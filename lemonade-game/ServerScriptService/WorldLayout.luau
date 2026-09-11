@@ -338,8 +338,11 @@ local function addZoneMarker(parent, zone, frame)
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "ZoneLabel"
 	billboard.Size = UDim2.fromOffset(280, 60)
-	billboard.AlwaysOnTop = true
-	billboard.MaxDistance = 150
+	-- Not AlwaysOnTop: that drew every zone sign through hills and ruin walls from
+	-- across the map. Hidden by terrain now, it only reads when the gate is in view.
+	billboard.AlwaysOnTop = false
+	billboard.LightInfluence = 0
+	billboard.MaxDistance = 110
 	billboard.Parent = marker
 
 	local label = Instance.new("TextLabel")

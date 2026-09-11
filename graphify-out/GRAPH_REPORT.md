@@ -1,7 +1,7 @@
 # Graph Report - lemonade-graph  (2026-09-11)
 
 ## Corpus Check
-- 55 files · ~57,690 words
+- 59 files · ~57,754 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6a95a625`
+- Built from commit: `61433108`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
