@@ -23,6 +23,25 @@ local DEFENSE_MAX_REDUCTION = 0.35 -- hard cap: Defense never mitigates more tha
 local ATTACK_COOLDOWN = 0.4
 local RESPAWN_DELAY = 5
 local DEFAULT_ARCHETYPE = "IronSquire"
+
+-- Classic Shirt/Pants texture pairs per boss family, so every archetype in a zone
+-- (minions, its elite alcove spawn, and the boss) reads as one faction instead of a
+-- flat-colored block. Verified real Roblox catalog assets: AssetTypeId 11 = Shirt,
+-- 12 = Pants, both public (5 R$, referencing them as a template needs no purchase).
+local TEXTURE_SETS = {
+	SterlingSilver = { shirt = 104282632152691, pants = 139353720126326 }, -- Iron Hall
+	Frostbite      = { shirt = 121924965140998, pants = 99353608981343  }, -- Frost Glacier
+	MagmaFiery     = { shirt = 123363908145112, pants = 96561718306565  }, -- Infernal Forge
+	Darkheart      = { shirt = 139651785525579, pants = 88740990058786  }, -- Void Rift
+	Golden         = { shirt = 100133588604370, pants = 92015331906060  }, -- Celestial Sanctum
+}
+local ARCHETYPE_TEXTURE_SET = {
+	IronSquire = "SterlingSilver", IronBerserker = "SterlingSilver", Boss_Gorgon = "SterlingSilver",
+	FrostImp = "Frostbite", GlacialGargoyle = "Frostbite", Boss_FrostRevenant = "Frostbite",
+	CinderFiend = "MagmaFiery", MagmaJuggernaut = "MagmaFiery", Boss_InfernalColossus = "MagmaFiery",
+	VoidShade = "Darkheart", AbyssTormentor = "Darkheart", Boss_VoidWraith = "Darkheart",
+	AstralWisp = "Golden", SolarDominator = "Golden", Boss_CelestialTitan = "Golden",
+}
 -- NPC decisions do not need to run at the render/frame rate. Keeping a short
 -- fixed tick preserves responsive combat while avoiding work proportional to
 -- enemies × players every frame.
@@ -494,6 +513,23 @@ local function createEnemyRig(archetypeKey, spawnPosition, level)
 	rightLeg.CanCollide = false
 	rightLeg.Position = torso.Position + Vector3.new(0.5 * s, -2 * s, 0)
 	rightLeg.Parent = model
+
+	-- Clothing: a themed Shirt/Pants pair per boss family so the rig reads as a
+	-- faction instead of a flat-colored block. arch.color still tints the parts
+	-- underneath, so the palette stays consistent even where the texture shows skin.
+	local textureSetName = ARCHETYPE_TEXTURE_SET[archetypeKey]
+	local textureSet = textureSetName and TEXTURE_SETS[textureSetName]
+	if textureSet then
+		local shirt = Instance.new("Shirt")
+		shirt.Name = "Shirt"
+		shirt.ShirtTemplate = "rbxassetid://" .. textureSet.shirt
+		shirt.Parent = model
+
+		local pants = Instance.new("Pants")
+		pants.Name = "Pants"
+		pants.PantsTemplate = "rbxassetid://" .. textureSet.pants
+		pants.Parent = model
+	end
 
 	-- Joints (Motor6D)
 	createMotor6D("RootJoint", hrp, hrp, torso, CFrame.new(0, 0, 0), CFrame.new(0, 0, 0))
