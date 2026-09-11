@@ -56,10 +56,12 @@ runtime_enemies = N("world_workspace_runtimeenemies", "Runtime-spawned enemy rig
                               "show them. WorldLayout.GetEnemySpawns supplies five level-ordered "
                               "zones, each with one boss plus four minions: Boss_Gorgon (Lv10), "
                               "Boss_FrostRevenant (Lv25), Boss_InfernalColossus (Lv45), "
-                              "Boss_VoidWraith (Lv70), and Boss_CelestialTitan (Lv100). Four roadside "
-                              "WILD_CAMPS (3 mobs each, Lv11-13 / 26-28 / 44-48 / 70-74) sit beside ROUTE "
-                              "transition nodes to close the level gap before each next door. Each arena also "
-                              "hides one Elite (Lv9/23/41/66/92) in a rear-corner alcove screened by two ruin slabs.Only bosses carry the "
+                              "Boss_VoidWraith (Lv70), and Boss_CelestialTitan (Lv100). Three bridge "
+                              "zones fill the level gaps: Briarwood (Lv8: ThornStalker, BriarBrute, RootWarden), "
+                              "Sunken Marsh (Lv23: BogLurker, MireHulk, DrownedBellwarden) and Stormwatch "
+                              "(Lv40: Stormcaller, ThunderConstruct, TempestWarden); wardens are named elites "
+                              "with no sword drop. One roadside WILD_CAMP (Lv70-74) covers the Void->Celestial gap. Each arena also "
+                              "hides one Elite (Lv9/23/41/66/92) in a rear alcove screened by two ruin slabs. Only bosses carry the "
                               "welded SwordMeshTemplate, tinted per boss via swordColor / "
                               "swordMaterial, and swing it with swingWeapon(). Every rig is "
                               "stamped with an Archetype attribute, which is how SwordDropSystem "
@@ -75,12 +77,12 @@ E(runtime_enemies, "serverscriptservice_sworddropsystem_server_hook",
 E(spawn, "serverscriptservice_levelingsystem_server_setupplayer",
   "conceptually_related_to", "INFERRED", 0.65)
 
-boss_rooms = N("world_workspace_bossrooms", "Boss ruins (5 level-gated arenas)", WS,
+boss_rooms = N("world_workspace_bossrooms", "Ruin arenas (8 level-gated zones)", WS,
                rationale="WorldLayout rebuilds Workspace/BossRooms with one circular 68-stud ruin per ascending "
-                         "zone (Iron Lowlands, Frostbound Glacier, Infernal Caldera, Void Rift, "
+                         "zone (Iron Lowlands, Briarwood, Frostbound Glacier, Sunken Marsh, Infernal Caldera, Stormwatch, Void Rift, "
                          "Celestial Summit). The shared layout places each boss and four minions inside. "
                          "Each doorway faces an authored junction on the main trail and holds a ForceField "
-                         "'Door' whose RequiredLevel attribute (1/15/30/50/75) is the single tuning "
+                         "'Door' whose RequiredLevel attribute (1/8/15/23/30/40/50/75) is the single tuning "
                          "knob. Each room also has an invisible Bounds part (the interior, used for "
                          "ejection) and an Exit marker outside the door.")
 E(boss_rooms, "serverscriptservice_bossroomgate_server", "referenced_by")
@@ -93,7 +95,7 @@ E(boss_rooms, spawn, "conceptually_related_to", "INFERRED", 0.8)
 TR = "Terrain.md"
 terrain = N("world_terrain_terrain", "Voxel Terrain", TR,
             rationale="WorldLayout clears the legacy voxels and creates one continuous authored landmass "
-                      "along an ascending S-curve trail. Five regions use blended terrain ribbons, asymmetric "
+                      "along an ascending S-curve trail. Eight regions use blended terrain ribbons, asymmetric "
                       "ridges, fixed decor clusters, and distinct skyline landmarks. EnemyCombat raycasts "
                       "against Terrain, Baseplate, and BossRooms so rigs snap to arena floors.")
 E(terrain, "serverscriptservice_enemycombat_server_resolvegroundposition", "references", src=TR)

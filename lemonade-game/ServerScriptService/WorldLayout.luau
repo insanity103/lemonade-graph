@@ -6,7 +6,7 @@ local Workspace = game:GetService("Workspace")
 
 local WorldLayout = {}
 
-WorldLayout.VERSION = 4
+WorldLayout.VERSION = 5
 WorldLayout.HUB = {
 	Center = Vector3.new(0, 2, -178),
 	SpawnPosition = Vector3.new(-8, 3.3, -181),
@@ -62,6 +62,29 @@ WorldLayout.ZONES = {
 		},
 		Elite = { "IronBerserker", Vector3.new(-7, 0, 26), 9 },
 	},
+	-- Bridge zones (Lv8 / 23 / 40) close the gap between each boss arena and the next
+	-- door. Each sits on a spur off the trail, >=95 studs from every other arena.
+	{
+		Name = "Briarwood", DisplayName = "Briarwood", RequiredLevel = 8,
+		Center = Vector3.new(-166, 11, -126), Approach = Vector3.new(-115, 10, -105),
+		TerrainMaterial = Enum.Material.LeafyGrass, FloorMaterial = Enum.Material.Pebble,
+		Color = Color3.fromRGB(74, 98, 52), Accent = Color3.fromRGB(170, 220, 90), Style = "Briar",
+		Landforms = {
+			{ Vector3.new(-46, 9, 30), 36 }, { Vector3.new(44, 6, 32), 33 },
+			{ Vector3.new(50, 3, -24), 28 },
+		},
+		Trees = {
+			Vector3.new(-47, 0, -14), Vector3.new(-53, 0, 12), Vector3.new(-44, 0, 34),
+			Vector3.new(42, 0, 16), Vector3.new(50, 0, 36), Vector3.new(54, 0, -12),
+			Vector3.new(-30, 0, 48), Vector3.new(28, 0, 49),
+		},
+		Rocks = { Vector3.new(-45, 0, -30), Vector3.new(47, 0, 0) },
+		Spawns = {
+			{ "RootWarden", Vector3.new(0, 0, 10), 14 },
+			{ "ThornStalker", Vector3.new(-15, 0, -7), 9 }, { "ThornStalker", Vector3.new(15, 0, -7), 10 },
+			{ "BriarBrute", Vector3.new(-14, 0, 17), 11 }, { "BriarBrute", Vector3.new(14, 0, 17), 12 },
+		},
+	},
 	{
 		Name = "FrostboundGlacier", DisplayName = "Frostbound Glacier", RequiredLevel = 15,
 		Center = Vector3.new(-138, 14, -22), Approach = Vector3.new(-111, 12, -57),
@@ -82,6 +105,32 @@ WorldLayout.ZONES = {
 			{ "GlacialGargoyle", Vector3.new(-14, 0, 17), 21 }, { "GlacialGargoyle", Vector3.new(14, 0, 17), 22 },
 		},
 		Elite = { "GlacialGargoyle", Vector3.new(7, 0, 26), 23 },
+	},
+	{
+		Name = "SunkenMarsh", DisplayName = "Sunken Marsh", RequiredLevel = 23,
+		Center = Vector3.new(-217, 20, 39), Approach = Vector3.new(-171, 19, 20),
+		TerrainMaterial = Enum.Material.Mud, FloorMaterial = Enum.Material.Slate,
+		Color = Color3.fromRGB(70, 86, 70), Accent = Color3.fromRGB(120, 210, 170), Style = "Marsh",
+		Landforms = {
+			{ Vector3.new(-44, 6, 32), 34 }, { Vector3.new(45, 4, 30), 32 },
+			{ Vector3.new(-50, 2, -24), 28 },
+		},
+		-- Shallow standing water outside the ring (arena-local centre, block size).
+		Pools = {
+			{ Vector3.new(-50, -2, 4), Vector3.new(22, 4, 34) },
+			{ Vector3.new(48, -2, 8), Vector3.new(20, 4, 28) },
+			{ Vector3.new(0, -2, 52), Vector3.new(40, 4, 16) },
+		},
+		Trees = {
+			Vector3.new(-42, 0, -22), Vector3.new(-56, 0, 30), Vector3.new(42, 0, -20),
+			Vector3.new(56, 0, 34), Vector3.new(-26, 0, 44),
+		},
+		Rocks = { Vector3.new(-40, 0, -36), Vector3.new(40, 0, -34), Vector3.new(26, 0, 46) },
+		Spawns = {
+			{ "DrownedBellwarden", Vector3.new(0, 0, 10), 29 },
+			{ "BogLurker", Vector3.new(-15, 0, -7), 24 }, { "BogLurker", Vector3.new(15, 0, -7), 25 },
+			{ "MireHulk", Vector3.new(-14, 0, 17), 26 }, { "MireHulk", Vector3.new(14, 0, 17), 27 },
+		},
 	},
 	{
 		Name = "InfernalCaldera", DisplayName = "Infernal Caldera", RequiredLevel = 30,
@@ -106,6 +155,29 @@ WorldLayout.ZONES = {
 			{ "MagmaJuggernaut", Vector3.new(-14, 0, 17), 38 }, { "MagmaJuggernaut", Vector3.new(14, 0, 17), 40 },
 		},
 		Elite = { "MagmaJuggernaut", Vector3.new(-7, 0, 26), 41 },
+	},
+	{
+		Name = "Stormwatch", DisplayName = "Stormwatch", RequiredLevel = 40,
+		Center = Vector3.new(-33, 26, 35), Approach = Vector3.new(-74, 25, 64),
+		TerrainMaterial = Enum.Material.Rock, FloorMaterial = Enum.Material.Granite,
+		Color = Color3.fromRGB(84, 92, 110), Accent = Color3.fromRGB(130, 190, 255), Style = "Storm",
+		Landforms = {
+			{ Vector3.new(-45, 14, 30), 37 }, { Vector3.new(44, 10, 32), 34 },
+			{ Vector3.new(-48, 5, -26), 30 },
+		},
+		Trees = {
+			Vector3.new(-46, 0, -12), Vector3.new(-52, 0, 20), Vector3.new(46, 0, 14),
+			Vector3.new(50, 0, 36),
+		},
+		Rocks = {
+			Vector3.new(-42, 0, -34), Vector3.new(44, 0, -8),
+			Vector3.new(-24, 0, 48), Vector3.new(22, 0, 49),
+		},
+		Spawns = {
+			{ "TempestWarden", Vector3.new(0, 0, 10), 48 },
+			{ "Stormcaller", Vector3.new(-15, 0, -7), 41 }, { "Stormcaller", Vector3.new(15, 0, -7), 42 },
+			{ "ThunderConstruct", Vector3.new(-14, 0, 17), 44 }, { "ThunderConstruct", Vector3.new(14, 0, 17), 45 },
+		},
 	},
 	{
 		Name = "VoidRift", DisplayName = "Void Rift", RequiredLevel = 50,
@@ -158,18 +230,8 @@ WorldLayout.ZONES = {
 -- zone's archetypes with the first of the next one, so players meet the new
 -- faction before its gate.
 WorldLayout.WILD_CAMPS = {
-	{
-		Name = "IronFrostPass", Route = 6, Side = 1, Zone = "IronLowlands",
-		Spawns = { { "IronBerserker", 11 }, { "IronSquire", 12 }, { "FrostImp", 13 } },
-	},
-	{
-		Name = "GlacierScorchedRidge", Route = 11, Side = 1, Zone = "FrostboundGlacier",
-		Spawns = { { "GlacialGargoyle", 26 }, { "FrostImp", 27 }, { "CinderFiend", 28 } },
-	},
-	{
-		Name = "CalderaRiftOverlook", Route = 15, Side = -1, Zone = "InfernalCaldera",
-		Spawns = { { "MagmaJuggernaut", 44 }, { "CinderFiend", 46 }, { "VoidShade", 48 } },
-	},
+	-- The Lv8/23/40 bridge zones replaced the earlier Iron-Frost, Glacier and Caldera
+	-- camps; only the Void -> Celestial gap (70 -> 75) still needs one.
 	{
 		Name = "RiftSummitSteps", Route = 20, Side = -1, Zone = "VoidRift",
 		Spawns = { { "AbyssTormentor", 70 }, { "VoidShade", 72 }, { "AstralWisp", 74 } },
@@ -278,6 +340,9 @@ local function buildTerrain()
 		for _, landform in ipairs(zone.Landforms) do
 			fillTerrainMound(terrain, frame:PointToWorldSpace(landform[1]), landform[2], zone.TerrainMaterial)
 		end
+		for _, pool in ipairs(zone.Pools or {}) do
+			terrain:FillBlock(frame * CFrame.new(pool[1]), pool[2], Enum.Material.Water)
+		end
 	end
 	return terrain
 end
@@ -304,17 +369,93 @@ local function buildTrailSegment(parent, fromNode, toNode, index, namePrefix)
 	if material == Enum.Material.Snow or material == Enum.Material.CrackedLava then
 		material = Enum.Material.Rock
 	end
+	local width = index % 3 == 0 and 12 or 10
+	local length = (to - from).Magnitude + 0.5
+	local frame = CFrame.lookAt(midpoint, to)
 	local road = createPart(parent, string.format("%s%02d", namePrefix, index),
-		Vector3.new(index % 3 == 0 and 12 or 10, 1, (to - from).Magnitude + 0.5),
-		CFrame.lookAt(midpoint, to), material, Color3.fromRGB(105, 96, 84))
+		Vector3.new(width, 1, length), frame, material, Color3.fromRGB(105, 96, 84))
 	road:SetAttribute("FromLevel", fromNode.Level)
 	road:SetAttribute("ToLevel", toNode.Level)
+	-- Low kerbs frame the paving so the route reads from a distance. They rise only
+	-- 0.4 above the road, so players and enemies step over them at junctions.
+	for side = -1, 1, 2 do
+		local kerb = createPart(parent, road.Name .. (side < 0 and "KerbL" or "KerbR"),
+			Vector3.new(1.2, 1.4, length), frame * CFrame.new(side * (width / 2 + 0.6), 0.2, 0),
+			Enum.Material.Slate, Color3.fromRGB(72, 68, 64))
+		kerb.CanQuery = false
+	end
 	return road
 end
 
+local LAMP_WOOD = Color3.fromRGB(52, 44, 38)
+local LAMP_GLOW = Color3.fromRGB(255, 205, 120)
+
+local function buildLamp(parent, name, position)
+	local base = terrainSurfaceAt(position)
+	local model = Instance.new("Model")
+	model.Name = name
+	local post = createPart(model, "Post", Vector3.new(0.6, 9, 0.6), CFrame.new(base + Vector3.new(0, 4.5, 0)),
+		Enum.Material.Wood, LAMP_WOOD)
+	model.PrimaryPart = post
+	createPart(model, "Arm", Vector3.new(0.4, 0.4, 2.2), CFrame.new(base + Vector3.new(0, 8.8, 0.9)),
+		Enum.Material.Wood, LAMP_WOOD)
+	local lantern = createPart(model, "Lantern", Vector3.new(1.1, 1.4, 1.1),
+		CFrame.new(base + Vector3.new(0, 8, 1.8)), Enum.Material.Neon, LAMP_GLOW)
+	lantern.CanCollide = false
+	local light = Instance.new("PointLight")
+	light.Color = LAMP_GLOW
+	light.Brightness = 1.4
+	light.Range = 16
+	light.Parent = lantern
+	model.Parent = parent
+end
+
+-- Destination sign beside each arena spur, facing the main trail. SurfaceGuis on both
+-- faces are depth-tested like any part, so unlike billboards they never show through
+-- terrain.
+local function addSignFace(board, face, text, color)
+	local gui = Instance.new("SurfaceGui")
+	gui.Face = face
+	gui.LightInfluence = 0
+	gui.PixelsPerStud = 40
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.Parent = board
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.GothamBold
+	label.TextScaled = true
+	label.TextColor3 = color
+	label.TextStrokeTransparency = 0.3
+	label.Text = text
+	label.Parent = gui
+end
+
+local function buildSignpost(parent, zone)
+	local frame = arenaCFrame(zone)
+	local entrance = frame:PointToWorldSpace(Vector3.new(0, 0, -ARENA_HALF - 1))
+	local spurDirection = Vector3.new(entrance.X - zone.Approach.X, 0, entrance.Z - zone.Approach.Z).Unit
+	local across = Vector3.new(-spurDirection.Z, 0, spurDirection.X)
+	local base = terrainSurfaceAt(zone.Approach + spurDirection * 11 + across * 8.5)
+	local model = Instance.new("Model")
+	model.Name = zone.Name .. "Signpost"
+	local post = createPart(model, "Post", Vector3.new(0.7, 7, 0.7), CFrame.new(base + Vector3.new(0, 3.5, 0)),
+		Enum.Material.Wood, LAMP_WOOD)
+	model.PrimaryPart = post
+	local boardCenter = base + Vector3.new(0, 6, 0)
+	local facing = Vector3.new(zone.Approach.X, boardCenter.Y, zone.Approach.Z)
+	local board = createPart(model, "Board", Vector3.new(7, 2.6, 0.35),
+		CFrame.lookAt(boardCenter, facing), Enum.Material.WoodPlanks, zone.Color:Lerp(Color3.new(0, 0, 0), 0.35))
+	local text = string.format("%s\nLEVEL %d+", string.upper(zone.DisplayName), zone.RequiredLevel)
+	addSignFace(board, Enum.NormalId.Front, text, zone.Accent)
+	addSignFace(board, Enum.NormalId.Back, text, zone.Accent)
+	model.Parent = parent
+end
+
 local function buildRoads(parent)
-	for index = 1, #WorldLayout.ROUTE - 1 do
-		buildTrailSegment(parent, WorldLayout.ROUTE[index], WorldLayout.ROUTE[index + 1], index, "Trail")
+	local route = WorldLayout.ROUTE
+	for index = 1, #route - 1 do
+		buildTrailSegment(parent, route[index], route[index + 1], index, "Trail")
 	end
 	for index, zone in ipairs(WorldLayout.ZONES) do
 		local frame = arenaCFrame(zone)
@@ -324,6 +465,15 @@ local function buildRoads(parent)
 		}, {
 			Position = entrance, Material = zone.FloorMaterial, Level = zone.RequiredLevel,
 		}, index, "ArenaSpur")
+		buildSignpost(parent, zone)
+	end
+	-- Lamps on every other trail node, alternating shoulders, just outside the kerb.
+	for index = 2, #route, 2 do
+		local before = route[index - 1].Position
+		local after = route[math.min(#route, index + 1)].Position
+		local along = Vector3.new(after.X - before.X, 0, after.Z - before.Z).Unit
+		local across = Vector3.new(-along.Z, 0, along.X) * ((index / 2) % 2 == 0 and 1 or -1)
+		buildLamp(parent, string.format("TrailLamp%02d", index), route[index].Position + across * 9)
 	end
 end
 
@@ -334,6 +484,7 @@ local function addZoneMarker(parent, zone, frame)
 	marker.Transparency = 1
 	marker.CanCollide = false
 	marker.CanTouch = false
+	marker.CanQuery = false
 
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "ZoneLabel"
@@ -409,11 +560,16 @@ local function buildBossRoom(parent, zone)
 	bounds.Transparency = 1
 	bounds.CanCollide = false
 	bounds.CanTouch = false
+	-- BossRooms is in EnemyCombat's ground-raycast list; without this every rig in
+	-- the room snapped to the top of this invisible 22-stud box and dropped in.
+	-- BossRoomGate tests Bounds with its own maths, so it needs no query.
+	bounds.CanQuery = false
 	local exit = createPart(model, "Exit", Vector3.new(4, 1, 4),
 		frame * CFrame.new(0, 0.5, -ARENA_HALF - 9), Enum.Material.SmoothPlastic, zone.Accent)
 	exit.Transparency = 1
 	exit.CanCollide = false
 	exit.CanTouch = false
+	exit.CanQuery = false
 
 	for brazierIndex, x in ipairs({ -13, 13 }) do
 		local flame = createPart(model, "GateLight" .. brazierIndex, Vector3.new(2, 2, 2),
@@ -454,11 +610,14 @@ local function buildTree(parent, name, position, zone, variant)
 	local model = Instance.new("Model")
 	model.Name = name
 	local height = 10 + (variant % 3) * 2
-	local trunkColor = zone.Style == "Infernal" and Color3.fromRGB(58, 42, 37) or Color3.fromRGB(91, 63, 43)
+	-- Infernal deadwood and Stormwatch's lightning-struck snags are bare; others leaf out.
+	local bare = zone.Style == "Infernal" or zone.Style == "Storm"
+	local trunkColor = bare and Color3.fromRGB(58, 42, 37) or Color3.fromRGB(91, 63, 43)
+	if zone.Style == "Marsh" then trunkColor = Color3.fromRGB(62, 58, 44) end
 	local trunk = createPart(model, "Trunk", Vector3.new(2.2, height, 2.2),
 		CFrame.new(position + Vector3.new(0, height / 2, 0)), Enum.Material.Wood, trunkColor)
 	model.PrimaryPart = trunk
-	if zone.Style == "Infernal" then
+	if bare then
 		for branchIndex, side in ipairs({ -1, 1 }) do
 			createPart(model, "Branch" .. branchIndex, Vector3.new(1.2, 6, 1.2),
 				CFrame.new(position + Vector3.new(side * 2, height - 1, 0)) * CFrame.Angles(0, 0, math.rad(side * 42)),
@@ -526,9 +685,51 @@ local function buildColumn(parent, name, position, zone, height)
 	model.Parent = parent
 end
 
+local function flatDistanceToSegment(point, a, b)
+	local p, s, e = Vector3.new(point.X, 0, point.Z), Vector3.new(a.X, 0, a.Z), Vector3.new(b.X, 0, b.Z)
+	local span = e - s
+	local t = span.Magnitude > 0 and math.clamp((p - s):Dot(span) / span:Dot(span), 0, 1) or 0
+	return (p - (s + span * t)).Magnitude
+end
+
+local function distanceToRoute(point)
+	local best = math.huge
+	local route = WorldLayout.ROUTE
+	for index = 1, #route - 1 do
+		best = math.min(best, flatDistanceToSegment(point, route[index].Position, route[index + 1].Position))
+	end
+	return best
+end
+
+local function distanceToOtherArena(point, zone)
+	local best = math.huge
+	for _, other in ipairs(WorldLayout.ZONES) do
+		if other ~= zone then
+			best = math.min(best, (Vector3.new(point.X - other.Center.X, 0, point.Z - other.Center.Z)).Magnitude)
+		end
+	end
+	return best
+end
+
+-- Landmarks prefer the point straight behind the arena, but two of the original
+-- sites (Iron, Frost) landed on the trail itself. Swing around the back until the
+-- site clears the road and every other arena.
+local LANDMARK_ANGLES = { 0, 30, -30, 60, -60, 90, -90 }
+local function landmarkSite(zone, frame)
+	local distance = ARENA_HALF + 18
+	for _, degrees in ipairs(LANDMARK_ANGLES) do
+		local angle = math.rad(degrees)
+		local site = frame:PointToWorldSpace(Vector3.new(math.sin(angle) * distance, 0, math.cos(angle) * distance))
+		if distanceToRoute(site) >= 20 and distanceToOtherArena(site, zone) >= 50 then
+			return site
+		end
+	end
+	return frame:PointToWorldSpace(Vector3.new(0, 0, distance))
+end
+
 local function buildLandmark(parent, zone)
 	local frame = arenaCFrame(zone)
-	local rear = terrainSurfaceAt(frame:PointToWorldSpace(Vector3.new(0, 0, ARENA_HALF + 18)))
+	local rear = terrainSurfaceAt(landmarkSite(zone, frame))
 	local model = Instance.new("Model")
 	model.Name = zone.Name .. "Landmark"
 	model.Parent = parent
@@ -560,6 +761,79 @@ local function buildLandmark(parent, zone)
 			mote.Shape = Enum.PartType.Ball
 			mote.CanCollide = false
 		end
+	elseif zone.Style == "Briar" then
+		-- Ancient root shrine: a vast hollow stump, arching roots, a glowing heartstone.
+		local stump = createPart(model, "ShrineStump", Vector3.new(14, 12, 12),
+			CFrame.new(rear + Vector3.new(0, 7, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+			Enum.Material.Wood, Color3.fromRGB(78, 56, 38))
+		stump.Shape = Enum.PartType.Cylinder
+		for rootIndex = 1, 6 do
+			local angle = math.rad(rootIndex * 60 + 15)
+			local out = Vector3.new(math.cos(angle), 0, math.sin(angle))
+			createPart(model, "Root" .. rootIndex, Vector3.new(2.4, 2.4, 11),
+				CFrame.lookAt(rear + out * 7 + Vector3.new(0, 2, 0), rear + out * 13 - Vector3.new(0, 1.5, 0)),
+				Enum.Material.Wood, Color3.fromRGB(70, 50, 34))
+		end
+		for archIndex, x in ipairs({ -5, 5 }) do
+			createPart(model, "RootArch" .. archIndex, Vector3.new(2, 16, 2),
+				CFrame.new(rear + Vector3.new(x, 16, -2)) * CFrame.Angles(0, 0, math.rad(-x * 4)),
+				Enum.Material.Wood, Color3.fromRGB(70, 50, 34))
+		end
+		local heart = createPart(model, "Heartstone", Vector3.new(3.5, 3.5, 3.5),
+			CFrame.new(rear + Vector3.new(0, 15, 0)), Enum.Material.Neon, zone.Accent)
+		heart.Shape = Enum.PartType.Ball
+		heart.CanCollide = false
+	elseif zone.Style == "Marsh" then
+		-- Flooded bell tower: a leaning brick tower half-sunk in its own pool.
+		local lean = CFrame.new(rear + Vector3.new(0, 11, 0)) * CFrame.Angles(math.rad(6), 0, math.rad(-8))
+		model.PrimaryPart = createPart(model, "BellTower", Vector3.new(9, 26, 9), lean,
+			Enum.Material.Brick, zone.Color:Lerp(Color3.fromRGB(110, 100, 90), 0.5))
+		createPart(model, "Belfry", Vector3.new(11, 1.5, 11), lean * CFrame.new(0, 12, 0),
+			Enum.Material.WoodPlanks, Color3.fromRGB(60, 52, 44))
+		for pillarIndex, offset in ipairs({
+			Vector3.new(-4.5, 15.5, -4.5), Vector3.new(4.5, 15.5, -4.5),
+			Vector3.new(-4.5, 15.5, 4.5), Vector3.new(4.5, 15.5, 4.5),
+		}) do
+			createPart(model, "BelfryPost" .. pillarIndex, Vector3.new(1.2, 6, 1.2), lean * CFrame.new(offset),
+				Enum.Material.Brick, zone.Color)
+		end
+		createPart(model, "BelfryRoof", Vector3.new(11, 1.5, 11), lean * CFrame.new(0, 19, 0),
+			Enum.Material.Slate, Color3.fromRGB(45, 50, 48))
+		local bell = createPart(model, "SunkenBell", Vector3.new(4, 4, 4), lean * CFrame.new(0, 15.5, 0),
+			Enum.Material.CorrodedMetal, Color3.fromRGB(90, 130, 110))
+		bell.Shape = Enum.PartType.Ball
+		local glow = Instance.new("PointLight")
+		glow.Color = zone.Accent
+		glow.Range = 20
+		glow.Parent = bell
+		Workspace.Terrain:FillBlock(CFrame.new(rear + Vector3.new(0, -1.5, 0)), Vector3.new(26, 3, 26),
+			Enum.Material.Water)
+	elseif zone.Style == "Storm" then
+		-- Broken storm observatory: cracked drum walls, a split dome and a tilted
+		-- telescope, with a lit lightning rod still standing.
+		for wallIndex = 1, 7 do
+			local angle = math.rad(wallIndex * 45)
+			local height = 8 + (wallIndex % 3) * 3
+			local at = rear + Vector3.new(math.cos(angle) * 9, height / 2, math.sin(angle) * 9)
+			createPart(model, "ObservatoryWall" .. wallIndex, Vector3.new(7, height, 1.6),
+				CFrame.lookAt(at, Vector3.new(rear.X, at.Y, rear.Z)), Enum.Material.Granite, zone.Color)
+		end
+		local dome = createPart(model, "BrokenDome", Vector3.new(15, 15, 15),
+			CFrame.new(rear + Vector3.new(2, 12, 1)), Enum.Material.Metal, zone.Color:Lerp(Color3.new(1, 1, 1), 0.3))
+		dome.Shape = Enum.PartType.Ball
+		dome.Transparency = 0.35
+		local scope = createPart(model, "Telescope", Vector3.new(15, 2.6, 2.6),
+			CFrame.new(rear + Vector3.new(0, 16, 0)) * CFrame.Angles(0, math.rad(30), math.rad(35)),
+			Enum.Material.Metal, Color3.fromRGB(150, 130, 90))
+		scope.Shape = Enum.PartType.Cylinder
+		local rod = createPart(model, "LightningRod", Vector3.new(0.6, 16, 0.6),
+			CFrame.new(rear + Vector3.new(-7, 26, -4)), Enum.Material.Neon, zone.Accent)
+		rod.CanCollide = false
+		local spark = Instance.new("PointLight")
+		spark.Color = zone.Accent
+		spark.Brightness = 3
+		spark.Range = 24
+		spark.Parent = rod
 	else
 		buildColumn(model, "SummitColumnLeft", rear + Vector3.new(-12, 0, 0), zone, 25)
 		buildColumn(model, "SummitColumnRight", rear + Vector3.new(12, 0, 0), zone, 21)
@@ -708,6 +982,7 @@ local function buildWildCamp(parent, camp)
 	marker.Transparency = 1
 	marker.CanCollide = false
 	marker.CanTouch = false
+	marker.CanQuery = false
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "CampLabel"
 	billboard.Size = UDim2.fromOffset(200, 40)

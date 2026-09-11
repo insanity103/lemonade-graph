@@ -210,9 +210,9 @@
     "semantic_hash": ""
   },
   "default.project.json": {
-    "mtime": 1789148088.9377015,
-    "seen": 1789153885.1371665,
-    "ast_hash": "8c965e43e1d4ca6e8a579a2a3adab3fa",
+    "mtime": 1789155092.752904,
+    "seen": 1789155692.9124594,
+    "ast_hash": "3ed0736a3ecac50ab8d02b4660a75892",
     "semantic_hash": ""
   },
   "lemonade-game/ReplicatedStorage/Animations/Sword Attack Animation.luau": {
@@ -312,9 +312,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/WorldLayout.luau": {
-    "mtime": 1789154020.4521034,
-    "seen": 1789154030.1416748,
-    "ast_hash": "c880c2cd744d244ee41cf076cfb9d48e",
+    "mtime": 1789155685.9658918,
+    "seen": 1789155692.9124901,
+    "ast_hash": "c7eedd09aa0fdfcea2e043f18807784b",
     "semantic_hash": ""
   },
   "assets/swords/manifest.json": {
@@ -333,6 +333,30 @@
     "mtime": 1789151609.8298695,
     "seen": 1789153885.1372182,
     "ast_hash": "b30b4704c84bdf20b7d44ae16a57b271",
+    "semantic_hash": ""
+  },
+  "lemonade-game/ReplicatedStorage/Animations/init.meta.json": {
+    "mtime": 1789155106.4892952,
+    "seen": 1789155692.9124649,
+    "ast_hash": "5302f4a1f01027bd33d4406a1e0e2eb2",
+    "semantic_hash": ""
+  },
+  "lemonade-game/ReplicatedStorage/Config/init.meta.json": {
+    "mtime": 1789155106.4892952,
+    "seen": 1789155692.9124744,
+    "ast_hash": "5302f4a1f01027bd33d4406a1e0e2eb2",
+    "semantic_hash": ""
+  },
+  "lemonade-game/StarterPack/ClassicSword/init.meta.json": {
+    "mtime": 1789155093.4359121,
+    "seen": 1789155692.912493,
+    "ast_hash": "2973f3cf44a2832bccafd1e23c0872ae",
+    "semantic_hash": ""
+  },
+  "lemonade-game/StarterPlayer/StarterPlayerScripts/init.meta.json": {
+    "mtime": 1789155106.4892952,
+    "seen": 1789155692.912505,
+    "ast_hash": "5302f4a1f01027bd33d4406a1e0e2eb2",
     "semantic_hash": ""
   }
 }

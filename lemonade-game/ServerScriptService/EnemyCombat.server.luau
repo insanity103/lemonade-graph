@@ -34,6 +34,7 @@ local TEXTURE_SETS = {
 	MagmaFiery     = { shirt = 123363908145112, pants = 96561718306565  }, -- Infernal Forge
 	Darkheart      = { shirt = 139651785525579, pants = 88740990058786  }, -- Void Rift
 	Golden         = { shirt = 100133588604370, pants = 92015331906060  }, -- Celestial Sanctum
+	Ranger         = { shirt = 12696379800,     pants = 12696385673     }, -- Briarwood
 }
 local ARCHETYPE_TEXTURE_SET = {
 	IronSquire = "SterlingSilver", IronBerserker = "SterlingSilver", Boss_Gorgon = "SterlingSilver",
@@ -41,6 +42,8 @@ local ARCHETYPE_TEXTURE_SET = {
 	CinderFiend = "MagmaFiery", MagmaJuggernaut = "MagmaFiery", Boss_InfernalColossus = "MagmaFiery",
 	VoidShade = "Darkheart", AbyssTormentor = "Darkheart", Boss_VoidWraith = "Darkheart",
 	AstralWisp = "Golden", SolarDominator = "Golden", Boss_CelestialTitan = "Golden",
+	ThornStalker = "Ranger", BriarBrute = "Ranger", RootWarden = "Ranger",
+	-- Sunken Marsh and Stormwatch have no verified catalog set yet; they read by body colour.
 }
 -- NPC decisions do not need to run at the render/frame rate. Keeping a short
 -- fixed tick preserves responsive combat while avoiding work proportional to
@@ -229,6 +232,59 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 1.4,
 		patrolRadius = 16,
 		leashDistance = 48,
+	},
+
+	-- Bridge zones (WorldLayout: Briarwood Lv8, Sunken Marsh Lv23, Stormwatch Lv40). Their
+	-- stats are log-interpolated between the neighbouring zones' curves at the spawn levels,
+	-- so each one sits between the arena before it and the gate after it. Wardens are
+	-- named elites, not bosses: no weapon, no sword drop.
+	ThornStalker = {
+		name = "Thorn Stalker", color = Color3.fromRGB(120, 150, 60), scale = 1.0, walkSpeed = 15,
+		baseHealth = 203, healthGrowth = 1.23, baseDamage = 21, damageGrowth = 1.14, baseXP = 170,
+		aggroRange = 26, attackReach = 6.0, attackCooldown = 1.2, patrolRadius = 14, leashDistance = 38,
+	},
+	BriarBrute = {
+		name = "Briar Brute", color = Color3.fromRGB(85, 105, 45), scale = 1.35, walkSpeed = 11,
+		baseHealth = 377, healthGrowth = 1.23, baseDamage = 32, damageGrowth = 1.14, baseXP = 240,
+		aggroRange = 23, attackReach = 7.5, attackCooldown = 1.7, patrolRadius = 10, leashDistance = 34,
+	},
+	RootWarden = {
+		name = "Rootbound Warden", title = "Keeper of the Grove", color = Color3.fromRGB(60, 80, 35),
+		scale = 1.6, walkSpeed = 11.5, baseHealth = 724, healthGrowth = 1.23, baseDamage = 42,
+		damageGrowth = 1.14, baseXP = 450, aggroRange = 30, attackReach = 9.0, attackCooldown = 1.6,
+		patrolRadius = 10, leashDistance = 45, nameTag = true, tagColor = Color3.fromRGB(170, 220, 90),
+	},
+	BogLurker = {
+		name = "Bog Lurker", color = Color3.fromRGB(80, 110, 90), scale = 1.05, walkSpeed = 14.5,
+		baseHealth = 1030, healthGrowth = 1.26, baseDamage = 50, damageGrowth = 1.17, baseXP = 750,
+		aggroRange = 27, attackReach = 6.5, attackCooldown = 1.2, patrolRadius = 14, leashDistance = 40,
+	},
+	MireHulk = {
+		name = "Mire Hulk", color = Color3.fromRGB(55, 75, 60), scale = 1.45, walkSpeed = 10.5,
+		baseHealth = 1915, healthGrowth = 1.26, baseDamage = 74, damageGrowth = 1.17, baseXP = 950,
+		aggroRange = 24, attackReach = 8.0, attackCooldown = 1.8, patrolRadius = 11, leashDistance = 36,
+	},
+	DrownedBellwarden = {
+		name = "Drowned Bellwarden", title = "Toller of the Sunken Bell", color = Color3.fromRGB(40, 60, 70),
+		scale = 1.65, walkSpeed = 12, baseHealth = 3685, healthGrowth = 1.26, baseDamage = 99,
+		damageGrowth = 1.17, baseXP = 1600, aggroRange = 32, attackReach = 9.5, attackCooldown = 1.6,
+		patrolRadius = 10, leashDistance = 48, nameTag = true, tagColor = Color3.fromRGB(120, 210, 170),
+	},
+	Stormcaller = {
+		name = "Stormcaller", color = Color3.fromRGB(110, 130, 175), scale = 1.1, walkSpeed = 17,
+		baseHealth = 2750, healthGrowth = 1.31, baseDamage = 95, damageGrowth = 1.20, baseXP = 2800,
+		aggroRange = 32, attackReach = 7.0, attackCooldown = 1.0, patrolRadius = 16, leashDistance = 44,
+	},
+	ThunderConstruct = {
+		name = "Thunder Construct", color = Color3.fromRGB(70, 85, 120), scale = 1.5, walkSpeed = 12,
+		baseHealth = 5100, healthGrowth = 1.31, baseDamage = 143, damageGrowth = 1.20, baseXP = 3500,
+		aggroRange = 27, attackReach = 9.0, attackCooldown = 1.6, patrolRadius = 13, leashDistance = 40,
+	},
+	TempestWarden = {
+		name = "Tempest Warden", title = "Keeper of the Observatory", color = Color3.fromRGB(50, 60, 95),
+		scale = 1.7, walkSpeed = 13, baseHealth = 9800, healthGrowth = 1.31, baseDamage = 190,
+		damageGrowth = 1.20, baseXP = 5500, aggroRange = 34, attackReach = 10.0, attackCooldown = 1.5,
+		patrolRadius = 12, leashDistance = 50, nameTag = true, tagColor = Color3.fromRGB(130, 190, 255),
 	},
 
 	-- 5 UNIQUE SPREAD-OUT PROGRESSIVE BOSSES (High-Level & High-Stakes)
@@ -585,8 +641,9 @@ local function createEnemyRig(archetypeKey, spawnPosition, level)
 		bb.Name = "NameTag"
 		bb.Size = UDim2.fromOffset(260, 56)
 		bb.StudsOffsetWorldSpace = Vector3.new(0, 3.2 * s, 0)
-		bb.AlwaysOnTop = true
-		bb.MaxDistance = 300
+		-- Depth-tested so boss tags no longer show through hills and arena walls map-wide.
+		bb.AlwaysOnTop = false
+		bb.MaxDistance = 120
 		bb.Parent = head
 
 		local lbl = Instance.new("TextLabel")
