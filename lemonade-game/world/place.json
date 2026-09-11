@@ -1,0 +1,18 @@
+{
+  "placeName": "game",
+  "placeId": 108354544637319,
+  "gameId": 10765853284,
+  "exportedAt": "2026-09-10T16:16:32-07:00",
+  "note": "Readable text export of the Roblox DataModel for knowledge-graph indexing. Not a restorable backup: terrain voxels, mesh geometry and exact CFrames are not captured.",
+  "descendantCounts": {
+    "Workspace": 86,
+    "ServerScriptService": 12,
+    "ServerStorage": 3,
+    "ReplicatedStorage": 27,
+    "StarterGui": 0,
+    "StarterPack": 17,
+    "StarterPlayer": 12,
+    "Lighting": 5,
+    "SoundService": 0
+  }
+}

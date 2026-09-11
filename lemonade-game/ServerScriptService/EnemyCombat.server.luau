@@ -1,0 +1,951 @@
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local CollectionService = game:GetService("CollectionService")
+local ServerStorage = game:GetService("ServerStorage")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+
+local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
+
+local ENEMY_TAG = CombatUtil.ENEMY_TAG
+local ENEMY_ATTRIBUTE = CombatUtil.ENEMY_ATTRIBUTE
+local CREATOR_TAG_NAME = "creator"
+
+local ATTACK_RANGE = 10
+-- Sword mesh sizing. SWORD_ASPECT matches the imported MeshPart's MeshSize, so
+-- Size = SWORD_ASPECT * length keeps the blade undistorted at any scale.
+local SWORD_LENGTH = 4.2
+local SWORD_ASPECT = Vector3.new(0.10701, 0.20346, 1)
+local SWORD_GRIP_FRAC = 0.38 -- where along the blade the hand sits, from centre
+-- Defense is a straight percentage reduction with a hard cap, so it can never trivialise an enemy.
+local DEFENSE_PCT_PER_POINT = 0.003 -- each Defense point removes 0.30% of incoming damage
+local DEFENSE_MAX_REDUCTION = 0.35 -- hard cap: Defense never mitigates more than 35%
+local ATTACK_COOLDOWN = 0.4
+local RESPAWN_DELAY = 5
+
+local ATTACK_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("EnemyAttack")
+local TOGGLE_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToggleAutoAttack")
+local DAMAGE_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("DamageNumber")
+
+local playerCooldowns = {}
+local autoAttackState = {} -- [player] = bool (auto-attack on/off)
+
+-- ==============================================================================
+-- 1. ENEMY & BOSS ARCHETYPES CONFIGURATION
+-- ==============================================================================
+local ENEMY_ARCHETYPES = {
+	-- 1. Iron Warlord Minions (South-West Courtyard, Lv 4-8)
+	IronSquire = {
+		name = "Iron Vanguard",
+		color = Color3.fromRGB(150, 65, 75),
+		scale = 1.05,
+		walkSpeed = 12.5,
+		baseHealth = 120,
+		healthGrowth = 1.20,
+		baseDamage = 14,
+		damageGrowth = 1.12,
+		baseXP = 75,
+		aggroRange = 24,
+		attackReach = 6.0,
+		attackCooldown = 1.3,
+		patrolRadius = 12,
+		leashDistance = 35,
+	},
+	IronBerserker = {
+		name = "Iron Crusher",
+		color = Color3.fromRGB(110, 35, 45),
+		scale = 1.25,
+		walkSpeed = 10.0,
+		baseHealth = 240,
+		healthGrowth = 1.22,
+		baseDamage = 22,
+		damageGrowth = 1.14,
+		baseXP = 140,
+		aggroRange = 22,
+		attackReach = 7.0,
+		attackCooldown = 1.8,
+		patrolRadius = 10,
+		leashDistance = 32,
+	},
+
+	-- 2. Frost Revenant Minions (North-West Permafrost Glade, Lv 15-20)
+	FrostImp = {
+		name = "Frost Stalker",
+		color = Color3.fromRGB(90, 160, 220),
+		scale = 0.95,
+		walkSpeed = 16.0,
+		baseHealth = 450,
+		healthGrowth = 1.24,
+		baseDamage = 35,
+		damageGrowth = 1.15,
+		baseXP = 320,
+		aggroRange = 28,
+		attackReach = 5.5,
+		attackCooldown = 1.1,
+		patrolRadius = 14,
+		leashDistance = 40,
+	},
+	GlacialGargoyle = {
+		name = "Glacial Sentinel",
+		color = Color3.fromRGB(30, 95, 160),
+		scale = 1.35,
+		walkSpeed = 11.0,
+		baseHealth = 950,
+		healthGrowth = 1.26,
+		baseDamage = 52,
+		damageGrowth = 1.16,
+		baseXP = 600,
+		aggroRange = 25,
+		attackReach = 7.5,
+		attackCooldown = 1.7,
+		patrolRadius = 12,
+		leashDistance = 36,
+	},
+
+	-- 3. Infernal Colossus Minions (North-East Caldera, Lv 30-38)
+	CinderFiend = {
+		name = "Cinder Fiend",
+		color = Color3.fromRGB(240, 100, 30),
+		scale = 1.05,
+		walkSpeed = 15.0,
+		baseHealth = 1800,
+		healthGrowth = 1.28,
+		baseDamage = 85,
+		damageGrowth = 1.18,
+		baseXP = 1200,
+		aggroRange = 30,
+		attackReach = 6.5,
+		attackCooldown = 1.2,
+		patrolRadius = 14,
+		leashDistance = 42,
+	},
+	MagmaJuggernaut = {
+		name = "Magma Juggernaut",
+		color = Color3.fromRGB(180, 50, 15),
+		scale = 1.45,
+		walkSpeed = 11.5,
+		baseHealth = 3600,
+		healthGrowth = 1.30,
+		baseDamage = 135,
+		damageGrowth = 1.19,
+		baseXP = 2200,
+		aggroRange = 26,
+		attackReach = 8.5,
+		attackCooldown = 1.6,
+		patrolRadius = 12,
+		leashDistance = 38,
+	},
+
+	-- 4. Void Archon Minions (South-East Void Spire, Lv 50-60)
+	VoidShade = {
+		name = "Void Shade",
+		color = Color3.fromRGB(130, 50, 190),
+		scale = 1.1,
+		walkSpeed = 17.0,
+		baseHealth = 6500,
+		healthGrowth = 1.32,
+		baseDamage = 190,
+		damageGrowth = 1.20,
+		baseXP = 4500,
+		aggroRange = 32,
+		attackReach = 7.0,
+		attackCooldown = 1.0,
+		patrolRadius = 16,
+		leashDistance = 46,
+	},
+	AbyssTormentor = {
+		name = "Abyss Tormentor",
+		color = Color3.fromRGB(65, 20, 110),
+		scale = 1.55,
+		walkSpeed = 13.0,
+		baseHealth = 13000,
+		healthGrowth = 1.33,
+		baseDamage = 280,
+		damageGrowth = 1.21,
+		baseXP = 7500,
+		aggroRange = 28,
+		attackReach = 9.0,
+		attackCooldown = 1.5,
+		patrolRadius = 14,
+		leashDistance = 42,
+	},
+
+	-- 5. Celestial Titan Minions (Far Astral Sanctuary, Lv 75-88)
+	AstralWisp = {
+		name = "Astral Emissary",
+		color = Color3.fromRGB(255, 220, 90),
+		scale = 1.15,
+		walkSpeed = 18.0,
+		baseHealth = 22000,
+		healthGrowth = 1.34,
+		baseDamage = 380,
+		damageGrowth = 1.22,
+		baseXP = 14000,
+		aggroRange = 36,
+		attackReach = 8.0,
+		attackCooldown = 0.9,
+		patrolRadius = 18,
+		leashDistance = 50,
+	},
+	SolarDominator = {
+		name = "Solar Dominator",
+		color = Color3.fromRGB(220, 160, 30),
+		scale = 1.7,
+		walkSpeed = 14.0,
+		baseHealth = 48000,
+		healthGrowth = 1.35,
+		baseDamage = 550,
+		damageGrowth = 1.23,
+		baseXP = 24000,
+		aggroRange = 32,
+		attackReach = 10.5,
+		attackCooldown = 1.4,
+		patrolRadius = 16,
+		leashDistance = 48,
+	},
+
+	-- 5 UNIQUE SPREAD-OUT PROGRESSIVE BOSSES (High-Level & High-Stakes)
+	Boss_Gorgon = {
+		name = "Iron Warlord",
+		title = "Warlord of Iron",
+		color = Color3.fromRGB(130, 45, 55),
+		scale = 1.5,
+		walkSpeed = 12,
+		baseHealth = 650,
+		healthGrowth = 1.32,
+		baseDamage = 32,
+		damageGrowth = 1.16,
+		baseXP = 600,
+		aggroRange = 34,
+		attackReach = 9.0,
+		attackCooldown = 1.8,
+		patrolRadius = 12,
+		leashDistance = 55,
+		weapon = true,
+		boss = true,
+		uniqueDrop = "Warlord Greatsword",
+		swordColor = Color3.fromRGB(180, 50, 50),
+		swordMaterial = Enum.Material.Metal,
+		nameTag = true,
+		tagColor = Color3.fromRGB(255, 90, 90),
+	},
+	Boss_FrostRevenant = {
+		name = "Frost Revenant",
+		title = "Lord of the Permafrost",
+		color = Color3.fromRGB(45, 120, 185),
+		scale = 1.7,
+		walkSpeed = 13.5,
+		baseHealth = 1600,
+		healthGrowth = 1.34,
+		baseDamage = 58,
+		damageGrowth = 1.18,
+		baseXP = 1500,
+		aggroRange = 38,
+		attackReach = 10.5,
+		attackCooldown = 1.6,
+		patrolRadius = 14,
+		leashDistance = 60,
+		weapon = true,
+		boss = true,
+		uniqueDrop = "Frostfang Cleaver",
+		swordColor = Color3.fromRGB(120, 220, 255),
+		swordMaterial = Enum.Material.Ice,
+		nameTag = true,
+		tagColor = Color3.fromRGB(100, 200, 255),
+	},
+	Boss_InfernalColossus = {
+		name = "Infernal Colossus",
+		title = "Scourge of Flame",
+		color = Color3.fromRGB(215, 75, 20),
+		scale = 1.9,
+		walkSpeed = 12,
+		baseHealth = 3600,
+		healthGrowth = 1.36,
+		baseDamage = 110,
+		damageGrowth = 1.20,
+		baseXP = 3400,
+		aggroRange = 42,
+		attackReach = 12.0,
+		attackCooldown = 1.5,
+		patrolRadius = 16,
+		leashDistance = 68,
+		weapon = true,
+		boss = true,
+		uniqueDrop = "Inferno Edge",
+		swordColor = Color3.fromRGB(255, 120, 30),
+		swordMaterial = Enum.Material.Neon,
+		nameTag = true,
+		tagColor = Color3.fromRGB(255, 140, 40),
+	},
+	Boss_VoidWraith = {
+		name = "Void Archon",
+		title = "Herald of Oblivion",
+		color = Color3.fromRGB(90, 35, 145),
+		scale = 2.1,
+		walkSpeed = 15,
+		baseHealth = 7200,
+		healthGrowth = 1.38,
+		baseDamage = 185,
+		damageGrowth = 1.22,
+		baseXP = 7000,
+		aggroRange = 46,
+		attackReach = 13.5,
+		attackCooldown = 1.3,
+		patrolRadius = 18,
+		leashDistance = 75,
+		weapon = true,
+		boss = true,
+		uniqueDrop = "Voidrend Blade",
+		swordColor = Color3.fromRGB(180, 80, 255),
+		swordMaterial = Enum.Material.Neon,
+		nameTag = true,
+		tagColor = Color3.fromRGB(210, 110, 255),
+	},
+	Boss_CelestialTitan = {
+		name = "Celestial Titan",
+		title = "God of the Astral Realm",
+		color = Color3.fromRGB(240, 190, 50),
+		scale = 2.4,
+		walkSpeed = 14.5,
+		baseHealth = 14500,
+		healthGrowth = 1.40,
+		baseDamage = 290,
+		damageGrowth = 1.24,
+		baseXP = 15000,
+		aggroRange = 52,
+		attackReach = 15.0,
+		attackCooldown = 1.2,
+		patrolRadius = 20,
+		leashDistance = 85,
+		weapon = true,
+		boss = true,
+		uniqueDrop = "Astral Eclipse",
+		swordColor = Color3.fromRGB(255, 230, 100),
+		swordMaterial = Enum.Material.Neon,
+		nameTag = true,
+		tagColor = Color3.fromRGB(255, 225, 70),
+	},
+}
+
+local function getEnemyMaxHealth(archetype, level)
+	if archetype.boss then
+		-- Boss linear-quadratic scaling: smooth difficulty curve without numeric overflow at high levels
+		return math.floor(archetype.baseHealth + (archetype.baseHealth * 0.45 * level) + (35 * level * level))
+	end
+	return math.floor(archetype.baseHealth * archetype.healthGrowth ^ (level - 1))
+end
+
+local function getEnemyDamage(archetype, level)
+	if archetype.boss then
+		return math.floor(archetype.baseDamage + (archetype.baseDamage * 0.12 * level) + (2.5 * level))
+	end
+	return math.floor(archetype.baseDamage * archetype.damageGrowth ^ (level - 1))
+end
+
+local function getEnemyXP(archetype, level)
+	return math.floor(archetype.baseXP * level)
+end
+
+local function getPlayerAttackDamage(player)
+	local strength = player:GetAttribute("Strength") or 0
+	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
+	local swordMult = player:GetAttribute("SwordDamageMult") or 1
+	local bonusPct = player:GetAttribute("SwordBonusDamagePct") or 0
+	local critChance = (player:GetAttribute("SwordCritChance") or 0) + (player:GetAttribute("RebirthExtraCrit") or 0)
+	local rebirthDmgMult = player:GetAttribute("RebirthDamageMult") or 1
+	local critDamageMult = player:GetAttribute("RebirthCritDamageMult") or 1.75
+
+	local baseDamage = 25
+	local raw = (baseDamage + 5 * strength) * swordMult * (1 + bonusPct) * (1 + 0.12 * weaponLevel) * rebirthDmgMult
+	
+	local isCrit = math.random() <= critChance
+	if isCrit then
+		raw = raw * critDamageMult
+	end
+	return math.max(1, math.floor(raw)), isCrit
+end
+
+local isEnemy = CombatUtil.isEnemy
+
+-- ==============================================================================
+-- 2. ENEMY RIG GENERATION (R6-style humanoid model with joints & unanchored physics)
+-- ==============================================================================
+local function createMotor6D(name, parent, part0, part1, c0, c1)
+	local motor = Instance.new("Motor6D")
+	motor.Name = name
+	motor.Part0 = part0
+	motor.Part1 = part1
+	motor.C0 = c0 or CFrame.new()
+	motor.C1 = c1 or CFrame.new()
+	motor.Parent = parent
+	return motor
+end
+
+local function resolveGroundPosition(pos)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = { Workspace.Terrain, Workspace:FindFirstChild("Baseplate") }
+	local result = Workspace:Raycast(pos + Vector3.new(0, 80, 0), Vector3.new(0, -500, 0), params)
+	if result then
+		return Vector3.new(pos.X, result.Position.Y, pos.Z)
+	end
+	return pos
+end
+
+local function createEnemyRig(archetypeKey, spawnPosition, level)
+	local arch = ENEMY_ARCHETYPES[archetypeKey] or ENEMY_ARCHETYPES.Grunt
+	level = level or 1
+	spawnPosition = resolveGroundPosition(spawnPosition)
+
+	local model = Instance.new("Model")
+	model.Name = arch.name
+
+	local s = arch.scale
+
+	-- Root
+	local hrp = Instance.new("Part")
+	hrp.Name = "HumanoidRootPart"
+	hrp.Size = Vector3.new(2 * s, 2 * s, 1 * s)
+	hrp.Transparency = 1
+	hrp.CanCollide = false
+	hrp.Position = spawnPosition + Vector3.new(0, 3 * s, 0)
+	hrp.Parent = model
+	model.PrimaryPart = hrp
+
+	-- Torso
+	local torso = Instance.new("Part")
+	torso.Name = "Torso"
+	torso.Size = Vector3.new(2 * s, 2 * s, 1 * s)
+	torso.Color = arch.color
+	torso.Material = arch.boss and Enum.Material.SmoothPlastic or Enum.Material.SmoothPlastic
+	torso.CanCollide = true
+	torso.Position = hrp.Position
+	torso.Parent = model
+
+	-- Head
+	local head = Instance.new("Part")
+	head.Name = "Head"
+	head.Size = Vector3.new(1.2 * s, 1.2 * s, 1.2 * s)
+	head.Color = arch.color
+	head.Material = Enum.Material.SmoothPlastic
+	head.CanCollide = false
+	head.Position = torso.Position + Vector3.new(0, 1.5 * s, 0)
+	head.Parent = model
+
+	local headMesh = Instance.new("SpecialMesh")
+	headMesh.MeshType = Enum.MeshType.Head
+	headMesh.Scale = Vector3.new(1.25, 1.25, 1.25)
+	headMesh.Parent = head
+
+	-- Left Arm
+	local leftArm = Instance.new("Part")
+	leftArm.Name = "Left Arm"
+	leftArm.Size = Vector3.new(1 * s, 2 * s, 1 * s)
+	leftArm.Color = arch.color
+	leftArm.Material = Enum.Material.SmoothPlastic
+	leftArm.CanCollide = false
+	leftArm.Position = torso.Position + Vector3.new(-1.5 * s, 0, 0)
+	leftArm.Parent = model
+
+	-- Right Arm
+	local rightArm = Instance.new("Part")
+	rightArm.Name = "Right Arm"
+	rightArm.Size = Vector3.new(1 * s, 2 * s, 1 * s)
+	rightArm.Color = arch.color
+	rightArm.Material = Enum.Material.SmoothPlastic
+	rightArm.CanCollide = false
+	rightArm.Position = torso.Position + Vector3.new(1.5 * s, 0, 0)
+	rightArm.Parent = model
+
+	-- Left Leg
+	local leftLeg = Instance.new("Part")
+	leftLeg.Name = "Left Leg"
+	leftLeg.Size = Vector3.new(1 * s, 2 * s, 1 * s)
+	leftLeg.Color = arch.color
+	leftLeg.Material = Enum.Material.SmoothPlastic
+	leftLeg.CanCollide = false
+	leftLeg.Position = torso.Position + Vector3.new(-0.5 * s, -2 * s, 0)
+	leftLeg.Parent = model
+
+	-- Right Leg
+	local rightLeg = Instance.new("Part")
+	rightLeg.Name = "Right Leg"
+	rightLeg.Size = Vector3.new(1 * s, 2 * s, 1 * s)
+	rightLeg.Color = arch.color
+	rightLeg.Material = Enum.Material.SmoothPlastic
+	rightLeg.CanCollide = false
+	rightLeg.Position = torso.Position + Vector3.new(0.5 * s, -2 * s, 0)
+	rightLeg.Parent = model
+
+	-- Joints (Motor6D)
+	createMotor6D("RootJoint", hrp, hrp, torso, CFrame.new(0, 0, 0), CFrame.new(0, 0, 0))
+	createMotor6D("Neck", torso, torso, head, CFrame.new(0, 1 * s, 0), CFrame.new(0, -0.5 * s, 0))
+	createMotor6D("Left Shoulder", torso, torso, leftArm, CFrame.new(-1 * s, 0.5 * s, 0), CFrame.new(0.5 * s, 0.5 * s, 0))
+	local rightShoulder = createMotor6D("Right Shoulder", torso, torso, rightArm, CFrame.new(1 * s, 0.5 * s, 0), CFrame.new(-0.5 * s, 0.5 * s, 0))
+	rightShoulder:SetAttribute("BaseC0", rightShoulder.C0)
+	createMotor6D("Left Hip", torso, torso, leftLeg, CFrame.new(-0.5 * s, -1 * s, 0), CFrame.new(0, 1 * s, 0))
+	createMotor6D("Right Hip", torso, torso, rightLeg, CFrame.new(0.5 * s, -1 * s, 0), CFrame.new(0, 1 * s, 0))
+
+	-- Weapon
+	if arch.weapon then
+		local template = ServerStorage:FindFirstChild("SwordMeshTemplate")
+		if template then
+			local L = SWORD_LENGTH * s
+			local sword = template:Clone()
+			sword.Name = "Sword"
+			sword.Size = SWORD_ASPECT * L
+			sword.CanCollide = false
+			sword.Massless = true
+			CombatUtil.applyWeaponAppearance(sword, arch.swordColor, arch.swordMaterial)
+			local hand = rightArm.Position + Vector3.new(0, -1 * s, 0)
+			sword.CFrame = CFrame.new(hand - Vector3.new(0, 0, L * SWORD_GRIP_FRAC))
+				* CFrame.Angles(0, math.pi, 0)
+			sword.Parent = model
+
+			local weld = Instance.new("WeldConstraint")
+			weld.Part0 = rightArm
+			weld.Part1 = sword
+			weld.Parent = sword
+		end
+	end
+
+	-- Humanoid setup
+	local humanoid = Instance.new("Humanoid")
+	humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+	humanoid.RigType = Enum.HumanoidRigType.R6
+	humanoid.WalkSpeed = arch.walkSpeed
+	humanoid.Parent = model
+
+	local maxHp = getEnemyMaxHealth(arch, level)
+	humanoid.MaxHealth = maxHp
+	humanoid.Health = maxHp
+
+	-- Boss nameplate & dynamic health bar
+	if arch.nameTag then
+		local bb = Instance.new("BillboardGui")
+		bb.Name = "NameTag"
+		bb.Size = UDim2.fromOffset(260, 56)
+		bb.StudsOffsetWorldSpace = Vector3.new(0, 3.2 * s, 0)
+		bb.AlwaysOnTop = true
+		bb.MaxDistance = 300
+		bb.Parent = head
+
+		local lbl = Instance.new("TextLabel")
+		lbl.BackgroundTransparency = 1
+		lbl.Size = UDim2.new(1, 0, 0, 24)
+		lbl.Position = UDim2.fromOffset(0, 0)
+		lbl.Font = Enum.Font.GothamBold
+		lbl.TextSize = 16
+		lbl.TextColor3 = arch.tagColor or Color3.fromRGB(255, 90, 90)
+		lbl.TextStrokeTransparency = 0.2
+		lbl.TextStrokeColor3 = Color3.fromRGB(10, 10, 15)
+		lbl.Text = string.format("☠ %s  [Lv %d]", arch.name, level)
+		lbl.Parent = bb
+
+		-- Health bar background
+		local hpBg = Instance.new("Frame")
+		hpBg.Size = UDim2.new(1, 0, 0, 10)
+		hpBg.Position = UDim2.fromOffset(0, 26)
+		hpBg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+		hpBg.BorderSizePixel = 0
+		hpBg.Parent = bb
+		local hpCorner = Instance.new("UICorner", hpBg)
+		hpCorner.CornerRadius = UDim.new(0, 5)
+		local hpStroke = Instance.new("UIStroke", hpBg)
+		hpStroke.Color = Color3.fromRGB(45, 45, 55)
+		hpStroke.Thickness = 1
+
+		-- Health bar fill
+		local hpFill = Instance.new("Frame")
+		hpFill.Size = UDim2.new(1, 0, 1, 0)
+		hpFill.BackgroundColor3 = arch.tagColor or Color3.fromRGB(255, 80, 80)
+		hpFill.BorderSizePixel = 0
+		hpFill.Parent = hpBg
+		local fillCorner = Instance.new("UICorner", hpFill)
+		fillCorner.CornerRadius = UDim.new(0, 5)
+
+		-- Health numbers label
+		local hpText = Instance.new("TextLabel")
+		hpText.BackgroundTransparency = 1
+		hpText.Size = UDim2.new(1, 0, 0, 14)
+		hpText.Position = UDim2.fromOffset(0, 38)
+		hpText.Font = Enum.Font.GothamMedium
+		hpText.TextSize = 11
+		hpText.TextColor3 = Color3.fromRGB(210, 210, 220)
+		hpText.TextStrokeTransparency = 0.4
+		hpText.TextStrokeColor3 = Color3.fromRGB(10, 10, 15)
+		hpText.Text = string.format("%d / %d", humanoid.Health, humanoid.MaxHealth)
+		hpText.Parent = bb
+
+		humanoid.HealthChanged:Connect(function(newHp)
+			local ratio = math.clamp(newHp / humanoid.MaxHealth, 0, 1)
+			TweenService:Create(hpFill, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Size = UDim2.new(ratio, 0, 1, 0)
+			}):Play()
+			hpText.Text = string.format("%d / %d", math.max(0, math.floor(newHp)), humanoid.MaxHealth)
+		end)
+	end
+
+	-- Attributes and tags
+	model:SetAttribute(ENEMY_ATTRIBUTE, true)
+	model:SetAttribute("EnemyLevel", level)
+	model:SetAttribute("Archetype", archetypeKey)
+	model:SetAttribute("Boss", arch.boss == true)
+	model:SetAttribute("UniqueDrop", arch.uniqueDrop or nil)
+	model:SetAttribute("ExperienceReward", getEnemyXP(arch, level))
+	CollectionService:AddTag(model, ENEMY_TAG)
+
+	model.Parent = Workspace
+
+	return model, humanoid, hrp, arch, spawnPosition
+end
+
+-- ==============================================================================
+-- 3. ENEMY STATE MACHINE & AI LOOP
+-- ==============================================================================
+local activeEnemies = {}
+
+local function findNearestLivingPlayer(origin, maxDist)
+	local bestPlayer, bestChar, bestHrp, bestDist = nil, nil, nil, maxDist
+	for _, player in ipairs(Players:GetPlayers()) do
+		local char = player.Character
+		if char then
+			local humanoid = char:FindFirstChildOfClass("Humanoid")
+			local hrp = char:FindFirstChild("HumanoidRootPart")
+			if humanoid and humanoid.Health > 0 and hrp then
+				local dist = (hrp.Position - origin).Magnitude
+				if dist < bestDist then
+					bestPlayer = player
+					bestChar = char
+					bestHrp = hrp
+					bestDist = dist
+				end
+			end
+		end
+	end
+	return bestPlayer, bestChar, bestHrp, bestDist
+end
+
+local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
+	local humanoid = playerChar:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then
+		return
+	end
+
+	local player = Players:GetPlayerFromCharacter(playerChar)
+	local defense = player and (player:GetAttribute("Defense") or 0) or 0
+	local rawDamage = getEnemyDamage(arch, level)
+	local reduction = math.min(defense * DEFENSE_PCT_PER_POINT, DEFENSE_MAX_REDUCTION)
+	local finalDamage = math.max(1, math.floor(rawDamage * (1 - reduction) + 0.5))
+
+	humanoid:TakeDamage(finalDamage)
+
+	local hrp = playerChar:FindFirstChild("HumanoidRootPart")
+	if hrp then
+		DAMAGE_EVENT:FireAllClients(hrp.Position, finalDamage, "incoming")
+	end
+end
+
+local function swingWeapon(model)
+	local torso = model:FindFirstChild("Torso")
+	local shoulder = torso and torso:FindFirstChild("Right Shoulder")
+	if not (shoulder and shoulder:IsA("Motor6D")) then
+		return
+	end
+	local base = shoulder:GetAttribute("BaseC0")
+	if not base or shoulder:GetAttribute("Swinging") then
+		return
+	end
+	shoulder:SetAttribute("Swinging", true)
+
+	local raise = TweenService:Create(shoulder, TweenInfo.new(0.20, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+		{ C0 = base * CFrame.Angles(math.rad(-120), 0, 0) })
+	local chop = TweenService:Create(shoulder, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+		{ C0 = base * CFrame.Angles(math.rad(35), 0, 0) })
+	local recover = TweenService:Create(shoulder, TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{ C0 = base })
+
+	raise:Play()
+	raise.Completed:Once(function()
+		chop:Play()
+		chop.Completed:Once(function()
+			recover:Play()
+			recover.Completed:Once(function()
+				shoulder:SetAttribute("Swinging", false)
+			end)
+		end)
+	end)
+end
+
+local function startEnemyAI(model, humanoid, hrp, arch, spawnPos, level, onDeath)
+	local state = {
+		mode = "IDLE",
+		spawnPos = spawnPos,
+		nextPatrolTime = tick() + math.random(1, 3),
+		lastAttackTime = 0,
+		targetChar = nil,
+	}
+	activeEnemies[model] = state
+
+	humanoid.Died:Connect(function()
+		activeEnemies[model] = nil
+		task.delay(0.2, function()
+			if model and model.Parent then
+				model:Destroy()
+			end
+		end)
+		if onDeath then
+			onDeath()
+		end
+	end)
+end
+
+RunService.Heartbeat:Connect(function()
+	local now = tick()
+	for model, state in pairs(activeEnemies) do
+		if not model.Parent or not model.PrimaryPart then
+			activeEnemies[model] = nil
+			continue
+		end
+
+		local humanoid = model:FindFirstChildOfClass("Humanoid")
+		if not humanoid or humanoid.Health <= 0 then
+			continue
+		end
+
+		local hrp = model.PrimaryPart
+		local archKey = model:GetAttribute("Archetype") or "Grunt"
+		local arch = ENEMY_ARCHETYPES[archKey] or ENEMY_ARCHETYPES.Grunt
+		local level = model:GetAttribute("EnemyLevel") or 1
+
+		local distFromSpawn = (hrp.Position - state.spawnPos).Magnitude
+
+		if distFromSpawn > arch.leashDistance then
+			state.mode = "RETURNING"
+			state.targetChar = nil
+			humanoid:MoveTo(state.spawnPos)
+		end
+
+		if state.mode == "RETURNING" then
+			if (hrp.Position - state.spawnPos).Magnitude < 4 then
+				state.mode = "IDLE"
+				state.nextPatrolTime = now + math.random(1, 3)
+			else
+				humanoid:MoveTo(state.spawnPos)
+			end
+
+		elseif state.mode == "CHASE" then
+			local targetHrp = state.targetChar and state.targetChar:FindFirstChild("HumanoidRootPart")
+			local targetHumanoid = state.targetChar and state.targetChar:FindFirstChildOfClass("Humanoid")
+
+			if not targetHrp or not targetHumanoid or targetHumanoid.Health <= 0 then
+				state.mode = "IDLE"
+				state.targetChar = nil
+				state.nextPatrolTime = now + 1
+			else
+				local targetDist = (targetHrp.Position - hrp.Position).Magnitude
+				if targetDist > arch.aggroRange * 1.5 then
+					state.mode = "RETURNING"
+					state.targetChar = nil
+					humanoid:MoveTo(state.spawnPos)
+				elseif targetDist <= arch.attackReach then
+					humanoid:MoveTo(hrp.Position)
+					if now - state.lastAttackTime >= arch.attackCooldown then
+						state.lastAttackTime = now
+						if arch.weapon then
+							swingWeapon(model)
+						end
+						applyEnemyDamageToPlayer(model, state.targetChar, arch, level)
+					end
+				else
+					humanoid:MoveTo(targetHrp.Position)
+				end
+			end
+
+		else
+			local p, pChar, pHrp, pDist = findNearestLivingPlayer(hrp.Position, arch.aggroRange)
+			if pChar and pHrp then
+				state.mode = "CHASE"
+				state.targetChar = pChar
+			else
+				if now >= state.nextPatrolTime then
+					state.nextPatrolTime = now + math.random(3, 6)
+					local angle = math.random() * math.pi * 2
+					local dist = math.random(3, arch.patrolRadius)
+					local patrolTarget = state.spawnPos + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
+					humanoid:MoveTo(patrolTarget)
+				end
+			end
+		end
+	end
+end)
+
+local function spawnEnemy(config)
+	local model, humanoid, hrp, arch, groundedPos = createEnemyRig(config.archetype, config.position, config.level)
+	startEnemyAI(model, humanoid, hrp, arch, groundedPos, config.level, function()
+		task.delay(RESPAWN_DELAY, function()
+			spawnEnemy(config)
+		end)
+	end)
+end
+
+-- ==============================================================================
+-- 5. PLAYER COMBAT & AUTO-ATTACK WIRING
+-- ==============================================================================
+local function attackEnemy(player, enemyModel)
+	local humanoid = enemyModel:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then
+		return
+	end
+
+	local creatorTag = humanoid:FindFirstChild(CREATOR_TAG_NAME)
+	if not creatorTag then
+		creatorTag = Instance.new("ObjectValue")
+		creatorTag.Name = CREATOR_TAG_NAME
+		creatorTag.Parent = humanoid
+	end
+	creatorTag.Value = player
+
+	local damage, isCrit = getPlayerAttackDamage(player)
+	humanoid:TakeDamage(damage)
+
+	local char = player.Character
+	local playerHrp = char and char:FindFirstChild("HumanoidRootPart")
+	local knockback = (player:GetAttribute("SwordKnockbackBonus") or 0) + (player:GetAttribute("RebirthExtraKnockback") or 0)
+	if playerHrp and knockback > 0 then
+		local enemyHrp = enemyModel.PrimaryPart or enemyModel:FindFirstChild("HumanoidRootPart")
+		if enemyHrp then
+			local dir = (enemyHrp.Position - playerHrp.Position)
+			dir = Vector3.new(dir.X, 0, dir.Z)
+			dir = dir.Magnitude > 0.001 and dir.Unit or playerHrp.CFrame.LookVector
+			local impulse = (dir * knockback + Vector3.new(0, knockback * 0.25, 0)) * math.max(1, enemyHrp.AssemblyMass)
+			enemyHrp:ApplyImpulse(impulse)
+		end
+	end
+
+	local root = enemyModel.PrimaryPart or enemyModel:FindFirstChild("HumanoidRootPart")
+	if root then
+		DAMAGE_EVENT:FireAllClients(root.Position, damage, isCrit and "crit" or "outgoing")
+	end
+end
+
+local function findNearestEnemy(origin, maxRange)
+	local best, bestDist = nil, maxRange or ATTACK_RANGE
+	for _, enemy in ipairs(Workspace:GetChildren()) do
+		if enemy:IsA("Model") and isEnemy(enemy) then
+			local humanoid = enemy:FindFirstChildOfClass("Humanoid")
+			if humanoid and humanoid.Health > 0 then
+				local root = enemy.PrimaryPart or enemy:FindFirstChild("HumanoidRootPart")
+				if root then
+					local dist = (root.Position - origin).Magnitude
+					if dist <= (maxRange or ATTACK_RANGE) and dist < bestDist then
+						best, bestDist = enemy, dist
+					end
+				end
+			end
+		end
+	end
+	return best
+end
+
+ATTACK_REMOTE.OnServerEvent:Connect(function(player)
+	local character = player.Character
+	if not character then
+		return
+	end
+
+	local now = tick()
+	local last = playerCooldowns[player]
+	if last and (now - last) < ATTACK_COOLDOWN then
+		return
+	end
+	playerCooldowns[player] = now
+
+	local hrp = character:FindFirstChild("HumanoidRootPart")
+	if not hrp then
+		return
+	end
+
+	local rangeBonus = player:GetAttribute("SwordRangeBonus") or 0
+	local enemy = findNearestEnemy(hrp.Position, ATTACK_RANGE + rangeBonus)
+	if enemy then
+		attackEnemy(player, enemy)
+	end
+end)
+
+TOGGLE_REMOTE.OnServerEvent:Connect(function(player, enabled)
+	if enabled == nil then
+		enabled = not autoAttackState[player]
+	end
+	autoAttackState[player] = enabled == true
+	print(string.format("[EnemyCombat] %s auto-attack %s", player.Name, autoAttackState[player] and "ON" or "OFF"))
+end)
+
+task.spawn(function()
+	while true do
+		task.wait(ATTACK_COOLDOWN)
+		for player, on in pairs(autoAttackState) do
+			if on and player.Parent and player.Character then
+				local character = player.Character
+				local hrp = character:FindFirstChild("HumanoidRootPart")
+				if hrp then
+					local rangeBonus = player:GetAttribute("SwordRangeBonus") or 0
+					local enemy = findNearestEnemy(hrp.Position, ATTACK_RANGE + rangeBonus)
+					if enemy then
+						attackEnemy(player, enemy)
+					end
+				end
+			end
+		end
+	end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+	playerCooldowns[player] = nil
+	autoAttackState[player] = nil
+end)
+
+-- Spawns: 5 Spread-Out Boss Arenas with Surrounding Themed Minions
+local spawnConfigs = {
+	-- 1. Iron Warlord Arena (South-West Courtyard, Position -45, -50)
+	{ archetype = "Boss_Gorgon", position = Vector3.new(-45, 0, -50), level = 10 },
+	{ archetype = "IronSquire", position = Vector3.new(-35, 0, -42), level = 6 },
+	{ archetype = "IronSquire", position = Vector3.new(-55, 0, -44), level = 7 },
+	{ archetype = "IronBerserker", position = Vector3.new(-48, 0, -62), level = 8 },
+	{ archetype = "IronBerserker", position = Vector3.new(-38, 0, -58), level = 8 },
+
+	-- 2. Frost Revenant Glade (North-West Permafrost, Position -110, 70)
+	{ archetype = "Boss_FrostRevenant", position = Vector3.new(-110, 0, 70), level = 25 },
+	{ archetype = "FrostImp", position = Vector3.new(-98, 0, 62), level = 18 },
+	{ archetype = "FrostImp", position = Vector3.new(-122, 0, 64), level = 19 },
+	{ archetype = "GlacialGargoyle", position = Vector3.new(-114, 0, 82), level = 21 },
+	{ archetype = "GlacialGargoyle", position = Vector3.new(-102, 0, 78), level = 22 },
+
+	-- 3. Infernal Colossus Caldera (North-East Caldera, Position 115, 85)
+	{ archetype = "Boss_InfernalColossus", position = Vector3.new(115, 0, 85), level = 45 },
+	{ archetype = "CinderFiend", position = Vector3.new(102, 0, 75), level = 34 },
+	{ archetype = "CinderFiend", position = Vector3.new(128, 0, 76), level = 35 },
+	{ archetype = "MagmaJuggernaut", position = Vector3.new(118, 0, 98), level = 38 },
+	{ archetype = "MagmaJuggernaut", position = Vector3.new(106, 0, 95), level = 40 },
+
+	-- 4. Void Archon Spire (South-East Void Spire, Position 135, -90)
+	{ archetype = "Boss_VoidWraith", position = Vector3.new(135, 0, -90), level = 70 },
+	{ archetype = "VoidShade", position = Vector3.new(122, 0, -80), level = 55 },
+	{ archetype = "VoidShade", position = Vector3.new(148, 0, -82), level = 58 },
+	{ archetype = "AbyssTormentor", position = Vector3.new(138, 0, -104), level = 62 },
+	{ archetype = "AbyssTormentor", position = Vector3.new(124, 0, -98), level = 64 },
+
+	-- 5. Celestial Titan Sanctuary (Far Astral Sanctuary, Position -140, -130)
+	{ archetype = "Boss_CelestialTitan", position = Vector3.new(-140, 0, -130), level = 100 },
+	{ archetype = "AstralWisp", position = Vector3.new(-126, 0, -118), level = 80 },
+	{ archetype = "AstralWisp", position = Vector3.new(-154, 0, -120), level = 82 },
+	{ archetype = "SolarDominator", position = Vector3.new(-144, 0, -145), level = 88 },
+	{ archetype = "SolarDominator", position = Vector3.new(-130, 0, -142), level = 90 },
+}
+
+for _, cfg in ipairs(spawnConfigs) do
+	spawnEnemy(cfg)
+end
+
+print("[EnemyCombat] 5 Unique Boss Arenas and Progressive Difficulty initialized")
