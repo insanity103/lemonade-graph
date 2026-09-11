@@ -2,7 +2,6 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local CollectionService = game:GetService("CollectionService")
-local ServerStorage = game:GetService("ServerStorage")
 local TweenService = game:GetService("TweenService")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
@@ -12,11 +11,10 @@ local ENEMY_ATTRIBUTE = CombatUtil.ENEMY_ATTRIBUTE
 local CREATOR_TAG_NAME = "creator"
 
 local ATTACK_RANGE = 10
--- Sword mesh sizing. SWORD_ASPECT matches the imported MeshPart's MeshSize, so
--- Size = SWORD_ASPECT * length keeps the blade undistorted at any scale.
+-- Sword mesh sizing. Each boss carries its own mesh (CombatUtil.getSwordMesh); its
+-- MeshSize aspect keeps the blade undistorted at SWORD_LENGTH * rig scale.
 local SWORD_LENGTH = 4.2
-local SWORD_ASPECT = Vector3.new(0.10701, 0.20346, 1)
-local SWORD_GRIP_FRAC = 0.38 -- where along the blade the hand sits, from centre
+local SWORD_GRIP_FRAC = 0.38 -- where along the blade the hand sits, from centre (same on every mesh)
 -- Defense is a straight percentage reduction with a hard cap, so it can never trivialise an enemy.
 local DEFENSE_PCT_PER_POINT = 0.003 -- each Defense point removes 0.30% of incoming damage
 local DEFENSE_MAX_REDUCTION = 0.35 -- hard cap: Defense never mitigates more than 35%
@@ -542,12 +540,13 @@ local function createEnemyRig(archetypeKey, spawnPosition, level)
 
 	-- Weapon
 	if arch.weapon then
-		local template = ServerStorage:FindFirstChild("SwordMeshTemplate")
+		local template = CombatUtil.getSwordMesh(archetypeKey)
 		if template then
 			local L = SWORD_LENGTH * s
 			local sword = template:Clone()
 			sword.Name = "Sword"
-			sword.Size = SWORD_ASPECT * L
+			sword.Anchored = false
+			CombatUtil.sizeSwordMesh(sword, L)
 			sword.CanCollide = false
 			sword.Massless = true
 			CombatUtil.applyWeaponAppearance(sword, arch.swordColor, arch.swordMaterial)

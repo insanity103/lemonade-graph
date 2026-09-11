@@ -72,4 +72,33 @@ function CombatUtil.hasLineOfSight(origin, target, ignoredInstances)
 	return Workspace:Raycast(origin, direction, params) == nil
 end
 
+-- Boss sword meshes. Each boss's unique blade lives in ServerStorage/BossSwordMeshes as
+-- a MeshPart named after its archetype (Boss_Gorgon, ...). All of them share one layout
+-- (length-normalised, grip toward one end, hand SWORD_GRIP_FRAC from centre), so the same
+-- Grip and weld maths fit every one; only width/thickness differ, taken from MeshSize.
+-- Until a boss's mesh is imported, the shared SwordMeshTemplate stands in.
+CombatUtil.SWORD_MESH_FOLDER = "BossSwordMeshes"
+
+function CombatUtil.getSwordMesh(archetypeKey)
+	local ServerStorage = game:GetService("ServerStorage")
+	local folder = ServerStorage:FindFirstChild(CombatUtil.SWORD_MESH_FOLDER)
+	local mesh = folder and typeof(archetypeKey) == "string" and folder:FindFirstChild(archetypeKey)
+	if mesh and mesh:IsA("MeshPart") then
+		return mesh, true
+	end
+	local fallback = ServerStorage:FindFirstChild("SwordMeshTemplate")
+	if fallback and fallback:IsA("MeshPart") then
+		return fallback, false
+	end
+	return nil, false
+end
+
+-- Scale a sword MeshPart to `length` studs along its blade without distorting it.
+function CombatUtil.sizeSwordMesh(part, length)
+	local meshSize = part.MeshSize
+	if meshSize.Z > 0 then
+		part.Size = meshSize * (length / meshSize.Z)
+	end
+end
+
 return CombatUtil

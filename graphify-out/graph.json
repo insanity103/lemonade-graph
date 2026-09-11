@@ -150,6 +150,18 @@
       "source_location": "L56"
     },
     {
+      "id": "serverscriptservice_combatutil_combatutil_isenemy",
+      "label": "CombatUtil.isEnemy()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RemoteEvents folder",
+      "file_type": "code",
+      "norm_label": "combatutil.isenemy()",
+      "source_file": "ServerScriptService/CombatUtil.luau",
+      "source_location": "L13"
+    },
+    {
       "id": "serverscriptservice_merchantsystem_server_isnearmerchant",
       "label": "isNearMerchant()",
       "_callable": true,
@@ -339,7 +351,7 @@
       "file_type": "code",
       "norm_label": "applyenemydamagetoplayer()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L686"
+      "source_location": "L685"
     },
     {
       "id": "serverscriptservice_enemycombat_server_attackenemy",
@@ -351,7 +363,7 @@
       "file_type": "code",
       "norm_label": "attackenemy()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L876"
+      "source_location": "L875"
     },
     {
       "id": "serverscriptservice_enemycombat_server_commandmove",
@@ -363,7 +375,7 @@
       "file_type": "code",
       "norm_label": "commandmove()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L766"
+      "source_location": "L765"
     },
     {
       "id": "serverscriptservice_enemycombat_server_createenemyrig",
@@ -375,7 +387,7 @@
       "file_type": "code",
       "norm_label": "createenemyrig()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L427"
+      "source_location": "L425"
     },
     {
       "id": "serverscriptservice_enemycombat_server_createmotor6d",
@@ -387,7 +399,7 @@
       "file_type": "code",
       "norm_label": "createmotor6d()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L400"
+      "source_location": "L398"
     },
     {
       "id": "serverscriptservice_enemycombat_server_findnearestenemy",
@@ -399,7 +411,7 @@
       "file_type": "code",
       "norm_label": "findnearestenemy()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L913"
+      "source_location": "L912"
     },
     {
       "id": "serverscriptservice_enemycombat_server_findnearestlivingplayer",
@@ -411,7 +423,7 @@
       "file_type": "code",
       "norm_label": "findnearestlivingplayer()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L665"
+      "source_location": "L664"
     },
     {
       "id": "serverscriptservice_enemycombat_server_getalivecharacter",
@@ -423,7 +435,7 @@
       "file_type": "code",
       "norm_label": "getalivecharacter()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L933"
+      "source_location": "L932"
     },
     {
       "id": "serverscriptservice_enemycombat_server_getenemydamage",
@@ -435,7 +447,7 @@
       "file_type": "code",
       "norm_label": "getenemydamage()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L365"
+      "source_location": "L363"
     },
     {
       "id": "serverscriptservice_enemycombat_server_getenemymaxhealth",
@@ -447,7 +459,7 @@
       "file_type": "code",
       "norm_label": "getenemymaxhealth()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L357"
+      "source_location": "L355"
     },
     {
       "id": "serverscriptservice_enemycombat_server_getenemyxp",
@@ -459,7 +471,7 @@
       "file_type": "code",
       "norm_label": "getenemyxp()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L372"
+      "source_location": "L370"
     },
     {
       "id": "serverscriptservice_enemycombat_server_getplayerattackdamage",
@@ -471,7 +483,7 @@
       "file_type": "code",
       "norm_label": "getplayerattackdamage()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L376"
+      "source_location": "L374"
     },
     {
       "id": "serverscriptservice_enemycombat_server_hasequippedtool",
@@ -483,7 +495,7 @@
       "file_type": "code",
       "norm_label": "hasequippedtool()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L946"
+      "source_location": "L945"
     },
     {
       "id": "serverscriptservice_enemycombat_server_resolvegroundposition",
@@ -495,7 +507,7 @@
       "file_type": "code",
       "norm_label": "resolvegroundposition()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L411"
+      "source_location": "L409"
     },
     {
       "id": "serverscriptservice_enemycombat_server_spawnenemy",
@@ -507,7 +519,7 @@
       "file_type": "code",
       "norm_label": "spawnenemy()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L864"
+      "source_location": "L863"
     },
     {
       "id": "serverscriptservice_enemycombat_server_startenemyai",
@@ -519,7 +531,7 @@
       "file_type": "code",
       "norm_label": "startenemyai()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L743"
+      "source_location": "L742"
     },
     {
       "id": "serverscriptservice_enemycombat_server_swingweapon",
@@ -531,7 +543,7 @@
       "file_type": "code",
       "norm_label": "swingweapon()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L712"
+      "source_location": "L711"
     },
     {
       "id": "serverscriptservice_enemycombat_server_tryunarmedattack",
@@ -543,7 +555,7 @@
       "file_type": "code",
       "norm_label": "tryunarmedattack()",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L952"
+      "source_location": "L951"
     },
     {
       "id": "starterplayer_starterplayerscripts_combatcontroller_client_autoallocateskillpoints",
@@ -1710,11 +1722,143 @@
       "source_location": "L9"
     },
     {
+      "id": "replicatedstorage_config_bossweapons_bossweapons_get",
+      "label": "BossWeapons.Get()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "bossweapons.get()",
+      "source_file": "ReplicatedStorage/Config/BossWeapons.luau",
+      "source_location": "L95"
+    },
+    {
+      "id": "replicatedstorage_config_bossweapons_bossweapons_getbytier",
+      "label": "BossWeapons.GetByTier()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "bossweapons.getbytier()",
+      "source_file": "ReplicatedStorage/Config/BossWeapons.luau",
+      "source_location": "L103"
+    },
+    {
+      "id": "replicatedstorage_config_bossweapons_bossweapons_gettier",
+      "label": "BossWeapons.GetTier()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "bossweapons.gettier()",
+      "source_file": "ReplicatedStorage/Config/BossWeapons.luau",
+      "source_location": "L99"
+    },
+    {
+      "id": "replicatedstorage_config_merchantconfig_merchantconfig_getitem",
+      "label": "MerchantConfig.GetItem()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "merchantconfig.getitem()",
+      "source_file": "ReplicatedStorage/Config/MerchantConfig.luau",
+      "source_location": "L37"
+    },
+    {
+      "id": "replicatedstorage_config_weaponmodifiers_weaponmodifiers_rollmodifiers",
+      "label": "WeaponModifiers.RollModifiers()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "weaponmodifiers.rollmodifiers()",
+      "source_file": "ReplicatedStorage/Config/WeaponModifiers.luau",
+      "source_location": "L70"
+    },
+    {
+      "id": "serverscriptservice_bossswordfactory_bossswordfactory_build",
+      "label": "BossSwordFactory.build()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "bossswordfactory.build()",
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L41"
+    },
+    {
+      "id": "serverscriptservice_bossswordfactory_bossswordfactory_rebuild",
+      "label": "BossSwordFactory.rebuild()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "bossswordfactory.rebuild()",
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L140"
+    },
+    {
+      "id": "serverscriptservice_bossswordfactory_fitbossmesh",
+      "label": "fitBossMesh()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "fitbossmesh()",
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L20"
+    },
+    {
+      "id": "serverscriptservice_combatutil_combatutil_applyweaponappearance",
+      "label": "CombatUtil.applyWeaponAppearance()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "combatutil.applyweaponappearance()",
+      "source_file": "ServerScriptService/CombatUtil.luau",
+      "source_location": "L27"
+    },
+    {
+      "id": "serverscriptservice_combatutil_combatutil_getswordmesh",
+      "label": "CombatUtil.getSwordMesh()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "combatutil.getswordmesh()",
+      "source_file": "ServerScriptService/CombatUtil.luau",
+      "source_location": "L82"
+    },
+    {
+      "id": "serverscriptservice_combatutil_combatutil_sizeswordmesh",
+      "label": "CombatUtil.sizeSwordMesh()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "combatutil.sizeswordmesh()",
+      "source_file": "ServerScriptService/CombatUtil.luau",
+      "source_location": "L97"
+    },
+    {
       "id": "serverscriptservice_bossroomgate_server_applytier",
       "label": "applyTier()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "applytier()",
@@ -1726,7 +1870,7 @@
       "label": "bindPlayer()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "bindplayer()",
@@ -1738,7 +1882,7 @@
       "label": "doorGroup()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "doorgroup()",
@@ -1750,7 +1894,7 @@
       "label": "getLevel()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "getlevel()",
@@ -1762,7 +1906,7 @@
       "label": "inside()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "inside()",
@@ -1774,7 +1918,7 @@
       "label": "onCharacter()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "oncharacter()",
@@ -1786,7 +1930,7 @@
       "label": "register()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "register()",
@@ -1798,7 +1942,7 @@
       "label": "tierFor()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "tierfor()",
@@ -1810,7 +1954,7 @@
       "label": "tierGroup()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "tiergroup()",
@@ -1822,7 +1966,7 @@
       "label": "getLevel()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "getlevel()",
@@ -1834,7 +1978,7 @@
       "label": "paint()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "paint()",
@@ -1846,7 +1990,7 @@
       "label": "repaintAll()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "repaintall()",
@@ -1858,7 +2002,7 @@
       "label": "show()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "show()",
@@ -1870,7 +2014,7 @@
       "label": "track()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "track()",
@@ -1882,7 +2026,7 @@
       "label": "applyDeathGoldPenalty()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "applydeathgoldpenalty()",
@@ -1894,7 +2038,7 @@
       "label": "applyHealth()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "applyhealth()",
@@ -1906,7 +2050,7 @@
       "label": "awardExperience()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "awardexperience()",
@@ -1918,7 +2062,7 @@
       "label": "connectEnemyHumanoid()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "connectenemyhumanoid()",
@@ -1930,7 +2074,7 @@
       "label": "getEnemyGold()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "getenemygold()",
@@ -1942,7 +2086,7 @@
       "label": "getEnemyReward()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "getenemyreward()",
@@ -1954,7 +2098,7 @@
       "label": "getKiller()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "getkiller()",
@@ -1966,7 +2110,7 @@
       "label": "getOrCreateIntValue()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "getorcreateintvalue()",
@@ -1978,7 +2122,7 @@
       "label": "getRequiredExperience()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "getrequiredexperience()",
@@ -1990,7 +2134,7 @@
       "label": "inspect()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "inspect()",
@@ -2002,7 +2146,7 @@
       "label": "setupPlayer()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "setupplayer()",
@@ -2014,7 +2158,7 @@
       "label": "spawnBurst()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "spawnburst()",
@@ -2026,120 +2170,12 @@
       "label": "showXP()",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "showxp()",
       "source_file": "StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau",
       "source_location": "L10"
-    },
-    {
-      "id": "replicatedstorage_config_bossweapons_bossweapons_get",
-      "label": "BossWeapons.Get()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "bossweapons.get()",
-      "source_file": "ReplicatedStorage/Config/BossWeapons.luau",
-      "source_location": "L95"
-    },
-    {
-      "id": "replicatedstorage_config_bossweapons_bossweapons_getbytier",
-      "label": "BossWeapons.GetByTier()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "bossweapons.getbytier()",
-      "source_file": "ReplicatedStorage/Config/BossWeapons.luau",
-      "source_location": "L103"
-    },
-    {
-      "id": "replicatedstorage_config_bossweapons_bossweapons_gettier",
-      "label": "BossWeapons.GetTier()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "bossweapons.gettier()",
-      "source_file": "ReplicatedStorage/Config/BossWeapons.luau",
-      "source_location": "L99"
-    },
-    {
-      "id": "replicatedstorage_config_merchantconfig_merchantconfig_getitem",
-      "label": "MerchantConfig.GetItem()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "merchantconfig.getitem()",
-      "source_file": "ReplicatedStorage/Config/MerchantConfig.luau",
-      "source_location": "L37"
-    },
-    {
-      "id": "replicatedstorage_config_weaponmodifiers_weaponmodifiers_rollmodifiers",
-      "label": "WeaponModifiers.RollModifiers()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "weaponmodifiers.rollmodifiers()",
-      "source_file": "ReplicatedStorage/Config/WeaponModifiers.luau",
-      "source_location": "L70"
-    },
-    {
-      "id": "serverscriptservice_bossswordfactory_bossswordfactory_build",
-      "label": "BossSwordFactory.build()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "bossswordfactory.build()",
-      "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L18"
-    },
-    {
-      "id": "serverscriptservice_bossswordfactory_bossswordfactory_rebuild",
-      "label": "BossSwordFactory.rebuild()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "bossswordfactory.rebuild()",
-      "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L115"
-    },
-    {
-      "id": "serverscriptservice_combatutil_combatutil_applyweaponappearance",
-      "label": "CombatUtil.applyWeaponAppearance()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "combatutil.applyweaponappearance()",
-      "source_file": "ServerScriptService/CombatUtil.luau",
-      "source_location": "L27"
-    },
-    {
-      "id": "serverscriptservice_combatutil_combatutil_isenemy",
-      "label": "CombatUtil.isEnemy()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "combatutil.isenemy()",
-      "source_file": "ServerScriptService/CombatUtil.luau",
-      "source_location": "L13"
     },
     {
       "id": "workspace_daycycle_server_makedawn",
@@ -2455,10 +2491,87 @@
       "source_location": "L1"
     },
     {
+      "id": "replicatedstorage_config_bossweapons",
+      "label": "BossWeapons.luau",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "bossweapons.luau",
+      "source_file": "ReplicatedStorage/Config/BossWeapons.luau",
+      "source_location": "L1"
+    },
+    {
+      "id": "replicatedstorage_config_items",
+      "label": "Items.luau",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "items.luau",
+      "source_file": "ReplicatedStorage/Config/Items.luau",
+      "source_location": "L1"
+    },
+    {
+      "id": "replicatedstorage_config_merchantconfig",
+      "label": "MerchantConfig.luau",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "merchantconfig.luau",
+      "source_file": "ReplicatedStorage/Config/MerchantConfig.luau",
+      "source_location": "L1"
+    },
+    {
+      "id": "replicatedstorage_config_sword",
+      "label": "Sword.luau",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "sword.luau",
+      "source_file": "ReplicatedStorage/Config/Sword.luau",
+      "source_location": "L1"
+    },
+    {
+      "id": "replicatedstorage_config_weaponmodifiers",
+      "label": "WeaponModifiers.luau",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "weaponmodifiers.luau",
+      "source_file": "ReplicatedStorage/Config/WeaponModifiers.luau",
+      "source_location": "L1"
+    },
+    {
+      "id": "serverscriptservice_bossswordfactory",
+      "label": "BossSwordFactory.luau",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "bossswordfactory.luau",
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L1"
+    },
+    {
+      "id": "serverscriptservice_combatutil",
+      "label": "CombatUtil.luau",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "combatutil.luau",
+      "source_file": "ServerScriptService/CombatUtil.luau",
+      "source_location": "L1"
+    },
+    {
       "id": "serverscriptservice_bossroomgate_server",
       "label": "BossRoomGate.server.luau",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "bossroomgate.server.luau",
@@ -2469,7 +2582,7 @@
       "id": "starterplayer_starterplayerscripts_bossdoorclient_client",
       "label": "BossDoorClient.client.luau",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "file_type": "code",
       "norm_label": "bossdoorclient.client.luau",
@@ -2480,7 +2593,7 @@
       "id": "serverscriptservice_levelingsystem_server",
       "label": "LevelingSystem.server.luau",
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "levelingsystem.server.luau",
@@ -2491,7 +2604,7 @@
       "id": "starterplayer_starterplayerscripts_levelupburst_client",
       "label": "LevelUpBurst.client.luau",
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "levelupburst.client.luau",
@@ -2502,88 +2615,11 @@
       "id": "starterplayer_starterplayerscripts_xpgainui_client",
       "label": "XPGainUI.client.luau",
       "_origin": "ast",
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "file_type": "code",
       "norm_label": "xpgainui.client.luau",
       "source_file": "StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau",
-      "source_location": "L1"
-    },
-    {
-      "id": "replicatedstorage_config_bossweapons",
-      "label": "BossWeapons.luau",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "bossweapons.luau",
-      "source_file": "ReplicatedStorage/Config/BossWeapons.luau",
-      "source_location": "L1"
-    },
-    {
-      "id": "replicatedstorage_config_items",
-      "label": "Items.luau",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "items.luau",
-      "source_file": "ReplicatedStorage/Config/Items.luau",
-      "source_location": "L1"
-    },
-    {
-      "id": "replicatedstorage_config_merchantconfig",
-      "label": "MerchantConfig.luau",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "merchantconfig.luau",
-      "source_file": "ReplicatedStorage/Config/MerchantConfig.luau",
-      "source_location": "L1"
-    },
-    {
-      "id": "replicatedstorage_config_sword",
-      "label": "Sword.luau",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "sword.luau",
-      "source_file": "ReplicatedStorage/Config/Sword.luau",
-      "source_location": "L1"
-    },
-    {
-      "id": "replicatedstorage_config_weaponmodifiers",
-      "label": "WeaponModifiers.luau",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "weaponmodifiers.luau",
-      "source_file": "ReplicatedStorage/Config/WeaponModifiers.luau",
-      "source_location": "L1"
-    },
-    {
-      "id": "serverscriptservice_bossswordfactory",
-      "label": "BossSwordFactory.luau",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "bossswordfactory.luau",
-      "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L1"
-    },
-    {
-      "id": "serverscriptservice_combatutil",
-      "label": "CombatUtil.luau",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "file_type": "code",
-      "norm_label": "combatutil.luau",
-      "source_file": "ServerScriptService/CombatUtil.luau",
       "source_location": "L1"
     },
     {
@@ -3051,11 +3087,26 @@
       "source_url": null
     },
     {
+      "id": "lemonade_game_world_replicatedstorage_config",
+      "label": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
+      "author": null,
+      "captured_at": null,
+      "community": 6,
+      "community_name": "BossSwordFactory.build",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "config folder (sword, items, rebirthconfig, weaponmodifiers, merchantconfig, bossweapons)",
+      "rationale": "Shared tuning tables replicated to clients so UI can show the same numbers the server uses. Sword and Items cover base damage and item definitions; RebirthConfig owns rebirth multipliers, milestone perks and per-rarity drop bonuses; WeaponModifiers rolls the prefix modifiers on boss drops; BossWeapons is the single table of the five boss weapons' stats and look; MerchantConfig holds only prices and shop blurbs and fills the stats in from BossWeapons; SaveConfig lists what PlayerDataService persists between sessions.",
+      "source_file": "lemonade-game/world/ReplicatedStorage.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
       "id": "lemonade_game_world_replicatedstorage_remoteevents_bossdoornotice",
       "label": "BossDoorNotice (RemoteEvent)",
       "author": null,
       "captured_at": null,
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "contributor": null,
       "file_type": "concept",
@@ -3069,7 +3120,7 @@
       "label": "Boss rooms (5 level-gated arenas)",
       "author": null,
       "captured_at": null,
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "contributor": null,
       "file_type": "concept",
@@ -3084,7 +3135,7 @@
       "label": "Player SpawnLocation",
       "author": null,
       "captured_at": null,
-      "community": 6,
+      "community": 7,
       "community_name": "BossRoomGate.server.luau",
       "contributor": null,
       "file_type": "concept",
@@ -3098,7 +3149,7 @@
       "label": "LevelUpBurst (RemoteEvent)",
       "author": null,
       "captured_at": null,
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "contributor": null,
       "file_type": "concept",
@@ -3112,26 +3163,11 @@
       "label": "XPGain (RemoteEvent)",
       "author": null,
       "captured_at": null,
-      "community": 7,
+      "community": 8,
       "community_name": "LevelingSystem.server.luau",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "xpgain (remoteevent)",
-      "source_file": "lemonade-game/world/ReplicatedStorage.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "lemonade_game_world_replicatedstorage_config",
-      "label": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "author": null,
-      "captured_at": null,
-      "community": 8,
-      "community_name": "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "config folder (sword, items, rebirthconfig, weaponmodifiers, merchantconfig, bossweapons)",
-      "rationale": "Shared tuning tables replicated to clients so UI can show the same numbers the server uses. Sword and Items cover base damage and item definitions; RebirthConfig owns rebirth multipliers, milestone perks and per-rarity drop bonuses; WeaponModifiers rolls the prefix modifiers on boss drops; BossWeapons is the single table of the five boss weapons' stats and look; MerchantConfig holds only prices and shop blurbs and fills the stats in from BossWeapons; SaveConfig lists what PlayerDataService persists between sessions.",
       "source_file": "lemonade-game/world/ReplicatedStorage.md",
       "source_location": null,
       "source_url": null
@@ -3317,6 +3353,30 @@
       "weight": 1.0
     },
     {
+      "source": "serverscriptservice_bossswordfactory_bossswordfactory_build",
+      "target": "serverscriptservice_bossswordfactory_fitbossmesh",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "serverscriptservice_bossswordfactory_bossswordfactory_rebuild",
+      "target": "serverscriptservice_bossswordfactory_fitbossmesh",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
       "source": "serverscriptservice_enemycombat_server_applyenemydamagetoplayer",
       "target": "serverscriptservice_enemycombat_server_getenemydamage",
       "relation": "calls",
@@ -3325,7 +3385,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L700",
+      "source_location": "L699",
       "weight": 1.0
     },
     {
@@ -3337,7 +3397,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L890",
+      "source_location": "L889",
       "weight": 1.0
     },
     {
@@ -3349,7 +3409,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L435",
+      "source_location": "L433",
       "weight": 1.0
     },
     {
@@ -3361,7 +3421,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L535",
+      "source_location": "L533",
       "weight": 1.0
     },
     {
@@ -3373,7 +3433,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L573",
+      "source_location": "L572",
       "weight": 1.0
     },
     {
@@ -3385,7 +3445,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L649",
+      "source_location": "L648",
       "weight": 1.0
     },
     {
@@ -3397,7 +3457,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L865",
+      "source_location": "L864",
       "weight": 1.0
     },
     {
@@ -3409,7 +3469,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L866",
+      "source_location": "L865",
       "weight": 1.0
     },
     {
@@ -3421,7 +3481,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L953",
+      "source_location": "L952",
       "weight": 1.0
     },
     {
@@ -3433,7 +3493,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L954",
+      "source_location": "L953",
       "weight": 1.0
     },
     {
@@ -3445,7 +3505,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L966",
+      "source_location": "L965",
       "weight": 1.0
     },
     {
@@ -3457,7 +3517,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L968",
+      "source_location": "L967",
       "weight": 1.0
     },
     {
@@ -5302,7 +5362,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L115",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "serverscriptservice_bossswordfactory",
+      "target": "serverscriptservice_bossswordfactory_fitbossmesh",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -5313,7 +5384,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L18",
+      "source_location": "L41",
       "weight": 1.0
     },
     {
@@ -5350,6 +5421,28 @@
       "weight": 1.0
     },
     {
+      "source": "serverscriptservice_combatutil",
+      "target": "serverscriptservice_combatutil_combatutil_getswordmesh",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ServerScriptService/CombatUtil.luau",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "serverscriptservice_combatutil",
+      "target": "serverscriptservice_combatutil_combatutil_sizeswordmesh",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ServerScriptService/CombatUtil.luau",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
       "source": "serverscriptservice_enemycombat_server",
       "target": "serverscriptservice_enemycombat_server_getenemymaxhealth",
       "relation": "contains",
@@ -5357,7 +5450,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L357",
+      "source_location": "L355",
       "weight": 1.0
     },
     {
@@ -5368,7 +5461,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L365",
+      "source_location": "L363",
       "weight": 1.0
     },
     {
@@ -5379,7 +5472,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L372",
+      "source_location": "L370",
       "weight": 1.0
     },
     {
@@ -5390,7 +5483,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L376",
+      "source_location": "L374",
       "weight": 1.0
     },
     {
@@ -5401,7 +5494,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L400",
+      "source_location": "L398",
       "weight": 1.0
     },
     {
@@ -5412,7 +5505,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L411",
+      "source_location": "L409",
       "weight": 1.0
     },
     {
@@ -5423,7 +5516,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L427",
+      "source_location": "L425",
       "weight": 1.0
     },
     {
@@ -5434,7 +5527,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L665",
+      "source_location": "L664",
       "weight": 1.0
     },
     {
@@ -5445,7 +5538,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L686",
+      "source_location": "L685",
       "weight": 1.0
     },
     {
@@ -5456,7 +5549,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L712",
+      "source_location": "L711",
       "weight": 1.0
     },
     {
@@ -5467,7 +5560,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L743",
+      "source_location": "L742",
       "weight": 1.0
     },
     {
@@ -5478,7 +5571,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L766",
+      "source_location": "L765",
       "weight": 1.0
     },
     {
@@ -5489,7 +5582,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L864",
+      "source_location": "L863",
       "weight": 1.0
     },
     {
@@ -5500,7 +5593,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L876",
+      "source_location": "L875",
       "weight": 1.0
     },
     {
@@ -5511,7 +5604,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L913",
+      "source_location": "L912",
       "weight": 1.0
     },
     {
@@ -5522,7 +5615,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L933",
+      "source_location": "L932",
       "weight": 1.0
     },
     {
@@ -5533,7 +5626,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L946",
+      "source_location": "L945",
       "weight": 1.0
     },
     {
@@ -5544,7 +5637,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L952",
+      "source_location": "L951",
       "weight": 1.0
     },
     {
@@ -6924,6 +7017,30 @@
     },
     {
       "source": "serverscriptservice_bossswordfactory_bossswordfactory_build",
+      "target": "replicatedstorage_config_bossweapons_bossweapons_gettier",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "serverscriptservice_bossswordfactory_bossswordfactory_build",
+      "target": "serverscriptservice_combatutil_combatutil_applyweaponappearance",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "serverscriptservice_bossswordfactory_bossswordfactory_build",
       "target": "replicatedstorage_config_bossweapons_bossweapons_get",
       "relation": "calls",
       "_origin": "ast",
@@ -6931,7 +7048,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L21",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -6943,31 +7060,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L39",
-      "weight": 1.0
-    },
-    {
-      "source": "serverscriptservice_bossswordfactory_bossswordfactory_build",
-      "target": "replicatedstorage_config_bossweapons_bossweapons_gettier",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "context": "call",
-      "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L75",
-      "weight": 1.0
-    },
-    {
-      "source": "serverscriptservice_bossswordfactory_bossswordfactory_build",
-      "target": "serverscriptservice_combatutil_combatutil_applyweaponappearance",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "context": "call",
-      "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L90",
+      "source_location": "L64",
       "weight": 1.0
     },
     {
@@ -6979,7 +7072,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L131",
+      "source_location": "L158",
       "weight": 1.0
     },
     {
@@ -6991,7 +7084,31 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L153",
+      "source_location": "L180",
+      "weight": 1.0
+    },
+    {
+      "source": "serverscriptservice_bossswordfactory_fitbossmesh",
+      "target": "serverscriptservice_combatutil_combatutil_getswordmesh",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "serverscriptservice_bossswordfactory_fitbossmesh",
+      "target": "serverscriptservice_combatutil_combatutil_sizeswordmesh",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -7003,7 +7120,31 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L694",
+      "source_location": "L693",
+      "weight": 1.0
+    },
+    {
+      "source": "serverscriptservice_enemycombat_server_createenemyrig",
+      "target": "serverscriptservice_combatutil_combatutil_getswordmesh",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "ServerScriptService/EnemyCombat.server.luau",
+      "source_location": "L543",
+      "weight": 1.0
+    },
+    {
+      "source": "serverscriptservice_enemycombat_server_createenemyrig",
+      "target": "serverscriptservice_combatutil_combatutil_sizeswordmesh",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "ServerScriptService/EnemyCombat.server.luau",
+      "source_location": "L549",
       "weight": 1.0
     },
     {
@@ -7015,7 +7156,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L553",
+      "source_location": "L552",
       "weight": 1.0
     },
     {
@@ -7027,7 +7168,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L923",
+      "source_location": "L922",
       "weight": 1.0
     },
     {
@@ -8382,5 +8523,5 @@
       "source_file": "lemonade-game/world/ReplicatedStorage.md"
     }
   ],
-  "built_at_commit": "cc5c615b8c36cbe58e0cb7b314398760c560aa2b"
+  "built_at_commit": "bc45ef664ee0c258addb7babc89e19760ac18eea"
 }

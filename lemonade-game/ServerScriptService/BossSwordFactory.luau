@@ -12,6 +12,29 @@ local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 
 local BossSwordFactory = {}
 
+-- Held length of every boss sword. BossSwordTool.Grip is built for this length and the
+-- shared mesh layout, so swapping in a boss's own mesh needs no Grip change.
+local HELD_SWORD_LENGTH = 4.2
+
+-- Replace the template's Handle with this boss's unique mesh, if one has been imported.
+local function fitBossMesh(tool, archetypeKey)
+	local mesh, isBossSpecific = CombatUtil.getSwordMesh(archetypeKey)
+	if not mesh or not isBossSpecific then
+		return
+	end
+	local handle = mesh:Clone()
+	handle.Name = "Handle"
+	handle.Anchored = false
+	handle.CanCollide = false
+	handle.Massless = true
+	CombatUtil.sizeSwordMesh(handle, HELD_SWORD_LENGTH)
+	local old = tool:FindFirstChild("Handle")
+	if old then
+		old:Destroy()
+	end
+	handle.Parent = tool
+end
+
 -- opts.blessedBonus  added to WeaponModifiers.EXTRA_SLOT_CHANCE (drops: +5% at rebirth 5+)
 -- opts.allowBlessed  false = never roll a Blessed extra slot. Defaults to true.
 -- Returns tool, mods, fullName, gotExtraSlot, weaponData (the old makeBossSword contract).
@@ -33,6 +56,8 @@ function BossSwordFactory.build(archetypeKey, opts)
 		h.Size = Vector3.new(1, 1, 4)
 		h.Parent = tool
 	end
+
+	fitBossMesh(tool, archetypeKey)
 
 	-- Roll modifiers by rarity. A bonus of -1 pushes the Blessed chance below zero,
 	-- which is how purchases guarantee no extra slot.
@@ -125,6 +150,8 @@ function BossSwordFactory.rebuild(data)
 	for key, value in pairs(attrs) do
 		tool:SetAttribute(key, value)
 	end
+
+	fitBossMesh(tool, BossWeapons.ArchetypeByTier[tonumber(attrs.BossTier)])
 
 	local handle = tool:FindFirstChild("Handle")
 	if handle then
