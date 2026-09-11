@@ -1,6 +1,6 @@
 # Workspace
 
-Roblox service in place `game` (PlaceId 108354544637319). 86 descendant instances.
+Roblox service in place `game` (PlaceId 108354544637319). 147 descendant instances.
 
 Every instance below is a live object in the game hierarchy. Paths are Roblox instance paths; `Referenced by script(s)` lists the Luau source files that mention the instance by name.
 
@@ -363,3 +363,33 @@ Source file: `Workspace/DayCycle.server.luau` (220 lines)
 
 ## `Workspace/Camera` — Camera
 - Attributes: _lemonadeUniqueId = default_camera
+
+## `Workspace/BossRooms` — Folder
+One walled room per boss zone, built around EnemyCombat's existing spawn clusters so each boss and its four minions spawn inside. Interior 68 x 68 studs. Walls are sunk 6 studs into the terrain and rise 22 above its highest point inside the footprint, so they can't be crawled under or jumped. The doorway sits on the wall facing the player spawn. Its `Door` is solid for everyone, enemies included, except players at or above its `RequiredLevel` attribute (see `BossRoomGate`).
+- Children (5): IronHall (Model), FrostGlacier (Model), InfernalForge (Model), VoidRift (Model), CelestialSanctum (Model)
+- Referenced by script(s): ServerScriptService/BossRoomGate, StarterPlayer/StarterPlayerScripts/BossDoorClient
+
+### `Workspace/BossRooms/IronHall` — Model
+- Attributes: DisplayName = Iron Hall
+- Door on the north wall at (-44, 8, -16), `RequiredLevel` = 1; walls 31 studs tall
+- Children: 3 full walls, 2 door-wall segments, Lintel, Door (ForceField, with a `Sign` BillboardGui), Exit (hidden marker outside the door), Bounds (hidden interior volume, PrimaryPart)
+
+### `Workspace/BossRooms/FrostGlacier` — Model
+- Attributes: DisplayName = Frost Glacier
+- Door on the east wall at (-74, 7, 71), `RequiredLevel` = 15; walls 36 studs tall
+- Children: 3 full walls, 2 door-wall segments, Lintel, Door (ForceField, with a `Sign` BillboardGui), Exit (hidden marker outside the door), Bounds (hidden interior volume, PrimaryPart)
+
+### `Workspace/BossRooms/InfernalForge` — Model
+- Attributes: DisplayName = Infernal Forge
+- Door on the west wall at (79, 7, 86), `RequiredLevel` = 30; walls 32 studs tall
+- Children: 3 full walls, 2 door-wall segments, Lintel, Door (ForceField, with a `Sign` BillboardGui), Exit (hidden marker outside the door), Bounds (hidden interior volume, PrimaryPart)
+
+### `Workspace/BossRooms/VoidRift` — Model
+- Attributes: DisplayName = Void Rift
+- Door on the west wall at (98, 16, -91), `RequiredLevel` = 50; walls 42 studs tall
+- Children: 3 full walls, 2 door-wall segments, Lintel, Door (ForceField, with a `Sign` BillboardGui), Exit (hidden marker outside the door), Bounds (hidden interior volume, PrimaryPart)
+
+### `Workspace/BossRooms/CelestialSanctum` — Model
+- Attributes: DisplayName = Celestial Sanctum
+- Door on the east wall at (-104, 10, -131), `RequiredLevel` = 75; walls 36 studs tall
+- Children: 3 full walls, 2 door-wall segments, Lintel, Door (ForceField, with a `Sign` BillboardGui), Exit (hidden marker outside the door), Bounds (hidden interior volume, PrimaryPart)

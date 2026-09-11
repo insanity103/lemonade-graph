@@ -1,12 +1,12 @@
 # StarterPlayer
 
-Roblox service in place `game` (PlaceId 108354544637319). 12 descendant instances.
+Roblox service in place `game` (PlaceId 108354544637319). 13 descendant instances.
 
 Every instance below is a live object in the game hierarchy. Paths are Roblox instance paths; `Referenced by script(s)` lists the Luau source files that mention the instance by name.
 
 ## `StarterPlayer/StarterPlayerScripts` — StarterPlayerScripts
 - Attributes: _lemonadeUniqueId = sps
-- Children (10): RunController (LocalScript), LevelProgressGui (LocalScript), CombatController (LocalScript), DamageNumbers (LocalScript), XPGainUI (LocalScript), GoldNumbers (LocalScript), LevelUpBurst (LocalScript), MainMenuGui (LocalScript), SwordDropToast (LocalScript), MerchantGui (LocalScript)
+- Children (11): RunController (LocalScript), LevelProgressGui (LocalScript), CombatController (LocalScript), DamageNumbers (LocalScript), XPGainUI (LocalScript), GoldNumbers (LocalScript), LevelUpBurst (LocalScript), MainMenuGui (LocalScript), SwordDropToast (LocalScript), MerchantGui (LocalScript), BossDoorClient (LocalScript)
 
 ### `StarterPlayer/StarterPlayerScripts/RunController` — LocalScript
 Source file: `StarterPlayer/StarterPlayerScripts/RunController.client.luau` (38 lines)
@@ -47,6 +47,10 @@ Source file: `StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau` (23
 
 ### `StarterPlayer/StarterPlayerScripts/MerchantGui` — LocalScript
 Source file: `StarterPlayer/StarterPlayerScripts/MerchantGui.client.luau` (329 lines)
+
+### `StarterPlayer/StarterPlayerScripts/BossDoorClient` — LocalScript
+Recolours each boss-room door sign OPEN (green) or LOCKED (red) for this player's level, shows a toast on bumping a locked door, and shows BossRoomGate's eject notice. Visual only; the server decides who passes. Handles doors streaming in (StreamingEnabled is on).
+Source file: `StarterPlayer/StarterPlayerScripts/BossDoorClient.client.luau` (103 lines)
 
 ## `StarterPlayer/StarterCharacterScripts` — StarterCharacterScripts
 - Attributes: _lemonadeUniqueId = scs

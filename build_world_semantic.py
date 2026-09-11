@@ -70,6 +70,20 @@ E(runtime_enemies, "serverscriptservice_sworddropsystem_server_hook",
 E(spawn, "serverscriptservice_levelingsystem_server_setupplayer",
   "conceptually_related_to", "INFERRED", 0.65)
 
+boss_rooms = N("world_workspace_bossrooms", "Boss rooms (5 level-gated arenas)", WS,
+               rationale="Workspace/BossRooms holds one walled room per boss zone (Iron Hall, Frost "
+                         "Glacier, Infernal Forge, Void Rift, Celestial Sanctum), built around "
+                         "EnemyCombat's existing spawn clusters so each boss and its four minions "
+                         "spawn inside. Walls are sunk 6 studs into the terrain and rise 22 above its "
+                         "highest point. The doorway faces the player spawn and holds a ForceField "
+                         "'Door' whose RequiredLevel attribute (1/15/30/50/75) is the single tuning "
+                         "knob. Each room also has an invisible Bounds part (the interior, used for "
+                         "ejection) and an Exit marker outside the door.")
+E(boss_rooms, "serverscriptservice_bossroomgate_server", "referenced_by")
+E(boss_rooms, "starterplayer_starterplayerscripts_bossdoorclient_client", "referenced_by")
+E(boss_rooms, runtime_enemies, "contains")
+E(boss_rooms, spawn, "conceptually_related_to", "INFERRED", 0.8)
+
 # ---------------------------------------------------------------- Terrain
 TR = "Terrain.md"
 terrain = N("world_terrain_terrain", "Voxel Terrain", TR,
@@ -123,6 +137,8 @@ REMOTES = {
                           ["starterplayer_starterplayerscripts_sworddroptoast_client"]),
     "swordlostondeath":  ("SwordLostOnDeath",  ["serverscriptservice_sworddropsystem_server"],
                           ["starterplayer_starterplayerscripts_sworddroptoast_client"]),
+    "bossdoornotice":    ("BossDoorNotice",    ["serverscriptservice_bossroomgate_server"],
+                          ["starterplayer_starterplayerscripts_bossdoorclient_client"]),
 }
 REMOTE_NOTES = {
     "rebirthresult": "Orphaned: RebirthSystem still fires it, but its only listener was RebirthGui, "
@@ -276,6 +292,14 @@ hyperedges.append({
               "replicatedstorage_config_bossweapons", "serverscriptservice_bossswordfactory"],
     "relation": "participate_in", "confidence": "EXTRACTED", "confidence_score": 1.0,
     "source_file": W + SS})
+hyperedges.append({
+    "id": "boss_room_gating", "label": "Level-gated boss rooms",
+    "nodes": [boss_rooms, runtime_enemies, remote_ids["bossdoornotice"],
+              "serverscriptservice_bossroomgate_server",
+              "starterplayer_starterplayerscripts_bossdoorclient_client",
+              "serverscriptservice_levelingsystem_server"],
+    "relation": "participate_in", "confidence": "EXTRACTED", "confidence_score": 1.0,
+    "source_file": W + WS})
 hyperedges.append({
     "id": "cross_session_save", "label": "Cross-session player save/load",
     "nodes": [save_flow, "serverscriptservice_playerdatastore_server",

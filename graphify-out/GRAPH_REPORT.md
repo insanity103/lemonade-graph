@@ -1,31 +1,32 @@
 # Graph Report - lemonade-game  (2026-09-10)
 
 ## Corpus Check
-- Corpus is ~26,564 words - fits in a single context window. You may not need a graph.
+- Corpus is ~28,071 words - fits in a single context window. You may not need a graph.
 
 ## Summary
-- 223 nodes · 397 edges · 17 communities (12 shown, 2 thin omitted)
-- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.83)
+- 241 nodes · 430 edges · 18 communities (13 shown, 2 thin omitted)
+- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 29 edges (avg confidence: 0.83)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- EnemyCombat.server.luau
 - RemoteEvents folder
 - InventoryService.luau
+- AnimationController.luau
+- EnemyCombat.server.luau
 - MainMenuGui.client.luau
-- PlayerDataService.luau
+- BossRoomGate.server.luau
 - LevelingSystem.server.luau
 - Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)
-- AnimationController.luau
+- PlayerDataService.luau
 - DayCycle.server.luau
 - CombatController.client.luau
 - SwordSystem.server.luau
-- RebirthSystem.server.luau
+- MerchantGui.client.luau
 - Boulder decor set (5 Models)
 - Tree decor set (10 Models)
 
 ## God Nodes (most connected - your core abstractions)
-1. `RemoteEvents folder` - 17 edges
+1. `RemoteEvents folder` - 18 edges
 2. `buildInventoryPanel()` - 10 edges
 3. `createEnemyRig()` - 8 edges
 4. `validateItemId()` - 8 edges
@@ -52,84 +53,89 @@
 - None detected.
 
 ## Hyperedges (group relationships)
+- **Level-gated boss rooms** — lemonade_game_world_workspace_bossrooms, lemonade_game_world_workspace_runtimeenemies, lemonade_game_world_replicatedstorage_remoteevents_bossdoornotice, serverscriptservice_bossroomgate_server, starterplayer_starterplayerscripts_bossdoorclient_client, serverscriptservice_levelingsystem_server [EXTRACTED 1.00]
 - **Boss weapon drop + auto-sell loop** — lemonade_game_world_workspace_runtimeenemies, lemonade_game_world_serverstorage_bossswordtool, lemonade_game_world_serverstorage_swordmeshtemplate, lemonade_game_world_replicatedstorage_remoteevents_sworddrop, lemonade_game_world_replicatedstorage_remoteevents_toggleautosell, lemonade_game_world_replicatedstorage_remoteevents_autosellnotice, serverscriptservice_sworddropsystem_server, replicatedstorage_config_weaponmodifiers, replicatedstorage_config_rebirthconfig, starterplayer_starterplayerscripts_sworddroptoast_client, starterplayer_starterplayerscripts_mainmenugui_client, replicatedstorage_config_bossweapons, serverscriptservice_bossswordfactory [EXTRACTED 1.00]
 - **Cross-session player save/load** — world_persistence_playerdata, serverscriptservice_playerdatastore_server, serverscriptservice_playerdataservice, replicatedstorage_config_saveconfig, serverscriptservice_inventoryservice, serverscriptservice_bossswordfactory, serverscriptservice_inventorysystem_server [EXTRACTED 1.00]
 - **Day/night lighting stack** — lemonade_game_world_lighting_sky, lemonade_game_world_lighting_atmosphere, lemonade_game_world_lighting_bloom, lemonade_game_world_lighting_sunrays, lemonade_game_world_lighting_depthoffield, workspace_daycycle_server [EXTRACTED 1.00]
 - **Merchant sword purchase** — lemonade_game_world_replicatedstorage_remoteevents_merchantaction, lemonade_game_world_replicatedstorage_remoteevents_sworddrop, lemonade_game_world_serverstorage_bossswordtool, serverscriptservice_merchantsystem_server, starterplayer_starterplayerscripts_merchantgui_client, replicatedstorage_config_merchantconfig, replicatedstorage_config_bossweapons, serverscriptservice_bossswordfactory [EXTRACTED 1.00]
 - **Rebirth progression** — replicatedstorage_config_rebirthconfig, serverscriptservice_rebirthsystem_server, lemonade_game_world_replicatedstorage_remoteevents_rebirth, lemonade_game_world_replicatedstorage_remoteevents_rebirthresult, starterplayer_starterplayerscripts_mainmenugui_client, serverscriptservice_swordsystem_server, serverscriptservice_sworddropsystem_server [EXTRACTED 1.00]
 
-## Communities (17 total, 2 thin omitted)
+## Communities (18 total, 2 thin omitted)
 
-### Community 0 - "EnemyCombat.server.luau"
+### Community 0 - "RemoteEvents folder"
 Cohesion: 0.10
-Nodes (26): Lemonade RPG place (root), BossSwordTool (Tool), Importer 180 deg Y flip, SwordMeshTemplate (MeshPart), Starter sword blade assembly, ClassicSword (Tool), ClassicSword Handle, SwordLunge sound (unused) (+18 more)
+Nodes (24): RemoteEvents folder, AutoSellNotice (RemoteEvent), GoldGain (RemoteEvent), InventoryUpdated (RemoteEvent), MerchantAction (RemoteEvent), Rebirth (RemoteEvent), RebirthResult (RemoteEvent), SwordDrop (RemoteEvent) (+16 more)
 
-### Community 1 - "RemoteEvents folder"
-Cohesion: 0.11
-Nodes (20): RemoteEvents folder, AutoSellNotice (RemoteEvent), GoldGain (RemoteEvent), InventoryUpdated (RemoteEvent), MerchantAction (RemoteEvent), SwordDrop (RemoteEvent), SwordLostOnDeath (RemoteEvent), ToggleAutoSell (RemoteEvent) (+12 more)
+### Community 1 - "InventoryService.luau"
+Cohesion: 0.14
+Nodes (28): InventoryAction (RemoteEvent), ensureDataFolder(), findOwnedTool(), findToolTemplate(), getDataFolder(), getInventorySnapshot(), getItemDefinition(), getOrCreateInventory() (+20 more)
 
-### Community 2 - "InventoryService.luau"
-Cohesion: 0.19
-Nodes (25): ensureDataFolder(), findOwnedTool(), findToolTemplate(), getDataFolder(), getInventorySnapshot(), getItemDefinition(), getOrCreateInventory(), InventoryService.AddItem() (+17 more)
+### Community 2 - "AnimationController.luau"
+Cohesion: 0.10
+Nodes (13): Starter sword blade assembly, ClassicSword (Tool), ClassicSword Handle, SwordLunge sound (unused), SwordSlash sound, Unsheath sound, AnimationController.Play(), AnimationExecutor.new() (+5 more)
 
-### Community 3 - "MainMenuGui.client.luau"
+### Community 3 - "EnemyCombat.server.luau"
+Cohesion: 0.15
+Nodes (18): Lemonade RPG place (root), BossSwordTool (Tool), Importer 180 deg Y flip, SwordMeshTemplate (MeshPart), Voxel Terrain, Baseplate, Runtime-spawned enemy rigs, applyEnemyDamageToPlayer() (+10 more)
+
+### Community 4 - "MainMenuGui.client.luau"
 Cohesion: 0.26
 Nodes (19): addCorner(), addPadding(), addStroke(), bindInventoryRefresh(), buildHomePanel(), buildInventoryPanel(), buildRebirthPanel(), buildSettingsPanel() (+11 more)
 
-### Community 4 - "PlayerDataService.luau"
-Cohesion: 0.19
-Nodes (13): InventoryAction (RemoteEvent), defaultData(), keyFor(), lockHeldByOther(), PlayerDataService.Load(), PlayerDataService.Release(), PlayerDataService.Save(), PlayerDataService.SaveAll() (+5 more)
+### Community 5 - "BossRoomGate.server.luau"
+Cohesion: 0.18
+Nodes (14): BossDoorNotice (RemoteEvent), Boss rooms (5 level-gated arenas), Player SpawnLocation, applyTier(), bindPlayer(), getLevel(), onCharacter(), tierFor() (+6 more)
 
-### Community 5 - "LevelingSystem.server.luau"
+### Community 6 - "LevelingSystem.server.luau"
 Cohesion: 0.18
 Nodes (13): LevelUpBurst (RemoteEvent), XPGain (RemoteEvent), applyDeathGoldPenalty(), applyHealth(), awardExperience(), connectEnemyHumanoid(), getEnemyGold(), getEnemyReward() (+5 more)
 
-### Community 6 - "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)"
-Cohesion: 0.16
-Nodes (7): Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons), BossWeapons.Get(), BossWeapons.GetTier(), WeaponModifiers.RollModifiers(), BossSwordFactory.build(), BossSwordFactory.rebuild(), CombatUtil.applyWeaponAppearance()
-
-### Community 7 - "AnimationController.luau"
+### Community 7 - "Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons)"
 Cohesion: 0.15
-Nodes (6): SwordSlash sound, Unsheath sound, AnimationController.Play(), AnimationExecutor.new(), ensureExecutor(), onActivated()
+Nodes (8): Config folder (Sword, Items, RebirthConfig, WeaponModifiers, MerchantConfig, BossWeapons), BossWeapons.Get(), BossWeapons.GetTier(), WeaponModifiers.RollModifiers(), BossSwordFactory.build(), BossSwordFactory.rebuild(), CombatUtil.applyWeaponAppearance(), CombatUtil.isEnemy()
 
-### Community 8 - "DayCycle.server.luau"
+### Community 8 - "PlayerDataService.luau"
+Cohesion: 0.33
+Nodes (10): defaultData(), keyFor(), lockHeldByOther(), PlayerDataService.Load(), PlayerDataService.Release(), PlayerDataService.Save(), PlayerDataService.SaveAll(), PlayerDataService.Serialize() (+2 more)
+
+### Community 9 - "DayCycle.server.luau"
 Cohesion: 0.25
 Nodes (10): Lighting/Atmosphere, Lighting/BloomEffect, Lighting/DepthOfFieldEffect, Lighting/Sky, Lighting/SunRaysEffect, makeDawn(), makeDay(), makeDusk() (+2 more)
 
-### Community 9 - "CombatController.client.luau"
+### Community 10 - "CombatController.client.luau"
 Cohesion: 0.24
 Nodes (8): EnemyAttack (RemoteEvent), SpendSkillPoint (RemoteEvent), ToggleAutoAttack (RemoteEvent), findClosestLivingEnemy(), fireAttack(), getEquippedTool(), handleAttack(), isLivingEnemy()
 
-### Community 10 - "SwordSystem.server.luau"
+### Community 11 - "SwordSystem.server.luau"
 Cohesion: 0.31
 Nodes (7): DamageNumber (RemoteEvent), applyDamage(), applyKnockback(), calculateDamage(), performSwing(), setupCharacter(), setupTool()
 
-### Community 11 - "RebirthSystem.server.luau"
-Cohesion: 0.27
-Nodes (8): Rebirth (RemoteEvent), RebirthResult (RemoteEvent), RebirthConfig.GetEffectiveDropChance(), RebirthConfig.GetMultipliers(), RebirthConfig.GetRequiredLevel(), applyRebirthAttributes(), getOrCreateIntValue(), setupPlayer()
+### Community 12 - "MerchantGui.client.luau"
+Cohesion: 0.60
+Nodes (3): buildShopList(), formatGold(), setShopOpen()
 
 ## Knowledge Gaps
 - **12 isolated node(s):** `Tree decor set (10 Models)`, `Boulder decor set (5 Models)`, `Baseplate`, `Starter sword blade assembly`, `SwordSlash sound` (+7 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 41 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 44 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `RemoteEvents folder` connect `RemoteEvents folder` to `EnemyCombat.server.luau`, `PlayerDataService.luau`, `LevelingSystem.server.luau`, `CombatController.client.luau`, `SwordSystem.server.luau`, `RebirthSystem.server.luau`?**
-  _High betweenness centrality (0.340) - this node is a cross-community bridge._
+- **Why does `RemoteEvents folder` connect `RemoteEvents folder` to `InventoryService.luau`, `EnemyCombat.server.luau`, `BossRoomGate.server.luau`, `LevelingSystem.server.luau`, `CombatController.client.luau`, `SwordSystem.server.luau`?**
+  _High betweenness centrality (0.378) - this node is a cross-community bridge._
 - **Why does `InventoryUpdated (RemoteEvent)` connect `RemoteEvents folder` to `InventoryService.luau`, `MainMenuGui.client.luau`?**
-  _High betweenness centrality (0.190) - this node is a cross-community bridge._
-- **Why does `ClassicSword (Tool)` connect `EnemyCombat.server.luau` to `RemoteEvents folder`, `SwordSystem.server.luau`, `AnimationController.luau`?**
-  _High betweenness centrality (0.181) - this node is a cross-community bridge._
+  _High betweenness centrality (0.186) - this node is a cross-community bridge._
+- **Why does `ClassicSword (Tool)` connect `AnimationController.luau` to `RemoteEvents folder`, `SwordSystem.server.luau`, `EnemyCombat.server.luau`?**
+  _High betweenness centrality (0.169) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `InventoryService.LoadPlayer()` (e.g. with `setupPlayer()` and `PlayerDataService.Apply()`) actually correct?**
   _`InventoryService.LoadPlayer()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Tree decor set (10 Models)`, `Boulder decor set (5 Models)`, `Baseplate` to the rest of the system?**
   _12 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `EnemyCombat.server.luau` be split into smaller, more focused modules?**
-  _Cohesion score 0.0989247311827957 - nodes in this community are weakly interconnected._
 - **Should `RemoteEvents folder` be split into smaller, more focused modules?**
-  _Cohesion score 0.10846560846560846 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0967741935483871 - nodes in this community are weakly interconnected._
+- **Should `InventoryService.luau` be split into smaller, more focused modules?**
+  _Cohesion score 0.1431451612903226 - nodes in this community are weakly interconnected._
 ## Manual Trace
 
 Hand-traced findings, kept in `~/lemonade-graph/manual_trace.md` and re-appended after every rebuild (the report generator rewrites this file from scratch). Last verified against the 2026-09-10 sync.

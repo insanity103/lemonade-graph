@@ -5,13 +5,13 @@
   "exportedAt": "2026-09-10T16:16:32-07:00",
   "note": "Readable text export of the Roblox DataModel for knowledge-graph indexing. Not a restorable backup: terrain voxels, mesh geometry and exact CFrames are not captured.",
   "descendantCounts": {
-    "Workspace": 86,
-    "ServerScriptService": 12,
+    "Workspace": 147,
+    "ServerScriptService": 13,
     "ServerStorage": 3,
-    "ReplicatedStorage": 28,
+    "ReplicatedStorage": 29,
     "StarterGui": 0,
     "StarterPack": 17,
-    "StarterPlayer": 12,
+    "StarterPlayer": 13,
     "Lighting": 5,
     "SoundService": 0
   }

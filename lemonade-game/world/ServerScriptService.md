@@ -1,6 +1,6 @@
 # ServerScriptService
 
-Roblox service in place `game` (PlaceId 108354544637319). 12 descendant instances.
+Roblox service in place `game` (PlaceId 108354544637319). 13 descendant instances.
 
 Every instance below is a live object in the game hierarchy. Paths are Roblox instance paths; `Referenced by script(s)` lists the Luau source files that mention the instance by name.
 
@@ -55,3 +55,7 @@ Source file: `ServerScriptService/PlayerDataService.luau` (283 lines)
 ## `ServerScriptService/PlayerDataStore` — Script
 Drives `PlayerDataService` off the player lifecycle: load+apply on join (sets the `DataLoaded` attribute), save+release on `PlayerRemoving`, a periodic autosave loop, and a `BindToClose` save-all on shutdown.
 Source file: `ServerScriptService/PlayerDataStore.server.luau` (48 lines)
+
+## `ServerScriptService/BossRoomGate` — Script
+Level-gates the doors in Workspace/BossRooms using collision groups. Each distinct `RequiredLevel` gets a `BossDoorN` group, and each player's character is placed in a `BossPassT` tier group that ignores exactly the doors they qualify for. Characters are re-tiered on spawn and on level change. Doors stay in collision with the Default group, so enemies can't leave. A 0.5s loop moves under-level players found inside a room out to its Exit, which covers rebirth level resets.
+Source file: `ServerScriptService/BossRoomGate.server.luau` (138 lines)

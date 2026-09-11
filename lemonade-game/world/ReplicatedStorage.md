@@ -1,6 +1,6 @@
 # ReplicatedStorage
 
-Roblox service in place `game` (PlaceId 108354544637319). 28 descendant instances.
+Roblox service in place `game` (PlaceId 108354544637319). 29 descendant instances.
 
 Every instance below is a live object in the game hierarchy. Paths are Roblox instance paths; `Referenced by script(s)` lists the Luau source files that mention the instance by name.
 
@@ -11,7 +11,7 @@ Source file: `ReplicatedStorage/AnimationController.luau` (268 lines)
 
 ## `ReplicatedStorage/RemoteEvents` — Folder
 - Attributes: _lemonadeUniqueId = 1ciW710q1ciW
-- Children (16): EnemyAttack (RemoteEvent), DamageNumber (RemoteEvent), XPGain (RemoteEvent), SpendSkillPoint (RemoteEvent), GoldGain (RemoteEvent), LevelUpBurst (RemoteEvent), ToggleAutoAttack (RemoteEvent), InventoryUpdated (RemoteEvent), InventoryAction (RemoteEvent), Rebirth (RemoteEvent), RebirthResult (RemoteEvent), SwordDrop (RemoteEvent), ToggleAutoSell (RemoteEvent), AutoSellNotice (RemoteEvent), MerchantAction (RemoteEvent), SwordLostOnDeath (RemoteEvent)
+- Children (17): EnemyAttack (RemoteEvent), DamageNumber (RemoteEvent), XPGain (RemoteEvent), SpendSkillPoint (RemoteEvent), GoldGain (RemoteEvent), LevelUpBurst (RemoteEvent), ToggleAutoAttack (RemoteEvent), InventoryUpdated (RemoteEvent), InventoryAction (RemoteEvent), Rebirth (RemoteEvent), RebirthResult (RemoteEvent), SwordDrop (RemoteEvent), ToggleAutoSell (RemoteEvent), AutoSellNotice (RemoteEvent), MerchantAction (RemoteEvent), SwordLostOnDeath (RemoteEvent), BossDoorNotice (RemoteEvent)
 - Referenced by script(s): ServerScriptService/EnemyCombat, ServerScriptService/InventoryService, ServerScriptService/InventorySystem, ServerScriptService/LevelingSystem, ServerScriptService/MerchantSystem, ServerScriptService/RebirthSystem, ServerScriptService/SwordDropSystem, ServerScriptService/SwordSystem, StarterPlayer/StarterPlayerScripts/CombatController, StarterPlayer/StarterPlayerScripts/DamageNumbers, StarterPlayer/StarterPlayerScripts/GoldNumbers, StarterPlayer/StarterPlayerScripts/LevelUpBurst, StarterPlayer/StarterPlayerScripts/MainMenuGui, StarterPlayer/StarterPlayerScripts/MerchantGui, StarterPlayer/StarterPlayerScripts/SwordDropToast, StarterPlayer/StarterPlayerScripts/XPGainUI
 
 ### `ReplicatedStorage/RemoteEvents/EnemyAttack` — RemoteEvent
@@ -74,6 +74,10 @@ Source file: `ReplicatedStorage/AnimationController.luau` (268 lines)
 ### `ReplicatedStorage/RemoteEvents/SwordLostOnDeath` — RemoteEvent
 Server -> client. Fired by SwordDropSystem's death handler when the 2% roll destroys the equipped boss sword instead of sparing it; SwordDropToast shows a red "shattered" card.
 - Referenced by script(s): ServerScriptService/SwordDropSystem, StarterPlayer/StarterPlayerScripts/SwordDropToast
+
+### `ReplicatedStorage/RemoteEvents/BossDoorNotice` — RemoteEvent
+Server -> client. Fired by BossRoomGate when it moves an under-level player out of a boss room; BossDoorClient shows the reason.
+- Referenced by script(s): ServerScriptService/BossRoomGate, StarterPlayer/StarterPlayerScripts/BossDoorClient
 
 ## `ReplicatedStorage/Animations` — Folder
 - Attributes: _lemonadeUniqueId = mMxrkPhZmMxr
