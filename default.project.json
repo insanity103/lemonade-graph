@@ -3,22 +3,28 @@
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
-      "$path": "lemonade-game/ReplicatedStorage"
+      "$path": "lemonade-game/ReplicatedStorage",
+      "$ignoreUnknownInstances": true
     },
     "ServerScriptService": {
-      "$path": "lemonade-game/ServerScriptService"
+      "$path": "lemonade-game/ServerScriptService",
+      "$ignoreUnknownInstances": true
     },
     "StarterPack": {
-      "$path": "lemonade-game/StarterPack"
+      "$path": "lemonade-game/StarterPack",
+      "$ignoreUnknownInstances": true
     },
     "StarterPlayer": {
       "$className": "StarterPlayer",
+      "$ignoreUnknownInstances": true,
       "StarterPlayerScripts": {
-        "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts"
+        "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts",
+        "$ignoreUnknownInstances": true
       }
     },
     "Workspace": {
-      "$path": "lemonade-game/Workspace"
+      "$path": "lemonade-game/Workspace",
+      "$ignoreUnknownInstances": true
     }
   }
 }
