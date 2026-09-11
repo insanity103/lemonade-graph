@@ -21,11 +21,11 @@ The same mesh wrapped as an equippable Tool. This is what `SwordDropSystem` clon
 a rare boss drop, so the sword the player wins is visibly the one the boss was swinging
 — not the plain starter blade in StarterPack.
 
-`Grip` folds in both the importer's 180 deg flip and the 0.38*L offset that puts the
-hand in the handle. Verified against the engine's weld maths
+`Grip` folds in the importer's 180 deg flip, the 0.38*L hand offset, and a final
+`Angles(-pi/2,0,0)` pitch so the blade is held upright like every other sword. Verified against the engine's weld maths
 (`Handle = Arm * C0 * Grip:Inverse()`): crossguard lands 0.6 studs in front of the hand,
 pommel 0.5 studs behind it, tip 3.6 studs forward.
-- Properties: RequiresHandle: true; CanBeDropped: false; Grip pos: (0.00, 0.00, -1.60); Grip yaw: 180 deg
+- Properties: RequiresHandle: true; CanBeDropped: false; Grip: pos (0, 0, -1.60) + upright pitch (blade points up)
 - Children (1): Handle (MeshPart)
 - Referenced by script(s): ServerScriptService/SwordDropSystem
 

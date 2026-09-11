@@ -44,7 +44,7 @@ Source file: `ServerScriptService/MerchantSystem.server.luau` (232 lines)
 
 ## `ServerScriptService/BossSwordFactory` — ModuleScript
 Builds an equippable boss weapon: clones `ServerStorage/BossSwordTool`, rolls `WeaponModifiers` prefixes, stamps the stat attributes combat reads, dresses the blade via `CombatUtil.applyWeaponAppearance()`, and copies in `SwordClient`. Shared by SwordDropSystem (boss drops, Blessed allowed) and MerchantSystem (purchases, `allowBlessed = false`), which used to carry near-identical copies of this code.
-Source file: `ServerScriptService/BossSwordFactory.luau` (133 lines)
+Source file: `ServerScriptService/BossSwordFactory.luau` (153 lines)
 - Referenced by script(s): ServerScriptService/MerchantSystem, ServerScriptService/SwordDropSystem
 
 ## `ServerScriptService/PlayerDataService` — ModuleScript

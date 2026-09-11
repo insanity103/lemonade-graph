@@ -9,8 +9,8 @@ The plain starter blade every player spawns holding: a part-built sword (no mesh
 texture) deliberately simpler than the boss's imported blade, so a boss drop reads as
 an upgrade. Assembled along the Handle's -Z axis, which is the direction the tool
 points out of the hand; `Grip` is identity, so the hand sits at the centre of the grip.
-Total length 4.77 studs (0.88 of pommel behind the hand, 3.89 of blade in front).
-- Properties: RequiresHandle: true; CanBeDropped: false; Grip: identity (hand at grip centre)
+Total length 4.77 studs. `Grip` = `CFrame.Angles(-pi/2, 0, 0)` so the blade is held upright (points up out of the fist), pommel below.
+- Properties: RequiresHandle: true; CanBeDropped: false; Grip: Angles(-pi/2, 0, 0) — blade held upright
 - Children (8): MouseIcon (LocalScript), SwordClient (LocalScript), Handle (Part), Pommel (Part), Guard (Part), Blade (Part), TipUpper (WedgePart), TipLower (WedgePart)
 - Referenced by script(s): ServerScriptService/SwordDropSystem, ReplicatedStorage/Config/Items
 
@@ -18,7 +18,7 @@ Total length 4.77 studs (0.88 of pommel behind the hand, 3.89 of blade in front)
 Source file: `StarterPack/ClassicSword/MouseIcon.client.luau` (29 lines)
 
 ### `StarterPack/ClassicSword/SwordClient` — LocalScript
-Source file: `StarterPack/ClassicSword/SwordClient.client.luau` (31 lines)
+Source file: `StarterPack/ClassicSword/SwordClient.client.luau` (37 lines)
 
 ### `StarterPack/ClassicSword/Handle` — Part
 The leather grip, and the Tool's required Handle. Every other piece is welded to it.

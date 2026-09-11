@@ -1,7 +1,7 @@
 # Graph Report - lemonade-game  (2026-09-10)
 
 ## Corpus Check
-- Corpus is ~26,425 words - fits in a single context window. You may not need a graph.
+- Corpus is ~26,564 words - fits in a single context window. You may not need a graph.
 
 ## Summary
 - 223 nodes · 397 edges · 17 communities (12 shown, 2 thin omitted)

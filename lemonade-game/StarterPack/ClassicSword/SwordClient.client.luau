@@ -3,8 +3,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local tool = script.Parent
 local handle = tool:WaitForChild("Handle")
-local slashSound = handle:WaitForChild("SwordSlash")
-local unsheathSound = handle:WaitForChild("Unsheath")
+-- Boss/merchant swords use a MeshPart handle with no sounds; look these up without
+-- blocking so the Activated/Equipped handlers below always get connected.
+local slashSound = handle:FindFirstChild("SwordSlash")
+local unsheathSound = handle:FindFirstChild("Unsheath")
 
 local AnimationController = require(ReplicatedStorage:WaitForChild("AnimationController"))
 
@@ -18,12 +20,16 @@ local function onActivated()
 	end
 	lastSwing = now
 
-	slashSound:Play()
+	if slashSound then
+		slashSound:Play()
+	end
 	AnimationController.Play("Sword Attack Animation")
 end
 
 local function onEquipped()
-	unsheathSound:Play()
+	if unsheathSound then
+		unsheathSound:Play()
+	end
 end
 
 tool.Activated:Connect(onActivated)

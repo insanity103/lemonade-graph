@@ -89,10 +89,21 @@ function BossSwordFactory.build(archetypeKey, opts)
 		CombatUtil.applyWeaponAppearance(handle, weaponData.color, weaponData.material)
 	end
 
-	-- The BossSwordTool template ships without the activation script; copy ClassicSword's.
-	local clientScript = StarterPack:FindFirstChild("ClassicSword") and StarterPack.ClassicSword:FindFirstChild("SwordClient")
+	-- The BossSwordTool template ships without the activation script or swing sounds;
+	-- copy both from ClassicSword so every sword swings and sounds the same.
+	local classic = StarterPack:FindFirstChild("ClassicSword")
+	local clientScript = classic and classic:FindFirstChild("SwordClient")
 	if clientScript and not tool:FindFirstChild("SwordClient") then
 		clientScript:Clone().Parent = tool
+	end
+	local classicHandle = classic and classic:FindFirstChild("Handle")
+	local bossHandle = tool:FindFirstChild("Handle")
+	if classicHandle and bossHandle then
+		for _, sound in ipairs(classicHandle:GetChildren()) do
+			if sound:IsA("Sound") and not bossHandle:FindFirstChild(sound.Name) then
+				sound:Clone().Parent = bossHandle
+			end
+		end
 	end
 
 	return tool, mods, fullName, gotExtraSlot, weaponData
@@ -120,10 +131,19 @@ function BossSwordFactory.rebuild(data)
 		CombatUtil.applyWeaponAppearance(handle, color, material)
 	end
 
-	local clientScript = StarterPack:FindFirstChild("ClassicSword")
-		and StarterPack.ClassicSword:FindFirstChild("SwordClient")
+	local classic = StarterPack:FindFirstChild("ClassicSword")
+	local clientScript = classic and classic:FindFirstChild("SwordClient")
 	if clientScript and not tool:FindFirstChild("SwordClient") then
 		clientScript:Clone().Parent = tool
+	end
+	local classicHandle = classic and classic:FindFirstChild("Handle")
+	local bossHandle = tool:FindFirstChild("Handle")
+	if classicHandle and bossHandle then
+		for _, sound in ipairs(classicHandle:GetChildren()) do
+			if sound:IsA("Sound") and not bossHandle:FindFirstChild(sound.Name) then
+				sound:Clone().Parent = bossHandle
+			end
+		end
 	end
 
 	return tool
