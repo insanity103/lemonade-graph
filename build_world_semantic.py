@@ -39,23 +39,24 @@ def E(s, t, rel, conf="EXTRACTED", score=1.0, src="Workspace.md"):
 # ---------------------------------------------------------------- Workspace
 WS = "Workspace.md"
 spawn = N("world_workspace_spawnlocation", "Player SpawnLocation", WS)
-trees = N("world_workspace_trees", "Tree decor set (10 Models)", WS,
-          rationale="Code-generated foliage: each tree is a Cylinder trunk plus 3 Ball canopy "
-                    "parts, all Anchored. Scenery only — no script references them.")
-boulders = N("world_workspace_boulders", "Boulder decor set (5 Models)", WS,
-             rationale="Code-generated rocks, 3-5 Anchored Ball parts each. Scenery only.")
+trees = N("world_workspace_trees", "Authored biome decor clusters (25 Models)", WS,
+          rationale="Fixed, code-generated scenery clusters frame arena edges: woodland and frost "
+                    "trees, infernal deadwood, void crystals, and celestial ruins. Placement is "
+                    "authored rather than random so entrances and sightlines stay clear.")
+boulders = N("world_workspace_boulders", "Boulder decor clusters (16 Models)", WS,
+             rationale="Fixed clusters of three-part Anchored rocks reinforce region edges and "
+                       "landmarks without obstructing the progression trail.")
 base = N("world_workspace_baseplate", "Baseplate", WS,
-         rationale="2048x16x2048 at y=-80, fully transparent — the visible ground is Terrain, "
-                   "not this. Acts as a fallback floor far below the playable surface.")
+         rationale="WorldLayout restores the classic visible 512x20x512 baseplate at y=-10: "
+                   "Medium stone grey Plastic, anchored, collidable, with Studs on top and Inlet below.")
 runtime_enemies = N("world_workspace_runtimeenemies", "Runtime-spawned enemy rigs", WS,
                     rationale="Enemies exist only at runtime: EnemyCombat builds R6 rigs from "
                               "scratch with Motor6D joints and parents them to Workspace. Nothing "
                               "enemy-shaped is saved in the place file, so the world export cannot "
-                              "show them. 15 archetypes in five zones, each zone one boss plus "
-                              "four minions: Boss_Gorgon (Iron Warlord, Lv10, south-west), "
-                              "Boss_FrostRevenant (Lv25, north-west), Boss_InfernalColossus "
-                              "(Lv45, north-east), Boss_VoidWraith (Lv70, south-east) and "
-                              "Boss_CelestialTitan (Lv100, far south-west). Only bosses carry the "
+                              "show them. WorldLayout.GetEnemySpawns supplies five level-ordered "
+                              "zones, each with one boss plus four minions: Boss_Gorgon (Lv10), "
+                              "Boss_FrostRevenant (Lv25), Boss_InfernalColossus (Lv45), "
+                              "Boss_VoidWraith (Lv70), and Boss_CelestialTitan (Lv100). Only bosses carry the "
                               "welded SwordMeshTemplate, tinted per boss via swordColor / "
                               "swordMaterial, and swing it with swingWeapon(). Every rig is "
                               "stamped with an Archetype attribute, which is how SwordDropSystem "
@@ -63,6 +64,7 @@ runtime_enemies = N("world_workspace_runtimeenemies", "Runtime-spawned enemy rig
 
 E(runtime_enemies, "serverscriptservice_enemycombat_server_createenemyrig", "references")
 E(runtime_enemies, "serverscriptservice_enemycombat_server_spawnenemy", "references")
+E(runtime_enemies, "serverscriptservice_worldlayout_worldlayout_getenemyspawns", "references")
 E(runtime_enemies, "serverscriptservice_levelingsystem_server_connectenemyhumanoid",
   "conceptually_related_to", "INFERRED", 0.95)
 E(runtime_enemies, "serverscriptservice_sworddropsystem_server_hook",
@@ -70,16 +72,16 @@ E(runtime_enemies, "serverscriptservice_sworddropsystem_server_hook",
 E(spawn, "serverscriptservice_levelingsystem_server_setupplayer",
   "conceptually_related_to", "INFERRED", 0.65)
 
-boss_rooms = N("world_workspace_bossrooms", "Boss rooms (5 level-gated arenas)", WS,
-               rationale="Workspace/BossRooms holds one walled room per boss zone (Iron Hall, Frost "
-                         "Glacier, Infernal Forge, Void Rift, Celestial Sanctum), built around "
-                         "EnemyCombat's existing spawn clusters so each boss and its four minions "
-                         "spawn inside. Walls are sunk 6 studs into the terrain and rise 22 above its "
-                         "highest point. The doorway faces the player spawn and holds a ForceField "
+boss_rooms = N("world_workspace_bossrooms", "Boss ruins (5 level-gated arenas)", WS,
+               rationale="WorldLayout rebuilds Workspace/BossRooms with one circular 68-stud ruin per ascending "
+                         "zone (Iron Lowlands, Frostbound Glacier, Infernal Caldera, Void Rift, "
+                         "Celestial Summit). The shared layout places each boss and four minions inside. "
+                         "Each doorway faces an authored junction on the main trail and holds a ForceField "
                          "'Door' whose RequiredLevel attribute (1/15/30/50/75) is the single tuning "
                          "knob. Each room also has an invisible Bounds part (the interior, used for "
                          "ejection) and an Exit marker outside the door.")
 E(boss_rooms, "serverscriptservice_bossroomgate_server", "referenced_by")
+E(boss_rooms, "serverscriptservice_worldlayout_buildbossroom", "created_by")
 E(boss_rooms, "starterplayer_starterplayerscripts_bossdoorclient_client", "referenced_by")
 E(boss_rooms, runtime_enemies, "contains")
 E(boss_rooms, spawn, "conceptually_related_to", "INFERRED", 0.8)
@@ -87,10 +89,12 @@ E(boss_rooms, spawn, "conceptually_related_to", "INFERRED", 0.8)
 # ---------------------------------------------------------------- Terrain
 TR = "Terrain.md"
 terrain = N("world_terrain_terrain", "Voxel Terrain", TR,
-            rationale="The actual playable ground. EnemyCombat raycasts against it so spawned "
-                      "rigs snap to the surface instead of spawning buried or floating; this is "
-                      "why the Baseplate can sit unused 80 studs below.")
+            rationale="WorldLayout clears the legacy voxels and creates one continuous authored landmass "
+                      "along an ascending S-curve trail. Five regions use blended terrain ribbons, asymmetric "
+                      "ridges, fixed decor clusters, and distinct skyline landmarks. EnemyCombat raycasts "
+                      "against Terrain, Baseplate, and BossRooms so rigs snap to arena floors.")
 E(terrain, "serverscriptservice_enemycombat_server_resolvegroundposition", "references", src=TR)
+E(terrain, "serverscriptservice_worldlayout_buildterrain", "created_by", src=TR)
 E(terrain, base, "semantically_similar_to", "INFERRED", 0.75, src=TR)
 
 # ---------------------------------------------------------------- RemoteEvents

@@ -5,6 +5,8 @@ local Workspace = game:GetService("Workspace")
 
 local MerchantConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("MerchantConfig"))
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
+local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
+WorldLayout.EnsureBuilt()
 
 local REMOTES = ReplicatedStorage:WaitForChild("RemoteEvents")
 local MERCHANT_ACTION = REMOTES:WaitForChild("MerchantAction")
@@ -29,8 +31,8 @@ local function setupMerchantNPC()
 	local merchantModel = Instance.new("Model")
 	merchantModel.Name = "RelicMerchantNPC"
 
-	-- Spawn near SpawnLocation (-4, 0.5, -8) -> Place stall at (-4, 0.5, 12)
-	local basePos = Vector3.new(-4, 0.5, 14)
+	-- WorldLayout owns both the safe-zone ground height and merchant position.
+	local basePos = WorldLayout.HUB.MerchantPosition
 
 	-- Safe Zone Pavilion / Carpet
 	local carpet = Instance.new("Part")

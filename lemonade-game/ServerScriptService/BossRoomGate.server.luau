@@ -10,6 +10,9 @@ local PhysicsService = game:GetService("PhysicsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
+local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
+WorldLayout.EnsureBuilt()
+
 local ROOMS_FOLDER = Workspace:WaitForChild("BossRooms")
 local NOTICE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("BossDoorNotice")
 local EJECT_CHECK_INTERVAL = 0.5

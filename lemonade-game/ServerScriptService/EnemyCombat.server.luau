@@ -5,6 +5,8 @@ local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
+local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
+WorldLayout.EnsureBuilt()
 
 local ENEMY_TAG = CombatUtil.ENEMY_TAG
 local ENEMY_ATTRIBUTE = CombatUtil.ENEMY_ATTRIBUTE
@@ -413,6 +415,10 @@ local function resolveGroundPosition(pos)
 	local baseplate = Workspace:FindFirstChild("Baseplate")
 	if baseplate then
 		table.insert(ground, baseplate)
+	end
+	local bossRooms = Workspace:FindFirstChild("BossRooms")
+	if bossRooms then
+		table.insert(ground, bossRooms)
 	end
 	params.FilterDescendantsInstances = ground
 	local result = Workspace:Raycast(pos + Vector3.new(0, 80, 0), Vector3.new(0, -500, 0), params)
@@ -996,43 +1002,9 @@ Players.PlayerRemoving:Connect(function(player)
 	autoAttackState[player] = nil
 end)
 
--- Spawns: 5 Spread-Out Boss Arenas with Surrounding Themed Minions
-local spawnConfigs = {
-	-- 1. Iron Warlord Arena (South-West Courtyard, Position -45, -50)
-	{ archetype = "Boss_Gorgon", position = Vector3.new(-45, 0, -50), level = 10 },
-	{ archetype = "IronSquire", position = Vector3.new(-35, 0, -42), level = 6 },
-	{ archetype = "IronSquire", position = Vector3.new(-55, 0, -44), level = 7 },
-	{ archetype = "IronBerserker", position = Vector3.new(-48, 0, -62), level = 8 },
-	{ archetype = "IronBerserker", position = Vector3.new(-38, 0, -58), level = 8 },
-
-	-- 2. Frost Revenant Glade (North-West Permafrost, Position -110, 70)
-	{ archetype = "Boss_FrostRevenant", position = Vector3.new(-110, 0, 70), level = 25 },
-	{ archetype = "FrostImp", position = Vector3.new(-98, 0, 62), level = 18 },
-	{ archetype = "FrostImp", position = Vector3.new(-122, 0, 64), level = 19 },
-	{ archetype = "GlacialGargoyle", position = Vector3.new(-114, 0, 82), level = 21 },
-	{ archetype = "GlacialGargoyle", position = Vector3.new(-102, 0, 78), level = 22 },
-
-	-- 3. Infernal Colossus Caldera (North-East Caldera, Position 115, 85)
-	{ archetype = "Boss_InfernalColossus", position = Vector3.new(115, 0, 85), level = 45 },
-	{ archetype = "CinderFiend", position = Vector3.new(102, 0, 75), level = 34 },
-	{ archetype = "CinderFiend", position = Vector3.new(128, 0, 76), level = 35 },
-	{ archetype = "MagmaJuggernaut", position = Vector3.new(118, 0, 98), level = 38 },
-	{ archetype = "MagmaJuggernaut", position = Vector3.new(106, 0, 95), level = 40 },
-
-	-- 4. Void Archon Spire (South-East Void Spire, Position 135, -90)
-	{ archetype = "Boss_VoidWraith", position = Vector3.new(135, 0, -90), level = 70 },
-	{ archetype = "VoidShade", position = Vector3.new(122, 0, -80), level = 55 },
-	{ archetype = "VoidShade", position = Vector3.new(148, 0, -82), level = 58 },
-	{ archetype = "AbyssTormentor", position = Vector3.new(138, 0, -104), level = 62 },
-	{ archetype = "AbyssTormentor", position = Vector3.new(124, 0, -98), level = 64 },
-
-	-- 5. Celestial Titan Sanctuary (Far Astral Sanctuary, Position -140, -130)
-	{ archetype = "Boss_CelestialTitan", position = Vector3.new(-140, 0, -130), level = 100 },
-	{ archetype = "AstralWisp", position = Vector3.new(-126, 0, -118), level = 80 },
-	{ archetype = "AstralWisp", position = Vector3.new(-154, 0, -120), level = 82 },
-	{ archetype = "SolarDominator", position = Vector3.new(-144, 0, -145), level = 88 },
-	{ archetype = "SolarDominator", position = Vector3.new(-130, 0, -142), level = 90 },
-}
+-- Spawn positions come from the same source that builds each level plateau and
+-- boss room, preventing terrain edits from leaving enemies buried or misplaced.
+local spawnConfigs = WorldLayout.GetEnemySpawns()
 
 for _, cfg in ipairs(spawnConfigs) do
 	spawnEnemy(cfg)

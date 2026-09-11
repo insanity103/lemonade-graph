@@ -4,6 +4,14 @@ Roblox service in place `game` (PlaceId 108354544637319). 147 descendant instanc
 
 Every instance below is a live object in the game hierarchy. Paths are Roblox instance paths; `Referenced by script(s)` lists the Luau source files that mention the instance by name.
 
+> Runtime layout v3: this file retains the original edit-mode export for provenance. At server start,
+> `ServerScriptService/WorldLayout` clears and rebuilds Terrain, restores Baseplate to the classic
+> 512×20×512 visible state, resets SpawnLocation, creates a safe hub, and replaces the old boss-room,
+> tree, and boulder layout. One gently ascending S-curve trail visits Iron Lowlands (level 1),
+> Frostbound Glacier (15), Infernal Caldera (30), Void Rift (50), and Celestial Summit (75). The
+> regions use authored ridges, biome transitions, clustered decor, and visible landmarks instead of
+> isolated square terrain pads and straight radial ramps.
+
 ## `Workspace/DayCycle` — Script
 Source file: `Workspace/DayCycle.server.luau` (220 lines)
 - Attributes: _lemonadeUniqueId = BxDr3DMsBxDr
@@ -357,6 +365,9 @@ Source file: `Workspace/DayCycle.server.luau` (220 lines)
 - Attributes: _lemonadeUniqueId = default_baseplate
 - Children (1): Texture (Texture)
 
+Runtime override: restored to Size (512, 20, 512), Position (0, -10, 0), Medium stone grey Plastic,
+Transparency 0, Studs top surface, Inlet bottom surface, anchored and collidable.
+
 ### `Workspace/Baseplate/Texture` — Texture
 - Properties: Texture: rbxassetid://6372755229
 - Attributes: _lemonadeUniqueId = default_baseplate_texture
@@ -365,9 +376,14 @@ Source file: `Workspace/DayCycle.server.luau` (220 lines)
 - Attributes: _lemonadeUniqueId = default_camera
 
 ## `Workspace/BossRooms` — Folder
-One walled room per boss zone, built around EnemyCombat's existing spawn clusters so each boss and its four minions spawn inside. Interior 68 x 68 studs. Walls are sunk 6 studs into the terrain and rise 22 above its highest point inside the footprint, so they can't be crawled under or jumped. The doorway sits on the wall facing the player spawn. Its `Door` is solid for everyone, enemies included, except players at or above its `RequiredLevel` attribute (see `BossRoomGate`).
+One circular ruin arena per boss zone, built around EnemyCombat's spawn clusters so each boss and its four minions spawn inside. Each 68-stud clearing uses low broken ring walls, irregular pillars, a lit stone gate, and an open skyline. Its ForceField `Door` is solid for everyone, enemies included, except players at or above its `RequiredLevel` attribute (see `BossRoomGate`).
 - Children (5): IronHall (Model), FrostGlacier (Model), InfernalForge (Model), VoidRift (Model), CelestialSanctum (Model)
 - Referenced by script(s): ServerScriptService/BossRoomGate, StarterPlayer/StarterPlayerScripts/BossDoorClient
+
+Runtime override: `WorldLayout` rebuilds five round ruin arenas beside the ascending main trail. Every
+entrance faces its authored approach junction, and every arena owns its floor, ForceField Door, Bounds,
+Exit, level sign, and five matching enemy spawn positions from the same configuration table. A different
+silhouette landmark behind each arena makes the destination readable before the player reaches it.
 
 ### `Workspace/BossRooms/IronHall` — Model
 - Attributes: DisplayName = Iron Hall
