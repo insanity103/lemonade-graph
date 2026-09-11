@@ -934,7 +934,6 @@ local function tryUnarmedAttack(player)
 end
 
 ATTACK_REMOTE.OnServerEvent:Connect(tryUnarmedAttack)
-end)
 
 TOGGLE_REMOTE.OnServerEvent:Connect(function(player, enabled)
 	if enabled == nil then
