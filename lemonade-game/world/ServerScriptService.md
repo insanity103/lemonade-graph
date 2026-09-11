@@ -30,7 +30,7 @@ Source file: `ServerScriptService/RebirthSystem.server.luau` (122 lines)
 - Attributes: _lemonadeUniqueId = v1aLM9gkv1aL
 
 ## `ServerScriptService/SwordDropSystem` — Script
-Source file: `ServerScriptService/SwordDropSystem.server.luau` (204 lines)
+Source file: `ServerScriptService/SwordDropSystem.server.luau` (233 lines)
 - Attributes: _lemonadeUniqueId = OwjpQA9fOwjp
 
 ## `ServerScriptService/CombatUtil` — ModuleScript

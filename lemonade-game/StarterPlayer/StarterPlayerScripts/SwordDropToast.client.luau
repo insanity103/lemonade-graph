@@ -7,6 +7,7 @@ local player = Players.LocalPlayer
 local REMOTES = ReplicatedStorage:WaitForChild("RemoteEvents")
 local DROP_EVENT = REMOTES:WaitForChild("SwordDrop")
 local AUTO_SELL_NOTICE = REMOTES:WaitForChild("AutoSellNotice")
+local SWORD_LOST_EVENT = REMOTES:WaitForChild("SwordLostOnDeath")
 
 local RARITY_COLOR = {
 	Common = Color3.fromRGB(210, 210, 210),
@@ -134,6 +135,42 @@ DROP_EVENT.OnClientEvent:Connect(function(rarityName, mult, fullName, mods, gotE
 end)
 
 -- Handle auto-sold sword toasts
+SWORD_LOST_EVENT.OnClientEvent:Connect(function(fullName, rarityName)
+	local card = Instance.new("Frame")
+	card.Size = UDim2.fromOffset(270, 52)
+	card.BackgroundColor3 = Color3.fromRGB(32, 20, 20)
+	card.BackgroundTransparency = 0.1
+	card.BorderSizePixel = 0
+	card.Parent = holder
+	Instance.new("UICorner", card).CornerRadius = UDim.new(0, 8)
+	local s = Instance.new("UIStroke", card)
+	s.Color = Color3.fromRGB(230, 70, 70)
+	s.Thickness = 1.4
+	local title = Instance.new("TextLabel")
+	title.BackgroundTransparency = 1
+	title.Position = UDim2.fromOffset(12, 6)
+	title.Size = UDim2.fromOffset(246, 20)
+	title.Font = Enum.Font.GothamBold
+	title.TextXAlignment = Enum.TextXAlignment.Left
+	title.TextSize = 13
+	title.TextColor3 = Color3.fromRGB(255, 110, 110)
+	title.Text = "\u{1F4A5} Sword Shattered on Death"
+	title.Parent = card
+	local desc = Instance.new("TextLabel")
+	desc.BackgroundTransparency = 1
+	desc.Position = UDim2.fromOffset(12, 26)
+	desc.Size = UDim2.fromOffset(246, 16)
+	desc.Font = Enum.Font.Gotham
+	desc.TextXAlignment = Enum.TextXAlignment.Left
+	desc.TextSize = 12
+	desc.TextColor3 = Color3.fromRGB(220, 180, 180)
+	desc.Text = tostring(fullName or "Your sword") .. " is gone."
+	desc.Parent = card
+	task.delay(4.5, function()
+		if card and card.Parent then card:Destroy() end
+	end)
+end)
+
 AUTO_SELL_NOTICE.OnClientEvent:Connect(function(fullName, rarityName, goldEarned)
 	local card = Instance.new("Frame")
 	card.Size = UDim2.fromOffset(270, 52)

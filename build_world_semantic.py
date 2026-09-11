@@ -121,6 +121,8 @@ REMOTES = {
                           ["starterplayer_starterplayerscripts_mainmenugui_client"]),
     "autosellnotice":    ("AutoSellNotice",    ["serverscriptservice_sworddropsystem_server"],
                           ["starterplayer_starterplayerscripts_sworddroptoast_client"]),
+    "swordlostondeath":  ("SwordLostOnDeath",  ["serverscriptservice_sworddropsystem_server"],
+                          ["starterplayer_starterplayerscripts_sworddroptoast_client"]),
 }
 REMOTE_NOTES = {
     "rebirthresult": "Orphaned: RebirthSystem still fires it, but its only listener was RebirthGui, "
@@ -130,6 +132,10 @@ REMOTE_NOTES = {
                       "MainMenuGui's Inventory tab renders the toggle and re-renders on change.",
     "autosellnotice": "Server -> client. Fired instead of SwordDrop when a boss drop is auto-sold "
                       "because it has fewer modifier slots than the equipped weapon.",
+    "swordlostondeath": "Server -> client. On death SwordDropSystem moves the equipped boss sword "
+                        "to the Backpack so it survives respawn; with DEATH_SWORD_LOSS_CHANCE (2%) "
+                        "it destroys the sword instead and fires this so SwordDropToast shows a "
+                        "red 'shattered' card.",
 }
 remote_ids = {}
 for key, (label, servers, clients) in REMOTES.items():

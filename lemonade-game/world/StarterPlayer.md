@@ -42,7 +42,7 @@ Source file: `StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau` (854 l
 - Attributes: _lemonadeUniqueId = stpInpG6stpI
 
 ### `StarterPlayer/StarterPlayerScripts/SwordDropToast` — LocalScript
-Source file: `StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau` (193 lines)
+Source file: `StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau` (230 lines)
 - Attributes: _lemonadeUniqueId = 5BE4TZBWE6ZU
 
 ### `StarterPlayer/StarterPlayerScripts/MerchantGui` — LocalScript

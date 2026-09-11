@@ -15,8 +15,13 @@ local DROP_EVENT = REMOTES:WaitForChild("SwordDrop")
 local TOGGLE_AUTO_SELL = REMOTES:WaitForChild("ToggleAutoSell")
 local AUTO_SELL_NOTICE = REMOTES:WaitForChild("AutoSellNotice")
 local GOLD_EVENT = REMOTES:WaitForChild("GoldGain")
+local SWORD_LOST_EVENT = REMOTES:WaitForChild("SwordLostOnDeath")
 
 local BOSS_ONLY   = true   -- only rigs flagged Boss by EnemyCombat can drop a sword
+
+-- On death you keep your swords -- the equipped one is moved to the Backpack so it
+-- survives respawn -- EXCEPT this small chance it shatters instead.
+local DEATH_SWORD_LOSS_CHANCE = 0.02
 
 -- Boss tiers and weapon stats live in ReplicatedStorage/Config/BossWeapons
 local BOSS_TIERS = BossWeapons.Tiers
@@ -133,6 +138,30 @@ local function watchCharacter(player, character)
 	character.ChildAdded:Connect(function(c) if c:IsA("Tool") then refresh() end end)
 	character.ChildRemoved:Connect(function(c) if c:IsA("Tool") then task.defer(refresh) end end)
 	refresh()
+
+	-- On death: the equipped boss sword normally dies with the character. Move it to the
+	-- Backpack so it survives -- unless it loses the DEATH_SWORD_LOSS_CHANCE roll, in which
+	-- case it shatters for good. Backpack swords are untouched.
+	local humanoid = character:FindFirstChildOfClass("Humanoid") or character:WaitForChild("Humanoid", 5)
+	if humanoid then
+		humanoid.Died:Once(function()
+			local bag = player:FindFirstChildOfClass("Backpack")
+			if not bag then return end
+			for _, tool in ipairs(character:GetChildren()) do
+				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true then
+					if math.random() < DEATH_SWORD_LOSS_CHANCE then
+						local lostName, lostRarity = tool.Name, tool:GetAttribute("Rarity")
+						tool:Destroy()
+						SWORD_LOST_EVENT:FireClient(player, lostName, lostRarity)
+						print(string.format("[SwordDropSystem] %s died -- equipped sword [%s] shattered (%.0f%% roll)",
+							player.Name, lostName, DEATH_SWORD_LOSS_CHANCE * 100))
+					else
+						tool.Parent = bag
+					end
+				end
+			end
+		end)
+	end
 end
 
 local function bindPlayer(player)
