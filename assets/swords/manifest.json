@@ -2,9 +2,9 @@
   "Boss_Gorgon": {
     "name": "Warlord Greatsword",
     "file": "Boss_Gorgon.glb",
-    "bytes": 140196,
-    "triangles": 1380,
-    "vertices": 2062,
+    "bytes": 208708,
+    "triangles": 6220,
+    "vertices": 3462,
     "meshSize": [
       0.075,
       0.26,
@@ -24,9 +24,9 @@
   "Boss_FrostRevenant": {
     "name": "Frostfang Cleaver",
     "file": "Boss_FrostRevenant.glb",
-    "bytes": 200524,
-    "triangles": 1396,
-    "vertices": 2110,
+    "bytes": 246508,
+    "triangles": 5604,
+    "vertices": 3220,
     "meshSize": [
       0.06,
       0.26,
@@ -46,9 +46,9 @@
   "Boss_InfernalColossus": {
     "name": "Inferno Edge",
     "file": "Boss_InfernalColossus.glb",
-    "bytes": 252536,
-    "triangles": 1764,
-    "vertices": 3214,
+    "bytes": 319456,
+    "triangles": 7816,
+    "vertices": 4446,
     "meshSize": [
       0.065,
       0.26,
@@ -68,9 +68,9 @@
   "Boss_VoidWraith": {
     "name": "Voidrend Blade",
     "file": "Boss_VoidWraith.glb",
-    "bytes": 244980,
-    "triangles": 1788,
-    "vertices": 2390,
+    "bytes": 301188,
+    "triangles": 6844,
+    "vertices": 3888,
     "meshSize": [
       0.06,
       0.26,
@@ -90,9 +90,9 @@
   "Boss_CelestialTitan": {
     "name": "Astral Eclipse",
     "file": "Boss_CelestialTitan.glb",
-    "bytes": 223372,
-    "triangles": 2352,
-    "vertices": 2778,
+    "bytes": 275448,
+    "triangles": 7664,
+    "vertices": 4192,
     "meshSize": [
       0.05,
       0.26,
