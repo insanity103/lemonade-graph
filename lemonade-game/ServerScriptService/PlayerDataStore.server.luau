@@ -16,7 +16,13 @@ local function onPlayerAdded(player)
 	end)
 	if not ok then
 		warn(string.format("[PlayerDataStore] setup failed for %s: %s", player.Name, tostring(err)))
-		player:SetAttribute("DataLoaded", true)  -- unblock InventorySystem's fallback; player runs on defaults
+		local recovered, fallbackErr = pcall(function()
+			PlayerDataService.StartFallback(player)
+		end)
+		if not recovered then
+			warn(string.format("[PlayerDataStore] fallback failed for %s: %s", player.Name, tostring(fallbackErr)))
+			player:SetAttribute("DataLoaded", false)
+		end
 	end
 end
 

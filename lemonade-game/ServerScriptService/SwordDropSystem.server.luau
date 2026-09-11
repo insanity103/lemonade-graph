@@ -1,9 +1,6 @@
 --// SwordDropSystem  (Unique Boss Weapon drops with randomized prefixes, Blessed slots, Rebirth scaling, and slot-based Auto-Sell)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local CollectionService = game:GetService("CollectionService")
-local StarterPack = game:GetService("StarterPack")
-local ServerStorage = game:GetService("ServerStorage")
 
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 local RebirthConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("RebirthConfig"))
@@ -70,6 +67,14 @@ local function makeBossSword(archetypeKey, blessedBonus)
 end
 
 local function giveSword(player, archetypeKey, blessedBonus)
+	if not player or not player.Parent then
+		return false
+	end
+	local container = player:FindFirstChildOfClass("Backpack") or player.Character
+	if not container then
+		return false
+	end
+
 	local tool, mods, fullName, gotExtraSlot, weaponData = makeBossSword(archetypeKey, blessedBonus)
 	local droppedTier = BOSS_TIERS[archetypeKey] or 1
 	local droppedSlots = #mods + (gotExtraSlot and 1 or 0)
@@ -84,8 +89,9 @@ local function giveSword(player, archetypeKey, blessedBonus)
 		end
 		
 		-- Rebirth gold bonus
-		local rebirths = player:GetAttribute("Rebirths") or 0
-		local goldEarned = math.floor(baseValue * (1 + 0.50 * rebirths))
+		local rebirthGoldMultiplier = player:GetAttribute("RebirthGoldMult") or 1
+		if typeof(rebirthGoldMultiplier) ~= "number" then rebirthGoldMultiplier = 1 end
+		local goldEarned = math.floor(baseValue * math.max(0, rebirthGoldMultiplier))
 
 		local leaderstats = player:FindFirstChild("leaderstats")
 		local goldStat = leaderstats and leaderstats:FindFirstChild("Gold")
@@ -107,12 +113,13 @@ local function giveSword(player, archetypeKey, blessedBonus)
 		return
 	end
 
-	tool.Parent = player:FindFirstChild("Backpack") or player.Character
+	tool.Parent = container
 	
 	-- Pass modifiers summary to client toast
 	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods, gotExtraSlot)
 	print(string.format("[SwordDropSystem] %s obtained [%s] (Mult: x%.2f, Rarity: %s, Mods: %d%s)",
 		player.Name, fullName, weaponData.baseMult, weaponData.rarity, #mods, gotExtraSlot and " [BLESSED!]" or ""))
+	return true
 end
 
 -- Watch equipped tool -> expose its stats as player attributes for combat systems
@@ -174,6 +181,9 @@ end
 
 -- Toggle Auto-Sell Remote
 TOGGLE_AUTO_SELL.OnServerEvent:Connect(function(player, requestedState)
+	if requestedState ~= nil and typeof(requestedState) ~= "boolean" then
+		return
+	end
 	local current = player:GetAttribute("AutoSellLowerSwords") == true
 	local newState = (requestedState ~= nil) and (requestedState == true) or (not current)
 	player:SetAttribute("AutoSellLowerSwords", newState)

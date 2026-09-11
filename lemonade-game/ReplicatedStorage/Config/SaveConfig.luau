@@ -31,7 +31,7 @@ SaveConfig.ATTRIBUTES = {
 -- attributes copied verbatim off each saved boss / merchant sword Tool
 SaveConfig.SWORD_ATTRS = {
 	"DamageMult", "BonusDamagePct", "CritChance", "RangeBonus", "KnockbackBonus",
-	"ExtraSlot", "Prefixes", "BossTier", "Rarity", "BaseWeaponName",
+	"ExtraSlot", "Prefixes", "BossTier", "Rarity", "BaseWeaponName", "WeaponAppearanceMaterial",
 }
 
 return SaveConfig

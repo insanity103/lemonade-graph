@@ -23,6 +23,7 @@ local DEFENSE_PCT_PER_POINT = 0.003 -- each Defense point removes 0.30% of incom
 local DEFENSE_MAX_REDUCTION = 0.35 -- hard cap: Defense never mitigates more than 35%
 local ATTACK_COOLDOWN = 0.4
 local RESPAWN_DELAY = 5
+local DEFAULT_ARCHETYPE = "IronSquire"
 
 local ATTACK_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("EnemyAttack")
 local TOGGLE_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToggleAutoAttack")
@@ -385,7 +386,12 @@ end
 local function resolveGroundPosition(pos)
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Include
-	params.FilterDescendantsInstances = { Workspace.Terrain, Workspace:FindFirstChild("Baseplate") }
+	local ground = { Workspace.Terrain }
+	local baseplate = Workspace:FindFirstChild("Baseplate")
+	if baseplate then
+		table.insert(ground, baseplate)
+	end
+	params.FilterDescendantsInstances = ground
 	local result = Workspace:Raycast(pos + Vector3.new(0, 80, 0), Vector3.new(0, -500, 0), params)
 	if result then
 		return Vector3.new(pos.X, result.Position.Y, pos.Z)
@@ -394,7 +400,12 @@ local function resolveGroundPosition(pos)
 end
 
 local function createEnemyRig(archetypeKey, spawnPosition, level)
-	local arch = ENEMY_ARCHETYPES[archetypeKey] or ENEMY_ARCHETYPES.Grunt
+	local arch = ENEMY_ARCHETYPES[archetypeKey]
+	if not arch then
+		warn(string.format("[EnemyCombat] Unknown archetype %s; using %s", tostring(archetypeKey), DEFAULT_ARCHETYPE))
+		archetypeKey = DEFAULT_ARCHETYPE
+		arch = ENEMY_ARCHETYPES[archetypeKey]
+	end
 	level = level or 1
 	spawnPosition = resolveGroundPosition(spawnPosition)
 
@@ -597,6 +608,9 @@ local function createEnemyRig(archetypeKey, spawnPosition, level)
 	CollectionService:AddTag(model, ENEMY_TAG)
 
 	model.Parent = Workspace
+	if hrp:CanSetNetworkOwnership() then
+		hrp:SetNetworkOwner(nil)
+	end
 
 	return model, humanoid, hrp, arch, spawnPosition
 end
@@ -716,7 +730,7 @@ RunService.Heartbeat:Connect(function()
 
 		local hrp = model.PrimaryPart
 		local archKey = model:GetAttribute("Archetype") or "Grunt"
-		local arch = ENEMY_ARCHETYPES[archKey] or ENEMY_ARCHETYPES.Grunt
+		local arch = ENEMY_ARCHETYPES[archKey] or ENEMY_ARCHETYPES[DEFAULT_ARCHETYPE]
 		local level = model:GetAttribute("EnemyLevel") or 1
 
 		local distFromSpawn = (hrp.Position - state.spawnPos).Magnitude
@@ -830,7 +844,7 @@ local function attackEnemy(player, enemyModel)
 	end
 end
 
-local function findNearestEnemy(origin, maxRange)
+local function findNearestEnemy(character, origin, maxRange)
 	local best, bestDist = nil, maxRange or ATTACK_RANGE
 	for _, enemy in ipairs(Workspace:GetChildren()) do
 		if enemy:IsA("Model") and isEnemy(enemy) then
@@ -839,7 +853,8 @@ local function findNearestEnemy(origin, maxRange)
 				local root = enemy.PrimaryPart or enemy:FindFirstChild("HumanoidRootPart")
 				if root then
 					local dist = (root.Position - origin).Magnitude
-					if dist <= (maxRange or ATTACK_RANGE) and dist < bestDist then
+					if dist <= (maxRange or ATTACK_RANGE) and dist < bestDist
+						and CombatUtil.hasLineOfSight(origin, root.Position, { character, enemy }) then
 						best, bestDist = enemy, dist
 					end
 				end
@@ -849,12 +864,30 @@ local function findNearestEnemy(origin, maxRange)
 	return best
 end
 
-ATTACK_REMOTE.OnServerEvent:Connect(function(player)
+local function getAliveCharacter(player)
 	local character = player.Character
 	if not character then
+		return nil, nil
+	end
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local hrp = character:FindFirstChild("HumanoidRootPart")
+	if not humanoid or humanoid.Health <= 0 or not hrp then
+		return nil, nil
+	end
+	return character, hrp
+end
+
+local function hasEquippedTool(character)
+	return character:FindFirstChildOfClass("Tool") ~= nil
+end
+
+-- EnemyAttack is deliberately the unarmed combat path. Equipped tools use
+-- SwordSystem instead, so clients cannot combine both paths for extra damage.
+local function tryUnarmedAttack(player)
+	local character, hrp = getAliveCharacter(player)
+	if not character or hasEquippedTool(character) then
 		return
 	end
-
 	local now = tick()
 	local last = playerCooldowns[player]
 	if last and (now - last) < ATTACK_COOLDOWN then
@@ -862,16 +895,15 @@ ATTACK_REMOTE.OnServerEvent:Connect(function(player)
 	end
 	playerCooldowns[player] = now
 
-	local hrp = character:FindFirstChild("HumanoidRootPart")
-	if not hrp then
-		return
-	end
-
 	local rangeBonus = player:GetAttribute("SwordRangeBonus") or 0
-	local enemy = findNearestEnemy(hrp.Position, ATTACK_RANGE + rangeBonus)
+	if typeof(rangeBonus) ~= "number" then rangeBonus = 0 end
+	local enemy = findNearestEnemy(character, hrp.Position, ATTACK_RANGE + rangeBonus)
 	if enemy then
 		attackEnemy(player, enemy)
 	end
+end
+
+ATTACK_REMOTE.OnServerEvent:Connect(tryUnarmedAttack)
 end)
 
 TOGGLE_REMOTE.OnServerEvent:Connect(function(player, enabled)
@@ -886,16 +918,10 @@ task.spawn(function()
 	while true do
 		task.wait(ATTACK_COOLDOWN)
 		for player, on in pairs(autoAttackState) do
-			if on and player.Parent and player.Character then
-				local character = player.Character
-				local hrp = character:FindFirstChild("HumanoidRootPart")
-				if hrp then
-					local rangeBonus = player:GetAttribute("SwordRangeBonus") or 0
-					local enemy = findNearestEnemy(hrp.Position, ATTACK_RANGE + rangeBonus)
-					if enemy then
-						attackEnemy(player, enemy)
-					end
-				end
+			if on and player.Parent then
+				-- Tool auto-attacks are driven by the equipped Tool's server script. This
+				-- loop covers unarmed players only, avoiding a second hit every swing.
+				tryUnarmedAttack(player)
 			end
 		end
 	end

@@ -83,6 +83,7 @@ function BossSwordFactory.build(archetypeKey, opts)
 	tool:SetAttribute("Prefixes", table.concat(prefixNames, ", "))
 	tool:SetAttribute("BossDrop", true)
 	tool:SetAttribute("BaseWeaponName", weaponData.name)
+	tool:SetAttribute("WeaponAppearanceMaterial", weaponData.material.Name)
 
 	local handle = tool:FindFirstChild("Handle")
 	if handle then
@@ -118,16 +119,37 @@ function BossSwordFactory.rebuild(data)
 	if not template then return nil end
 
 	local tool = template:Clone()
-	tool.Name = data.name or "Relic Sword"
+	tool.Name = typeof(data.name) == "string" and data.name or "Relic Sword"
 	tool:SetAttribute("BossDrop", true)
-	for key, value in pairs(data.attrs or {}) do
+	local attrs = typeof(data.attrs) == "table" and data.attrs or {}
+	for key, value in pairs(attrs) do
 		tool:SetAttribute(key, value)
 	end
 
 	local handle = tool:FindFirstChild("Handle")
 	if handle then
-		local color = data.color and Color3.new(data.color[1], data.color[2], data.color[3]) or nil
-		local material = data.material and Enum.Material[data.material] or nil
+		local weaponData = BossWeapons.GetByTier(attrs.BossTier)
+		local color
+		if typeof(data.color) == "table"
+			and typeof(data.color[1]) == "number"
+			and typeof(data.color[2]) == "number"
+			and typeof(data.color[3]) == "number" then
+			color = Color3.new(data.color[1], data.color[2], data.color[3])
+		elseif weaponData then
+			color = weaponData.color
+		end
+
+		-- New saves retain the requested appearance explicitly. Older saves stored the
+		-- rendered material, which is Metal for textured Neon swords; the tier fallback
+		-- restores their glow as well.
+		local materialName = attrs.WeaponAppearanceMaterial
+		local material = typeof(materialName) == "string" and Enum.Material[materialName] or nil
+		if not material and weaponData then
+			material = weaponData.material
+		end
+		if not material and typeof(data.material) == "string" then
+			material = Enum.Material[data.material]
+		end
 		CombatUtil.applyWeaponAppearance(handle, color, material)
 	end
 

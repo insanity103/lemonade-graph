@@ -1,8 +1,6 @@
 --// MerchantSystem (Safe Area Relic Merchant with 0% Blessed chance random rolling)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerStorage = game:GetService("ServerStorage")
-local StarterPack = game:GetService("StarterPack")
 local Workspace = game:GetService("Workspace")
 
 local MerchantConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("MerchantConfig"))
@@ -12,6 +10,8 @@ local REMOTES = ReplicatedStorage:WaitForChild("RemoteEvents")
 local MERCHANT_ACTION = REMOTES:WaitForChild("MerchantAction")
 local DROP_EVENT = REMOTES:WaitForChild("SwordDrop")
 
+local PURCHASE_DISTANCE = 16
+local merchantModel
 
 
 -- Built by the shared BossSwordFactory; purchases never roll a Blessed extra slot
@@ -185,13 +185,30 @@ local function setupMerchantNPC()
 
 	merchantModel.Parent = Workspace
 	print("[MerchantSystem] Relic Blacksmith NPC spawned at safe area")
+	return merchantModel
 end
 
-setupMerchantNPC()
+merchantModel = setupMerchantNPC()
+
+local function isNearMerchant(player)
+	local character = player.Character
+	local playerRoot = character and character:FindFirstChild("HumanoidRootPart")
+	local merchantRoot = merchantModel and merchantModel.PrimaryPart
+	return playerRoot ~= nil and merchantRoot ~= nil
+		and (playerRoot.Position - merchantRoot.Position).Magnitude <= PURCHASE_DISTANCE
+end
 
 -- Handle Buy Requests
 MERCHANT_ACTION.OnServerEvent:Connect(function(player, action, swordId)
 	if action ~= "BuySword" or typeof(swordId) ~= "string" then
+		return
+	end
+	if player:GetAttribute("DataLoaded") ~= true then
+		MERCHANT_ACTION:FireClient(player, "PurchaseResult", false, "Your data is still loading.")
+		return
+	end
+	if not isNearMerchant(player) then
+		MERCHANT_ACTION:FireClient(player, "PurchaseResult", false, "Move closer to the Relic Blacksmith to buy this.")
 		return
 	end
 
@@ -212,13 +229,26 @@ MERCHANT_ACTION.OnServerEvent:Connect(function(player, action, swordId)
 		MERCHANT_ACTION:FireClient(player, "PurchaseResult", false, ("Not enough Gold! You need %d Gold."):format(item.price))
 		return
 	end
+	local backpack = player:FindFirstChildOfClass("Backpack")
+	if not backpack then
+		MERCHANT_ACTION:FireClient(player, "PurchaseResult", false, "Your inventory is not ready yet.")
+		return
+	end
+
+	-- Build before debiting currency so an invalid template or configuration can
+	-- never consume Gold without delivering a sword.
+	local built, tool, mods, fullName, gotExtraSlot, weaponData = pcall(makePurchasedSword, swordId)
+	if not built or not tool then
+		warn(string.format("[MerchantSystem] Could not build %s for %s: %s", swordId, player.Name, tostring(tool)))
+		MERCHANT_ACTION:FireClient(player, "PurchaseResult", false, "That weapon is temporarily unavailable.")
+		return
+	end
 
 	-- Deduct gold
 	goldStat.Value -= item.price
 
-	-- Generate sword with random modifiers (0% chance to be blessed)
-	local tool, mods, fullName, gotExtraSlot, weaponData = makePurchasedSword(swordId)
-	tool.Parent = player:FindFirstChild("Backpack") or player.Character
+	-- Purchases never roll Blessed; the builder applies all other randomized mods.
+	tool.Parent = backpack
 
 	-- Notify client with sword drop animation toast & purchase result
 	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods, gotExtraSlot)

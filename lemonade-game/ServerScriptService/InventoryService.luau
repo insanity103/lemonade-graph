@@ -115,7 +115,8 @@ function InventoryService.GetItemCount(player, itemId)
 end
 
 function InventoryService.CanAddItem(player, itemId, amount)
-	if not player or not player.Parent or amount <= 0 or not validateItemId(itemId) then
+	if not player or not player.Parent or typeof(amount) ~= "number"
+		or amount ~= math.floor(amount) or amount <= 0 or not validateItemId(itemId) then
 		return false
 	end
 
@@ -141,7 +142,8 @@ function InventoryService.AddItem(player, itemId, amount)
 end
 
 function InventoryService.RemoveItem(player, itemId, amount)
-	if not player or not player.Parent or amount <= 0 or not validateItemId(itemId) then
+	if not player or not player.Parent or typeof(amount) ~= "number"
+		or amount ~= math.floor(amount) or amount <= 0 or not validateItemId(itemId) then
 		return false
 	end
 
@@ -305,15 +307,20 @@ function InventoryService.LoadPlayer(player, savedInventory)
 
 	if typeof(savedInventory) == "table" then
 		for itemId, count in pairs(savedInventory) do
-			if validateItemId(itemId) and typeof(count) == "number" and count > 0 then
+			if validateItemId(itemId) and typeof(count) == "number"
+				and count == count and math.abs(count) < math.huge and count > 0 then
 				local definition = getItemDefinition(itemId)
-				inventory[itemId] = math.min(count, definition.MaxStack)
+				inventory[itemId] = math.min(math.floor(count), definition.MaxStack)
 			end
 		end
 	end
 
 	rebuildReplication(player, inventory)
 	notifyClient(player)
+end
+
+function InventoryService.HasLoaded(player)
+	return playerInventories[player] ~= nil
 end
 
 function InventoryService.ClearPlayer(player)

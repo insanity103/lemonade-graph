@@ -36,8 +36,8 @@ local ATTRIBUTE_NAMES = { "Strength", "Health", "Defense", "ExperienceGain" }
 local combatXP = {} -- [player] = accumulated XP earned this combat session
 local lastCombatAction = {} -- [player] = tick() of most recent kill
 
-local connectedHumanoids = {}
-local processedDeaths = {}
+local connectedHumanoids = setmetatable({}, { __mode = "k" })
+local processedDeaths = setmetatable({}, { __mode = "k" })
 
 local function getRequiredExperience(level)
 	return math.floor(BASE_XP_REQUIREMENT * (1 + XP_INCREASE_PER_LEVEL) ^ (level - 1))
@@ -56,7 +56,7 @@ local function getOrCreateIntValue(parent, name, value)
 	return valueObject
 end
 
--- Recompute a character's max health from the Health attribute and heal to full.
+-- Recompute a character's max health from its Health stat plus all rebirth bonuses.
 local function applyHealth(player, points)
 	local character = player.Character
 	if not character then
@@ -66,7 +66,19 @@ local function applyHealth(player, points)
 	if not humanoid then
 		return
 	end
-	local newMax = BASE_MAX_HEALTH + HEALTH_PER_POINT * (points or 0)
+	points = typeof(points) == "number" and math.max(0, points) or 0
+	local rebirthBaseMultiplier = player:GetAttribute("RebirthHealthMult") or 1
+	local rebirthFlatHealth = player:GetAttribute("RebirthFlatHealth") or 0
+	if typeof(rebirthBaseMultiplier) ~= "number" then rebirthBaseMultiplier = 1 end
+	if typeof(rebirthFlatHealth) ~= "number" then rebirthFlatHealth = 0 end
+
+	-- The configured rebirth percentage applies to the base health pool; skill-point
+	-- health remains a transparent +20 HP per point, and milestone health is flat.
+	local newMax = math.max(1, math.floor(
+		BASE_MAX_HEALTH * math.max(0, rebirthBaseMultiplier)
+		+ HEALTH_PER_POINT * points
+		+ math.max(0, rebirthFlatHealth)
+	))
 	humanoid.MaxHealth = newMax
 	humanoid.Health = newMax
 end
@@ -130,10 +142,13 @@ local function setupPlayer(player)
 		end
 	end
 
-	-- Health attribute changes re-apply max health to the current character.
-	player:GetAttributeChangedSignal("Health"):Connect(function()
+	-- Health and rebirth changes all re-apply max health to the current character.
+	local function refreshHealth()
 		applyHealth(player, player:GetAttribute("Health"))
-	end)
+	end
+	player:GetAttributeChangedSignal("Health"):Connect(refreshHealth)
+	player:GetAttributeChangedSignal("RebirthHealthMult"):Connect(refreshHealth)
+	player:GetAttributeChangedSignal("RebirthFlatHealth"):Connect(refreshHealth)
 
 	player.CharacterAdded:Connect(function(character)
 		local humanoid = character:WaitForChild("Humanoid")
@@ -162,23 +177,24 @@ local function setupPlayer(player)
 end
 
 local function awardExperience(player, amount)
-	if not player or not player.Parent or amount <= 0 then
-		return
+	if not player or not player.Parent or typeof(amount) ~= "number" or amount <= 0 then
+		return 0
 	end
 
 	local leaderstats = player:FindFirstChild("leaderstats")
 	local level = leaderstats and leaderstats:FindFirstChild("Level")
 	local experience = leaderstats and leaderstats:FindFirstChild("Experience")
 	if not level or not experience then
-		return
+		return 0
 	end
 
 	-- Experience Gain attribute boosts the XP earned (with a low cap similar to defense)
 	local expPoints = player:GetAttribute("ExperienceGain") or 0
 	local skillBonus = math.min(expPoints * XPGAIN_PCT_PER_POINT, XPGAIN_MAX_BONUS)
 	local multiplier = 1 + skillBonus
-	local rebirthBonus = 0.25 * (player:GetAttribute("Rebirths") or 0)
-	local gained = math.floor(amount * multiplier * (1 + rebirthBonus))
+	local rebirthMultiplier = player:GetAttribute("RebirthXPMult") or 1
+	if typeof(rebirthMultiplier) ~= "number" then rebirthMultiplier = 1 end
+	local gained = math.floor(amount * multiplier * math.max(0, rebirthMultiplier))
 
 	local levelsGained = 0
 	experience.Value += gained
@@ -201,6 +217,8 @@ local function awardExperience(player, amount)
 			LEVELUP_EVENT:FireClient(player, root.Position)
 		end
 	end
+
+	return gained
 end
 
 local function getEnemyReward(model)
@@ -241,13 +259,15 @@ local function connectEnemyHumanoid(humanoid)
 		local killer = getKiller(humanoid)
 		if killer then
 			local reward = getEnemyReward(model)
-			awardExperience(killer, reward)
-			combatXP[killer] = (combatXP[killer] or 0) + reward
+			local gained = awardExperience(killer, reward)
+			combatXP[killer] = (combatXP[killer] or 0) + gained
 			lastCombatAction[killer] = tick()
 
 			-- Drop gold scaled by the enemy's level.
 			local enemyLevel = model:GetAttribute("EnemyLevel") or 1
-			local gold = math.floor(getEnemyGold(enemyLevel) * (1 + 0.25 * (killer:GetAttribute("Rebirths") or 0)))
+			local rebirthGoldMultiplier = killer:GetAttribute("RebirthGoldMult") or 1
+			if typeof(rebirthGoldMultiplier) ~= "number" then rebirthGoldMultiplier = 1 end
+			local gold = math.floor(getEnemyGold(enemyLevel) * math.max(0, rebirthGoldMultiplier))
 			local goldStat = killer:FindFirstChild("leaderstats") and killer.leaderstats:FindFirstChild("Gold")
 			if goldStat then
 				goldStat.Value += gold
@@ -273,7 +293,7 @@ end
 
 -- Spend one skill point on an attribute. Authoritative on the server.
 SPEND_EVENT.OnServerEvent:Connect(function(player, attributeName)
-	if not attributeName or not table.find(ATTRIBUTE_NAMES, attributeName) then
+	if typeof(attributeName) ~= "string" or not table.find(ATTRIBUTE_NAMES, attributeName) then
 		return
 	end
 	local points = player:GetAttribute("SkillPoints") or 0

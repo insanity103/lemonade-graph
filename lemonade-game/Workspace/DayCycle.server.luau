@@ -206,10 +206,18 @@ while true do
 
 	-- Night
 	makeNight()
-	tween(Lighting, NightTime, {
+	-- ClockTime is a 0-24 value, so tweening directly from 19 to 5 runs the
+	-- sun backwards through the day. Split the transition at midnight instead.
+	local firstNightHalf = NightTime / 2
+	tween(Lighting, firstNightHalf, {
+		ClockTime = 24
+	})
+	task.wait(firstNightHalf)
+	Lighting.ClockTime = 0
+	tween(Lighting, firstNightHalf, {
 		ClockTime = 5
 	})
-	task.wait(NightTime)
+	task.wait(firstNightHalf)
 
 	-- Dawn / sunrise
 	makeDawn()

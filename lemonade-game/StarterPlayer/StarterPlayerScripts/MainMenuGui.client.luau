@@ -817,16 +817,26 @@ for _, attr in ipairs(attrsToWatch) do
 end
 
 -- Refresh inventory view when tools change in backpack/character
+local inventoryRefreshBound = setmetatable({}, { __mode = "k" })
+local function refreshInventoryIfVisible()
+	if activeTab == "Inventory" and panelOpen then
+		buildInventoryPanel(latestInventory)
+	end
+end
+
+local function bindInventoryContainer(container)
+	if not container or inventoryRefreshBound[container] then
+		return
+	end
+	inventoryRefreshBound[container] = true
+	container.ChildAdded:Connect(refreshInventoryIfVisible)
+	container.ChildRemoved:Connect(refreshInventoryIfVisible)
+end
+
 local function bindInventoryRefresh()
 	local bp = player:WaitForChild("Backpack", 5)
-	if bp then
-		bp.ChildAdded:Connect(function() if activeTab == 'Inventory' and panelOpen then buildInventoryPanel(latestInventory) end end)
-		bp.ChildRemoved:Connect(function() if activeTab == 'Inventory' and panelOpen then buildInventoryPanel(latestInventory) end end)
-	end
-	if player.Character then
-		player.Character.ChildAdded:Connect(function() if activeTab == 'Inventory' and panelOpen then buildInventoryPanel(latestInventory) end end)
-		player.Character.ChildRemoved:Connect(function() if activeTab == 'Inventory' and panelOpen then buildInventoryPanel(latestInventory) end end)
-	end
+	bindInventoryContainer(bp)
+	bindInventoryContainer(player.Character)
 end
 
 player.CharacterAdded:Connect(function(ch)

@@ -1,6 +1,5 @@
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
-local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("Sword"))
@@ -8,11 +7,10 @@ local DAMAGE_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 
-local ENEMY_TAG = CombatUtil.ENEMY_TAG
-local ENEMY_ATTRIBUTE = CombatUtil.ENEMY_ATTRIBUTE
 local CREATOR_TAG_NAME = "creator"
 
 local lastAttack = {} -- [player] = last attack time
+local connectedTools = setmetatable({}, { __mode = "k" })
 
 local isEnemy = CombatUtil.isEnemy
 
@@ -30,7 +28,7 @@ local function calculateDamage(player, tool)
 	local base = (Config.BaseDamage + Config.StrengthDamagePerPoint * strength)
 	local withMults = base * swordMult * (1 + bonusPct) * (1 + Config.WeaponDamagePerLevel * weaponLevel) * rebirthDmgMult
 	
-	local isCrit = math.random() <= critChance
+	local isCrit = math.random() < math.clamp(critChance, 0, 1)
 	if isCrit then
 		withMults = withMults * critDamageMult
 	end
@@ -99,7 +97,7 @@ local function performSwing(player, character, tool)
 	local rangeBonus = (player:GetAttribute("SwordRangeBonus") or (tool and tool:GetAttribute("RangeBonus") or 0))
 		+ (player:GetAttribute("RebirthExtraRange") or 0)
 	local hitboxSize = Config.HitboxSize + Vector3.new(rangeBonus, rangeBonus * 0.5, rangeBonus)
-	local hitboxOffset = CFrame.new(0, 0, -(3 + rangeBonus * 0.5))
+	local hitboxOffset = Config.HitboxOffset * CFrame.new(0, 0, -rangeBonus * 0.5)
 
 	local params = OverlapParams.new()
 	params.FilterDescendantsInstances = { character }
@@ -114,7 +112,9 @@ local function performSwing(player, character, tool)
 	local damaged = {}
 	for _, part in parts do
 		local model = part:FindFirstAncestorOfClass("Model")
-		if model and isEnemy(model) and not damaged[model] then
+		local enemyRoot = model and (model.PrimaryPart or model:FindFirstChild("HumanoidRootPart"))
+		if model and enemyRoot and isEnemy(model) and not damaged[model]
+			and CombatUtil.hasLineOfSight(rootPart.Position, enemyRoot.Position, { character, model }) then
 			damaged[model] = true
 			applyDamage(model, player, tool, rootPart)
 		end
@@ -122,6 +122,10 @@ local function performSwing(player, character, tool)
 end
 
 local function setupTool(character, tool)
+	if connectedTools[tool] then
+		return
+	end
+	connectedTools[tool] = true
 	local player = Players:GetPlayerFromCharacter(character)
 	if not player then
 		return

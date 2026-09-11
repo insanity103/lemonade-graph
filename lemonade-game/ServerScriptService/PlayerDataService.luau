@@ -56,9 +56,15 @@ local function retry(fn)
 end
 
 local function lockHeldByOther(lock)
-	return lock ~= nil
-		and lock.jobId ~= JOB_ID
-		and (os.time() - (lock.time or 0)) < SaveConfig.LOCK_STALE_AFTER
+	if typeof(lock) ~= "table" then
+		return false
+	end
+	return lock.jobId ~= JOB_ID
+		and (os.time() - (tonumber(lock.time) or 0)) < SaveConfig.LOCK_STALE_AFTER
+end
+
+local function lockHeldByThisServer(lock)
+	return typeof(lock) == "table" and lock.jobId == JOB_ID
 end
 
 -- ---------------------------------------------------------------- load
@@ -77,12 +83,13 @@ function PlayerDataService.Load(player)
 				return old
 			end)
 		end)
-		if ok and typeof(result) == "table" then
+		if ok and typeof(result) == "table" and lockHeldByThisServer(result.__lock) then
 			record = result
 		else
+			local resultLock = typeof(result) == "table" and result.__lock or nil
+			local reason = lockHeldByOther(resultLock) and "profile is active in another server" or tostring(result)
 			warn(string.format("[PlayerDataService] load failed for %s (%s). "
-				.. "Using safe defaults; saving disabled this session to avoid overwrite.",
-				player.Name, tostring(result)))
+				.. "Using safe defaults; saving disabled this session to avoid overwrite.", player.Name, reason))
 			record = defaultData()
 			record.__loadFailed = true
 		end
@@ -90,10 +97,10 @@ function PlayerDataService.Load(player)
 		record = memoryFallback[userId] or defaultData()
 	end
 
-	record.leaderstats = record.leaderstats or {}
-	record.attributes = record.attributes or {}
-	record.inventory = record.inventory or {}
-	record.swords = record.swords or {}
+	record.leaderstats = typeof(record.leaderstats) == "table" and record.leaderstats or {}
+	record.attributes = typeof(record.attributes) == "table" and record.attributes or {}
+	record.inventory = typeof(record.inventory) == "table" and record.inventory or {}
+	record.swords = typeof(record.swords) == "table" and record.swords or {}
 	profiles[player] = { data = record, ready = false, dirty = false }
 	return record
 end
@@ -122,7 +129,7 @@ function PlayerDataService.Apply(player)
 
 	for name, default in pairs(SaveConfig.ATTRIBUTES) do
 		local v = data.attributes[name]
-		if v == nil then v = default end
+		if typeof(v) ~= typeof(default) then v = default end
 		player:SetAttribute(name, v)
 	end
 	player:SetAttribute("Rebirths", tonumber(data.leaderstats.Rebirths) or 0)
@@ -156,7 +163,7 @@ function PlayerDataService.Apply(player)
 		end
 	end
 
-	if data.isNew and not data.__loadFailed then
+	if data.isNew == true then
 		InventoryService.GiveStarterItems(player)
 	end
 
@@ -209,11 +216,10 @@ function PlayerDataService.Serialize(player)
 		if v ~= nil then data.attributes[name] = v end
 	end
 
-	-- Guard the PlayerRemoving race: if InventorySystem has already wiped its cache,
-	-- GetInventory returns {}. Only overwrite when the live snapshot has content, or
-	-- when we never had any.
+	-- Only serialize a live inventory cache. This preserves a genuinely empty
+	-- inventory while still avoiding a late PlayerRemoving cleanup race.
 	local liveInv = InventoryService.GetInventory(player)
-	if next(liveInv) ~= nil or next(data.inventory) == nil then
+	if InventoryService.HasLoaded(player) then
 		data.inventory = liveInv
 	end
 
@@ -245,7 +251,7 @@ function PlayerDataService.Save(player, releaseLock)
 		payload.__lock = { jobId = JOB_ID, time = os.time() }
 	end
 
-	local ok, err = retry(function()
+	local ok, result = retry(function()
 		return store:UpdateAsync(keyFor(player.UserId), function(old)
 			if old and lockHeldByOther(old.__lock) then
 				return nil  -- another server owns it now; don't stomp
@@ -253,12 +259,21 @@ function PlayerDataService.Save(player, releaseLock)
 			return payload
 		end)
 	end)
-	if ok then
+
+	local saved = ok and typeof(result) == "table"
+	if saved then
+		if releaseLock then
+			saved = result.__lock == nil
+		else
+			saved = lockHeldByThisServer(result.__lock)
+		end
+	end
+	if saved then
 		profile.dirty = false
 	else
-		warn(string.format("[PlayerDataService] save failed for %s: %s", player.Name, tostring(err)))
+		warn(string.format("[PlayerDataService] save failed for %s: %s", player.Name, tostring(result)))
 	end
-	return ok
+	return saved
 end
 
 function PlayerDataService.Release(player)
@@ -277,6 +292,15 @@ end
 function PlayerDataService.IsReady(player)
 	local p = profiles[player]
 	return p ~= nil and p.ready
+end
+
+-- Used only if the lifecycle wrapper itself throws. It gives the player a fully
+-- initialized, memory-only profile instead of leaving them without starter items.
+function PlayerDataService.StartFallback(player)
+	local data = defaultData()
+	data.__loadFailed = true
+	profiles[player] = { data = data, ready = false, dirty = false }
+	PlayerDataService.Apply(player)
 end
 
 return PlayerDataService

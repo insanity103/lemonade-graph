@@ -1,0 +1,24 @@
+{
+  "name": "lemonade-graph",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$path": "lemonade-game/ReplicatedStorage"
+    },
+    "ServerScriptService": {
+      "$path": "lemonade-game/ServerScriptService"
+    },
+    "StarterPack": {
+      "$path": "lemonade-game/StarterPack"
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts"
+      }
+    },
+    "Workspace": {
+      "$path": "lemonade-game/Workspace"
+    }
+  }
+}

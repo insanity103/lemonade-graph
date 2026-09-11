@@ -72,8 +72,9 @@ function WeaponModifiers.RollModifiers(rarityName, blessedChanceBonus)
 	local count = cfg.baseSlots
 	local gotExtraSlot = false
 	
-	local blessedChance = WeaponModifiers.EXTRA_SLOT_CHANCE + (blessedChanceBonus or 0)
-	if math.random() <= blessedChance then
+	local bonus = typeof(blessedChanceBonus) == "number" and blessedChanceBonus or 0
+	local blessedChance = math.clamp(WeaponModifiers.EXTRA_SLOT_CHANCE + bonus, 0, 1)
+	if math.random() < blessedChance then
 		count += 1
 		gotExtraSlot = true
 	end

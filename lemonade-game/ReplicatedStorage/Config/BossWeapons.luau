@@ -14,6 +14,14 @@ BossWeapons.Tiers = {
 	Boss_CelestialTitan = 5,   -- Celestial Titan (Lv 100)
 }
 
+BossWeapons.ArchetypeByTier = {
+	[1] = "Boss_Gorgon",
+	[2] = "Boss_FrostRevenant",
+	[3] = "Boss_InfernalColossus",
+	[4] = "Boss_VoidWraith",
+	[5] = "Boss_CelestialTitan",
+}
+
 -- Stats and look of each boss's unique weapon, keyed by EnemyCombat archetype
 BossWeapons.Weapons = {
 	Boss_Gorgon = {
@@ -90,6 +98,11 @@ end
 
 function BossWeapons.GetTier(archetypeKey)
 	return BossWeapons.Tiers[archetypeKey] or 1
+end
+
+function BossWeapons.GetByTier(tier)
+	local archetypeKey = BossWeapons.ArchetypeByTier[tonumber(tier)]
+	return archetypeKey and BossWeapons.Weapons[archetypeKey] or BossWeapons.Fallback
 end
 
 return BossWeapons
