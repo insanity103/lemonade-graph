@@ -3,7 +3,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local CollectionService = game:GetService("CollectionService")
 local ServerStorage = game:GetService("ServerStorage")
-local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
@@ -24,6 +23,13 @@ local DEFENSE_MAX_REDUCTION = 0.35 -- hard cap: Defense never mitigates more tha
 local ATTACK_COOLDOWN = 0.4
 local RESPAWN_DELAY = 5
 local DEFAULT_ARCHETYPE = "IronSquire"
+-- NPC decisions do not need to run at the render/frame rate. Keeping a short
+-- fixed tick preserves responsive combat while avoiding work proportional to
+-- enemies × players every frame.
+local AI_TICK_INTERVAL = 0.15
+local TARGET_SCAN_INTERVAL = 0.5
+local MOVE_COMMAND_INTERVAL = 0.35
+local MOVE_TARGET_EPSILON = 2
 
 local ATTACK_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("EnemyAttack")
 local TOGGLE_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToggleAutoAttack")
@@ -646,6 +652,12 @@ local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 	if not humanoid or humanoid.Health <= 0 then
 		return
 	end
+	local enemyRoot = enemyModel.PrimaryPart or enemyModel:FindFirstChild("HumanoidRootPart")
+	local playerRoot = playerChar:FindFirstChild("HumanoidRootPart")
+	if not enemyRoot or not playerRoot
+		or not CombatUtil.hasLineOfSight(enemyRoot.Position, playerRoot.Position, { enemyModel, playerChar }) then
+		return
+	end
 
 	local player = Players:GetPlayerFromCharacter(playerChar)
 	local defense = player and (player:GetAttribute("Defense") or 0) or 0
@@ -715,9 +727,21 @@ local function startEnemyAI(model, humanoid, hrp, arch, spawnPos, level, onDeath
 	end)
 end
 
-RunService.Heartbeat:Connect(function()
-	local now = tick()
-	for model, state in pairs(activeEnemies) do
+local function commandMove(state, humanoid, destination, now)
+	local lastDestination = state.lastMoveDestination
+	if not lastDestination
+		or (destination - lastDestination).Magnitude >= MOVE_TARGET_EPSILON
+		or (now - (state.lastMoveTime or 0)) >= MOVE_COMMAND_INTERVAL then
+		state.lastMoveDestination = destination
+		state.lastMoveTime = now
+		humanoid:MoveTo(destination)
+	end
+end
+
+task.spawn(function()
+	while true do
+		local now = tick()
+		for model, state in pairs(activeEnemies) do
 		if not model.Parent or not model.PrimaryPart then
 			activeEnemies[model] = nil
 			continue
@@ -738,7 +762,7 @@ RunService.Heartbeat:Connect(function()
 		if distFromSpawn > arch.leashDistance then
 			state.mode = "RETURNING"
 			state.targetChar = nil
-			humanoid:MoveTo(state.spawnPos)
+			commandMove(state, humanoid, state.spawnPos, now)
 		end
 
 		if state.mode == "RETURNING" then
@@ -746,7 +770,7 @@ RunService.Heartbeat:Connect(function()
 				state.mode = "IDLE"
 				state.nextPatrolTime = now + math.random(1, 3)
 			else
-				humanoid:MoveTo(state.spawnPos)
+				commandMove(state, humanoid, state.spawnPos, now)
 			end
 
 		elseif state.mode == "CHASE" then
@@ -762,9 +786,9 @@ RunService.Heartbeat:Connect(function()
 				if targetDist > arch.aggroRange * 1.5 then
 					state.mode = "RETURNING"
 					state.targetChar = nil
-					humanoid:MoveTo(state.spawnPos)
+					commandMove(state, humanoid, state.spawnPos, now)
 				elseif targetDist <= arch.attackReach then
-					humanoid:MoveTo(hrp.Position)
+					commandMove(state, humanoid, hrp.Position, now)
 					if now - state.lastAttackTime >= arch.attackCooldown then
 						state.lastAttackTime = now
 						if arch.weapon then
@@ -773,25 +797,31 @@ RunService.Heartbeat:Connect(function()
 						applyEnemyDamageToPlayer(model, state.targetChar, arch, level)
 					end
 				else
-					humanoid:MoveTo(targetHrp.Position)
+					commandMove(state, humanoid, targetHrp.Position, now)
 				end
 			end
 
 		else
-			local p, pChar, pHrp, pDist = findNearestLivingPlayer(hrp.Position, arch.aggroRange)
-			if pChar and pHrp then
-				state.mode = "CHASE"
-				state.targetChar = pChar
-			else
+			if now >= (state.nextTargetScanTime or 0) then
+				state.nextTargetScanTime = now + TARGET_SCAN_INTERVAL
+				local _, pChar, pHrp = findNearestLivingPlayer(hrp.Position, arch.aggroRange)
+				if pChar and pHrp then
+					state.mode = "CHASE"
+					state.targetChar = pChar
+				end
+			end
+			if state.mode == "IDLE" then
 				if now >= state.nextPatrolTime then
 					state.nextPatrolTime = now + math.random(3, 6)
 					local angle = math.random() * math.pi * 2
 					local dist = math.random(3, arch.patrolRadius)
 					local patrolTarget = state.spawnPos + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
-					humanoid:MoveTo(patrolTarget)
+					commandMove(state, humanoid, patrolTarget, now)
 				end
 			end
 		end
+	end
+		task.wait(AI_TICK_INTERVAL)
 	end
 end)
 

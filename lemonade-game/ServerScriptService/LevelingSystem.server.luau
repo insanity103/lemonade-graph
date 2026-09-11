@@ -17,6 +17,8 @@ local SPEND_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild(
 local GOLD_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("GoldGain")
 local LEVELUP_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("LevelUpBurst")
 local COMBAT_END_DELAY = 3 -- seconds without a kill before the combat session ends
+local SKILL_SPEND_COOLDOWN = 0.1
+local lastSkillSpendAt = {}
 
 -- Skill point / attribute tuning
 local SKILL_POINTS_PER_LEVEL = 8
@@ -293,9 +295,16 @@ end
 
 -- Spend one skill point on an attribute. Authoritative on the server.
 SPEND_EVENT.OnServerEvent:Connect(function(player, attributeName)
-	if typeof(attributeName) ~= "string" or not table.find(ATTRIBUTE_NAMES, attributeName) then
+	if player:GetAttribute("DataLoaded") ~= true
+		or typeof(attributeName) ~= "string"
+		or not table.find(ATTRIBUTE_NAMES, attributeName) then
 		return
 	end
+	local now = tick()
+	if now - (lastSkillSpendAt[player] or 0) < SKILL_SPEND_COOLDOWN then
+		return
+	end
+	lastSkillSpendAt[player] = now
 	local points = player:GetAttribute("SkillPoints") or 0
 	if points <= 0 then
 		return
@@ -316,6 +325,7 @@ Players.PlayerAdded:Connect(setupPlayer)
 Players.PlayerRemoving:Connect(function(player)
 	combatXP[player] = nil
 	lastCombatAction[player] = nil
+	lastSkillSpendAt[player] = nil
 	for humanoid in pairs(processedDeaths) do
 		local creatorTag = humanoid:FindFirstChild(CREATOR_TAG_NAME)
 		if creatorTag and creatorTag:IsA("ObjectValue") and creatorTag.Value == player then

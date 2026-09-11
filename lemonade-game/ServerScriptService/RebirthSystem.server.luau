@@ -9,6 +9,8 @@ local REBIRTH_EVENT  = REMOTES:WaitForChild("Rebirth")
 local REBIRTH_RESULT = REMOTES:WaitForChild("RebirthResult")
 
 local WIPE_ATTRS = { "Strength", "Health", "Defense", "ExperienceGain" }
+local REBIRTH_COOLDOWN = 1
+local lastRebirthAt = {}
 
 local function getOrCreateIntValue(parent, name, value)
 	local existing = parent:FindFirstChild(name)
@@ -69,6 +71,14 @@ local function setupPlayer(player)
 end
 
 REBIRTH_EVENT.OnServerEvent:Connect(function(player)
+	if player:GetAttribute("DataLoaded") ~= true then
+		return
+	end
+	local now = tick()
+	if now - (lastRebirthAt[player] or 0) < REBIRTH_COOLDOWN then
+		return
+	end
+	lastRebirthAt[player] = now
 	local leaderstats = player:FindFirstChild("leaderstats")
 	local levelStat = leaderstats and leaderstats:FindFirstChild("Level")
 	if not levelStat then return end
@@ -118,4 +128,7 @@ end)
 
 Players.PlayerAdded:Connect(setupPlayer)
 for _, p in ipairs(Players:GetPlayers()) do task.spawn(setupPlayer, p) end
+Players.PlayerRemoving:Connect(function(player)
+	lastRebirthAt[player] = nil
+end)
 print("[RebirthSystem] Enhanced Rebirth System with Milestones & Config initialized")

@@ -9,26 +9,23 @@ local VALID_ACTIONS = {
 	Equip = true,
 	Sell = true,
 }
-
-local function setupPlayer(player)
-	-- PlayerDataService (PlayerDataStore) now owns inventory restore + starter items so a
-	-- saved inventory is not overwritten on join. Fall back to a fresh inventory only if
-	-- persistence never signals ready (its script errored).
-	local waited = 0
-	while player:GetAttribute("DataLoaded") ~= true and waited < 10 do
-		task.wait(0.2)
-		waited += 0.2
-	end
-	if player:GetAttribute("DataLoaded") ~= true then
-		InventoryService.LoadPlayer(player, nil)
-		InventoryService.GiveStarterItems(player)
-	end
-end
+local ACTION_COOLDOWN = 0.1
+local MAX_ITEM_ID_LENGTH = 100
+local lastActionAt = {}
 
 INVENTORY_ACTION_EVENT.OnServerEvent:Connect(function(player, action, itemId)
-	if typeof(action) ~= "string" or typeof(itemId) ~= "string" or not VALID_ACTIONS[action] then
+	if player:GetAttribute("DataLoaded") ~= true
+		or typeof(action) ~= "string"
+		or typeof(itemId) ~= "string"
+		or #itemId > MAX_ITEM_ID_LENGTH
+		or not VALID_ACTIONS[action] then
 		return
 	end
+	local now = tick()
+	if now - (lastActionAt[player] or 0) < ACTION_COOLDOWN then
+		return
+	end
+	lastActionAt[player] = now
 
 	if action == "Use" then
 		InventoryService.UseItem(player, itemId)
@@ -39,13 +36,8 @@ INVENTORY_ACTION_EVENT.OnServerEvent:Connect(function(player, action, itemId)
 	end
 end)
 
-for _, player in Players:GetPlayers() do
-	task.spawn(setupPlayer, player)
-end
-
-Players.PlayerAdded:Connect(setupPlayer)
-
 Players.PlayerRemoving:Connect(function(player)
+	lastActionAt[player] = nil
 	-- Delay so PlayerDataService.Release() can serialize the live inventory first.
 	task.delay(5, function()
 		InventoryService.ClearPlayer(player)
