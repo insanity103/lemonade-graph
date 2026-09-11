@@ -60,6 +60,7 @@ WorldLayout.ZONES = {
 			{ "IronSquire", Vector3.new(-15, 0, -7), 6 }, { "IronSquire", Vector3.new(15, 0, -7), 7 },
 			{ "IronBerserker", Vector3.new(-14, 0, 17), 8 }, { "IronBerserker", Vector3.new(14, 0, 17), 8 },
 		},
+		Elite = { "IronBerserker", Vector3.new(-7, 0, 26), 9 },
 	},
 	{
 		Name = "FrostboundGlacier", DisplayName = "Frostbound Glacier", RequiredLevel = 15,
@@ -80,6 +81,7 @@ WorldLayout.ZONES = {
 			{ "FrostImp", Vector3.new(-15, 0, -7), 18 }, { "FrostImp", Vector3.new(15, 0, -7), 19 },
 			{ "GlacialGargoyle", Vector3.new(-14, 0, 17), 21 }, { "GlacialGargoyle", Vector3.new(14, 0, 17), 22 },
 		},
+		Elite = { "GlacialGargoyle", Vector3.new(7, 0, 26), 23 },
 	},
 	{
 		Name = "InfernalCaldera", DisplayName = "Infernal Caldera", RequiredLevel = 30,
@@ -103,6 +105,7 @@ WorldLayout.ZONES = {
 			{ "CinderFiend", Vector3.new(-15, 0, -7), 34 }, { "CinderFiend", Vector3.new(15, 0, -7), 35 },
 			{ "MagmaJuggernaut", Vector3.new(-14, 0, 17), 38 }, { "MagmaJuggernaut", Vector3.new(14, 0, 17), 40 },
 		},
+		Elite = { "MagmaJuggernaut", Vector3.new(-7, 0, 26), 41 },
 	},
 	{
 		Name = "VoidRift", DisplayName = "Void Rift", RequiredLevel = 50,
@@ -123,6 +126,7 @@ WorldLayout.ZONES = {
 			{ "VoidShade", Vector3.new(-15, 0, -7), 55 }, { "VoidShade", Vector3.new(15, 0, -7), 58 },
 			{ "AbyssTormentor", Vector3.new(-14, 0, 17), 62 }, { "AbyssTormentor", Vector3.new(14, 0, 17), 64 },
 		},
+		Elite = { "AbyssTormentor", Vector3.new(7, 0, 26), 66 },
 	},
 	{
 		Name = "CelestialSummit", DisplayName = "Celestial Summit", RequiredLevel = 75,
@@ -143,6 +147,7 @@ WorldLayout.ZONES = {
 			{ "AstralWisp", Vector3.new(-15, 0, -7), 80 }, { "AstralWisp", Vector3.new(15, 0, -7), 82 },
 			{ "SolarDominator", Vector3.new(-14, 0, 17), 88 }, { "SolarDominator", Vector3.new(14, 0, 17), 90 },
 		},
+		Elite = { "SolarDominator", Vector3.new(-7, 0, 26), 92 },
 	},
 }
 
@@ -412,6 +417,31 @@ local function buildBossRoom(parent, zone)
 			frame * CFrame.new(x, 5, gateZ - 1), Enum.Material.Neon, zone.Accent)
 		flame.Shape = Enum.PartType.Ball
 		flame.CanCollide = false
+	end
+	-- Hidden alcove: a rear-corner pocket screened (not sealed) by two ruin slabs,
+	-- holding one elite a level above the room's minions. It rewards players who
+	-- look past the boss instead of fighting straight down the middle.
+	if zone.Elite then
+		local alcove = zone.Elite[2]
+		local towardCenter = Vector3.new(-alcove.X, 0, -alcove.Z).Unit
+		local across = Vector3.new(-towardCenter.Z, 0, towardCenter.X)
+		for slabIndex, side in ipairs({ -1, 1 }) do
+			local slabPosition = alcove + towardCenter * 4 + across * (side * 4.5)
+			createPart(model, "AlcoveScreen" .. slabIndex, Vector3.new(5, 9, 6),
+				frame * CFrame.lookAt(slabPosition + Vector3.new(0, 4.5, 0),
+					slabPosition + Vector3.new(0, 4.5, 0) + towardCenter),
+				Enum.Material.Rock, ruinColor)
+		end
+		local glow = createPart(model, "AlcoveMarker", Vector3.new(1.5, 4, 1.5),
+			frame * CFrame.new(alcove + across * 2.5 + Vector3.new(0, 2, 0)), Enum.Material.Neon,
+			Color3.fromRGB(255, 210, 90))
+		glow.CanCollide = false
+		glow.CanQuery = false -- EnemyCombat's ground raycast must land on the floor, not this
+		local light = Instance.new("PointLight")
+		light.Color = glow.Color
+		light.Brightness = 4
+		light.Range = 18
+		light.Parent = glow
 	end
 	addZoneMarker(model, zone, frame)
 	model.Parent = parent
@@ -700,6 +730,11 @@ function WorldLayout.GetEnemySpawns()
 		for _, entry in ipairs(zone.Spawns) do
 			configs[#configs + 1] = {
 				archetype = entry[1], position = frame:PointToWorldSpace(entry[2]), level = entry[3],
+			}
+		end
+		if zone.Elite then
+			configs[#configs + 1] = {
+				archetype = zone.Elite[1], position = frame:PointToWorldSpace(zone.Elite[2]), level = zone.Elite[3],
 			}
 		end
 	end

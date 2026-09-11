@@ -6,9 +6,9 @@
     "semantic_hash": ""
   },
   "build_world_semantic.py": {
-    "mtime": 1789153875.3671348,
-    "seen": 1789153885.137165,
-    "ast_hash": "93e9c3715345b26cb7594a1896284abf",
+    "mtime": 1789153992.8944526,
+    "seen": 1789154030.141645,
+    "ast_hash": "e8c1e75b8ee6d100199fc756cd9974d5",
     "semantic_hash": ""
   },
   "dump_scripts.py": {
@@ -312,9 +312,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/WorldLayout.luau": {
-    "mtime": 1789153872.545103,
-    "seen": 1789153885.1371922,
-    "ast_hash": "89fe1ce819af87f0d771ef202e963cd0",
+    "mtime": 1789154020.4521034,
+    "seen": 1789154030.1416748,
+    "ast_hash": "c880c2cd744d244ee41cf076cfb9d48e",
     "semantic_hash": ""
   },
   "assets/swords/manifest.json": {

@@ -29,18 +29,6 @@
       "source_location": "L559"
     },
     {
-      "id": "tools_sword_forge_assemble_uv",
-      "label": "uv()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "sword_forge.py",
-      "file_type": "code",
-      "norm_label": "uv()",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L569"
-    },
-    {
       "id": "tools_sword_forge_assert_simple",
       "label": "assert_simple()",
       "_callable": true,
@@ -101,18 +89,6 @@
       "source_location": "L374"
     },
     {
-      "id": "tools_sword_forge_design_celestial_base_w",
-      "label": "base_w()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "sword_forge.py",
-      "file_type": "code",
-      "norm_label": "base_w()",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L375"
-    },
-    {
       "id": "tools_sword_forge_design_frost",
       "label": "design_frost()",
       "_callable": true,
@@ -123,30 +99,6 @@
       "norm_label": "design_frost()",
       "source_file": "tools/sword_forge.py",
       "source_location": "L304"
-    },
-    {
-      "id": "tools_sword_forge_design_frost_bot",
-      "label": "bot()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "sword_forge.py",
-      "file_type": "code",
-      "norm_label": "bot()",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L308"
-    },
-    {
-      "id": "tools_sword_forge_design_frost_top",
-      "label": "top()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "sword_forge.py",
-      "file_type": "code",
-      "norm_label": "top()",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L305"
     },
     {
       "id": "tools_sword_forge_design_gorgon",
@@ -195,18 +147,6 @@
       "norm_label": "extrude()",
       "source_file": "tools/sword_forge.py",
       "source_location": "L156"
-    },
-    {
-      "id": "tools_sword_forge_extrude_turn",
-      "label": "turn()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "sword_forge.py",
-      "file_type": "code",
-      "norm_label": "turn()",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L168"
     },
     {
       "id": "tools_sword_forge_fbm",
@@ -401,18 +341,6 @@
       "source_location": "L92"
     },
     {
-      "id": "tools_sword_forge_segments_cross_o",
-      "label": "o()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "sword_forge.py",
-      "file_type": "code",
-      "norm_label": "o()",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L93"
-    },
-    {
       "id": "tools_sword_forge_smooth_tip",
       "label": "smooth_tip()",
       "_callable": true,
@@ -423,18 +351,6 @@
       "norm_label": "smooth_tip()",
       "source_file": "tools/sword_forge.py",
       "source_location": "L276"
-    },
-    {
-      "id": "tools_sword_forge_smooth_tip_f",
-      "label": "f()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "sword_forge.py",
-      "file_type": "code",
-      "norm_label": "f()",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L278"
     },
     {
       "id": "tools_sword_forge_sparkle",
@@ -485,30 +401,6 @@
       "source_location": "L109"
     },
     {
-      "id": "tools_sword_forge_triangulate_area2",
-      "label": "area2()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "sword_forge.py",
-      "file_type": "code",
-      "norm_label": "area2()",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L111"
-    },
-    {
-      "id": "tools_sword_forge_triangulate_inside",
-      "label": "inside()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "sword_forge.py",
-      "file_type": "code",
-      "norm_label": "inside()",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L114"
-    },
-    {
       "id": "tools_sword_forge_vnoise",
       "label": "vnoise()",
       "_callable": true,
@@ -531,18 +423,6 @@
       "norm_label": "voronoi()",
       "source_file": "tools/sword_forge.py",
       "source_location": "L412"
-    },
-    {
-      "id": "tools_sword_forge_voronoi_up",
-      "label": "up()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "sword_forge.py",
-      "file_type": "code",
-      "norm_label": "up()",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L420"
     },
     {
       "id": "tools_sword_forge_wrap",
@@ -578,7 +458,7 @@
       "file_type": "code",
       "norm_label": "addzonemarker()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L298"
+      "source_location": "L325"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_arenacframe",
@@ -590,7 +470,7 @@
       "file_type": "code",
       "norm_label": "arenacframe()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L168"
+      "source_location": "L195"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_buildbossroom",
@@ -602,7 +482,7 @@
       "file_type": "code",
       "norm_label": "buildbossroom()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L330"
+      "source_location": "L357"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_buildboulder",
@@ -614,7 +494,7 @@
       "file_type": "code",
       "norm_label": "buildboulder()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L424"
+      "source_location": "L451"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_buildcolumn",
@@ -626,7 +506,7 @@
       "file_type": "code",
       "norm_label": "buildcolumn()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L456"
+      "source_location": "L483"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_buildcrystal",
@@ -638,7 +518,7 @@
       "file_type": "code",
       "norm_label": "buildcrystal()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L440"
+      "source_location": "L467"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_buildlandmark",
@@ -650,7 +530,7 @@
       "file_type": "code",
       "norm_label": "buildlandmark()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L469"
+      "source_location": "L496"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_buildroads",
@@ -662,7 +542,7 @@
       "file_type": "code",
       "norm_label": "buildroads()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L283"
+      "source_location": "L310"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_buildterrain",
@@ -674,7 +554,7 @@
       "file_type": "code",
       "norm_label": "buildterrain()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L200"
+      "source_location": "L227"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_buildtrailsegment",
@@ -686,7 +566,7 @@
       "file_type": "code",
       "norm_label": "buildtrailsegment()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L267"
+      "source_location": "L294"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_buildtree",
@@ -698,7 +578,43 @@
       "file_type": "code",
       "norm_label": "buildtree()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L393"
+      "source_location": "L420"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_worldlayout_buildwildcamp",
+      "label": "buildWildCamp()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "WorldLayout.luau",
+      "file_type": "code",
+      "norm_label": "buildwildcamp()",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L635"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_worldlayout_campcenter",
+      "label": "campCenter()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "WorldLayout.luau",
+      "file_type": "code",
+      "norm_label": "campcenter()",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L615"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_worldlayout_campspawnpositions",
+      "label": "campSpawnPositions()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "WorldLayout.luau",
+      "file_type": "code",
+      "norm_label": "campspawnpositions()",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L625"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_createpart",
@@ -710,7 +626,7 @@
       "file_type": "code",
       "norm_label": "createpart()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L154"
+      "source_location": "L181"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_fillterrainmound",
@@ -722,7 +638,7 @@
       "file_type": "code",
       "norm_label": "fillterrainmound()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L196"
+      "source_location": "L223"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_rebuilddecor",
@@ -734,7 +650,7 @@
       "file_type": "code",
       "norm_label": "rebuilddecor()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L513"
+      "source_location": "L540"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_relocatelooseplacedpart",
@@ -746,7 +662,7 @@
       "file_type": "code",
       "norm_label": "relocatelooseplacedpart()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L570"
+      "source_location": "L597"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_resetspawn",
@@ -758,7 +674,7 @@
       "file_type": "code",
       "norm_label": "resetspawn()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L550"
+      "source_location": "L577"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_restorebaseplate",
@@ -770,7 +686,7 @@
       "file_type": "code",
       "norm_label": "restorebaseplate()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L173"
+      "source_location": "L200"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_terrainsurfaceat",
@@ -782,7 +698,7 @@
       "file_type": "code",
       "norm_label": "terrainsurfaceat()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L258"
+      "source_location": "L285"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_worldlayout_ensurebuilt",
@@ -794,7 +710,7 @@
       "file_type": "code",
       "norm_label": "worldlayout.ensurebuilt()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L592"
+      "source_location": "L715"
     },
     {
       "id": "lemonade_game_serverscriptservice_worldlayout_worldlayout_getenemyspawns",
@@ -806,7 +722,19 @@
       "file_type": "code",
       "norm_label": "worldlayout.getenemyspawns()",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L579"
+      "source_location": "L696"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_worldlayout_zonebyname",
+      "label": "zoneByName()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "WorldLayout.luau",
+      "file_type": "code",
+      "norm_label": "zonebyname()",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L606"
     },
     {
       "id": "lemonade_game_serverscriptservice_inventoryservice_inventoryservice_hasloaded",
@@ -2234,7 +2162,7 @@
       "file_type": "code",
       "norm_label": "resolve()",
       "source_file": "build_world_semantic.py",
-      "source_location": "L348"
+      "source_location": "L350"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_merchantgui_client_buildshoplist",
@@ -3747,125 +3675,125 @@
       "source_location": "L1"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon",
-      "label": "Boss_Gorgon",
+      "id": "assets_swords_manifest_boss_voidwraith",
+      "label": "Boss_VoidWraith",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
-      "norm_label": "boss_gorgon",
+      "norm_label": "boss_voidwraith",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L2"
+      "source_location": "L68"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon_bytes",
+      "id": "assets_swords_manifest_boss_voidwraith_bytes",
       "label": "bytes",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
       "norm_label": "bytes",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L5"
+      "source_location": "L71"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon_checks",
+      "id": "assets_swords_manifest_boss_voidwraith_checks",
       "label": "checks",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
       "norm_label": "checks",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L22"
+      "source_location": "L88"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon_file",
+      "id": "assets_swords_manifest_boss_voidwraith_file",
       "label": "file",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
       "norm_label": "file",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L4"
+      "source_location": "L70"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon_gripfrac",
+      "id": "assets_swords_manifest_boss_voidwraith_gripfrac",
       "label": "gripFrac",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
       "norm_label": "gripfrac",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L13"
+      "source_location": "L79"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon_guardz",
+      "id": "assets_swords_manifest_boss_voidwraith_guardz",
       "label": "guardZ",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
       "norm_label": "guardz",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L14"
+      "source_location": "L80"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon_handlez",
+      "id": "assets_swords_manifest_boss_voidwraith_handlez",
       "label": "handleZ",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
       "norm_label": "handlez",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L18"
+      "source_location": "L84"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon_meshsize",
+      "id": "assets_swords_manifest_boss_voidwraith_meshsize",
       "label": "meshSize",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
       "norm_label": "meshsize",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L8"
+      "source_location": "L74"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon_name",
+      "id": "assets_swords_manifest_boss_voidwraith_name",
       "label": "name",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
       "norm_label": "name",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L3"
+      "source_location": "L69"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon_triangles",
+      "id": "assets_swords_manifest_boss_voidwraith_triangles",
       "label": "triangles",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
       "norm_label": "triangles",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L6"
+      "source_location": "L72"
     },
     {
-      "id": "assets_swords_manifest_boss_gorgon_vertices",
+      "id": "assets_swords_manifest_boss_voidwraith_vertices",
       "label": "vertices",
       "_origin": "ast",
       "community": 20,
-      "community_name": "Boss_Gorgon",
+      "community_name": "Boss_VoidWraith",
       "file_type": "code",
       "norm_label": "vertices",
       "source_file": "assets/swords/manifest.json",
-      "source_location": "L7"
+      "source_location": "L73"
     },
     {
       "id": "lemonade_game_serverscriptservice_bossroomgate_server",
@@ -4110,6 +4038,127 @@
       "source_location": "L95"
     },
     {
+      "id": "assets_swords_manifest_boss_gorgon",
+      "label": "Boss_Gorgon",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "boss_gorgon",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "assets_swords_manifest_boss_gorgon_bytes",
+      "label": "bytes",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "bytes",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "assets_swords_manifest_boss_gorgon_checks",
+      "label": "checks",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "checks",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "assets_swords_manifest_boss_gorgon_file",
+      "label": "file",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "file",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "assets_swords_manifest_boss_gorgon_gripfrac",
+      "label": "gripFrac",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "gripfrac",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "assets_swords_manifest_boss_gorgon_guardz",
+      "label": "guardZ",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "guardz",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "assets_swords_manifest_boss_gorgon_handlez",
+      "label": "handleZ",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "handlez",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "assets_swords_manifest_boss_gorgon_meshsize",
+      "label": "meshSize",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "meshsize",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "assets_swords_manifest_boss_gorgon_name",
+      "label": "name",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "name",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "assets_swords_manifest_boss_gorgon_triangles",
+      "label": "triangles",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "triangles",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "assets_swords_manifest_boss_gorgon_vertices",
+      "label": "vertices",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Boss_CelestialTitan",
+      "file_type": "code",
+      "norm_label": "vertices",
+      "source_file": "assets/swords/manifest.json",
+      "source_location": "L7"
+    },
+    {
       "id": "assets_swords_manifest_boss_infernalcolossus",
       "label": "Boss_InfernalColossus",
       "_origin": "ast",
@@ -4229,127 +4278,6 @@
       "norm_label": "vertices",
       "source_file": "assets/swords/manifest.json",
       "source_location": "L51"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith",
-      "label": "Boss_VoidWraith",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "boss_voidwraith",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L68"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith_bytes",
-      "label": "bytes",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "bytes",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L71"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith_checks",
-      "label": "checks",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "checks",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L88"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith_file",
-      "label": "file",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "file",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L70"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith_gripfrac",
-      "label": "gripFrac",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "gripfrac",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L79"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith_guardz",
-      "label": "guardZ",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "guardz",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L80"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith_handlez",
-      "label": "handleZ",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "handlez",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L84"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith_meshsize",
-      "label": "meshSize",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "meshsize",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L74"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith_name",
-      "label": "name",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "name",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L69"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith_triangles",
-      "label": "triangles",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "triangles",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L72"
-    },
-    {
-      "id": "assets_swords_manifest_boss_voidwraith_vertices",
-      "label": "vertices",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "Boss_CelestialTitan",
-      "file_type": "code",
-      "norm_label": "vertices",
-      "source_file": "assets/swords/manifest.json",
-      "source_location": "L73"
     },
     {
       "id": "claude",
@@ -5457,18 +5385,6 @@
       "weight": 1.0
     },
     {
-      "source": "lemonade_game_serverscriptservice_enemycombat_server_spawnenemy",
-      "target": "lemonade_game_serverscriptservice_enemycombat_server_spawnenemy",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L873",
-      "weight": 1.0
-    },
-    {
       "source": "lemonade_game_serverscriptservice_enemycombat_server_tryunarmedattack",
       "target": "lemonade_game_serverscriptservice_enemycombat_server_getalivecharacter",
       "relation": "calls",
@@ -6401,7 +6317,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L300",
+      "source_location": "L327",
       "weight": 1.0
     },
     {
@@ -6413,7 +6329,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L334",
+      "source_location": "L361",
       "weight": 1.0
     },
     {
@@ -6425,7 +6341,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L335",
+      "source_location": "L362",
       "weight": 1.0
     },
     {
@@ -6437,7 +6353,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L389",
+      "source_location": "L416",
       "weight": 1.0
     },
     {
@@ -6449,7 +6365,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L431",
+      "source_location": "L458",
       "weight": 1.0
     },
     {
@@ -6461,7 +6377,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L459",
+      "source_location": "L486",
       "weight": 1.0
     },
     {
@@ -6473,7 +6389,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L448",
+      "source_location": "L475",
       "weight": 1.0
     },
     {
@@ -6485,7 +6401,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L470",
+      "source_location": "L497",
       "weight": 1.0
     },
     {
@@ -6497,7 +6413,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L471",
+      "source_location": "L498",
       "weight": 1.0
     },
     {
@@ -6509,7 +6425,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L477",
+      "source_location": "L504",
       "weight": 1.0
     },
     {
@@ -6521,7 +6437,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L483",
+      "source_location": "L510",
       "weight": 1.0
     },
     {
@@ -6533,7 +6449,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L504",
+      "source_location": "L531",
       "weight": 1.0
     },
     {
@@ -6545,7 +6461,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L285",
+      "source_location": "L312",
       "weight": 1.0
     },
     {
@@ -6557,7 +6473,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L288",
+      "source_location": "L315",
       "weight": 1.0
     },
     {
@@ -6569,7 +6485,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L214",
+      "source_location": "L241",
       "weight": 1.0
     },
     {
@@ -6581,7 +6497,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L245",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
@@ -6593,7 +6509,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L275",
+      "source_location": "L302",
       "weight": 1.0
     },
     {
@@ -6605,7 +6521,79 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L398",
+      "source_location": "L425",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout_buildwildcamp",
+      "target": "lemonade_game_serverscriptservice_worldlayout_zonebyname",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L636",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout_buildwildcamp",
+      "target": "lemonade_game_serverscriptservice_worldlayout_campcenter",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L637",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout_buildwildcamp",
+      "target": "lemonade_game_serverscriptservice_worldlayout_fillterrainmound",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L640",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout_buildwildcamp",
+      "target": "lemonade_game_serverscriptservice_worldlayout_terrainsurfaceat",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L641",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout_buildwildcamp",
+      "target": "lemonade_game_serverscriptservice_worldlayout_createpart",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L645",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout_campspawnpositions",
+      "target": "lemonade_game_serverscriptservice_worldlayout_campcenter",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L626",
       "weight": 1.0
     },
     {
@@ -6617,7 +6605,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L529",
+      "source_location": "L556",
       "weight": 1.0
     },
     {
@@ -6629,7 +6617,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L531",
+      "source_location": "L558",
       "weight": 1.0
     },
     {
@@ -6641,7 +6629,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L533",
+      "source_location": "L560",
       "weight": 1.0
     },
     {
@@ -6653,7 +6641,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L536",
+      "source_location": "L563",
       "weight": 1.0
     },
     {
@@ -6665,7 +6653,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L539",
+      "source_location": "L566",
       "weight": 1.0
     },
     {
@@ -6677,7 +6665,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L543",
+      "source_location": "L570",
       "weight": 1.0
     },
     {
@@ -6689,7 +6677,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L546",
+      "source_location": "L573",
       "weight": 1.0
     },
     {
@@ -6701,7 +6689,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L595",
+      "source_location": "L718",
       "weight": 1.0
     },
     {
@@ -6713,7 +6701,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L596",
+      "source_location": "L719",
       "weight": 1.0
     },
     {
@@ -6725,7 +6713,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L613",
+      "source_location": "L736",
       "weight": 1.0
     },
     {
@@ -6737,7 +6725,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L614",
+      "source_location": "L737",
       "weight": 1.0
     },
     {
@@ -6749,7 +6737,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L616",
+      "source_location": "L739",
       "weight": 1.0
     },
     {
@@ -6761,7 +6749,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L622",
+      "source_location": "L745",
       "weight": 1.0
     },
     {
@@ -6773,7 +6761,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L623",
+      "source_location": "L746",
       "weight": 1.0
     },
     {
@@ -6785,7 +6773,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L624",
+      "source_location": "L747",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout_worldlayout_ensurebuilt",
+      "target": "lemonade_game_serverscriptservice_worldlayout_buildwildcamp",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L751",
       "weight": 1.0
     },
     {
@@ -6797,7 +6797,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L582",
+      "source_location": "L699",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout_worldlayout_getenemyspawns",
+      "target": "lemonade_game_serverscriptservice_worldlayout_campspawnpositions",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L707",
       "weight": 1.0
     },
     {
@@ -7653,30 +7665,6 @@
       "weight": 1.0
     },
     {
-      "source": "tools_sword_forge_design_frost_bot",
-      "target": "tools_sword_forge_lerp",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L309",
-      "weight": 1.0
-    },
-    {
-      "source": "tools_sword_forge_design_frost_top",
-      "target": "tools_sword_forge_lerp",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L306",
-      "weight": 1.0
-    },
-    {
       "source": "tools_sword_forge_design_gorgon",
       "target": "tools_sword_forge_part",
       "relation": "calls",
@@ -8121,18 +8109,6 @@
       "weight": 1.0
     },
     {
-      "source": "tools_sword_forge_triangulate_inside",
-      "target": "tools_sword_forge_triangulate_area2",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L115",
-      "weight": 1.0
-    },
-    {
       "source": "tools_sword_forge_wrap",
       "target": "tools_sword_forge_mix",
       "relation": "calls",
@@ -8142,102 +8118,6 @@
       "context": "call",
       "source_file": "tools/sword_forge.py",
       "source_location": "L473",
-      "weight": 1.0
-    },
-    {
-      "source": "tools_sword_forge_assemble",
-      "target": "tools_sword_forge_assemble_uv",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L569",
-      "weight": 1.0
-    },
-    {
-      "source": "tools_sword_forge_design_frost",
-      "target": "tools_sword_forge_design_frost_top",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L305",
-      "weight": 1.0
-    },
-    {
-      "source": "tools_sword_forge_design_frost",
-      "target": "tools_sword_forge_design_frost_bot",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L308",
-      "weight": 1.0
-    },
-    {
-      "source": "tools_sword_forge_extrude",
-      "target": "tools_sword_forge_extrude_turn",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L168",
-      "weight": 1.0
-    },
-    {
-      "source": "tools_sword_forge_segments_cross",
-      "target": "tools_sword_forge_segments_cross_o",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L93",
-      "weight": 1.0
-    },
-    {
-      "source": "tools_sword_forge_triangulate",
-      "target": "tools_sword_forge_triangulate_area2",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L111",
-      "weight": 1.0
-    },
-    {
-      "source": "tools_sword_forge_triangulate",
-      "target": "tools_sword_forge_triangulate_inside",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L114",
-      "weight": 1.0
-    },
-    {
-      "source": "tools_sword_forge_voronoi",
-      "target": "tools_sword_forge_voronoi_up",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L420",
       "weight": 1.0
     },
     {
@@ -8875,7 +8755,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "build_world_semantic.py",
-      "source_location": "L348",
+      "source_location": "L350",
       "weight": 1.0
     },
     {
@@ -10228,7 +10108,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L154",
+      "source_location": "L181",
       "weight": 1.0
     },
     {
@@ -10239,7 +10119,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L168",
+      "source_location": "L195",
       "weight": 1.0
     },
     {
@@ -10250,7 +10130,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L173",
+      "source_location": "L200",
       "weight": 1.0
     },
     {
@@ -10261,7 +10141,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L196",
+      "source_location": "L223",
       "weight": 1.0
     },
     {
@@ -10272,7 +10152,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L200",
+      "source_location": "L227",
       "weight": 1.0
     },
     {
@@ -10283,7 +10163,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L258",
+      "source_location": "L285",
       "weight": 1.0
     },
     {
@@ -10294,7 +10174,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L267",
+      "source_location": "L294",
       "weight": 1.0
     },
     {
@@ -10305,7 +10185,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L283",
+      "source_location": "L310",
       "weight": 1.0
     },
     {
@@ -10316,7 +10196,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L298",
+      "source_location": "L325",
       "weight": 1.0
     },
     {
@@ -10327,7 +10207,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L330",
+      "source_location": "L357",
       "weight": 1.0
     },
     {
@@ -10338,7 +10218,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L393",
+      "source_location": "L420",
       "weight": 1.0
     },
     {
@@ -10349,7 +10229,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L424",
+      "source_location": "L451",
       "weight": 1.0
     },
     {
@@ -10360,7 +10240,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L440",
+      "source_location": "L467",
       "weight": 1.0
     },
     {
@@ -10371,7 +10251,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L456",
+      "source_location": "L483",
       "weight": 1.0
     },
     {
@@ -10382,7 +10262,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L469",
+      "source_location": "L496",
       "weight": 1.0
     },
     {
@@ -10393,7 +10273,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L513",
+      "source_location": "L540",
       "weight": 1.0
     },
     {
@@ -10404,7 +10284,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L550",
+      "source_location": "L577",
       "weight": 1.0
     },
     {
@@ -10415,7 +10295,51 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L570",
+      "source_location": "L597",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout",
+      "target": "lemonade_game_serverscriptservice_worldlayout_zonebyname",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L606",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout",
+      "target": "lemonade_game_serverscriptservice_worldlayout_campcenter",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L615",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout",
+      "target": "lemonade_game_serverscriptservice_worldlayout_campspawnpositions",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L625",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_worldlayout",
+      "target": "lemonade_game_serverscriptservice_worldlayout_buildwildcamp",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
+      "source_location": "L635",
       "weight": 1.0
     },
     {
@@ -10426,7 +10350,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L579",
+      "source_location": "L696",
       "weight": 1.0
     },
     {
@@ -10437,7 +10361,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/WorldLayout.luau",
-      "source_location": "L592",
+      "source_location": "L715",
       "weight": 1.0
     },
     {
@@ -11860,18 +11784,6 @@
       "weight": 1.0
     },
     {
-      "source": "tools_sword_forge_design_celestial",
-      "target": "tools_sword_forge_design_celestial_base_w",
-      "relation": "indirect_call",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "context": "argument",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L378",
-      "weight": 1.0
-    },
-    {
       "source": "lemonade_game_serverscriptservice_bossswordfactory_bossswordfactory_build",
       "target": "lemonade_game_replicatedstorage_config_bossweapons_bossweapons_gettier",
       "relation": "calls",
@@ -12280,18 +12192,6 @@
       "weight": 1.0
     },
     {
-      "source": "tools_sword_forge_smooth_tip",
-      "target": "tools_sword_forge_smooth_tip_f",
-      "relation": "indirect_call",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "context": "return",
-      "source_file": "tools/sword_forge.py",
-      "source_location": "L282",
-      "weight": 1.0
-    },
-    {
       "source": "lemonade_game_world_serverstorage_importer_flip",
       "target": "lemonade_game_world_serverstorage_bossswordtool",
       "relation": "constrains",
@@ -12656,5 +12556,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "9c1702bfa9d906dbc238606b63578365b513c59a"
+  "built_at_commit": "2123dde1915932999284808c060bb87041ea8ccc"
 }
