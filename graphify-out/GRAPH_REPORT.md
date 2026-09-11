@@ -1,16 +1,16 @@
 # Graph Report - lemonade-graph  (2026-09-11)
 
 ## Corpus Check
-- 55 files · ~56,721 words
+- 55 files · ~57,448 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 432 nodes · 649 edges · 51 communities (22 shown, 14 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 39 edges (avg confidence: 0.85)
+- 426 nodes · 647 edges · 51 communities (22 shown, 14 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 37 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9c1702bf`
+- Built from commit: `2123dde1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -35,7 +35,7 @@
 - AnimationController.luau
 - LevelingSystem.server.luau
 - Boss_FrostRevenant
-- Boss_Gorgon
+- Boss_VoidWraith
 - BossRoomGate.server.luau
 - CombatController.client.luau
 - SwordSystem.server.luau
@@ -61,8 +61,8 @@
 6. `Boss_InfernalColossus` - 11 edges
 7. `Boss_VoidWraith` - 11 edges
 8. `Boss_CelestialTitan` - 11 edges
-9. `Part` - 11 edges
-10. `extrude()` - 11 edges
+9. `createPart()` - 11 edges
+10. `Part` - 11 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Lemonade RPG place (root)` --references--> `Voxel Terrain`  [EXTRACTED]
@@ -86,8 +86,8 @@ Cohesion: 0.07
 Nodes (31): Lemonade RPG place (root), RemoteEvents folder, AutoSellNotice (RemoteEvent), BossDoorNotice (RemoteEvent), DamageNumber (RemoteEvent), EnemyAttack (RemoteEvent), GoldGain (RemoteEvent), InventoryAction (RemoteEvent) (+23 more)
 
 ### Community 1 - "sword_forge.py"
-Cohesion: 0.07
-Nodes (47): assemble(), assert_simple(), C(), ccw(), chaikin(), design_celestial(), design_frost(), bot() (+39 more)
+Cohesion: 0.09
+Nodes (42): assemble(), assert_simple(), C(), ccw(), chaikin(), design_celestial(), design_frost(), design_gorgon() (+34 more)
 
 ### Community 2 - "EnemyCombat.server.luau"
 Cohesion: 0.09
@@ -106,8 +106,8 @@ Cohesion: 0.23
 Nodes (21): addCorner(), addPadding(), addStroke(), bindInventoryContainer(), bindInventoryRefresh(), buildHomePanel(), buildInventoryPanel(), buildRebirthPanel() (+13 more)
 
 ### Community 10 - "WorldLayout.luau"
-Cohesion: 0.26
-Nodes (20): addZoneMarker(), arenaCFrame(), buildBossRoom(), buildBoulder(), buildColumn(), buildCrystal(), buildLandmark(), buildRoads() (+12 more)
+Cohesion: 0.22
+Nodes (24): addZoneMarker(), arenaCFrame(), buildBossRoom(), buildBoulder(), buildColumn(), buildCrystal(), buildLandmark(), buildRoads() (+16 more)
 
 ### Community 11 - "PlayerDataService.luau"
 Cohesion: 0.22
@@ -137,9 +137,9 @@ Nodes (11): applyDeathGoldPenalty(), applyHealth(), awardExperience(), connectEn
 Cohesion: 0.18
 Nodes (11): Boss_FrostRevenant, bytes, checks, file, gripFrac, guardZ, handleZ, meshSize (+3 more)
 
-### Community 20 - "Boss_Gorgon"
+### Community 20 - "Boss_VoidWraith"
 Cohesion: 0.18
-Nodes (11): Boss_Gorgon, bytes, checks, file, gripFrac, guardZ, handleZ, meshSize (+3 more)
+Nodes (11): Boss_VoidWraith, bytes, checks, file, gripFrac, guardZ, handleZ, meshSize (+3 more)
 
 ### Community 21 - "BossRoomGate.server.luau"
 Cohesion: 0.36
@@ -171,23 +171,23 @@ Nodes (3): OnChanged(), OnEquipped(), UpdateIcon()
 
 ## Knowledge Gaps
 - **108 isolated node(s):** `name`, `file`, `bytes`, `triangles`, `vertices` (+103 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 181 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 176 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `PlayerDataService.Apply()` connect `PlayerDataService.luau` to `EnemyCombat.server.luau`, `InventoryService.luau`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Why does `BossSwordFactory.rebuild()` connect `EnemyCombat.server.luau` to `PlayerDataService.luau`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
 - **What connects `name`, `file`, `bytes` to the rest of the system?**
   _108 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `RemoteEvents folder` be split into smaller, more focused modules?**
   _Cohesion score 0.07096774193548387 - nodes in this community are weakly interconnected._
 - **Should `sword_forge.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.06662770309760374 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0858843537414966 - nodes in this community are weakly interconnected._
 - **Should `EnemyCombat.server.luau` be split into smaller, more focused modules?**
-  _Cohesion score 0.08677098150782361 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08534850640113797 - nodes in this community are weakly interconnected._
 - **Should `Boss_CelestialTitan` be split into smaller, more focused modules?**
   _Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected._

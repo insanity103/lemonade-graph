@@ -6,7 +6,7 @@ local Workspace = game:GetService("Workspace")
 
 local WorldLayout = {}
 
-WorldLayout.VERSION = 3
+WorldLayout.VERSION = 4
 WorldLayout.HUB = {
 	Center = Vector3.new(0, 2, -178),
 	SpawnPosition = Vector3.new(-8, 3.3, -181),
@@ -145,6 +145,33 @@ WorldLayout.ZONES = {
 		},
 	},
 }
+
+-- Roadside camps fill the level gaps between arenas: each room's minions stop a few
+-- levels short of the next door's RequiredLevel, so without these the only way to
+-- close the gap was grinding under-levelled mobs. Each camp sits beside a ROUTE
+-- transition node (Side = which shoulder of the road) and mixes the outgoing
+-- zone's archetypes with the first of the next one, so players meet the new
+-- faction before its gate.
+WorldLayout.WILD_CAMPS = {
+	{
+		Name = "IronFrostPass", Route = 6, Side = 1, Zone = "IronLowlands",
+		Spawns = { { "IronBerserker", 11 }, { "IronSquire", 12 }, { "FrostImp", 13 } },
+	},
+	{
+		Name = "GlacierScorchedRidge", Route = 11, Side = 1, Zone = "FrostboundGlacier",
+		Spawns = { { "GlacialGargoyle", 26 }, { "FrostImp", 27 }, { "CinderFiend", 28 } },
+	},
+	{
+		Name = "CalderaRiftOverlook", Route = 15, Side = -1, Zone = "InfernalCaldera",
+		Spawns = { { "MagmaJuggernaut", 44 }, { "CinderFiend", 46 }, { "VoidShade", 48 } },
+	},
+	{
+		Name = "RiftSummitSteps", Route = 20, Side = -1, Zone = "VoidRift",
+		Spawns = { { "AbyssTormentor", 70 }, { "VoidShade", 72 }, { "AstralWisp", 74 } },
+	},
+}
+local CAMP_OFFSET = 17 -- studs from the road centreline; the terrain ribbon is ~29 wide
+local CAMP_SPAWN_RING = 6
 
 local ARENA_SIZE = 68
 local ARENA_HALF = ARENA_SIZE / 2
@@ -576,6 +603,96 @@ local function relocateLoosePlacedPart(generated)
 	loose.Parent = generated
 end
 
+local function zoneByName(name)
+	for _, zone in ipairs(WorldLayout.ZONES) do
+		if zone.Name == name then return zone end
+	end
+	return WorldLayout.ZONES[1]
+end
+
+-- Camp centre: CAMP_OFFSET off the road shoulder, perpendicular to the trail's
+-- direction through its ROUTE node, so the camp never blocks the path.
+local function campCenter(camp)
+	local route = WorldLayout.ROUTE
+	local node = route[camp.Route].Position
+	local before = route[math.max(1, camp.Route - 1)].Position
+	local after = route[math.min(#route, camp.Route + 1)].Position
+	local along = Vector3.new(after.X - before.X, 0, after.Z - before.Z).Unit
+	local across = Vector3.new(-along.Z, 0, along.X) * camp.Side
+	return node + across * CAMP_OFFSET, along
+end
+
+local function campSpawnPositions(camp)
+	local center = campCenter(camp)
+	local positions = {}
+	for index = 1, #camp.Spawns do
+		local angle = (index - 1) / #camp.Spawns * math.pi * 2
+		positions[index] = center + Vector3.new(math.cos(angle), 0, math.sin(angle)) * CAMP_SPAWN_RING
+	end
+	return positions
+end
+
+local function buildWildCamp(parent, camp)
+	local zone = zoneByName(camp.Zone)
+	local center, along = campCenter(camp)
+	-- The road ribbon falls away ~5 studs at the shoulder; a low pad keeps the camp
+	-- level with the trail instead of sitting in a ditch.
+	fillTerrainMound(Workspace.Terrain, center, 16, zone.TerrainMaterial)
+	local ground = terrainSurfaceAt(center)
+	local model = Instance.new("Model")
+	model.Name = camp.Name
+
+	local fire = createPart(model, "Campfire", Vector3.new(2.4, 2.4, 2.4),
+		CFrame.new(ground + Vector3.new(0, 1, 0)), Enum.Material.Neon, zone.Accent)
+	fire.Shape = Enum.PartType.Ball
+	fire.CanCollide = false
+	model.PrimaryPart = fire
+	local light = Instance.new("PointLight")
+	light.Color = zone.Accent
+	light.Brightness = 2
+	light.Range = 18
+	light.Parent = fire
+
+	local facing = CFrame.lookAt(ground, ground + along)
+	for index, x in ipairs({ -2.2, 2.2 }) do
+		createPart(model, "Log" .. index, Vector3.new(0.9, 0.9, 4.2),
+			facing * CFrame.new(x, 0.45, 0) * CFrame.Angles(0, math.rad(x * 18), 0), Enum.Material.Wood,
+			Color3.fromRGB(88, 60, 41))
+	end
+	-- A lean-to banner in the zone colour marks it as that faction's outpost.
+	local post = facing * CFrame.new(0, 0, CAMP_SPAWN_RING + 4)
+	createPart(model, "BannerPole", Vector3.new(0.6, 9, 0.6), post * CFrame.new(0, 4.5, 0),
+		Enum.Material.Wood, Color3.fromRGB(88, 60, 41))
+	createPart(model, "Banner", Vector3.new(3, 4, 0.2), post * CFrame.new(1.8, 6.5, 0),
+		Enum.Material.Fabric, zone.Color)
+
+	local low, high = math.huge, 0
+	for _, entry in ipairs(camp.Spawns) do
+		low, high = math.min(low, entry[2]), math.max(high, entry[2])
+	end
+	local marker = createPart(model, "CampMarker", Vector3.new(1, 1, 1),
+		CFrame.new(ground + Vector3.new(0, 8, 0)), Enum.Material.SmoothPlastic, zone.Accent)
+	marker.Transparency = 1
+	marker.CanCollide = false
+	marker.CanTouch = false
+	local billboard = Instance.new("BillboardGui")
+	billboard.Name = "CampLabel"
+	billboard.Size = UDim2.fromOffset(200, 40)
+	billboard.MaxDistance = 90
+	billboard.Parent = marker
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.GothamBold
+	label.TextScaled = true
+	label.TextColor3 = zone.Accent
+	label.TextStrokeTransparency = 0.4
+	label.Text = string.format("WILD CAMP  •  LV %d-%d", low, high)
+	label.Parent = billboard
+
+	model.Parent = parent
+end
+
 function WorldLayout.GetEnemySpawns()
 	local configs = {}
 	for _, zone in ipairs(WorldLayout.ZONES) do
@@ -584,6 +701,12 @@ function WorldLayout.GetEnemySpawns()
 			configs[#configs + 1] = {
 				archetype = entry[1], position = frame:PointToWorldSpace(entry[2]), level = entry[3],
 			}
+		end
+	end
+	for _, camp in ipairs(WorldLayout.WILD_CAMPS) do
+		local positions = campSpawnPositions(camp)
+		for index, entry in ipairs(camp.Spawns) do
+			configs[#configs + 1] = { archetype = entry[1], position = positions[index], level = entry[2] }
 		end
 	end
 	return configs
@@ -622,6 +745,10 @@ function WorldLayout.EnsureBuilt()
 	resetSpawn()
 	relocateLoosePlacedPart(generated)
 	rebuildDecor()
+	local camps = Instance.new("Folder")
+	camps.Name = "WildCamps"
+	camps.Parent = generated
+	for _, camp in ipairs(WorldLayout.WILD_CAMPS) do buildWildCamp(camps, camp) end
 	built = true
 	Workspace:SetAttribute("WorldLayoutVersion", WorldLayout.VERSION)
 	Workspace:SetAttribute("WorldReady", true)
