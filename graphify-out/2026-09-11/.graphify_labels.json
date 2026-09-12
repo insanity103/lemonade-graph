@@ -19,7 +19,7 @@
   "17": "AnimationController.luau",
   "18": "LevelingSystem.server.luau",
   "19": "Boss_FrostRevenant",
-  "20": "Boss_VoidWraith",
+  "20": "Boss_Gorgon",
   "21": "BossRoomGate.server.luau",
   "22": "CombatController.client.luau",
   "23": "SwordSystem.server.luau",

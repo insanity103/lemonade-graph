@@ -1,16 +1,16 @@
 # Graph Report - lemonade-graph  (2026-09-11)
 
 ## Corpus Check
-- 59 files · ~59,990 words
+- 60 files · ~60,965 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 433 nodes · 666 edges · 51 communities (22 shown, 14 thin omitted)
+- 437 nodes · 671 edges · 52 communities (22 shown, 14 thin omitted)
 - Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 37 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `322b4786`
+- Built from commit: `d3bc2554`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -79,7 +79,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (51 total, 14 thin omitted)
+## Communities (52 total, 14 thin omitted)
 
 ### Community 0 - "RemoteEvents folder"
 Cohesion: 0.07
@@ -130,8 +130,8 @@ Cohesion: 0.18
 Nodes (4): AnimationController.Play(), AnimationExecutor.new(), ensureExecutor(), onActivated()
 
 ### Community 18 - "LevelingSystem.server.luau"
-Cohesion: 0.32
-Nodes (11): applyDeathGoldPenalty(), applyHealth(), awardExperience(), connectEnemyHumanoid(), getEnemyGold(), getEnemyReward(), getKiller(), getOrCreateIntValue() (+3 more)
+Cohesion: 0.31
+Nodes (12): applyDeathGoldPenalty(), applyHealth(), awardExperience(), connectEnemyHumanoid(), getEnemyGold(), getEnemyReward(), getKiller(), getOrCreateIntValue() (+4 more)
 
 ### Community 19 - "Boss_FrostRevenant"
 Cohesion: 0.18
@@ -146,7 +146,7 @@ Cohesion: 0.36
 Nodes (6): applyTier(), bindPlayer(), getLevel(), onCharacter(), tierFor(), tierGroup()
 
 ### Community 22 - "CombatController.client.luau"
-Cohesion: 0.36
+Cohesion: 0.43
 Nodes (5): findClosestLivingEnemy(), fireAttack(), getEquippedTool(), handleAttack(), isLivingEnemy()
 
 ### Community 23 - "SwordSystem.server.luau"
@@ -171,14 +171,14 @@ Nodes (3): OnChanged(), OnEquipped(), UpdateIcon()
 
 ## Knowledge Gaps
 - **108 isolated node(s):** `name`, `file`, `bytes`, `triangles`, `vertices` (+103 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 176 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 178 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `PlayerDataService.Apply()` connect `PlayerDataService.luau` to `EnemyCombat.server.luau`, `InventoryService.luau`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
 - **Why does `BossSwordFactory.rebuild()` connect `EnemyCombat.server.luau` to `PlayerDataService.luau`?**
   _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **What connects `name`, `file`, `bytes` to the rest of the system?**

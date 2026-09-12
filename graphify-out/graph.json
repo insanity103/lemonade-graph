@@ -1106,7 +1106,7 @@
       "file_type": "code",
       "norm_label": "bindplayer()",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L174"
+      "source_location": "L175"
     },
     {
       "id": "lemonade_game_serverscriptservice_sworddropsystem_server_getequippedweaponslots",
@@ -1154,7 +1154,7 @@
       "file_type": "code",
       "norm_label": "hook()",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L195"
+      "source_location": "L196"
     },
     {
       "id": "lemonade_game_serverscriptservice_sworddropsystem_server_makebosssword",
@@ -1322,7 +1322,7 @@
       "file_type": "code",
       "norm_label": "applydeathgoldpenalty()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L88"
+      "source_location": "L89"
     },
     {
       "id": "lemonade_game_serverscriptservice_levelingsystem_server_applyhealth",
@@ -1334,7 +1334,7 @@
       "file_type": "code",
       "norm_label": "applyhealth()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L62"
+      "source_location": "L63"
     },
     {
       "id": "lemonade_game_serverscriptservice_levelingsystem_server_awardexperience",
@@ -1346,7 +1346,7 @@
       "file_type": "code",
       "norm_label": "awardexperience()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L181"
+      "source_location": "L202"
     },
     {
       "id": "lemonade_game_serverscriptservice_levelingsystem_server_connectenemyhumanoid",
@@ -1358,7 +1358,7 @@
       "file_type": "code",
       "norm_label": "connectenemyhumanoid()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L244"
+      "source_location": "L287"
     },
     {
       "id": "lemonade_game_serverscriptservice_levelingsystem_server_getenemygold",
@@ -1370,7 +1370,7 @@
       "file_type": "code",
       "norm_label": "getenemygold()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L100"
+      "source_location": "L107"
     },
     {
       "id": "lemonade_game_serverscriptservice_levelingsystem_server_getenemyreward",
@@ -1382,7 +1382,7 @@
       "file_type": "code",
       "norm_label": "getenemyreward()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L226"
+      "source_location": "L269"
     },
     {
       "id": "lemonade_game_serverscriptservice_levelingsystem_server_getkiller",
@@ -1394,7 +1394,7 @@
       "file_type": "code",
       "norm_label": "getkiller()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L236"
+      "source_location": "L279"
     },
     {
       "id": "lemonade_game_serverscriptservice_levelingsystem_server_getorcreateintvalue",
@@ -1406,7 +1406,7 @@
       "file_type": "code",
       "norm_label": "getorcreateintvalue()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L48"
+      "source_location": "L49"
     },
     {
       "id": "lemonade_game_serverscriptservice_levelingsystem_server_getrequiredexperience",
@@ -1418,7 +1418,7 @@
       "file_type": "code",
       "norm_label": "getrequiredexperience()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L44"
+      "source_location": "L45"
     },
     {
       "id": "lemonade_game_serverscriptservice_levelingsystem_server_inspect",
@@ -1430,7 +1430,7 @@
       "file_type": "code",
       "norm_label": "inspect()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L285"
+      "source_location": "L328"
     },
     {
       "id": "lemonade_game_serverscriptservice_levelingsystem_server_setupplayer",
@@ -1442,7 +1442,19 @@
       "file_type": "code",
       "norm_label": "setupplayer()",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L104"
+      "source_location": "L122"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_levelingsystem_server_trackcombathealth",
+      "label": "trackCombatHealth()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "LevelingSystem.server.luau",
+      "file_type": "code",
+      "norm_label": "trackcombathealth()",
+      "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
+      "source_location": "L111"
     },
     {
       "id": "lemonade_game_replicatedstorage_config_bossweapons_bossweapons_get",
@@ -1586,7 +1598,7 @@
       "file_type": "code",
       "norm_label": "applyenemydamagetoplayer()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L748"
+      "source_location": "L757"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_attackenemy",
@@ -1598,7 +1610,7 @@
       "file_type": "code",
       "norm_label": "attackenemy()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L938"
+      "source_location": "L954"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_commandmove",
@@ -1610,7 +1622,7 @@
       "file_type": "code",
       "norm_label": "commandmove()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L828"
+      "source_location": "L844"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_createenemyrig",
@@ -1622,7 +1634,7 @@
       "file_type": "code",
       "norm_label": "createenemyrig()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L487"
+      "source_location": "L496"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_createmotor6d",
@@ -1634,7 +1646,7 @@
       "file_type": "code",
       "norm_label": "createmotor6d()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L456"
+      "source_location": "L465"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_findnearestenemy",
@@ -1646,7 +1658,7 @@
       "file_type": "code",
       "norm_label": "findnearestenemy()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L975"
+      "source_location": "L991"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_findnearestlivingplayer",
@@ -1658,7 +1670,7 @@
       "file_type": "code",
       "norm_label": "findnearestlivingplayer()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L727"
+      "source_location": "L736"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_getalivecharacter",
@@ -1670,7 +1682,7 @@
       "file_type": "code",
       "norm_label": "getalivecharacter()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L995"
+      "source_location": "L1011"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_getenemydamage",
@@ -1682,7 +1694,7 @@
       "file_type": "code",
       "norm_label": "getenemydamage()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L421"
+      "source_location": "L429"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_getenemymaxhealth",
@@ -1694,7 +1706,7 @@
       "file_type": "code",
       "norm_label": "getenemymaxhealth()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L413"
+      "source_location": "L418"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_getenemyxp",
@@ -1706,7 +1718,7 @@
       "file_type": "code",
       "norm_label": "getenemyxp()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L428"
+      "source_location": "L437"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_getplayerattackdamage",
@@ -1718,7 +1730,7 @@
       "file_type": "code",
       "norm_label": "getplayerattackdamage()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L432"
+      "source_location": "L441"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_hasequippedtool",
@@ -1730,7 +1742,7 @@
       "file_type": "code",
       "norm_label": "hasequippedtool()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1008"
+      "source_location": "L1024"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_resolvegroundposition",
@@ -1742,7 +1754,7 @@
       "file_type": "code",
       "norm_label": "resolvegroundposition()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L467"
+      "source_location": "L476"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_spawnenemy",
@@ -1754,7 +1766,7 @@
       "file_type": "code",
       "norm_label": "spawnenemy()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L926"
+      "source_location": "L942"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_startenemyai",
@@ -1766,7 +1778,7 @@
       "file_type": "code",
       "norm_label": "startenemyai()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L805"
+      "source_location": "L821"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_swingweapon",
@@ -1778,7 +1790,7 @@
       "file_type": "code",
       "norm_label": "swingweapon()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L774"
+      "source_location": "L790"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_tryunarmedattack",
@@ -1790,7 +1802,7 @@
       "file_type": "code",
       "norm_label": "tryunarmedattack()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1014"
+      "source_location": "L1030"
     },
     {
       "id": "lemonade_game_serverscriptservice_merchantsystem_server_isnearmerchant",
@@ -1937,18 +1949,6 @@
       "source_location": "L42"
     },
     {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client_autoallocateskillpoints",
-      "label": "autoAllocateSkillPoints()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": "CombatController.client.luau",
-      "file_type": "code",
-      "norm_label": "autoallocateskillpoints()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L99"
-    },
-    {
       "id": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client_findclosestlivingenemy",
       "label": "findClosestLivingEnemy()",
       "_callable": true,
@@ -1958,7 +1958,7 @@
       "file_type": "code",
       "norm_label": "findclosestlivingenemy()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L159"
+      "source_location": "L177"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client_fireattack",
@@ -1970,7 +1970,7 @@
       "file_type": "code",
       "norm_label": "fireattack()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L49"
+      "source_location": "L62"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client_getequippedtool",
@@ -1982,7 +1982,7 @@
       "file_type": "code",
       "norm_label": "getequippedtool()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L36"
+      "source_location": "L49"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client_handleattack",
@@ -1994,7 +1994,7 @@
       "file_type": "code",
       "norm_label": "handleattack()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L66"
+      "source_location": "L79"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client_islivingenemy",
@@ -2006,7 +2006,7 @@
       "file_type": "code",
       "norm_label": "islivingenemy()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L148"
+      "source_location": "L166"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client_setautoattack",
@@ -2018,7 +2018,7 @@
       "file_type": "code",
       "norm_label": "setautoattack()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L58"
+      "source_location": "L71"
     },
     {
       "id": "lemonade_game_serverscriptservice_swordsystem_server_applydamage",
@@ -2402,7 +2402,7 @@
       "file_type": "code",
       "norm_label": "update()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/LevelProgressGui.client.luau",
-      "source_location": "L107"
+      "source_location": "L120"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_levelupburst_client_spawnburst",
@@ -2427,6 +2427,42 @@
       "norm_label": "showxp()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau",
       "source_location": "L10"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_runtimebootstrap_server_ensurepart",
+      "label": "ensurePart()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 51,
+      "community_name": "RuntimeBootstrap.server.luau",
+      "file_type": "code",
+      "norm_label": "ensurepart()",
+      "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
+      "source_location": "L53"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_runtimebootstrap_server_ensureweld",
+      "label": "ensureWeld()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 51,
+      "community_name": "RuntimeBootstrap.server.luau",
+      "file_type": "code",
+      "norm_label": "ensureweld()",
+      "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
+      "source_location": "L84"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_runtimebootstrap_server_repairplayersword",
+      "label": "repairPlayerSword()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 51,
+      "community_name": "RuntimeBootstrap.server.luau",
+      "file_type": "code",
+      "norm_label": "repairplayersword()",
+      "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
+      "source_location": "L121"
     },
     {
       "id": "lemonade_game_serverscriptservice_inventoryservice_ensuredatafolder",
@@ -4566,6 +4602,17 @@
       "source_location": "L1"
     },
     {
+      "id": "lemonade_game_serverscriptservice_runtimebootstrap_server",
+      "label": "RuntimeBootstrap.server.luau",
+      "_origin": "ast",
+      "community": 51,
+      "community_name": "RuntimeBootstrap.server.luau",
+      "file_type": "code",
+      "norm_label": "runtimebootstrap.server.luau",
+      "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
+      "source_location": "L1"
+    },
+    {
       "id": "lemonade_game_serverscriptservice_inventoryservice",
       "label": "InventoryService.luau",
       "_origin": "ast",
@@ -5381,7 +5428,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L762",
+      "source_location": "L778",
       "weight": 1.0
     },
     {
@@ -5393,7 +5440,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L952",
+      "source_location": "L968",
       "weight": 1.0
     },
     {
@@ -5405,7 +5452,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L495",
+      "source_location": "L504",
       "weight": 1.0
     },
     {
@@ -5417,7 +5464,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L595",
+      "source_location": "L604",
       "weight": 1.0
     },
     {
@@ -5429,7 +5476,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L634",
+      "source_location": "L643",
       "weight": 1.0
     },
     {
@@ -5441,7 +5488,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L711",
+      "source_location": "L720",
       "weight": 1.0
     },
     {
@@ -5453,7 +5500,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L927",
+      "source_location": "L943",
       "weight": 1.0
     },
     {
@@ -5465,7 +5512,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L928",
+      "source_location": "L944",
       "weight": 1.0
     },
     {
@@ -5477,7 +5524,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1015",
+      "source_location": "L1031",
       "weight": 1.0
     },
     {
@@ -5489,7 +5536,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1016",
+      "source_location": "L1032",
       "weight": 1.0
     },
     {
@@ -5501,7 +5548,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1028",
+      "source_location": "L1044",
       "weight": 1.0
     },
     {
@@ -5513,7 +5560,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1030",
+      "source_location": "L1046",
       "weight": 1.0
     },
     {
@@ -5957,7 +6004,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L203",
+      "source_location": "L224",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_levelingsystem_server_awardexperience",
+      "target": "lemonade_game_serverscriptservice_levelingsystem_server_applyhealth",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
+      "source_location": "L233",
       "weight": 1.0
     },
     {
@@ -5969,7 +6028,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L261",
+      "source_location": "L304",
       "weight": 1.0
     },
     {
@@ -5981,7 +6040,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L263",
+      "source_location": "L306",
       "weight": 1.0
     },
     {
@@ -5993,7 +6052,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L264",
+      "source_location": "L307",
       "weight": 1.0
     },
     {
@@ -6005,7 +6064,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L272",
+      "source_location": "L315",
       "weight": 1.0
     },
     {
@@ -6017,7 +6076,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L287",
+      "source_location": "L330",
       "weight": 1.0
     },
     {
@@ -6029,7 +6088,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L112",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -6041,7 +6100,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L118",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_levelingsystem_server_setupplayer",
+      "target": "lemonade_game_serverscriptservice_levelingsystem_server_trackcombathealth",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
+      "source_location": "L175",
       "weight": 1.0
     },
     {
@@ -6053,7 +6124,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L158",
+      "source_location": "L177",
       "weight": 1.0
     },
     {
@@ -6065,7 +6136,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L160",
+      "source_location": "L179",
       "weight": 1.0
     },
     {
@@ -6281,7 +6352,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L178",
+      "source_location": "L179",
       "weight": 1.0
     },
     {
@@ -6329,7 +6400,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L226",
+      "source_location": "L227",
       "weight": 1.0
     },
     {
@@ -7133,7 +7204,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L164",
+      "source_location": "L182",
       "weight": 1.0
     },
     {
@@ -7145,7 +7216,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L50",
+      "source_location": "L63",
       "weight": 1.0
     },
     {
@@ -7157,7 +7228,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L68",
+      "source_location": "L81",
       "weight": 1.0
     },
     {
@@ -9373,13 +9444,24 @@
     },
     {
       "source": "lemonade_game_serverscriptservice_enemycombat_server",
+      "target": "lemonade_game_serverscriptservice_enemycombat_server_getalivecharacter",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
+      "source_location": "L1011",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_enemycombat_server",
       "target": "lemonade_game_serverscriptservice_enemycombat_server_hasequippedtool",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1008",
+      "source_location": "L1024",
       "weight": 1.0
     },
     {
@@ -9390,7 +9472,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1014",
+      "source_location": "L1030",
       "weight": 1.0
     },
     {
@@ -9401,7 +9483,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L413",
+      "source_location": "L418",
       "weight": 1.0
     },
     {
@@ -9412,7 +9494,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L421",
+      "source_location": "L429",
       "weight": 1.0
     },
     {
@@ -9423,7 +9505,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L428",
+      "source_location": "L437",
       "weight": 1.0
     },
     {
@@ -9434,7 +9516,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L432",
+      "source_location": "L441",
       "weight": 1.0
     },
     {
@@ -9445,7 +9527,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L456",
+      "source_location": "L465",
       "weight": 1.0
     },
     {
@@ -9456,7 +9538,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L467",
+      "source_location": "L476",
       "weight": 1.0
     },
     {
@@ -9467,7 +9549,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L487",
+      "source_location": "L496",
       "weight": 1.0
     },
     {
@@ -9478,7 +9560,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L727",
+      "source_location": "L736",
       "weight": 1.0
     },
     {
@@ -9489,7 +9571,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L748",
+      "source_location": "L757",
       "weight": 1.0
     },
     {
@@ -9500,7 +9582,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L774",
+      "source_location": "L790",
       "weight": 1.0
     },
     {
@@ -9511,7 +9593,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L805",
+      "source_location": "L821",
       "weight": 1.0
     },
     {
@@ -9522,7 +9604,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L828",
+      "source_location": "L844",
       "weight": 1.0
     },
     {
@@ -9533,7 +9615,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L926",
+      "source_location": "L942",
       "weight": 1.0
     },
     {
@@ -9544,7 +9626,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L938",
+      "source_location": "L954",
       "weight": 1.0
     },
     {
@@ -9555,18 +9637,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L975",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_serverscriptservice_enemycombat_server",
-      "target": "lemonade_game_serverscriptservice_enemycombat_server_getalivecharacter",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L995",
+      "source_location": "L991",
       "weight": 1.0
     },
     {
@@ -9841,7 +9912,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L100",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_levelingsystem_server",
+      "target": "lemonade_game_serverscriptservice_levelingsystem_server_trackcombathealth",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -9852,7 +9934,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L104",
+      "source_location": "L122",
       "weight": 1.0
     },
     {
@@ -9863,7 +9945,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L181",
+      "source_location": "L202",
       "weight": 1.0
     },
     {
@@ -9874,7 +9956,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L226",
+      "source_location": "L269",
       "weight": 1.0
     },
     {
@@ -9885,7 +9967,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L236",
+      "source_location": "L279",
       "weight": 1.0
     },
     {
@@ -9896,7 +9978,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L244",
+      "source_location": "L287",
       "weight": 1.0
     },
     {
@@ -9907,7 +9989,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L285",
+      "source_location": "L328",
       "weight": 1.0
     },
     {
@@ -9918,7 +10000,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L44",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -9929,7 +10011,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L48",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -9940,7 +10022,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L62",
+      "source_location": "L63",
       "weight": 1.0
     },
     {
@@ -9951,7 +10033,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/LevelingSystem.server.luau",
-      "source_location": "L88",
+      "source_location": "L89",
       "weight": 1.0
     },
     {
@@ -10186,6 +10268,39 @@
       "weight": 1.0
     },
     {
+      "source": "lemonade_game_serverscriptservice_runtimebootstrap_server",
+      "target": "lemonade_game_serverscriptservice_runtimebootstrap_server_repairplayersword",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_runtimebootstrap_server",
+      "target": "lemonade_game_serverscriptservice_runtimebootstrap_server_ensurepart",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_serverscriptservice_runtimebootstrap_server",
+      "target": "lemonade_game_serverscriptservice_runtimebootstrap_server_ensureweld",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
       "source": "lemonade_game_serverscriptservice_sworddropsystem_server",
       "target": "lemonade_game_serverscriptservice_sworddropsystem_server_watchcharacter",
       "relation": "contains",
@@ -10204,7 +10319,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L174",
+      "source_location": "L175",
       "weight": 1.0
     },
     {
@@ -10215,7 +10330,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L195",
+      "source_location": "L196",
       "weight": 1.0
     },
     {
@@ -10787,7 +10902,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L148",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -10798,7 +10913,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L159",
+      "source_location": "L177",
       "weight": 1.0
     },
     {
@@ -10809,7 +10924,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L36",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -10820,7 +10935,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L49",
+      "source_location": "L62",
       "weight": 1.0
     },
     {
@@ -10831,7 +10946,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L58",
+      "source_location": "L71",
       "weight": 1.0
     },
     {
@@ -10842,18 +10957,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L66",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client_autoallocateskillpoints",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L99",
+      "source_location": "L79",
       "weight": 1.0
     },
     {
@@ -10886,7 +10990,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/LevelProgressGui.client.luau",
-      "source_location": "L107",
+      "source_location": "L120",
       "weight": 1.0
     },
     {
@@ -12193,7 +12297,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L756",
+      "source_location": "L765",
       "weight": 1.0
     },
     {
@@ -12205,7 +12309,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L605",
+      "source_location": "L614",
       "weight": 1.0
     },
     {
@@ -12217,7 +12321,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L611",
+      "source_location": "L620",
       "weight": 1.0
     },
     {
@@ -12229,7 +12333,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L614",
+      "source_location": "L623",
       "weight": 1.0
     },
     {
@@ -12241,7 +12345,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L985",
+      "source_location": "L1001",
       "weight": 1.0
     },
     {
@@ -12385,7 +12489,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L196",
+      "source_location": "L197",
       "weight": 1.0
     },
     {
@@ -12397,7 +12501,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L220",
+      "source_location": "L221",
       "weight": 1.0
     },
     {
@@ -12861,5 +12965,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "322b4786f8b324a9ad92d99f540935148eac7c1f"
+  "built_at_commit": "d3bc25542641d4323714844485b2b6cae7dee52a"
 }
