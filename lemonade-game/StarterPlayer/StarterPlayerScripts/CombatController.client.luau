@@ -13,6 +13,8 @@ local toggleRemote = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild
 local spendEvent = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("SpendSkillPoint")
 
 local autoAttackOn = false
+local autoSkillOn = false
+local autoAllocateSkillPoints
 
 -- HUD showing auto-attack state
 local playerGui = player:WaitForChild("PlayerGui")
@@ -32,6 +34,17 @@ statusLabel.Font = Enum.Font.SourceSans
 statusLabel.TextSize = 18
 statusLabel.Text = "Auto-Attack: OFF (Q)"
 statusLabel.Parent = autoGui
+
+local skillStatusLabel = Instance.new("TextLabel")
+skillStatusLabel.Size = UDim2.new(0, 260, 0, 24)
+skillStatusLabel.Position = UDim2.fromScale(0.5, 0.055)
+skillStatusLabel.AnchorPoint = Vector2.new(0.5, 0)
+skillStatusLabel.BackgroundTransparency = 1
+skillStatusLabel.TextColor3 = Color3.fromRGB(180, 185, 200)
+skillStatusLabel.Font = Enum.Font.SourceSans
+skillStatusLabel.TextSize = 15
+skillStatusLabel.Text = "Skill Points: manual (P to auto)"
+skillStatusLabel.Parent = autoGui
 
 local function getEquippedTool()
 	local character = player.Character
@@ -81,6 +94,13 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if input.KeyCode == Enum.KeyCode.Q then
 		setAutoAttack(not autoAttackOn)
 	end
+	if input.KeyCode == Enum.KeyCode.P then
+		autoSkillOn = not autoSkillOn
+		skillStatusLabel.Text = autoSkillOn and "Skill Points: auto (P)" or "Skill Points: manual (P to auto)"
+		if autoSkillOn and (player:GetAttribute("SkillPoints") or 0) > 0 then
+			task.spawn(autoAllocateSkillPoints)
+		end
+	end
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		fireAttack()
 	end
@@ -89,14 +109,13 @@ end)
 print("[CombatController] Attack controls enabled (Left Click / E / Q)")
 
 -- ===================================================================
--- AUTO SKILL POINT ALLOCATION
--- Automatically distributes available skill points evenly across all
--- attributes (Strength, Health, Defense, ExperienceGain).
+-- OPTIONAL AUTO SKILL POINT ALLOCATION
+-- Press P to distribute available points evenly across all attributes.
 -- ===================================================================
 local ALLOCATE_ATTRIBUTES = { "Strength", "Health", "Defense", "ExperienceGain" }
 local isAllocating = false
 
-local function autoAllocateSkillPoints()
+autoAllocateSkillPoints = function()
 	if isAllocating then
 		return
 	end
@@ -104,6 +123,9 @@ local function autoAllocateSkillPoints()
 
 	local points = player:GetAttribute("SkillPoints") or 0
 	while points > 0 do
+		if not autoSkillOn then
+			break
+		end
 		local lowestAttr = ALLOCATE_ATTRIBUTES[1]
 		local lowestVal = player:GetAttribute(lowestAttr) or 0
 
@@ -127,13 +149,9 @@ end
 player:GetAttributeChangedSignal("SkillPoints"):Connect(function()
 	local points = player:GetAttribute("SkillPoints") or 0
 	if points > 0 then
-		task.spawn(autoAllocateSkillPoints)
+		if autoSkillOn then task.spawn(autoAllocateSkillPoints) end
 	end
 end)
-
-if (player:GetAttribute("SkillPoints") or 0) > 0 then
-	task.spawn(autoAllocateSkillPoints)
-end
 
 -- ===================================================================
 -- AUTO-ATTACK MOVEMENT & TARGETING CONTROLLER
