@@ -57,10 +57,10 @@ WorldLayout.ZONES = {
 		Rocks = { Vector3.new(-46, 0, -32), Vector3.new(47, 0, 2), Vector3.new(20, 0, 48) },
 		Spawns = {
 			{ "Boss_Gorgon", Vector3.new(0, 0, 10), 10 },
-			{ "IronSquire", Vector3.new(-15, 0, -7), 6 }, { "IronSquire", Vector3.new(15, 0, -7), 7 },
-			{ "IronBerserker", Vector3.new(-14, 0, 17), 8 }, { "IronBerserker", Vector3.new(14, 0, 17), 8 },
+			{ "IronSquire", Vector3.new(-15, 0, -7), 1 }, { "IronSquire", Vector3.new(15, 0, -7), 1 },
+			{ "IronBerserker", Vector3.new(-14, 0, 17), 2 }, { "IronBerserker", Vector3.new(14, 0, 17), 2 },
 		},
-		Elite = { "IronBerserker", Vector3.new(-7, 0, 26), 9 },
+		Elite = { "IronBerserker", Vector3.new(-7, 0, 26), 3 },
 	},
 	-- Bridge zones (Lv8 / 23 / 40) close the gap between each boss arena and the next
 	-- door. Each sits on a spur off the trail, >=95 studs from every other arena.

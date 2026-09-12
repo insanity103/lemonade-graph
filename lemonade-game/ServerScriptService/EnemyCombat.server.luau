@@ -20,6 +20,9 @@ local SWORD_GRIP_FRAC = 0.38 -- where along the blade the hand sits, from centre
 -- Defense is a straight percentage reduction with a hard cap, so it can never trivialise an enemy.
 local DEFENSE_PCT_PER_POINT = 0.003 -- each Defense point removes 0.30% of incoming damage
 local DEFENSE_MAX_REDUCTION = 0.35 -- hard cap: Defense never mitigates more than 35%
+-- Keep early encounters forgiving and leave room for mistakes. Players should be
+-- able to clear a small group and reach the next level without repeated deaths.
+local ENEMY_DAMAGE_MULTIPLIER = 0.55
 local ATTACK_COOLDOWN = 0.4
 local RESPAWN_DELAY = 5
 local DEFAULT_ARCHETYPE = "IronSquire"
@@ -761,7 +764,7 @@ local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 	local defense = player and (player:GetAttribute("Defense") or 0) or 0
 	local rawDamage = getEnemyDamage(arch, level)
 	local reduction = math.min(defense * DEFENSE_PCT_PER_POINT, DEFENSE_MAX_REDUCTION)
-	local finalDamage = math.max(1, math.floor(rawDamage * (1 - reduction) + 0.5))
+	local finalDamage = math.max(1, math.floor(rawDamage * ENEMY_DAMAGE_MULTIPLIER * (1 - reduction) + 0.5))
 
 	humanoid:TakeDamage(finalDamage)
 
