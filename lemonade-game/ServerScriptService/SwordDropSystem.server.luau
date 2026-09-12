@@ -156,7 +156,8 @@ local function watchCharacter(player, character)
 			if not bag then return end
 			for _, tool in ipairs(character:GetChildren()) do
 				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true then
-					if math.random() < DEATH_SWORD_LOSS_CHANCE then
+					local level = player:GetAttribute("Level") or 1
+					if level > 8 and math.random() < DEATH_SWORD_LOSS_CHANCE then
 						local lostName, lostRarity = tool.Name, tool:GetAttribute("Rarity")
 						tool:Destroy()
 						SWORD_LOST_EVENT:FireClient(player, lostName, lostRarity)

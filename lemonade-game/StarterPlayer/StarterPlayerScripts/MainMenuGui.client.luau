@@ -325,7 +325,7 @@ local function buildHomePanel()
 	}
 	local statLabels = {}
 	for i, row in ipairs(rows) do statLabels[row[1]] = createStatRow(row[1], row[2], 2 + i) end
-	local tip = createText(body, { text = "Press Q for auto-attack. Press M for this menu.", font = Enum.Font.Gotham, size = 13, color = COLORS.Muted, wrap = true, size2 = UDim2.new(1, 0, 0, 48), zIndex = 23 })
+	local tip = createText(body, { text = "Start with Iron Lowlands: defeat a few enemies, spend Skill Points, then follow the level gates. Press Q for auto-attack.", font = Enum.Font.Gotham, size = 13, color = COLORS.Muted, wrap = true, size2 = UDim2.new(1, 0, 0, 48), zIndex = 23 })
 	tip.LayoutOrder = 20
 	return statLabels
 end

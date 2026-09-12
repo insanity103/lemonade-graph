@@ -23,6 +23,7 @@ local DEFENSE_MAX_REDUCTION = 0.35 -- hard cap: Defense never mitigates more tha
 -- Keep early encounters forgiving and leave room for mistakes. Players should be
 -- able to clear a small group and reach the next level without repeated deaths.
 local ENEMY_DAMAGE_MULTIPLIER = 0.55
+local ENEMY_HIT_INTERVAL_PER_PLAYER = 0.7 -- prevents several enemies landing damage on one frame
 local ATTACK_COOLDOWN = 0.4
 local RESPAWN_DELAY = 5
 local DEFAULT_ARCHETYPE = "IronSquire"
@@ -61,6 +62,7 @@ local TOGGLE_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChil
 local DAMAGE_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("DamageNumber")
 
 local playerCooldowns = {}
+local playerEnemyHitAt = {}
 local autoAttackState = {} -- [player] = bool (auto-attack on/off)
 
 -- ==============================================================================
@@ -418,14 +420,18 @@ local function getEnemyMaxHealth(archetype, level)
 		-- Boss linear-quadratic scaling: smooth difficulty curve without numeric overflow at high levels
 		return math.floor(archetype.baseHealth + (archetype.baseHealth * 0.45 * level) + (35 * level * level))
 	end
-	return math.floor(archetype.baseHealth * archetype.healthGrowth ^ (level - 1))
+	local levelDelta = math.max(0, level - 1)
+	-- Soft quadratic growth keeps later zones meaningful without exponential
+	-- one-shot spikes when a player reaches a new area.
+	return math.floor(archetype.baseHealth * (1 + 0.14 * levelDelta + 0.008 * levelDelta * levelDelta))
 end
 
 local function getEnemyDamage(archetype, level)
 	if archetype.boss then
 		return math.floor(archetype.baseDamage + (archetype.baseDamage * 0.12 * level) + (2.5 * level))
 	end
-	return math.floor(archetype.baseDamage * archetype.damageGrowth ^ (level - 1))
+	local levelDelta = math.max(0, level - 1)
+	return math.floor(archetype.baseDamage * (1 + 0.08 * levelDelta + 0.0015 * levelDelta * levelDelta))
 end
 
 local function getEnemyXP(archetype, level)
@@ -761,6 +767,13 @@ local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 	end
 
 	local player = Players:GetPlayerFromCharacter(playerChar)
+	if player then
+		local now = tick()
+		if now - (playerEnemyHitAt[player] or 0) < ENEMY_HIT_INTERVAL_PER_PLAYER then
+			return
+		end
+		playerEnemyHitAt[player] = now
+	end
 	local defense = player and (player:GetAttribute("Defense") or 0) or 0
 	local rawDamage = getEnemyDamage(arch, level)
 	local reduction = math.min(defense * DEFENSE_PCT_PER_POINT, DEFENSE_MAX_REDUCTION)
@@ -892,9 +905,9 @@ task.spawn(function()
 					commandMove(state, humanoid, hrp.Position, now)
 					if now - state.lastAttackTime >= arch.attackCooldown then
 						state.lastAttackTime = now
-						if arch.weapon then
-							swingWeapon(model)
-						end
+						-- Every enemy telegraphs its swing so the player can react before
+						-- damage lands; boss weapons still use their distinct blade pose.
+						swingWeapon(model)
 						applyEnemyDamageToPlayer(model, state.targetChar, arch, level)
 					end
 				else
@@ -1059,6 +1072,7 @@ end)
 
 Players.PlayerRemoving:Connect(function(player)
 	playerCooldowns[player] = nil
+	playerEnemyHitAt[player] = nil
 	autoAttackState[player] = nil
 end)
 

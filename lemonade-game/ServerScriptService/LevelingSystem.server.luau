@@ -37,6 +37,7 @@ local ATTRIBUTE_NAMES = { "Strength", "Health", "Defense", "ExperienceGain" }
 
 local combatXP = {} -- [player] = accumulated XP earned this combat session
 local lastCombatAction = {} -- [player] = tick() of most recent kill
+local lastDamageAt = setmetatable({}, { __mode = "k" })
 
 local connectedHumanoids = setmetatable({}, { __mode = "k" })
 local processedDeaths = setmetatable({}, { __mode = "k" })
@@ -92,13 +93,30 @@ local function applyDeathGoldPenalty(player)
 		return
 	end
 
-	local lostGold = math.floor(gold.Value * 0.15)
+	local level = player:GetAttribute("Level") or 1
+	-- Early exploration should teach the loop without deleting the player's
+	-- earnings. The gold sink starts after the opening zone.
+	local penaltyRate = level <= 8 and 0 or 0.15
+	local lostGold = math.floor(gold.Value * penaltyRate)
 	gold.Value -= lostGold
-	print(string.format("[LevelingSystem] %s lost %d Gold on death (15%% of %d)", player.Name, lostGold, gold.Value + lostGold))
+	if lostGold > 0 then
+		print(string.format("[LevelingSystem] %s lost %d Gold on death (15%% of %d)", player.Name, lostGold, gold.Value + lostGold))
+	end
 end
 
 local function getEnemyGold(level)
 	return math.floor(GOLD_BASE * level)
+end
+
+local function trackCombatHealth(humanoid)
+	lastDamageAt[humanoid] = tick()
+	local previous = humanoid.Health
+	humanoid.HealthChanged:Connect(function(current)
+		if current < previous then
+			lastDamageAt[humanoid] = tick()
+		end
+		previous = current
+	end)
 end
 
 local function setupPlayer(player)
@@ -154,6 +172,7 @@ local function setupPlayer(player)
 
 	player.CharacterAdded:Connect(function(character)
 		local humanoid = character:WaitForChild("Humanoid")
+		trackCombatHealth(humanoid)
 		humanoid.Died:Connect(function()
 			applyDeathGoldPenalty(player)
 		end)
@@ -164,12 +183,14 @@ local function setupPlayer(player)
 	if player.Character then
 		local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
 		if humanoid then
+			trackCombatHealth(humanoid)
 			humanoid.Died:Connect(function()
 				applyDeathGoldPenalty(player)
 			end)
 			applyHealth(player, player:GetAttribute("Health") or 0)
 		else
 			humanoid = player.Character:WaitForChild("Humanoid")
+			trackCombatHealth(humanoid)
 			humanoid.Died:Connect(function()
 				applyDeathGoldPenalty(player)
 			end)
@@ -208,6 +229,8 @@ local function awardExperience(player, amount)
 
 	-- Grant skill points for each level gained.
 	if levelsGained > 0 then
+		-- A level-up is a safe recovery beat as well as a power increase.
+		applyHealth(player, player:GetAttribute("Health") or 0)
 		local newPoints = (player:GetAttribute("SkillPoints") or 0) + SKILL_POINTS_PER_LEVEL * levelsGained
 		player:SetAttribute("SkillPoints", newPoints)
 		print(string.format("[LevelingSystem] %s reached level %d and gained %d skill points (total %d)",
@@ -222,6 +245,26 @@ local function awardExperience(player, amount)
 
 	return gained
 end
+
+-- Regenerate after a short, readable pause away from combat. This keeps a
+-- player who barely survives an encounter moving forward without making
+-- Defense or Health upgrades irrelevant.
+local REGEN_DELAY = 4
+local REGEN_PER_SECOND = 0.08
+task.spawn(function()
+	while true do
+		local now = tick()
+		for _, player in ipairs(Players:GetPlayers()) do
+			local character = player.Character
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			if humanoid and humanoid.Health > 0 and humanoid.Health < humanoid.MaxHealth
+				and now - (lastDamageAt[humanoid] or 0) >= REGEN_DELAY then
+				humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * REGEN_PER_SECOND * 0.5)
+			end
+		end
+		task.wait(0.5)
+	end
+end)
 
 local function getEnemyReward(model)
 	local reward = model:GetAttribute(XP_REWARD_ATTRIBUTE)
