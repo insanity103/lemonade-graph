@@ -1,6 +1,6 @@
 # Fivefold Sanctuary
 
-Blender redesign of Lemonade Sword RPG, authored for the September 13 request: a large circular safe hub, five outward branches, one clearly defined region per main boss, and a rebirth NPC station. This is the Part 2 asset delivery. The live game scripts are unchanged; the integration files are outside the active Rojo tree.
+Blender redesign of Lemonade Sword RPG, authored for the September 13 request: a large circular safe hub, five outward branches, one clearly defined region per main boss, and a rebirth NPC station. This is the Part 2 asset delivery. This task does not replace the live map builder; the integration files are outside the active Rojo tree.
 
 ## Open the design
 
@@ -19,6 +19,8 @@ Blender redesign of Lemonade Sword RPG, authored for the September 13 request: a
 - `validation.json`: measured geometry/placement checks and remaining Studio limitations.
 
 ## Layout and scale
+
+**Blender validation passed:** 423 map meshes / 100,854 triangles, with at most 4,082 triangles in one mesh. All 108 enemy anchors, five main routes and eight arena entrances passed floor/clearance checks. Every mesh retained its individual position and dimensions through a GLB export/import round trip. The ten reusable LOD1 props each use fewer triangles than their LOD0 counterpart. The seven handoff files passed syntax checks with the system Lua 5.4 parser; that is not a Roblox runtime or Luau type-checking test.
 
 The hub is **360 studs in diameter**, compared with the old 52-stud plaza. Its enemy exclusion radius is **195 studs**. Five gates are spaced **72 degrees** apart around the circumference. Each leads across a **28-stud-wide**, **128-stud-long** stone bridge, then through a regional threshold into four linked enemy clearings. Each main boss has a separate **68-stud circular court** at radial distance **550 studs**, with a **14-stud gate** facing the hub.
 
@@ -76,7 +78,7 @@ The current rebirth implementation resets level, XP and gold; this differs from 
 7. Reuse/relocate the existing quest and merchant logic at the hub anchors. `QuestConfig.GIVER_POSITION` is a placeholder body's center, while the new `QuestGiverPosition` is feet position. Replace the old visual placeholder with the supplied NPC instead of layering two bodies. Keep existing quest IDs and rewards. Merchant anchor is also a feet position.
 8. Wire `SafeHub.canEnemyAttack()` into both target acquisition and server damage application, including AOE/projectile paths. Leash enemies to their assigned branch/arena. There are no enemy spawns inside the sanctuary; the nearest is over 346 studs from center, so even the current largest 85-stud leash cannot reach the 195-stud safe boundary. Distance alone is not a damage-permission check.
 9. Install the rebirth prompt script, and paste the hook snippet after `setMenuOpen` in `MainMenuGui.client.luau`. It reuses the existing UI, remote request and server validation. Optionally rig the static NPC later; animation is not required for the interaction.
-10. Use the playtest below before publishing. The Blender scene is a daylight visual reference; Roblox lighting, emissive appearance, fog, streaming, collisions and NPC interactions still require Studio verification. Nothing has been published by this delivery.
+10. Use the playtest below before publishing. The Blender scene is a daylight visual reference; Roblox lighting, emissive appearance, fog, streaming, collisions and NPC interactions still require Studio verification. No Roblox place or asset upload was performed in this Blender task.
 
 ## Five Studio playtests
 

@@ -1,29 +1,17 @@
 {
-  "status": "failed",
+  "status": "passed",
   "stats": {
     "mesh_count": 423,
-    "triangles": 91848,
+    "triangles": 100854,
     "max_mesh_triangles": 4082,
-    "nonmanifold_meshes": [
-      {
-        "mesh": "Hub_Warm ivory_-1_-1",
-        "edges": 6
-      },
-      {
-        "mesh": "Branch_InfernalCaldera_Warm ivory_1_-3",
-        "edges": 1
-      },
-      {
-        "mesh": "Arena_InfernalCaldera_Warm ivory_2_-4",
-        "edges": 1
-      }
-    ],
+    "nonmanifold_meshes": [],
     "closest_enemy_to_hub_center": 346.342,
     "enemy_anchor_count": 108,
     "spawn_ground_errors": [],
     "spawn_clearance_errors": [],
     "route_errors": [],
     "max_main_route_slope_degrees": 10.62,
+    "arena_route_errors": [],
     "roundtrip_bounds_delta": 0.0,
     "roundtrip_per_mesh_bounds_delta": 0
   },
@@ -42,7 +30,7 @@
     },
     {
       "check": "All mesh components have closed manifold surfaces",
-      "passed": false
+      "passed": true
     },
     {
       "check": "Exactly five branches leave the hub",
@@ -258,6 +246,10 @@
     },
     {
       "check": "No main-route ramp is steeper than 12 degrees",
+      "passed": true
+    },
+    {
+      "check": "All eight arena entrance ramps and door openings have clear walkable routes",
       "passed": true
     },
     {
@@ -765,9 +757,7 @@
       "passed": true
     }
   ],
-  "issues": [
-    "All mesh components have closed manifold surfaces"
-  ],
+  "issues": [],
   "limitations": [
     "Roblox Studio import, collision fidelity, streaming, combat and prompts require live Studio playtesting"
   ]
