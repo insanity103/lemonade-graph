@@ -6,52 +6,43 @@ local Workspace = game:GetService("Workspace")
 
 local WorldLayout = {}
 
-WorldLayout.VERSION = 5
+WorldLayout.VERSION = 6
 WorldLayout.HUB = {
-	Center = Vector3.new(0, 2, -178),
-	SpawnPosition = Vector3.new(-8, 3.3, -181),
-	MerchantPosition = Vector3.new(13, 2.8, -172),
+	Center = Vector3.new(0, 6, 0),
+	SpawnPosition = Vector3.new(0, 9, 42),
+	MerchantPosition = Vector3.new(98, 6.3, 27),
+	QuestGiverPosition = Vector3.new(-42, 6.3, 12),
+	RebirthPosition = Vector3.new(-98, 6.3, 32),
 }
 
 -- Hub feature positions (offsets from HUB.Center, used by Hub* scripts)
 WorldLayout.HUB_FEATURES = {
-	Campfire       = Vector3.new(18, 0, 8),    -- south-east of spawn
-	Leaderboard    = Vector3.new(-14, 0, -10), -- north-west of spawn
-	RespecShrine   = Vector3.new(-8, 0, 12),   -- south of spawn
+	Campfire       = Vector3.new(45, 0, 20),    -- south-east of spawn
+	Leaderboard    = Vector3.new(-35, 0, -25),  -- north-west of spawn
+	RespecShrine   = Vector3.new(-20, 0, 40),   -- south of spawn
 	-- Ambient NPCs wander around the hub using their own waypoint tables
 }
 
 -- A readable S-curve replaces the old hub-and-spoke layout. Each arena sits
 -- beside the road so the player sees its landmark before reaching its gate.
 WorldLayout.ROUTE = {
-	{ Position = Vector3.new(0, 2, -178), Material = Enum.Material.Cobblestone, Level = 0 },
-	{ Position = Vector3.new(-15, 3, -160), Material = Enum.Material.Cobblestone, Level = 0 },
-	{ Position = Vector3.new(-31, 4, -143), Material = Enum.Material.Ground, Level = 1 },
-	{ Position = Vector3.new(-45, 4, -130), Material = Enum.Material.Ground, Level = 1 },
-	{ Position = Vector3.new(-75, 6, -145), Material = Enum.Material.Ground, Level = 1 },
-	{ Position = Vector3.new(-108, 9, -122), Material = Enum.Material.Rock, Level = 10 },
-	{ Position = Vector3.new(-122, 11, -88), Material = Enum.Material.Snow, Level = 15 },
-	{ Position = Vector3.new(-111, 12, -57), Material = Enum.Material.Snow, Level = 15 },
-	{ Position = Vector3.new(-139, 14, -72), Material = Enum.Material.Snow, Level = 15 },
-	{ Position = Vector3.new(-174, 16, -54), Material = Enum.Material.Snow, Level = 15 },
-	{ Position = Vector3.new(-185, 17, -15), Material = Enum.Material.Rock, Level = 22 },
-	{ Position = Vector3.new(-171, 19, 20), Material = Enum.Material.Basalt, Level = 30 },
-	{ Position = Vector3.new(-132, 20, 42), Material = Enum.Material.Basalt, Level = 30 },
-	{ Position = Vector3.new(-106, 21, 40), Material = Enum.Material.Basalt, Level = 30 },
-	{ Position = Vector3.new(-79, 24, 57), Material = Enum.Material.Rock, Level = 40 },
-	{ Position = Vector3.new(-61, 27, 83), Material = Enum.Material.Slate, Level = 50 },
-	{ Position = Vector3.new(-43, 29, 101), Material = Enum.Material.Slate, Level = 50 },
-	{ Position = Vector3.new(-27, 30, 108), Material = Enum.Material.Slate, Level = 50 },
-	{ Position = Vector3.new(-3, 33, 88), Material = Enum.Material.Slate, Level = 58 },
-	{ Position = Vector3.new(26, 36, 73), Material = Enum.Material.Sandstone, Level = 68 },
-	{ Position = Vector3.new(55, 39, 80), Material = Enum.Material.Sandstone, Level = 75 },
-	{ Position = Vector3.new(78, 40, 91), Material = Enum.Material.Marble, Level = 75 },
+	{ Position = Vector3.new(0, 6, -24), Material = Enum.Material.Cobblestone, Level = 0 },
+	{ Position = Vector3.new(0, 6, -92), Material = Enum.Material.Ground, Level = 1 },
+	{ Position = Vector3.new(0, 6, -152), Material = Enum.Material.Ground, Level = 1 },
+	{ Position = Vector3.new(0, 6, -178), Material = Enum.Material.Ground, Level = 1 },
+	{ Position = Vector3.new(0, 7.3125, -220), Material = Enum.Material.Ground, Level = 1 },
+	{ Position = Vector3.new(0, 8.7188, -265), Material = Enum.Material.Rock, Level = 10 },
+	{ Position = Vector3.new(0, 10, -306), Material = Enum.Material.Rock, Level = 10 },
+	{ Position = Vector3.new(0, 10, -340), Material = Enum.Material.Ground, Level = 1 },
+	{ Position = Vector3.new(0, 10, -390), Material = Enum.Material.Ground, Level = 1 },
+	{ Position = Vector3.new(0, 10, -445), Material = Enum.Material.Ground, Level = 1 },
+	{ Position = Vector3.new(0, 10, -498), Material = Enum.Material.Ground, Level = 1 },
 }
 
 WorldLayout.ZONES = {
 	{
 		Name = "IronLowlands", DisplayName = "Iron Lowlands", RequiredLevel = 1,
-		Center = Vector3.new(-72, 5, -104), Approach = Vector3.new(-45, 4, -130),
+		Center = Vector3.new(0, 12, -550), Approach = Vector3.new(0, 12, -498),
 		TerrainMaterial = Enum.Material.Ground, FloorMaterial = Enum.Material.Slate,
 		Color = Color3.fromRGB(117, 75, 67), Accent = Color3.fromRGB(205, 103, 78), Style = "Woodland",
 		Landforms = {
@@ -65,8 +56,8 @@ WorldLayout.ZONES = {
 		Rocks = { Vector3.new(-46, 0, -32), Vector3.new(47, 0, 2), Vector3.new(20, 0, 48) },
 		Spawns = {
 			{ "Boss_Gorgon", Vector3.new(0, 0, 10), 10 },
-			{ "IronSquire", Vector3.new(-15, 0, -7), 1 }, { "IronSquire", Vector3.new(15, 0, -7), 1 },
-			{ "IronBerserker", Vector3.new(-14, 0, 17), 2 }, { "IronBerserker", Vector3.new(14, 0, 17), 2 },
+			{ "IronSquire", Vector3.new(-15, 0, -7), 1 }, { "IronSquire", Vector3.new(15, 0, -7), 2 },
+			{ "IronBerserker", Vector3.new(-14, 0, 17), 2 }, { "IronBerserker", Vector3.new(14, 0, 17), 3 },
 		},
 		Elite = { "IronBerserker", Vector3.new(-7, 0, 26), 3 },
 	},
@@ -74,7 +65,7 @@ WorldLayout.ZONES = {
 	-- door. Each sits on a spur off the trail, >=95 studs from every other arena.
 	{
 		Name = "Briarwood", DisplayName = "Briarwood", RequiredLevel = 8,
-		Center = Vector3.new(-166, 11, -126), Approach = Vector3.new(-115, 10, -105),
+		Center = Vector3.new(91, 12, -445), Approach = Vector3.new(91, 12, -393),
 		TerrainMaterial = Enum.Material.LeafyGrass, FloorMaterial = Enum.Material.Pebble,
 		Color = Color3.fromRGB(74, 98, 52), Accent = Color3.fromRGB(170, 220, 90), Style = "Briar",
 		Landforms = {
@@ -95,7 +86,7 @@ WorldLayout.ZONES = {
 	},
 	{
 		Name = "FrostboundGlacier", DisplayName = "Frostbound Glacier", RequiredLevel = 15,
-		Center = Vector3.new(-138, 14, -22), Approach = Vector3.new(-111, 12, -57),
+		Center = Vector3.new(523.0811, 20, -169.9593), Approach = Vector3.new(473.6261, 20, -153.8905),
 		TerrainMaterial = Enum.Material.Snow, FloorMaterial = Enum.Material.Ice,
 		Color = Color3.fromRGB(126, 176, 207), Accent = Color3.fromRGB(199, 239, 255), Style = "FrostPine",
 		Landforms = {
@@ -112,11 +103,11 @@ WorldLayout.ZONES = {
 			{ "FrostImp", Vector3.new(-15, 0, -7), 18 }, { "FrostImp", Vector3.new(15, 0, -7), 19 },
 			{ "GlacialGargoyle", Vector3.new(-14, 0, 17), 21 }, { "GlacialGargoyle", Vector3.new(14, 0, 17), 22 },
 		},
-		Elite = { "GlacialGargoyle", Vector3.new(7, 0, 26), 23 },
+		Elite = { "GlacialGargoyle", Vector3.new(-7, 0, 26), 23 },
 	},
 	{
 		Name = "SunkenMarsh", DisplayName = "Sunken Marsh", RequiredLevel = 23,
-		Center = Vector3.new(-217, 20, 39), Approach = Vector3.new(-171, 19, 20),
+		Center = Vector3.new(451.3407, 20, -50.9664), Approach = Vector3.new(401.8858, 20, -34.8975),
 		TerrainMaterial = Enum.Material.Mud, FloorMaterial = Enum.Material.Slate,
 		Color = Color3.fromRGB(70, 86, 70), Accent = Color3.fromRGB(120, 210, 170), Style = "Marsh",
 		Landforms = {
@@ -142,7 +133,7 @@ WorldLayout.ZONES = {
 	},
 	{
 		Name = "InfernalCaldera", DisplayName = "Infernal Caldera", RequiredLevel = 30,
-		Center = Vector3.new(-125, 23, 78), Approach = Vector3.new(-106, 21, 40),
+		Center = Vector3.new(323.2819, 16, 444.9593), Approach = Vector3.new(292.7171, 16, 402.8905),
 		TerrainMaterial = Enum.Material.Basalt, FloorMaterial = Enum.Material.CrackedLava,
 		Color = Color3.fromRGB(91, 48, 37), Accent = Color3.fromRGB(255, 112, 35), Style = "Infernal",
 		Landforms = {
@@ -160,13 +151,13 @@ WorldLayout.ZONES = {
 		Spawns = {
 			{ "Boss_InfernalColossus", Vector3.new(0, 0, 10), 45 },
 			{ "CinderFiend", Vector3.new(-15, 0, -7), 34 }, { "CinderFiend", Vector3.new(15, 0, -7), 35 },
-			{ "MagmaJuggernaut", Vector3.new(-14, 0, 17), 38 }, { "MagmaJuggernaut", Vector3.new(14, 0, 17), 40 },
+			{ "MagmaJuggernaut", Vector3.new(-14, 0, 17), 38 }, { "MagmaJuggernaut", Vector3.new(14, 0, 17), 39 },
 		},
 		Elite = { "MagmaJuggernaut", Vector3.new(-7, 0, 26), 41 },
 	},
 	{
 		Name = "Stormwatch", DisplayName = "Stormwatch", RequiredLevel = 40,
-		Center = Vector3.new(-33, 26, 35), Approach = Vector3.new(-74, 25, 64),
+		Center = Vector3.new(187.9439, 16, 413.501), Approach = Vector3.new(157.3791, 16, 371.4321),
 		TerrainMaterial = Enum.Material.Rock, FloorMaterial = Enum.Material.Granite,
 		Color = Color3.fromRGB(84, 92, 110), Accent = Color3.fromRGB(130, 190, 255), Style = "Storm",
 		Landforms = {
@@ -189,7 +180,7 @@ WorldLayout.ZONES = {
 	},
 	{
 		Name = "VoidRift", DisplayName = "Void Rift", RequiredLevel = 50,
-		Center = Vector3.new(10, 32, 132), Approach = Vector3.new(-27, 30, 108),
+		Center = Vector3.new(-323.2819, 24, 444.9593), Approach = Vector3.new(-292.7171, 24, 402.8905),
 		TerrainMaterial = Enum.Material.Slate, FloorMaterial = Enum.Material.Basalt,
 		Color = Color3.fromRGB(55, 38, 79), Accent = Color3.fromRGB(175, 77, 255), Style = "Void",
 		Landforms = {
@@ -203,14 +194,14 @@ WorldLayout.ZONES = {
 		Rocks = { Vector3.new(-43, 0, -34), Vector3.new(43, 0, -4), Vector3.new(-20, 0, 49) },
 		Spawns = {
 			{ "Boss_VoidWraith", Vector3.new(0, 0, 10), 70 },
-			{ "VoidShade", Vector3.new(-15, 0, -7), 55 }, { "VoidShade", Vector3.new(15, 0, -7), 58 },
-			{ "AbyssTormentor", Vector3.new(-14, 0, 17), 62 }, { "AbyssTormentor", Vector3.new(14, 0, 17), 64 },
+			{ "VoidShade", Vector3.new(-15, 0, -7), 55 }, { "VoidShade", Vector3.new(15, 0, -7), 56 },
+			{ "AbyssTormentor", Vector3.new(-14, 0, 17), 62 }, { "AbyssTormentor", Vector3.new(14, 0, 17), 63 },
 		},
-		Elite = { "AbyssTormentor", Vector3.new(7, 0, 26), 66 },
+		Elite = { "AbyssTormentor", Vector3.new(-7, 0, 26), 66 },
 	},
 	{
 		Name = "CelestialSummit", DisplayName = "Celestial Summit", RequiredLevel = 75,
-		Center = Vector3.new(121, 43, 70), Approach = Vector3.new(78, 40, 91),
+		Center = Vector3.new(-523.0811, 32, -169.9593), Approach = Vector3.new(-473.6261, 32, -153.8905),
 		TerrainMaterial = Enum.Material.Sandstone, FloorMaterial = Enum.Material.Marble,
 		Color = Color3.fromRGB(194, 164, 105), Accent = Color3.fromRGB(255, 230, 126), Style = "Celestial",
 		Landforms = {
@@ -224,8 +215,8 @@ WorldLayout.ZONES = {
 		Rocks = { Vector3.new(-41, 0, -34), Vector3.new(43, 0, -5), Vector3.new(-17, 0, 49) },
 		Spawns = {
 			{ "Boss_CelestialTitan", Vector3.new(0, 0, 10), 100 },
-			{ "AstralWisp", Vector3.new(-15, 0, -7), 80 }, { "AstralWisp", Vector3.new(15, 0, -7), 82 },
-			{ "SolarDominator", Vector3.new(-14, 0, 17), 88 }, { "SolarDominator", Vector3.new(14, 0, 17), 90 },
+			{ "AstralWisp", Vector3.new(-15, 0, -7), 80 }, { "AstralWisp", Vector3.new(15, 0, -7), 81 },
+			{ "SolarDominator", Vector3.new(-14, 0, 17), 88 }, { "SolarDominator", Vector3.new(14, 0, 17), 89 },
 		},
 		Elite = { "SolarDominator", Vector3.new(-7, 0, 26), 92 },
 	},
@@ -310,8 +301,8 @@ local function buildTerrain()
 	-- Offset overlapping mounds give the hub a meadow silhouette while preserving
 	-- a predictable center for spawning, menus, and merchant interactions.
 	for _, mound in ipairs({
-		{ Vector3.new(0, 2, -178), 52 }, { Vector3.new(-31, 1, -169), 38 },
-		{ Vector3.new(29, 1, -163), 35 },
+		{ Vector3.new(0, 6, 0), 195 }, { Vector3.new(-65, 3, -45), 80 },
+		{ Vector3.new(55, 3, 50), 70 },
 	}) do
 		fillTerrainMound(terrain, mound[1], mound[2], Enum.Material.Grass)
 	end

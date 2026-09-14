@@ -11,7 +11,7 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 -- ── Constants ──────────────────────────────────────────────────────────────
 
-local QUEST_MASTER_POS = Vector3.new(5, 3, -175)
+local QUEST_MASTER_POS = Vector3.new(-42, 6.3, 12)
 
 local COLORS = {
 	Panel = Color3.fromRGB(12, 12, 14),

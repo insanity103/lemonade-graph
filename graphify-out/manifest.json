@@ -120,9 +120,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/EnemyCombat.server.luau": {
-    "mtime": 1789345899.7505918,
-    "seen": 1789345979.5830097,
-    "ast_hash": "711e7e0bd16d996fd0d372cd497a6b22",
+    "mtime": 1789356476.1401463,
+    "seen": 1789357533.4688518,
+    "ast_hash": "dc073a59d6a8f61b68d17c71f969caf5",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/InventoryService.luau": {
@@ -138,9 +138,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/LevelingSystem.server.luau": {
-    "mtime": 1789189891.0088446,
-    "seen": 1789345979.5830126,
-    "ast_hash": "1a504eefee1b877018ff36bf0e4daa74",
+    "mtime": 1789356478.130175,
+    "seen": 1789357533.4688597,
+    "ast_hash": "4edc7ffaad2444a8de32a70bec825435",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/MerchantSystem.server.luau": {
@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/SwordSystem.server.luau": {
-    "mtime": 1789346369.0442667,
-    "seen": 1789348954.838056,
-    "ast_hash": "8cb5bdf23007edd6ace4079079eba6e6",
+    "mtime": 1789356473.4191067,
+    "seen": 1789357533.468868,
+    "ast_hash": "b7a35e475441b226321d2bce784c27e4",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/WorldBuilder.server.luau": {
@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/WorldLayout.luau": {
-    "mtime": 1789354881.4339323,
-    "seen": 1789355777.086567,
-    "ast_hash": "8fc80438563a1c5a7cf55710bcb23d7d",
+    "mtime": 1789357466.4786277,
+    "seen": 1789357533.4688702,
+    "ast_hash": "a747d345132006271072b2e22db865cd",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPack/ClassicSword/MouseIcon.client.luau": {
@@ -396,9 +396,9 @@
     "semantic_hash": ""
   },
   "manual_trace.md": {
-    "mtime": 1789350938.8335912,
-    "seen": 1789350967.7186937,
-    "ast_hash": "6d7519ffdee43c4f1bac552b2fa12aea",
+    "mtime": 1789356817.963142,
+    "seen": 1789357533.4689188,
+    "ast_hash": "d3f9ba56bb88c3ea71b9e994ad7c4922",
     "semantic_hash": ""
   },
   "research/sword-rpg/sword-rpg-INDEX.md": {
@@ -744,27 +744,27 @@
     "semantic_hash": ""
   },
   "assets/map_redesign/MapAnchors.luau": {
-    "mtime": 1789355528.20037,
-    "seen": 1789355777.0865173,
+    "mtime": 1789356701.0316377,
+    "seen": 1789357533.4688134,
     "ast_hash": "9fe43acd3cd87162a9edca29291efeb4",
     "semantic_hash": ""
   },
   "assets/map_redesign/anchors.json": {
-    "mtime": 1789355528.1992395,
-    "seen": 1789355777.0865183,
+    "mtime": 1789356701.0297668,
+    "seen": 1789357533.4688146,
     "ast_hash": "6d1e8b17dd0339429bfabd4e80452b2c",
     "semantic_hash": ""
   },
   "assets/map_redesign/manifest.json": {
-    "mtime": 1789355530.8434746,
-    "seen": 1789355777.0865195,
-    "ast_hash": "5e497107c2f1d20a703eb60e497707f2",
+    "mtime": 1789356703.7068856,
+    "seen": 1789357533.468821,
+    "ast_hash": "8f48b7675e9f74f3c8c373aaf1e1dc50",
     "semantic_hash": ""
   },
   "assets/map_redesign/validation.json": {
-    "mtime": 1789355352.2362723,
-    "seen": 1789355777.0865207,
-    "ast_hash": "084a23e807aa382011da98f758e8be02",
+    "mtime": 1789356765.384351,
+    "seen": 1789357533.4688227,
+    "ast_hash": "c9d0755fe8cc749d60570cc810874ddc",
     "semantic_hash": ""
   },
   "lemonade-game/ReplicatedStorage/AudioManager.luau": {
@@ -780,21 +780,21 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/HubCampfire.server.luau": {
-    "mtime": 1789354786.114541,
-    "seen": 1789355777.0865517,
-    "ast_hash": "758c0f7b01b44376f5452995fd467ccb",
+    "mtime": 1789356704.7904863,
+    "seen": 1789357533.468854,
+    "ast_hash": "7a3d3c23094c2c88cce7045a2354de58",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/HubLeaderboard.server.luau": {
-    "mtime": 1789354826.0721242,
-    "seen": 1789355777.0865524,
-    "ast_hash": "6a1ea1152cd5421a83d54ff155724910",
+    "mtime": 1789356705.595498,
+    "seen": 1789357533.4688554,
+    "ast_hash": "790ddbdf3549fe268cff6d0a03be374e",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/HubRespecShrine.server.luau": {
-    "mtime": 1789354852.830515,
-    "seen": 1789355777.086553,
-    "ast_hash": "cc293548f8f67faf5125791576833737",
+    "mtime": 1789356707.433525,
+    "seen": 1789357533.4688566,
+    "ast_hash": "fb7222a18372c787228d37e266e63129",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/QuestSystem.server.luau": {
@@ -816,9 +816,9 @@
     "semantic_hash": ""
   },
   "tools/build_map_redesign.py": {
-    "mtime": 1789355670.359436,
-    "seen": 1789355777.0865884,
-    "ast_hash": "c7e89ebc3eb10739892d6d4126f978af",
+    "mtime": 1789356692.0082994,
+    "seen": 1789357533.468892,
+    "ast_hash": "d315011534c28a2c90031bde3c364aae",
     "semantic_hash": ""
   },
   "tools/map_redesign_spec.py": {
@@ -834,33 +834,171 @@
     "semantic_hash": ""
   },
   "tools/validate_map_redesign.py": {
-    "mtime": 1789355670.4864378,
-    "seen": 1789355777.086592,
-    "ast_hash": "86caa58ce01fbeaee7adef7bcea3efa9",
+    "mtime": 1789356593.8988643,
+    "seen": 1789357533.4688988,
+    "ast_hash": "be4dd0510c18b5334e6513bb043e28a1",
     "semantic_hash": ""
   },
   "MAP_REDESIGN_FRAMEWORK.md": {
-    "mtime": 1789353413.4255404,
-    "seen": 1789355777.0865982,
-    "ast_hash": "f530f808a23ca7d0eb77ba840f4a99e8",
+    "mtime": 1789355935.8752947,
+    "seen": 1789357533.4689057,
+    "ast_hash": "fbe140a5b8e3654df46178aa3b632e13",
     "semantic_hash": ""
   },
   "assets/map_redesign/previews/01_world_overview.png": {
-    "mtime": 1789355365.6730003,
-    "seen": 1789355777.0866659,
-    "ast_hash": "68b361686e7db087a66ff37079834562",
+    "mtime": 1789356778.9195707,
+    "seen": 1789357533.468972,
+    "ast_hash": "18908397b62137dc5d74f5fd439ff382",
     "semantic_hash": ""
   },
   "assets/map_redesign/previews/03_sanctuary.png": {
-    "mtime": 1789355388.1473284,
-    "seen": 1789355777.0866668,
-    "ast_hash": "2fee71317e5a944c50f07de7daebe1dc",
+    "mtime": 1789356823.1972184,
+    "seen": 1789357533.468974,
+    "ast_hash": "b16bef22713b6700a824b9c819c6d043",
     "semantic_hash": ""
   },
   "assets/map_redesign/previews/04_rebirth_pavilion.png": {
-    "mtime": 1789355410.0656483,
-    "seen": 1789355777.0866675,
-    "ast_hash": "bea2c7e0ecc87f9d318c392078a5e998",
+    "mtime": 1789356843.5915167,
+    "seen": 1789357533.4689748,
+    "ast_hash": "6eb2ae93b994175054e779106c45b61e",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/CollisionLayout.luau": {
+    "mtime": 1789356701.0350733,
+    "seen": 1789357533.4688113,
+    "ast_hash": "08799d0c5b72db77269ac61995f99b0e",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/integration/CollisionDecks.server.luau": {
+    "mtime": 1789356360.191461,
+    "seen": 1789357533.4688158,
+    "ast_hash": "a7504a759b230f05faf3edd96c396b6b",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/integration/InstallMapAnchors.server.luau": {
+    "mtime": 1789355935.1302838,
+    "seen": 1789357533.468817,
+    "ast_hash": "3c99afb5e6d32e604ac284b4385e6565",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/integration/MainMenuRebirthHook.luau": {
+    "mtime": 1789355935.5072892,
+    "seen": 1789357533.468818,
+    "ast_hash": "a62f282c259bb9abadd74ead4ccf08e8",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/integration/RebirthStation.server.luau": {
+    "mtime": 1789355935.3852875,
+    "seen": 1789357533.468819,
+    "ast_hash": "b2d8fd2f11b3a0ba044e07da0f110d0c",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/integration/SafeHub.luau": {
+    "mtime": 1789355935.629291,
+    "seen": 1789357533.4688196,
+    "ast_hash": "114cb1334e17312d4ec3a0c87595f0b7",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/sky/lighting.json": {
+    "mtime": 1789356374.8558066,
+    "seen": 1789357533.4688218,
+    "ast_hash": "275cfcffd1a6d974ebc66257d59245b3",
+    "semantic_hash": ""
+  },
+  "tools/build_map_sky.py": {
+    "mtime": 1789356360.0614593,
+    "seen": 1789357533.4688933,
+    "ast_hash": "0c8dc13c2bd751e19777709c39f37bd0",
+    "semantic_hash": ""
+  },
+  "tools/check_map_integration.py": {
+    "mtime": 1789356245.6267962,
+    "seen": 1789357533.468894,
+    "ast_hash": "7759faa71477f6daad4348c41b85a1b8",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/README.md": {
+    "mtime": 1789356939.385918,
+    "seen": 1789357533.468909,
+    "ast_hash": "58bc0baa66122a0e2127bc65fc6c1783",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/previews/02_top_down.png": {
+    "mtime": 1789356802.9759226,
+    "seen": 1789357533.4689732,
+    "ast_hash": "fc346ac95c6bee17615595d880330dd4",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/previews/05_spawn_view.png": {
+    "mtime": 1789356855.9076967,
+    "seen": 1789357533.4689755,
+    "ast_hash": "4ae2d636b2fb9c18e216c1e3bd3f4e7e",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/previews/06_IronLowlands.png": {
+    "mtime": 1789356871.439924,
+    "seen": 1789357533.4689765,
+    "ast_hash": "fb2b72f31c7d28e3db210a32f5a16074",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/previews/07_FrostboundGlacier.png": {
+    "mtime": 1789356887.843164,
+    "seen": 1789357533.4689775,
+    "ast_hash": "3b5f5bcbae864118cefe87f9f398455f",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/previews/08_InfernalCaldera.png": {
+    "mtime": 1789356903.8583982,
+    "seen": 1789357533.4689784,
+    "ast_hash": "bf935f2521c66dc9eb26341acbfdcff1",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/previews/09_VoidRift.png": {
+    "mtime": 1789356920.188637,
+    "seen": 1789357533.4689794,
+    "ast_hash": "b980e1097eb3c7a2dcd667b410c2e206",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/previews/10_CelestialSummit.png": {
+    "mtime": 1789356937.4208891,
+    "seen": 1789357533.4689803,
+    "ast_hash": "3a08e3f37f194dfa6e4d5fdcae1e2710",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/sky/SkyboxBk.png": {
+    "mtime": 1789356367.816572,
+    "seen": 1789357533.4689813,
+    "ast_hash": "86462d5cda0fc2f917bc57744cd3bab8",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/sky/SkyboxDn.png": {
+    "mtime": 1789356374.8536742,
+    "seen": 1789357533.4689822,
+    "ast_hash": "b945792b3f6d7678fc8daa246e469b8a",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/sky/SkyboxFt.png": {
+    "mtime": 1789356365.9995456,
+    "seen": 1789357533.468983,
+    "ast_hash": "ec260d55f7adc7da00903a5c1fa27763",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/sky/SkyboxLf.png": {
+    "mtime": 1789356369.611598,
+    "seen": 1789357533.468984,
+    "ast_hash": "9d670c41d8a104e573591a48a89411fa",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/sky/SkyboxRt.png": {
+    "mtime": 1789356371.388624,
+    "seen": 1789357533.4689846,
+    "ast_hash": "4b850e5959ffa2fef53a07dfaff1268f",
+    "semantic_hash": ""
+  },
+  "assets/map_redesign/sky/SkyboxUp.png": {
+    "mtime": 1789356373.1286492,
+    "seen": 1789357533.4689853,
+    "ast_hash": "9b1a97644a97a2348baa88d61612938e",
     "semantic_hash": ""
   }
 }
