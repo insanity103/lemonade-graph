@@ -1,258 +1,546 @@
--- StarterPlayer/StarterPlayerScripts/QuestGui.client.luau
--- Client-side quest HUD: tracker, progress bar, completion flash, accept notification
--- Reads quest data from QuestConfig and listens for player attribute changes.
-
+--// QuestGui  (client-side quest tracker HUD + NPC interaction)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
-
-local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
+local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- ===================================================================
--- CONSTANTS
--- ===================================================================
-local GOLD_COLOR = Color3.fromRGB(235, 200, 60)
-local DARK_BG = Color3.fromRGB(15, 15, 15)
-local BAR_BG_COLOR = Color3.fromRGB(40, 40, 40)
-local BAR_FILL_COLOR = Color3.fromRGB(220, 190, 50)
-local WHITE = Color3.fromRGB(255, 255, 255)
-local TRANSPARENCY_BG = 0.3
-local CORNER_RADIUS = UDim.new(0, 8)
+local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
 
--- ===================================================================
--- SCREEN GUI
--- ===================================================================
+local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
+local QUEST_ACCEPT = remotes:WaitForChild("QuestAccept")
+local QUEST_UPDATE = remotes:WaitForChild("QuestUpdate")
+local QUEST_COMPLETE = remotes:WaitForChild("QuestComplete")
+local QUEST_REWARD = remotes:WaitForChild("QuestReward")
+
+-- ── Colors & constants ───────────────────────────────────────────────────
+
+local COLORS = {
+	Panel = Color3.fromRGB(12, 12, 14),
+	PanelLight = Color3.fromRGB(22, 22, 26),
+	Stroke = Color3.fromRGB(45, 45, 52),
+	StrokeBright = Color3.fromRGB(70, 70, 80),
+	Text = Color3.fromRGB(245, 245, 250),
+	Muted = Color3.fromRGB(150, 150, 165),
+	Gold = Color3.fromRGB(255, 215, 0),
+	Success = Color3.fromRGB(90, 220, 140),
+	XPGreen = Color3.fromRGB(80, 220, 120),
+	Button = Color3.fromRGB(40, 40, 48),
+	ButtonHover = Color3.fromRGB(55, 55, 65),
+	Accent = Color3.fromRGB(200, 180, 60),
+	QuestBar = Color3.fromRGB(200, 180, 60),
+	QuestBarBg = Color3.fromRGB(30, 30, 36),
+	Complete = Color3.fromRGB(90, 220, 140),
+}
+
+local REWARD_COLORS = {
+	GOLD = COLORS.Gold,
+	XP = COLORS.XPGreen,
+	LEVEL = Color3.fromRGB(120, 200, 255),
+	SKILL_POINTS = Color3.fromRGB(190, 110, 245),
+}
+
+local REWARD_LABELS = {
+	GOLD = "Gold",
+	XP = "XP",
+	LEVEL = "Level(s)",
+	SKILL_POINTS = "Skill Points",
+}
+
+-- ── State ────────────────────────────────────────────────────────────────
+
+local activeQuestId = player:GetAttribute("ActiveQuestId") or ""
+local activeProgress = player:GetAttribute("QuestProgress") or 0
+local activeQuestComplete = false
+local npcNearby = false
+local interactionOpen = false
+
+-- ── GUI creation ─────────────────────────────────────────────────────────
+
+local existing = playerGui:FindFirstChild("QuestGui")
+if existing then existing:Destroy() end
+
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "QuestHud"
+screenGui.Name = "QuestGui"
 screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screenGui.DisplayOrder = 11
 screenGui.Parent = playerGui
 
--- ===================================================================
--- QUEST TRACKER FRAME — top-right corner
--- ===================================================================
+local function addCorner(parent, radius)
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0, radius)
+	c.Parent = parent
+	return c
+end
+
+local function addStroke(parent, color, transparency, thickness)
+	local s = Instance.new("UIStroke")
+	s.Color = color or COLORS.Stroke
+	s.Transparency = transparency or 0.35
+	s.Thickness = thickness or 1
+	s.Parent = parent
+	return s
+end
+
+-- ── Quest Tracker HUD (left side) ────────────────────────────────────────
+
 local trackerFrame = Instance.new("Frame")
 trackerFrame.Name = "QuestTracker"
-trackerFrame.Size = UDim2.new(0, 250, 0, 80)
-trackerFrame.Position = UDim2.new(1, -16, 0, 16)
-trackerFrame.AnchorPoint = Vector2.new(1, 0)
-trackerFrame.BackgroundColor3 = DARK_BG
-trackerFrame.BackgroundTransparency = TRANSPARENCY_BG
+trackerFrame.AnchorPoint = Vector2.new(0, 0.5)
+trackerFrame.Position = UDim2.new(0, 12, 0.5, -100)
+trackerFrame.Size = UDim2.fromOffset(260, 0)
+trackerFrame.AutomaticSize = Enum.AutomaticSize.Y
+trackerFrame.BackgroundColor3 = COLORS.Panel
+trackerFrame.BackgroundTransparency = 0.08
 trackerFrame.BorderSizePixel = 0
 trackerFrame.Visible = false
+trackerFrame.ZIndex = 5
 trackerFrame.Parent = screenGui
+addCorner(trackerFrame, 12)
+addStroke(trackerFrame, COLORS.Stroke, 0.3, 1)
 
-local trackerCorner = Instance.new("UICorner")
-trackerCorner.CornerRadius = CORNER_RADIUS
-trackerCorner.Parent = trackerFrame
+local trackerPadding = Instance.new("UIPadding")
+trackerPadding.PaddingTop = UDim.new(0, 10)
+trackerPadding.PaddingRight = UDim.new(0, 12)
+trackerPadding.PaddingBottom = UDim.new(0, 10)
+trackerPadding.PaddingLeft = UDim.new(0, 12)
+trackerPadding.Parent = trackerFrame
 
-local trackerStroke = Instance.new("UIStroke")
-trackerStroke.Color = Color3.fromRGB(60, 55, 30)
-trackerStroke.Thickness = 1
-trackerStroke.Transparency = 0.5
-trackerStroke.Parent = trackerFrame
+local trackerLayout = Instance.new("UIListLayout")
+trackerLayout.Padding = UDim.new(0, 6)
+trackerLayout.SortOrder = Enum.SortOrder.LayoutOrder
+trackerLayout.Parent = trackerFrame
 
--- Quest name label
+-- Quest name
 local questNameLabel = Instance.new("TextLabel")
 questNameLabel.Name = "QuestName"
-questNameLabel.Size = UDim2.new(1, -16, 0, 20)
-questNameLabel.Position = UDim2.new(0, 8, 0, 6)
 questNameLabel.BackgroundTransparency = 1
 questNameLabel.Font = Enum.Font.GothamBold
-questNameLabel.TextSize = 15
-questNameLabel.TextColor3 = GOLD_COLOR
+questNameLabel.TextSize = 14
+questNameLabel.TextColor3 = COLORS.Accent
 questNameLabel.TextXAlignment = Enum.TextXAlignment.Left
-questNameLabel.TextTruncate = Enum.TextTruncate.AtEnd
 questNameLabel.Text = ""
+questNameLabel.Size = UDim2.new(1, 0, 0, 18)
+questNameLabel.LayoutOrder = 1
+questNameLabel.ZIndex = 6
 questNameLabel.Parent = trackerFrame
 
--- Objective description label
-local objectiveLabel = Instance.new("TextLabel")
-objectiveLabel.Name = "Objective"
-objectiveLabel.Size = UDim2.new(1, -16, 0, 16)
-objectiveLabel.Position = UDim2.new(0, 8, 0, 26)
-objectiveLabel.BackgroundTransparency = 1
-objectiveLabel.Font = Enum.Font.Gotham
-objectiveLabel.TextSize = 13
-objectiveLabel.TextColor3 = WHITE
-objectiveLabel.TextXAlignment = Enum.TextXAlignment.Left
-objectiveLabel.TextTruncate = Enum.TextTruncate.AtEnd
-objectiveLabel.Text = ""
-objectiveLabel.Parent = trackerFrame
+-- Quest description
+local questDescLabel = Instance.new("TextLabel")
+questDescLabel.Name = "QuestDesc"
+questDescLabel.BackgroundTransparency = 1
+questDescLabel.Font = Enum.Font.Gotham
+questDescLabel.TextSize = 12
+questDescLabel.TextColor3 = COLORS.Muted
+questDescLabel.TextXAlignment = Enum.TextXAlignment.Left
+questDescLabel.TextWrapped = true
+questDescLabel.Text = ""
+questDescLabel.Size = UDim2.new(1, 0, 0, 0)
+questDescLabel.AutomaticSize = Enum.AutomaticSize.Y
+questDescLabel.LayoutOrder = 2
+questDescLabel.ZIndex = 6
+questDescLabel.Parent = trackerFrame
 
 -- Progress bar background
-local progressBarBg = Instance.new("Frame")
-progressBarBg.Name = "ProgressBg"
-progressBarBg.Size = UDim2.new(1, -16, 0, 10)
-progressBarBg.Position = UDim2.new(0, 8, 0, 48)
-progressBarBg.BackgroundColor3 = BAR_BG_COLOR
-progressBarBg.BackgroundTransparency = 0.2
-progressBarBg.BorderSizePixel = 0
-progressBarBg.Parent = trackerFrame
-
-local barBgCorner = Instance.new("UICorner")
-barBgCorner.CornerRadius = UDim.new(0, 5)
-barBgCorner.Parent = progressBarBg
+local progressBg = Instance.new("Frame")
+progressBg.Name = "ProgressBg"
+progressBg.Size = UDim2.new(1, 0, 0, 8)
+progressBg.BackgroundColor3 = COLORS.QuestBarBg
+progressBg.BorderSizePixel = 0
+progressBg.LayoutOrder = 3
+progressBg.ZIndex = 6
+progressBg.Parent = trackerFrame
+addCorner(progressBg, 4)
 
 -- Progress bar fill
-local progressBarFill = Instance.new("Frame")
-progressBarFill.Name = "ProgressFill"
-progressBarFill.Size = UDim2.new(0, 0, 1, 0)
-progressBarFill.BackgroundColor3 = BAR_FILL_COLOR
-progressBarFill.BackgroundTransparency = 0
-progressBarFill.BorderSizePixel = 0
-progressBarFill.Parent = progressBarBg
+local progressFill = Instance.new("Frame")
+progressFill.Name = "ProgressFill"
+progressFill.Size = UDim2.new(0, 0, 1, 0)
+progressFill.BackgroundColor3 = COLORS.QuestBar
+progressFill.BorderSizePixel = 0
+progressFill.ZIndex = 7
+progressFill.Parent = progressBg
+addCorner(progressFill, 4)
 
-local barFillCorner = Instance.new("UICorner")
-barFillCorner.CornerRadius = UDim.new(0, 5)
-barFillCorner.Parent = progressBarFill
-
--- Progress text label
+-- Progress text
 local progressLabel = Instance.new("TextLabel")
 progressLabel.Name = "ProgressText"
-progressLabel.Size = UDim2.new(1, -16, 0, 14)
-progressLabel.Position = UDim2.new(0, 8, 0, 62)
 progressLabel.BackgroundTransparency = 1
-progressLabel.Font = Enum.Font.Gotham
-progressLabel.TextSize = 12
-progressLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-progressLabel.TextXAlignment = Enum.TextXAlignment.Left
+progressLabel.Font = Enum.Font.GothamMedium
+progressLabel.TextSize = 11
+progressLabel.TextColor3 = COLORS.Muted
+progressLabel.TextXAlignment = Enum.TextXAlignment.Right
 progressLabel.Text = ""
+progressLabel.Size = UDim2.new(1, 0, 0, 14)
+progressLabel.LayoutOrder = 4
+progressLabel.ZIndex = 6
 progressLabel.Parent = trackerFrame
 
--- ===================================================================
--- QUEST COMPLETION FLASH — golden overlay
--- ===================================================================
-local completionOverlay = Instance.new("Frame")
-completionOverlay.Name = "CompletionFlash"
-completionOverlay.Size = UDim2.fromScale(1, 1)
-completionOverlay.BackgroundColor3 = GOLD_COLOR
-completionOverlay.BackgroundTransparency = 1
-completionOverlay.BorderSizePixel = 0
-completionOverlay.ZIndex = 50
-completionOverlay.Visible = false
-completionOverlay.Parent = screenGui
+-- ── NPC Interaction Prompt ───────────────────────────────────────────────
 
-local completionText = Instance.new("TextLabel")
-completionText.Name = "RewardText"
-completionText.Size = UDim2.new(0.6, 0, 0, 50)
-completionText.Position = UDim2.fromScale(0.5, 0.45)
-completionText.AnchorPoint = Vector2.new(0.5, 0.5)
-completionText.BackgroundTransparency = 1
-completionText.Font = Enum.Font.GothamBold
-completionText.TextSize = 32
-completionText.TextColor3 = WHITE
-completionText.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-completionText.TextStrokeTransparency = 0.3
-completionText.Text = ""
-completionText.ZIndex = 51
-completionText.Parent = completionOverlay
+local promptFrame = Instance.new("Frame")
+promptFrame.Name = "InteractionPrompt"
+promptFrame.AnchorPoint = Vector2.new(0.5, 1)
+promptFrame.Position = UDim2.new(0.5, 0, 1, -120)
+promptFrame.Size = UDim2.fromOffset(300, 50)
+promptFrame.BackgroundColor3 = COLORS.Panel
+promptFrame.BackgroundTransparency = 0.05
+promptFrame.BorderSizePixel = 0
+promptFrame.Visible = false
+promptFrame.ZIndex = 10
+promptFrame.Parent = screenGui
+addCorner(promptFrame, 10)
+addStroke(promptFrame, COLORS.Accent, 0.2, 1.5)
 
--- ===================================================================
--- QUEST ACCEPT NOTIFICATION
--- ===================================================================
-local notifLabel = Instance.new("TextLabel")
-notifLabel.Name = "QuestNotification"
-notifLabel.Size = UDim2.new(0.5, 0, 0, 36)
-notifLabel.Position = UDim2.fromScale(0.5, 0.15)
-notifLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-notifLabel.BackgroundTransparency = 1
-notifLabel.Font = Enum.Font.GothamBold
-notifLabel.TextSize = 22
-notifLabel.TextColor3 = GOLD_COLOR
-notifLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-notifLabel.TextStrokeTransparency = 0.4
-notifLabel.TextTransparency = 1
-notifLabel.Text = ""
-notifLabel.ZIndex = 40
-notifLabel.Visible = false
-notifLabel.Parent = screenGui
+local promptKey = Instance.new("Frame")
+promptKey.Size = UDim2.fromOffset(32, 32)
+promptKey.Position = UDim2.fromOffset(10, 9)
+promptKey.BackgroundColor3 = COLORS.Accent
+promptKey.BorderSizePixel = 0
+promptKey.ZIndex = 11
+promptKey.Parent = promptFrame
+addCorner(promptKey, 6)
 
--- ===================================================================
--- HELPERS
--- ===================================================================
+local promptKeyLabel = Instance.new("TextLabel")
+promptKeyLabel.BackgroundTransparency = 1
+promptKeyLabel.Size = UDim2.fromScale(1, 1)
+promptKeyLabel.Font = Enum.Font.GothamBold
+promptKeyLabel.TextSize = 16
+promptKeyLabel.TextColor3 = Color3.fromRGB(12, 12, 14)
+promptKeyLabel.Text = "E"
+promptKeyLabel.ZIndex = 12
+promptKeyLabel.Parent = promptKey
 
---- Build a lookup from quest id to quest definition.
-local function getQuestData(questId: string)
-	if questId == nil or questId == "" then
-		return nil
-	end
-	return QuestConfig.getQuestById(questId)
+local promptText = Instance.new("TextLabel")
+promptText.BackgroundTransparency = 1
+promptText.Font = Enum.Font.Gotham
+promptText.TextSize = 13
+promptText.TextColor3 = COLORS.Text
+promptText.TextXAlignment = Enum.TextXAlignment.Left
+promptText.Text = "Talk to Quest Master"
+promptText.Position = UDim2.fromOffset(50, 0)
+promptText.Size = UDim2.new(1, -60, 1, 0)
+promptText.ZIndex = 11
+promptText.Parent = promptFrame
+
+-- ── Quest Dialog Panel ───────────────────────────────────────────────────
+
+local dialogOverlay = Instance.new("TextButton")
+dialogOverlay.Name = "DialogOverlay"
+dialogOverlay.Size = UDim2.fromScale(1, 1)
+dialogOverlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+dialogOverlay.BackgroundTransparency = 1
+dialogOverlay.BorderSizePixel = 0
+dialogOverlay.Text = ""
+dialogOverlay.AutoButtonColor = false
+dialogOverlay.Visible = false
+dialogOverlay.ZIndex = 20
+dialogOverlay.Parent = screenGui
+
+local dialogPanel = Instance.new("Frame")
+dialogPanel.Name = "DialogPanel"
+dialogPanel.AnchorPoint = Vector2.new(0.5, 0.5)
+dialogPanel.Position = UDim2.fromScale(0.5, 0.5)
+dialogPanel.Size = UDim2.fromOffset(380, 280)
+dialogPanel.BackgroundColor3 = COLORS.Panel
+dialogPanel.BackgroundTransparency = 0.04
+dialogPanel.BorderSizePixel = 0
+dialogPanel.Visible = false
+dialogPanel.ZIndex = 21
+dialogPanel.Parent = screenGui
+addCorner(dialogPanel, 16)
+addStroke(dialogPanel, COLORS.StrokeBright, 0.2, 1.5)
+
+local dialogPadding = Instance.new("UIPadding")
+dialogPadding.PaddingTop = UDim.new(0, 16)
+dialogPadding.PaddingRight = UDim.new(0, 16)
+dialogPadding.PaddingBottom = UDim.new(0, 16)
+dialogPadding.PaddingLeft = UDim.new(0, 16)
+dialogPadding.Parent = dialogPanel
+
+local dialogLayout = Instance.new("UIListLayout")
+dialogLayout.Padding = UDim.new(0, 10)
+dialogLayout.SortOrder = Enum.SortOrder.LayoutOrder
+dialogLayout.Parent = dialogPanel
+
+-- NPC name header
+local npcHeader = Instance.new("TextLabel")
+npcHeader.BackgroundTransparency = 1
+npcHeader.Font = Enum.Font.GothamBold
+npcHeader.TextSize = 18
+npcHeader.TextColor3 = COLORS.Accent
+npcHeader.TextXAlignment = Enum.TextXAlignment.Left
+npcHeader.Text = QuestConfig.GIVER_NAME
+npcHeader.Size = UDim2.new(1, 0, 0, 22)
+npcHeader.LayoutOrder = 1
+npcHeader.ZIndex = 22
+npcHeader.Parent = dialogPanel
+
+-- Dialog message
+local dialogMessage = Instance.new("TextLabel")
+dialogMessage.BackgroundTransparency = 1
+dialogMessage.Font = Enum.Font.Gotham
+dialogMessage.TextSize = 14
+dialogMessage.TextColor3 = COLORS.Text
+dialogMessage.TextXAlignment = Enum.TextXAlignment.Left
+dialogMessage.TextWrapped = true
+dialogMessage.Text = ""
+dialogMessage.Size = UDim2.new(1, 0, 0, 0)
+dialogMessage.AutomaticSize = Enum.AutomaticSize.Y
+dialogMessage.LayoutOrder = 2
+dialogMessage.ZIndex = 22
+dialogMessage.Parent = dialogPanel
+
+-- Objective preview
+local objPreview = Instance.new("TextLabel")
+objPreview.BackgroundTransparency = 1
+objPreview.Font = Enum.Font.GothamMedium
+objPreview.TextSize = 13
+objPreview.TextColor3 = COLORS.Muted
+objPreview.TextXAlignment = Enum.TextXAlignment.Left
+objPreview.TextWrapped = true
+objPreview.Text = ""
+objPreview.Size = UDim2.new(1, 0, 0, 0)
+objPreview.AutomaticSize = Enum.AutomaticSize.Y
+objPreview.LayoutOrder = 3
+objPreview.ZIndex = 22
+objPreview.Parent = dialogPanel
+
+-- Reward preview
+local rewardPreview = Instance.new("TextLabel")
+rewardPreview.BackgroundTransparency = 1
+rewardPreview.Font = Enum.Font.GothamBold
+rewardPreview.TextSize = 13
+rewardPreview.TextColor3 = COLORS.Gold
+rewardPreview.TextXAlignment = Enum.TextXAlignment.Left
+rewardPreview.Text = ""
+rewardPreview.Size = UDim2.new(1, 0, 0, 18)
+rewardPreview.LayoutOrder = 4
+rewardPreview.ZIndex = 22
+rewardPreview.Parent = dialogPanel
+
+-- Buttons row
+local buttonRow = Instance.new("Frame")
+buttonRow.BackgroundTransparency = 1
+buttonRow.Size = UDim2.new(1, 0, 0, 40)
+buttonRow.LayoutOrder = 5
+buttonRow.ZIndex = 22
+buttonRow.Parent = dialogPanel
+
+local buttonLayout = Instance.new("UIListLayout")
+buttonLayout.FillDirection = Enum.FillDirection.Horizontal
+buttonLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+buttonLayout.Padding = UDim.new(0, 10)
+buttonLayout.Parent = buttonRow
+
+local function createDialogButton(text, color, textColor)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.fromOffset(120, 36)
+	btn.BackgroundColor3 = color
+	btn.BorderSizePixel = 0
+	btn.Font = Enum.Font.GothamBold
+	btn.TextColor3 = textColor
+	btn.TextSize = 14
+	btn.Text = text
+	btn.ZIndex = 23
+	btn.AutoButtonColor = false
+	btn.Parent = buttonRow
+	addCorner(btn, 8)
+	addStroke(btn, COLORS.StrokeBright, 0.3, 1)
+	return btn
 end
 
---- Format a reward into a human-readable string (e.g. "+500 Gold").
-local function formatReward(reward: { type: string, amount: number? }?): string
-	if not reward then
-		return ""
+local acceptBtn = createDialogButton("Accept Quest", COLORS.Accent, Color3.fromRGB(12, 12, 14))
+local completeBtn = createDialogButton("Turn In", COLORS.Complete, Color3.fromRGB(12, 12, 14))
+local closeBtn = createDialogButton("Close", COLORS.Button, COLORS.Text)
+
+acceptBtn.Visible = false
+completeBtn.Visible = false
+
+-- ── Reward Toast ─────────────────────────────────────────────────────────
+
+local function showRewardToast(rtype, amount)
+	local toast = Instance.new("Frame")
+	toast.AnchorPoint = Vector2.new(0.5, 0)
+	toast.Position = UDim2.new(0.5, 0, 0, -50)
+	toast.Size = UDim2.fromOffset(280, 44)
+	toast.BackgroundColor3 = COLORS.Panel
+	toast.BackgroundTransparency = 0.05
+	toast.BorderSizePixel = 0
+	toast.ZIndex = 30
+	toast.Parent = screenGui
+	addCorner(toast, 10)
+	addStroke(toast, REWARD_COLORS[rtype] or COLORS.Gold, 0.1, 2)
+
+	local icon = Instance.new("TextLabel")
+	icon.BackgroundTransparency = 1
+	icon.Size = UDim2.fromOffset(36, 44)
+	icon.Font = Enum.Font.GothamBold
+	icon.TextSize = 18
+	icon.TextColor3 = REWARD_COLORS[rtype] or COLORS.Gold
+	icon.Text = "+"
+	icon.ZIndex = 31
+	icon.Parent = toast
+
+	local label = Instance.new("TextLabel")
+	label.BackgroundTransparency = 1
+	label.Position = UDim2.fromOffset(36, 0)
+	label.Size = UDim2.new(1, -36, 1, 0)
+	label.Font = Enum.Font.GothamBold
+	label.TextSize = 15
+	label.TextColor3 = COLORS.Text
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Text = string.format("+%d %s!", amount, REWARD_LABELS[rtype] or rtype)
+	label.ZIndex = 31
+	label.Parent = toast
+
+	-- Slide in
+	TweenService:Create(toast, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Position = UDim2.new(0.5, 0, 0, 16)
+	}):Play()
+
+	-- Slide out after delay
+	task.delay(2.5, function()
+		TweenService:Create(toast, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+			Position = UDim2.new(0.5, 0, 0, -50),
+			BackgroundTransparency = 1
+		}):Play()
+		task.delay(0.35, function()
+			toast:Destroy()
+		end)
+	end)
+end
+
+-- ── Completion celebration toast ─────────────────────────────────────────
+
+local function showCompletionToast(questName)
+	local toast = Instance.new("Frame")
+	toast.AnchorPoint = Vector2.new(0.5, 0)
+	toast.Position = UDim2.new(0.5, 0, 0, -60)
+	toast.Size = UDim2.fromOffset(340, 56)
+	toast.BackgroundColor3 = COLORS.Panel
+	toast.BackgroundTransparency = 0.02
+	toast.BorderSizePixel = 0
+	toast.ZIndex = 30
+	toast.Parent = screenGui
+	addCorner(toast, 12)
+	addStroke(toast, COLORS.Complete, 0.0, 2)
+
+	local checkLabel = Instance.new("TextLabel")
+	checkLabel.BackgroundTransparency = 1
+	checkLabel.Size = UDim2.fromOffset(40, 56)
+	checkLabel.Font = Enum.Font.GothamBold
+	checkLabel.TextSize = 24
+	checkLabel.TextColor3 = COLORS.Complete
+	checkLabel.Text = "✓"
+	checkLabel.ZIndex = 31
+	checkLabel.Parent = toast
+
+	local titleLabel = Instance.new("TextLabel")
+ titleLabel.BackgroundTransparency = 1
+	titleLabel.Position = UDim2.fromOffset(40, 6)
+	titleLabel.Size = UDim2.new(1, -50, 0, 20)
+	titleLabel.Font = Enum.Font.GothamBold
+	titleLabel.TextSize = 14
+	titleLabel.TextColor3 = COLORS.Complete
+	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	titleLabel.Text = "QUEST COMPLETE"
+	titleLabel.ZIndex = 31
+	titleLabel.Parent = toast
+
+	local nameLabel = Instance.new("TextLabel")
+	nameLabel.BackgroundTransparency = 1
+	nameLabel.Position = UDim2.fromOffset(40, 28)
+	nameLabel.Size = UDim2.new(1, -50, 0, 18)
+	nameLabel.Font = Enum.Font.Gotham
+	nameLabel.TextSize = 13
+	nameLabel.TextColor3 = COLORS.Text
+	nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+	nameLabel.Text = questName
+	nameLabel.ZIndex = 31
+	nameLabel.Parent = toast
+
+	TweenService:Create(toast, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Position = UDim2.new(0.5, 0, 0, 16)
+	}):Play()
+
+	task.delay(3, function()
+		TweenService:Create(toast, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+			Position = UDim2.new(0.5, 0, 0, -60),
+			BackgroundTransparency = 1
+		}):Play()
+		task.delay(0.35, function()
+			toast:Destroy()
+		end)
+	end)
+end
+
+-- ── Helper: objective text ───────────────────────────────────────────────
+
+local function getObjectiveText(quest, progress)
+	local obj = quest.objective
+	if obj.type == "KILL" then
+		return string.format("Defeat %d enemies  (%d/%d)", obj.count, math.min(progress, obj.count), obj.count)
+	elseif obj.type == "KILL_ZONE" then
+		return string.format("Defeat %d enemies in %s  (%d/%d)", obj.count, obj.zone, math.min(progress, obj.count), obj.count)
+	elseif obj.type == "KILL_BOSS" then
+		return string.format("Defeat %s  (%d/%d)", obj.archetype, math.min(progress, obj.count or 1), obj.count or 1)
+	elseif obj.type == "OBTAIN" then
+		return string.format("Obtain: %s  (%s)", obj.itemName, progress >= 1 and "Found!" or "Not found")
+	elseif obj.type == "LEVEL" then
+		local level = 1
+		local leaderstats = player:FindFirstChild("leaderstats")
+		local lv = leaderstats and leaderstats:FindFirstChild("Level")
+		if lv then level = lv.Value end
+		return string.format("Reach level %d  (Lv %d)", obj.target, level)
 	end
+	return quest.description
+end
+
+local function getProgressFraction(quest, progress)
+	local obj = quest.objective
+	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" then
+		return math.clamp(progress / (obj.count or 1), 0, 1)
+	elseif obj.type == "OBTAIN" then
+		return progress >= 1 and 1 or 0
+	elseif obj.type == "LEVEL" then
+		local level = 1
+		local leaderstats = player:FindFirstChild("leaderstats")
+		local lv = leaderstats and leaderstats:FindFirstChild("Level")
+		if lv then level = lv.Value end
+		return math.clamp(level / (obj.target or 1), 0, 1)
+	end
+	return 0
+end
+
+local function getRewardText(reward)
 	local rtype = reward.type
 	local amount = reward.amount or 0
-	if rtype == QuestConfig.REWARD_TYPES.GOLD then
-		return "+" .. tostring(amount) .. " Gold"
-	elseif rtype == QuestConfig.REWARD_TYPES.XP then
-		return "+" .. tostring(amount) .. " XP"
-	elseif rtype == QuestConfig.REWARD_TYPES.LEVEL then
-		return "+" .. tostring(amount) .. (amount == 1 and " Level" or " Levels")
-	elseif rtype == QuestConfig.REWARD_TYPES.SKILL_POINTS then
-		return "+" .. tostring(amount) .. " Skill Points"
+	if rtype == "GOLD" then
+		return string.format("Reward: %d Gold", amount)
+	elseif rtype == "XP" then
+		return string.format("Reward: %d XP", amount)
+	elseif rtype == "LEVEL" then
+		return string.format("Reward: %d Free Level(s)", amount)
+	elseif rtype == "SKILL_POINTS" then
+		return string.format("Reward: %d Skill Points", amount)
 	end
-	return "+" .. tostring(amount) .. " " .. tostring(rtype)
+	return "Reward: ???"
 end
 
---- Compute progress fraction (0–1) and display text for a given quest + progress value.
-local function computeProgress(quest, progress: number): (number, string)
-	local obj = quest.objective
-	local objType = obj.type
+-- ── Tracker update ───────────────────────────────────────────────────────
 
-	if objType == QuestConfig.OBJECTIVE_TYPES.KILL_ZONE
-		or objType == QuestConfig.OBJECTIVE_TYPES.KILL_BOSS
-		or objType == QuestConfig.OBJECTIVE_TYPES.KILL then
-		local count = obj.count or 1
-		local current = math.min(progress, count)
-		local frac = if count > 0 then current / count else 0
-		return frac, tostring(current) .. "/" .. tostring(count) .. " defeated"
-
-	elseif objType == QuestConfig.OBJECTIVE_TYPES.OBTAIN then
-		-- Binary: 0 = not obtained, 1 = obtained
-		if progress >= 1 then
-			return 1, "Obtained"
-		else
-			return 0, "Not obtained"
-		end
-
-	elseif objType == QuestConfig.OBJECTIVE_TYPES.LEVEL then
-		local target = obj.target or 1
-		local currentLevel = player:GetAttribute("Level") or 1
-		local displayLevel = math.min(currentLevel, target)
-		local frac = if target > 0 then displayLevel / target else 0
-		return frac, "Level " .. tostring(displayLevel) .. "/" .. tostring(target)
+local function updateTracker()
+	if activeQuestId == "" then
+		trackerFrame.Visible = false
+		return
 	end
 
-	return 0, tostring(progress)
-end
-
---- Tween the progress bar fill to a target fraction (0–1).
-local function tweenProgress(frac: number)
-	local clamped = math.clamp(frac, 0, 1)
-	local tweenInfo = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-	local tween = TweenService:Create(progressBarFill, tweenInfo, {
-		Size = UDim2.new(clamped, 0, 1, 0),
-	})
-	tween:Play()
-end
-
--- ===================================================================
--- UPDATE DISPLAY
--- ===================================================================
-local isShowingCompletion = false
-
-local function updateQuestDisplay()
-	local questId = player:GetAttribute("ActiveQuestId") or ""
-	local quest = getQuestData(questId)
-
+	local quest = QuestConfig.getQuestById(activeQuestId)
 	if not quest then
 		trackerFrame.Visible = false
 		return
@@ -260,133 +548,262 @@ local function updateQuestDisplay()
 
 	trackerFrame.Visible = true
 	questNameLabel.Text = quest.name
-	objectiveLabel.Text = quest.description
+	questDescLabel.Text = quest.description
 
-	local progress = player:GetAttribute("QuestProgress") or 0
-	local frac, progressText = computeProgress(quest, progress)
-	progressLabel.Text = progressText
-	tweenProgress(frac)
+	local objText = getObjectiveText(quest, activeProgress)
+	progressLabel.Text = objText
+
+	local frac = getProgressFraction(quest, activeProgress)
+	TweenService:Create(progressFill, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Size = UDim2.new(frac, 0, 1, 0)
+	}):Play()
+
+	if activeQuestComplete then
+		progressFill.BackgroundColor3 = COLORS.Complete
+		progressLabel.Text = "✓ Ready to turn in!"
+	else
+		progressFill.BackgroundColor3 = COLORS.QuestBar
+	end
 end
 
--- ===================================================================
--- COMPLETION FLASH ANIMATION
--- ===================================================================
-local function showCompletionFlash(rewardText: string)
-	if isShowingCompletion then
+-- ── Dialog management ────────────────────────────────────────────────────
+
+local function closeDialog()
+	interactionOpen = false
+	dialogOverlay.Visible = false
+	dialogPanel.Visible = false
+end
+
+local function openDialog(quest, mode)
+	-- mode: "accept", "turnin", "info"
+	interactionOpen = true
+	dialogOverlay.Visible = true
+	dialogPanel.Visible = true
+
+	TweenService:Create(dialogOverlay, TweenInfo.new(0.2), { BackgroundTransparency = 0.5 }):Play()
+
+	acceptBtn.Visible = false
+	completeBtn.Visible = false
+
+	if mode == "accept" then
+		dialogMessage.Text = string.format("I have a task for you, adventurer.\n\n%s", quest.description)
+		objPreview.Text = getObjectiveText(quest, 0)
+		rewardPreview.Text = getRewardText(quest.reward)
+		acceptBtn.Visible = true
+	elseif mode == "turnin" then
+		dialogMessage.Text = "Well done! Here is your reward."
+		objPreview.Text = getObjectiveText(quest, activeProgress)
+		rewardPreview.Text = getRewardText(quest.reward)
+		completeBtn.Visible = true
+	elseif mode == "info" then
+		dialogMessage.Text = string.format("You're working on:\n\n%s", quest.description)
+		objPreview.Text = getObjectiveText(quest, activeProgress)
+		rewardPreview.Text = getRewardText(quest.reward)
+	end
+end
+
+-- ── NPC interaction logic ────────────────────────────────────────────────
+
+local INTERACT_RANGE = QuestConfig.INTERACT_RANGE
+
+local function getQuestMasterPosition()
+	-- Find Quest Master in workspace
+	local npc = Workspace:FindFirstChild(QuestConfig.GIVER_NAME)
+	if npc then
+		local hrp = npc:FindFirstChild("HumanoidRootPart") or npc.PrimaryPart
+		if hrp then return hrp.Position end
+	end
+	return QuestConfig.GIVER_POSITION
+end
+
+local function checkProximity()
+	local character = player.Character
+	if not character then
+		if npcNearby then npcNearby = false; promptFrame.Visible = false end
 		return
 	end
-	isShowingCompletion = true
-
-	completionText.Text = "Quest Complete! " .. rewardText
-	completionOverlay.Visible = true
-
-	-- Fade in the golden flash
-	completionOverlay.BackgroundTransparency = 1
-	local fadeIn = TweenService:Create(completionOverlay, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
-		BackgroundTransparency = 0.7,
-	})
-	fadeIn:Play()
-	fadeIn.Completed:Wait()
-
-	task.wait(1.0)
-
-	-- Fade out
-	local fadeOut = TweenService:Create(completionOverlay, TweenInfo.new(0.6, Enum.EasingStyle.Quad), {
-		BackgroundTransparency = 1,
-	})
-	fadeOut:Play()
-	fadeOut.Completed:Wait()
-
-	completionOverlay.Visible = false
-	isShowingCompletion = false
-end
-
--- ===================================================================
--- QUEST ACCEPT NOTIFICATION
--- ===================================================================
-local isShowingNotif = false
-
-local function showQuestNotification(questName: string)
-	if isShowingNotif then
+	local hrp = character:FindFirstChild("HumanoidRootPart")
+	if not hrp then
+		if npcNearby then npcNearby = false; promptFrame.Visible = false end
 		return
 	end
-	isShowingNotif = true
 
-	notifLabel.Text = "New Quest: " .. questName
-	notifLabel.TextTransparency = 1
-	notifLabel.Visible = true
+	local npcPos = getQuestMasterPosition()
+	local dist = (hrp.Position - npcPos).Magnitude
+	local wasNear = npcNearby
+	npcNearby = dist <= INTERACT_RANGE
 
-	-- Fade in
-	local fadeIn = TweenService:Create(notifLabel, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {
-		TextTransparency = 0,
-	})
-	fadeIn:Play()
-	fadeIn.Completed:Wait()
-
-	task.wait(2.0)
-
-	-- Fade out
-	local fadeOut = TweenService:Create(notifLabel, TweenInfo.new(0.6, Enum.EasingStyle.Quad), {
-		TextTransparency = 1,
-	})
-	fadeOut:Play()
-	fadeOut.Completed:Wait()
-
-	notifLabel.Visible = false
-	isShowingNotif = false
+	if npcNearby and not wasNear then
+		promptFrame.Visible = true
+		TweenService:Create(promptFrame, TweenInfo.new(0.2), { BackgroundTransparency = 0.05 }):Play()
+	elseif not npcNearby and wasNear then
+		promptFrame.Visible = false
+		if interactionOpen then closeDialog() end
+	end
 end
 
--- ===================================================================
--- ATTRIBUTE LISTENERS
--- ===================================================================
+local function interactWithNPC()
+	if not npcNearby or interactionOpen then return end
 
--- Active quest changed — update entire display
-player:GetAttributeChangedSignal("ActiveQuestId"):Connect(function()
-	local questId = player:GetAttribute("ActiveQuestId") or ""
-	local quest = getQuestData(questId)
+	-- Determine what to show
+	if activeQuestId == "" then
+		-- No active quest — offer next in chain
+		local nextQuest = nil
+		local completed = {}
+		local raw = player:GetAttribute("CompletedQuests") or ""
+		if raw ~= "" then
+			for id in string.gmatch(raw, "[^,]+") do completed[id] = true end
+		end
+		for _, q in ipairs(QuestConfig.QUESTS) do
+			if not completed[q.id] then
+				nextQuest = q
+				break
+			end
+		end
+		if nextQuest then
+			openDialog(nextQuest, "accept")
+		else
+			-- All quests done
+			dialogMessage.Text = "You have completed all my tasks. You are a true legend!"
+			objPreview.Text = ""
+			rewardPreview.Text = ""
+			interactionOpen = true
+			dialogOverlay.Visible = true
+			dialogPanel.Visible = true
+		end
+	elseif activeQuestComplete then
+		-- Ready to turn in
+		local quest = QuestConfig.getQuestById(activeQuestId)
+		if quest then openDialog(quest, "turnin") end
+	else
+		-- Quest in progress
+		local quest = QuestConfig.getQuestById(activeQuestId)
+		if quest then openDialog(quest, "info") end
+	end
+end
 
+-- ── Button handlers ──────────────────────────────────────────────────────
+
+acceptBtn.Activated:Connect(function()
+	local nextQuest = nil
+	local completed = {}
+	local raw = player:GetAttribute("CompletedQuests") or ""
+	if raw ~= "" then
+		for id in string.gmatch(raw, "[^,]+") do completed[id] = true end
+	end
+	for _, q in ipairs(QuestConfig.QUESTS) do
+		if not completed[q.id] then
+			nextQuest = q
+			break
+		end
+	end
+	if nextQuest then
+		QUEST_ACCEPT:FireServer(nextQuest.id)
+	end
+	closeDialog()
+end)
+
+completeBtn.Activated:Connect(function()
+	if activeQuestId ~= "" then
+		QUEST_COMPLETE:FireServer(activeQuestId)
+	end
+	closeDialog()
+end)
+
+closeBtn.Activated:Connect(closeDialog)
+dialogOverlay.Activated:Connect(closeDialog)
+
+-- ── Input ────────────────────────────────────────────────────────────────
+
+UserInputService.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	if input.KeyCode == Enum.KeyCode.E and npcNearby and not interactionOpen then
+		interactWithNPC()
+	elseif input.KeyCode == Enum.KeyCode.Escape and interactionOpen then
+		closeDialog()
+	end
+end)
+
+-- ── Remote listeners ─────────────────────────────────────────────────────
+
+QUEST_UPDATE.OnClientEvent:Connect(function(questId, progress, completed)
+	activeQuestId = questId
+	activeProgress = progress
+	activeQuestComplete = completed
+	player:SetAttribute("ActiveQuestId", questId)
+	player:SetAttribute("QuestProgress", progress)
+	updateTracker()
+end)
+
+QUEST_COMPLETE.OnClientEvent:Connect(function(questId)
+	local quest = QuestConfig.getQuestById(questId)
 	if quest then
-		-- Show accept notification for newly activated quest
-		task.spawn(showQuestNotification, quest.name)
+		showCompletionToast(quest.name)
 	end
-
-	updateQuestDisplay()
+	activeQuestId = ""
+	activeProgress = 0
+	activeQuestComplete = false
+	player:SetAttribute("ActiveQuestId", "")
+	player:SetAttribute("QuestProgress", 0)
+	updateTracker()
 end)
 
--- Quest progress changed — update progress bar and text
-player:GetAttributeChangedSignal("QuestProgress"):Connect(function()
-	updateQuestDisplay()
+QUEST_REWARD.OnClientEvent:Connect(function(rtype, amount)
+	showRewardToast(rtype, amount)
 end)
 
--- Completed quests changed — show completion flash if we just completed the active quest
-player:GetAttributeChangedSignal("CompletedQuests"):Connect(function()
-	local activeQuestId = player:GetAttribute("ActiveQuestId") or ""
-	local quest = getQuestData(activeQuestId)
-	if quest then
-		local rewardText = formatReward(quest.reward)
-		task.spawn(showCompletionFlash, rewardText)
+-- ── Sync from attributes on join ─────────────────────────────────────────
+
+local function syncFromAttributes()
+	activeQuestId = player:GetAttribute("ActiveQuestId") or ""
+	activeProgress = player:GetAttribute("QuestProgress") or 0
+	if activeQuestId ~= "" then
+		local quest = QuestConfig.getQuestById(activeQuestId)
+		if quest then
+			activeQuestComplete = false
+			-- Check if complete
+			local obj = quest.objective
+			if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" then
+				activeQuestComplete = activeProgress >= (obj.count or 1)
+			elseif obj.type == "OBTAIN" then
+				activeQuestComplete = activeProgress >= 1
+			elseif obj.type == "LEVEL" then
+				local leaderstats = player:FindFirstChild("leaderstats")
+				local lv = leaderstats and leaderstats:FindFirstChild("Level")
+				if lv then activeQuestComplete = lv.Value >= (obj.target or 1) end
+			end
+		end
 	end
+	updateTracker()
+end
 
-	-- After flash, the server will typically clear or swap the active quest;
-	-- update display will hide the tracker if no new quest is set.
-	task.delay(2.5, function()
-		updateQuestDisplay()
-	end)
+player:GetAttributeChangedSignal("ActiveQuestId"):Connect(syncFromAttributes)
+player:GetAttributeChangedSignal("QuestProgress"):Connect(syncFromAttributes)
+
+-- Initial sync
+syncFromAttributes()
+
+-- ── Proximity loop ───────────────────────────────────────────────────────
+
+RunService.Heartbeat:Connect(function()
+	checkProximity()
 end)
 
--- Also update the LEVEL-type quest display when the player's Level attribute changes,
--- since the progress text depends on the player's current level.
-player:GetAttributeChangedSignal("Level"):Connect(function()
-	local questId = player:GetAttribute("ActiveQuestId") or ""
-	local quest = getQuestData(questId)
-	if quest and quest.objective.type == QuestConfig.OBJECTIVE_TYPES.LEVEL then
-		updateQuestDisplay()
+-- ── Player attribute watcher for LEVEL quests ────────────────────────────
+
+local leaderstats = player:WaitForChild("leaderstats", 15)
+if leaderstats then
+	local levelVal = leaderstats:WaitForChild("Level", 10)
+	if levelVal then
+		levelVal.Changed:Connect(function()
+			if activeQuestId ~= "" and not activeQuestComplete then
+				local quest = QuestConfig.getQuestById(activeQuestId)
+				if quest and quest.objective.type == "LEVEL" then
+					syncFromAttributes()
+				end
+			end
+		end)
 	end
-end)
+end
 
--- ===================================================================
--- INITIAL STATE
--- ===================================================================
-updateQuestDisplay()
-
-print("[QuestGui] Quest HUD initialized")
+print("[QuestGui] Quest tracker and NPC interaction enabled")
