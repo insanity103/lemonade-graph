@@ -13,6 +13,14 @@ WorldLayout.HUB = {
 	MerchantPosition = Vector3.new(13, 2.8, -172),
 }
 
+-- Hub feature positions (offsets from HUB.Center, used by Hub* scripts)
+WorldLayout.HUB_FEATURES = {
+	Campfire       = Vector3.new(18, 0, 8),    -- south-east of spawn
+	Leaderboard    = Vector3.new(-14, 0, -10), -- north-west of spawn
+	RespecShrine   = Vector3.new(-8, 0, 12),   -- south of spawn
+	-- Ambient NPCs wander around the hub using their own waypoint tables
+}
+
 -- A readable S-curve replaces the old hub-and-spoke layout. Each arena sits
 -- beside the road so the player sees its landmark before reaching its gate.
 WorldLayout.ROUTE = {
