@@ -7,9 +7,11 @@ local StarterPack = game:GetService("StarterPack")
 local REMOTE_NAMES = {
 	"AutoSellNotice",
 	"BossDoorNotice",
+	"ComboUpdate",
 	"DamageNumber",
 	"EnemyAttack",
 	"GoldGain",
+	"HitlagEffect",
 	"InventoryAction",
 	"InventoryUpdated",
 	"LevelUpBurst",

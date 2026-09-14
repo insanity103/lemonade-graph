@@ -174,9 +174,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/SwordDropSystem.server.luau": {
-    "mtime": 1789346085.0812244,
-    "seen": 1789346267.6797469,
-    "ast_hash": "692a48c16ece489eee3283456e3b0fe5",
+    "mtime": 1789189881.0587,
+    "seen": 1789345979.5830178,
+    "ast_hash": "5bf42f0185cbeeb33ccbb95740b44458",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/SwordSystem.server.luau": {
@@ -222,9 +222,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau": {
-    "mtime": 1789345986.4858239,
-    "seen": 1789346267.679755,
-    "ast_hash": "a9b5945599e7182d8121e3bfb7201f1e",
+    "mtime": 1789345973.6246412,
+    "seen": 1789345979.5830247,
+    "ast_hash": "3f36c0cde7e89c768431dd369036f7f5",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/ComboVFX.client.luau": {
@@ -330,9 +330,9 @@
     "semantic_hash": ""
   },
   "GAME_ARCHITECTURE.md": {
-    "mtime": 1789346039.7255802,
-    "seen": 1789346267.6797738,
-    "ast_hash": "83b6fe79cfb4e4d8b512f80dd378ed2f",
+    "mtime": 1789345668.2043025,
+    "seen": 1789345979.5830414,
+    "ast_hash": "be8fdac4575ae18de42aadfa65288786",
     "semantic_hash": ""
   },
   "RESEARCH.md": {
@@ -396,9 +396,9 @@
     "semantic_hash": ""
   },
   "manual_trace.md": {
-    "mtime": 1789346034.4765055,
-    "seen": 1789346267.6797845,
-    "ast_hash": "985653e8f178a20b14fcb4bf34f1ba31",
+    "mtime": 1789083005.0589697,
+    "seen": 1789345979.5830514,
+    "ast_hash": "9a8efd32d69b4faf848426dce5ca047c",
     "semantic_hash": ""
   },
   "research/sword-rpg/sword-rpg-INDEX.md": {
@@ -717,18 +717,6 @@
     "mtime": 1789151609.8298695,
     "seen": 1789345979.5831072,
     "ast_hash": "b30b4704c84bdf20b7d44ae16a57b271",
-    "semantic_hash": ""
-  },
-  "lemonade-game/ReplicatedStorage/Animations/Combo Attack Animation.luau": {
-    "mtime": 1789346200.314862,
-    "seen": 1789346267.6797206,
-    "ast_hash": "579008a281e41b87254352d5f8866a6f",
-    "semantic_hash": ""
-  },
-  "COMBO_TEST_PLAN.md": {
-    "mtime": 1789345995.1269467,
-    "seen": 1789346267.679772,
-    "ast_hash": "99f3b60ba7897767df3f04693e54ef07",
     "semantic_hash": ""
   }
 }

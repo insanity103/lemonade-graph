@@ -2,7 +2,18 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local TweenService = game:GetService("TweenService")
 
+local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
+
 local damageEvent = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("DamageNumber")
+
+local currentCombo = 0
+
+local comboRemote = ReplicatedStorage:WaitForChild("RemoteEvents"):FindFirstChild("ComboUpdate")
+if comboRemote then
+	comboRemote.OnClientEvent:Connect(function(count)
+		currentCombo = count
+	end)
+end
 
 local TWEEN_INFO = TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
@@ -38,6 +49,11 @@ local function showDamage(position, amount, kind)
 	else
 		label.Text = "-" .. tostring(math.round(amount))
 		label.TextColor3 = Color3.fromRGB(255, 215, 60)
+	end
+
+	if currentCombo >= 3 and not isCrit and kind ~= "incoming" then
+		label.Text = currentCombo .. "x " .. label.Text
+		label.TextColor3 = ComboConfig.HUD_COLORS[currentCombo] or Color3.fromRGB(255, 255, 255)
 	end
 
 	label.TextStrokeTransparency = 0

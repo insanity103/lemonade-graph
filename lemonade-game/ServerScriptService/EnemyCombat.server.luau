@@ -6,6 +6,7 @@ local TweenService = game:GetService("TweenService")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
+local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
 WorldLayout.EnsureBuilt()
 
 local ENEMY_TAG = CombatUtil.ENEMY_TAG
@@ -967,6 +968,16 @@ local function attackEnemy(player, enemyModel)
 
 	local damage, isCrit = getPlayerAttackDamage(player)
 	humanoid:TakeDamage(damage)
+
+	-- Apply hitlag for unarmed attacks (use combo hit 1 duration)
+	local attackerChar = player.Character
+	if attackerChar then
+		CombatUtil.applyHitlag(attackerChar, enemyModel, ComboConfig.HITLAG_DURATION[1])
+	end
+	local hitlagRemote = ReplicatedStorage:WaitForChild("RemoteEvents"):FindFirstChild("HitlagEffect")
+	if hitlagRemote then
+		hitlagRemote:FireClient(player, ComboConfig.HITLAG_DURATION[1])
+	end
 
 	local char = player.Character
 	local playerHrp = char and char:FindFirstChild("HumanoidRootPart")

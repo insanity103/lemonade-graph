@@ -16,6 +16,12 @@ local autoAttackOn = false
 local autoSkillOn = false
 local autoAllocateSkillPoints
 
+-- Combo state tracking
+local comboCount = 0
+local comboEndTime = 0
+local COMBO_RESET_TIME = 1.5
+local comboEndlagUntil = 0 -- server-reported endlag expiry
+
 -- HUD showing auto-attack state
 local playerGui = player:WaitForChild("PlayerGui")
 local autoGui = Instance.new("ScreenGui")
@@ -45,6 +51,21 @@ skillStatusLabel.Font = Enum.Font.SourceSans
 skillStatusLabel.TextSize = 15
 skillStatusLabel.Text = "Skill Points: manual (P to auto)"
 skillStatusLabel.Parent = autoGui
+
+local comboLabel = Instance.new("TextLabel")
+comboLabel.Name = "ComboLabel"
+comboLabel.Size = UDim2.new(0, 120, 0, 40)
+comboLabel.Position = UDim2.fromScale(0.5, 0.09)
+comboLabel.AnchorPoint = Vector2.new(0.5, 0)
+comboLabel.BackgroundTransparency = 1
+comboLabel.Font = Enum.Font.GothamBold
+comboLabel.TextSize = 28
+comboLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+comboLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+comboLabel.TextStrokeTransparency = 0.3
+comboLabel.Text = ""
+comboLabel.Visible = false
+comboLabel.Parent = autoGui
 
 local function getEquippedTool()
 	local character = player.Character
@@ -154,6 +175,56 @@ player:GetAttributeChangedSignal("SkillPoints"):Connect(function()
 end)
 
 -- ===================================================================
+-- COMBO UPDATE LISTENER
+-- ===================================================================
+local comboRemote = ReplicatedStorage:WaitForChild("RemoteEvents"):FindFirstChild("ComboUpdate")
+if comboRemote then
+	comboRemote.OnClientEvent:Connect(function(count, endlag)
+		comboCount = count
+		comboEndTime = tick() + COMBO_RESET_TIME
+		comboEndlagUntil = tick() + (endlag or 0)
+
+		-- Update HUD
+		local colors = {
+			Color3.fromRGB(255, 255, 255),
+			Color3.fromRGB(255, 255, 200),
+			Color3.fromRGB(255, 200, 80),
+			Color3.fromRGB(255, 120, 50),
+			Color3.fromRGB(255, 50, 50),
+		}
+		comboLabel.Text = tostring(count) .. "x COMBO"
+		comboLabel.TextColor3 = colors[count] or colors[1]
+		comboLabel.Visible = true
+
+		-- Brief scale pulse animation
+		comboLabel.TextSize = 36
+		task.delay(0.1, function()
+			comboLabel.TextSize = 28
+		end)
+	end)
+end
+
+-- ===================================================================
+-- HITLAG SCREEN EFFECT LISTENER
+-- ===================================================================
+local hitlagRemote = ReplicatedStorage:WaitForChild("RemoteEvents"):FindFirstChild("HitlagEffect")
+if hitlagRemote then
+	hitlagRemote.OnClientEvent:Connect(function(duration)
+		-- Screen freeze effect: brief vignette flash
+		local flash = Instance.new("Frame")
+		flash.Size = UDim2.fromScale(1, 1)
+		flash.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		flash.BackgroundTransparency = 0.85
+		flash.BorderSizePixel = 0
+		flash.ZIndex = 100
+		flash.Parent = playerGui
+		task.delay(duration, function()
+			flash:Destroy()
+		end)
+	end)
+end
+
+-- ===================================================================
 -- AUTO-ATTACK MOVEMENT & TARGETING CONTROLLER
 -- Smoothly paths/moves player towards the closest living enemy,
 -- faces them, and activates equipped weapon / attacks automatically.
@@ -161,6 +232,7 @@ end)
 local TARGET_SEARCH_RANGE = 70
 local ATTACK_REACH_DISTANCE = 6.5
 local lastAutoSwingTime = 0
+-- AUTO_SWING_INTERVAL: auto-attack respects combo endlag on server side
 local AUTO_SWING_INTERVAL = 0.45
 
 local function isLivingEnemy(model)
@@ -230,6 +302,11 @@ RunService.RenderStepped:Connect(function()
 		hrp.CFrame = lookAtCFrame
 	end
 
+	-- Respect combo endlag — don't fire during recovery
+	if tick() < comboEndlagUntil then
+		return -- still in combo endlag
+	end
+
 	-- Trigger attacks on interval when within reach
 	if dist <= (ATTACK_REACH_DISTANCE + 2) then
 		local now = tick()
@@ -237,5 +314,11 @@ RunService.RenderStepped:Connect(function()
 			lastAutoSwingTime = now
 			fireAttack()
 		end
+	end
+
+	-- Combo reset display
+	if comboCount > 0 and tick() > comboEndTime then
+		comboCount = 0
+		comboLabel.Visible = false
 	end
 end)

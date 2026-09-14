@@ -2709,7 +2709,7 @@
       "file_type": "code",
       "norm_label": "bindplayer()",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L179"
+      "source_location": "L175"
     },
     {
       "id": "lemonade_game_serverscriptservice_sworddropsystem_server_getequippedweaponslots",
@@ -2721,7 +2721,7 @@
       "file_type": "code",
       "norm_label": "getequippedweaponslots()",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L62"
+      "source_location": "L58"
     },
     {
       "id": "lemonade_game_serverscriptservice_sworddropsystem_server_getweaponslots",
@@ -2733,7 +2733,7 @@
       "file_type": "code",
       "norm_label": "getweaponslots()",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L51"
+      "source_location": "L47"
     },
     {
       "id": "lemonade_game_serverscriptservice_sworddropsystem_server_givesword",
@@ -2745,7 +2745,7 @@
       "file_type": "code",
       "norm_label": "givesword()",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L73"
+      "source_location": "L69"
     },
     {
       "id": "lemonade_game_serverscriptservice_sworddropsystem_server_hook",
@@ -2757,7 +2757,7 @@
       "file_type": "code",
       "norm_label": "hook()",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L200"
+      "source_location": "L196"
     },
     {
       "id": "lemonade_game_serverscriptservice_sworddropsystem_server_makebosssword",
@@ -2769,7 +2769,7 @@
       "file_type": "code",
       "norm_label": "makebosssword()",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L69"
+      "source_location": "L65"
     },
     {
       "id": "lemonade_game_serverscriptservice_sworddropsystem_server_watchcharacter",
@@ -2781,7 +2781,7 @@
       "file_type": "code",
       "norm_label": "watchcharacter()",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L130"
+      "source_location": "L126"
     },
     {
       "id": "lemonade_game_serverscriptservice_bossroomgate_server_applytier",
@@ -3057,7 +3057,7 @@
       "file_type": "code",
       "norm_label": "findclosestlivingenemy()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L249"
+      "source_location": "L248"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client_fireattack",
@@ -3105,7 +3105,7 @@
       "file_type": "code",
       "norm_label": "islivingenemy()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L238"
+      "source_location": "L237"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_combatcontroller_client_setautoattack",
@@ -16725,173 +16725,6 @@
       "source_location": "L56"
     },
     {
-      "id": "combo_test_plan",
-      "label": "COMBO_TEST_PLAN.md",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "combo_test_plan.md",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "combo_test_plan_combo_system_test_plan",
-      "label": "Combo System Test Plan",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "combo system test plan",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "combo_test_plan_known_limitations",
-      "label": "Known Limitations",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "known limitations",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L58"
-    },
-    {
-      "id": "combo_test_plan_test_10_multiplayer",
-      "label": "Test 10: Multiplayer",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "test 10: multiplayer",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L53"
-    },
-    {
-      "id": "combo_test_plan_test_1_basic_5_hit_combo",
-      "label": "Test 1: Basic 5-Hit Combo",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "test 1: basic 5-hit combo",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L3"
-    },
-    {
-      "id": "combo_test_plan_test_2_combo_reset",
-      "label": "Test 2: Combo Reset",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "test 2: combo reset",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L10"
-    },
-    {
-      "id": "combo_test_plan_test_3_endlag_enforcement",
-      "label": "Test 3: Endlag Enforcement",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "test 3: endlag enforcement",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L15"
-    },
-    {
-      "id": "combo_test_plan_test_4_hitlag_feel",
-      "label": "Test 4: Hitlag Feel",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "test 4: hitlag feel",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L20"
-    },
-    {
-      "id": "combo_test_plan_test_5_combo_damage_scaling",
-      "label": "Test 5: Combo Damage Scaling",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "test 5: combo damage scaling",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L26"
-    },
-    {
-      "id": "combo_test_plan_test_6_auto_attack_integration",
-      "label": "Test 6: Auto-Attack Integration",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "test 6: auto-attack integration",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L31"
-    },
-    {
-      "id": "combo_test_plan_test_7_combo_reset_on_death",
-      "label": "Test 7: Combo Reset on Death",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "test 7: combo reset on death",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L37"
-    },
-    {
-      "id": "combo_test_plan_test_8_unarmed_combat_hitlag",
-      "label": "Test 8: Unarmed Combat Hitlag",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "test 8: unarmed combat hitlag",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L43"
-    },
-    {
-      "id": "combo_test_plan_test_9_pity_system",
-      "label": "Test 9: Pity System",
-      "_origin": "ast",
-      "community": 271,
-      "community_name": "Combo System Test Plan",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "test 9: pity system",
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L48"
-    },
-    {
-      "id": "lemonade_game_replicatedstorage_animations_combo_attack_animation",
-      "label": "Combo Attack Animation.luau",
-      "_origin": "ast",
-      "community": 272,
-      "community_name": "Combo Attack Animation.luau",
-      "file_type": "code",
-      "norm_label": "combo attack animation.luau",
-      "source_file": "lemonade-game/ReplicatedStorage/Animations/Combo Attack Animation.luau",
-      "source_location": "L1"
-    },
-    {
       "id": "skills_roblox_optimize_skill",
       "label": "roblox-optimize/SKILL.md",
       "_origin": "ast",
@@ -27188,7 +27021,7 @@
       "node_kind": "heading",
       "norm_label": "anti-exploit",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L345"
+      "source_location": "L334"
     },
     {
       "id": "game_architecture_architecture_patterns",
@@ -27200,7 +27033,7 @@
       "node_kind": "heading",
       "norm_label": "architecture patterns",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L422"
+      "source_location": "L411"
     },
     {
       "id": "game_architecture_boss_pve_design",
@@ -27212,7 +27045,7 @@
       "node_kind": "heading",
       "norm_label": "boss / pve design",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L340"
+      "source_location": "L329"
     },
     {
       "id": "game_architecture_boss_sword_attributes_per_tool_in_inventory",
@@ -27248,19 +27081,7 @@
       "node_kind": "heading",
       "norm_label": "combat system",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L318"
-    },
-    {
-      "id": "game_architecture_combo_system_added_2026_09_14",
-      "label": "\u2705 Combo System (Added 2026-09-14)",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "Integration Points for Research",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "\u2705 combo system (added 2026-09-14)",
-      "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L277"
+      "source_location": "L307"
     },
     {
       "id": "game_architecture_data_flow",
@@ -27272,7 +27093,7 @@
       "node_kind": "heading",
       "norm_label": "data flow",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L432"
+      "source_location": "L421"
     },
     {
       "id": "game_architecture_data_model",
@@ -27296,7 +27117,7 @@
       "node_kind": "heading",
       "norm_label": "economy",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L350"
+      "source_location": "L339"
     },
     {
       "id": "game_architecture_game_systems_currently_implemented",
@@ -27308,7 +27129,7 @@
       "node_kind": "heading",
       "norm_label": "game systems currently implemented",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L243"
+      "source_location": "L241"
     },
     {
       "id": "game_architecture_integration_points_for_research",
@@ -27320,7 +27141,7 @@
       "node_kind": "heading",
       "norm_label": "integration points for research",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L316"
+      "source_location": "L305"
     },
     {
       "id": "game_architecture_key_formulas",
@@ -27332,7 +27153,7 @@
       "node_kind": "heading",
       "norm_label": "key formulas",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L407"
+      "source_location": "L396"
     },
     {
       "id": "game_architecture_leaderstats_intvalues",
@@ -27368,7 +27189,7 @@
       "node_kind": "heading",
       "norm_label": "\u274c missing systems (not yet built)",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L299"
+      "source_location": "L285"
     },
     {
       "id": "game_architecture_module_separation",
@@ -27380,7 +27201,7 @@
       "node_kind": "heading",
       "norm_label": "module separation",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L427"
+      "source_location": "L416"
     },
     {
       "id": "game_architecture_next_steps_prioritized",
@@ -27392,7 +27213,7 @@
       "node_kind": "heading",
       "norm_label": "next steps (prioritized)",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L367"
+      "source_location": "L356"
     },
     {
       "id": "game_architecture_p0_core_combat_feel_blocks_player_satisfaction",
@@ -27404,7 +27225,7 @@
       "node_kind": "heading",
       "norm_label": "p0 \u2014 core combat feel (blocks player satisfaction)",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L369"
+      "source_location": "L358"
     },
     {
       "id": "game_architecture_p1_content_progression_blocks_retention",
@@ -27416,7 +27237,7 @@
       "node_kind": "heading",
       "norm_label": "p1 \u2014 content & progression (blocks retention)",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L380"
+      "source_location": "L369"
     },
     {
       "id": "game_architecture_p2_social_growth_blocks_viral_growth",
@@ -27428,7 +27249,7 @@
       "node_kind": "heading",
       "norm_label": "p2 \u2014 social & growth (blocks viral growth)",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L390"
+      "source_location": "L379"
     },
     {
       "id": "game_architecture_p3_polish_mobile_blocks_reach",
@@ -27440,7 +27261,7 @@
       "node_kind": "heading",
       "norm_label": "p3 \u2014 polish & mobile (blocks reach)",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L395"
+      "source_location": "L384"
     },
     {
       "id": "game_architecture_p4_anti_exploit_hardening",
@@ -27452,7 +27273,7 @@
       "node_kind": "heading",
       "norm_label": "p4 \u2014 anti-exploit hardening",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L400"
+      "source_location": "L389"
     },
     {
       "id": "game_architecture_partially_implemented_known_issues",
@@ -27464,7 +27285,7 @@
       "node_kind": "heading",
       "norm_label": "\ud83d\udea7 partially implemented / known issues",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L289"
+      "source_location": "L275"
     },
     {
       "id": "game_architecture_persisted_data",
@@ -27500,7 +27321,7 @@
       "node_kind": "heading",
       "norm_label": "player retention",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L360"
+      "source_location": "L349"
     },
     {
       "id": "game_architecture_progression_curves",
@@ -27512,7 +27333,7 @@
       "node_kind": "heading",
       "norm_label": "progression curves",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L330"
+      "source_location": "L319"
     },
     {
       "id": "game_architecture_project_structure",
@@ -27536,7 +27357,7 @@
       "node_kind": "heading",
       "norm_label": "rebirth system",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L324"
+      "source_location": "L313"
     },
     {
       "id": "game_architecture_remoteevents_functions",
@@ -27572,7 +27393,7 @@
       "node_kind": "heading",
       "norm_label": "script dependency graph",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L437"
+      "source_location": "L426"
     },
     {
       "id": "game_architecture_script_inventory",
@@ -27596,7 +27417,7 @@
       "node_kind": "heading",
       "norm_label": "server authority",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L424"
+      "source_location": "L413"
     },
     {
       "id": "game_architecture_server_scripts_serverscriptservice",
@@ -27644,7 +27465,7 @@
       "node_kind": "heading",
       "norm_label": "ui/ux",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L355"
+      "source_location": "L344"
     },
     {
       "id": "game_architecture_weapon_acquisition_pity",
@@ -27656,7 +27477,7 @@
       "node_kind": "heading",
       "norm_label": "weapon acquisition / pity",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L335"
+      "source_location": "L324"
     },
     {
       "id": "game_architecture_working_systems",
@@ -27668,7 +27489,7 @@
       "node_kind": "heading",
       "norm_label": "\u2705 working systems",
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L245"
+      "source_location": "L243"
     },
     {
       "id": "game_architecture_workspace_script",
@@ -30684,7 +30505,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L183",
+      "source_location": "L179",
       "weight": 1.0
     },
     {
@@ -30696,7 +30517,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L65",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -30708,7 +30529,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L82",
+      "source_location": "L78",
       "weight": 1.0
     },
     {
@@ -30720,7 +30541,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L86",
+      "source_location": "L82",
       "weight": 1.0
     },
     {
@@ -30732,7 +30553,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L236",
+      "source_location": "L227",
       "weight": 1.0
     },
     {
@@ -31548,7 +31369,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L254",
+      "source_location": "L253",
       "weight": 1.0
     },
     {
@@ -33908,138 +33729,6 @@
       "weight": 1.0
     },
     {
-      "source": "combo_test_plan",
-      "target": "combo_test_plan_combo_system_test_plan",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L1",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_test_2_combo_reset",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L10",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_test_3_endlag_enforcement",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L15",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_test_4_hitlag_feel",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L20",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_test_5_combo_damage_scaling",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L26",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_test_1_basic_5_hit_combo",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L3",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_test_6_auto_attack_integration",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L31",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_test_7_combo_reset_on_death",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L37",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_test_8_unarmed_combat_hitlag",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L43",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_test_9_pity_system",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L48",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_test_10_multiplayer",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L53",
-      "weight": 1.0
-    },
-    {
-      "source": "combo_test_plan_combo_system_test_plan",
-      "target": "combo_test_plan_known_limitations",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "COMBO_TEST_PLAN.md",
-      "source_location": "L58",
-      "weight": 1.0
-    },
-    {
       "source": "design_rules",
       "target": "design_rules_design_rules_lemonade_sword_rpg",
       "relation": "contains",
@@ -34223,7 +33912,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L424",
+      "source_location": "L413",
       "weight": 1.0
     },
     {
@@ -34234,7 +33923,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L427",
+      "source_location": "L416",
       "weight": 1.0
     },
     {
@@ -34245,7 +33934,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L432",
+      "source_location": "L421",
       "weight": 1.0
     },
     {
@@ -34256,7 +33945,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L437",
+      "source_location": "L426",
       "weight": 1.0
     },
     {
@@ -34289,18 +33978,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L245",
-      "weight": 1.0
-    },
-    {
-      "source": "game_architecture_game_systems_currently_implemented",
-      "target": "game_architecture_combo_system_added_2026_09_14",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L277",
+      "source_location": "L243",
       "weight": 1.0
     },
     {
@@ -34311,7 +33989,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L289",
+      "source_location": "L275",
       "weight": 1.0
     },
     {
@@ -34322,7 +34000,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L299",
+      "source_location": "L285",
       "weight": 1.0
     },
     {
@@ -34333,7 +34011,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L318",
+      "source_location": "L307",
       "weight": 1.0
     },
     {
@@ -34344,7 +34022,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L324",
+      "source_location": "L313",
       "weight": 1.0
     },
     {
@@ -34355,7 +34033,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L330",
+      "source_location": "L319",
       "weight": 1.0
     },
     {
@@ -34366,7 +34044,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L335",
+      "source_location": "L324",
       "weight": 1.0
     },
     {
@@ -34377,7 +34055,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L340",
+      "source_location": "L329",
       "weight": 1.0
     },
     {
@@ -34388,7 +34066,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L345",
+      "source_location": "L334",
       "weight": 1.0
     },
     {
@@ -34399,7 +34077,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L350",
+      "source_location": "L339",
       "weight": 1.0
     },
     {
@@ -34410,7 +34088,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L355",
+      "source_location": "L344",
       "weight": 1.0
     },
     {
@@ -34421,7 +34099,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L360",
+      "source_location": "L349",
       "weight": 1.0
     },
     {
@@ -34454,7 +34132,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L243",
+      "source_location": "L241",
       "weight": 1.0
     },
     {
@@ -34465,7 +34143,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L316",
+      "source_location": "L305",
       "weight": 1.0
     },
     {
@@ -34476,7 +34154,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L367",
+      "source_location": "L356",
       "weight": 1.0
     },
     {
@@ -34487,7 +34165,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L407",
+      "source_location": "L396",
       "weight": 1.0
     },
     {
@@ -34498,7 +34176,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L422",
+      "source_location": "L411",
       "weight": 1.0
     },
     {
@@ -34531,7 +34209,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L369",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -34542,7 +34220,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L380",
+      "source_location": "L369",
       "weight": 1.0
     },
     {
@@ -34553,7 +34231,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L390",
+      "source_location": "L379",
       "weight": 1.0
     },
     {
@@ -34564,7 +34242,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L395",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -34575,7 +34253,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "GAME_ARCHITECTURE.md",
-      "source_location": "L400",
+      "source_location": "L389",
       "weight": 1.0
     },
     {
@@ -35928,7 +35606,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L130",
+      "source_location": "L126",
       "weight": 1.0
     },
     {
@@ -35939,7 +35617,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L179",
+      "source_location": "L175",
       "weight": 1.0
     },
     {
@@ -35950,7 +35628,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L200",
+      "source_location": "L196",
       "weight": 1.0
     },
     {
@@ -35961,7 +35639,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L51",
+      "source_location": "L47",
       "weight": 1.0
     },
     {
@@ -35972,7 +35650,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L62",
+      "source_location": "L58",
       "weight": 1.0
     },
     {
@@ -35983,7 +35661,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L69",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -35994,7 +35672,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L73",
+      "source_location": "L69",
       "weight": 1.0
     },
     {
@@ -36555,7 +36233,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L238",
+      "source_location": "L237",
       "weight": 1.0
     },
     {
@@ -36566,7 +36244,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau",
-      "source_location": "L249",
+      "source_location": "L248",
       "weight": 1.0
     },
     {
@@ -58328,7 +58006,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L201",
+      "source_location": "L197",
       "weight": 1.0
     },
     {
@@ -58340,7 +58018,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L225",
+      "source_location": "L221",
       "weight": 1.0
     },
     {
@@ -58352,7 +58030,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau",
-      "source_location": "L70",
+      "source_location": "L66",
       "weight": 1.0
     },
     {

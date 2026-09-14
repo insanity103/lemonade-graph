@@ -233,8 +233,10 @@ All communication flows through `ReplicatedStorage/RemoteEvents`. **No RemoteFun
 | `RebirthResult` | Server → Client | Rebirth success/failure result | RebirthSystem | MainMenuGui |
 | `MerchantAction` | Client → Server | Buy sword from merchant | MerchantSystem | MerchantGui |
 | `BossDoorNotice` | Server → Client | Notify player ejected from boss room | BossRoomGate | BossDoorClient |
+| `ComboUpdate` | Server → Client | Push current combo count to client HUD | SwordSystem | CombatController, ComboVFX |
+| `HitlagEffect` | Server → Client | Trigger hitlag freeze on both attacker and victim | CombatUtil | CombatController |
 
-**Total: 17 RemoteEvents, 0 RemoteFunctions**
+**Total: 19 RemoteEvents, 0 RemoteFunctions**
 
 ---
 
@@ -272,24 +274,33 @@ All communication flows through `ReplicatedStorage/RemoteEvents`. **No RemoteFun
 | **Animation System** | ✅ Complete | Custom Motor6D keyframe driver, fade in/out, leg counter-rotation |
 | **Sprint** | ✅ Complete | LeftShift = 26 speed vs 16 walk |
 
+### ✅ Combo System (Added 2026-09-14)
+
+| Component | File | Purpose |
+|-----------|------|--------|
+| ComboConfig | ReplicatedStorage/Config/ComboConfig.luau | Combo constants: endlag, damage mult, hitlag duration, timing |
+| SwordSystem | ServerScriptService/SwordSystem.server.luau | Server-side combo tracking, escalating endlag, combo damage multiplier |
+| CombatUtil | ServerScriptService/CombatUtil.luau | applyHitlag() — freeze both attacker + victim on hit |
+| CombatController | StarterPlayerScripts/CombatController.client.luau | Combo HUD counter, endlag-respecting auto-attack |
+| ComboVFX | StarterPlayerScripts/ComboVFX.client.luau | Screen shake scaling with combo count |
+| DamageNumbers | StarterPlayerScripts/DamageNumbers.client.luau | Combo multiplier prefix on floating damage text |
+| Combo Animation | ReplicatedStorage/Animations/Combo Attack Animation.luau | 5 distinct swing arcs (horizontal, overhead, spin) |
+
 ### 🚧 Partially Implemented / Known Issues
 
 | Item | Status | Details |
 |------|--------|---------|
 | **Merchant duplicates BossSwordFactory** | 🐛 Known Bug | `manual_trace.md` item #1 (OPEN): MerchantSystem carries its own copy of weapon construction logic. BossSwordFactory was extracted but merchant still has inline code. |
 | **CombatController pathfinding** | 🚧 Basic | Auto-attack uses `Humanoid:MoveTo()` — functional but no obstacle avoidance or path computation |
-| **5-hit combo system** | 🚧 Design Only | DESIGN_RULES.md specifies "5-hit M1 combos with escalating endlag" but current implementation uses simple cooldown (0.5s) with no combo counter |
-| **Hitlag** | 🚧 Design Only | DESIGN_RULES.md specifies "20-50ms freeze frames" — not yet implemented |
-| **Pity system for drops** | 🚧 Design Only | DESIGN_RULES.md specifies pity counters — current drop system is pure RNG with rebirth scaling |
+| **5-hit combo system** | ✅ Implemented — see ComboConfig.luau | 5-hit M1 combos with escalating endlag, damage multiplier, hitlag integration |
+| **Hitlag** | ✅ Implemented — see CombatUtil.applyHitlag() | 20-50ms freeze frames on hit — freezes both attacker and victim |
+| **Pity system for drops** | ✅ Implemented — see SwordDropSystem.server.luau | Pity counters track consecutive failed drops per rarity, guaranteed at threshold |
 
 ### ❌ Missing Systems (Not Yet Built)
 
 | System | Priority | Research Source |
 |--------|----------|----------------|
 | **Quest System** | High | No quest giver, quest tracking, or quest rewards exist |
-| **Combo Combat** | High | DESIGN_RULES: 5-hit M1 with escalating endlag |
-| **Hitlag** | High | DESIGN_RULES: 20-50ms freeze frames on hit |
-| **Pity System** | Medium | DESIGN_RULES: guaranteed drop after N failures |
 | **Multi-Currency** | Medium | DESIGN_RULES: 3+ activity-specific currencies (only Gold exists) |
 | **PvP System** | Medium | sword-rpg-pvp-design.md: ELO ranking, tier floors, PvP zones |
 | **Trading System** | Medium | sword-rpg-retention-community.md: player-to-player trading |

@@ -42,6 +42,10 @@ local BASE_RARITY_DROP_CHANCES = {
 	Common    = 0.80,
 }
 
+local PITY_THRESHOLD_BASE = 50 -- [TUNING] guaranteed drop after this many failures
+local PITY_PER_REBIRTH = 5    -- [TUNING] threshold increases with rebirth count
+local playerPityCount = {} -- [player] = consecutive failed rare drops
+
 local BOSS_WEAPONS = BossWeapons.Weapons
 
 local function getWeaponSlots(tool)
@@ -223,8 +227,38 @@ local function hook(model)
 		-- Scale blessed chance bonus (extra +5% at Rebirth 5+)
 		local blessedBonus = (rebirths >= 5) and (RebirthConfig.REBIRTH_5_BLESSED_BONUS or 0.05) or 0
 
-		if math.random() <= effectiveDropRate then
+		local rollSuccess = (math.random() <= effectiveDropRate)
+		local isRarePlus = (rarity == "Rare" or rarity == "Epic" or rarity == "Legendary")
+
+		if rollSuccess and isRarePlus then
+			-- Natural rare+ drop: reset pity and give sword
+			playerPityCount[killer] = 0
 			giveSword(killer, archKey, blessedBonus)
+		else
+			-- Failed to produce a rare+ drop
+			if rollSuccess then
+				-- Still give the non-rare drop
+				giveSword(killer, archKey, blessedBonus)
+			end
+
+			-- Pity tracking: increment on failed rare drops
+			local pity = playerPityCount[killer] or 0
+			pity = pity + 1
+			playerPityCount[killer] = pity
+
+			local pityRebirths = killer:GetAttribute("Rebirths") or 0
+			local pityThreshold = PITY_THRESHOLD_BASE + (pityRebirths * PITY_PER_REBIRTH)
+
+			-- Force a rare drop at pity threshold
+			if pity >= pityThreshold then
+				-- Override rarity to Rare
+				rarity = "Rare"
+				playerPityCount[killer] = 0 -- reset pity
+				if not rollSuccess then
+					-- Roll failed but pity triggered: force the drop
+					giveSword(killer, archKey, blessedBonus)
+				end
+			end
 		end
 	end)
 end
@@ -241,4 +275,9 @@ end)
 Players.PlayerAdded:Connect(bindPlayer)
 for _, p in ipairs(Players:GetPlayers()) do bindPlayer(p) end
 
+Players.PlayerRemoving:Connect(function(player)
+	playerPityCount[player] = nil
+end)
+
+print("[SwordDropSystem] Pity system enabled (base threshold: " .. PITY_THRESHOLD_BASE .. ")")
 print("[SwordDropSystem] Boss weapon drop system initialized with Rebirth rarity scaling, Rebirth 5+ Blessed bonuses, and Auto-Sell")

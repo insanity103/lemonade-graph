@@ -7,14 +7,16 @@ local DAMAGE_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 
+local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
+
 local CREATOR_TAG_NAME = "creator"
 
-local lastAttack = {} -- [player] = last attack time
+local playerCombo = {} -- [player] = {count=0, lastHitTime=0, lastEndTime=0}
 local connectedTools = setmetatable({}, { __mode = "k" })
 
 local isEnemy = CombatUtil.isEnemy
 
-local function calculateDamage(player, tool)
+local function calculateDamage(player, tool, comboIndex)
 	local strength = player:GetAttribute("Strength") or 0
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 	
@@ -26,7 +28,8 @@ local function calculateDamage(player, tool)
 	local critDamageMult = player:GetAttribute("RebirthCritDamageMult") or 1.75
 
 	local base = (Config.BaseDamage + Config.StrengthDamagePerPoint * strength)
-	local withMults = base * swordMult * (1 + bonusPct) * (1 + Config.WeaponDamagePerLevel * weaponLevel) * rebirthDmgMult
+	local comboMult = ComboConfig.COMBO_DAMAGE_MULT[comboIndex] or 1.0
+	local withMults = base * swordMult * (1 + bonusPct) * (1 + Config.WeaponDamagePerLevel * weaponLevel) * rebirthDmgMult * comboMult
 	
 	local isCrit = math.random() < math.clamp(critChance, 0, 1)
 	if isCrit then
@@ -54,7 +57,7 @@ local function applyKnockback(enemyModel, playerHrp, knockbackForce)
 	enemyHrp:ApplyImpulse(impulse)
 end
 
-local function applyDamage(enemyModel, player, tool, playerHrp)
+local function applyDamage(enemyModel, player, tool, playerHrp, comboIndex, character)
 	local humanoid = enemyModel:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health <= 0 then
 		return
@@ -68,8 +71,14 @@ local function applyDamage(enemyModel, player, tool, playerHrp)
 	end
 	creatorTag.Value = player
 
-	local damage, isCrit = calculateDamage(player, tool)
+	local damage, isCrit = calculateDamage(player, tool, comboIndex)
 	humanoid:TakeDamage(damage)
+
+	-- Apply hitlag: freeze both attacker and victim briefly
+	local hitlagDuration = ComboConfig.HITLAG_DURATION[comboIndex] or ComboConfig.HITLAG_DURATION[1]
+	CombatUtil.applyHitlag(character, enemyModel, hitlagDuration)
+	-- Notify client for screen shake (pass comboIndex so shake scales)
+	CombatUtil.fireHitlagToClient(player, hitlagDuration, comboIndex)
 
 	local knockback = (player:GetAttribute("SwordKnockbackBonus") or (tool and tool:GetAttribute("KnockbackBonus") or 0))
 		+ (player:GetAttribute("RebirthExtraKnockback") or 0)
@@ -83,7 +92,7 @@ local function applyDamage(enemyModel, player, tool, playerHrp)
 	end
 end
 
-local function performSwing(player, character, tool)
+local function performSwingWithCombo(player, character, tool, comboIndex)
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health <= 0 then
 		return
@@ -116,9 +125,48 @@ local function performSwing(player, character, tool)
 		if model and enemyRoot and isEnemy(model) and not damaged[model]
 			and CombatUtil.hasLineOfSight(rootPart.Position, enemyRoot.Position, { character, model }) then
 			damaged[model] = true
-			applyDamage(model, player, tool, rootPart)
+			applyDamage(model, player, tool, rootPart, comboIndex, character)
 		end
 	end
+end
+
+local function performComboSwing(player, character, tool)
+	local now = tick()
+	local state = playerCombo[player]
+	if not state then
+		state = {count=0, lastHitTime=0, lastEndTime=0}
+		playerCombo[player] = state
+	end
+
+	-- Check if combo should reset
+	if now - state.lastHitTime > ComboConfig.COMBO_RESET_TIME then
+		state.count = 0
+	end
+
+	-- Check endlag — player must wait for current endlag to finish
+	if state.lastEndTime > 0 and now < state.lastEndTime then
+		return -- still in endlag
+	end
+
+	-- Advance combo
+	state.count = state.count + 1
+	if state.count > ComboConfig.MAX_COMBO then
+		state.count = 1
+	end
+	state.lastHitTime = now
+
+	-- Calculate endlag for this hit
+	local endlag = ComboConfig.ENDLAG[state.count] or 0.2
+	state.lastEndTime = now + endlag
+
+	-- Fire combo update to client
+	local comboRemote = ReplicatedStorage:WaitForChild("RemoteEvents"):FindFirstChild("ComboUpdate")
+	if comboRemote then
+		comboRemote:FireClient(player, state.count, endlag)
+	end
+
+	-- Perform the actual swing with combo index
+	performSwingWithCombo(player, character, tool, state.count)
 end
 
 local function setupTool(character, tool)
@@ -137,12 +185,7 @@ local function setupTool(character, tool)
 	end
 
 	tool.Activated:Connect(function()
-		local now = tick()
-		if lastAttack[player] and (now - lastAttack[player]) < Config.AttackCooldown then
-			return
-		end
-		lastAttack[player] = now
-		performSwing(player, character, tool)
+		performComboSwing(player, character, tool)
 	end)
 end
 
@@ -171,7 +214,40 @@ Players.PlayerAdded:Connect(function(player)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
-	lastAttack[player] = nil
+	playerCombo[player] = nil
 end)
 
-print("[SwordSystem] Sword combat with modifiers enabled")
+-- Reset combo on death/respawn
+local function onCharacterAdded(player, character)
+	local humanoid = character:WaitForChild("Humanoid", 5)
+	if humanoid then
+		humanoid.Died:Connect(function()
+			if playerCombo[player] then
+				playerCombo[player].count = 0
+				playerCombo[player].lastHitTime = 0
+				playerCombo[player].lastEndTime = 0
+			end
+			-- Notify client to reset combo HUD
+			local comboRemote = ReplicatedStorage:WaitForChild("RemoteEvents"):FindFirstChild("ComboUpdate")
+			if comboRemote then
+				comboRemote:FireClient(player, 0, 0)
+			end
+		end)
+	end
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+	if player.Character then
+		task.spawn(onCharacterAdded, player, player.Character)
+	end
+	player.CharacterAdded:Connect(function(char)
+		task.spawn(onCharacterAdded, player, char)
+	end)
+end
+Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(function(char)
+		task.spawn(onCharacterAdded, player, char)
+	end)
+end)
+
+print("[SwordSystem] 5-hit combo system with hitlag enabled")
