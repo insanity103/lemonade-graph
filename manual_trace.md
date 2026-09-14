@@ -36,6 +36,12 @@ None remaining. All research gaps resolved or documented from code.
 9. ~~`Items.luau` is a stub registry.~~ Added all 5 boss weapon entries (Boss_Gorgon through Boss_CelestialTitan) with names/descriptions matching `BossWeapons.luau`. Removed dead `ItemsConfig` import from `MainMenuGui.client.luau`.
 10. ~~No schema migration or field backfill.~~ `PlayerDataService.Load()` now backfills missing leaderstat and attribute keys from `SaveConfig` defaults after type-guard coercions. Version guard stamps `record.version` when missing or stale. `Apply()` defaults remain as a complementary safety net at the Instance layer.
 11. ~~`blessedBonus` hardcoded in SwordDropSystem.~~ Now reads `killer:GetAttribute("RebirthBlessedBonus")` instead of `rebirths >= 5` check, keeping a single source of truth via RebirthSystem.
+12. ~~AudioManager is dead code.~~ Wired into SwordSystem (enemy_hit/crit_hit), EnemyCombat (enemy_death), LevelingSystem (level_up). Module created in ReplicatedStorage with PlaySFX/PlayGlobal API, 11 sound events, MusicVolume support.
+13. ~~Quest system double rewards.~~ QuestService.server.luau renamed to .bak. QuestSystem.server.luau is now sole quest script. Eliminates double NPC spawns, double event handlers, and double reward grants.
+14. ~~HubLeaderboard unused require.~~ Removed dead `PlayerDataService` require — leaderboard reads `player:GetAttribute("Rebirths")` directly.
+15. ~~HUB_FEATURES dead code.~~ Hub scripts (Campfire, Leaderboard, RespecShrine) now read from `WorldLayout.HUB_FEATURES` with hardcoded fallbacks. Table is now the source of truth for hub layout.
+16. ~~No onboarding flow.~~ OnboardingGui.client.luau created: welcome overlay (first join), directional arrow to Quest Master, 4 milestone hint toasts (equip sword, find enemies, Q auto-attack, M menu). All client-side, no remotes.
+17. ~~Hub is empty.~~ Four hub features built: HubCampfire (fire pit + benches), HubAmbientNPCs (4 wandering villagers), HubLeaderboard (top 10 rebirth pillar), HubRespecShrine (gold-based stat reset). Positions registered in HUB_FEATURES.
 
 **Context**
 
@@ -52,3 +58,4 @@ None remaining. All research gaps resolved or documented from code.
 - **Area level gates (no rebirths):** Outer Caves (0), Caves (5), Upper Mountain (20), Forest (45), Maxos Temple (100), Legendary Mines (175), Deep Mines (215).
 - **Rebirth-gated areas:** RB4 (Tower Roof), RB9 (Sand Dunes), RB16 (OUROBOROS portal), RB22 (Gehenna).
 - **Dagon is the strongest boss:** ETERNAL, Level 1,525,000, 55.3B HP, drops Dagon's Lament (1/250). Requires RB20 + Level 880 + hidden puzzle.
+- **Map redesign pending integration.** GPT-6 Astra exported Blender geometry to `assets/map_redesign/exports/` (48 GLB files). New hub at (0,6,0) with hub-and-spoke layout. Current WorldLayout.luau uses S-curve at (0,2,-178). Migration path: disable `WorldLayout.EnsureBuilt()`, import meshes via Studio 3D importer, run `InstallMapAnchors.server.luau`. Local spawn offsets match between both systems. Validation: 4/95 checks failed (non-manifold meshes, floor gaps, 2 enemy anchor heights).
