@@ -1,16 +1,16 @@
 # Graph Report - lemonade-graph  (2026-09-13)
 
 ## Corpus Check
-- 121 files · ~215,279 words
+- 121 files · ~217,181 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2453 nodes · 2660 edges · 273 communities (241 shown, 10 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 38 edges (avg confidence: 0.85)
+- 2453 nodes · 2665 edges · 274 communities (241 shown, 11 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 40 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3dae0cf0`
+- Built from commit: `42bbcf56`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -240,9 +240,9 @@
 - Symmetry Types
 - Data Persistence Bugs (duplication, data loss, race conditions)
 - Damage Formula (Base + Physical Damage Stat)
-- 12. Sources & References
+- MerchantSystem.server.luau
 - 9. Community Reporting System
-- Appendix A: Quick Reference Card
+- 12. Sources & References
 - 10. Player Count & Popularity
 - 13. Mechanics to Preserve in a Modern Remake
 - 14. What Needs Improvement for Modern Audience
@@ -266,6 +266,7 @@
 - PvP System (separate damage values, minimal focus)
 - Wiki Status (dedicated wiki HTTP 410 Gone, no wiki docs)
 - Combo System Test Plan
+- Appendix A: Quick Reference Card
 
 ## God Nodes (most connected - your core abstractions)
 1. `Executive Summary` - 35 edges
@@ -280,6 +281,8 @@
 10. `Roblox Sword RPG Monetization Patterns — Research Document` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `makePurchasedSword()` --calls--> `BossSwordFactory.build()`  [INFERRED]
+  lemonade-game/ServerScriptService/MerchantSystem.server.luau → lemonade-game/ServerScriptService/BossSwordFactory.luau
 - `BossSwordFactory.build()` --calls--> `BossWeapons.Get()`  [INFERRED]
   lemonade-game/ServerScriptService/BossSwordFactory.luau → lemonade-game/ReplicatedStorage/Config/BossWeapons.luau
 - `BossSwordFactory.build()` --calls--> `BossWeapons.GetTier()`  [INFERRED]
@@ -288,8 +291,6 @@
   lemonade-game/ServerScriptService/BossSwordFactory.luau → lemonade-game/ReplicatedStorage/Config/BossWeapons.luau
 - `BossSwordFactory.build()` --calls--> `WeaponModifiers.RollModifiers()`  [INFERRED]
   lemonade-game/ServerScriptService/BossSwordFactory.luau → lemonade-game/ReplicatedStorage/Config/WeaponModifiers.luau
-- `makePurchasedSword()` --calls--> `BossSwordFactory.build()`  [INFERRED]
-  lemonade-game/ServerScriptService/MerchantSystem.server.luau → lemonade-game/ServerScriptService/BossSwordFactory.luau
 
 ## Import Cycles
 - None detected.
@@ -299,7 +300,7 @@
 - **Prestige-Collection Feedback Loop (Rebirth improves drops → motivates collection → rebirth again)** — ls_core_rebirth_system, ls_core_drop_rate_formula, ls_core_collection_loop [EXTRACTED 0.95]
 - **Social Boss Event Pattern (timed spawns + last-hit reward + communal discovery)** — ls_core_server_events, ls_core_boss_system, ls_core_last_hit_mechanic [EXTRACTED 0.95]
 
-## Communities (273 total, 10 thin omitted)
+## Communities (274 total, 11 thin omitted)
 
 ### Community 0 - "6. Weapon Acquisition Design Template"
 Cohesion: 0.04
@@ -382,7 +383,7 @@ Cohesion: 0.07
 Nodes (27): 10. Server / Performance Bugs, 11. Exploit / Security Vulnerabilities, 12.1 DataStore Architecture Risks, 12.2 Combat System Risks, 12.3 Economy Risks, 12. Inferred Architectural Weaknesses, 13. Prevention Summary Matrix, 1. Data / Persistence Bugs (+19 more)
 
 ### Community 20 - "MainMenuGui.client.luau"
-Cohesion: 0.23
+Cohesion: 0.24
 Nodes (21): addCorner(), addPadding(), addStroke(), bindInventoryContainer(), bindInventoryRefresh(), buildHomePanel(), buildInventoryPanel(), buildRebirthPanel() (+13 more)
 
 ### Community 21 - "Lemonade Graph — Complete Roblox Game Design Knowledge Base"
@@ -398,8 +399,8 @@ Cohesion: 0.10
 Nodes (20): Button Feedback, Compound Animation Sequences, Core setup, Counter animation (number counting up), Easing directions, Easing styles reference, Fade transition (modals), Hover scale-up, press scale-down, release tween back (+12 more)
 
 ### Community 24 - "BossSwordFactory.build"
-Cohesion: 0.15
-Nodes (11): BossWeapons.Get(), BossWeapons.GetByTier(), BossWeapons.GetTier(), WeaponModifiers.RollModifiers(), BossSwordFactory.build(), BossSwordFactory.rebuild(), fitBossMesh(), CombatUtil.applyWeaponAppearance() (+3 more)
+Cohesion: 0.22
+Nodes (10): BossWeapons.Get(), BossWeapons.GetByTier(), BossWeapons.GetTier(), WeaponModifiers.RollModifiers(), BossSwordFactory.build(), BossSwordFactory.rebuild(), fitBossMesh(), CombatUtil.applyWeaponAppearance() (+2 more)
 
 ### Community 25 - "`StarterPack/ClassicSword/Handle` — Part"
 Cohesion: 0.11
@@ -586,8 +587,8 @@ Cohesion: 0.20
 Nodes (9): 1. Modal Dialog, 2. Toast Notification, 3. Scrolling Inventory Grid, 4. Tabbed Interface, 5. Confirmation Popup, 6. Health / Mana Bar, 7. Leaderboard Customization, 8. Cooldown Overlay (+1 more)
 
 ### Community 71 - "SwordSystem.server.luau"
-Cohesion: 0.39
-Nodes (7): applyDamage(), applyKnockback(), calculateDamage(), performComboSwing(), performSwingWithCombo(), setupCharacter(), setupTool()
+Cohesion: 0.33
+Nodes (8): CombatUtil.fireHitlagToClient(), applyDamage(), applyKnockback(), calculateDamage(), performComboSwing(), performSwingWithCombo(), setupCharacter(), setupTool()
 
 ### Community 72 - "Rebirth / Reset Systems in Roblox Sword RPG Games"
 Cohesion: 0.22
@@ -1197,17 +1198,13 @@ Nodes (3): Data Persistence Bugs (duplication, data loss, race conditions), Mile
 Cohesion: 0.67
 Nodes (3): Damage Formula (Base + Physical Damage Stat), Sword System (65+ weapons, fixed stats, no upgrades), Upgrade Stats System (Health, Damage, Defense, Gold)
 
-### Community 230 - "12. Sources & References"
-Cohesion: 0.67
-Nodes (3): 12. Sources & References, Community & Industry References, Official Roblox Documentation
-
 ### Community 231 - "9. Community Reporting System"
 Cohesion: 0.67
 Nodes (3): 9.1 In-Game Report Design, 9.2 Trust Score System, 9. Community Reporting System
 
-### Community 232 - "Appendix A: Quick Reference Card"
+### Community 232 - "12. Sources & References"
 Cohesion: 0.67
-Nodes (3): Appendix A: Quick Reference Card, Minimum RemoteEvent Template, The 10 Commandments of Roblox Anti-Exploit
+Nodes (3): 12. Sources & References, Community & Industry References, Official Roblox Documentation
 
 ### Community 233 - "10. Player Count & Popularity"
 Cohesion: 0.67
@@ -1265,10 +1262,14 @@ Nodes (3): 9. Menu Systems, Main Menu Structure, Menu Design Rules
 Cohesion: 0.15
 Nodes (12): Combo System Test Plan, Known Limitations, Test 10: Multiplayer, Test 1: Basic 5-Hit Combo, Test 2: Combo Reset, Test 3: Endlag Enforcement, Test 4: Hitlag Feel, Test 5: Combo Damage Scaling (+4 more)
 
+### Community 273 - "Appendix A: Quick Reference Card"
+Cohesion: 0.67
+Nodes (3): Appendix A: Quick Reference Card, Minimum RemoteEvent Template, The 10 Commandments of Roblox Anti-Exploit
+
 ## Knowledge Gaps
 - **1639 isolated node(s):** `name`, `file`, `bytes`, `triangles`, `vertices` (+1634 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1743 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1742 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

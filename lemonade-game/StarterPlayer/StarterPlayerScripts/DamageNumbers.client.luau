@@ -1,6 +1,9 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+
+local player = Players.LocalPlayer
 
 local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
 
@@ -72,6 +75,10 @@ local function showDamage(position, amount, kind)
 end
 
 damageEvent.OnClientEvent:Connect(function(position, amount, kind)
+	-- Respect the ShowDamageNumbers setting (defaults to true)
+	if player:GetAttribute("ShowDamageNumbers") == false then
+		return
+	end
 	showDamage(position, amount, kind)
 end)
 

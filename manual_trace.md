@@ -5,18 +5,22 @@ Hand-traced findings, kept in `~/lemonade-graph/manual_trace.md` and re-appended
 
 **Open (Research Backlog — Legendary Swords Wiki Gaps)**
 
-1. **XP curve / max level unconfirmed.** Only inferred as ~900 from a YouTube video title. Requires in-game testing (record XP-per-kill for 20+ level intervals) or YouTube video analysis.
-2. **Mythical/Eternal numeric drop rates not quantified.** Only "Very rare" with no numbers. Requires in-game testing or wiki page scraping.
-3. **4 event bosses missing HP values** (Dragon Lord, Spectrum Destroyer, Chaotic Alien, Sun God). Requires in-game testing.
-4. **Rebirth walkspeed bonus — no data found.** Requires in-game testing at Rebirth 0/1/5/10/15/20/25.
+1. **XP-per-level formula undocumented.** No formula exists on the wiki. Boss XP values confirmed for 5 bosses (Bandit Leader: 98, Bandit Overlord: 110, Camp Leader: 150, Forest God: 310, Undead God: 500). Regular enemy XP completely undocumented. Requires in-game testing.
+2. **Rebirth cost formula undocumented.** No wiki page exists for rebirth mechanics. Confirmed: Rebirth 25 is current max, "Rebirth walkspeed" is a toggle that maxes at RB25, Rebirth 26 is planned. Cost/multiplier formulas require in-game testing.
 
 **Resolved (Research)**
 
-12. ~~Common/Uncommon shop sword prices missing.~~ All 19 prices scraped from Restored wiki individual pages. Common: Bronze (free), Steel (45G), Iron (108G), Gold (210G), Diamond (500G), Dark Axe (1.5K), Serpentine Axe (2.5K), Dragon Axe (4.5K). Uncommon Spawn: Ice Sword (6.7K), Bone Sword (9.8K), Frostbrand (15.5K). Uncommon Forest: Scaled Sword (23.1K), Blizzard Striker (45K), Cleaver Blade (65K), Morrow Sword (85.75K), Nefertiti Sword (120.75K), Mythic Sword (162K), Winged Sword (195K), Laser Scythe (235K), Overseer Axe (320K).
-13. ~~PvP mechanics unknown.~~ Confirmed nonexistent. Legendary Swords is purely PvE across original, LS2, and Restored versions. No PvP page, arena, toggle, or damage formula exists in any wiki.
+12. ~~Common/Uncommon shop sword prices missing.~~ All 19 prices scraped from Restored wiki. Common (Spawn): Bronze (free), Steel (45G), Iron (108G), Gold (210G), Diamond (500G), Dark Axe (1.5K), Serpentine Axe (2.5K), Dragon Axe (4.5K). Uncommon (Spawn): Ice Sword (6.7K), Bone Sword (9.8K), Frostbrand (15.5K). Uncommon (Forest): Scaled Sword (23.1K), Blizzard Striker (45K), Cleaver Blade (65K), Morrow Sword (85.75K), Nefertiti Sword (120.75K), Mythic Sword (162K), Winged Sword (195K), Laser Scythe (235K), Overseer Axe (320K).
+13. ~~PvP mechanics unknown.~~ Confirmed nonexistent. Legendary Swords is purely PvE across original, LS2, and Restored versions.
 14. ~~Arcane Gem earning undocumented.~~ Foregone per user request. No code or wiki source available.
 15. ~~Forging system undocumented.~~ Foregone per user request. No code or wiki source available.
-16. ~~Source code not available.~~ Restored version is built off a decompile of Terrorbans remaster by @Saltels. No public GitHub repo exists. In-game testing is the only path for remaining gaps (XP curve, boss HP, walkspeed).
+16. ~~Source code not available.~~ Restored version is built off a decompile of Terrorbans remaster by @Saltels. No public GitHub repo exists.
+17. ~~Boss HP values missing.~~ All 12 bosses scraped from Restored wiki. Camp Leader (1.3K), Summoner (5.5K), Forest God (8K), Undead God (11.5K), Temple Lord (30K), Temple God (35K), Celestial God (320K), Dragon Lord (2.75M), Alien Leader (3.4M), Chaotic Alien (3.5M), Spectrum Destroyer (32M), Dagon (55.3B). Sun God does not exist on the wiki.
+18. ~~Mythical/Eternal drop rates not quantified.~~ Confirmed from wiki: Omega 1/55 (1.81%), Mythical 1/150 (0.66%), ETERNAL 1/250 (0.4%). Rebirth scaling: at RB25, numerator becomes 26 (e.g. 26/150 for Mythical = 17.3%). 18 Mythical weapons documented, 3 ETERNAL weapons documented. Gatan's Resentment is strongest obtainable non-Secret weapon.
+19. ~~Rebirth walkspeed bonus undocumented.~~ Confirmed: "Rebirth walkspeed" is a player-facing toggle. Max walkspeed at Rebirth 25. Legendary Pack gamepass gives equivalent walkspeed. Exact per-rebirth values not documented on wiki.
+20. ~~Settings panel is empty stub.~~ Replaced with full settings panel: auto-attack toggle, music volume slider, show damage numbers toggle, keyboard shortcuts reference. Files: `MainMenuGui.client.luau`, `DamageNumbers.client.luau`. No new RemoteEvents — all client-side.
+21. ~~Sell button stuck on SELLING.~~ Added 5-second `task.delay` timeout that resets button if server never responds. File: `MainMenuGui.client.luau`.
+22. ~~Dead inventory snapshot pipeline.~~ Removed dead code: `InventoryUpdated` listener, `latestInventory` variable, unused `snapshot` parameter. Boss swords are physical Tools managed by BossSwordFactory, not stack inventory items. File: `MainMenuGui.client.luau`.
 
 **Resolved**
 
@@ -38,5 +42,9 @@ Hand-traced findings, kept in `~/lemonade-graph/manual_trace.md` and re-appended
 - `CombatUtil` is the shared server helper module. Lemonade generates scripts independently and may reintroduce local `isEnemy` copies or raw `.Material` writes on sword handles; if so, re-point them at the module rather than re-fixing by hand.
 - **Restored wiki is live** at `the-legendary-swords-rpg-restored.fandom.com` (266 pages). Individual sword pages have buy/sell prices. Category pages do not. Original wiki (`the-legendary-swords-rpg.fandom.com`) is HTTP 410 Gone.
 - **Legendary Swords is purely PvE.** No PvP system exists in original, LS2, or Restored versions. The Lemonade PvP design should be original, not a port.
-- **Drop rate formulas (from LS2 wiki):** `1 / (original_drop_chance - rebirth_level)`. At rebirth 25+, all drops become 1/5. Legendary tier: 1/50 base. God tier: 1/100 base.
-- **XP formula (from LS2 wiki):** `XP_to_next_level = n^2 + 100n` (level n to n+1). Strength per upgrade point: `(n/10)^2 + 1`.
+- **Drop rates (from Restored wiki):** Omega 1/55, Mythical 1/150, ETERNAL 1/250. Rebirth scaling: numerator becomes (rebirth_level + 1). At RB25: 26/150 for Mythical, 26/250 for ETERNAL. Legendary 1/50, God 1/100 (from LS2 wiki).
+- **XP formula (from LS2 wiki):** `XP_to_next_level = n^2 + 100n` (level n to n+1). Strength per upgrade point: `(n/10)^2 + 1`. Restored wiki has no XP formula; only 5 boss XP values confirmed.
+- **Rebirth 25 is current max.** Rebirth walkspeed is a toggle, maxes at RB25. Rebirth 26 planned. Cost formula undocumented.
+- **Area level gates (no rebirths):** Outer Caves (0), Caves (5), Upper Mountain (20), Forest (45), Maxos Temple (100), Legendary Mines (175), Deep Mines (215).
+- **Rebirth-gated areas:** RB4 (Tower Roof), RB9 (Sand Dunes), RB16 (OUROBOROS portal), RB22 (Gehenna).
+- **Dagon is the strongest boss:** ETERNAL, Level 1,525,000, 55.3B HP, drops Dagon's Lament (1/250). Requires RB20 + Level 880 + hidden puzzle.

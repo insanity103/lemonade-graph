@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -8,9 +9,9 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
 local spendEvent = remotes:WaitForChild("SpendSkillPoint")
-local inventoryUpdated = remotes:WaitForChild("InventoryUpdated")
 local inventoryAction = remotes:WaitForChild("InventoryAction")
 local toggleAutoSellRemote = remotes:WaitForChild("ToggleAutoSell")
+local toggleAutoAttackRemote = remotes:WaitForChild("ToggleAutoAttack")
 local rebirthResultRemote = remotes:WaitForChild("RebirthResult")
 
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
@@ -272,7 +273,6 @@ bodyLayout.Parent = body
 local activeTab = nil
 local panelOpen = false
 local homeStatLabels = {}
-local latestInventory = {}
 local skillButtons = {}
 
 local function clearBody()
@@ -346,7 +346,7 @@ local function getCarriedTools()
 	return tools
 end
 
-local function buildInventoryPanel(snapshot)
+local function buildInventoryPanel()
 	clearBody()
 	headerTitle.Text = "Inventory & Equipment"
 	
@@ -507,6 +507,12 @@ local function buildInventoryPanel(snapshot)
 					sellButton.Active = false
 					sellButton.Text = "SELLING..."
 					inventoryAction:FireServer("Sell", tool.Name)
+					task.delay(5, function()
+						if sellButton and sellButton.Parent and sellButton.Text == "SELLING..." then
+							sellButton.Active = true
+							sellButton.Text = "SELL"
+						end
+					end)
 				end)
 			end
 
@@ -700,7 +706,361 @@ end
 local function buildSettingsPanel()
 	clearBody()
 	headerTitle.Text = "Settings"
-	createText(body, { text = "Press M to open/close this menu.", font = Enum.Font.Gotham, size = 13, color = COLORS.Muted, size2 = UDim2.new(1, 0, 0, 30), zIndex = 23 }).LayoutOrder = 1
+	local order = 0
+
+	-- ── helper: create a row with label on top, description below ──
+	local function createSettingRow(height, layoutOrder)
+		order += 1
+		local row = Instance.new("Frame")
+		row.Size = UDim2.new(1, 0, 0, height)
+		row.BackgroundColor3 = COLORS.PanelLight
+		row.BackgroundTransparency = 0.08
+		row.BorderSizePixel = 0
+		row.LayoutOrder = layoutOrder
+		row.ZIndex = 23
+		row.Parent = body
+		addCorner(row, 12)
+		addStroke(row, COLORS.Stroke, 0.4, 1)
+		return row
+	end
+
+	-- ═══════════════════════════════════════════════
+	--  1. AUTO-ATTACK TOGGLE
+	-- ═══════════════════════════════════════════════
+	local autoAttackOn = player:GetAttribute("AutoAttack") == true
+	local aaRow = createSettingRow(56, 1)
+	addPadding(aaRow, 6, 12, 6, 12)
+
+	local aaIcon = Instance.new("ImageLabel")
+	aaIcon.Size = UDim2.fromOffset(24, 24)
+	aaIcon.Position = UDim2.fromOffset(2, 10)
+	aaIcon.BackgroundTransparency = 1
+	aaIcon.Image = ICONS.Target
+	aaIcon.ScaleType = Enum.ScaleType.Fit
+	aaIcon.ZIndex = 24
+	aaIcon.Parent = aaRow
+
+	createText(aaRow, {
+		text = "Auto-Attack",
+		font = Enum.Font.GothamBold,
+		size = 14,
+		color = COLORS.Text,
+		pos = UDim2.fromOffset(34, 4),
+		size2 = UDim2.new(1, -145, 0, 18),
+		zIndex = 24
+	})
+
+	createText(aaRow, {
+		text = "Automatically seek and attack enemies",
+		font = Enum.Font.Gotham,
+		size = 11,
+		color = COLORS.Muted,
+		pos = UDim2.fromOffset(34, 24),
+		size2 = UDim2.new(1, -145, 0, 18),
+		wrap = true,
+		zIndex = 24
+	})
+
+	local aaToggleBtn = Instance.new("TextButton")
+	aaToggleBtn.Size = UDim2.fromOffset(100, 32)
+	aaToggleBtn.Position = UDim2.new(1, -100, 0.5, -16)
+	aaToggleBtn.BackgroundColor3 = autoAttackOn and COLORS.Success or COLORS.Button
+	aaToggleBtn.BorderSizePixel = 0
+	aaToggleBtn.Font = Enum.Font.GothamBold
+	aaToggleBtn.TextColor3 = autoAttackOn and Color3.fromRGB(15, 20, 15) or COLORS.Text
+	aaToggleBtn.TextSize = 13
+	aaToggleBtn.Text = autoAttackOn and "ON (ACTIVE)" or "OFF"
+	aaToggleBtn.ZIndex = 24
+	aaToggleBtn.Parent = aaRow
+	aaToggleBtn.AutoButtonColor = false
+	addCorner(aaToggleBtn, 8)
+	addStroke(aaToggleBtn, autoAttackOn and Color3.fromRGB(120, 255, 170) or COLORS.StrokeBright, 0.3, 1)
+
+	aaToggleBtn.MouseEnter:Connect(function()
+		aaToggleBtn.BackgroundColor3 = autoAttackOn and Color3.fromRGB(100, 230, 155) or COLORS.ButtonHover
+	end)
+	aaToggleBtn.MouseLeave:Connect(function()
+		aaToggleBtn.BackgroundColor3 = autoAttackOn and COLORS.Success or COLORS.Button
+	end)
+
+	aaToggleBtn.Activated:Connect(function()
+		autoAttackOn = not autoAttackOn
+		player:SetAttribute("AutoAttack", autoAttackOn)
+		toggleAutoAttackRemote:FireServer(autoAttackOn)
+		aaToggleBtn.Text = autoAttackOn and "ON (ACTIVE)" or "OFF"
+		aaToggleBtn.TextColor3 = autoAttackOn and Color3.fromRGB(15, 20, 15) or COLORS.Text
+		aaToggleBtn.BackgroundColor3 = autoAttackOn and COLORS.Success or COLORS.Button
+		addStroke(aaToggleBtn, autoAttackOn and Color3.fromRGB(120, 255, 170) or COLORS.StrokeBright, 0.3, 1)
+		aaRow.BackgroundColor3 = autoAttackOn and Color3.fromRGB(30, 48, 36) or COLORS.PanelLight
+		addStroke(aaRow, autoAttackOn and Color3.fromRGB(90, 220, 140) or COLORS.Stroke, 0.4, 1)
+	end)
+
+	-- ═══════════════════════════════════════════════
+	--  2. MUSIC VOLUME SLIDER
+	-- ═══════════════════════════════════════════════
+	local musicVolume = player:GetAttribute("MusicVolume")
+	if musicVolume == nil then musicVolume = 0.5 end
+	local volRow = createSettingRow(72, 2)
+	addPadding(volRow, 6, 12, 6, 12)
+
+	local volIcon = Instance.new("ImageLabel")
+	volIcon.Size = UDim2.fromOffset(24, 24)
+	volIcon.Position = UDim2.fromOffset(2, 10)
+	volIcon.BackgroundTransparency = 1
+	volIcon.Image = ICONS.Lighting
+	volIcon.ScaleType = Enum.ScaleType.Fit
+	volIcon.ZIndex = 24
+	volIcon.Parent = volRow
+
+	createText(volRow, {
+		text = "Music Volume",
+		font = Enum.Font.GothamBold,
+		size = 14,
+		color = COLORS.Text,
+		pos = UDim2.fromOffset(34, 4),
+		size2 = UDim2.new(1, -50, 0, 18),
+		zIndex = 24
+	})
+
+	local volValueLabel = createText(volRow, {
+		text = tostring(math.round(musicVolume * 100)) .. "%",
+		font = Enum.Font.GothamBold,
+		size = 14,
+		color = COLORS.Muted,
+		xAlign = Enum.TextXAlignment.Right,
+		pos = UDim2.fromOffset(0, 4),
+		size2 = UDim2.new(1, -12, 0, 18),
+		zIndex = 24
+	})
+
+	-- Slider track
+	local sliderTrack = Instance.new("Frame")
+	sliderTrack.Name = "SliderTrack"
+	sliderTrack.Size = UDim2.new(1, -32, 0, 8)
+	sliderTrack.Position = UDim2.fromOffset(0, 40)
+	sliderTrack.BackgroundColor3 = COLORS.Accent
+	sliderTrack.BorderSizePixel = 0
+	sliderTrack.ZIndex = 24
+	sliderTrack.Parent = volRow
+	addCorner(sliderTrack, 4)
+
+	-- Slider fill
+	local sliderFill = Instance.new("Frame")
+	sliderFill.Name = "SliderFill"
+	sliderFill.Size = UDim2.new(musicVolume, 0, 1, 0)
+	sliderFill.BackgroundColor3 = COLORS.Success
+	sliderFill.BorderSizePixel = 0
+	sliderFill.ZIndex = 25
+	sliderFill.Parent = sliderTrack
+	addCorner(sliderFill, 4)
+
+	-- Slider knob
+	local sliderKnob = Instance.new("Frame")
+	sliderKnob.Name = "SliderKnob"
+	sliderKnob.Size = UDim2.fromOffset(18, 18)
+	sliderKnob.Position = UDim2.new(musicVolume, -9, 0.5, -9)
+	sliderKnob.BackgroundColor3 = COLORS.Text
+	sliderKnob.BorderSizePixel = 0
+	sliderKnob.ZIndex = 26
+	sliderKnob.Parent = sliderTrack
+	addCorner(sliderKnob, 9)
+
+	-- Invisible drag target wider than the track for easier clicking
+	local sliderHitArea = Instance.new("TextButton")
+	sliderHitArea.Name = "SliderHitArea"
+	sliderHitArea.Size = UDim2.new(1, 16, 0, 28)
+	sliderHitArea.Position = UDim2.fromOffset(-8, -10)
+	sliderHitArea.BackgroundTransparency = 1
+	sliderHitArea.Text = ""
+	sliderHitArea.BorderSizePixel = 0
+	sliderHitArea.ZIndex = 27
+	sliderHitArea.Parent = sliderTrack
+	sliderHitArea.AutoButtonColor = false
+
+	-- Apply volume to SoundService sounds and persist
+	local function applyVolume(vol)
+		musicVolume = math.clamp(vol, 0, 1)
+		player:SetAttribute("MusicVolume", musicVolume)
+		for _, sound in ipairs(SoundService:GetDescendants()) do
+			if sound:IsA("Sound") then
+				local base = sound:GetAttribute("BaseVolume")
+				if not base then
+					base = sound.Volume
+					sound:SetAttribute("BaseVolume", base)
+				end
+				sound.Volume = base * musicVolume
+			end
+		end
+		sliderFill.Size = UDim2.new(musicVolume, 0, 1, 0)
+		sliderKnob.Position = UDim2.new(musicVolume, -9, 0.5, -9)
+		volValueLabel.Text = tostring(math.round(musicVolume * 100)) .. "%"
+	end
+
+	-- Drag handling
+	local dragging = false
+	local function updateSliderFromMouse(inputX)
+		local absPos = sliderTrack.AbsolutePosition.X
+		local absSize = sliderTrack.AbsoluteSize.X
+		if absSize <= 0 then return end
+		local fraction = math.clamp((inputX - absPos) / absSize, 0, 1)
+		applyVolume(fraction)
+	end
+
+	sliderHitArea.MouseButton1Down:Connect(function(x)
+		dragging = true
+		updateSliderFromMouse(x)
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			updateSliderFromMouse(input.Position.X)
+		end
+	end)
+
+	UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
+		end
+	end)
+
+	-- ═══════════════════════════════════════════════
+	--  3. SHOW DAMAGE NUMBERS TOGGLE
+	-- ═══════════════════════════════════════════════
+	local showDmgOn = player:GetAttribute("ShowDamageNumbers")
+	if showDmgOn == nil then showDmgOn = true end
+	local dmgRow = createSettingRow(56, 3)
+	addPadding(dmgRow, 6, 12, 6, 12)
+
+	local dmgIcon = Instance.new("ImageLabel")
+	dmgIcon.Size = UDim2.fromOffset(24, 24)
+	dmgIcon.Position = UDim2.fromOffset(2, 10)
+	dmgIcon.BackgroundTransparency = 1
+	dmgIcon.Image = ICONS.Sword
+	dmgIcon.ScaleType = Enum.ScaleType.Fit
+	dmgIcon.ZIndex = 24
+	dmgIcon.Parent = dmgRow
+
+	createText(dmgRow, {
+		text = "Show Damage Numbers",
+		font = Enum.Font.GothamBold,
+		size = 14,
+		color = COLORS.Text,
+		pos = UDim2.fromOffset(34, 4),
+		size2 = UDim2.new(1, -145, 0, 18),
+		zIndex = 24
+	})
+
+	createText(dmgRow, {
+		text = "Floating combat text above enemies",
+		font = Enum.Font.Gotham,
+		size = 11,
+		color = COLORS.Muted,
+		pos = UDim2.fromOffset(34, 24),
+		size2 = UDim2.new(1, -145, 0, 18),
+		wrap = true,
+		zIndex = 24
+	})
+
+	local dmgToggleBtn = Instance.new("TextButton")
+	dmgToggleBtn.Size = UDim2.fromOffset(100, 32)
+	dmgToggleBtn.Position = UDim2.new(1, -100, 0.5, -16)
+	dmgToggleBtn.BackgroundColor3 = showDmgOn and COLORS.Success or COLORS.Button
+	dmgToggleBtn.BorderSizePixel = 0
+	dmgToggleBtn.Font = Enum.Font.GothamBold
+	dmgToggleBtn.TextColor3 = showDmgOn and Color3.fromRGB(15, 20, 15) or COLORS.Text
+	dmgToggleBtn.TextSize = 13
+	dmgToggleBtn.Text = showDmgOn and "ON (ACTIVE)" or "OFF"
+	dmgToggleBtn.ZIndex = 24
+	dmgToggleBtn.Parent = dmgRow
+	dmgToggleBtn.AutoButtonColor = false
+	addCorner(dmgToggleBtn, 8)
+	addStroke(dmgToggleBtn, showDmgOn and Color3.fromRGB(120, 255, 170) or COLORS.StrokeBright, 0.3, 1)
+
+	dmgToggleBtn.MouseEnter:Connect(function()
+		dmgToggleBtn.BackgroundColor3 = showDmgOn and Color3.fromRGB(100, 230, 155) or COLORS.ButtonHover
+	end)
+	dmgToggleBtn.MouseLeave:Connect(function()
+		dmgToggleBtn.BackgroundColor3 = showDmgOn and COLORS.Success or COLORS.Button
+	end)
+
+	local function updateDmgToggleVisual(on)
+		dmgToggleBtn.Text = on and "ON (ACTIVE)" or "OFF"
+		dmgToggleBtn.TextColor3 = on and Color3.fromRGB(15, 20, 15) or COLORS.Text
+		dmgToggleBtn.BackgroundColor3 = on and COLORS.Success or COLORS.Button
+		addStroke(dmgToggleBtn, on and Color3.fromRGB(120, 255, 170) or COLORS.StrokeBright, 0.3, 1)
+	end
+
+	dmgToggleBtn.Activated:Connect(function()
+		showDmgOn = not showDmgOn
+		player:SetAttribute("ShowDamageNumbers", showDmgOn)
+		updateDmgToggleVisual(showDmgOn)
+	end)
+
+	-- ═══════════════════════════════════════════════
+	--  4. KEYBOARD SHORTCUTS REFERENCE
+	-- ═══════════════════════════════════════════════
+	local shortcuts = {
+		{ key = "M", desc = "Open / close menu" },
+		{ key = "Q", desc = "Toggle auto-attack" },
+		{ key = "E", desc = "Manual attack" },
+		{ key = "P", desc = "Toggle auto skill spend" },
+		{ key = "Click", desc = "Manual attack" },
+	}
+
+	local shortcutsHeader = createText(body, {
+		text = "Keyboard Shortcuts",
+		font = Enum.Font.GothamBold,
+		size = 16,
+		color = COLORS.Text,
+		size2 = UDim2.new(1, 0, 0, 24),
+		zIndex = 23,
+	})
+	shortcutsHeader.LayoutOrder = 4
+
+	for i, sc in ipairs(shortcuts) do
+		local scRow = Instance.new("Frame")
+		scRow.Size = UDim2.new(1, 0, 0, 32)
+		scRow.BackgroundColor3 = COLORS.PanelLight
+		scRow.BackgroundTransparency = 0.15
+		scRow.BorderSizePixel = 0
+		scRow.LayoutOrder = 4 + i
+		scRow.ZIndex = 23
+		scRow.Parent = body
+		addCorner(scRow, 8)
+		addPadding(scRow, 0, 10, 0, 10)
+
+		local keyBadge = Instance.new("Frame")
+		keyBadge.Size = UDim2.fromOffset(52, 22)
+		keyBadge.Position = UDim2.fromOffset(0, 5)
+		keyBadge.BackgroundColor3 = COLORS.Accent
+		keyBadge.BorderSizePixel = 0
+		keyBadge.ZIndex = 24
+		keyBadge.Parent = scRow
+		addCorner(keyBadge, 6)
+		addStroke(keyBadge, COLORS.StrokeBright, 0.3, 1)
+
+		local keyLabel = Instance.new("TextLabel")
+		keyLabel.BackgroundTransparency = 1
+		keyLabel.Size = UDim2.fromScale(1, 1)
+		keyLabel.Font = Enum.Font.GothamBold
+		keyLabel.TextSize = 13
+		keyLabel.TextColor3 = COLORS.Text
+		keyLabel.TextXAlignment = Enum.TextXAlignment.Center
+		keyLabel.TextYAlignment = Enum.TextYAlignment.Center
+		keyLabel.Text = sc.key
+		keyLabel.ZIndex = 25
+		keyLabel.Parent = keyBadge
+
+		createText(scRow, {
+			text = sc.desc,
+			font = Enum.Font.Gotham,
+			size = 13,
+			color = COLORS.Muted,
+			pos = UDim2.fromOffset(62, 0),
+			size2 = UDim2.new(1, -62, 1, 0),
+			zIndex = 24,
+		})
+	end
 end
 
 local function refreshTopBar()
@@ -752,7 +1112,7 @@ local function openTab(tabId)
 		btn.BackgroundTransparency = selected and 0.05 or 0.15
 	end
 	if tabId == 'Home' then homeStatLabels = buildHomePanel()
-	elseif tabId == 'Inventory' then buildInventoryPanel(latestInventory)
+	elseif tabId == 'Inventory' then buildInventoryPanel()
 	elseif tabId == 'Skills' then buildSkillsPanel(); refreshSkills()
 	elseif tabId == 'Rebirth' then buildRebirthPanel()
 	elseif tabId == 'Settings' then buildSettingsPanel() end
@@ -765,7 +1125,7 @@ local function setMenuOpen(open)
 	contentPanel.Visible = open
 	TweenService:Create(overlay, TweenInfo.new(0.2), { BackgroundTransparency = open and 0.5 or 1 }):Play()
 	if open and not activeTab then openTab('Home') end
-	if open and activeTab == 'Inventory' then buildInventoryPanel(latestInventory) end
+	if open and activeTab == 'Inventory' then buildInventoryPanel() end
 end
 
 local function toggleMenu() setMenuOpen(not panelOpen) end
@@ -798,19 +1158,16 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if input.KeyCode == Enum.KeyCode.M then toggleMenu() end
 end)
 
-inventoryUpdated.OnClientEvent:Connect(function(snapshot)
-	latestInventory = snapshot or {}
-	if activeTab == 'Inventory' and panelOpen then buildInventoryPanel(latestInventory) end
-end)
-
-local attrsToWatch = { 'Gold', 'SkillPoints', 'Strength', 'Health', 'Defense', 'ExperienceGain', 'AutoSellLowerSwords', 'Rebirths', 'RebirthRequirement' }
+local attrsToWatch = { 'Gold', 'SkillPoints', 'Strength', 'Health', 'Defense', 'ExperienceGain', 'AutoSellLowerSwords', 'Rebirths', 'RebirthRequirement', 'AutoAttack', 'ShowDamageNumbers', 'MusicVolume' }
 for _, attr in ipairs(attrsToWatch) do
 	player:GetAttributeChangedSignal(attr):Connect(function()
 		refreshTopBar(); refreshSkills(); refreshHomeStats()
 		if attr == 'AutoSellLowerSwords' and activeTab == 'Inventory' and panelOpen then
-			buildInventoryPanel(latestInventory)
+			buildInventoryPanel()
 		elseif (attr == 'Rebirths' or attr == 'RebirthRequirement') and activeTab == 'Rebirth' and panelOpen then
 			buildRebirthPanel()
+		elseif (attr == 'AutoAttack' or attr == 'ShowDamageNumbers' or attr == 'MusicVolume') and activeTab == 'Settings' and panelOpen then
+			buildSettingsPanel()
 		end
 	end)
 end
@@ -819,7 +1176,7 @@ end
 local inventoryRefreshBound = setmetatable({}, { __mode = "k" })
 local function refreshInventoryIfVisible()
 	if activeTab == "Inventory" and panelOpen then
-		buildInventoryPanel(latestInventory)
+		buildInventoryPanel()
 	end
 end
 
