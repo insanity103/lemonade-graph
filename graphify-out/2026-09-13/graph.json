@@ -1617,7 +1617,7 @@
       "file_type": "code",
       "norm_label": "addcorner()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L83"
+      "source_location": "L84"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_addpadding",
@@ -1629,7 +1629,7 @@
       "file_type": "code",
       "norm_label": "addpadding()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L99"
+      "source_location": "L100"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_addstroke",
@@ -1641,7 +1641,7 @@
       "file_type": "code",
       "norm_label": "addstroke()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L90"
+      "source_location": "L91"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_bindinventorycontainer",
@@ -1653,7 +1653,7 @@
       "file_type": "code",
       "norm_label": "bindinventorycontainer()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L826"
+      "source_location": "L1183"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_bindinventoryrefresh",
@@ -1665,7 +1665,7 @@
       "file_type": "code",
       "norm_label": "bindinventoryrefresh()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L835"
+      "source_location": "L1192"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildhomepanel",
@@ -1701,7 +1701,7 @@
       "file_type": "code",
       "norm_label": "buildrebirthpanel()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L662"
+      "source_location": "L668"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildsettingspanel",
@@ -1713,7 +1713,7 @@
       "file_type": "code",
       "norm_label": "buildsettingspanel()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L700"
+      "source_location": "L706"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildskillspanel",
@@ -1725,7 +1725,7 @@
       "file_type": "code",
       "norm_label": "buildskillspanel()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L617"
+      "source_location": "L623"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_clearbody",
@@ -1749,7 +1749,7 @@
       "file_type": "code",
       "norm_label": "createchip()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L169"
+      "source_location": "L170"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_createiconbutton",
@@ -1761,7 +1761,7 @@
       "file_type": "code",
       "norm_label": "createiconbutton()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L126"
+      "source_location": "L127"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_createstatrow",
@@ -1785,7 +1785,7 @@
       "file_type": "code",
       "norm_label": "createtext()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L109"
+      "source_location": "L110"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_getcarriedtools",
@@ -1809,7 +1809,7 @@
       "file_type": "code",
       "norm_label": "opentab()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L747"
+      "source_location": "L1107"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshhomestats",
@@ -1821,7 +1821,7 @@
       "file_type": "code",
       "norm_label": "refreshhomestats()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L730"
+      "source_location": "L1090"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshinventoryifvisible",
@@ -1833,7 +1833,7 @@
       "file_type": "code",
       "norm_label": "refreshinventoryifvisible()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L820"
+      "source_location": "L1177"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshskills",
@@ -1845,7 +1845,7 @@
       "file_type": "code",
       "norm_label": "refreshskills()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L717"
+      "source_location": "L1077"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshtopbar",
@@ -1857,7 +1857,7 @@
       "file_type": "code",
       "norm_label": "refreshtopbar()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L706"
+      "source_location": "L1066"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_setmenuopen",
@@ -1869,7 +1869,7 @@
       "file_type": "code",
       "norm_label": "setmenuopen()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L761"
+      "source_location": "L1121"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_togglemenu",
@@ -1881,7 +1881,7 @@
       "file_type": "code",
       "norm_label": "togglemenu()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L771"
+      "source_location": "L1131"
     },
     {
       "id": "lemonade_game_serverscriptservice_combatutil_combatutil_applyhitlag",
@@ -2337,7 +2337,7 @@
       "file_type": "code",
       "norm_label": "showdamage()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/DamageNumbers.client.luau",
-      "source_location": "L20"
+      "source_location": "L23"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_goldnumbers_client_showgold",
@@ -12209,100 +12209,52 @@
       "source_location": "L26"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_13_prevention_summary_matrix",
-      "label": "13. Prevention Summary Matrix",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_7_1_escalation_decision_tree",
+      "label": "7.1 Escalation Decision Tree",
       "_origin": "ast",
       "community": 184,
-      "community_name": "13. Prevention Summary Matrix",
+      "community_name": "7. Punishment Escalation Ladder",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "13. prevention summary matrix",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L159"
+      "norm_label": "7.1 escalation decision tree",
+      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
+      "source_location": "L1305"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_anti_exploit",
-      "label": "Anti-Exploit",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_7_2_shadow_ban_system_advanced",
+      "label": "7.2 Shadow Ban System (Advanced)",
       "_origin": "ast",
       "community": 184,
-      "community_name": "13. Prevention Summary Matrix",
+      "community_name": "7. Punishment Escalation Ladder",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "anti-exploit",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L242"
+      "norm_label": "7.2 shadow ban system (advanced)",
+      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
+      "source_location": "L1335"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_combat",
-      "label": "Combat",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_7_3_appeal_system_integration",
+      "label": "7.3 Appeal System Integration",
       "_origin": "ast",
       "community": 184,
-      "community_name": "13. Prevention Summary Matrix",
+      "community_name": "7. Punishment Escalation Ladder",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "combat",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L177"
+      "norm_label": "7.3 appeal system integration",
+      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
+      "source_location": "L1380"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_data_persistence",
-      "label": "Data Persistence",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_7_punishment_escalation_ladder",
+      "label": "7. Punishment Escalation Ladder",
       "_origin": "ast",
       "community": 184,
-      "community_name": "13. Prevention Summary Matrix",
+      "community_name": "7. Punishment Escalation Ladder",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "data persistence",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L163"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_economy",
-      "label": "Economy",
-      "_origin": "ast",
-      "community": 184,
-      "community_name": "13. Prevention Summary Matrix",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "economy",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L191"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_gamepass_effects",
-      "label": "Gamepass Effects",
-      "_origin": "ast",
-      "community": 184,
-      "community_name": "13. Prevention Summary Matrix",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "gamepass effects",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L204"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_npc_enemy",
-      "label": "NPC / Enemy",
-      "_origin": "ast",
-      "community": 184,
-      "community_name": "13. Prevention Summary Matrix",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "npc / enemy",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L229"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_ui",
-      "label": "UI",
-      "_origin": "ast",
-      "community": 184,
-      "community_name": "13. Prevention Summary Matrix",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "ui",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L217"
+      "norm_label": "7. punishment escalation ladder",
+      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
+      "source_location": "L1303"
     },
     {
       "id": "research_sword_rpg_sword_rpg_legendary_swords_community_10_1_timeline_reconstruction",
@@ -12593,6 +12545,66 @@
       "source_location": "L119"
     },
     {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_12_1_datastore_architecture_risks",
+      "label": "12.1 DataStore Architecture Risks",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "12.1 datastore architecture risks",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L134"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_12_2_combat_system_risks",
+      "label": "12.2 Combat System Risks",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "12.2 combat system risks",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L143"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_12_3_economy_risks",
+      "label": "12.3 Economy Risks",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "12.3 economy risks",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L151"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_12_inferred_architectural_weaknesses",
+      "label": "12. Inferred Architectural Weaknesses",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "12. inferred architectural weaknesses",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L130"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_13_prevention_summary_matrix",
+      "label": "13. Prevention Summary Matrix",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "13. prevention summary matrix",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L159"
+    },
+    {
       "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_1_data_persistence_bugs",
       "label": "1. Data / Persistence Bugs",
       "_origin": "ast",
@@ -12701,6 +12713,18 @@
       "source_location": "L103"
     },
     {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_anti_exploit",
+      "label": "Anti-Exploit",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "anti-exploit",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L242"
+    },
+    {
       "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_bug_count_summary",
       "label": "Bug Count Summary",
       "_origin": "ast",
@@ -12711,6 +12735,66 @@
       "norm_label": "bug count summary",
       "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
       "source_location": "L280"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_combat",
+      "label": "Combat",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "combat",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L177"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_data_persistence",
+      "label": "Data Persistence",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "data persistence",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L163"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_economy",
+      "label": "Economy",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "economy",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L191"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_gamepass_effects",
+      "label": "Gamepass Effects",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "gamepass effects",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L204"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_npc_enemy",
+      "label": "NPC / Enemy",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "npc / enemy",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L229"
     },
     {
       "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_source_urls",
@@ -12747,6 +12831,18 @@
       "norm_label": "the legendary swords rpg - comprehensive bug catalog",
       "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
       "source_location": "L1"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_ui",
+      "label": "UI",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "The Legendary Swords RPG - Comprehensive Bug Catalog",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "ui",
+      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
+      "source_location": "L217"
     },
     {
       "id": "research_sword_rpg_sword_rpg_legendary_swords_core_11_community_sentiment",
@@ -15145,52 +15241,40 @@
       "source_location": "L1559"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_12_1_datastore_architecture_risks",
-      "label": "12.1 DataStore Architecture Risks",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_12_sources_references",
+      "label": "12. Sources & References",
       "_origin": "ast",
       "community": 232,
-      "community_name": "12. Inferred Architectural Weaknesses",
+      "community_name": "12. Sources & References",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "12.1 datastore architecture risks",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L134"
+      "norm_label": "12. sources & references",
+      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
+      "source_location": "L2018"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_12_2_combat_system_risks",
-      "label": "12.2 Combat System Risks",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_community_industry_references",
+      "label": "Community & Industry References",
       "_origin": "ast",
       "community": 232,
-      "community_name": "12. Inferred Architectural Weaknesses",
+      "community_name": "12. Sources & References",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "12.2 combat system risks",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L143"
+      "norm_label": "community & industry references",
+      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
+      "source_location": "L2046"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_12_3_economy_risks",
-      "label": "12.3 Economy Risks",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_official_roblox_documentation",
+      "label": "Official Roblox Documentation",
       "_origin": "ast",
       "community": 232,
-      "community_name": "12. Inferred Architectural Weaknesses",
+      "community_name": "12. Sources & References",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "12.3 economy risks",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L151"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_legendary_swords_bugs_12_inferred_architectural_weaknesses",
-      "label": "12. Inferred Architectural Weaknesses",
-      "_origin": "ast",
-      "community": 232,
-      "community_name": "12. Inferred Architectural Weaknesses",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "12. inferred architectural weaknesses",
-      "source_file": "research/sword-rpg/sword-rpg-legendary-swords-bugs.md",
-      "source_location": "L130"
+      "norm_label": "official roblox documentation",
+      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
+      "source_location": "L2020"
     },
     {
       "id": "research_sword_rpg_sword_rpg_legendary_swords_core_10_player_count_popularity",
@@ -16772,40 +16856,40 @@
       "source_location": "L1"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_6_1_session_locking_prevent_duplication",
-      "label": "6.1 Session Locking (Prevent Duplication)",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_appendix_a_quick_reference_card",
+      "label": "Appendix A: Quick Reference Card",
       "_origin": "ast",
       "community": 273,
-      "community_name": "6. DataStore Security",
+      "community_name": "Appendix A: Quick Reference Card",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "6.1 session locking (prevent duplication)",
+      "norm_label": "appendix a: quick reference card",
       "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L1018"
+      "source_location": "L2058"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_6_2_datastore_rate_limiting",
-      "label": "6.2 DataStore Rate Limiting",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_minimum_remoteevent_template",
+      "label": "Minimum RemoteEvent Template",
       "_origin": "ast",
       "community": 273,
-      "community_name": "6. DataStore Security",
+      "community_name": "Appendix A: Quick Reference Card",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "6.2 datastore rate limiting",
+      "norm_label": "minimum remoteevent template",
       "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L1282"
+      "source_location": "L2073"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_6_datastore_security",
-      "label": "6. DataStore Security",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_the_10_commandments_of_roblox_anti_exploit",
+      "label": "The 10 Commandments of Roblox Anti-Exploit",
       "_origin": "ast",
       "community": 273,
-      "community_name": "6. DataStore Security",
+      "community_name": "Appendix A: Quick Reference Card",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "6. datastore security",
+      "norm_label": "the 10 commandments of roblox anti-exploit",
       "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L1016"
+      "source_location": "L2060"
     },
     {
       "id": "skills_roblox_optimize_skill",
@@ -25610,18 +25694,6 @@
       "source_location": "L111"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_12_sources_references",
-      "label": "12. Sources & References",
-      "_origin": "ast",
-      "community": 78,
-      "community_name": "Sword RPG Anti-Exploit & Server Architecture \u2014 Design Template",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "12. sources & references",
-      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L2018"
-    },
-    {
       "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_4_1_universal_validation_middleware",
       "label": "4.1 Universal Validation Middleware",
       "_origin": "ast",
@@ -25658,100 +25730,40 @@
       "source_location": "L456"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_7_1_escalation_decision_tree",
-      "label": "7.1 Escalation Decision Tree",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_6_1_session_locking_prevent_duplication",
+      "label": "6.1 Session Locking (Prevent Duplication)",
       "_origin": "ast",
       "community": 78,
       "community_name": "Sword RPG Anti-Exploit & Server Architecture \u2014 Design Template",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "7.1 escalation decision tree",
+      "norm_label": "6.1 session locking (prevent duplication)",
       "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L1305"
+      "source_location": "L1018"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_7_2_shadow_ban_system_advanced",
-      "label": "7.2 Shadow Ban System (Advanced)",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_6_2_datastore_rate_limiting",
+      "label": "6.2 DataStore Rate Limiting",
       "_origin": "ast",
       "community": 78,
       "community_name": "Sword RPG Anti-Exploit & Server Architecture \u2014 Design Template",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "7.2 shadow ban system (advanced)",
+      "norm_label": "6.2 datastore rate limiting",
       "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L1335"
+      "source_location": "L1282"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_7_3_appeal_system_integration",
-      "label": "7.3 Appeal System Integration",
+      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_6_datastore_security",
+      "label": "6. DataStore Security",
       "_origin": "ast",
       "community": 78,
       "community_name": "Sword RPG Anti-Exploit & Server Architecture \u2014 Design Template",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "7.3 appeal system integration",
+      "norm_label": "6. datastore security",
       "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L1380"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_7_punishment_escalation_ladder",
-      "label": "7. Punishment Escalation Ladder",
-      "_origin": "ast",
-      "community": 78,
-      "community_name": "Sword RPG Anti-Exploit & Server Architecture \u2014 Design Template",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "7. punishment escalation ladder",
-      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L1303"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_appendix_a_quick_reference_card",
-      "label": "Appendix A: Quick Reference Card",
-      "_origin": "ast",
-      "community": 78,
-      "community_name": "Sword RPG Anti-Exploit & Server Architecture \u2014 Design Template",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "appendix a: quick reference card",
-      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L2058"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_community_industry_references",
-      "label": "Community & Industry References",
-      "_origin": "ast",
-      "community": 78,
-      "community_name": "Sword RPG Anti-Exploit & Server Architecture \u2014 Design Template",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "community & industry references",
-      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L2046"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_minimum_remoteevent_template",
-      "label": "Minimum RemoteEvent Template",
-      "_origin": "ast",
-      "community": 78,
-      "community_name": "Sword RPG Anti-Exploit & Server Architecture \u2014 Design Template",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "minimum remoteevent template",
-      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L2073"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_official_roblox_documentation",
-      "label": "Official Roblox Documentation",
-      "_origin": "ast",
-      "community": 78,
-      "community_name": "Sword RPG Anti-Exploit & Server Architecture \u2014 Design Template",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "official roblox documentation",
-      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L2020"
+      "source_location": "L1016"
     },
     {
       "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_sword_rpg_anti_exploit_server_architecture_design_template",
@@ -25776,18 +25788,6 @@
       "norm_label": "table of contents",
       "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
       "source_location": "L9"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_the_10_commandments_of_roblox_anti_exploit",
-      "label": "The 10 Commandments of Roblox Anti-Exploit",
-      "_origin": "ast",
-      "community": 78,
-      "community_name": "Sword RPG Anti-Exploit & Server Architecture \u2014 Design Template",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "the 10 commandments of roblox anti-exploit",
-      "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
-      "source_location": "L2060"
     },
     {
       "id": "research_sword_rpg_sword_rpg_hidden_gems_1_deepwoken",
@@ -31584,7 +31584,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L837",
+      "source_location": "L1194",
       "weight": 1.0
     },
     {
@@ -31728,7 +31728,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L663",
+      "source_location": "L669",
       "weight": 1.0
     },
     {
@@ -31740,36 +31740,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L671",
+      "source_location": "L677",
       "weight": 1.0
     },
     {
       "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildrebirthpanel",
       "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_addcorner",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L695",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildrebirthpanel",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_addstroke",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L696",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildsettingspanel",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_clearbody",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -31780,6 +31756,42 @@
       "weight": 1.0
     },
     {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildrebirthpanel",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_addstroke",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L702",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildsettingspanel",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_clearbody",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L707",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildsettingspanel",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_addpadding",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L732",
+      "weight": 1.0
+    },
+    {
       "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildsettingspanel",
       "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_createtext",
       "relation": "calls",
@@ -31788,7 +31800,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L703",
+      "source_location": "L743",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildsettingspanel",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_addcorner",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L776",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildsettingspanel",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_addstroke",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L777",
       "weight": 1.0
     },
     {
@@ -31800,7 +31836,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L618",
+      "source_location": "L624",
       "weight": 1.0
     },
     {
@@ -31812,7 +31848,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L621",
+      "source_location": "L627",
       "weight": 1.0
     },
     {
@@ -31824,7 +31860,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L633",
+      "source_location": "L639",
       "weight": 1.0
     },
     {
@@ -31836,7 +31872,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L634",
+      "source_location": "L640",
       "weight": 1.0
     },
     {
@@ -31848,7 +31884,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L635",
+      "source_location": "L641",
       "weight": 1.0
     },
     {
@@ -31860,7 +31896,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L178",
+      "source_location": "L179",
       "weight": 1.0
     },
     {
@@ -31872,7 +31908,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L187",
+      "source_location": "L188",
       "weight": 1.0
     },
     {
@@ -31884,7 +31920,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L139",
+      "source_location": "L140",
       "weight": 1.0
     },
     {
@@ -31944,7 +31980,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L754",
+      "source_location": "L1114",
       "weight": 1.0
     },
     {
@@ -31956,7 +31992,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L755",
+      "source_location": "L1115",
       "weight": 1.0
     },
     {
@@ -31968,7 +32004,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L756",
+      "source_location": "L1116",
       "weight": 1.0
     },
     {
@@ -31980,7 +32016,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L756",
+      "source_location": "L1116",
       "weight": 1.0
     },
     {
@@ -31992,7 +32028,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L757",
+      "source_location": "L1117",
       "weight": 1.0
     },
     {
@@ -32004,7 +32040,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L758",
+      "source_location": "L1118",
       "weight": 1.0
     },
     {
@@ -32016,7 +32052,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L822",
+      "source_location": "L1179",
       "weight": 1.0
     },
     {
@@ -32028,7 +32064,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L767",
+      "source_location": "L1127",
       "weight": 1.0
     },
     {
@@ -32040,7 +32076,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L768",
+      "source_location": "L1128",
       "weight": 1.0
     },
     {
@@ -32052,7 +32088,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L771",
+      "source_location": "L1131",
       "weight": 1.0
     },
     {
@@ -36621,7 +36657,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/DamageNumbers.client.luau",
-      "source_location": "L20",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -36659,13 +36695,123 @@
     },
     {
       "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_addpadding",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshtopbar",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L1066",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshskills",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L1077",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshhomestats",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L1090",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
       "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_createtext",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L109",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_opentab",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L1107",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_setmenuopen",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L1121",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_togglemenu",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L1131",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshinventoryifvisible",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L1177",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_bindinventorycontainer",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L1183",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
+      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_bindinventoryrefresh",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L1192",
       "weight": 1.0
     },
     {
@@ -36676,7 +36822,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L126",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -36687,7 +36833,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L169",
+      "source_location": "L170",
       "weight": 1.0
     },
     {
@@ -36753,7 +36899,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L617",
+      "source_location": "L623",
       "weight": 1.0
     },
     {
@@ -36764,7 +36910,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L662",
+      "source_location": "L668",
       "weight": 1.0
     },
     {
@@ -36775,95 +36921,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L700",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshtopbar",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
       "source_location": "L706",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshskills",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L717",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshhomestats",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L730",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_opentab",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L747",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_setmenuopen",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L761",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_togglemenu",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L771",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshinventoryifvisible",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L820",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_bindinventorycontainer",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L826",
       "weight": 1.0
     },
     {
@@ -36874,18 +36932,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L83",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_bindinventoryrefresh",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L835",
+      "source_location": "L84",
       "weight": 1.0
     },
     {
@@ -36896,18 +36943,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L90",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_addpadding",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L99",
+      "source_location": "L91",
       "weight": 1.0
     },
     {

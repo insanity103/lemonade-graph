@@ -396,9 +396,9 @@
     "semantic_hash": ""
   },
   "manual_trace.md": {
-    "mtime": 1789349811.1227326,
-    "seen": 1789349936.0347114,
-    "ast_hash": "ccd87756e6cce0b3b1c19c27e4005346",
+    "mtime": 1789350938.8335912,
+    "seen": 1789350967.7186937,
+    "ast_hash": "6d7519ffdee43c4f1bac552b2fa12aea",
     "semantic_hash": ""
   },
   "research/sword-rpg/sword-rpg-INDEX.md": {
@@ -729,6 +729,12 @@
     "mtime": 1789345995.1269467,
     "seen": 1789346267.679772,
     "ast_hash": "99f3b60ba7897767df3f04693e54ef07",
+    "semantic_hash": ""
+  },
+  "lemonade-game/ReplicatedStorage/Config/QuestConfig.luau": {
+    "mtime": 1789350946.9757059,
+    "seen": 1789350967.7185557,
+    "ast_hash": "4a3fc889110d70067a29a06e9644d1fc",
     "semantic_hash": ""
   }
 }

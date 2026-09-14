@@ -234,9 +234,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/DamageNumbers.client.luau": {
-    "mtime": 1789345899.9955952,
-    "seen": 1789345979.5830264,
-    "ast_hash": "a4c3c40ce0f36debe3223740db5a4ae2",
+    "mtime": 1789349253.9319134,
+    "seen": 1789349509.5631125,
+    "ast_hash": "7246ecbf04a7080429fe7a3bf5b63db0",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/GoldNumbers.client.luau": {
@@ -258,9 +258,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau": {
-    "mtime": 1789347856.4906867,
-    "seen": 1789348954.838069,
-    "ast_hash": "994628b71028cdfdf5d2fbc6db6c30c6",
+    "mtime": 1789349568.143322,
+    "seen": 1789349936.034685,
+    "ast_hash": "12b7fa1f36108b4f67edc266c359cc4f",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/MerchantGui.client.luau": {
@@ -396,9 +396,9 @@
     "semantic_hash": ""
   },
   "manual_trace.md": {
-    "mtime": 1789348044.6070163,
-    "seen": 1789348954.8381073,
-    "ast_hash": "6c43f976c2eda8a8eda24a2db44cb356",
+    "mtime": 1789349811.1227326,
+    "seen": 1789349936.0347114,
+    "ast_hash": "ccd87756e6cce0b3b1c19c27e4005346",
     "semantic_hash": ""
   },
   "research/sword-rpg/sword-rpg-INDEX.md": {

@@ -2388,6 +2388,30 @@
       "source_location": "L10"
     },
     {
+      "id": "lemonade_game_replicatedstorage_config_questconfig_questconfig_getnextquest",
+      "label": "QuestConfig.getNextQuest()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 274,
+      "community_name": "QuestConfig.luau",
+      "file_type": "code",
+      "norm_label": "questconfig.getnextquest()",
+      "source_file": "lemonade-game/ReplicatedStorage/Config/QuestConfig.luau",
+      "source_location": "L109"
+    },
+    {
+      "id": "lemonade_game_replicatedstorage_config_questconfig_questconfig_getquestbyid",
+      "label": "QuestConfig.getQuestById()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 274,
+      "community_name": "QuestConfig.luau",
+      "file_type": "code",
+      "norm_label": "questconfig.getquestbyid()",
+      "source_file": "lemonade-game/ReplicatedStorage/Config/QuestConfig.luau",
+      "source_location": "L105"
+    },
+    {
       "id": "lemonade_game_replicatedstorage_animationcontroller_animationcontroller_play",
       "label": "AnimationController.Play()",
       "_callable": true,
@@ -16890,6 +16914,17 @@
       "norm_label": "the 10 commandments of roblox anti-exploit",
       "source_file": "research/sword-rpg/sword-rpg-anti-exploit-architecture.md",
       "source_location": "L2060"
+    },
+    {
+      "id": "lemonade_game_replicatedstorage_config_questconfig",
+      "label": "QuestConfig.luau",
+      "_origin": "ast",
+      "community": 274,
+      "community_name": "QuestConfig.luau",
+      "file_type": "code",
+      "norm_label": "questconfig.luau",
+      "source_file": "lemonade-game/ReplicatedStorage/Config/QuestConfig.luau",
+      "source_location": "L1"
     },
     {
       "id": "skills_roblox_optimize_skill",
@@ -34843,6 +34878,28 @@
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ReplicatedStorage/Config/MerchantConfig.luau",
       "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_replicatedstorage_config_questconfig",
+      "target": "lemonade_game_replicatedstorage_config_questconfig_questconfig_getquestbyid",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ReplicatedStorage/Config/QuestConfig.luau",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "lemonade_game_replicatedstorage_config_questconfig",
+      "target": "lemonade_game_replicatedstorage_config_questconfig_questconfig_getnextquest",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lemonade-game/ReplicatedStorage/Config/QuestConfig.luau",
+      "source_location": "L109",
       "weight": 1.0
     },
     {
@@ -59145,5 +59202,5 @@
       "source_file": "/home/alex-christensen/.codex/skills/roblox-systems/references/sword-rpg-legendary-swords-core.md"
     }
   ],
-  "built_at_commit": "42bbcf5673d1829514f4fa47645f0762e667aece"
+  "built_at_commit": "a710359e2c30d8a42e51f4a29f85cc2463050e97"
 }
