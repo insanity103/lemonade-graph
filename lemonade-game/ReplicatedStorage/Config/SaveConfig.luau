@@ -26,6 +26,9 @@ SaveConfig.ATTRIBUTES = {
 	Defense = 0,
 	ExperienceGain = 0,
 	AutoSellLowerSwords = false,
+	CompletedQuests = '',      -- comma-separated quest IDs (e.g., 'q1_first_blood,q2_prove_yourself')
+	ActiveQuestId = '',        -- current quest ID or '' if none
+	QuestProgress = 0,         -- progress toward current objective
 }
 
 -- attributes copied verbatim off each saved boss / merchant sword Tool
