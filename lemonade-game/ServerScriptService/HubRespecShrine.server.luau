@@ -6,8 +6,9 @@ local Workspace = game:GetService("Workspace")
 
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 local hub = WorldLayout.HUB
+local features = WorldLayout.HUB_FEATURES or {}
 
-local OFFSET = Vector3.new(-8, 0, 12)
+local OFFSET = features.RespecShrine or Vector3.new(-8, 0, 12)
 local BASE_POS = Vector3.new(hub.Center.X + OFFSET.X, hub.Center.Y, hub.Center.Z + OFFSET.Z)
 
 local BASE_COST = 200       -- gold cost at rebirth 0

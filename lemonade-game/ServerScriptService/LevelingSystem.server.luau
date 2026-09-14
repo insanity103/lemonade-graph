@@ -8,6 +8,7 @@ local BASE_XP_REQUIREMENT = 100
 local XP_INCREASE_PER_LEVEL = 0.15
 local XP_REWARD_ATTRIBUTE = "ExperienceReward"
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
+local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
 
 local ENEMY_ATTRIBUTE = CombatUtil.ENEMY_ATTRIBUTE
 local CREATOR_TAG_NAME = "creator"
@@ -240,6 +241,7 @@ local function awardExperience(player, amount)
 		local root = player.Character and (player.Character.PrimaryPart or player.Character:FindFirstChild("HumanoidRootPart"))
 		if root then
 			LEVELUP_EVENT:FireClient(player, root.Position)
+			AudioManager.PlaySFX("level_up", root)
 		end
 	end
 

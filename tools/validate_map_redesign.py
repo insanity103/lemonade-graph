@@ -8,6 +8,7 @@ import math
 from pathlib import Path
 import struct
 import sys
+import re
 import bmesh
 import bpy
 from mathutils import Vector
@@ -70,7 +71,7 @@ bvh=BVHTree.FromPolygons(verts,faces,all_triangles=True)
 ground_errors=[];clearance_errors=[]
 for s in all_spawns:
     p=pos(s['Position']);hit,normal,_,_=bvh.ray_cast(p+Vector((0,0,7)),Vector((0,0,-1)),12)
-    if hit is None or abs(hit.z-p.z)>.55:ground_errors.append(s.get('Id',s['Archetype']))
+    if hit is None or abs(hit.z-p.z)>.55 or normal.z<.9:ground_errors.append(s.get('Id',s['Archetype']))
     for a in range(8):
         t=a*math.tau/8;direction=Vector((math.cos(t),math.sin(t),0))
         hit,_,_,_=bvh.ray_cast(p+Vector((0,0,3)),direction,2.5)
@@ -98,6 +99,24 @@ for branch in contract['Branches']:
 stats['route_errors']=route_errors;stats['max_main_route_slope_degrees']=round(slope_max,3)
 check(not route_errors,'All five hub-to-boss approach routes have continuous floors and clear 5-stud corridors')
 check(slope_max<12,'No main-route ramp is steeper than 12 degrees')
+arena_route_errors=[]
+for zone in contract['Zones']:
+    center=pos(zone['Center']);approach=pos(zone['Approach'])
+    outward=(center-approach).normalized()
+    start=approach-Vector((0,0,2));door=pos(zone['Door'])-Vector((0,0,7))
+    for a,b in ((start,door),(door,center)):
+        count=math.ceil((b-a).length/2)
+        for i in range(count+1):
+            p=a.lerp(b,i/count)
+            hit,_,_,_=bvh.ray_cast(p+Vector((0,0,6)),Vector((0,0,-1)),10)
+            if hit is None or abs(hit.z-p.z)>.6:
+                arena_route_errors.append(zone['Name']+' floor');break
+        direction=(b-a).normalized();side=Vector((-direction.y,direction.x,0)).normalized()
+        for offset in (-2.5,0,2.5):
+            hit,_,_,_=bvh.ray_cast(a+side*offset+Vector((0,0,3)),direction,(b-a).length)
+            if hit is not None:arena_route_errors.append(zone['Name']+' obstruction');break
+stats['arena_route_errors']=arena_route_errors
+check(not arena_route_errors,'All eight arena entrance ramps and door openings have clear walkable routes')
 
 # Read actual exported GLB indices, not just Blender metadata.
 for entry in manifest['files']:
@@ -107,9 +126,17 @@ for entry in manifest['files']:
     length,kind=struct.unpack_from('<II',data,12);doc=json.loads(data[20:20+length])
     tris=sum(doc['accessors'][p['indices']]['count']//3 for m in doc.get('meshes',[]) for p in m['primitives'])
     check(tris==entry['triangles'],path.name+' exported triangle count matches manifest')
+by_name={entry['collection']:entry for entry in manifest['files']}
+for name,entry in by_name.items():
+    if name.endswith('LOD1'):
+        check(entry['triangles']<by_name[name[:-1]+'0']['triangles'],name+' uses fewer triangles than LOD0')
 
 original_bounds=[min((o.matrix_world@v.co)[i] for o in meshes for v in o.data.vertices) for i in range(3)]+[
     max((o.matrix_world@v.co)[i] for o in meshes for v in o.data.vertices) for i in range(3)]
+def object_bounds(o):
+    points=[o.matrix_world@v.co for v in o.data.vertices]
+    return [min(p[i] for p in points) for i in range(3)]+[max(p[i] for p in points) for i in range(3)]
+per_object={o.name:object_bounds(o) for o in meshes}
 scene=bpy.data.scenes.new('GLB validation only');bpy.context.window.scene=scene
 bpy.ops.import_scene.gltf(filepath=str(OUT/'FivefoldSanctuary.glb'))
 imported=[o for o in scene.objects if o.type=='MESH']
@@ -117,6 +144,14 @@ roundtrip_bounds=[min((o.matrix_world@v.co)[i] for o in imported for v in o.data
     max((o.matrix_world@v.co)[i] for o in imported for v in o.data.vertices) for i in range(3)]
 stats['roundtrip_bounds_delta']=max(abs(a-b) for a,b in zip(original_bounds,roundtrip_bounds))
 check(stats['roundtrip_bounds_delta']<.01,'Full GLB reimports into Blender with matching scale, orientation and bounds')
+delta=0;missing=[]
+for o in imported:
+    name=re.sub(r'\.\d{3}$','',o.name)
+    if name not in per_object:missing.append(name);continue
+    delta=max(delta,max(abs(a-b) for a,b in zip(per_object[name],object_bounds(o))))
+stats['roundtrip_per_mesh_bounds_delta']=delta
+check(not missing and len(imported)==len(meshes) and delta<.01,
+      'Every map mesh retains its individual world placement and dimensions in the GLB round trip')
 report=dict(status='passed' if not issues else 'failed',stats=stats,checks=checks,issues=issues,
             limitations=['Roblox Studio import, collision fidelity, streaming, combat and prompts require live Studio playtesting'])
 (OUT/'validation.json').write_text(json.dumps(report,indent=2)+'\n')

@@ -5,12 +5,12 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
-local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
 
 local hub = WorldLayout.HUB
+local features = WorldLayout.HUB_FEATURES or {}
 
 -- Offset from hub center (north-west of spawn)
-local OFFSET = Vector3.new(-14, 0, -10)
+local OFFSET = features.Leaderboard or Vector3.new(-14, 0, -10)
 local BASE_POS = Vector3.new(hub.Center.X + OFFSET.X, hub.Center.Y, hub.Center.Z + OFFSET.Z)
 local REFRESH_INTERVAL = 30
 

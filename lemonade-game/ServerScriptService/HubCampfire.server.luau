@@ -5,9 +5,10 @@ local Workspace = game:GetService("Workspace")
 
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 local hub = WorldLayout.HUB
+local features = WorldLayout.HUB_FEATURES or {}
 
 -- Offset from hub center (campfire sits south-east of spawn)
-local OFFSET = Vector3.new(18, 0, 8)
+local OFFSET = features.Campfire or Vector3.new(18, 0, 8)
 local BASE_POS = Vector3.new(hub.Center.X + OFFSET.X, hub.Center.Y, hub.Center.Z + OFFSET.Z)
 
 local function createPart(properties)

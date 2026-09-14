@@ -8,6 +8,7 @@ local DAMAGE_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 
 local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
+local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
 
 local CREATOR_TAG_NAME = "creator"
 
@@ -73,6 +74,12 @@ local function applyDamage(enemyModel, player, tool, playerHrp, comboIndex, char
 
 	local damage, isCrit = calculateDamage(player, tool, comboIndex)
 	humanoid:TakeDamage(damage)
+
+	-- Play hit sound
+	local root = enemyModel.PrimaryPart or enemyModel:FindFirstChild("HumanoidRootPart")
+	if root then
+		AudioManager.PlaySFX(isCrit and "crit_hit" or "enemy_hit", root)
+	end
 
 	-- Apply hitlag: freeze both attacker and victim briefly
 	local hitlagDuration = ComboConfig.HITLAG_DURATION[comboIndex] or ComboConfig.HITLAG_DURATION[1]

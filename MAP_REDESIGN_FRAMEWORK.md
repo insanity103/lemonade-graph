@@ -116,6 +116,8 @@ MerchantPosition = Vector3.new(X, Y, Z)  -- from HUB
 
 ## Part 2: GPT-6 Astra (Blender Side)
 
+> **September 13 redesign delivery:** See [`assets/map_redesign/README.md`](assets/map_redesign/README.md) and [`anchors.json`](assets/map_redesign/anchors.json). The new user brief supersedes the linear layout below: a 360-stud circular sanctuary, five independent boss branches, and a modeled rebirth station/NPC. All eight existing zone IDs survive as five main regions plus three secondary pockets. The delivered anchors supersede the reference positions in Parts 3 and 5. Part 1 gameplay integration remains a separate step.
+
 ### What Blender owns
 
 | Asset | Format | Where it goes in Roblox |

@@ -12,6 +12,7 @@ import sys
 from collections import defaultdict
 
 import bpy
+import bmesh
 from mathutils import Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -25,6 +26,7 @@ MATERIALS = {}
 COLLECTIONS = {}
 GROUP = "Hub"
 SERIAL = 0
+FONT = None
 COLLISION_BOXES = []
 COLLISION_ROADS = []
 
@@ -137,11 +139,18 @@ def tree(p,h,style,leaf,wood,snow=None):
 
 def label(text,p,size,m,rot=(math.pi/2,0,0),name=None):
     curve=bpy.data.curves.new('Lettering','FONT');curve.body=text;curve.align_x='CENTER';curve.align_y='CENTER'
-    curve.size=size;curve.extrude=.035;curve.bevel_depth=.008;curve.resolution_u=3
+    curve.font=FONT
+    curve.size=size;curve.extrude=.035;curve.bevel_depth=0;curve.resolution_u=3
     o=bpy.data.objects.new(name or text,curve);bpy.context.scene.collection.objects.link(o)
     o.location=p;o.rotation_euler=rot
     bpy.context.view_layer.objects.active=o;o.select_set(True)
     bpy.ops.object.convert(target='MESH');o=bpy.context.object
+    # Font conversion leaves cap/rim vertices split. Weld within this lettering
+    # object before it is combined with unrelated solids in the material batch.
+    bm=bmesh.new();bm.from_mesh(o.data)
+    bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.00001)
+    bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+    bm.to_mesh(o.data);bm.free()
     verts=[tuple(o.matrix_world@v.co) for v in o.data.vertices]
     faces=[tuple(p.vertices) for p in o.data.polygons]
     mesh(name or text,verts,faces,m)
@@ -428,15 +437,15 @@ def region(r):
     for side in (-1,1):
         rock('OuterRidge',bp(r,side*112,549,z+8),(40,51,38),mm['dark'])
     # Small abandoned outposts make the farming grounds feel inhabited.
-    for d in (388,473):
+    for d in (388,520):
         x=-91
         if r['style'] in ('Woodland','Celestial'):
             local_box(r,'OutpostBase',x,d,z+1,(15,12,2),mm['stone'])
             local_box(r,'OutpostWall',x-6,d,z+5,(2,12,8),mm['stone'])
             local_box(r,'OutpostWall',x,d+5,z+5,(14,2,8),mm['stone'])
             # Pitched canopy, two solid slabs meeting along the ridge.
-            beam('Canopy',bp(r,x-9,d,z+10),bp(r,x,d,z+15),1.1,mm['leaf'],14)
-            beam('Canopy',bp(r,x,d,z+15),bp(r,x+9,d,z+10),1.1,mm['leaf'],14)
+            beam('Canopy',bp(r,x-9,d,z+10),bp(r,x,d,z+15),14,mm['leaf'],1.1)
+            beam('Canopy',bp(r,x,d,z+15),bp(r,x+9,d,z+10),14,mm['leaf'],1.1)
         elif r['style']=='FrostPine':
             for dx in (-5,5):crystal('FrostOutpost',bp(r,x+dx,d,z),3,17,mm['stone'])
             arch(bp(r,x,d,z),8,12,mm['dark'],mm['accent'],-math.radians(r['angle']))
@@ -524,9 +533,11 @@ def prop_library():
                 if r['style']=='Void':crystal('Amethyst',(0,0,0),3,21,mm['accent'])
                 else:tree((0,0,0),24,style,mm['leaf'],WOOD,CREAM if style=='pine' else None)
             else:
-                cone('Trunk',(0,0,0),1.3,.6,18,WOOD,5)
-                if style=='dead':beam('Branch',(-4,0,19),(0,0,11),.8,WOOD)
-                else:cone('Canopy',(0,0,9),7,.2,15,mm['accent'] if r['style']=='Void' else mm['leaf'],5)
+                if r['style']=='Void':cone('Amethyst',(0,0,0),3,.05,21,mm['accent'],5)
+                else:
+                    cone('Trunk',(0,0,0),1.3,.6,18,WOOD,5)
+                    if style=='dead':beam('Branch',(-4,0,19),(0,0,11),.8,WOOD)
+                    else:cone('Canopy',(0,0,9),7,.2,15,mm['leaf'],5)
             GROUP=f'Kit_{r["id"]}_Rock_LOD{lod}'
             if lod==0:rock('Rock',(0,0,2),(9,7,8),mm['dark'],seed=SEED+r['angle'])
             else:cone('Rock',(0,0,0),4.5,1.5,6,mm['dark'],5)
@@ -638,7 +649,9 @@ def export(contract,cameras,render):
 
 def main():
     global STONE,CREAM,GOLD,GRASS,LEAVES,WOOD,CLIFF,DARK,WATER,AMBER,TEAL,IVORY,SKIN,INK,LAVA,ICE,ZONE_MATS
+    global FONT
     bpy.ops.wm.read_factory_settings(use_empty=True)
+    FONT=bpy.data.fonts.load('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf')
     bpy.context.scene.unit_settings.system='NONE';bpy.context.scene.unit_settings.scale_length=1
     STONE=mat('Sanctuary limestone','#b7b8a8');CREAM=mat('Warm ivory','#eee3c9')
     GOLD=mat('Aged gold','#c5a365',.35);GRASS=mat('Sanctuary turf','#6f915e');LEAVES=mat('Laurel leaves','#48785d')

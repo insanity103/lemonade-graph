@@ -1,0 +1,82 @@
+{
+  "Description": "Optional original procedural clear-day cubemap, rendered in Blender.",
+  "Faces": {
+    "SkyboxFt": "SkyboxFt.png",
+    "SkyboxBk": "SkyboxBk.png",
+    "SkyboxLf": "SkyboxLf.png",
+    "SkyboxRt": "SkyboxRt.png",
+    "SkyboxUp": "SkyboxUp.png",
+    "SkyboxDn": "SkyboxDn.png"
+  },
+  "FaceLookDirectionsRoblox": {
+    "SkyboxFt": [
+      0,
+      0,
+      -1
+    ],
+    "SkyboxBk": [
+      0,
+      0,
+      1
+    ],
+    "SkyboxLf": [
+      -1,
+      0,
+      0
+    ],
+    "SkyboxRt": [
+      1,
+      0,
+      0
+    ],
+    "SkyboxUp": [
+      0,
+      1,
+      0
+    ],
+    "SkyboxDn": [
+      0,
+      -1,
+      0
+    ]
+  },
+  "Lighting": {
+    "ClockTime": 14.5,
+    "Brightness": 2.3,
+    "Ambient": [
+      108,
+      116,
+      128
+    ],
+    "OutdoorAmbient": [
+      142,
+      156,
+      167
+    ],
+    "EnvironmentDiffuseScale": 0.8,
+    "EnvironmentSpecularScale": 0.35,
+    "GlobalShadows": true
+  },
+  "Atmosphere": {
+    "Density": 0.18,
+    "Offset": 0.1,
+    "Color": [
+      194,
+      218,
+      231
+    ],
+    "Decay": [
+      138,
+      154,
+      177
+    ],
+    "Glare": 0.08,
+    "Haze": 1.2
+  },
+  "IntegrationNotes": [
+    "Upload PNGs to obtain asset IDs; local paths are not rbxassetid URLs.",
+    "Choose this sky OR the existing dynamic sky; DayCycle may overwrite global lighting settings.",
+    "Check sky face rotation/seams in Studio. Emissive materials do not create Roblox point lights automatically.",
+    "Keep bridge and boss gate visibility legible when testing night lighting."
+  ]
+}

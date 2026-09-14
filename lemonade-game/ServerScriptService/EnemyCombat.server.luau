@@ -7,6 +7,7 @@ local TweenService = game:GetService("TweenService")
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
+local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
 WorldLayout.EnsureBuilt()
 
 local ENEMY_TAG = CombatUtil.ENEMY_TAG
@@ -831,6 +832,11 @@ local function startEnemyAI(model, humanoid, hrp, arch, spawnPos, level, onDeath
 
 	humanoid.Died:Connect(function()
 		activeEnemies[model] = nil
+		-- Play death sound
+		local root = model.PrimaryPart or model:FindFirstChild("HumanoidRootPart")
+		if root then
+			AudioManager.PlaySFX("enemy_death", root)
+		end
 		task.delay(0.2, function()
 			if model and model.Parent then
 				model:Destroy()

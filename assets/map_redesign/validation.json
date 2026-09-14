@@ -1,271 +1,31 @@
 {
   "status": "failed",
   "stats": {
-    "mesh_count": 424,
-    "triangles": 171088,
-    "max_mesh_triangles": 13012,
+    "mesh_count": 423,
+    "triangles": 91848,
+    "max_mesh_triangles": 4082,
     "nonmanifold_meshes": [
-      {
-        "mesh": "Hub_Aged gold_0_0",
-        "edges": 8
-      },
-      {
-        "mesh": "Hub_Sanctuary limestone_0_-1",
-        "edges": 4
-      },
-      {
-        "mesh": "Hub_Aged gold_0_-1",
-        "edges": 20
-      },
-      {
-        "mesh": "Hub_Aged gold_-1_-1",
-        "edges": 8
-      },
-      {
-        "mesh": "Hub_Warm ivory_0_0",
-        "edges": 4
-      },
       {
         "mesh": "Hub_Warm ivory_-1_-1",
         "edges": 6
       },
       {
-        "mesh": "Grounds_IronLowlands_IronLowlands_path_0_3",
-        "edges": 4
+        "mesh": "Branch_InfernalCaldera_Warm ivory_1_-3",
+        "edges": 1
       },
       {
-        "mesh": "Arena_IronLowlands_IronLowlands_accent_0_5",
-        "edges": 8
-      },
-      {
-        "mesh": "Arena_Briarwood_IronLowlands_accent_0_4",
-        "edges": 8
-      },
-      {
-        "mesh": "Arena_FrostboundGlacier_FrostboundGlacier_accent_4_1",
-        "edges": 8
-      },
-      {
-        "mesh": "Arena_SunkenMarsh_FrostboundGlacier_accent_4_0",
-        "edges": 8
-      },
-      {
-        "mesh": "Arena_InfernalCaldera_InfernalCaldera_accent_2_-5",
-        "edges": 8
-      },
-      {
-        "mesh": "Arena_Stormwatch_InfernalCaldera_accent_1_-4",
-        "edges": 8
-      },
-      {
-        "mesh": "Pocket_Stormwatch_InfernalCaldera_stone_1_-5",
-        "edges": 24
-      },
-      {
-        "mesh": "Arena_VoidRift_VoidRift_accent_-3_-5",
-        "edges": 8
-      },
-      {
-        "mesh": "Arena_CelestialSummit_CelestialSummit_accent_-5_1",
-        "edges": 8
-      },
-      {
-        "mesh": "Landmark_CelestialSummit_CelestialSummit_stone_-6_1",
-        "edges": 4
-      },
-      {
-        "mesh": "Landmark_CelestialSummit_Aged gold_-6_1",
-        "edges": 4
+        "mesh": "Arena_InfernalCaldera_Warm ivory_2_-4",
+        "edges": 1
       }
     ],
     "closest_enemy_to_hub_center": 346.342,
     "enemy_anchor_count": 108,
-    "spawn_ground_errors": [
-      "Boss_InfernalColossus",
-      "SolarDominator"
-    ],
-    "spawn_clearance_errors": [
-      "Boss_InfernalColossus"
-    ],
-    "route_errors": [
-      {
-        "branch": "IronLowlands",
-        "point": [
-          0.0,
-          257.1739196777344,
-          8.474225997924805
-        ],
-        "floor": [
-          0.0,
-          257.1739196777344,
-          9.121780395507812
-        ]
-      },
-      {
-        "branch": "IronLowlands",
-        "point": [
-          0.0,
-          265.0,
-          8.718799591064453
-        ],
-        "floor": [
-          0.0,
-          265.0,
-          9.72818374633789
-        ]
-      },
-      {
-        "branch": "FrostboundGlacier",
-        "point": [
-          229.70082092285156,
-          74.63430786132812,
-          11.95513916015625
-        ],
-        "floor": [
-          229.70082092285156,
-          74.63430786132812,
-          14.049256324768066
-        ]
-      },
-      {
-        "branch": "FrostboundGlacier",
-        "point": [
-          252.02999877929688,
-          81.8895034790039,
-          14.156200408935547
-        ],
-        "floor": [
-          252.02999877929688,
-          81.8895034790039,
-          16.05548095703125
-        ]
-      },
-      {
-        "branch": "InfernalCaldera",
-        "point": [
-          125.94639587402344,
-          -173.35023498535156,
-          8.267045021057129
-        ],
-        "floor": [
-          125.94639587402344,
-          -173.35023498535156,
-          10.015364646911621
-        ]
-      },
-      {
-        "branch": "InfernalCaldera",
-        "point": [
-          129.31280517578125,
-          -177.98370361328125,
-          8.625
-        ],
-        "floor": [
-          129.31280517578125,
-          -177.98370361328125,
-          10.45435905456543
-        ]
-      },
-      {
-        "branch": "InfernalCaldera",
-        "point": [
-          155.7631072998047,
-          -214.38949584960938,
-          11.4375
-        ],
-        "floor": [
-          155.7631072998047,
-          -214.38949584960938,
-          13.903589248657227
-        ]
-      },
-      {
-        "branch": "VoidRift",
-        "point": [
-          -143.1129608154297,
-          -196.97802734375,
-          14.184782981872559
-        ],
-        "floor": [
-          -143.1129608154297,
-          -196.97802734375,
-          18.127071380615234
-        ]
-      },
-      {
-        "branch": "VoidRift",
-        "obstruction": [
-          -144.2954864501953,
-          -194.35238647460938,
-          17.00614356994629
-        ]
-      },
-      {
-        "branch": "VoidRift",
-        "point": [
-          -155.7631072998047,
-          -214.38949584960938,
-          16.875
-        ],
-        "floor": [
-          -155.7631072998047,
-          -214.38949584960938,
-          19.974414825439453
-        ]
-      },
-      {
-        "branch": "VoidRift",
-        "obstruction": [
-          -160.25579833984375,
-          -216.3199005126953,
-          20.40030860900879
-        ]
-      },
-      {
-        "branch": "CelestialSummit",
-        "point": [
-          -211.09317016601562,
-          68.58830261230469,
-          14.241847038269043
-        ],
-        "floor": [
-          -211.09317016601562,
-          68.58830261230469,
-          18.193992614746094
-        ]
-      },
-      {
-        "branch": "CelestialSummit",
-        "obstruction": [
-          -211.65774536132812,
-          71.40039825439453,
-          17.50545883178711
-        ]
-      },
-      {
-        "branch": "CelestialSummit",
-        "point": [
-          -252.02999877929688,
-          81.8895034790039,
-          22.3125
-        ],
-        "floor": [
-          -252.02999877929688,
-          81.8895034790039,
-          26.0
-        ]
-      },
-      {
-        "branch": "CelestialSummit",
-        "obstruction": [
-          -253.7313232421875,
-          85.0709457397461,
-          25.80021858215332
-        ]
-      }
-    ],
+    "spawn_ground_errors": [],
+    "spawn_clearance_errors": [],
+    "route_errors": [],
     "max_main_route_slope_degrees": 10.62,
-    "roundtrip_bounds_delta": 0.0
+    "roundtrip_bounds_delta": 0.0,
+    "roundtrip_per_mesh_bounds_delta": 0
   },
   "checks": [
     {
@@ -281,7 +41,7 @@
       "passed": true
     },
     {
-      "check": "All mesh surfaces are closed after coincident seam welding",
+      "check": "All mesh components have closed manifold surfaces",
       "passed": false
     },
     {
@@ -486,15 +246,15 @@
     },
     {
       "check": "All enemy anchors hit the intended floor within 0.55 studs",
-      "passed": false
+      "passed": true
     },
     {
       "check": "Every enemy anchor has 2.5 studs of horizontal body clearance",
-      "passed": false
+      "passed": true
     },
     {
       "check": "All five hub-to-boss approach routes have continuous floors and clear 5-stud corridors",
-      "passed": false
+      "passed": true
     },
     {
       "check": "No main-route ramp is steeper than 12 degrees",
@@ -781,6 +541,174 @@
       "passed": true
     },
     {
+      "check": "Kit_IronLowlands_Tree_LOD0.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_IronLowlands_Tree_LOD0.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_IronLowlands_Rock_LOD0.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_IronLowlands_Rock_LOD0.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_IronLowlands_Tree_LOD1.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_IronLowlands_Tree_LOD1.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_IronLowlands_Rock_LOD1.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_IronLowlands_Rock_LOD1.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_FrostboundGlacier_Tree_LOD0.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_FrostboundGlacier_Tree_LOD0.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_FrostboundGlacier_Rock_LOD0.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_FrostboundGlacier_Rock_LOD0.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_FrostboundGlacier_Tree_LOD1.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_FrostboundGlacier_Tree_LOD1.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_FrostboundGlacier_Rock_LOD1.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_FrostboundGlacier_Rock_LOD1.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_InfernalCaldera_Tree_LOD0.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_InfernalCaldera_Tree_LOD0.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_InfernalCaldera_Rock_LOD0.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_InfernalCaldera_Rock_LOD0.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_InfernalCaldera_Tree_LOD1.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_InfernalCaldera_Tree_LOD1.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_InfernalCaldera_Rock_LOD1.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_InfernalCaldera_Rock_LOD1.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_VoidRift_Tree_LOD0.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_VoidRift_Tree_LOD0.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_VoidRift_Rock_LOD0.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_VoidRift_Rock_LOD0.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_VoidRift_Tree_LOD1.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_VoidRift_Tree_LOD1.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_VoidRift_Rock_LOD1.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_VoidRift_Rock_LOD1.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_CelestialSummit_Tree_LOD0.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_CelestialSummit_Tree_LOD0.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_CelestialSummit_Rock_LOD0.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_CelestialSummit_Rock_LOD0.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_CelestialSummit_Tree_LOD1.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_CelestialSummit_Tree_LOD1.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_CelestialSummit_Rock_LOD1.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_CelestialSummit_Rock_LOD1.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
+      "check": "Kit_ScaleReference.glb valid GLB container",
+      "passed": true
+    },
+    {
+      "check": "Kit_ScaleReference.glb exported triangle count matches manifest",
+      "passed": true
+    },
+    {
       "check": "Ocean_VisualOnly.glb valid GLB container",
       "passed": true
     },
@@ -789,15 +717,56 @@
       "passed": true
     },
     {
+      "check": "Kit_IronLowlands_Tree_LOD1 uses fewer triangles than LOD0",
+      "passed": true
+    },
+    {
+      "check": "Kit_IronLowlands_Rock_LOD1 uses fewer triangles than LOD0",
+      "passed": true
+    },
+    {
+      "check": "Kit_FrostboundGlacier_Tree_LOD1 uses fewer triangles than LOD0",
+      "passed": true
+    },
+    {
+      "check": "Kit_FrostboundGlacier_Rock_LOD1 uses fewer triangles than LOD0",
+      "passed": true
+    },
+    {
+      "check": "Kit_InfernalCaldera_Tree_LOD1 uses fewer triangles than LOD0",
+      "passed": true
+    },
+    {
+      "check": "Kit_InfernalCaldera_Rock_LOD1 uses fewer triangles than LOD0",
+      "passed": true
+    },
+    {
+      "check": "Kit_VoidRift_Tree_LOD1 uses fewer triangles than LOD0",
+      "passed": true
+    },
+    {
+      "check": "Kit_VoidRift_Rock_LOD1 uses fewer triangles than LOD0",
+      "passed": true
+    },
+    {
+      "check": "Kit_CelestialSummit_Tree_LOD1 uses fewer triangles than LOD0",
+      "passed": true
+    },
+    {
+      "check": "Kit_CelestialSummit_Rock_LOD1 uses fewer triangles than LOD0",
+      "passed": true
+    },
+    {
       "check": "Full GLB reimports into Blender with matching scale, orientation and bounds",
+      "passed": true
+    },
+    {
+      "check": "Every map mesh retains its individual world placement and dimensions in the GLB round trip",
       "passed": true
     }
   ],
   "issues": [
-    "All mesh surfaces are closed after coincident seam welding",
-    "All enemy anchors hit the intended floor within 0.55 studs",
-    "Every enemy anchor has 2.5 studs of horizontal body clearance",
-    "All five hub-to-boss approach routes have continuous floors and clear 5-stud corridors"
+    "All mesh components have closed manifold surfaces"
   ],
   "limitations": [
     "Roblox Studio import, collision fidelity, streaming, combat and prompts require live Studio playtesting"
