@@ -1,18 +1,73 @@
 --// WorldLayout
--- Builds a deliberately authored RPG landscape from source. The main trail,
--- terrain silhouette, arena approaches, landmarks, and prop clusters are fixed
--- compositions; only small terrain undulations use deterministic noise.
+-- The map's shape is owned by the Blender side (assets/map_redesign, GPT-6 Astra) and
+-- reaches gameplay through MapAnchors -- the generated anchor contract. This module is
+-- the gameplay adapter for that contract: zone metadata, spawn resolution, level gates.
+--
+-- Two modes, chosen at runtime:
+--   Imported -- Workspace.FivefoldSanctuary exists with a matching MapRedesignVersion.
+--               The imported meshes own every visual; this module places no geometry
+--               and only resolves gameplay anchors.
+--   Fallback -- the imported map is absent (pre-import, or a fresh Rojo sync into an
+--               empty place). The procedural builder below recreates a playable world
+--               at the SAME anchor positions, so spawns, gates and quests line up
+--               either way and nothing 404s while the art is still in Blender.
+--
+-- Anchors are the single source of truth. Never hand-copy positions into this file:
+-- regenerate assets/map_redesign and re-copy MapAnchors.luau instead.
 local Workspace = game:GetService("Workspace")
+
+local MapAnchors = require(script.Parent:WaitForChild("MapAnchors"))
 
 local WorldLayout = {}
 
-WorldLayout.VERSION = 6
+WorldLayout.VERSION = 7
+WorldLayout.MAP_MODEL_NAME = "FivefoldSanctuary"
+WorldLayout.ANCHOR_VERSION = MapAnchors.Version
+
+local function v3(t)
+	return Vector3.new(t[1], t[2], t[3])
+end
+
+local function hexColor(hex, fallback)
+	if typeof(hex) ~= "string" then return fallback end
+	local r, g, b = string.match(hex, "^#?(%x%x)(%x%x)(%x%x)$")
+	if not r then return fallback end
+	return Color3.fromRGB(tonumber(r, 16), tonumber(g, 16), tonumber(b, 16))
+end
+
+-- Decor is code-owned (the framework's split: Blender ships geometry, code ships the
+-- fallback dressing). Keyed by the Style the anchor contract assigns each zone, so a
+-- new zone inherits a coherent look without another hand-authored table.
+local STYLE_PRESETS = {
+	Woodland   = { terrain = Enum.Material.Ground,     floor = Enum.Material.Slate,       color = Color3.fromRGB(117, 75, 67),   accent = Color3.fromRGB(205, 103, 78) },
+	Briar      = { terrain = Enum.Material.LeafyGrass, floor = Enum.Material.Pebble,      color = Color3.fromRGB(74, 98, 52),    accent = Color3.fromRGB(170, 220, 90) },
+	FrostPine  = { terrain = Enum.Material.Snow,       floor = Enum.Material.Ice,         color = Color3.fromRGB(126, 176, 207), accent = Color3.fromRGB(199, 239, 255) },
+	Marsh      = { terrain = Enum.Material.Mud,        floor = Enum.Material.Slate,       color = Color3.fromRGB(70, 86, 70),    accent = Color3.fromRGB(120, 210, 170),
+		pools = { { Vector3.new(-50, -2, 4), Vector3.new(22, 4, 34) }, { Vector3.new(48, -2, 8), Vector3.new(20, 4, 28) }, { Vector3.new(0, -2, 52), Vector3.new(40, 4, 16) } } },
+	Infernal   = { terrain = Enum.Material.Basalt,     floor = Enum.Material.CrackedLava, color = Color3.fromRGB(91, 48, 37),    accent = Color3.fromRGB(255, 112, 35) },
+	Storm      = { terrain = Enum.Material.Rock,       floor = Enum.Material.Granite,     color = Color3.fromRGB(84, 92, 110),   accent = Color3.fromRGB(130, 190, 255) },
+	Void       = { terrain = Enum.Material.Slate,      floor = Enum.Material.Basalt,      color = Color3.fromRGB(55, 38, 79),    accent = Color3.fromRGB(175, 77, 255) },
+	Celestial  = { terrain = Enum.Material.Sandstone,  floor = Enum.Material.Marble,      color = Color3.fromRGB(194, 164, 105), accent = Color3.fromRGB(255, 230, 126) },
+}
+local DEFAULT_STYLE = STYLE_PRESETS.Woodland
+
+-- Shared fallback dressing, in arena-local studs. Every arena is the same 68-stud
+-- circle, so one composition reads correctly in all of them.
+local DECOR_LANDFORMS = { { Vector3.new(-46, 10, 30), 36 }, { Vector3.new(45, 6, 32), 33 }, { Vector3.new(-50, 3, -25), 29 } }
+local DECOR_TREES = {
+	Vector3.new(-48, 0, -12), Vector3.new(-55, 0, 18), Vector3.new(-41, 0, 36),
+	Vector3.new(43, 0, 18), Vector3.new(52, 0, 37), Vector3.new(55, 0, -16),
+}
+local DECOR_ROCKS = { Vector3.new(-46, 0, -32), Vector3.new(47, 0, 2), Vector3.new(20, 0, 48) }
+
 WorldLayout.HUB = {
-	Center = Vector3.new(0, 6, 0),
-	SpawnPosition = Vector3.new(0, 9, 42),
-	MerchantPosition = Vector3.new(98, 6.3, 27),
-	QuestGiverPosition = Vector3.new(-42, 6.3, 12),
-	RebirthPosition = Vector3.new(-98, 6.3, 32),
+	Center = v3(MapAnchors.Hub.Center),
+	Radius = MapAnchors.Hub.Radius,
+	SafeRadius = MapAnchors.Hub.SafeRadius,
+	SpawnPosition = v3(MapAnchors.Hub.SpawnPosition),
+	MerchantPosition = v3(MapAnchors.Hub.MerchantPosition),
+	QuestGiverPosition = v3(MapAnchors.Hub.QuestGiverPosition),
+	RebirthPosition = v3(MapAnchors.Hub.RebirthPosition),
 }
 
 -- Hub feature positions (offsets from HUB.Center, used by Hub* scripts)
@@ -23,221 +78,114 @@ WorldLayout.HUB_FEATURES = {
 	-- Ambient NPCs wander around the hub using their own waypoint tables
 }
 
--- A readable S-curve replaces the old hub-and-spoke layout. Each arena sits
--- beside the road so the player sees its landmark before reaching its gate.
-WorldLayout.ROUTE = {
-	{ Position = Vector3.new(0, 6, -24), Material = Enum.Material.Cobblestone, Level = 0 },
-	{ Position = Vector3.new(0, 6, -92), Material = Enum.Material.Ground, Level = 1 },
-	{ Position = Vector3.new(0, 6, -152), Material = Enum.Material.Ground, Level = 1 },
-	{ Position = Vector3.new(0, 6, -178), Material = Enum.Material.Ground, Level = 1 },
-	{ Position = Vector3.new(0, 7.3125, -220), Material = Enum.Material.Ground, Level = 1 },
-	{ Position = Vector3.new(0, 8.7188, -265), Material = Enum.Material.Rock, Level = 10 },
-	{ Position = Vector3.new(0, 10, -306), Material = Enum.Material.Rock, Level = 10 },
-	{ Position = Vector3.new(0, 10, -340), Material = Enum.Material.Ground, Level = 1 },
-	{ Position = Vector3.new(0, 10, -390), Material = Enum.Material.Ground, Level = 1 },
-	{ Position = Vector3.new(0, 10, -445), Material = Enum.Material.Ground, Level = 1 },
-	{ Position = Vector3.new(0, 10, -498), Material = Enum.Material.Ground, Level = 1 },
-}
+-- Five independent branches radiate from the sanctuary at 72-degree spacing. The
+-- anchor contract is explicit that these must never be concatenated into one
+-- polyline: joining them would draw roads across open water and through unrelated
+-- territory. Each is its own road, walked out and back.
+WorldLayout.BRANCHES = {}
+for _, branch in ipairs(MapAnchors.Branches) do
+	local waypoints = {}
+	local color = hexColor(branch.Color, DEFAULT_STYLE.color)
+	for index, point in ipairs(branch.Waypoints) do
+		-- Material grades from worked stone near the hub to the region's own ground.
+		waypoints[index] = {
+			Position = v3(point),
+			Material = index <= 2 and Enum.Material.Cobblestone or Enum.Material.Ground,
+			Level = branch.RequiredLevel,
+		}
+	end
+	WorldLayout.BRANCHES[#WorldLayout.BRANCHES + 1] = {
+		Id = branch.Id,
+		DisplayName = branch.DisplayName,
+		AngleDegrees = branch.AngleDegrees,
+		RequiredLevel = branch.RequiredLevel,
+		Waypoints = waypoints,
+		Width = branch.Width,
+		GroundY = branch.GroundY,
+		Color = color,
+		Accent = hexColor(branch.Accent, DEFAULT_STYLE.accent),
+		Landmark = v3(branch.Landmark),
+		CombatEntry = v3(branch.CombatEntry),
+		ReturnAnchor = v3(branch.ReturnAnchor),
+		TerritoryCenter = v3(branch.EnemyTerritory.Center),
+		TerritorySize = v3(branch.EnemyTerritory.Size),
+		MainArena = branch.MainArena,
+		SecondaryArena = branch.SecondaryArena,
+	}
+end
 
-WorldLayout.ZONES = {
-	{
-		Name = "IronLowlands", DisplayName = "Iron Lowlands", RequiredLevel = 1,
-		Center = Vector3.new(0, 12, -550), Approach = Vector3.new(0, 12, -498),
-		TerrainMaterial = Enum.Material.Ground, FloorMaterial = Enum.Material.Slate,
-		Color = Color3.fromRGB(117, 75, 67), Accent = Color3.fromRGB(205, 103, 78), Style = "Woodland",
-		Landforms = {
-			{ Vector3.new(-48, 7, 30), 35 }, { Vector3.new(45, 4, 33), 32 },
-			{ Vector3.new(-55, 2, -25), 28 },
-		},
-		Trees = {
-			Vector3.new(-48, 0, -12), Vector3.new(-55, 0, 18), Vector3.new(-41, 0, 36),
-			Vector3.new(43, 0, 18), Vector3.new(52, 0, 37), Vector3.new(55, 0, -16),
-		},
-		Rocks = { Vector3.new(-46, 0, -32), Vector3.new(47, 0, 2), Vector3.new(20, 0, 48) },
-		Spawns = {
-			{ "Boss_Gorgon", Vector3.new(0, 0, 10), 10 },
-			{ "IronSquire", Vector3.new(-15, 0, -7), 1 }, { "IronSquire", Vector3.new(15, 0, -7), 2 },
-			{ "IronBerserker", Vector3.new(-14, 0, 17), 2 }, { "IronBerserker", Vector3.new(14, 0, 17), 3 },
-		},
-		Elite = { "IronBerserker", Vector3.new(-7, 0, 26), 3 },
-	},
-	-- Bridge zones (Lv8 / 23 / 40) close the gap between each boss arena and the next
-	-- door. Each sits on a spur off the trail, >=95 studs from every other arena.
-	{
-		Name = "Briarwood", DisplayName = "Briarwood", RequiredLevel = 8,
-		Center = Vector3.new(91, 12, -445), Approach = Vector3.new(91, 12, -393),
-		TerrainMaterial = Enum.Material.LeafyGrass, FloorMaterial = Enum.Material.Pebble,
-		Color = Color3.fromRGB(74, 98, 52), Accent = Color3.fromRGB(170, 220, 90), Style = "Briar",
-		Landforms = {
-			{ Vector3.new(-46, 9, 30), 36 }, { Vector3.new(44, 6, 32), 33 },
-			{ Vector3.new(50, 3, -24), 28 },
-		},
-		Trees = {
-			Vector3.new(-47, 0, -14), Vector3.new(-53, 0, 12), Vector3.new(-44, 0, 34),
-			Vector3.new(42, 0, 16), Vector3.new(50, 0, 36), Vector3.new(54, 0, -12),
-			Vector3.new(-30, 0, 48), Vector3.new(28, 0, 49),
-		},
-		Rocks = { Vector3.new(-45, 0, -30), Vector3.new(47, 0, 0) },
-		Spawns = {
-			{ "RootWarden", Vector3.new(0, 0, 10), 14 },
-			{ "ThornStalker", Vector3.new(-15, 0, -7), 9 }, { "ThornStalker", Vector3.new(15, 0, -7), 10 },
-			{ "BriarBrute", Vector3.new(-14, 0, 17), 11 }, { "BriarBrute", Vector3.new(14, 0, 17), 12 },
-		},
-	},
-	{
-		Name = "FrostboundGlacier", DisplayName = "Frostbound Glacier", RequiredLevel = 15,
-		Center = Vector3.new(523.0811, 20, -169.9593), Approach = Vector3.new(473.6261, 20, -153.8905),
-		TerrainMaterial = Enum.Material.Snow, FloorMaterial = Enum.Material.Ice,
-		Color = Color3.fromRGB(126, 176, 207), Accent = Color3.fromRGB(199, 239, 255), Style = "FrostPine",
-		Landforms = {
-			{ Vector3.new(-45, 14, 30), 38 }, { Vector3.new(42, 9, 34), 35 },
-			{ Vector3.new(-48, 5, -27), 30 },
-		},
-		Trees = {
-			Vector3.new(-48, 0, -10), Vector3.new(-54, 0, 21), Vector3.new(-38, 0, 42),
-			Vector3.new(44, 0, 17), Vector3.new(54, 0, 36), Vector3.new(51, 0, -17),
-		},
-		Rocks = { Vector3.new(-43, 0, -35), Vector3.new(46, 0, -4), Vector3.new(18, 0, 49) },
-		Spawns = {
-			{ "Boss_FrostRevenant", Vector3.new(0, 0, 10), 25 },
-			{ "FrostImp", Vector3.new(-15, 0, -7), 18 }, { "FrostImp", Vector3.new(15, 0, -7), 19 },
-			{ "GlacialGargoyle", Vector3.new(-14, 0, 17), 21 }, { "GlacialGargoyle", Vector3.new(14, 0, 17), 22 },
-		},
-		Elite = { "GlacialGargoyle", Vector3.new(-7, 0, 26), 23 },
-	},
-	{
-		Name = "SunkenMarsh", DisplayName = "Sunken Marsh", RequiredLevel = 23,
-		Center = Vector3.new(451.3407, 20, -50.9664), Approach = Vector3.new(401.8858, 20, -34.8975),
-		TerrainMaterial = Enum.Material.Mud, FloorMaterial = Enum.Material.Slate,
-		Color = Color3.fromRGB(70, 86, 70), Accent = Color3.fromRGB(120, 210, 170), Style = "Marsh",
-		Landforms = {
-			{ Vector3.new(-44, 6, 32), 34 }, { Vector3.new(45, 4, 30), 32 },
-			{ Vector3.new(-50, 2, -24), 28 },
-		},
-		-- Shallow standing water outside the ring (arena-local centre, block size).
-		Pools = {
-			{ Vector3.new(-50, -2, 4), Vector3.new(22, 4, 34) },
-			{ Vector3.new(48, -2, 8), Vector3.new(20, 4, 28) },
-			{ Vector3.new(0, -2, 52), Vector3.new(40, 4, 16) },
-		},
-		Trees = {
-			Vector3.new(-42, 0, -22), Vector3.new(-56, 0, 30), Vector3.new(42, 0, -20),
-			Vector3.new(56, 0, 34), Vector3.new(-26, 0, 44),
-		},
-		Rocks = { Vector3.new(-40, 0, -36), Vector3.new(40, 0, -34), Vector3.new(26, 0, 46) },
-		Spawns = {
-			{ "DrownedBellwarden", Vector3.new(0, 0, 10), 29 },
-			{ "BogLurker", Vector3.new(-15, 0, -7), 24 }, { "BogLurker", Vector3.new(15, 0, -7), 25 },
-			{ "MireHulk", Vector3.new(-14, 0, 17), 26 }, { "MireHulk", Vector3.new(14, 0, 17), 27 },
-		},
-	},
-	{
-		Name = "InfernalCaldera", DisplayName = "Infernal Caldera", RequiredLevel = 30,
-		Center = Vector3.new(323.2819, 16, 444.9593), Approach = Vector3.new(292.7171, 16, 402.8905),
-		TerrainMaterial = Enum.Material.Basalt, FloorMaterial = Enum.Material.CrackedLava,
-		Color = Color3.fromRGB(91, 48, 37), Accent = Color3.fromRGB(255, 112, 35), Style = "Infernal",
-		Landforms = {
-			{ Vector3.new(-46, 18, 28), 40 }, { Vector3.new(44, 12, 35), 36 },
-			{ Vector3.new(-50, 7, -25), 31 },
-		},
-		Trees = {
-			Vector3.new(-49, 0, -8), Vector3.new(-53, 0, 24),
-			Vector3.new(47, 0, 19), Vector3.new(53, 0, 38),
-		},
-		Rocks = {
-			Vector3.new(-44, 0, -34), Vector3.new(45, 0, -7),
-			Vector3.new(-26, 0, 48), Vector3.new(24, 0, 50),
-		},
-		Spawns = {
-			{ "Boss_InfernalColossus", Vector3.new(0, 0, 10), 45 },
-			{ "CinderFiend", Vector3.new(-15, 0, -7), 34 }, { "CinderFiend", Vector3.new(15, 0, -7), 35 },
-			{ "MagmaJuggernaut", Vector3.new(-14, 0, 17), 38 }, { "MagmaJuggernaut", Vector3.new(14, 0, 17), 39 },
-		},
-		Elite = { "MagmaJuggernaut", Vector3.new(-7, 0, 26), 41 },
-	},
-	{
-		Name = "Stormwatch", DisplayName = "Stormwatch", RequiredLevel = 40,
-		Center = Vector3.new(187.9439, 16, 413.501), Approach = Vector3.new(157.3791, 16, 371.4321),
-		TerrainMaterial = Enum.Material.Rock, FloorMaterial = Enum.Material.Granite,
-		Color = Color3.fromRGB(84, 92, 110), Accent = Color3.fromRGB(130, 190, 255), Style = "Storm",
-		Landforms = {
-			{ Vector3.new(-45, 14, 30), 37 }, { Vector3.new(44, 10, 32), 34 },
-			{ Vector3.new(-48, 5, -26), 30 },
-		},
-		Trees = {
-			Vector3.new(-46, 0, -12), Vector3.new(-52, 0, 20), Vector3.new(46, 0, 14),
-			Vector3.new(50, 0, 36),
-		},
-		Rocks = {
-			Vector3.new(-42, 0, -34), Vector3.new(44, 0, -8),
-			Vector3.new(-24, 0, 48), Vector3.new(22, 0, 49),
-		},
-		Spawns = {
-			{ "TempestWarden", Vector3.new(0, 0, 10), 48 },
-			{ "Stormcaller", Vector3.new(-15, 0, -7), 41 }, { "Stormcaller", Vector3.new(15, 0, -7), 42 },
-			{ "ThunderConstruct", Vector3.new(-14, 0, 17), 44 }, { "ThunderConstruct", Vector3.new(14, 0, 17), 45 },
-		},
-	},
-	{
-		Name = "VoidRift", DisplayName = "Void Rift", RequiredLevel = 50,
-		Center = Vector3.new(-323.2819, 24, 444.9593), Approach = Vector3.new(-292.7171, 24, 402.8905),
-		TerrainMaterial = Enum.Material.Slate, FloorMaterial = Enum.Material.Basalt,
-		Color = Color3.fromRGB(55, 38, 79), Accent = Color3.fromRGB(175, 77, 255), Style = "Void",
-		Landforms = {
-			{ Vector3.new(-45, 15, 31), 38 }, { Vector3.new(45, 11, 29), 35 },
-			{ Vector3.new(50, 6, -25), 30 },
-		},
-		Trees = {
-			Vector3.new(-49, 0, -7), Vector3.new(-52, 0, 25), Vector3.new(45, 0, 17),
-			Vector3.new(51, 0, 39), Vector3.new(48, 0, -21),
-		},
-		Rocks = { Vector3.new(-43, 0, -34), Vector3.new(43, 0, -4), Vector3.new(-20, 0, 49) },
-		Spawns = {
-			{ "Boss_VoidWraith", Vector3.new(0, 0, 10), 70 },
-			{ "VoidShade", Vector3.new(-15, 0, -7), 55 }, { "VoidShade", Vector3.new(15, 0, -7), 56 },
-			{ "AbyssTormentor", Vector3.new(-14, 0, 17), 62 }, { "AbyssTormentor", Vector3.new(14, 0, 17), 63 },
-		},
-		Elite = { "AbyssTormentor", Vector3.new(-7, 0, 26), 66 },
-	},
-	{
-		Name = "CelestialSummit", DisplayName = "Celestial Summit", RequiredLevel = 75,
-		Center = Vector3.new(-523.0811, 32, -169.9593), Approach = Vector3.new(-473.6261, 32, -153.8905),
-		TerrainMaterial = Enum.Material.Sandstone, FloorMaterial = Enum.Material.Marble,
-		Color = Color3.fromRGB(194, 164, 105), Accent = Color3.fromRGB(255, 230, 126), Style = "Celestial",
-		Landforms = {
-			{ Vector3.new(-44, 13, 35), 37 }, { Vector3.new(42, 18, 28), 41 },
-			{ Vector3.new(49, 8, -25), 32 },
-		},
-		Trees = {
-			Vector3.new(-48, 0, 2), Vector3.new(-50, 0, 31),
-			Vector3.new(45, 0, 17), Vector3.new(52, 0, 39),
-		},
-		Rocks = { Vector3.new(-41, 0, -34), Vector3.new(43, 0, -5), Vector3.new(-17, 0, 49) },
-		Spawns = {
-			{ "Boss_CelestialTitan", Vector3.new(0, 0, 10), 100 },
-			{ "AstralWisp", Vector3.new(-15, 0, -7), 80 }, { "AstralWisp", Vector3.new(15, 0, -7), 81 },
-			{ "SolarDominator", Vector3.new(-14, 0, 17), 88 }, { "SolarDominator", Vector3.new(14, 0, 17), 89 },
-		},
-		Elite = { "SolarDominator", Vector3.new(-7, 0, 26), 92 },
-	},
-}
+-- All eight zone identifiers survive the redesign: five main arenas plus three
+-- secondary pockets folded into their parent region. Quest objectives and
+-- SwordDropSystem key off these names, so they are contract, not cosmetics.
+WorldLayout.ZONES = {}
+for _, zone in ipairs(MapAnchors.Zones) do
+	local style = STYLE_PRESETS[zone.Style] or DEFAULT_STYLE
+	local spawns, elite = {}, nil
+	for _, spawn in ipairs(zone.Spawns) do
+		-- Absolute Position is authoritative (the generator already applied the arena
+		-- frame); LocalPosition is kept so the fallback builder can dress around it.
+		local entry = {
+			spawn.Archetype, v3(spawn.LocalPosition), spawn.Level,
+			Position = v3(spawn.Position), Role = spawn.Role,
+		}
+		if spawn.Role == "elite" then
+			elite = entry
+		else
+			spawns[#spawns + 1] = entry
+		end
+	end
+	WorldLayout.ZONES[#WorldLayout.ZONES + 1] = {
+		Name = zone.Name,
+		DisplayName = zone.DisplayName,
+		Region = zone.Region,
+		RequiredLevel = zone.RequiredLevel,
+		Center = v3(zone.Center),
+		Approach = v3(zone.Approach),
+		DoorPosition = v3(zone.Door),
+		DoorSize = v3(zone.DoorSize),
+		ExitPosition = v3(zone.Exit),
+		BoundsCenter = v3(zone.BoundsCenter),
+		BoundsSize = v3(zone.BoundsSize),
+		FloorDiameter = zone.FloorDiameter,
+		Style = zone.Style,
+		TerrainMaterial = style.terrain,
+		FloorMaterial = style.floor,
+		Color = style.color,
+		Accent = style.accent,
+		Landforms = DECOR_LANDFORMS,
+		Trees = DECOR_TREES,
+		Rocks = DECOR_ROCKS,
+		Pools = style.pools,
+		Spawns = spawns,
+		Elite = elite,
+	}
+end
 
--- Roadside camps fill the level gaps between arenas: each room's minions stop a few
--- levels short of the next door's RequiredLevel, so without these the only way to
--- close the gap was grinding under-levelled mobs. Each camp sits beside a ROUTE
--- transition node (Side = which shoulder of the road) and mixes the outgoing
--- zone's archetypes with the first of the next one, so players meet the new
--- faction before its gate.
-WorldLayout.WILD_CAMPS = {
-	-- The Lv8/23/40 bridge zones replaced the earlier Iron-Frost, Glacier and Caldera
-	-- camps; only the Void -> Celestial gap (70 -> 75) still needs one.
-	{
-		Name = "RiftSummitSteps", Route = 20, Side = -1, Zone = "VoidRift",
-		Spawns = { { "AbyssTormentor", 70 }, { "VoidShade", 72 }, { "AstralWisp", 74 } },
-	},
-}
-local CAMP_OFFSET = 17 -- studs from the road centreline; the terrain ribbon is ~29 wide
-local CAMP_SPAWN_RING = 6
+-- Roaming groups outside the arenas -- the farming population that fills the levels
+-- between each gate. These replace the old roadside WILD_CAMPS, which were pinned to
+-- indices in the single ROUTE table that the branch redesign removed.
+WorldLayout.FIELD_SPAWNS = {}
+for _, field in ipairs(MapAnchors.FieldSpawns) do
+	WorldLayout.FIELD_SPAWNS[#WorldLayout.FIELD_SPAWNS + 1] = {
+		Id = field.Id,
+		Region = field.Region,
+		Archetype = field.Archetype,
+		Level = field.Level,
+		Position = v3(field.Position),
+		LeashRadius = field.LeashRadius,
+	}
+end
+
+WorldLayout.SECRETS = {}
+for _, secret in ipairs(MapAnchors.Secrets or {}) do
+	WorldLayout.SECRETS[#WorldLayout.SECRETS + 1] = {
+		Id = secret.Id, Region = secret.Region, Kind = secret.Kind, Position = v3(secret.Position),
+	}
+end
+
+-- Kept so older callers that walked a single road still resolve; it is the first
+-- branch, not a join of all five.
+WorldLayout.ROUTE = WorldLayout.BRANCHES[1].Waypoints
 
 local ARENA_SIZE = 68
 local ARENA_HALF = ARENA_SIZE / 2
@@ -452,9 +400,27 @@ local function buildSignpost(parent, zone)
 end
 
 local function buildRoads(parent)
-	local route = WorldLayout.ROUTE
-	for index = 1, #route - 1 do
-		buildTrailSegment(parent, route[index], route[index + 1], index, "Trail")
+	-- One road per branch, each walked independently. Joining them would cut across
+	-- open water between regions.
+	for branchIndex, branch in ipairs(WorldLayout.BRANCHES) do
+		local waypoints = branch.Waypoints
+		for index = 1, #waypoints - 1 do
+			buildTrailSegment(parent, waypoints[index], waypoints[index + 1], index,
+				string.format("Trail_%s_", branch.Id))
+		end
+		-- Lamps on every other node, alternating shoulders, just outside the kerb.
+		for index = 2, #waypoints, 2 do
+			local before = waypoints[index - 1].Position
+			local after = waypoints[math.min(#waypoints, index + 1)].Position
+			local along = Vector3.new(after.X - before.X, 0, after.Z - before.Z)
+			if along.Magnitude > 0.001 then
+				along = along.Unit
+				local across = Vector3.new(-along.Z, 0, along.X) * ((index / 2) % 2 == 0 and 1 or -1)
+				buildLamp(parent, string.format("Lamp_%s_%02d", branch.Id, index),
+					waypoints[index].Position + across * (branch.Width / 2 - 5))
+			end
+		end
+		local _ = branchIndex
 	end
 	for index, zone in ipairs(WorldLayout.ZONES) do
 		local frame = arenaCFrame(zone)
@@ -465,14 +431,6 @@ local function buildRoads(parent)
 			Position = entrance, Material = zone.FloorMaterial, Level = zone.RequiredLevel,
 		}, index, "ArenaSpur")
 		buildSignpost(parent, zone)
-	end
-	-- Lamps on every other trail node, alternating shoulders, just outside the kerb.
-	for index = 2, #route, 2 do
-		local before = route[index - 1].Position
-		local after = route[math.min(#route, index + 1)].Position
-		local along = Vector3.new(after.X - before.X, 0, after.Z - before.Z).Unit
-		local across = Vector3.new(-along.Z, 0, along.X) * ((index / 2) % 2 == 0 and 1 or -1)
-		buildLamp(parent, string.format("TrailLamp%02d", index), route[index].Position + across * 9)
 	end
 end
 
@@ -693,9 +651,12 @@ end
 
 local function distanceToRoute(point)
 	local best = math.huge
-	local route = WorldLayout.ROUTE
-	for index = 1, #route - 1 do
-		best = math.min(best, flatDistanceToSegment(point, route[index].Position, route[index + 1].Position))
+	for _, branch in ipairs(WorldLayout.BRANCHES) do
+		local waypoints = branch.Waypoints
+		for index = 1, #waypoints - 1 do
+			best = math.min(best,
+				flatDistanceToSegment(point, waypoints[index].Position, waypoints[index + 1].Position))
+		end
 	end
 	return best
 end
@@ -909,124 +870,79 @@ local function relocateLoosePlacedPart(generated)
 	loose.Parent = generated
 end
 
-local function zoneByName(name)
-	for _, zone in ipairs(WorldLayout.ZONES) do
-		if zone.Name == name then return zone end
+-- The imported map, when present, owns every visual. Version-matched so a stale or
+-- partial import falls back rather than leaving the world half-built.
+function WorldLayout.GetImportedMap()
+	local map = Workspace:FindFirstChild(WorldLayout.MAP_MODEL_NAME)
+	if map and map:GetAttribute("MapRedesignVersion") == WorldLayout.ANCHOR_VERSION then
+		return map
 	end
-	return WorldLayout.ZONES[1]
+	return nil
 end
 
--- Camp centre: CAMP_OFFSET off the road shoulder, perpendicular to the trail's
--- direction through its ROUTE node, so the camp never blocks the path.
-local function campCenter(camp)
-	local route = WorldLayout.ROUTE
-	local node = route[camp.Route].Position
-	local before = route[math.max(1, camp.Route - 1)].Position
-	local after = route[math.min(#route, camp.Route + 1)].Position
-	local along = Vector3.new(after.X - before.X, 0, after.Z - before.Z).Unit
-	local across = Vector3.new(-along.Z, 0, along.X) * camp.Side
-	return node + across * CAMP_OFFSET, along
+function WorldLayout.IsImportedMap()
+	return WorldLayout.GetImportedMap() ~= nil
 end
 
-local function campSpawnPositions(camp)
-	local center = campCenter(camp)
-	local positions = {}
-	for index = 1, #camp.Spawns do
-		local angle = (index - 1) / #camp.Spawns * math.pi * 2
-		positions[index] = center + Vector3.new(math.cos(angle), 0, math.sin(angle)) * CAMP_SPAWN_RING
-	end
-	return positions
-end
-
-local function buildWildCamp(parent, camp)
-	local zone = zoneByName(camp.Zone)
-	local center, along = campCenter(camp)
-	-- The road ribbon falls away ~5 studs at the shoulder; a low pad keeps the camp
-	-- level with the trail instead of sitting in a ditch.
-	fillTerrainMound(Workspace.Terrain, center, 16, zone.TerrainMaterial)
-	local ground = terrainSurfaceAt(center)
-	local model = Instance.new("Model")
-	model.Name = camp.Name
-
-	local fire = createPart(model, "Campfire", Vector3.new(2.4, 2.4, 2.4),
-		CFrame.new(ground + Vector3.new(0, 1, 0)), Enum.Material.Neon, zone.Accent)
-	fire.Shape = Enum.PartType.Ball
-	fire.CanCollide = false
-	model.PrimaryPart = fire
-	local light = Instance.new("PointLight")
-	light.Color = zone.Accent
-	light.Brightness = 2
-	light.Range = 18
-	light.Parent = fire
-
-	local facing = CFrame.lookAt(ground, ground + along)
-	for index, x in ipairs({ -2.2, 2.2 }) do
-		createPart(model, "Log" .. index, Vector3.new(0.9, 0.9, 4.2),
-			facing * CFrame.new(x, 0.45, 0) * CFrame.Angles(0, math.rad(x * 18), 0), Enum.Material.Wood,
-			Color3.fromRGB(88, 60, 41))
-	end
-	-- A lean-to banner in the zone colour marks it as that faction's outpost.
-	local post = facing * CFrame.new(0, 0, CAMP_SPAWN_RING + 4)
-	createPart(model, "BannerPole", Vector3.new(0.6, 9, 0.6), post * CFrame.new(0, 4.5, 0),
-		Enum.Material.Wood, Color3.fromRGB(88, 60, 41))
-	createPart(model, "Banner", Vector3.new(3, 4, 0.2), post * CFrame.new(1.8, 6.5, 0),
-		Enum.Material.Fabric, zone.Color)
-
-	local low, high = math.huge, 0
-	for _, entry in ipairs(camp.Spawns) do
-		low, high = math.min(low, entry[2]), math.max(high, entry[2])
-	end
-	local marker = createPart(model, "CampMarker", Vector3.new(1, 1, 1),
-		CFrame.new(ground + Vector3.new(0, 8, 0)), Enum.Material.SmoothPlastic, zone.Accent)
-	marker.Transparency = 1
-	marker.CanCollide = false
-	marker.CanTouch = false
-	marker.CanQuery = false
-	local billboard = Instance.new("BillboardGui")
-	billboard.Name = "CampLabel"
-	billboard.Size = UDim2.fromOffset(200, 40)
-	billboard.MaxDistance = 90
-	billboard.Parent = marker
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.fromScale(1, 1)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.GothamBold
-	label.TextScaled = true
-	label.TextColor3 = zone.Accent
-	label.TextStrokeTransparency = 0.4
-	label.Text = string.format("WILD CAMP  •  LV %d-%d", low, high)
-	label.Parent = billboard
-
-	model.Parent = parent
-end
-
+-- Every enemy the world spawns: the eight arenas (boss, minions, elite) plus the
+-- roaming field groups that fill the levels between gates. Arena positions come
+-- straight from the anchor contract, which already applied the arena frame -- applying
+-- it a second time here would mirror every minion to the wrong side of its boss.
 function WorldLayout.GetEnemySpawns()
 	local configs = {}
 	for _, zone in ipairs(WorldLayout.ZONES) do
-		local frame = arenaCFrame(zone)
-		for _, entry in ipairs(zone.Spawns) do
-			configs[#configs + 1] = {
-				archetype = entry[1], position = frame:PointToWorldSpace(entry[2]), level = entry[3],
-			}
-		end
+		local entries = table.clone(zone.Spawns)
 		if zone.Elite then
+			entries[#entries + 1] = zone.Elite
+		end
+		for _, entry in ipairs(entries) do
 			configs[#configs + 1] = {
-				archetype = zone.Elite[1], position = frame:PointToWorldSpace(zone.Elite[2]), level = zone.Elite[3],
+				archetype = entry[1],
+				position = entry.Position,
+				level = entry[3],
+				zone = zone.Name,
+				region = zone.Region,
+				role = entry.Role,
 			}
 		end
 	end
-	for _, camp in ipairs(WorldLayout.WILD_CAMPS) do
-		local positions = campSpawnPositions(camp)
-		for index, entry in ipairs(camp.Spawns) do
-			configs[#configs + 1] = { archetype = entry[1], position = positions[index], level = entry[2] }
-		end
+	for _, field in ipairs(WorldLayout.FIELD_SPAWNS) do
+		configs[#configs + 1] = {
+			archetype = field.Archetype,
+			position = field.Position,
+			level = field.Level,
+			zone = field.Region,
+			region = field.Region,
+			role = "field",
+			leashRadius = field.LeashRadius,
+		}
 	end
 	return configs
 end
 
 function WorldLayout.EnsureBuilt()
 	if built then return end
+	built = true
 	Workspace:SetAttribute("WorldReady", false)
+
+	local imported = WorldLayout.GetImportedMap()
+	if imported then
+		-- Hands off the visuals: the meshes are the world. Only the gameplay anchors
+		-- (arena floors, ForceField doors, Bounds, Exit markers, hub NPC anchors) get
+		-- built, and they are built HERE rather than from a separate Script so they
+		-- exist before any service that waits on them resumes.
+		local installed = require(script.Parent:WaitForChild("MapAnchorInstaller")).install(imported)
+		if not installed then
+			warn("[WorldLayout] Imported map present but anchors failed to install")
+		end
+		Workspace:SetAttribute("WorldLayoutVersion", WorldLayout.VERSION)
+		Workspace:SetAttribute("WorldSource", "Imported")
+		Workspace:SetAttribute("WorldReady", true)
+		return
+	end
+
+	-- Fallback: no imported map yet, so stand up a playable stand-in at the same
+	-- anchor positions. Everything below is replaced wholesale once the GLBs land.
 	restoreBaseplate()
 	buildTerrain()
 
@@ -1048,7 +964,8 @@ function WorldLayout.EnsureBuilt()
 	buildRoads(roads)
 	for _, zone in ipairs(WorldLayout.ZONES) do buildBossRoom(rooms, zone) end
 
-	local plaza = createPart(generated, "HubPlaza", Vector3.new(1, 52, 52),
+	-- The sanctuary is 360 studs across in the redesign, not the old 52-stud plaza.
+	local plaza = createPart(generated, "HubPlaza", Vector3.new(1, WorldLayout.HUB.Radius * 2, WorldLayout.HUB.Radius * 2),
 		CFrame.new(WorldLayout.HUB.Center + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, 0, math.rad(90)),
 		Enum.Material.Cobblestone, Color3.fromRGB(127, 119, 103))
 	plaza.Shape = Enum.PartType.Cylinder
@@ -1057,12 +974,8 @@ function WorldLayout.EnsureBuilt()
 	resetSpawn()
 	relocateLoosePlacedPart(generated)
 	rebuildDecor()
-	local camps = Instance.new("Folder")
-	camps.Name = "WildCamps"
-	camps.Parent = generated
-	for _, camp in ipairs(WorldLayout.WILD_CAMPS) do buildWildCamp(camps, camp) end
-	built = true
 	Workspace:SetAttribute("WorldLayoutVersion", WorldLayout.VERSION)
+	Workspace:SetAttribute("WorldSource", "Fallback")
 	Workspace:SetAttribute("WorldReady", true)
 end
 

@@ -6,6 +6,7 @@ local TweenService = game:GetService("TweenService")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
+local SafeHub = require(script.Parent:WaitForChild("SafeHub"))
 local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
 local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
 WorldLayout.EnsureBuilt()
@@ -487,6 +488,21 @@ local function resolveGroundPosition(pos)
 	if bossRooms then
 		table.insert(ground, bossRooms)
 	end
+	-- The imported map's islands are meshes, not voxel terrain, so rigs would fall
+	-- through without these. Only the collision proxies and regional terrain count as
+	-- ground: decorative batches and invisible Bounds must stay out of this raycast.
+	local map = Workspace:FindFirstChild(WorldLayout.MAP_MODEL_NAME)
+	if map then
+		local collision = map:FindFirstChild("Collision")
+		if collision then
+			table.insert(ground, collision)
+		end
+		for _, child in ipairs(map:GetChildren()) do
+			if string.match(child.Name, "^Terrain_") or string.match(child.Name, "^Grounds_") then
+				table.insert(ground, child)
+			end
+		end
+	end
 	params.FilterDescendantsInstances = ground
 	local result = Workspace:Raycast(pos + Vector3.new(0, 80, 0), Vector3.new(0, -500, 0), params)
 	if result then
@@ -767,6 +783,12 @@ local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 		or not CombatUtil.hasLineOfSight(enemyRoot.Position, playerRoot.Position, { enemyModel, playerChar }) then
 		return
 	end
+	-- The sanctuary is a hard no-damage volume, enforced on the server at the point
+	-- damage is applied. Geometry and spawn distance alone are not a permission check:
+	-- a pulled enemy that reaches the boundary still must not land a hit.
+	if not SafeHub.canEnemyAttack(enemyRoot.Position, playerRoot.Position) then
+		return
+	end
 
 	local player = Players:GetPlayerFromCharacter(playerChar)
 	if player then
@@ -880,7 +902,10 @@ task.spawn(function()
 
 		local distFromSpawn = (hrp.Position - state.spawnPos).Magnitude
 
-		if distFromSpawn > arch.leashDistance then
+		-- Field groups carry their own leash from the anchor contract so a region's
+		-- roamers stay in their territory; arena enemies fall back to the archetype's.
+		local leashDistance = model:GetAttribute("LeashRadius") or arch.leashDistance
+		if distFromSpawn > leashDistance then
 			state.mode = "RETURNING"
 			state.targetChar = nil
 			commandMove(state, humanoid, state.spawnPos, now)
@@ -926,7 +951,9 @@ task.spawn(function()
 			if now >= (state.nextTargetScanTime or 0) then
 				state.nextTargetScanTime = now + TARGET_SCAN_INTERVAL
 				local _, pChar, pHrp = findNearestLivingPlayer(hrp.Position, arch.aggroRange)
-				if pChar and pHrp then
+				-- Refuse to acquire a target standing in the sanctuary, so enemies never
+				-- line up on players who are shopping, questing or rebirthing.
+				if pChar and pHrp and SafeHub.canEnemyAttack(hrp.Position, pHrp.Position) then
 					state.mode = "CHASE"
 					state.targetChar = pChar
 				end
@@ -948,6 +975,21 @@ end)
 
 local function spawnEnemy(config)
 	local model, humanoid, hrp, arch, groundedPos = createEnemyRig(config.archetype, config.position, config.level)
+	-- Carry the anchor contract's per-spawn metadata onto the rig: the leash keeps
+	-- field groups in their territory, and Zone/Region let quest and drop systems ask
+	-- the rig where it came from instead of inferring it from the archetype name.
+	if config.leashRadius then
+		model:SetAttribute("LeashRadius", config.leashRadius)
+	end
+	if config.zone then
+		model:SetAttribute("Zone", config.zone)
+	end
+	if config.region then
+		model:SetAttribute("Region", config.region)
+	end
+	if config.role then
+		model:SetAttribute("SpawnRole", config.role)
+	end
 	startEnemyAI(model, humanoid, hrp, arch, groundedPos, config.level, function()
 		task.delay(RESPAWN_DELAY, function()
 			spawnEnemy(config)
@@ -1093,12 +1135,24 @@ Players.PlayerRemoving:Connect(function(player)
 	autoAttackState[player] = nil
 end)
 
--- Spawn positions come from the same source that builds each level plateau and
--- boss room, preventing terrain edits from leaving enemies buried or misplaced.
+-- Spawn positions come from the anchor contract that also places the arenas and
+-- gates, so enemies cannot end up buried, floating, or inside the sanctuary.
 local spawnConfigs = WorldLayout.GetEnemySpawns()
 
+local spawned, skipped = 0, 0
 for _, cfg in ipairs(spawnConfigs) do
-	spawnEnemy(cfg)
+	-- Belt and braces: the contract keeps every spawn well outside the safe radius,
+	-- but a bad edit should drop the spawn rather than put an enemy in the hub.
+	if SafeHub.contains(cfg.position) then
+		warn(string.format("[EnemyCombat] Skipped %s spawn inside the sanctuary at %s",
+			tostring(cfg.archetype), tostring(cfg.position)))
+		skipped += 1
+	else
+		spawnEnemy(cfg)
+		spawned += 1
+	end
 end
 
-print("[EnemyCombat] 5 Unique Boss Arenas and Progressive Difficulty initialized")
+print(string.format("[EnemyCombat] %d enemies across %d arenas and %d field groups (%d skipped) | world: %s",
+	spawned, #WorldLayout.ZONES, #WorldLayout.FIELD_SPAWNS, skipped,
+	WorldLayout.IsImportedMap() and "imported" or "fallback"))

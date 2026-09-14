@@ -413,6 +413,14 @@ end)
 -- ── NPC Quest Giver ──────────────────────────────────────────────────────
 
 task.defer(function()
+	-- The imported map ships a modeled NPC_QuestGiver at this anchor. Building the
+	-- block-part placeholder too would stack two bodies in the same spot, so the
+	-- placeholder only stands in while the map is still the procedural fallback.
+	local importedMap = Workspace:FindFirstChild("FivefoldSanctuary")
+	if importedMap and importedMap:FindFirstChild("NPC_QuestGiver", true) then
+		return
+	end
+
 	local pos = QuestConfig.GIVER_POSITION
 	local npc = Instance.new("Model")
 	npc.Name = QuestConfig.GIVER_NAME

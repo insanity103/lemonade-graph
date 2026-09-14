@@ -24,7 +24,48 @@ end
 -- ==============================================================================
 -- SPAWN SAFE AREA RELIC MERCHANT NPC & STALL
 -- ==============================================================================
+-- The imported map ships a modeled NPC_RelicMerchant standing on the merchant anchor,
+-- but a mesh carries no interaction. Give it the same prompt the block-part stall has,
+-- so shopping works identically in both worlds.
+local function attachPromptToImportedMerchant(importedMap)
+	local existing = Workspace:FindFirstChild("RelicMerchantNPC")
+	if existing then existing:Destroy() end
+
+	local anchorPoint = WorldLayout.HUB.MerchantPosition
+	local host = Instance.new("Part")
+	host.Name = "RelicMerchantPrompt"
+	host.Size = Vector3.new(4, 6, 4)
+	host.Position = anchorPoint + Vector3.new(0, 3, 0)
+	host.Anchored = true
+	host.Transparency = 1
+	host.CanCollide = false
+	host.CanQuery = false
+	host.CanTouch = false
+	host.Parent = importedMap
+
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "MerchantPrompt"
+	prompt.ActionText = "Browse Relic Swords"
+	prompt.ObjectText = "Relic Blacksmith"
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = 12
+	prompt.RequiresLineOfSight = false
+	prompt.Parent = host
+	prompt.Triggered:Connect(function(player)
+		MERCHANT_ACTION:FireClient(player, "OpenShop")
+	end)
+	print("[MerchantSystem] Prompt attached to the imported Relic Blacksmith")
+	return host
+end
+
 local function setupMerchantNPC()
+	-- Two bodies on one anchor reads as a bug, so the block-part stall only stands in
+	-- while the world is still the procedural fallback.
+	local importedMap = Workspace:FindFirstChild("FivefoldSanctuary")
+	if importedMap and importedMap:FindFirstChild("NPC_RelicMerchant", true) then
+		return attachPromptToImportedMerchant(importedMap)
+	end
+
 	local existing = Workspace:FindFirstChild("RelicMerchantNPC")
 	if existing then existing:Destroy() end
 

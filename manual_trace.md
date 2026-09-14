@@ -61,3 +61,58 @@ None remaining. All research gaps resolved or documented from code.
 - **Rebirth-gated areas:** RB4 (Tower Roof), RB9 (Sand Dunes), RB16 (OUROBOROS portal), RB22 (Gehenna).
 - **Dagon is the strongest boss:** ETERNAL, Level 1,525,000, 55.3B HP, drops Dagon's Lament (1/250). Requires RB20 + Level 880 + hidden puzzle.
 - **Map redesign integrated.** WorldLayout.luau migrated to Fivefold Sanctuary coordinates (VERSION 6). Hub at (0,6,0), 5-branch hub-and-spoke layout at 72° intervals. All 8 zone centers and spawn positions updated from anchors.json. QuestConfig and OnboardingGui quest giver positions updated. Blender geometry (48 GLB files) validated (0/95 failures). Next step: import meshes into Studio and disable `WorldLayout.EnsureBuilt()` procedural generation.
+
+**Part 1 gameplay integration (MAP_REDESIGN_FRAMEWORK.md, 2026-09-13)**
+
+Claude Code's half of the Fivefold Sanctuary handoff. GPT-6 Astra delivered geometry,
+`anchors.json` and `MapAnchors.luau`; this is the scripting side that consumes them.
+
+18. ~~WorldLayout hand-copied anchor values.~~ `WorldLayout.luau` (VERSION 7) now *derives*
+    HUB, ZONES, BRANCHES, FIELD_SPAWNS and SECRETS from `MapAnchors.luau` at require time.
+    Positions are never retyped into the file; regenerate the Blender package and re-copy
+    `MapAnchors.luau` instead. Removed ~200 lines of duplicated per-zone decor in favour of
+    `STYLE_PRESETS` keyed by the Style the contract assigns each zone.
+19. ~~Single ROUTE polyline broke the five-branch layout.~~ The previous edit pasted only Iron
+    Lowlands' waypoints into the old single `ROUTE`, leaving four regions roadless; the anchor
+    contract forbids concatenating branches (it would draw roads over open water). Roads,
+    lamps and `distanceToRoute()` now walk each of the 5 `BRANCHES` independently. `ROUTE`
+    remains as an alias of branch 1 for older callers.
+20. ~~WILD_CAMPS crashed on startup.~~ Camps indexed `ROUTE[15]`/`ROUTE[20]` when the new route
+    has 11 nodes, so `campCenter()` indexed nil inside `EnsureBuilt()` and `GetEnemySpawns()`.
+    Removed the camps and their builders; the contract's 63 `FieldSpawns` replace them.
+21. ~~Nothing consumed FieldSpawns.~~ `GetEnemySpawns()` returns all 108 anchors: 45 arena
+    (boss + minions + elite across 8 zones) plus 63 roaming field groups, each tagged with
+    zone, region, role and leash radius. Arena positions come from the contract's absolute
+    `Position`; applying the arena frame a second time would mirror every minion (verified:
+    `CFrame.lookAt(Center, Approach)` reproduces all 45 absolute positions exactly).
+22. ~~EnsureBuilt would bulldoze the imported map.~~ Two modes now: with
+    `Workspace.FivefoldSanctuary` at a matching `MapRedesignVersion` it places no geometry and
+    installs gameplay anchors only; without it the procedural builder still stands up a
+    playable fallback at the same anchor positions. `Workspace.WorldSource` reports which.
+23. ~~Anchor install raced the services that read it.~~ The delivered `InstallMapAnchors`
+    shipped as a Script, but `BossRoomGate`/`MerchantSystem` `WaitForChild` the folders it
+    creates — arbitrary start order deadlocks whenever the gate service wins. Converted to
+    `MapAnchorInstaller.luau`, called from inside `EnsureBuilt()`, which every dependent
+    service already calls first.
+24. ~~Safe hub was geometry only.~~ `SafeHub.canEnemyAttack()` is wired into both enemy target
+    acquisition and server damage application in `EnemyCombat`, per the contract's note that
+    distance alone is not a permission check. Spawns inside the radius are refused at startup
+    with a warning (nearest real spawn is 346 studs out, safe radius 195).
+25. ~~Field groups used archetype leashes.~~ Per-spawn `LeashRadius`, `Zone`, `Region` and
+    `SpawnRole` are stamped onto each rig; the AI tick prefers the spawn's leash so roamers
+    stay in their territory.
+26. ~~Imported NPCs would double up with placeholders.~~ Quest giver and merchant block-part
+    NPCs now stand down when `NPC_QuestGiver`/`NPC_RelicMerchant` exist in the imported map.
+    The merchant's ProximityPrompt is re-attached to the imported model, so shopping works in
+    both worlds (the quest giver's interaction is position-based and already falls through).
+27. ~~Rebirth station unwired.~~ `RebirthStation.server.luau` installs a 12-stud "Talk" prompt
+    at the pavilion and fires `RebirthStationOpen`; `MainMenuGui` opens the existing Rebirth
+    tab on it. Talking never performs a rebirth — `RebirthSystem` keeps authority. The remote
+    is registered in `RuntimeBootstrap`. The installers stand down quietly (not `assert`) while
+    the map is unimported, so they activate on import without breaking startup today.
+
+Verified without Studio: 56/56 Luau files parse, 50/50 requires resolve, 24/24 RemoteEvents
+declared and used, all 8 gate levels ascend (1/8/15/23/30/40/50/75), every door sits 34 studs
+toward its approach, all 24 archetypes exist in `EnemyCombat`, all 7 quest zone references
+resolve. Still needs Studio: mesh import, collision decks, sky cubemap upload, and Astra's five
+playtests. Nothing here has been run in-engine.

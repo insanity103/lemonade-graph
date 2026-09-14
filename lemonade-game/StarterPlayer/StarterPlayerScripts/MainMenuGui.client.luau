@@ -1130,6 +1130,19 @@ end
 
 local function toggleMenu() setMenuOpen(not panelOpen) end
 
+-- Talking to the Keeper of Renewal at the hub's rebirth pavilion opens this panel on
+-- the Rebirth tab. It only opens the panel: the existing confirm button and
+-- RebirthSystem keep sole authority over requirements and the rebirth itself.
+task.spawn(function()
+	local stationOpen = remotes:WaitForChild("RebirthStationOpen", 30)
+	if not stationOpen then return end
+	stationOpen.OnClientEvent:Connect(function()
+		setMenuOpen(true)
+		openTab("Rebirth")
+		headerTitle.Text = "Keeper of Renewal"
+	end)
+end)
+
 for i, item in ipairs(NAV_ITEMS) do
 	local btn = createIconButton(navRail, { name = item.id, image = item.icon, size = UDim2.fromOffset(52, 52), bg = COLORS.PanelLight })
 	btn.LayoutOrder = i

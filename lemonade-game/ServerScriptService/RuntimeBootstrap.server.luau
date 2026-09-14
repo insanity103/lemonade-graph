@@ -22,6 +22,7 @@ local REMOTE_NAMES = {
 	"QuestUpdate",
 	"Rebirth",
 	"RebirthResult",
+	"RebirthStationOpen",
 	"SpendSkillPoint",
 	"SwordDrop",
 	"SwordLostOnDeath",
