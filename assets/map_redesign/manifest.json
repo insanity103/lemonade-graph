@@ -1,0 +1,534 @@
+{
+  "name": "Fivefold Sanctuary",
+  "version": 1,
+  "seed": 13092026,
+  "files": [
+    {
+      "file": "exports/Hub.glb",
+      "collection": "Hub",
+      "meshes": 89,
+      "triangles": 52650,
+      "max_mesh_triangles": 13012,
+      "bytes": 3390512,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/NPC_RebirthKeeper.glb",
+      "collection": "NPC_RebirthKeeper",
+      "meshes": 4,
+      "triangles": 230,
+      "max_mesh_triangles": 92,
+      "bytes": 15864,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": true
+    },
+    {
+      "file": "exports/NPC_RelicMerchant.glb",
+      "collection": "NPC_RelicMerchant",
+      "meshes": 4,
+      "triangles": 190,
+      "max_mesh_triangles": 64,
+      "bytes": 14272,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": true
+    },
+    {
+      "file": "exports/NPC_QuestGiver.glb",
+      "collection": "NPC_QuestGiver",
+      "meshes": 4,
+      "triangles": 230,
+      "max_mesh_triangles": 92,
+      "bytes": 15708,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": true
+    },
+    {
+      "file": "exports/Terrain_IronLowlands.glb",
+      "collection": "Terrain_IronLowlands",
+      "meshes": 2,
+      "triangles": 556,
+      "max_mesh_triangles": 332,
+      "bytes": 30040,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Branch_IronLowlands.glb",
+      "collection": "Branch_IronLowlands",
+      "meshes": 14,
+      "triangles": 5630,
+      "max_mesh_triangles": 4688,
+      "bytes": 402924,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Grounds_IronLowlands.glb",
+      "collection": "Grounds_IronLowlands",
+      "meshes": 36,
+      "triangles": 5780,
+      "max_mesh_triangles": 568,
+      "bytes": 410516,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Arena_IronLowlands.glb",
+      "collection": "Arena_IronLowlands",
+      "meshes": 13,
+      "triangles": 6642,
+      "max_mesh_triangles": 4508,
+      "bytes": 443712,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Arena_Briarwood.glb",
+      "collection": "Arena_Briarwood",
+      "meshes": 13,
+      "triangles": 6678,
+      "max_mesh_triangles": 4556,
+      "bytes": 451092,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Pocket_Briarwood.glb",
+      "collection": "Pocket_Briarwood",
+      "meshes": 2,
+      "triangles": 168,
+      "max_mesh_triangles": 84,
+      "bytes": 13144,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Landmark_IronLowlands.glb",
+      "collection": "Landmark_IronLowlands",
+      "meshes": 6,
+      "triangles": 454,
+      "max_mesh_triangles": 132,
+      "bytes": 29944,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Terrain_FrostboundGlacier.glb",
+      "collection": "Terrain_FrostboundGlacier",
+      "meshes": 2,
+      "triangles": 556,
+      "max_mesh_triangles": 332,
+      "bytes": 30016,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Branch_FrostboundGlacier.glb",
+      "collection": "Branch_FrostboundGlacier",
+      "meshes": 10,
+      "triangles": 9126,
+      "max_mesh_triangles": 8336,
+      "bytes": 687280,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Grounds_FrostboundGlacier.glb",
+      "collection": "Grounds_FrostboundGlacier",
+      "meshes": 36,
+      "triangles": 7398,
+      "max_mesh_triangles": 756,
+      "bytes": 478108,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Arena_FrostboundGlacier.glb",
+      "collection": "Arena_FrostboundGlacier",
+      "meshes": 7,
+      "triangles": 10138,
+      "max_mesh_triangles": 8004,
+      "bytes": 732448,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Arena_SunkenMarsh.glb",
+      "collection": "Arena_SunkenMarsh",
+      "meshes": 7,
+      "triangles": 6886,
+      "max_mesh_triangles": 4764,
+      "bytes": 476968,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Pocket_SunkenMarsh.glb",
+      "collection": "Pocket_SunkenMarsh",
+      "meshes": 4,
+      "triangles": 322,
+      "max_mesh_triangles": 202,
+      "bytes": 20100,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Landmark_FrostboundGlacier.glb",
+      "collection": "Landmark_FrostboundGlacier",
+      "meshes": 4,
+      "triangles": 204,
+      "max_mesh_triangles": 114,
+      "bytes": 15992,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Terrain_InfernalCaldera.glb",
+      "collection": "Terrain_InfernalCaldera",
+      "meshes": 2,
+      "triangles": 556,
+      "max_mesh_triangles": 332,
+      "bytes": 30276,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Branch_InfernalCaldera.glb",
+      "collection": "Branch_InfernalCaldera",
+      "meshes": 10,
+      "triangles": 6102,
+      "max_mesh_triangles": 5120,
+      "bytes": 449756,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Grounds_InfernalCaldera.glb",
+      "collection": "Grounds_InfernalCaldera",
+      "meshes": 19,
+      "triangles": 3308,
+      "max_mesh_triangles": 420,
+      "bytes": 230020,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Arena_InfernalCaldera.glb",
+      "collection": "Arena_InfernalCaldera",
+      "meshes": 13,
+      "triangles": 7114,
+      "max_mesh_triangles": 4980,
+      "bytes": 497696,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Arena_Stormwatch.glb",
+      "collection": "Arena_Stormwatch",
+      "meshes": 10,
+      "triangles": 6414,
+      "max_mesh_triangles": 4292,
+      "bytes": 440532,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Pocket_Stormwatch.glb",
+      "collection": "Pocket_Stormwatch",
+      "meshes": 2,
+      "triangles": 130,
+      "max_mesh_triangles": 112,
+      "bytes": 9304,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Landmark_InfernalCaldera.glb",
+      "collection": "Landmark_InfernalCaldera",
+      "meshes": 5,
+      "triangles": 452,
+      "max_mesh_triangles": 236,
+      "bytes": 32360,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Terrain_VoidRift.glb",
+      "collection": "Terrain_VoidRift",
+      "meshes": 2,
+      "triangles": 556,
+      "max_mesh_triangles": 332,
+      "bytes": 30552,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Branch_VoidRift.glb",
+      "collection": "Branch_VoidRift",
+      "meshes": 10,
+      "triangles": 3646,
+      "max_mesh_triangles": 2664,
+      "bytes": 262732,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Grounds_VoidRift.glb",
+      "collection": "Grounds_VoidRift",
+      "meshes": 26,
+      "triangles": 2136,
+      "max_mesh_triangles": 172,
+      "bytes": 148688,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Arena_VoidRift.glb",
+      "collection": "Arena_VoidRift",
+      "meshes": 13,
+      "triangles": 4658,
+      "max_mesh_triangles": 2524,
+      "bytes": 309080,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Landmark_VoidRift.glb",
+      "collection": "Landmark_VoidRift",
+      "meshes": 4,
+      "triangles": 576,
+      "max_mesh_triangles": 270,
+      "bytes": 37336,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Terrain_CelestialSummit.glb",
+      "collection": "Terrain_CelestialSummit",
+      "meshes": 2,
+      "triangles": 556,
+      "max_mesh_triangles": 332,
+      "bytes": 30908,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Branch_CelestialSummit.glb",
+      "collection": "Branch_CelestialSummit",
+      "meshes": 10,
+      "triangles": 6226,
+      "max_mesh_triangles": 5436,
+      "bytes": 462272,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Grounds_CelestialSummit.glb",
+      "collection": "Grounds_CelestialSummit",
+      "meshes": 27,
+      "triangles": 5720,
+      "max_mesh_triangles": 724,
+      "bytes": 402216,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Arena_CelestialSummit.glb",
+      "collection": "Arena_CelestialSummit",
+      "meshes": 7,
+      "triangles": 7238,
+      "max_mesh_triangles": 5104,
+      "bytes": 507444,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Landmark_CelestialSummit.glb",
+      "collection": "Landmark_CelestialSummit",
+      "meshes": 4,
+      "triangles": 1734,
+      "max_mesh_triangles": 856,
+      "bytes": 84988,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    },
+    {
+      "file": "exports/Ocean_VisualOnly.glb",
+      "collection": "Ocean_VisualOnly",
+      "meshes": 1,
+      "triangles": 12,
+      "max_mesh_triangles": 12,
+      "bytes": 1768,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "npc_visual": false
+    }
+  ],
+  "coordinate_system": "Blender (x,y,z) = Roblox (X,-Z,Y); glTF Y-up restores Roblox XYZ",
+  "import_scale_unit": "Stud",
+  "scene_position": [
+    0,
+    0,
+    0
+  ],
+  "anchor_file": "anchors.json",
+  "source_shapes": 2601,
+  "total_triangles": 170972,
+  "total_meshes": 424,
+  "previews": [
+    "previews/01_world_overview.png",
+    "previews/02_top_down.png",
+    "previews/03_sanctuary.png",
+    "previews/04_rebirth_pavilion.png",
+    "previews/05_spawn_view.png",
+    "previews/06_IronLowlands.png",
+    "previews/07_FrostboundGlacier.png",
+    "previews/08_InfernalCaldera.png",
+    "previews/09_VoidRift.png",
+    "previews/10_CelestialSummit.png"
+  ]
+}

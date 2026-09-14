@@ -1,16 +1,16 @@
 # Graph Report - lemonade-graph  (2026-09-13)
 
 ## Corpus Check
-- 121 files · ~217,181 words
+- 122 files · ~217,893 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2453 nodes · 2665 edges · 274 communities (241 shown, 11 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 40 edges (avg confidence: 0.85)
+- 2456 nodes · 2667 edges · 275 communities (241 shown, 11 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 40 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `42bbcf56`
+- Built from commit: `a710359e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -300,7 +300,7 @@
 - **Prestige-Collection Feedback Loop (Rebirth improves drops → motivates collection → rebirth again)** — ls_core_rebirth_system, ls_core_drop_rate_formula, ls_core_collection_loop [EXTRACTED 0.95]
 - **Social Boss Event Pattern (timed spawns + last-hit reward + communal discovery)** — ls_core_server_events, ls_core_boss_system, ls_core_last_hit_mechanic [EXTRACTED 0.95]
 
-## Communities (274 total, 11 thin omitted)
+## Communities (275 total, 11 thin omitted)
 
 ### Community 0 - "6. Weapon Acquisition Design Template"
 Cohesion: 0.04
@@ -1268,7 +1268,7 @@ Nodes (3): Appendix A: Quick Reference Card, Minimum RemoteEvent Template, The 1
 
 ## Knowledge Gaps
 - **1639 isolated node(s):** `name`, `file`, `bytes`, `triangles`, `vertices` (+1634 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1742 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1744 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
