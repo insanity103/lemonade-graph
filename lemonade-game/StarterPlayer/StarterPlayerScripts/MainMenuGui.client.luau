@@ -13,7 +13,6 @@ local inventoryAction = remotes:WaitForChild("InventoryAction")
 local toggleAutoSellRemote = remotes:WaitForChild("ToggleAutoSell")
 local rebirthResultRemote = remotes:WaitForChild("RebirthResult")
 
-local ItemsConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("Items"))
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 
 local ICONS = {

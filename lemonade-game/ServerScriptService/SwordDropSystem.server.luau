@@ -224,8 +224,8 @@ local function hook(model)
 		-- Scale drop chance with rebirths
 		local effectiveDropRate = RebirthConfig.GetEffectiveDropChance(baseDropRate, rarity, rebirths)
 		
-		-- Scale blessed chance bonus (extra +5% at Rebirth 5+)
-		local blessedBonus = (rebirths >= 5) and (RebirthConfig.REBIRTH_5_BLESSED_BONUS or 0.05) or 0
+		-- Scale blessed chance bonus (set by RebirthSystem milestone 5)
+		local blessedBonus = killer:GetAttribute("RebirthBlessedBonus") or 0
 
 		local rollSuccess = (math.random() <= effectiveDropRate)
 		local isRarePlus = (rarity == "Rare" or rarity == "Epic" or rarity == "Legendary")

@@ -101,6 +101,23 @@ function PlayerDataService.Load(player)
 	record.attributes = typeof(record.attributes) == "table" and record.attributes or {}
 	record.inventory = typeof(record.inventory) == "table" and record.inventory or {}
 	record.swords = typeof(record.swords) == "table" and record.swords or {}
+
+	-- Backfill any new leaderstat or attribute keys that didn't exist when
+	-- this record was last saved. Existing values are preserved.
+	for name, default in pairs(SaveConfig.LEADERSTATS) do
+		if record.leaderstats[name] == nil then
+			record.leaderstats[name] = default
+		end
+	end
+	for name, default in pairs(SaveConfig.ATTRIBUTES) do
+		if record.attributes[name] == nil then
+			record.attributes[name] = default
+		end
+	end
+	if not record.version or record.version < SaveConfig.SCHEMA_VERSION then
+		record.version = SaveConfig.SCHEMA_VERSION
+	end
+
 	profiles[player] = { data = record, ready = false, dirty = false }
 	return record
 end

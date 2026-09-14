@@ -37,6 +37,7 @@ local function applyRebirthAttributes(player, rebirths)
 	local extraCrit = 0
 	local extraRange = 0
 	local critDamageMult = 1.75
+	local blessedBonus = 0
 
 	for reqRb, perk in pairs(RebirthConfig.Milestones) do
 		if rebirths >= reqRb then
@@ -45,6 +46,7 @@ local function applyRebirthAttributes(player, rebirths)
 			if perk.flatCritBonus then extraCrit += perk.flatCritBonus end
 			if perk.flatRangeBonus then extraRange += perk.flatRangeBonus end
 			if perk.critDamageMultiplier then critDamageMult = perk.critDamageMultiplier end
+			if perk.blessedBonus then blessedBonus += perk.blessedBonus end
 		end
 	end
 
@@ -53,6 +55,7 @@ local function applyRebirthAttributes(player, rebirths)
 	player:SetAttribute("RebirthExtraCrit", extraCrit)
 	player:SetAttribute("RebirthExtraRange", extraRange)
 	player:SetAttribute("RebirthCritDamageMult", critDamageMult)
+	player:SetAttribute("RebirthBlessedBonus", blessedBonus)
 end
 
 local function setupPlayer(player)
