@@ -1,224 +1,302 @@
-# Map Redesign Framework — GPT-6 Astra Handoff
+# Map Redesign Framework
 
-> **Purpose:** This document gives you everything you need to redesign the Lemonade map in Blender and export it to Roblox. The scripting layer is already built — you only change data in one file (`WorldLayout.luau`) and import mesh assets.
-
----
-
-## Architecture: One File Controls Everything
-
-**`lemonade-game/ServerScriptService/WorldLayout.luau`** (1070 lines) is the single source of truth for the entire game world. It defines:
-
-- Hub position, spawn, merchant
-- 22 route waypoints (the road)
-- 8 combat zones (positions, enemies, terrain, props, landmarks)
-- 1 wild camp
-- Boss room construction (arenas with gates)
-- Terrain generation (mounds, materials, water)
-- Day/night cycle lighting
-
-**You change the map by editing the data tables in this file.** The runtime code (`WorldBuilder.server.luau`) calls `WorldLayout.EnsureBuilt()` which reads the tables and constructs everything procedurally. No Studio placement needed.
+> **Two owners, one world.** Blender owns the visual world (terrain, architecture, props). Code owns the gameplay hooks (spawns, gates, NPCs). They meet at anchor points — named positions both sides agree on.
 
 ---
 
-## What You Can Change (Data Only)
+## How It Works
 
-### 1. Hub
+```
+┌─────────────────────────┐     ┌─────────────────────────┐
+│   GPT-6 Astra (Blender) │     │  Claude Code (Luau)     │
+│                         │     │                         │
+│  Terrain mesh           │     │  Enemy spawn positions  │
+│  Zone architecture      │     │  Level gate data        │
+│  Landmarks & props      │     │  NPC positions          │
+│  Boss room geometry     │     │  Zone metadata          │
+│  Vegetation & rocks     │     │  Road waypoint data     │
+│  Lighting & atmosphere  │     │  Quest definitions      │
+│                         │     │  Day/night cycle        │
+└───────────┬─────────────┘     └───────────┬─────────────┘
+            │                               │
+            │    ANCHOR POINTS              │
+            │    (shared Vector3 data)      │
+            └───────────────┬───────────────┘
+                            │
+                    Roblox Studio
+                    (Rojo sync + import)
+```
+
+**Anchor points** are Vector3 positions both sides must agree on:
+- Hub center, spawn, merchant
+- Zone centers and approach directions
+- Enemy spawn local offsets (within each zone)
+- Road waypoints (the path connecting everything)
+- NPC positions (quest giver, merchants)
+- Boss room door positions and required levels
+
+---
+
+## Part 1: Claude Code (Scripting Side)
+
+### What Claude Code owns
+
+| System | File | What it does |
+|--------|------|-------------|
+| Zone metadata | `WorldLayout.luau` | Zone names, levels, colors, required levels |
+| Enemy spawns | `WorldLayout.luau` + `EnemyCombat.server.luau` | Archetype configs, spawn positions, AI |
+| Level gates | `BossRoomGate.server.luau` | Collision groups, ejection logic |
+| NPC placement | `MerchantSystem.server.luau`, `QuestService.server.luau` | Merchant, quest giver positions |
+| Boss room logic | `BossRoomGate.server.luau` | Door attributes, RequiredLevel |
+| Day/night | `DayCycle.server.luau` | Lighting cycle (global) |
+| Quests | `QuestConfig.luau` | Quest objectives, zone references |
+| Road waypoints | `WorldLayout.luau` ROUTE table | Player navigation, terrain ribbon |
+
+### What Claude Code does NOT own (Blender does)
+
+- Terrain shape and elevation
+- Zone architecture (ruins, walls, gates as meshes)
+- Landmark geometry (towers, shrines, obelisks)
+- Tree and rock meshes
+- Boss room physical layout (floor, pillars, walls)
+- Visual atmosphere (skybox, fog, particle effects)
+
+### Data contract: What Claude Code needs from Blender
+
+When Blender finishes a zone, Claude Code needs these values:
 
 ```lua
-WorldLayout.HUB = {
-    Center = Vector3.new(0, 2, -178),        -- world center of the hub
-    SpawnPosition = Vector3.new(-8, 3.3, -181), -- where players appear
-    MerchantPosition = Vector3.new(13, 2.8, -172), -- merchant NPC location
+-- Hub anchor points
+HUB.Center = Vector3.new(X, Y, Z)
+HUB.SpawnPosition = Vector3.new(X, Y, Z)
+HUB.MerchantPosition = Vector3.new(X, Y, Z)
+
+-- Route waypoints (road path)
+ROUTE = {
+    { Position = Vector3.new(X, Y, Z), Material = Enum.Material.X, Level = N },
+    -- ... one per waypoint
 }
-```
 
-### 2. Route (the road connecting all zones)
-
-22 waypoints forming an S-curve. Each node has:
-```lua
-{ Position = Vector3.new(X, Y, Z), Material = Enum.Material.Ground, Level = 1 },
-```
-- `Material` — terrain material for the road at this point
-- `Level` — level tag (informational, used for zone transitions)
-
-### 3. Zones (8 combat arenas)
-
-Each zone is a table with these fields:
-```lua
-{
-    Name = "IronLowlands",           -- internal ID (never changes after deploy)
-    DisplayName = "Iron Lowlands",   -- shown on zone label BillboardGui
-    RequiredLevel = 1,               -- level gate
-    Center = Vector3.new(-72, 5, -104),  -- world position
-    Approach = Vector3.new(-45, 4, -130), -- direction player enters from (road-facing)
-    TerrainMaterial = Enum.Material.Ground,  -- terrain fill material
-    FloorMaterial = Enum.Material.Slate,     -- arena floor material
-    Color = Color3.fromRGB(117, 75, 67),     -- primary zone color
-    Accent = Color3.fromRGB(205, 103, 78),   -- accent color (gate lights, markers)
-    Style = "Woodland",              -- determines tree/rock/landmark generation
-    Landforms = { ... },             -- terrain mounds (position + radius)
-    Trees = { ... },                 -- local positions for trees/props
-    Rocks = { ... },                 -- local positions for boulder clusters
-    Spawns = { ... },                -- enemy spawn configs
-    Elite = { ... },                 -- optional elite enemy spawn
-    Pools = { ... },                 -- optional water pools (Sunken Marsh only)
+-- Per zone
+ZONES[i] = {
+    Name = "ZoneId",                    -- internal ID (never changes)
+    DisplayName = "Zone Name",          -- player-facing
+    RequiredLevel = N,                  -- level gate
+    Center = Vector3.new(X, Y, Z),      -- world center of arena
+    Approach = Vector3.new(X, Y, Z),    -- road point player enters from
+    Color = Color3.fromRGB(R, G, B),    -- primary zone color
+    Accent = Color3.fromRGB(R, G, B),   -- accent color
+    Spawns = {                          -- enemy positions (local offsets)
+        { "BossArchetype", Vector3.new(0, 0, 10), bossLevel },
+        { "MinionA", Vector3.new(-15, 0, -7), minionLevel },
+        { "MinionA", Vector3.new(15, 0, -7), minionLevel },
+        { "MinionB", Vector3.new(-14, 0, 17), minionLevel },
+        { "MinionB", Vector3.new(14, 0, 17), minionLevel },
+    },
+    Elite = { "EliteArchetype", Vector3.new(-7, 0, 26), eliteLevel },
 }
+
+-- Per NPC
+QuestGiverPosition = Vector3.new(X, Y, Z)
+MerchantPosition = Vector3.new(X, Y, Z)  -- from HUB
 ```
 
-**Zone positions are local offsets from Center, transformed through `arenaCFrame()`.**
-The arena CFrame orients the zone to face its Approach point:
-```lua
-CFrame.lookAt(Center, Vector3.new(Approach.X, Center.Y, Approach.Z))
-```
+### Claude Code tasks (do these after Blender exports geometry)
 
-### 4. Enemy Spawns
-
-Each spawn is: `{ "ArchetypeName", Vector3.new(localX, localY, localZ), level }`
-```lua
-Spawns = {
-    { "Boss_Gorgon", Vector3.new(0, 0, 10), 10 },      -- boss at back center
-    { "IronSquire", Vector3.new(-15, 0, -7), 1 },      -- minion left-front
-    { "IronSquire", Vector3.new(15, 0, -7), 1 },       -- minion right-front
-    { "IronBerserker", Vector3.new(-14, 0, 17), 2 },   -- minion left-back
-    { "IronBerserker", Vector3.new(14, 0, 17), 2 },    -- minion right-back
-},
-Elite = { "IronBerserker", Vector3.new(-7, 0, 26), 3 }, -- hidden alcove (optional)
-```
-
-### 5. Styles (determine visual generation)
-
-| Style | Trees | Rocks | Landmark |
-|-------|-------|-------|----------|
-| `Woodland` | Full trunks + 3-ball canopies (Grass) | 3-sphere clusters | Twin watchtowers + beam |
-| `Briar` | Full trunks + canopies (LeafyGrass) | 3-sphere clusters | Root shrine (hollow stump, heartstone) |
-| `FrostPine` | Trunks + snow canopies | 3-sphere clusters | Crystal spires |
-| `Marsh` | Full trunks + canopies (Mud) | 3-sphere clusters | Flooded bell tower |
-| `Infernal` | Bare trunks (no canopy) | 3-sphere clusters | Basalt fangs + lava heart |
-| `Storm` | Bare lightning-struck snags | 3-sphere clusters | Cracked observatory dome |
-| `Void` | Crystal pillars (neon) | 3-sphere clusters | Rift obelisk + floating motes |
-| `Celestial` | Marble ruin columns | 3-sphere clusters | Marble columns + sun beacon |
+1. **Update `WorldLayout.luau`** — new hub, route, zone anchor points
+2. **Update `QuestConfig.luau`** — quest zone references if zone names change
+3. **Update `EnemyCombat.server.luau`** — if adding/removing enemy archetypes
+4. **Update `BossRoomGate.server.luau`** — if boss room door positions change
+5. **Update `DayCycle.server.luau`** — if lighting/atmosphere changes
+6. **Update `manual_trace.md`** — document what changed
+7. **Run `graphify update .`** — refresh knowledge graph
+8. **Commit and push**
 
 ---
 
-## What You Cannot Change (Game Systems)
+## Part 2: GPT-6 Astra (Blender Side)
 
-These are hardcoded in other files and must NOT be moved:
+### What Blender owns
 
-| System | File | Why |
-|--------|------|-----|
-| Enemy archetypes (HP, damage, XP) | `EnemyCombat.server.luau` | Combat balance — separate from map |
-| Boss weapons (stats, drops) | `BossWeapons.luau` | Loot system — separate from map |
-| Quest definitions | `QuestConfig.luau` | References zone names, not positions |
-| Merchant items | `MerchantConfig.luau` | Shop system — separate from map |
-| Boss room gate logic | `BossRoomGate.server.luau` | Reads `RequiredLevel` from door attributes |
-| Day/night cycle | `DayCycle.server.luau` | Lighting — applies globally |
-| Rebirth config | `RebirthConfig.luau` | Progression — separate from map |
+| Asset | Format | Where it goes in Roblox |
+|-------|--------|------------------------|
+| Terrain mesh | `.glb` or Roblox terrain voxels | `Workspace.Terrain` or mesh in `Workspace` |
+| Zone architecture | `.glb` per zone | `Workspace.BossRooms/<ZoneName>` |
+| Landmarks | `.glb` per landmark | `Workspace` (placed by code or manually) |
+| Trees & rocks | `.glb` with variants | `ServerStorage` (code clones and places) |
+| Boss room geometry | `.glb` per room | `Workspace.BossRooms/<RoomName>` |
+| Skybox | Cubemap texture | `Lighting.Sky` |
+| Particle effects | `.rbxm` or code | `Workspace` / `Lighting` |
+
+### Design constraints (from research)
+
+**Zone sizing:**
+- Hub: 1500-3000 studs, high content density
+- Grinding zones: 1000-2000 studs, 10-20 enemies
+- Boss arenas: 300-800 studs, boss + 5-10 minions
+- Travel time between zones: 30-60 seconds on foot
+
+**Level gating:**
+- Each zone spans ~50-100 levels
+- Adjacent zones overlap by 0-30 levels
+- Every major region transition = prestige milestone
+
+**Visual identity:**
+- Each zone must be distinct within 3 seconds of entering
+- Color coding per zone (terrain, lighting, props)
+- 1 dominant landmark per zone, visible from adjacent zones
+- Gradual biome transitions (20-40 stud blend zones)
+
+**Environmental rhythm (3-zone cycle):**
+```
+Zone A: Natural biome (forest, desert, snow)
+Zone B: Built environment (village, fortress, ruins)
+Zone C: Fantastical (volcano, void, sky island)
+→ Repeat with escalating scale
+```
+
+**Secrets:**
+- 1 hidden reward per 2-3 zones
+- 60% visible (on ledges, rooftops), 40% hidden (behind objects, underground)
+- Every point of interest visible from at least one other location
+
+**Boss room layout:**
+- 68x68 studs (matches `ARENA_SIZE` constant in code)
+- Gate opening: 14 studs wide (matches `DOOR_WIDTH`)
+- Gate must have a door part with `RequiredLevel` attribute
+- Interior needs: floor, walls/ruins, boss spawn point, minion spawn points
+- Elite alcove in rear corner (optional)
+
+### Blender → Roblox export workflow
+
+1. **Model the world** in Blender (terrain, zones, props)
+2. **Export meshes** as `.glb` (GLTF format)
+3. **Import into Roblox Studio** via Plugins > 3D Importer
+4. **Place in hierarchy:**
+   - Terrain → `Workspace.Terrain` (or `Workspace` as mesh)
+   - Zone architecture → `Workspace.BossRooms/<ZoneName>`
+   - Props → `ServerStorage` (code will clone and place)
+5. **Anchor points:** Mark zone centers and spawn positions with empty objects or comments in Blender so Claude Code can read them
+6. **Deliver anchor data** as a table of Vector3 values Claude Code needs
+
+### Blender deliverables
+
+| # | Deliverable | Format | Notes |
+|---|-------------|--------|-------|
+| 1 | Terrain geometry | `.glb` or terrain voxel data | The ground, hills, valleys, water |
+| 2 | Zone architecture (x8) | `.glb` per zone | Ruins, walls, gates, arena layout |
+| 3 | Landmarks (x8) | `.glb` per landmark | One per zone, behind the arena |
+| 4 | Boss room geometry (x8) | `.glb` per room | 68x68 arena with gate |
+| 5 | Tree/rock variants | `.glb` with LOD | Multiple variants per biome style |
+| 6 | Hub geometry | `.glb` | Plaza, merchant stall, quest giver area |
+| 7 | Road/path mesh | `.glb` | The connecting road (optional — can be terrain) |
+| 8 | Anchor point data | Text file / JSON | Vector3 positions for all anchor points |
+| 9 | Skybox | Cubemap PNG | 6-face cubemap for `Lighting.Sky` |
+| 10 | Color palette | Image/text | Zone color references for code |
 
 ---
 
-## Blender Workflow
+## Part 3: Anchor Points (Shared Data)
 
-### Step 1: Design the Map in Blender
-
-Use Blender to create the visual world. Design decisions:
-
-1. **World layout** — Where does the hub sit? What's the road path? Where are zones?
-2. **Zone geometry** — Each zone is a 68x68 arena with ruins, props, and a gate
-3. **Landmarks** — One per zone, behind the arena, 50+ studs from road
-4. **Terrain** — Use Blender's terrain tools to sculpt the ground, then convert to Roblox terrain voxels
-5. **Props** — Trees, rocks, boulders, campfires, logs, banners
-
-### Step 2: Export for Roblox
-
-Two approaches:
-
-**A. Terrain (recommended):** Don't model terrain in Blender. Instead, design the terrain layout on paper/2D, then encode it as `Landforms` data in `WorldLayout.luau`. The runtime generates terrain voxels from this data.
-
-**B. Meshes (for props/landmarks):** Model in Blender, export as `.glb`, import into Roblox Studio via the 3D importer. Then reference the mesh in `WorldLayout.luau` or `CombatUtil.luau`.
-
-### Step 3: Update WorldLayout.luau
-
-Translate your Blender design into the data tables:
-
-1. Update `HUB.Center`, `HUB.SpawnPosition`, `HUB.MerchantPosition`
-2. Update all 22 `ROUTE` nodes with new positions
-3. Update all 8 `ZONES` with new centers, approaches, and local spawn positions
-4. Update `Landforms`, `Trees`, `Rocks` per zone
-5. Update `WILD_CAMPS` if adding/moving camps
-6. Bump `WorldLayout.VERSION`
-
-### Step 4: Test in Studio
-
-1. `rojo serve` from the project root
-2. Connect Studio to Rojo
-3. Hit Play — `WorldBuilder.server.luau` will construct the new world automatically
-4. Walk the road, visit each zone, verify enemies spawn correctly
-
----
-
-## Current Map (for reference)
+Both sides must agree on these positions. Blender places geometry here; code places gameplay here.
 
 ### Hub
-- Center: `(0, 2, -178)`, Spawn: `(-8, 3.3, -181)`, Merchant: `(13, 2.8, -172)`
-- 52-stud diameter cobblestone plaza with 3 grass mounds
 
-### Route (22 nodes, ~29 studs wide)
-- Starts at hub `(0, 2, -178)`, ends at `(78, 40, 91)`
-- Total distance: ~400 studs (2-3 min walk)
-- Materials: Cobblestone → Ground → Rock → Snow → Basalt → Rock → Slate → Sandstone → Marble
+| Anchor | Vector3 | What Blender builds | What code places |
+|--------|---------|--------------------|--------------------|
+| Hub Center | `(0, 2, 0)` | Plaza, buildings | Terrain mounds |
+| Spawn | `(0, 3, 0)` | Spawn platform | SpawnLocation part |
+| Merchant | `(10, 3, 0)` | Merchant stall | Merchant NPC, carpet, counter |
+| Quest Giver | `(5, 3, -5)` | Quest giver area | Quest NPC |
 
-### 8 Zones
+### Per Zone (8 zones)
 
-| # | Name | Level | Center | Style | Enemies |
-|---|------|-------|--------|-------|---------|
-| 1 | Iron Lowlands | 1 | `(-72, 5, -104)` | Woodland | IronSquire, IronBerserker, Boss_Gorgon |
-| 2 | Briarwood | 8 | `(-166, 11, -126)` | Briar | ThornStalker, BriarBrute, RootWarden |
-| 3 | Frostbound Glacier | 15 | `(-138, 14, -22)` | FrostPine | FrostImp, GlacialGargoyle, Boss_FrostRevenant |
-| 4 | Sunken Marsh | 23 | `(-217, 20, 39)` | Marsh | BogLurker, MireHulk, DrownedBellwarden |
-| 5 | Infernal Caldera | 30 | `(-125, 23, 78)` | Infernal | CinderFiend, MagmaJuggernaut, Boss_InfernalColossus |
-| 6 | Stormwatch | 40 | `(-33, 26, 35)` | Storm | Stormcaller, ThunderConstruct, TempestWarden |
-| 7 | Void Rift | 50 | `(10, 32, 132)` | Void | VoidShade, AbyssTormentor, Boss_VoidWraith |
-| 8 | Celestial Summit | 75 | `(121, 43, 70)` | Celestial | AstralWisp, SolarDominator, Boss_CelestialTitan |
+| Anchor | What Blender builds | What code places |
+|--------|--------------------|--------------------|
+| Zone Center | Arena floor, ruins, walls | Enemy spawns, zone label |
+| Approach | Road entrance to zone | Terrain ribbon, lamps |
+| Boss Spawn (local `0,0,10`) | Boss pedestal/platform | Boss enemy |
+| Minion Spawns (local `±15,0,-7` and `±14,0,17`) | Minion patrol areas | Minion enemies |
+| Elite Alcove (local `-7,0,26` or `7,0,26`) | Hidden alcove geometry | Elite enemy |
+| Gate | Physical gate/door model | ForceField door with RequiredLevel |
+| Landmark | Unique zone landmark | BillboardGui label |
 
-### Boss Arenas (generated at each zone)
-- 68x68 studs, 9 ruin pillars, 8 low walls
-- ForceField gate with `RequiredLevel` attribute
-- Elite alcove in rear corner (5 of 8 zones)
-- Zone label BillboardGui
+### Road
 
-### Design Constraints (from research)
-
-1. **Zone sizing:** 500-2000 studs for grinding zones, 300-800 for boss arenas
-2. **Travel time:** 30-60 seconds between adjacent zones, 3-5 min across the full map
-3. **Level gates:** Each zone spans ~50-100 levels, with 0-30 overlap
-4. **Landmark anchoring:** 1 dominant landmark per zone, visible from adjacent zones
-5. **Visual identity:** Each zone must be distinct within 3 seconds of entering
-6. **Environmental rhythm:** Alternate natural/built/fantastical every 3 zones
-7. **Secrets:** 1 hidden reward per 2-3 zones (bushes, false walls, multi-step chains)
+| Anchor | What Blender builds | What code places |
+|--------|--------------------|--------------------|
+| Each of 22 ROUTE nodes | Road mesh, kerbs, lamps | Terrain ribbon, lamp parts |
 
 ---
 
-## Files GPT-6 Astra Should Read
+## Part 4: Files to Read
+
+### Claude Code reads these:
 
 | File | Purpose |
 |------|---------|
-| `lemonade-game/ServerScriptService/WorldLayout.luau` | **THE file to edit** — all map data |
-| `lemonade-game/ServerScriptService/WorldBuilder.server.luau` | How the data gets built into the world |
-| `lemonade-game/ServerScriptService/EnemyCombat.server.luau` | Enemy archetypes and spawn logic |
-| `lemonade-game/ServerScriptService/BossRoomGate.server.luau` | Boss room gate system |
+| `lemonade-game/ServerScriptService/WorldLayout.luau` | **Primary edit target** — all map data |
+| `lemonade-game/ServerScriptService/WorldBuilder.server.luau` | How data becomes world |
+| `lemonade-game/ServerScriptService/EnemyCombat.server.luau` | Enemy archetypes |
+| `lemonade-game/ServerScriptService/BossRoomGate.server.luau` | Boss room gates |
+| `lemonade-game/ServerScriptService/MerchantSystem.server.luau` | Merchant NPC |
+| `lemonade-game/ServerScriptService/QuestService.server.luau` | Quest NPC |
+| `lemonade-game/ReplicatedStorage/Config/QuestConfig.luau` | Quest definitions |
 | `lemonade-game/Workspace/DayCycle.server.luau` | Lighting cycle |
-| `lemonade-game/ReplicatedStorage/Config/QuestConfig.luau` | Quest zone references |
+| `MAP_REDESIGN_TEMPLATE.lua` | Fill-in data template |
+
+### GPT-6 Astra reads these:
+
+| File | Purpose |
+|------|---------|
+| This file (`MAP_REDESIGN_FRAMEWORK.md`) | Full architecture and constraints |
+| `MAP_REDESIGN_TEMPLATE.lua` | Anchor point format and current values |
+| `lemonade-game/ServerScriptService/WorldLayout.luau` | Current zone positions and sizes |
 | `research/sword-rpg/sword-rpg-world-design.md` | World design best practices |
 | `skills/roblox-map-design/SKILL.md` | Map design framework |
 | `assets/swords/manifest.json` | Boss sword mesh metadata |
 
 ---
 
-## Deliverables for GPT-6 Astra
+## Part 5: Current Map (Reference)
 
-1. **Updated `WorldLayout.luau`** — new positions, zones, routes, terrain data
-2. **Blender files** — zone geometry, landmarks, props (export as .glb)
-3. **Updated `assets/swords/`** — if boss sword meshes change
-4. **Updated `DayCycle.server.luau`** — if lighting/atmosphere changes
-5. **Updated `QuestConfig.luau`** — if zone names change
-6. **Updated `manual_trace.md`** — document what changed and why
+### Hub
+- Center: `(0, 2, -178)`, Spawn: `(-8, 3.3, -181)`, Merchant: `(13, 2.8, -172)`
+- 52-stud diameter cobblestone plaza
+
+### Route
+- 22 waypoints, ~400 studs total, ~29 studs wide
+- Materials: Cobblestone → Ground → Rock → Snow → Basalt → Rock → Slate → Sandstone → Marble
+
+### 8 Zones
+
+| # | Name | Level | Center | Style | Boss |
+|---|------|-------|--------|-------|------|
+| 1 | Iron Lowlands | 1 | `(-72, 5, -104)` | Woodland | Boss_Gorgon (Lv10) |
+| 2 | Briarwood | 8 | `(-166, 11, -126)` | Briar | RootWarden (Lv14) |
+| 3 | Frostbound Glacier | 15 | `(-138, 14, -22)` | FrostPine | Boss_FrostRevenant (Lv25) |
+| 4 | Sunken Marsh | 23 | `(-217, 20, 39)` | Marsh | DrownedBellwarden (Lv29) |
+| 5 | Infernal Caldera | 30 | `(-125, 23, 78)` | Infernal | Boss_InfernalColossus (Lv45) |
+| 6 | Stormwatch | 40 | `(-33, 26, 35)` | Storm | TempestWarden (Lv48) |
+| 7 | Void Rift | 50 | `(10, 32, 132)` | Void | Boss_VoidWraith (Lv70) |
+| 8 | Celestial Summit | 75 | `(121, 43, 70)` | Celestial | Boss_CelestialTitan (Lv100) |
+
+### Constants (code-side, don't change without updating code)
+- `ARENA_SIZE = 68` studs
+- `DOOR_WIDTH = 14` studs
+- `CAMP_OFFSET = 17` studs from road centerline
+- `RESPAWN_DELAY = 5` seconds for enemy respawn
+
+---
+
+## Part 6: Execution Order
+
+1. **GPT-6 Astra** designs the new map in Blender
+2. **GPT-6 Astra** exports geometry as `.glb` files
+3. **GPT-6 Astra** delivers anchor point data (Vector3 table) to Claude Code
+4. **Claude Code** imports `.glb` into Roblox Studio
+5. **Claude Code** updates `WorldLayout.luau` with new anchor points
+6. **Claude Code** updates related files (QuestConfig, DayCycle, etc.)
+7. **Claude Code** runs `rojo serve` and tests in Studio
+8. **Claude Code** runs `graphify update .` and commits
+9. Both sides iterate until it feels right
