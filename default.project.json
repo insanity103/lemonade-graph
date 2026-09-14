@@ -10,6 +10,10 @@
       "$path": "lemonade-game/ServerScriptService",
       "$ignoreUnknownInstances": true
     },
+    "ServerStorage": {
+      "$path": "lemonade-game/ServerStorage",
+      "$ignoreUnknownInstances": true
+    },
     "StarterPack": {
       "$path": "lemonade-game/StarterPack",
       "$ignoreUnknownInstances": true
