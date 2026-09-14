@@ -44,14 +44,14 @@ local ARCHETYPE_TO_ZONE = {
 	IronSquire = "IronLowlands",
 	IronBerserker = "IronLowlands",
 	Boss_Gorgon = "IronLowlands",
-	-- Frostbound Glacier (QuestConfig: "FrostGlacier")
-	FrostImp = "FrostGlacier",
-	GlacialGargoyle = "FrostGlacier",
-	Boss_FrostRevenant = "FrostGlacier",
-	-- Infernal Caldera (QuestConfig: "InfernalForge")
-	CinderFiend = "InfernalForge",
-	MagmaJuggernaut = "InfernalForge",
-	Boss_InfernalColossus = "InfernalForge",
+	-- Frostbound Glacier
+	FrostImp = "FrostboundGlacier",
+	GlacialGargoyle = "FrostboundGlacier",
+	Boss_FrostRevenant = "FrostboundGlacier",
+	-- Infernal Caldera
+	CinderFiend = "InfernalCaldera",
+	MagmaJuggernaut = "InfernalCaldera",
+	Boss_InfernalColossus = "InfernalCaldera",
 	-- Void Rift
 	VoidShade = "VoidRift",
 	AbyssTormentor = "VoidRift",

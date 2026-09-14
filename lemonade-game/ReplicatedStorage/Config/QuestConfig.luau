@@ -70,8 +70,8 @@ QuestConfig.QUESTS = {
 	{
 		id = "q6_frost_expedition",
 		name = "Frost Expedition",
-		description = "Defeat 5 enemies in the Frost Glacier.",
-		objective = { type = "KILL_ZONE", zone = "FrostGlacier", count = 5 },
+		description = "Defeat 5 enemies in the Frostbound Glacier.",
+		objective = { type = "KILL_ZONE", zone = "FrostboundGlacier", count = 5 },
 		reward = { type = "XP", amount = 1500 },
 	},
 	{
@@ -91,8 +91,8 @@ QuestConfig.QUESTS = {
 	{
 		id = "q9_infernal_trial",
 		name = "Infernal Trial",
-		description = "Defeat 10 enemies in the Infernal Forge.",
-		objective = { type = "KILL_ZONE", zone = "InfernalForge", count = 10 },
+		description = "Defeat 10 enemies in the Infernal Caldera.",
+		objective = { type = "KILL_ZONE", zone = "InfernalCaldera", count = 10 },
 		reward = { type = "GOLD", amount = 1000 },
 	},
 	{
