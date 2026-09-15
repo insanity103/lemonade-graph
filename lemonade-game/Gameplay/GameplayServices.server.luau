@@ -6,6 +6,7 @@ local actors = require(script.Parent:WaitForChild("GameplayActors"))
 if layout.BLANK_SLATE then return end
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
 local openRebirth = remotes:WaitForChild("RebirthStationOpen")
+local notify = remotes:WaitForChild("Notify")
 if layout.HUB.RebirthPosition then
 	local rebirth = actors.create("Rebirth Keeper", layout.HUB.RebirthPosition, Color3.fromRGB(80, 130, 180),
 		{ facing = layout.HUB.RebirthCFrame, subtitle = "Rebirth" })
@@ -29,14 +30,21 @@ actors.prompt(respec, "Reset Skills (200 + 100 per rebirth gold)").Triggered:Con
 	cooldowns[player] = now
 	local spent = 0
 	for _, attr in ipairs(ATTRIBUTES) do spent += player:GetAttribute(attr) or 0 end
-	if spent <= 0 then return end
+	if spent <= 0 then
+		notify:FireClient(player, "You have no spent skill points to reset.", "error")
+		return
+	end
 	local stats = player:FindFirstChild("leaderstats")
 	local gold = stats and stats:FindFirstChild("Gold")
 	local cost = BASE_COST + REBIRTH_COST * (player:GetAttribute("Rebirths") or 0)
-	if not gold or gold.Value < cost then return end
+	if not gold or gold.Value < cost then
+		notify:FireClient(player, string.format("Resetting skills costs %d gold.", cost), "error")
+		return
+	end
 	gold.Value -= cost
 	for _, attr in ipairs(ATTRIBUTES) do player:SetAttribute(attr, 0) end
 	player:SetAttribute("SkillPoints", (player:GetAttribute("SkillPoints") or 0) + spent)
+	notify:FireClient(player, string.format("Refunded %d skill points for %d gold.", spent, cost), "success")
 	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 	if humanoid then
 		humanoid.MaxHealth = 100 * (player:GetAttribute("RebirthHealthMult") or 1)

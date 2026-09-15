@@ -16,6 +16,7 @@ local REMOTE_NAMES = {
 	"InventoryUpdated",
 	"LevelUpBurst",
 	"MerchantAction",
+	"Notify",
 	"QuestAccept",
 	"QuestComplete",
 	"QuestReward",

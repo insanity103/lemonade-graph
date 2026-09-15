@@ -24,7 +24,7 @@ whenever `MapMarkers` and `Workspace.LemonadeMap/Markers` are both present.
 
 | Project | Adds | Mode |
 | --- | --- | --- |
-| `default.project.json` | gameplay only (18 server, 13 client) | baseplate |
+| `default.project.json` | gameplay only (18 server, 14 client) | baseplate |
 | `map.project.json` | default + `Workspace.LemonadeMap`, `MapMarkers`, `MapTravel`, `MapClient` | map |
 
 `tools/check_map_project.py` fails if `map.project.json` drops or changes any default mapping.
@@ -72,15 +72,21 @@ Merchant/trainer/quest/rebirth are 4–5.5 s from spawn.
   only if the target is still within reach + 1.5 studs, so stepping back after the raise avoids it.
 - Every enemy shows name, level and a health bar (60-stud draw distance); elites are gold "★ Elite".
 - Hub NPCs have nameplates and face the direction their markers give.
+- Enemies only acquire targets they can see (no aggro through cliffs or walls).
+- Refused actions explain themselves (`RemoteEvents.Notify`), starting with skill reset.
+- XP bar numbers are shortened (12.5K / 3.4M); the onboarding arrow tracks the real Quest Master.
+
+Map-only guidance: a quest guide marker plus a yellow outline on the Quest Master, merchant, the
+nearest living quest enemy or the boss, depending on quest state.
 
 ## Verification
 
 | Check | Result |
 | --- | --- |
 | `rojo build` both projects | pass |
-| `check_gameplay_project.py` (baseline contract) | pass: 18 server / 13 client, no environment services |
+| `check_gameplay_project.py` (baseline contract) | pass: 18 server / 14 client, no environment services |
 | `check_map_project.py` (schema, floors, overlaps, safe zones, aggro vs arrivals, camera clearance, reachability) | pass |
-| `luau_balance_check.py` (63 files) | pass |
+| `luau_balance_check.py` (65 files) | pass |
 | Studio playtest: travel, sword hits, camera, rewards | **not yet run** |
 
 ## Known limitations / next

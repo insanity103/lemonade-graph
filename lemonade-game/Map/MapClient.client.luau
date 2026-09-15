@@ -1,10 +1,12 @@
 -- LocalScript | StarterPlayerScripts.MapClient | Map project only: region entry banner, waystone
--- travel menu, discovery toasts and a Return to Hub button. Reads markers straight from Workspace.
+-- travel menu, discovery toasts, Return to Hub button and a quest guide marker. Reads markers
+-- straight from Workspace.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local GuiService = game:GetService("GuiService")
 local UserInputService = game:GetService("UserInputService")
+local CollectionService = game:GetService("CollectionService")
 local ContextActionService = game:GetService("ContextActionService")
 
 local player = Players.LocalPlayer
@@ -15,6 +17,8 @@ local travelRemote = markers and remotes:WaitForChild("TravelAction", 20)
 if not (map and markers and travelRemote) then
 	return
 end
+
+local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
 
 local HUB_WAYPOINT = "HubSpawn"
 local REGION_POLL = 0.4
@@ -298,6 +302,152 @@ travelRemote.OnClientEvent:Connect(function(kind, a, b)
 	end
 end)
 
+-- ── Quest guide ─────────────────────────────────────────────────────────────
+-- A single always-on-top marker over wherever the active quest wants the player next.
+local GUIDE_HIDE_NEAR = 14 -- [TUNING] studs: the marker fades once the player is basically there
+local GUIDE_HEIGHT = 8
+local LIVE_TARGET_RANGE = 90 -- [TUNING] prefer outlining a living matching enemy this close
+
+local guideAnchor = Instance.new("Part")
+guideAnchor.Name = "QuestGuideAnchor"
+guideAnchor.Anchored, guideAnchor.CanCollide, guideAnchor.CanQuery, guideAnchor.CanTouch = true, false, false, false
+guideAnchor.Transparency = 1
+guideAnchor.Size = Vector3.one
+guideAnchor.Parent = workspace.CurrentCamera -- local only, never replicated
+
+local guide = Instance.new("BillboardGui")
+guide.Name = "QuestGuide"
+guide.Adornee = guideAnchor
+guide.AlwaysOnTop = true
+guide.LightInfluence = 0
+guide.Size = UDim2.fromOffset(220, 46)
+guide.Enabled = false
+guide.Parent = gui
+local guideIcon = label(guide, { Size = UDim2.new(1, 0, 0, 24), Text = "◆", TextSize = 24, TextColor3 = COLORS.title,
+	TextStrokeTransparency = 0.2, Font = Enum.Font.GothamBold })
+local guideText = label(guide, { Position = UDim2.fromOffset(0, 24), Size = UDim2.new(1, 0, 0, 20), TextSize = 14,
+	TextStrokeTransparency = 0.3, Font = Enum.Font.GothamBold, TextColor3 = COLORS.title })
+
+-- Yellow outline on whatever the guide points at (an NPC or the enemy to fight).
+local focus = Instance.new("Highlight")
+focus.Name = "QuestFocus"
+focus.FillTransparency = 1
+focus.OutlineColor = COLORS.title
+focus.OutlineTransparency = 0.1
+focus.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+focus.Parent = gui
+
+local function namedModel(name: string): (Vector3?, Model?)
+	local model = workspace:FindFirstChild(name)
+	local root = model and (model:FindFirstChild("HumanoidRootPart") or model.PrimaryPart)
+	return root and root.Position, model
+end
+
+local function liveEnemy(objective, origin: Vector3): Model?
+	local best, bestDistance = nil, LIVE_TARGET_RANGE
+	for _, enemy in ipairs(CollectionService:GetTagged("Enemy")) do
+		local humanoid = enemy:FindFirstChildOfClass("Humanoid")
+		local root = enemy:IsA("Model") and enemy.PrimaryPart
+		local matches = (objective.type == "KILL")
+			or (objective.type == "KILL_ZONE" and enemy:GetAttribute("Zone") == objective.zone)
+			or (objective.type == "KILL_BOSS" and enemy:GetAttribute("Archetype") == objective.archetype)
+		if matches and humanoid and humanoid.Health > 0 and root then
+			local distance = (root.Position - origin).Magnitude
+			if distance < bestDistance then
+				best, bestDistance = enemy, distance
+			end
+		end
+	end
+	return best
+end
+
+local function questDone(quest, progress: number): boolean
+	local objective = quest.objective
+	if objective.type == "LEVEL" then
+		local stats = player:FindFirstChild("leaderstats")
+		local level = stats and stats:FindFirstChild("Level")
+		return level ~= nil and level.Value >= (objective.target or 1)
+	elseif objective.type == "OBTAIN" then
+		return progress >= 1
+	end
+	return progress >= (objective.count or 1)
+end
+
+local function nextQuestAvailable(): boolean
+	local completed = {}
+	for id in string.gmatch(player:GetAttribute("CompletedQuests") or "", "[^,]+") do
+		completed[id] = true
+	end
+	for _, quest in ipairs(QuestConfig.QUESTS) do
+		if not completed[quest.id] then return true end
+	end
+	return false
+end
+
+-- Nearest spawn marker matching the objective, preferring the region entrance while in the hub.
+local function combatTarget(objective, root: BasePart, inRegion)
+	local best, bestDistance
+	for _, spawnPart in ipairs(markers.EnemySpawns:GetChildren()) do
+		local matches = (objective.type == "KILL")
+			or (objective.type == "KILL_ZONE" and spawnPart:GetAttribute("Zone") == objective.zone)
+			or (objective.type == "KILL_BOSS" and spawnPart:GetAttribute("Archetype") == objective.archetype)
+		if matches then
+			local distance = (spawnPart.Position - root.Position).Magnitude
+			if not best or distance < bestDistance then
+				best, bestDistance = spawnPart, distance
+			end
+		end
+	end
+	if not best then return nil end
+	local regionName = best:GetAttribute("Region")
+	if inRegion and inRegion.Name == "Hub" and markers.Gates:FindFirstChild(regionName) then
+		local region = regionByName[regionName]
+		return markers.Gates[regionName].Position, ((region and region:GetAttribute("DisplayName")) or regionName) .. " gate"
+	end
+	local label = if objective.type == "KILL_BOSS" then "Boss" else "Enemies"
+	local enemy = liveEnemy(objective, root.Position)
+	if enemy then
+		return enemy.PrimaryPart.Position, label, enemy
+	end
+	return best.Position, label
+end
+
+local function resolveGuide(root: BasePart, inRegion)
+	local activeId = player:GetAttribute("ActiveQuestId") or ""
+	local quest = activeId ~= "" and QuestConfig.getQuestById(activeId)
+	if not quest then
+		if nextQuestAvailable() then
+			local pos, model = namedModel(QuestConfig.GIVER_NAME)
+			return pos, "New quest", model
+		end
+		return nil
+	end
+	if questDone(quest, player:GetAttribute("QuestProgress") or 0) then
+		local pos, model = namedModel(QuestConfig.GIVER_NAME)
+		return pos, "Turn in quest", model
+	end
+	local objective = quest.objective
+	if objective.type == "OBTAIN" then
+		local pos, model = namedModel("RelicMerchantNPC")
+		return pos, "Relic Blacksmith", model
+	elseif objective.type == "KILL" or objective.type == "KILL_ZONE" or objective.type == "KILL_BOSS" then
+		return combatTarget(objective, root, inRegion)
+	end
+	return nil
+end
+
+local function updateGuide(root: BasePart, inRegion)
+	local target, text, model = resolveGuide(root, inRegion)
+	focus.Adornee = model
+	if not target or (target - root.Position).Magnitude < GUIDE_HIDE_NEAR then
+		guide.Enabled = false
+		return
+	end
+	guideAnchor.Position = target + Vector3.new(0, GUIDE_HEIGHT, 0)
+	guideText.Text = string.format("%s  ·  %d", text, math.floor((target - root.Position).Magnitude))
+	guide.Enabled = true
+end
+
 -- Region tracking: the highest-Order volume containing the character wins.
 local currentRegion = nil
 local function regionAt(position: Vector3)
@@ -322,6 +472,10 @@ task.spawn(function()
 				showBanner(region:GetAttribute("DisplayName") or region.Name, region:GetAttribute("Subtitle") or "")
 			end
 			hubButton.Visible = region ~= nil and region.Name ~= "Hub"
+			updateGuide(root, region)
+		else
+			guide.Enabled = false
+			focus.Adornee = nil
 		end
 		task.wait(REGION_POLL)
 	end

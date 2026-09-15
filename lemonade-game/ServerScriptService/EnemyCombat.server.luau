@@ -1016,7 +1016,9 @@ task.spawn(function()
 				local _, pChar, pHrp = findNearestLivingPlayer(hrp.Position, arch.aggroRange)
 				-- Refuse to acquire a target standing in the sanctuary, so enemies never
 				-- line up on players who are shopping, questing or rebirthing.
-				if pChar and pHrp and SafeHub.canEnemyAttack(hrp.Position, pHrp.Position) then
+				-- ...and only players they can actually see, so nothing aggroes through cliffs or walls.
+				if pChar and pHrp and SafeHub.canEnemyAttack(hrp.Position, pHrp.Position)
+					and CombatUtil.hasLineOfSight(hrp.Position, pHrp.Position, { model, pChar }) then
 					state.mode = "CHASE"
 					state.targetChar = pChar
 				end

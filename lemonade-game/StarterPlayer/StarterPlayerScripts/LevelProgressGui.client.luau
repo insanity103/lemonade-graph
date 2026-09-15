@@ -111,6 +111,7 @@ hintLabel.Text = "Defeat enemies • spend Skill Points • follow the level gat
 hintLabel.TextTruncate = Enum.TextTruncate.AtEnd
 hintLabel.Parent = panel
 
+local NumberFormat = require(game:GetService("ReplicatedStorage"):WaitForChild("NumberFormat"))
 local leaderstats = player:WaitForChild("leaderstats")
 local levelValue = leaderstats:WaitForChild("Level")
 local experienceValue = leaderstats:WaitForChild("Experience")
@@ -124,7 +125,7 @@ local function update()
 	local progress = math.clamp(experience / math.max(required, 1), 0, 1)
 
 	levelLabel.Text = "Level " .. tostring(level)
-	experienceLabel.Text = string.format("%d / %d XP", experience, required)
+	experienceLabel.Text = string.format("%s / %s XP", NumberFormat.short(experience), NumberFormat.short(required))
 
 	if activeBarTween then
 		activeBarTween:Cancel()

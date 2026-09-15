@@ -11,7 +11,14 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 -- ── Constants ──────────────────────────────────────────────────────────────
 
-local QUEST_MASTER_POS = Vector3.new(-42, 6.3, 12)
+local QUEST_MASTER_FALLBACK = Vector3.new(-42, 6.3, 12) -- only used before the NPC exists
+
+-- The Quest Master is placed at runtime (baseplate layout or map marker), so look it up.
+local function getQuestMasterPosition()
+	local npc = workspace:FindFirstChild("Quest Master")
+	local root = npc and (npc:FindFirstChild("HumanoidRootPart") or npc.PrimaryPart)
+	return if root then root.Position else QUEST_MASTER_FALLBACK
+end
 
 local COLORS = {
 	Panel = Color3.fromRGB(12, 12, 14),
@@ -260,7 +267,7 @@ RunService.RenderStepped:Connect(function(dt)
 	if not hrp then return end
 
 	-- Calculate screen-space direction to quest master
-	local screenPos, onScreen = camera:WorldToScreenPoint(QUEST_MASTER_POS)
+	local screenPos, onScreen = camera:WorldToScreenPoint(getQuestMasterPosition())
 
 	if onScreen then
 		-- Point arrow toward the NPC on screen

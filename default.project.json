@@ -98,6 +98,9 @@
         "MerchantGui": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/MerchantGui.client.luau"
         },
+        "Notifications": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/Notifications.client.luau"
+        },
         "OnboardingGui": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/OnboardingGui.client.luau"
         },
