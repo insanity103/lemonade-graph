@@ -417,7 +417,9 @@ task.defer(function()
 	if WorldLayout.BLANK_SLATE then return end
 	if WorldLayout.GAMEPLAY_ONLY then
 		local actors = require(script.Parent:WaitForChild("GameplayActors"))
-		actors.create(QuestConfig.GIVER_NAME, WorldLayout.HUB.QuestGiverPosition, QuestConfig.GIVER_COLOR)
+		if not WorldLayout.HUB.QuestGiverPosition then return end -- map lacks the marker: quest giver idle
+		actors.create(QuestConfig.GIVER_NAME, WorldLayout.HUB.QuestGiverPosition, QuestConfig.GIVER_COLOR,
+			{ facing = WorldLayout.HUB.QuestGiverCFrame, subtitle = "Press E to talk" })
 		return
 	end
 	-- The imported map ships a modeled NPC_QuestGiver at this anchor. Building the

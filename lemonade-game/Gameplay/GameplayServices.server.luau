@@ -6,12 +6,17 @@ local actors = require(script.Parent:WaitForChild("GameplayActors"))
 if layout.BLANK_SLATE then return end
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
 local openRebirth = remotes:WaitForChild("RebirthStationOpen")
-local rebirth = actors.create("Rebirth Keeper", layout.HUB.RebirthPosition, Color3.fromRGB(80, 130, 180))
-actors.prompt(rebirth, "Rebirth").Triggered:Connect(function(player)
-	openRebirth:FireClient(player) -- The existing RebirthSystem validates and performs the purchase.
-end)
+if layout.HUB.RebirthPosition then
+	local rebirth = actors.create("Rebirth Keeper", layout.HUB.RebirthPosition, Color3.fromRGB(80, 130, 180),
+		{ facing = layout.HUB.RebirthCFrame, subtitle = "Rebirth" })
+	actors.prompt(rebirth, "Rebirth").Triggered:Connect(function(player)
+		openRebirth:FireClient(player) -- The existing RebirthSystem validates and performs the purchase.
+	end)
+end
 
-local respec = actors.create("Skill Trainer", layout.HUB.RespecPosition, Color3.fromRGB(120, 80, 150))
+if not layout.HUB.RespecPosition then return end -- map lacks the marker: respec idle
+local respec = actors.create("Skill Trainer", layout.HUB.RespecPosition, Color3.fromRGB(120, 80, 150),
+	{ facing = layout.HUB.RespecCFrame, subtitle = "Reset skill points" })
 local cooldowns = {}
 local ATTRIBUTES = {"Strength", "Health", "Defense", "ExperienceGain"}
 local BASE_COST, REBIRTH_COST, COOLDOWN = 200, 100, 2 -- [TUNING] Existing respec prices and cooldown.
@@ -40,4 +45,4 @@ actors.prompt(respec, "Reset Skills (200 + 100 per rebirth gold)").Triggered:Con
 	end
 end)
 Players.PlayerRemoving:Connect(function(player) cooldowns[player] = nil end)
-print("[GameplayServices] Rebirth and skill respec ready on the existing baseplate")
+print("[GameplayServices] Rebirth and skill respec ready (" .. layout.MODE .. " mode)")

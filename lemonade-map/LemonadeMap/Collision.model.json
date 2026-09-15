@@ -1,0 +1,1331 @@
+{
+ "className": "Model",
+ "children": [
+  {
+   "name": "HubCliff0_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     88.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -56.0,
+       59.0,
+       -103.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "HubCliff1_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     88.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       56.0,
+       59.0,
+       -103.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "HubCliff2_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     88.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       103.0,
+       59.0,
+       -56.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "HubCliff3_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     88.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       103.0,
+       59.0,
+       56.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "HubCliff4_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     88.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       56.0,
+       59.0,
+       103.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "HubCliff5_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     88.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -56.0,
+       59.0,
+       103.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "HubCliff6_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     88.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -103.0,
+       59.0,
+       56.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "HubCliff7_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     88.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -103.0,
+       59.0,
+       -56.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "PassWest0_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     40.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -17.0,
+       59.0,
+       120.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "PassWest1_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     26.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -27.0,
+       59.0,
+       137.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "PassWest2_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     28.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -43.0,
+       59.0,
+       154.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "PassEast0_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     28.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       43.0,
+       59.0,
+       154.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "PassEast1_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     26.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       27.0,
+       59.0,
+       137.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "PassEast2_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     40.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       17.0,
+       59.0,
+       120.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "QuarryNorthW0_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     70.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -75.0,
+       55.0,
+       165.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "QuarryWestN0_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     117.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -113.0,
+       55.0,
+       226.5
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "QuarryWestN1_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     55.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -137.5,
+       55.0,
+       282.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "QuarryWestN2_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     60.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -168.0,
+       55.0,
+       315.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "QuarryWestN3_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     55.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -137.5,
+       55.0,
+       348.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "QuarryWestN4_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     125.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -113.0,
+       55.0,
+       407.5
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "QuarrySouth0_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     98.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -61.0,
+       55.0,
+       473.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "QuarrySouthE0_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     98.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       61.0,
+       55.0,
+       473.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "QuarryEast0_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     302.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       113.0,
+       55.0,
+       319.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "QuarryEast1_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     70.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       75.0,
+       55.0,
+       165.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "RidgeProxy-1",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     90.0,
+     27.0,
+     14.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -65.0,
+       14.5,
+       375.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "RidgeProxy1",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     90.0,
+     27.0,
+     14.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       65.0,
+       14.5,
+       375.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  }
+ ]
+}

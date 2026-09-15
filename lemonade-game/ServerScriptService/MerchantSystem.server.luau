@@ -62,8 +62,10 @@ end
 local function setupMerchantNPC()
 	if WorldLayout.GAMEPLAY_ONLY then
 		local actors = require(script.Parent:WaitForChild("GameplayActors"))
-		local npc = actors.create("RelicMerchantNPC", WorldLayout.HUB.MerchantPosition, Color3.fromRGB(90, 70, 50))
-		actors.prompt(npc, "Browse Relic Swords").Triggered:Connect(function(player)
+		if not WorldLayout.HUB.MerchantPosition then return nil end -- map lacks the marker: shop idle
+		local npc = actors.create("RelicMerchantNPC", WorldLayout.HUB.MerchantPosition, Color3.fromRGB(90, 70, 50),
+			{ facing = WorldLayout.HUB.MerchantCFrame, title = "Relic Blacksmith", subtitle = "Swords for sale" })
+		actors.prompt(npc, "Browse Relic Swords", "Relic Blacksmith").Triggered:Connect(function(player)
 			MERCHANT_ACTION:FireClient(player, "OpenShop")
 		end)
 		return npc

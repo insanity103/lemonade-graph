@@ -1,0 +1,135 @@
+{
+  "name": "lemonade-map",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$path": "lemonade-game/ReplicatedStorage",
+      "$ignoreUnknownInstances": true
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$ignoreUnknownInstances": true,
+      "BossSwordFactory": {
+        "$path": "lemonade-game/ServerScriptService/BossSwordFactory.luau"
+      },
+      "CombatUtil": {
+        "$path": "lemonade-game/ServerScriptService/CombatUtil.luau"
+      },
+      "EnemyCombat": {
+        "$path": "lemonade-game/ServerScriptService/EnemyCombat.server.luau"
+      },
+      "InventoryService": {
+        "$path": "lemonade-game/ServerScriptService/InventoryService.luau"
+      },
+      "InventorySystem": {
+        "$path": "lemonade-game/ServerScriptService/InventorySystem.server.luau"
+      },
+      "LevelingSystem": {
+        "$path": "lemonade-game/ServerScriptService/LevelingSystem.server.luau"
+      },
+      "MerchantSystem": {
+        "$path": "lemonade-game/ServerScriptService/MerchantSystem.server.luau"
+      },
+      "PlayerDataService": {
+        "$path": "lemonade-game/ServerScriptService/PlayerDataService.luau"
+      },
+      "PlayerDataStore": {
+        "$path": "lemonade-game/ServerScriptService/PlayerDataStore.server.luau"
+      },
+      "QuestSystem": {
+        "$path": "lemonade-game/ServerScriptService/QuestSystem.server.luau"
+      },
+      "RebirthSystem": {
+        "$path": "lemonade-game/ServerScriptService/RebirthSystem.server.luau"
+      },
+      "RuntimeBootstrap": {
+        "$path": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau"
+      },
+      "SwordDropSystem": {
+        "$path": "lemonade-game/ServerScriptService/SwordDropSystem.server.luau"
+      },
+      "SwordSystem": {
+        "$path": "lemonade-game/ServerScriptService/SwordSystem.server.luau"
+      },
+      "WorldLayout": {
+        "$path": "lemonade-game/Gameplay/WorldLayout.luau"
+      },
+      "SafeHub": {
+        "$path": "lemonade-game/Gameplay/SafeHub.luau"
+      },
+      "GameplayActors": {
+        "$path": "lemonade-game/Gameplay/GameplayActors.luau"
+      },
+      "GameplayServices": {
+        "$path": "lemonade-game/Gameplay/GameplayServices.server.luau"
+      },
+      "MapMarkers": {
+        "$path": "lemonade-game/Gameplay/MapMarkers.luau"
+      },
+      "MapTravel": {
+        "$path": "lemonade-game/Map/MapTravel.server.luau"
+      }
+    },
+    "StarterPack": {
+      "$path": "lemonade-game/StarterPack",
+      "$ignoreUnknownInstances": true
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "$ignoreUnknownInstances": true,
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$ignoreUnknownInstances": true,
+        "CombatController": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau"
+        },
+        "ComboVFX": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/ComboVFX.client.luau"
+        },
+        "DamageNumbers": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/DamageNumbers.client.luau"
+        },
+        "GoldNumbers": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/GoldNumbers.client.luau"
+        },
+        "LevelProgressGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/LevelProgressGui.client.luau"
+        },
+        "LevelUpBurst": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/LevelUpBurst.client.luau"
+        },
+        "MainMenuGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau"
+        },
+        "MerchantGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/MerchantGui.client.luau"
+        },
+        "OnboardingGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/OnboardingGui.client.luau"
+        },
+        "QuestGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/QuestGui.client.luau"
+        },
+        "RunController": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/RunController.client.luau"
+        },
+        "SwordDropToast": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau"
+        },
+        "XPGainUI": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau"
+        },
+        "MapClient": {
+          "$path": "lemonade-game/Map/MapClient.client.luau"
+        }
+      }
+    },
+    "Workspace": {
+      "$className": "Workspace",
+      "$ignoreUnknownInstances": true,
+      "LemonadeMap": {
+        "$path": "lemonade-map/LemonadeMap"
+      }
+    }
+  }
+}

@@ -1,0 +1,1788 @@
+{
+ "className": "Folder",
+ "attributes": {
+  "SchemaVersion": 1
+ },
+ "children": [
+  {
+   "name": "NPCs",
+   "className": "Folder",
+   "children": [
+    {
+     "name": "QuestMaster",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         14.0,
+         10.0,
+         50.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     }
+    },
+    {
+     "name": "Merchant",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -62.0,
+         10.0,
+         -16.5
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     }
+    },
+    {
+     "name": "SkillTrainer",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         58.0,
+         10.0,
+         -12.0
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     }
+    },
+    {
+     "name": "RebirthKeeper",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         10.0,
+         22.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     }
+    }
+   ]
+  },
+  {
+   "name": "SafeZones",
+   "className": "Folder",
+   "children": [
+    {
+     "name": "Hub",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       200.0,
+       90.0,
+       200.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         45.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.0,
+       1.0,
+       0.4706
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Region": "Hub"
+     }
+    },
+    {
+     "name": "IronOverlook",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       80.0,
+       90.0,
+       68.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         45.0,
+         134.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.0,
+       1.0,
+       0.4706
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Region": "IronLowlands"
+     }
+    }
+   ]
+  },
+  {
+   "name": "Regions",
+   "className": "Folder",
+   "children": [
+    {
+     "name": "Hub",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       200.0,
+       120.0,
+       200.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         60.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.0,
+       1.0,
+       0.4706
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "DisplayName": "Hearthmere",
+      "Subtitle": "Safe haven",
+      "Order": 0
+     }
+    },
+    {
+     "name": "IronLowlands",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       282.0,
+       120.0,
+       372.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -29.0,
+         60.0,
+         286.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.0,
+       1.0,
+       0.4706
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "DisplayName": "Iron Lowlands",
+      "Subtitle": "Recommended Lv 1 - 10",
+      "Order": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "EnemySpawns",
+   "className": "Folder",
+   "children": [
+    {
+     "name": "IL_S1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -35.0,
+         2.0,
+         212.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronSquire",
+      "Level": 1,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "IL_S2",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         30.0,
+         2.0,
+         206.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronSquire",
+      "Level": 1,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "IL_S3",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -2.0,
+         2.0,
+         236.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronSquire",
+      "Level": 2,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "IL_S4",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -48.0,
+         2.0,
+         252.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronSquire",
+      "Level": 2,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "IL_S5",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         44.0,
+         2.0,
+         250.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronSquire",
+      "Level": 3,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "IL_S6",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -22.0,
+         2.0,
+         288.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronSquire",
+      "Level": 3,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "IL_B1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         30.0,
+         2.0,
+         296.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronBerserker",
+      "Level": 3,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 22
+     }
+    },
+    {
+     "name": "IL_S7",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -60.0,
+         2.0,
+         318.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronSquire",
+      "Level": 4,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "IL_B2",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         12.0,
+         2.0,
+         318.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronBerserker",
+      "Level": 4,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 22
+     }
+    },
+    {
+     "name": "IL_B3",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         52.0,
+         2.0,
+         338.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronBerserker",
+      "Level": 5,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 22
+     }
+    },
+    {
+     "name": "IL_S8",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -40.0,
+         2.0,
+         345.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronSquire",
+      "Level": 4,
+      "Role": "minion",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "IL_E1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -142.0,
+         2.0,
+         315.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "IronBerserker",
+      "Level": 6,
+      "Role": "elite",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 18
+     }
+    },
+    {
+     "name": "IL_BOSS",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         2.0,
+         432.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "Boss_Gorgon",
+      "Level": 10,
+      "Role": "boss",
+      "Zone": "IronLowlands",
+      "Region": "IronLowlands",
+      "LeashRadius": 50
+     }
+    }
+   ]
+  },
+  {
+   "name": "Waypoints",
+   "className": "Folder",
+   "children": [
+    {
+     "name": "HubSpawn",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         10.0,
+         -40.0
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "DisplayName": "Hearthmere",
+      "Region": "Hub",
+      "Order": 1,
+      "DiscoverRadius": 18
+     }
+    },
+    {
+     "name": "IronOverlook",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         18.0,
+         10.0,
+         152.0
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "DisplayName": "Quarry Overlook",
+      "Region": "IronLowlands",
+      "Order": 2,
+      "DiscoverRadius": 18
+     }
+    },
+    {
+     "name": "WarlordGate",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         2.0,
+         352.0
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "DisplayName": "Warlord's Gate",
+      "Region": "IronLowlands",
+      "Order": 3,
+      "DiscoverRadius": 18
+     }
+    }
+   ]
+  },
+  {
+   "name": "Gates",
+   "className": "Folder",
+   "children": [
+    {
+     "name": "IronLowlands",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         10.0,
+         100.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Region": "IronLowlands",
+      "Sealed": false,
+      "RequiredLevel": 1
+     }
+    },
+    {
+     "name": "FrostboundGlacier",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -100.0,
+         10.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Region": "FrostboundGlacier",
+      "Sealed": true,
+      "RequiredLevel": 18
+     }
+    },
+    {
+     "name": "InfernalCaldera",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         100.0,
+         10.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Region": "InfernalCaldera",
+      "Sealed": true,
+      "RequiredLevel": 34
+     }
+    },
+    {
+     "name": "CelestialSummit",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         10.0,
+         -100.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Region": "CelestialSummit",
+      "Sealed": true,
+      "RequiredLevel": 80
+     }
+    },
+    {
+     "name": "VoidRift",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         68.0,
+         10.0,
+         -72.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Region": "VoidRift",
+      "Sealed": true,
+      "RequiredLevel": 55
+     }
+    },
+    {
+     "name": "Briarwood",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         2.0,
+         470.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Region": "Briarwood",
+      "Sealed": true,
+      "RequiredLevel": 9
+     }
+    }
+   ]
+  },
+  {
+   "name": "PlayerSpawn",
+   "className": "SpawnLocation",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     8,
+     1,
+     8
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0,
+       10.5,
+       -40
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Transparency": 1,
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "Neutral": true,
+    "Duration": 0,
+    "Enabled": true,
+    "CastShadow": false
+   }
+  }
+ ]
+}

@@ -1,11 +1,16 @@
 -- ModuleScript | ServerScriptService.WorldLayout | Gameplay placement only; never builds a map.
+-- Two modes, chosen once at startup:
+--   "map"       Workspace.LemonadeMap markers exist and the MapMarkers module is synced (map.project.json).
+--   "baseplate" otherwise: the original gameplay-only placement on the existing Baseplate.
 local Workspace = game:GetService("Workspace")
 local WorldLayout = {
-	VERSION = 1,
+	VERSION = 2,
 	GAMEPLAY_ONLY = true,
 	BLANK_SLATE = false,
 	MAP_MODEL_NAME = "UnusedGameplayMap",
 	FIELD_SPAWNS = {},
+	MODE = "baseplate",
+	SAFE_ZONES = nil, -- map mode: { {Name, CFrame, Size} } replaces the circular hub radius
 }
 
 -- [TUNING] Existing enemy identities and levels, without the old map's coordinates.
@@ -20,6 +25,11 @@ WorldLayout.ZONES = {
 	{ Name = "CelestialSummit", Region = "CelestialSummit", Enemies = {{"Boss_CelestialTitan",100,"boss"},{"AstralWisp",80},{"AstralWisp",81},{"SolarDominator",88},{"SolarDominator",89},{"SolarDominator",92,"elite"}} },
 }
 
+-- The marker reader only ships with the map project; the default project never loads it.
+local markersModule = script.Parent:FindFirstChild("MapMarkers")
+local MapMarkers = markersModule and require(markersModule)
+local useMap = MapMarkers ~= nil and MapMarkers.isPresent()
+
 function WorldLayout.GetBaseplate(): BasePart?
 	local plate = Workspace:FindFirstChild("Baseplate")
 	return if plate and plate:IsA("BasePart") then plate else nil
@@ -31,19 +41,58 @@ function WorldLayout.SurfacePosition(x: number, z: number): Vector3
 	return plate.CFrame:PointToWorldSpace(Vector3.new(x, plate.Size.Y / 2, z))
 end
 
-local plate = WorldLayout.GetBaseplate()
-local halfSize = if plate then math.min(plate.Size.X, plate.Size.Z) / 2 else 256
-local safeRadius = math.min(40, halfSize * 0.2) -- [TUNING] Invisible safety rule, no geometry.
-WorldLayout.HUB = {
-	Center = WorldLayout.SurfacePosition(0, 0), SafeRadius = safeRadius,
-	MerchantPosition = WorldLayout.SurfacePosition(safeRadius * 0.6, 0),
-	QuestGiverPosition = WorldLayout.SurfacePosition(-safeRadius * 0.6, 0),
-	RebirthPosition = WorldLayout.SurfacePosition(0, safeRadius * 0.6),
-	RespecPosition = WorldLayout.SurfacePosition(0, -safeRadius * 0.6),
-}
+if useMap then
+	WorldLayout.MODE = "map"
+	WorldLayout.MAP_MODEL_NAME = MapMarkers.MAP_NAME
+	WorldLayout.SAFE_ZONES = MapMarkers.safeZones()
+	local spawn = MapMarkers.playerSpawn()
+	local function place(markerName)
+		local cframe = MapMarkers.npc(markerName)
+		return cframe and cframe.Position, cframe
+	end
+	local hub = { Center = spawn and spawn.Position or Vector3.zero, SafeRadius = 0 }
+	hub.MerchantPosition, hub.MerchantCFrame = place("Merchant")
+	hub.QuestGiverPosition, hub.QuestGiverCFrame = place("QuestMaster")
+	hub.RebirthPosition, hub.RebirthCFrame = place("RebirthKeeper")
+	hub.RespecPosition, hub.RespecCFrame = place("SkillTrainer")
+	WorldLayout.HUB = hub
+else
+	local plate = WorldLayout.GetBaseplate()
+	local halfSize = if plate then math.min(plate.Size.X, plate.Size.Z) / 2 else 256
+	local safeRadius = math.min(40, halfSize * 0.2) -- [TUNING] Invisible safety rule, no geometry.
+	WorldLayout.HUB = {
+		Center = WorldLayout.SurfacePosition(0, 0), SafeRadius = safeRadius,
+		MerchantPosition = WorldLayout.SurfacePosition(safeRadius * 0.6, 0),
+		QuestGiverPosition = WorldLayout.SurfacePosition(-safeRadius * 0.6, 0),
+		RebirthPosition = WorldLayout.SurfacePosition(0, safeRadius * 0.6),
+		RespecPosition = WorldLayout.SurfacePosition(0, -safeRadius * 0.6),
+	}
+end
+
+local function getMapEnemySpawns()
+	local known, covered, configs = {}, {}, {}
+	for _, zone in ipairs(WorldLayout.ZONES) do known[zone.Name] = true end
+	for _, config in ipairs(MapMarkers.enemySpawns()) do
+		if known[config.zone] then
+			covered[config.zone] = true
+			table.insert(configs, config)
+		else
+			warn(string.format("[Gameplay] Spawn marker %s names unknown zone %s; skipped", config.id, config.zone))
+		end
+	end
+	local idle = {}
+	for _, zone in ipairs(WorldLayout.ZONES) do
+		if not covered[zone.Name] then table.insert(idle, zone.Name) end
+	end
+	if #idle > 0 then
+		print("[Gameplay] Map has no spawn markers yet for: " .. table.concat(idle, ", ") .. " (those zones stay idle)")
+	end
+	return configs
+end
 
 function WorldLayout.GetEnemySpawns()
 	if WorldLayout.BLANK_SLATE then return {} end
+	if useMap then return getMapEnemySpawns() end
 	local baseplate = WorldLayout.GetBaseplate()
 	if not baseplate then
 		warn("[Gameplay] No Baseplate found; automatic enemy placement is idle")
