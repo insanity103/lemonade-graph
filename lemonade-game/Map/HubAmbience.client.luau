@@ -10,12 +10,13 @@ local TweenService = game:GetService("TweenService")
 local map = workspace:WaitForChild("LemonadeMap", 20)
 if not map then return end
 local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
+local NpcOutfits = require(ReplicatedStorage:WaitForChild("NpcOutfits"))
 
 -- ── Skill Trainer practice routine ─────────────────────────────────────────
 local TRAINER_NAME = "Skill Trainer"
 local WALK_SPEED = 9 -- [TUNING] studs per second, a relaxed stroll
 local SWINGS_PER_VISIT = { 3, 5 } -- [TUNING] min, max
-local REST_BETWEEN_VISITS = { 5, 11 } -- [TUNING] seconds idle at the post between visits
+local REST_BETWEEN_VISITS = { 4, 9 } -- [TUNING] seconds idle at the post between visits
 local SWING_TIME = 0.55
 local STAND_OFF = 3.6 -- studs in front of a dummy
 
@@ -52,31 +53,40 @@ local function pose(model: Model, parts, root: CFrame, legSwing: number, armAngl
 	local rightArm = root * CFrame.new(1.5, 1, 0) * CFrame.Angles(armAngle, 0, 0) * CFrame.new(0, -1, 0)
 	parts["Right Arm"].CFrame = rightArm
 	if sword then
-		sword.CFrame = rightArm * CFrame.new(0, -2.4, 0)
+		-- grip in the hand (arm bottom), blade continuing along the arm's -Y
+		sword.CFrame = rightArm * CFrame.new(0, -1.0, 0) * CFrame.new(0, -2.0, 0)
 	end
 end
 
+-- The trainer's sword: steel blade, crossguard and wrapped grip, CFrame-driven from the hand.
+-- The blade is the anchored root; the other pieces are welded so they follow it. Local +Y is
+-- the tip; the grip is at the top so the blade continues past the hand.
 local function makePracticeSword(): BasePart
 	local blade = Instance.new("Part")
-	blade.Name = "PracticeSword"
-	blade.Size = Vector3.new(0.45, 3.8, 0.7)
-	blade.Color = Color3.fromRGB(150, 110, 70)
-	blade.Material = Enum.Material.Wood
+	blade.Name = "TrainerSword"
+	blade.Size = Vector3.new(0.3, 3.6, 0.8)
+	blade.Color = Color3.fromRGB(196, 200, 206)
+	blade.Material = Enum.Material.Metal
 	blade.Anchored, blade.CanCollide, blade.CanQuery, blade.CanTouch = true, false, false, false
-	local guard = Instance.new("Part")
-	guard.Size = Vector3.new(1.6, 0.3, 0.5)
-	guard.Color = Color3.fromRGB(90, 60, 40)
-	guard.Material = Enum.Material.Wood
-	-- Unanchored so the weld carries it along with the (anchored, CFrame-driven) blade.
-	guard.Anchored, guard.Massless = false, true
-	guard.CanCollide, guard.CanQuery, guard.CanTouch = false, false, false
-	guard.CFrame = blade.CFrame * CFrame.new(0, 1.3, 0)
-	local weld = Instance.new("WeldConstraint")
-	weld.Part0, weld.Part1 = blade, guard
-	weld.Parent = blade
-	guard.Parent = blade
+	local function piece(name, size, color, material, offset)
+		local p = Instance.new("Part")
+		p.Name, p.Size, p.Color = name, size, color
+		p.Material = Enum.Material[material]
+		p.Anchored, p.Massless = false, true
+		p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
+		p.CFrame = blade.CFrame * offset
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0, weld.Part1 = blade, p
+		weld.Parent = p
+		p.Parent = blade
+	end
+	piece("Fuller", Vector3.new(0.32, 2.6, 0.2), Color3.fromRGB(150, 154, 162), "Metal", CFrame.new(0, -0.2, 0))
+	piece("Guard", Vector3.new(0.5, 0.3, 1.9), Color3.fromRGB(204, 168, 72), "Metal", CFrame.new(0, 1.85, 0))
+	piece("Grip", Vector3.new(0.34, 1.1, 0.34), Color3.fromRGB(84, 52, 36), "Fabric", CFrame.new(0, 2.55, 0))
+	piece("Pommel", Vector3.new(0.5, 0.5, 0.5), Color3.fromRGB(204, 168, 72), "Metal", CFrame.new(0, 3.2, 0))
 	return blade
 end
+
 
 local function rockDummy(dummy: Model)
 	local body = dummy:FindFirstChild("Body")
@@ -153,10 +163,19 @@ local function walkPath(model: Model, parts, from: CFrame, destination: Vector3,
 end
 
 local function trainerRoutine()
-	local model = workspace:WaitForChild(TRAINER_NAME, 30)
-	if not model or not model:IsA("Model") or not model.PrimaryPart then return end
+	local model = workspace:WaitForChild(TRAINER_NAME, 60)
+	if not model or not model:IsA("Model") or not model.PrimaryPart then
+		warn("[HubAmbience] Skill Trainer rig not found; practice routine idle")
+		return
+	end
 	local parts = rigParts(model)
-	if not parts then return end
+	if not parts then
+		warn("[HubAmbience] Skill Trainer rig is missing body parts; practice routine idle")
+		return
+	end
+	local backSword = model:FindFirstChild("BackSword")
+	local backGuard = model:FindFirstChild("BackSwordGuard")
+	print("[HubAmbience] Skill Trainer practice routine running")
 	local home = model.PrimaryPart.CFrame
 	local rng = Random.new()
 	while model.Parent do
@@ -177,6 +196,9 @@ local function trainerRoutine()
 		-- The server never moves him, so his respec prompt stays at the post: hide it while away.
 		local prompt = model.PrimaryPart:FindFirstChildOfClass("ProximityPrompt")
 		if prompt then prompt.Enabled = false end
+		-- Draw the sword from his back.
+		if backSword then backSword.Transparency = 1 end
+		if backGuard then backGuard.Transparency = 1 end
 		local sword = makePracticeSword()
 		sword.Parent = workspace.CurrentCamera
 		local arrived = walkPath(model, parts, home, standAt, WALK_SPEED, sword)
@@ -206,12 +228,17 @@ local function trainerRoutine()
 		end
 
 		sword:Destroy()
+		if backSword then backSword.Transparency = 0 end
+		if backGuard then backGuard.Transparency = 0 end
 		local back = walkPath(model, parts, facing, home.Position, WALK_SPEED, nil)
 		walk(model, parts, back, home, nil)
 		if prompt then prompt.Enabled = true end
 	end
 end
-task.spawn(trainerRoutine)
+task.spawn(function()
+	local ok, err = pcall(trainerRoutine)
+	if not ok then warn("[HubAmbience] trainer routine stopped: " .. tostring(err)) end
+end)
 
 -- ── Villagers ───────────────────────────────────────────────────────────────
 -- Client-side wanderers built from the same block rig as the hub NPCs. Each owns one of the
@@ -232,11 +259,7 @@ local CHATTER = {
 	"Fresh pears, picked this morning!", "The waystones hum louder these days.", "Heard the Warlord's back in the quarry.",
 	"Lovely evening by the fire.", "Someone's been at my apples.", "Rest a while, the benches are free.",
 }
-local OUTFITS = {
-	{ Color3.fromRGB(150, 60, 60), Color3.fromRGB(70, 60, 50) }, { Color3.fromRGB(70, 110, 160), Color3.fromRGB(60, 50, 45) },
-	{ Color3.fromRGB(90, 130, 80), Color3.fromRGB(80, 70, 60) }, { Color3.fromRGB(200, 170, 110), Color3.fromRGB(60, 60, 70) },
-	{ Color3.fromRGB(130, 80, 150), Color3.fromRGB(50, 45, 40) }, { Color3.fromRGB(190, 120, 70), Color3.fromRGB(65, 55, 50) },
-}
+local VILLAGER_OUTFITS = { "Farmer", "Baker", "Gatherer", "Elder" } -- NpcOutfits names, one per villager
 local SKIN = Color3.fromRGB(226, 190, 150)
 
 local floorY = 10
@@ -246,17 +269,17 @@ do
 	if floor then floorY = floor.Position.Y + floor.Size.Y / 2 end
 end
 
-local function makeVillager(index: number, outfit)
+local function makeVillager(index: number, outfit: string)
 	local model = Instance.new("Model")
 	model.Name = "Villager"
 	local pieces = {
 		{ "HumanoidRootPart", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0), nil },
-		{ "Torso", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0), outfit[1] },
+		{ "Torso", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0), SKIN },
 		{ "Head", Vector3.new(1.2, 1.2, 1.2), Vector3.new(0, 4.6, 0), SKIN },
 		{ "Left Arm", Vector3.new(1, 2, 1), Vector3.new(-1.5, 3, 0), SKIN },
 		{ "Right Arm", Vector3.new(1, 2, 1), Vector3.new(1.5, 3, 0), SKIN },
-		{ "Left Leg", Vector3.new(1, 2, 1), Vector3.new(-0.5, 1, 0), outfit[2] },
-		{ "Right Leg", Vector3.new(1, 2, 1), Vector3.new(0.5, 1, 0), outfit[2] },
+		{ "Left Leg", Vector3.new(1, 2, 1), Vector3.new(-0.5, 1, 0), SKIN },
+		{ "Right Leg", Vector3.new(1, 2, 1), Vector3.new(0.5, 1, 0), SKIN },
 	}
 	for _, spec in ipairs(pieces) do
 		local part = Instance.new("Part")
@@ -296,6 +319,7 @@ local function makeVillager(index: number, outfit)
 	corner.CornerRadius = UDim.new(0, 6)
 	corner.Parent = text
 	model.Parent = workspace.CurrentCamera
+	NpcOutfits.apply(model, outfit)
 	return model, text, bubble
 end
 
@@ -338,7 +362,7 @@ end
 
 local function villagerRoutine(index: number)
 	local rng = Random.new(index * 7919)
-	local model, text, bubble = makeVillager(index, OUTFITS[(index - 1) % #OUTFITS + 1])
+	local model, text, bubble = makeVillager(index, VILLAGER_OUTFITS[(index - 1) % #VILLAGER_OUTFITS + 1])
 	local parts = rigParts(model)
 	local house = houses[((index - 1) % math.max(#houses, 1)) + 1]
 	local doorstep, inside, doorway, floor
@@ -404,7 +428,10 @@ local function villagerRoutine(index: number)
 	end
 end
 for i = 1, VILLAGER_COUNT do
-	task.spawn(villagerRoutine, i)
+	task.spawn(function()
+		local ok, err = pcall(villagerRoutine, i)
+		if not ok then warn("[HubAmbience] villager " .. i .. " stopped: " .. tostring(err)) end
+	end)
 end
 
 -- ── Blacksmith hammer ───────────────────────────────────────────────────────
