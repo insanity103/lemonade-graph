@@ -324,7 +324,8 @@ def main():
     for st in stones:
         wid = st.attrs.get("WaypointId")
         w = waypoints.get(wid)
-        obelisk = next((c for c in st.children if c.name == "Obelisk"), None)
+        obelisk = (next((c for c in st.children if c.name == "PromptAnchor"), None)
+                   or next((c for c in st.children if c.name == "Core"), None))
         if not w or not obelisk:
             fail(f"Waystone {st.path()} links to unknown waypoint {wid}")
             continue
@@ -382,7 +383,7 @@ def check_coplanar_tops(parts):
     z-fight, which reads in-game as floor textures crawling while the camera moves."""
     buckets = {}
     for p in parts:
-        if p.transparency >= 0.9 or p.cls == "WedgePart":
+        if p.transparency >= 0.9 or p.cls == "WedgePart" or p.shape == 0:  # balls have no flat top
             continue
         r = p.rot
         if p.shape == 2 and abs(r[1][0]) > 0.99:
@@ -518,7 +519,8 @@ def check_projects():
     default = json.loads((ROOT / "default.project.json").read_text())["tree"]
     mapped = json.loads((ROOT / "map.project.json").read_text())["tree"]
     allowed_extra = {("Workspace",), ("ServerScriptService", "MapMarkers"), ("ServerScriptService", "MapTravel"),
-                     ("StarterPlayer", "StarterPlayerScripts", "MapClient")}
+                     ("StarterPlayer", "StarterPlayerScripts", "MapClient"),
+                     ("StarterPlayer", "StarterPlayerScripts", "HubAmbience")}
 
     def walk(d, m, path=()):
         for key, value in d.items():

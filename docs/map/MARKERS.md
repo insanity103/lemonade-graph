@@ -39,7 +39,7 @@ aggroRange + patrolRadius; nothing opaque 8–28 studs above spawns/arrivals (ca
 ## Waystones
 
 Any model with attributes `Waystone = true` and `WaypointId = <Waypoints child name>`. MapTravel puts a
-ProximityPrompt on its `Obelisk` part (or first BasePart). The obelisk must be within 20 studs of the
+ProximityPrompt on its `Core` part (or first BasePart). That part must be within 20 studs of the
 arrival marker. `HubSpawn` is the Return to Hub destination and is always discovered.
 
 ## Adding a region

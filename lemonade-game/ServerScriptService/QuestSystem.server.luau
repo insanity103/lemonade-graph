@@ -419,7 +419,7 @@ task.defer(function()
 		local actors = require(script.Parent:WaitForChild("GameplayActors"))
 		if not WorldLayout.HUB.QuestGiverPosition then return end -- map lacks the marker: quest giver idle
 		actors.create(QuestConfig.GIVER_NAME, WorldLayout.HUB.QuestGiverPosition, QuestConfig.GIVER_COLOR,
-			{ facing = WorldLayout.HUB.QuestGiverCFrame, subtitle = "Press E to talk" })
+			{ facing = WorldLayout.HUB.QuestGiverCFrame, subtitle = "Press E to talk", outfit = "QuestMaster" })
 		return
 	end
 	-- The imported map ships a modeled NPC_QuestGiver at this anchor. Building the

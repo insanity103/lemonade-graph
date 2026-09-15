@@ -25,7 +25,7 @@ whenever `MapMarkers` and `Workspace.LemonadeMap/Markers` are both present.
 | Project | Adds | Mode |
 | --- | --- | --- |
 | `default.project.json` | gameplay only (18 server, 13 client) | baseplate |
-| `map.project.json` | default + `Workspace.LemonadeMap`, `MapMarkers`, `MapTravel`, `MapClient` | map |
+| `map.project.json` | default + `Workspace.LemonadeMap`, `MapMarkers`, `MapTravel`, `MapClient`, `HubAmbience` | map |
 
 `tools/check_map_project.py` fails if `map.project.json` drops or changes any default mapping.
 
@@ -34,7 +34,7 @@ whenever `MapMarkers` and `Workspace.LemonadeMap/Markers` are both present.
 | Area | Extent | Floor top | Contents |
 | --- | --- | --- | --- |
 | Hearthmere hub | x −100..100, z −100..100 | 10 | spawn (0,−40) facing the south gate; plaza + sword monument; Sword Shop (W), Skill Trainer yard (E), Rebirth Shrine (SE), Quest Master in a striped market stall beside the south road (15,50); sealed gates W/E/N and Void Rift portal (NE) with visible vistas |
-| Pass | x −14..14, z 104..140 | 10 | timber arch "Iron Lowlands · Lv 1–10" |
+| Pass | x −14..14, z 104..140 | 10 | canyon pass from the hub gate |
 | Quarry Overlook | x −40..40, z 140..168 | 10 | safe staging area, waystone, route sign; 32-stud ramp down (14°) |
 | Squire Yard | z 200..265 | 2 | 5 Squires Lv 1–3, spaced 35–41 studs; tents, campfire, scaffolds at the edges |
 | Crusher Pits | z 270..360 | 2 | Squires Lv 3–4 + Berserkers Lv 3–5; rail line, crane, stone stacks |
@@ -54,7 +54,7 @@ Merchant/trainer/quest/rebirth are 4–5.5 s from spawn.
 - **Collision separate from visuals.** Cliff chunks never collide; `LemonadeMap/Collision` holds
   invisible wall proxies. Floors live in `Grounds_<Region>` so enemy ground raycasts hit only floors.
 - **Flat combat floors,** height only at the overlook (staging) and the hub step; no terrain.
-- **Every region has a readable entrance, landmark, enemy family and boss** (arch, crane, ridge gap).
+- **Every region has a readable entrance, landmark, enemy family and boss** (hub gate sign, crane, ridge gap).
 - **Sealed destinations are visible,** not hidden: barred gates with level labels and a vista behind.
 - **Existing identities kept.** Spawn markers reuse `IronSquire`, `IronBerserker`, `Boss_Gorgon` and the
   `IronLowlands` quest zone, so quests q1–q5, kill attribution, drops and saves are unchanged.
@@ -109,6 +109,31 @@ nearest living quest enemy or the boss, depending on quest state.
 
 Balance note from the footage: leveling is very fast (Lv 13 at the boss, Lv 24 after its XP).
 Boss XP and the level curve need a tuning pass before Briarwood exists.
+
+## Playtest 2 changes (2026-09-15)
+
+- Removed the Iron Lowlands arch and signs at the pass; the hub gate already names the region.
+- Sword monument assembled along its tilted axis (the hilt floated beside the blade).
+- Quest Master stall; well rebuilt as a round stone rim with winch, bucket and a roof on posts.
+- Rebirth shrine: hologram sword projector instead of the floating crystal.
+- Waystones are glowing crystal clusters; the travel prompt sits on an invisible `PromptAnchor`.
+- Doorway mid rails no longer cross the opening.
+- `HubAmbience` (client, map only): Skill Trainer walks to a dummy, swings a practice sword and
+  returns; hologram spins and flickers; waystone splinters orbit.
+
+## Hearthmere life pass (2026-09-15)
+
+Geometry (`map_forge.py`): houses got collidable plank doors, framed lit windows with flower
+boxes, and smoking chimneys; a working blacksmith corner (forge fire, anvil, hammer, quench
+barrel) beside the shop; benches and a flower ring around the monument; flower beds, bunting
+strung over every road, a fingerpost and welcome sign by spawn with a rune ring and lamps; a
+produce stall and gathering fire by the well; a waterfall and pool on the east cliff; hay,
+rack, barrels, crates, woodpile, hand cart, bushes, stumps and boulders. 1931 parts total.
+
+Motion (`HubAmbience`, client only): five villagers stroll between spots (detouring round the
+monument) and chat; the smith hammers in bursts with sparks and a clink; butterflies over the
+beds, three birds circling the plaza, waterfall sheets shimmer; plus the trainer, hologram and
+waystone splinters from before.
 
 ## Known limitations / next
 

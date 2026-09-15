@@ -1,4 +1,6 @@
 -- ModuleScript | ServerScriptService.GameplayActors | Plain interaction characters, no scenery.
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local NpcOutfits = require(ReplicatedStorage:WaitForChild("NpcOutfits"))
 local Actors = {}
 
 local function nameplate(head: BasePart, title: string, subtitle: string?)
@@ -32,6 +34,7 @@ end
 
 -- options.facing: CFrame whose rotation the character adopts (map markers supply one).
 -- options.title / options.subtitle: nameplate text; title defaults to the model name.
+-- options.outfit: an NpcOutfits name (QuestMaster, Blacksmith, Trainer, RebirthKeeper, ...).
 function Actors.create(name: string, position: Vector3, color: Color3, options: {}?): Model
 	options = options or {}
 	local model = Instance.new("Model")
@@ -39,7 +42,7 @@ function Actors.create(name: string, position: Vector3, color: Color3, options: 
 	local pieces = {
 		{"HumanoidRootPart", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0)},
 		{"Torso", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0)},
-		{"Head", Vector3.new(2, 1, 1), Vector3.new(0, 4.5, 0)},
+		{"Head", Vector3.new(1.2, 1.2, 1.2), Vector3.new(0, 4.6, 0)},
 		{"Left Arm", Vector3.new(1, 2, 1), Vector3.new(-1.5, 3, 0)},
 		{"Right Arm", Vector3.new(1, 2, 1), Vector3.new(1.5, 3, 0)},
 		{"Left Leg", Vector3.new(1, 2, 1), Vector3.new(-0.5, 1, 0)},
@@ -55,7 +58,15 @@ function Actors.create(name: string, position: Vector3, color: Color3, options: 
 		if part.Name == "HumanoidRootPart" then
 			part.Transparency = 1
 			model.PrimaryPart = part
+		elseif part.Name == "Head" then
+			local mesh = Instance.new("SpecialMesh")
+			mesh.MeshType = Enum.MeshType.Head
+			mesh.Scale = Vector3.new(1.25, 1.25, 1.25)
+			mesh.Parent = part
 		end
+	end
+	if options.outfit then
+		NpcOutfits.apply(model, options.outfit) -- distinct look per character (hat, apron, staff...)
 	end
 	if options.facing then
 		model:PivotTo(CFrame.new(position + Vector3.new(0, 3, 0)) * options.facing.Rotation)

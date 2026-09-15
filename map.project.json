@@ -121,6 +121,9 @@
         },
         "MapClient": {
           "$path": "lemonade-game/Map/MapClient.client.luau"
+        },
+        "HubAmbience": {
+          "$path": "lemonade-game/Map/HubAmbience.client.luau"
         }
       }
     },
