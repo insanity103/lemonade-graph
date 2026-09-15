@@ -34,7 +34,7 @@ whenever `MapMarkers` and `Workspace.LemonadeMap/Markers` are both present.
 | Area | Extent | Floor top | Contents |
 | --- | --- | --- | --- |
 | Hearthmere hub | x −100..100, z −100..100 | 10 | spawn (0,−40) facing the south gate; plaza + sword monument; Sword Shop (W), Skill Trainer yard (E), Rebirth Shrine (SE), Quest Master in a striped market stall beside the south road (15,50); sealed gates W/E/N and Void Rift portal (NE) with visible vistas |
-| Pass | x −14..14, z 104..140 | 10 | timber arch "Iron Lowlands · Lv 1–10" |
+| Pass | x −14..14, z 104..140 | 10 | canyon pass from the hub gate |
 | Quarry Overlook | x −40..40, z 140..168 | 10 | safe staging area, waystone, route sign; 32-stud ramp down (14°) |
 | Squire Yard | z 200..265 | 2 | 5 Squires Lv 1–3, spaced 35–41 studs; tents, campfire, scaffolds at the edges |
 | Crusher Pits | z 270..360 | 2 | Squires Lv 3–4 + Berserkers Lv 3–5; rail line, crane, stone stacks |
@@ -54,7 +54,7 @@ Merchant/trainer/quest/rebirth are 4–5.5 s from spawn.
 - **Collision separate from visuals.** Cliff chunks never collide; `LemonadeMap/Collision` holds
   invisible wall proxies. Floors live in `Grounds_<Region>` so enemy ground raycasts hit only floors.
 - **Flat combat floors,** height only at the overlook (staging) and the hub step; no terrain.
-- **Every region has a readable entrance, landmark, enemy family and boss** (arch, crane, ridge gap).
+- **Every region has a readable entrance, landmark, enemy family and boss** (hub gate sign, crane, ridge gap).
 - **Sealed destinations are visible,** not hidden: barred gates with level labels and a vista behind.
 - **Existing identities kept.** Spawn markers reuse `IronSquire`, `IronBerserker`, `Boss_Gorgon` and the
   `IronLowlands` quest zone, so quests q1–q5, kill attribution, drops and saves are unchanged.

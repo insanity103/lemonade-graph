@@ -999,17 +999,6 @@ def build_iron_lowlands(rng):
         proxies.append(box(f"RidgeProxy{side}", x0, x1, Y - 1, Y + 26, 368, 382, (255, 0, 255), transparency=1,
                            query=False, shadow=False, layer="proxy"))
 
-    # Region entrance landmark: timber arch where the pass opens onto the overlook.
-    arch = [
-        part("ArchPostW", (2.4, 16, 2.4), (-13, T + 8, 139), BEAM, "Wood"),
-        part("ArchPostE", (2.4, 16, 2.4), (13, T + 8, 139), BEAM, "Wood"),
-        part("ArchBeam", (30, 2.2, 3), (0, T + 16.8, 139), BEAM, "Wood", collide=False),
-    ]
-    visual.append(model("OverlookArch", arch))
-    visual.append(sign("OverlookSign", 0, T + 12.2, 137.3, 0, 18, 4.2, "Iron Lowlands", "Recommended Lv 1 - 10",
-                       post_h=4.2))
-    visual.append(sign("OverlookSignInner", 0, T + 12.2, 140.7, 180, 18, 4.2, "Hearthmere", "Return north",
-                       post_h=4.2))
     visual.append(waystone("OverlookWaystone", "IronOverlook", 28, T, 148))
     visual.append(sign("OverlookGuide", -26, T, 160, yaw_facing(0, -1), 12, 5, "Squire Yard  >  Crusher Pits",
                        "The Iron Warlord waits beyond the ridge"))
