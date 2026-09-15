@@ -110,6 +110,7 @@ local function walk(model: Model, parts, from: CFrame, to: CFrame, sword: BasePa
 		pose(model, parts, root, swing, swing * 0.5, sword)
 	end
 	pose(model, parts, to, 0, 0, sword)
+	return to
 end
 
 -- Walk a rig along a navmesh path so it goes round props and buildings instead of through them.
@@ -213,9 +214,12 @@ end
 task.spawn(trainerRoutine)
 
 -- ── Villagers ───────────────────────────────────────────────────────────────
--- Client-side wanderers built from the same block rig as the hub NPCs. They stroll between
--- spots around the village, pause, and occasionally say something. Nothing replicates.
-local VILLAGER_COUNT = 5
+-- Client-side wanderers built from the same block rig as the hub NPCs. Each owns one of the
+-- houses (models with the House attribute): they stroll between spots, chat, and now and then
+-- go home, opening and closing their door. Nothing replicates.
+local VILLAGER_COUNT = 4
+local HOME_STAY = { 20, 45 } -- [TUNING] seconds indoors
+local TRIPS_BEFORE_HOME = { 2, 4 }
 local VILLAGER_SPEED = 7
 local VILLAGER_SPOTS = { -- [TUNING] x, z on grass or paving, clear of props
 	Vector3.new(-30, 0, -22), Vector3.new(-12, 0, -26), Vector3.new(22, 0, -20), Vector3.new(30, 0, 12),
@@ -295,25 +299,108 @@ local function makeVillager(index: number, outfit)
 	return model, text, bubble
 end
 
+local houses = {}
+for _, model in ipairs(map:GetDescendants()) do
+	if model:IsA("Model") and model:GetAttribute("House") == true then
+		table.insert(houses, model)
+	end
+end
+table.sort(houses, function(a, b) return a.Name < b.Name end)
+
+-- Swing a house door (and its bands and handle) about its hinge edge. Client-side only; the
+-- door's collision never changes, so players cannot slip inside while it stands open.
+local function doorSwing(house: Model, open: boolean)
+	local door = house:FindFirstChild("Door")
+	if not door then return end
+	if not door:GetAttribute("ClosedCFrame") then
+		door:SetAttribute("ClosedCFrame", door.CFrame)
+		for _, piece in ipairs({ house:FindFirstChild("DoorBand0"), house:FindFirstChild("DoorBand1"), house:FindFirstChild("DoorHandle") }) do
+			if piece then piece:SetAttribute("ClosedCFrame", piece.CFrame) end
+		end
+	end
+	local closed = door:GetAttribute("ClosedCFrame")
+	local alongX = door.Size.X > door.Size.Z
+	local hinge = closed * CFrame.new(if alongX then -door.Size.X / 2 else 0, 0, if alongX then 0 else -door.Size.Z / 2)
+	local pieces = { door, house:FindFirstChild("DoorBand0"), house:FindFirstChild("DoorBand1"), house:FindFirstChild("DoorHandle") }
+	local t = 0
+	while t < 0.6 do
+		t += RunService.Heartbeat:Wait()
+		local alpha = math.min(t / 0.6, 1)
+		alpha = alpha * alpha * (3 - 2 * alpha)
+		local angle = math.rad(105) * (if open then alpha else 1 - alpha)
+		local swing = CFrame.new(hinge.Position) * CFrame.Angles(0, angle, 0) * CFrame.new(-hinge.Position)
+		for _, piece in ipairs(pieces) do
+			local base = piece and piece:GetAttribute("ClosedCFrame")
+			if base then piece.CFrame = swing * base end
+		end
+	end
+end
+
 local function villagerRoutine(index: number)
 	local rng = Random.new(index * 7919)
 	local model, text, bubble = makeVillager(index, OUTFITS[(index - 1) % #OUTFITS + 1])
 	local parts = rigParts(model)
+	local house = houses[((index - 1) % math.max(#houses, 1)) + 1]
+	local doorstep, inside, doorway, floor
+	if house then
+		floor = (house:GetAttribute("FloorY") or floorY) + 3
+		doorstep = Vector3.new(house:GetAttribute("OutsideX"), floorY + 3, house:GetAttribute("OutsideZ"))
+		doorway = Vector3.new(house:GetAttribute("DoorX"), floor, house:GetAttribute("DoorZ"))
+		inside = Vector3.new(house:GetAttribute("InsideX"), floor, house:GetAttribute("InsideZ"))
+	end
+	local atHome = house ~= nil and index % 2 == 0 -- half start indoors
 	local spot = VILLAGER_SPOTS[rng:NextInteger(1, #VILLAGER_SPOTS)]
-	local here = CFrame.new(spot.X, floorY + 3, spot.Z)
+	local here = if atHome then CFrame.lookAt(inside, doorway) else CFrame.new(spot.X, floorY + 3, spot.Z)
 	pose(model, parts, here, 0, 0, nil)
+
+	local function goHome()
+		here = walkPath(model, parts, here, doorstep, VILLAGER_SPEED, nil)
+		doorSwing(house, true)
+		here = walk(model, parts, here, CFrame.lookAt(doorstep, doorway), nil) or CFrame.lookAt(doorstep, doorway)
+		local step = CFrame.lookAt(doorway, inside)
+		walk(model, parts, here, CFrame.new(doorway) * step.Rotation, nil)
+		walk(model, parts, CFrame.new(doorway) * step.Rotation, CFrame.new(inside) * step.Rotation, nil)
+		here = CFrame.lookAt(inside, doorway)
+		pose(model, parts, here, 0, 0, nil)
+		doorSwing(house, false)
+		task.wait(rng:NextNumber(HOME_STAY[1], HOME_STAY[2]))
+		doorSwing(house, true)
+		local out = CFrame.lookAt(doorway, doorstep)
+		walk(model, parts, here, CFrame.new(inside) * out.Rotation, nil)
+		walk(model, parts, CFrame.new(inside) * out.Rotation, CFrame.new(doorway) * out.Rotation, nil)
+		walk(model, parts, CFrame.new(doorway) * out.Rotation, CFrame.new(doorstep) * out.Rotation, nil)
+		here = CFrame.new(doorstep) * out.Rotation
+		doorSwing(house, false)
+	end
+
 	while model.Parent do
-		task.wait(rng:NextNumber(2, 7))
-		if rng:NextNumber() < 0.35 then
-			text.Text = CHATTER[rng:NextInteger(1, #CHATTER)]
-			bubble.Enabled = true
-			task.wait(3)
-			bubble.Enabled = false
+		if atHome then
+			task.wait(rng:NextNumber(HOME_STAY[1], HOME_STAY[2]))
+			doorSwing(house, true)
+			local out = CFrame.lookAt(doorway, doorstep)
+			walk(model, parts, here, CFrame.new(inside) * out.Rotation, nil)
+			walk(model, parts, CFrame.new(inside) * out.Rotation, CFrame.new(doorway) * out.Rotation, nil)
+			walk(model, parts, CFrame.new(doorway) * out.Rotation, CFrame.new(doorstep) * out.Rotation, nil)
+			here = CFrame.new(doorstep) * out.Rotation
+			doorSwing(house, false)
+			atHome = false
 		end
-		local nextSpot = VILLAGER_SPOTS[rng:NextInteger(1, #VILLAGER_SPOTS)]
-		if (nextSpot - spot).Magnitude < 4 then continue end
-		here = walkPath(model, parts, here, Vector3.new(nextSpot.X, floorY + 3, nextSpot.Z), VILLAGER_SPEED, nil)
-		spot = nextSpot
+		for _ = 1, rng:NextInteger(TRIPS_BEFORE_HOME[1], TRIPS_BEFORE_HOME[2]) do
+			task.wait(rng:NextNumber(2, 7))
+			if rng:NextNumber() < 0.35 then
+				text.Text = CHATTER[rng:NextInteger(1, #CHATTER)]
+				bubble.Enabled = true
+				task.wait(3)
+				bubble.Enabled = false
+			end
+			local nextSpot = VILLAGER_SPOTS[rng:NextInteger(1, #VILLAGER_SPOTS)]
+			if (nextSpot - spot).Magnitude < 4 then continue end
+			here = walkPath(model, parts, here, Vector3.new(nextSpot.X, floorY + 3, nextSpot.Z), VILLAGER_SPEED, nil)
+			spot = nextSpot
+		end
+		if house then
+			goHome()
+		end
 	end
 end
 for i = 1, VILLAGER_COUNT do
@@ -390,18 +477,54 @@ for _, model in ipairs(map:GetDescendants()) do
 end
 
 -- ── Butterflies, birds, waterfall ───────────────────────────────────────────
-local flutters = {}
+-- Butterflies roam the whole village: each picks a destination (usually a flower bed, sometimes
+-- anywhere on the green), flies there on a wavering line, lingers, then picks another.
+local BUTTERFLY_COUNT = 10
+local BUTTERFLY_SPEED = { 4, 7 }
+local HUB_ROAM = 84
+local beds = {}
 for _, model in ipairs(map:GetDescendants()) do
-	if model:IsA("Model") and model:GetAttribute("FlowerBed") == true and #flutters < 12 and math.random() < 0.6 then
-		local centre = Vector3.new(model:GetAttribute("BedX"), model:GetAttribute("BedY"), model:GetAttribute("BedZ"))
+	if model:IsA("Model") and model:GetAttribute("FlowerBed") == true then
+		table.insert(beds, Vector3.new(model:GetAttribute("BedX"), model:GetAttribute("BedY"), model:GetAttribute("BedZ")))
+	end
+end
+local WING_COLORS = { Color3.fromRGB(255, 190, 60), Color3.fromRGB(120, 170, 255), Color3.fromRGB(255, 255, 255),
+	Color3.fromRGB(255, 120, 150), Color3.fromRGB(180, 220, 90) }
+local flutters = {}
+local function newButterfly(k: number)
+	local body = Instance.new("Part")
+	body.Size = Vector3.new(0.18, 0.18, 0.55)
+	body.Color = Color3.fromRGB(40, 36, 40)
+	body.Anchored, body.CanCollide, body.CanQuery, body.CanTouch, body.CastShadow = true, false, false, false, false
+	body.Parent = workspace.CurrentCamera
+	local wings = {}
+	for side = -1, 1, 2 do
 		local wing = Instance.new("Part")
-		wing.Size = Vector3.new(0.9, 0.08, 0.6)
-		wing.Color = ({ Color3.fromRGB(255, 190, 60), Color3.fromRGB(120, 170, 255), Color3.fromRGB(255, 255, 255) })[math.random(3)]
+		wing.Size = Vector3.new(0.6, 0.05, 0.5)
+		wing.Color = WING_COLORS[(k % #WING_COLORS) + 1]
 		wing.Material = Enum.Material.SmoothPlastic
 		wing.Anchored, wing.CanCollide, wing.CanQuery, wing.CanTouch, wing.CastShadow = true, false, false, false, false
 		wing.Parent = workspace.CurrentCamera
-		table.insert(flutters, { part = wing, centre = centre, phase = math.random() * 6.28, radius = 2.5 + math.random() * 2 })
+		table.insert(wings, { part = wing, side = side })
 	end
+	local start = if #beds > 0 then beds[(k % #beds) + 1] else Vector3.new(0, floorY + 3, 0)
+	return { body = body, wings = wings, pos = start + Vector3.new(0, 1, 0), target = start, phase = k * 1.7,
+		speed = BUTTERFLY_SPEED[1] + math.random() * (BUTTERFLY_SPEED[2] - BUTTERFLY_SPEED[1]), linger = 0 }
+end
+local function pickButterflyTarget(f)
+	if #beds > 0 and math.random() < 0.65 then
+		local bed = beds[math.random(#beds)]
+		f.target = bed + Vector3.new((math.random() - 0.5) * 3, 0.4 + math.random() * 1.2, (math.random() - 0.5) * 3)
+	else
+		local a, r = math.random() * math.pi * 2, math.sqrt(math.random()) * HUB_ROAM
+		f.target = Vector3.new(math.cos(a) * r, floorY + 2 + math.random() * 7, math.sin(a) * r)
+	end
+	f.linger = if math.random() < 0.5 then 1 + math.random() * 3 else 0
+end
+for k = 1, BUTTERFLY_COUNT do
+	local f = newButterfly(k)
+	pickButterflyTarget(f)
+	table.insert(flutters, f)
 end
 local birds = {}
 for k = 1, 3 do
@@ -455,10 +578,30 @@ local clock = 0
 RunService.Heartbeat:Connect(function(dt)
 	clock += dt
 	for _, f in ipairs(flutters) do
-		local a = clock * 0.9 + f.phase
-		local pos = f.centre + Vector3.new(math.cos(a) * f.radius, math.sin(clock * 5 + f.phase) * 0.5 + 0.8,
-			math.sin(a * 1.3) * f.radius * 0.6)
-		f.part.CFrame = CFrame.new(pos) * CFrame.Angles(0, -a, math.sin(clock * 22 + f.phase) * 0.9)
+		local toTarget = f.target - f.pos
+		if toTarget.Magnitude < 1.2 then
+			if f.linger > 0 then
+				f.linger -= dt
+				-- hover in place with a small drift
+				f.pos += Vector3.new(math.sin(clock * 3 + f.phase), math.sin(clock * 5 + f.phase) * 0.6,
+					math.cos(clock * 2.6 + f.phase)) * dt * 0.8
+			else
+				pickButterflyTarget(f)
+			end
+		else
+			-- wavering flight: forward plus a sideways/vertical wobble
+			local forward = toTarget.Unit
+			local sideways = Vector3.new(-forward.Z, 0, forward.X)
+			local wobble = sideways * math.sin(clock * 2.4 + f.phase) * 1.6 + Vector3.new(0, math.sin(clock * 4.1 + f.phase) * 1.1, 0)
+			f.pos += (forward * f.speed + wobble) * dt
+		end
+		local look = toTarget.Magnitude > 0.5 and toTarget.Unit or Vector3.new(1, 0, 0)
+		local frame = CFrame.lookAt(f.pos, f.pos + Vector3.new(look.X, 0, look.Z))
+		f.body.CFrame = frame
+		local flap = math.sin(clock * 24 + f.phase) * 1.1
+		for _, w in ipairs(f.wings) do
+			w.part.CFrame = frame * CFrame.Angles(0, 0, flap * w.side) * CFrame.new(w.side * 0.36, 0, 0)
+		end
 	end
 	for _, b in ipairs(birds) do
 		local a = clock * 0.25 + b.phase

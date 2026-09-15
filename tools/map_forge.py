@@ -206,8 +206,8 @@ USED_CLIFF_TOPS: set[int] = set()
 
 def free_top(top: float) -> float:
     """Nudge a cliff top until no other cliff top sits within 0.1 studs of it."""
-    while round(top * 10) in USED_CLIFF_TOPS:
-        top += 0.25
+    while any(round(top * 10) + d in USED_CLIFF_TOPS for d in (-1, 0, 1)):
+        top += 0.3
     USED_CLIFF_TOPS.add(round(top * 10))
     return top
 
@@ -526,7 +526,21 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
         kids.append(part("ChimneyCap", (3.0, 0.6, 3.0), (chx, ch_top + 0.3, chz), STONE, "Slate", collide=False))
         kids.append(part("ChimneyFlue", (1.2, 0.3, 1.2), (chx, ch_top + 0.6, chz), (30, 28, 26), "Slate",
                          collide=False, query=False, children=[smoke(3.5, 0.3, 2.5)]))
-    return model(name, kids)
+    attrs = None
+    if door and not open_front:
+        # Doorway centre, a doorstep outside and a spot inside: HubAmbience villagers live here.
+        a0, a1, b0, b1 = walls[front]
+        if front == "N":
+            dx, dz, ox, oz = (a0 + a1) / 2, b0, (a0 + a1) / 2, b0 - 4
+        elif front == "S":
+            dx, dz, ox, oz = (a0 + a1) / 2, b1, (a0 + a1) / 2, b1 + 4
+        elif front == "W":
+            dx, dz, ox, oz = a0, (b0 + b1) / 2, a0 - 4, (b0 + b1) / 2
+        else:
+            dx, dz, ox, oz = a1, (b0 + b1) / 2, a1 + 4, (b0 + b1) / 2
+        attrs = {"House": True, "DoorX": dx, "DoorZ": dz, "OutsideX": ox, "OutsideZ": oz,
+                 "InsideX": (x0 + x1) / 2, "InsideZ": (z0 + z1) / 2, "FloorY": y + 0.8}
+    return model(name, kids, attrs=attrs)
 
 
 def gate(name, cx, y, cz, yaw, width, height, title, subtitle, sealed, stone=STONE, accent=WARLORD_RED,
@@ -768,16 +782,29 @@ def flower_bed(name, x, y, z, width, depth, yaw, rng):
     r = rot_y(yaw)
     kids = [part("Soil", (width, 0.7, depth), (x, y + 0.35, z), (74, 52, 36), "Ground", r, collide=False),
             part("Edge", (width + 0.8, 0.5, depth + 0.8), (x, y + 0.22, z), STONE_DARK, "Cobblestone", r, collide=False)]
-    n = max(4, int(width * depth / 3.2))
+    # Daisies (petal disc + centre) and tulips (tall cupped bloom), each on a stem with a leaf.
+    n = max(6, int(width * depth / 1.6))
+    cols, rows = max(1, round(width / 1.1)), max(1, round(depth / 1.1))
     for k in range(n):
-        lx, lz = rng.uniform(-width / 2 + 0.5, width / 2 - 0.5), rng.uniform(-depth / 2 + 0.4, depth / 2 - 0.4)
+        lx = -width / 2 + 0.55 + (k % cols) * (width - 1.1) / max(cols - 1, 1) + rng.uniform(-0.2, 0.2)
+        lz = -depth / 2 + 0.5 + ((k // cols) % rows) * (depth - 1.0) / max(rows - 1, 1) + rng.uniform(-0.2, 0.2)
         w = apply(r, (lx, 0, lz))
-        h = rng.uniform(0.7, 1.3)
-        kids.append(part(f"Stem{k}", (0.16, h, 0.16), (x + w[0], y + 0.7 + h / 2, z + w[2]), (70, 120, 50), "Grass",
-                         collide=False, query=False, shadow=False))
-        kids.append(part(f"Bloom{k}", (0.55, 0.45, 0.55), (x + w[0], y + 0.7 + h + 0.15, z + w[2]),
-                         rng.choice(FLOWER_COLORS), "SmoothPlastic", shape="Ball", collide=False, query=False,
-                         shadow=False))
+        fx, fz = x + w[0], z + w[2]
+        h = rng.uniform(0.8, 1.4)
+        color = rng.choice(FLOWER_COLORS)
+        common = dict(collide=False, query=False, shadow=False)
+        kids.append(part(f"Stem{k}", (0.14, h, 0.14), (fx, y + 0.7 + h / 2, fz), (70, 120, 50), "Grass", **common))
+        kids.append(part(f"Leaf{k}", (0.7, 0.08, 0.3), (fx + 0.3, y + 0.7 + h * 0.45, fz), (86, 138, 58), "Grass",
+                         mul(rot_y(rng.uniform(0, 180)), rot_z(20)), **common))
+        if k % 3 == 2:  # tulip
+            kids.append(part(f"Bloom{k}", (0.5, 0.75, 0.5), (fx, y + 0.7 + h + 0.3, fz), color, "SmoothPlastic",
+                             shape="Ball", **common))
+        else:  # daisy: flat petal disc tilted slightly toward the sun, dark centre on top
+            tilt = mul(rot_y(rng.uniform(0, 360)), rot_x(rng.uniform(8, 22)))
+            kids.append(part(f"Petals{k}", (0.08, 0.95, 0.95), (fx, y + 0.7 + h, fz), color, "SmoothPlastic",
+                             mul(tilt, rot_z(90)), shape="Cylinder", **common))
+            kids.append(part(f"Centre{k}", (0.32, 0.22, 0.32), (fx, y + 0.7 + h + 0.08, fz), (255, 214, 80),
+                             "SmoothPlastic", tilt, shape="Ball", **common))
     return model(name, kids, attrs={"FlowerBed": True, "BedX": x, "BedY": y + 2.0, "BedZ": z})
 
 
@@ -1302,10 +1329,7 @@ def build_hub(rng):
         visual.append(part(f"SpawnRune{k}", (1.0, 0.12, 1.0), (math.cos(a) * 5.0, HUB_Y + 0.56, -40 + math.sin(a) * 5.0),
                            (140, 220, 240), "Neon", rot_y(45 + math.degrees(a)), collide=False, query=False, shadow=False,
                            transparency=0.2))
-    for k in range(4):
-        a = math.radians(45 + 90 * k)
-        visual.append(lamp_post(f"SpawnLamp{k}", math.cos(a) * 11.5, HUB_Y, -40 + math.sin(a) * 11.5,
-                                yaw_facing(-math.cos(a), -math.sin(a))))
+
     visual.append(sign("TravelBoard", -16, HUB_Y, -44, yaw_facing(1, 0), 7, 5, "Travel", "Waystones you have found"))
     visual.append(waystone("HubWaystone", "HubSpawn", -16, HUB_Y, -36))
 
@@ -1353,6 +1377,9 @@ def build_hub(rng):
     visual.append(timber_house("HouseNW2", -48, -26, -88, -68, HUB_Y, 10, "S", rng, wall_color=(206, 184, 150),
                                roof_color=(90, 64, 48), door=True))
     visual.append(timber_house("HouseSW", -86, -64, 66, 90, HUB_Y, 10, "E", rng, roof_color=(96, 58, 46), door=True))
+    visual.append(timber_house("HouseSE", 46, 68, 76, 94, HUB_Y, 10, "W", rng, wall_color=(214, 196, 158),
+                               roof_color=(84, 60, 50), door=True))
+    visual.append(barrel("BarrelSE", 70, HUB_Y, 92, rng))
     visual.append(woodpile("WoodpileNW", -58, HUB_Y, -84, 0, rng))
     visual.append(crate_stack("CratesNW", -22, HUB_Y, -76, rng))
     visual.append(barrel("BarrelNW1", -52, HUB_Y, -66, rng))
@@ -1404,11 +1431,11 @@ def build_hub(rng):
                            collide=False))
     # Bushes, stumps and boulders soften the edges.
     for k, (x, z) in enumerate(((-92, -40), (-92, 30), (92, -30), (92, 40), (-30, 92), (30, 92), (-60, -92), (60, -92),
-                                (-40, -60), (44, -70), (70, 70), (-70, 50), (-94, 62), (94, 90), (-26, 84))):
+                                (-40, -60), (44, -70), (76, 64), (-70, 50), (-94, 62), (94, 90), (-26, 84))):
         visual.append(bush(f"Bush{k:02d}", x, HUB_Y, z, rng, scale=rng.uniform(0.9, 1.5)))
     for k, (x, z) in enumerate(((-78, -52), (28, -74), (-24, 20), (44, 62))):
         visual.append(stump(f"Stump{k}", x, HUB_Y, z, rng))
-    for k, (x, z) in enumerate(((-94, -20), (94, -62), (-50, 94), (66, 94), (-94, 86))):
+    for k, (x, z) in enumerate(((-94, -20), (94, -62), (-50, 94), (82, 94), (-94, 86))):
         visual.append(rock_cluster(f"HubBoulder{k}", x, HUB_Y, z, rng, color=HUB_ROCK_DARK, size=0.9))
     visual.append(well("Well", -50, HUB_Y, 48, rng))
 
@@ -1464,7 +1491,7 @@ def build_hub(rng):
                   (40, 70), (86, 16), (30, 26), (-88, 12), (-40, 90)]
     for k, (x, z) in enumerate(tree_spots):
         visual.append(tree(f"Tree{k:02d}", x, HUB_Y, z, rng))
-    lamps = [(-11, -70), (11, -28), (-11, 34), (11, 78), (-34, 11), (-90, 11), (34, -11), (78, 11)]
+    lamps = [(-11, -70), (11, 78), (-90, 11), (78, 11)]  # one per road; more crowded the plaza
     for k, (x, z) in enumerate(lamps):
         visual.append(lamp_post(f"Lamp{k}", x, HUB_Y, z, yaw_facing(-x, 0) if abs(x) < 20 else yaw_facing(0, -z)))
     return ground, visual, proxies
