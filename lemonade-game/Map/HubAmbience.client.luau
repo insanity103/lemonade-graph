@@ -16,6 +16,21 @@ if not hub then
 	warn("[HubAmbience] Hub model never streamed in; ambience idle")
 	return
 end
+
+-- One animator per rig. If this script ever runs twice (a stale duplicate in the place, a
+-- respawn quirk), the second copy must not fight the first over the same parts: each routine
+-- claims its model with an attribute and skips if it is already claimed.
+local RUN_ID = string.format("%x", math.floor(os.clock() * 1000) % 0xFFFFFF)
+print("[HubAmbience] run " .. RUN_ID)
+local function claim(model: Instance, what: string): boolean
+	local owner = model:GetAttribute("AmbienceOwner")
+	if owner and owner ~= RUN_ID then
+		warn(string.format("[HubAmbience] %s already animated by run %s; this run (%s) leaves it alone", what, tostring(owner), RUN_ID))
+		return false
+	end
+	model:SetAttribute("AmbienceOwner", RUN_ID)
+	return true
+end
 local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
 local NpcOutfits = require(ReplicatedStorage:WaitForChild("NpcOutfits"))
 
@@ -216,6 +231,7 @@ local function trainerRoutine()
 		warn("[HubAmbience] Skill Trainer rig is missing body parts; practice routine idle")
 		return
 	end
+	if not claim(model, "Skill Trainer") then return end
 	local backSword = model:FindFirstChild("BackSword")
 	local backGuard = model:FindFirstChild("BackSwordGuard")
 	print("[HubAmbience] Skill Trainer practice routine running")
@@ -506,7 +522,14 @@ local function villagerRoutine(index: number)
 		end
 	end
 end
-for i = 1, VILLAGER_COUNT do
+local existingVillagers = 0
+for _, child in ipairs(workspace.CurrentCamera:GetChildren()) do
+	if child.Name == "Villager" then existingVillagers += 1 end
+end
+if existingVillagers > 0 then
+	warn("[HubAmbience] villagers already present (" .. existingVillagers .. "); not spawning more")
+end
+for i = 1, (existingVillagers > 0 and 0 or VILLAGER_COUNT) do
 	task.spawn(function()
 		local ok, err = pcall(villagerRoutine, i)
 		if not ok then warn("[HubAmbience] villager " .. i .. " stopped: " .. tostring(err)) end
@@ -527,6 +550,7 @@ local function smithRoutine(forge: Model)
 	end
 	local parts = rigParts(model)
 	if not parts then return end
+	if not claim(model, "Relic Blacksmith") then return end
 	local home = model.PrimaryPart.CFrame
 	local prompt = model.PrimaryPart:FindFirstChildOfClass("ProximityPrompt")
 	-- The shop prompt stays usable while he works (it follows him to the anvil). Using it
@@ -597,6 +621,8 @@ local function smithRoutine(forge: Model)
 end
 for _, model in ipairs(map:GetDescendants()) do
 	if model:IsA("Model") and model:GetAttribute("Forge") == true then
+		if model:GetAttribute("AmbienceOwner") and model:GetAttribute("AmbienceOwner") ~= RUN_ID then continue end
+		model:SetAttribute("AmbienceOwner", RUN_ID)
 		task.spawn(function()
 			local ok, err = pcall(smithRoutine, model)
 			if not ok then warn("[HubAmbience] smith routine stopped: " .. tostring(err)) end
