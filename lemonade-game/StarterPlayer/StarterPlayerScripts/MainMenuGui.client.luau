@@ -11,7 +11,6 @@ local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
 local spendEvent = remotes:WaitForChild("SpendSkillPoint")
 local inventoryAction = remotes:WaitForChild("InventoryAction")
 local toggleAutoSellRemote = remotes:WaitForChild("ToggleAutoSell")
-local toggleAutoAttackRemote = remotes:WaitForChild("ToggleAutoAttack")
 local rebirthResultRemote = remotes:WaitForChild("RebirthResult")
 
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
@@ -725,77 +724,6 @@ local function buildSettingsPanel()
 	end
 
 	-- ═══════════════════════════════════════════════
-	--  1. AUTO-ATTACK TOGGLE
-	-- ═══════════════════════════════════════════════
-	local autoAttackOn = player:GetAttribute("AutoAttack") == true
-	local aaRow = createSettingRow(56, 1)
-	addPadding(aaRow, 6, 12, 6, 12)
-
-	local aaIcon = Instance.new("ImageLabel")
-	aaIcon.Size = UDim2.fromOffset(24, 24)
-	aaIcon.Position = UDim2.fromOffset(2, 10)
-	aaIcon.BackgroundTransparency = 1
-	aaIcon.Image = ICONS.Target
-	aaIcon.ScaleType = Enum.ScaleType.Fit
-	aaIcon.ZIndex = 24
-	aaIcon.Parent = aaRow
-
-	createText(aaRow, {
-		text = "Auto-Attack",
-		font = Enum.Font.GothamBold,
-		size = 14,
-		color = COLORS.Text,
-		pos = UDim2.fromOffset(34, 4),
-		size2 = UDim2.new(1, -145, 0, 18),
-		zIndex = 24
-	})
-
-	createText(aaRow, {
-		text = "Automatically seek and attack enemies",
-		font = Enum.Font.Gotham,
-		size = 11,
-		color = COLORS.Muted,
-		pos = UDim2.fromOffset(34, 24),
-		size2 = UDim2.new(1, -145, 0, 18),
-		wrap = true,
-		zIndex = 24
-	})
-
-	local aaToggleBtn = Instance.new("TextButton")
-	aaToggleBtn.Size = UDim2.fromOffset(100, 32)
-	aaToggleBtn.Position = UDim2.new(1, -100, 0.5, -16)
-	aaToggleBtn.BackgroundColor3 = autoAttackOn and COLORS.Success or COLORS.Button
-	aaToggleBtn.BorderSizePixel = 0
-	aaToggleBtn.Font = Enum.Font.GothamBold
-	aaToggleBtn.TextColor3 = autoAttackOn and Color3.fromRGB(15, 20, 15) or COLORS.Text
-	aaToggleBtn.TextSize = 13
-	aaToggleBtn.Text = autoAttackOn and "ON (ACTIVE)" or "OFF"
-	aaToggleBtn.ZIndex = 24
-	aaToggleBtn.Parent = aaRow
-	aaToggleBtn.AutoButtonColor = false
-	addCorner(aaToggleBtn, 8)
-	addStroke(aaToggleBtn, autoAttackOn and Color3.fromRGB(120, 255, 170) or COLORS.StrokeBright, 0.3, 1)
-
-	aaToggleBtn.MouseEnter:Connect(function()
-		aaToggleBtn.BackgroundColor3 = autoAttackOn and Color3.fromRGB(100, 230, 155) or COLORS.ButtonHover
-	end)
-	aaToggleBtn.MouseLeave:Connect(function()
-		aaToggleBtn.BackgroundColor3 = autoAttackOn and COLORS.Success or COLORS.Button
-	end)
-
-	aaToggleBtn.Activated:Connect(function()
-		autoAttackOn = not autoAttackOn
-		player:SetAttribute("AutoAttack", autoAttackOn)
-		toggleAutoAttackRemote:FireServer(autoAttackOn)
-		aaToggleBtn.Text = autoAttackOn and "ON (ACTIVE)" or "OFF"
-		aaToggleBtn.TextColor3 = autoAttackOn and Color3.fromRGB(15, 20, 15) or COLORS.Text
-		aaToggleBtn.BackgroundColor3 = autoAttackOn and COLORS.Success or COLORS.Button
-		addStroke(aaToggleBtn, autoAttackOn and Color3.fromRGB(120, 255, 170) or COLORS.StrokeBright, 0.3, 1)
-		aaRow.BackgroundColor3 = autoAttackOn and Color3.fromRGB(30, 48, 36) or COLORS.PanelLight
-		addStroke(aaRow, autoAttackOn and Color3.fromRGB(90, 220, 140) or COLORS.Stroke, 0.4, 1)
-	end)
-
-	-- ═══════════════════════════════════════════════
 	--  2. MUSIC VOLUME SLIDER
 	-- ═══════════════════════════════════════════════
 	local musicVolume = player:GetAttribute("MusicVolume")
@@ -1171,7 +1099,7 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if input.KeyCode == Enum.KeyCode.M then toggleMenu() end
 end)
 
-local attrsToWatch = { 'Gold', 'SkillPoints', 'Strength', 'Health', 'Defense', 'ExperienceGain', 'AutoSellLowerSwords', 'Rebirths', 'RebirthRequirement', 'AutoAttack', 'ShowDamageNumbers', 'MusicVolume' }
+local attrsToWatch = { 'Gold', 'SkillPoints', 'Strength', 'Health', 'Defense', 'ExperienceGain', 'AutoSellLowerSwords', 'Rebirths', 'RebirthRequirement', 'ShowDamageNumbers', 'MusicVolume' }
 for _, attr in ipairs(attrsToWatch) do
 	player:GetAttributeChangedSignal(attr):Connect(function()
 		refreshTopBar(); refreshSkills(); refreshHomeStats()
@@ -1179,7 +1107,7 @@ for _, attr in ipairs(attrsToWatch) do
 			buildInventoryPanel()
 		elseif (attr == 'Rebirths' or attr == 'RebirthRequirement') and activeTab == 'Rebirth' and panelOpen then
 			buildRebirthPanel()
-		elseif (attr == 'AutoAttack' or attr == 'ShowDamageNumbers' or attr == 'MusicVolume') and activeTab == 'Settings' and panelOpen then
+		elseif (attr == 'ShowDamageNumbers' or attr == 'MusicVolume') and activeTab == 'Settings' and panelOpen then
 			buildSettingsPanel()
 		end
 	end)

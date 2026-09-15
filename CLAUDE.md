@@ -1,3 +1,14 @@
+# Current implementation direction
+
+Read [CLAUDE_IMPLEMENTATION_HANDOFF.md](CLAUDE_IMPLEMENTATION_HANDOFF.md) first.
+It contains the user's September 15 map/gameplay brief, recording findings, complete plan,
+current working baseline, implementation sequence, and acceptance criteria.
+
+The active default Rojo project is gameplay-only on the user's existing baseplate.
+`lemonade-game/Gameplay/WorldLayout.luau` is its WorldLayout module, NOT the legacy
+ServerScriptService/WorldLayout.luau. Preserve this baseline while building the new map in
+a separate project. The older Fivefold Sanctuary layout is historical, not the new target.
+
 ## graphify
 
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.

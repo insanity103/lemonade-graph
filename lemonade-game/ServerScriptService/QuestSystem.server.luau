@@ -5,6 +5,7 @@ local Workspace = game:GetService("Workspace")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
+local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
 local QUEST_ACCEPT = remotes:WaitForChild("QuestAccept")
@@ -413,6 +414,14 @@ end)
 -- ── NPC Quest Giver ──────────────────────────────────────────────────────
 
 task.defer(function()
+	if WorldLayout.BLANK_SLATE then return end
+	if WorldLayout.GAMEPLAY_ONLY then
+		local actors = require(script.Parent:WaitForChild("GameplayActors"))
+		if not WorldLayout.HUB.QuestGiverPosition then return end -- map lacks the marker: quest giver idle
+		actors.create(QuestConfig.GIVER_NAME, WorldLayout.HUB.QuestGiverPosition, QuestConfig.GIVER_COLOR,
+			{ facing = WorldLayout.HUB.QuestGiverCFrame, subtitle = "Press E to talk" })
+		return
+	end
 	-- The imported map ships a modeled NPC_QuestGiver at this anchor. Building the
 	-- block-part placeholder too would stack two bodies in the same spot, so the
 	-- placeholder only stands in while the map is still the procedural fallback.

@@ -616,6 +616,30 @@ local function getQuestMasterPosition()
 	return QuestConfig.GIVER_POSITION
 end
 
+-- Talking uses a ProximityPrompt on the Quest Master: prompts take their key before the
+-- ContextActionService Attack binding on E, and they work for touch and gamepad too.
+local questPrompt = nil
+local interactWithNPC -- defined below; the prompt callback runs later, once it exists
+local function ensureQuestPrompt()
+	local npc = Workspace:FindFirstChild(QuestConfig.GIVER_NAME)
+	local root = npc and (npc:FindFirstChild("HumanoidRootPart") or npc.PrimaryPart)
+	if not root or (questPrompt and questPrompt.Parent == root) then return end
+	questPrompt = Instance.new("ProximityPrompt")
+	questPrompt.Name = "QuestPrompt"
+	questPrompt.ActionText = "Talk"
+	questPrompt.ObjectText = QuestConfig.GIVER_NAME
+	questPrompt.HoldDuration = 0
+	questPrompt.MaxActivationDistance = INTERACT_RANGE
+	questPrompt.RequiresLineOfSight = false
+	questPrompt.Parent = root
+	questPrompt.Triggered:Connect(function()
+		if not interactionOpen then
+			npcNearby = true
+			interactWithNPC()
+		end
+	end)
+end
+
 local function checkProximity()
 	local character = player.Character
 	if not character then
@@ -634,15 +658,14 @@ local function checkProximity()
 	npcNearby = dist <= INTERACT_RANGE
 
 	if npcNearby and not wasNear then
-		promptFrame.Visible = true
-		TweenService:Create(promptFrame, TweenInfo.new(0.2), { BackgroundTransparency = 0.05 }):Play()
+		ensureQuestPrompt()
 	elseif not npcNearby and wasNear then
 		promptFrame.Visible = false
 		if interactionOpen then closeDialog() end
 	end
 end
 
-local function interactWithNPC()
+function interactWithNPC()
 	if not npcNearby or interactionOpen then return end
 
 	-- Determine what to show
@@ -717,9 +740,7 @@ dialogOverlay.Activated:Connect(closeDialog)
 
 UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
-	if input.KeyCode == Enum.KeyCode.E and npcNearby and not interactionOpen then
-		interactWithNPC()
-	elseif input.KeyCode == Enum.KeyCode.Escape and interactionOpen then
+	if input.KeyCode == Enum.KeyCode.Escape and interactionOpen then
 		closeDialog()
 	end
 end)

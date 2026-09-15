@@ -12,6 +12,11 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 local MapAnchors = require(script.Parent:WaitForChild("MapAnchors"))
 
+if WorldLayout.BLANK_SLATE then
+	print("[RebirthStation] Blank slate active; rebirth station disabled")
+	return
+end
+
 local map = Workspace:WaitForChild(WorldLayout.MAP_MODEL_NAME, 20)
 if not map or map:GetAttribute("MapRedesignVersion") ~= MapAnchors.Version then
 	print("[RebirthStation] Imported map not present; rebirth prompt idle (menu button still works)")

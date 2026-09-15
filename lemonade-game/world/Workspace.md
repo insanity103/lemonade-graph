@@ -5,12 +5,10 @@ Roblox service in place `game` (PlaceId 108354544637319). 147 descendant instanc
 Every instance below is a live object in the game hierarchy. Paths are Roblox instance paths; `Referenced by script(s)` lists the Luau source files that mention the instance by name.
 
 > Runtime layout v3: this file retains the original edit-mode export for provenance. At server start,
-> `ServerScriptService/WorldLayout` clears and rebuilds Terrain, restores Baseplate to the classic
-> 512×20×512 visible state, resets SpawnLocation, creates a safe hub, and replaces the old boss-room,
-> tree, and boulder layout. One gently ascending S-curve trail visits Iron Lowlands (level 1),
-> Frostbound Glacier (15), Infernal Caldera (30), Void Rift (50), and Celestial Summit (75). The
-> regions use authored ridges, biome transitions, clustered decor, and visible landmarks instead of
-> isolated square terrain pads and straight radial ramps.
+> `ServerScriptService/WorldLayout` currently runs in blank-slate mode: it clears Terrain, disables
+> terrain decoration, removes imported/generated map visuals, restores a classic 512×20×512 plastic
+> Baseplate, and resets SpawnLocation. The previous authored landscape is retained in Git history for
+> future map work.
 
 ## `Workspace/DayCycle` — Script
 Source file: `Workspace/DayCycle.server.luau` (220 lines)

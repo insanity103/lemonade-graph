@@ -29,6 +29,14 @@ local ENEMY_DAMAGE_MULTIPLIER = 0.55
 local ENEMY_HIT_INTERVAL_PER_PLAYER = 0.7 -- prevents several enemies landing damage on one frame
 local ATTACK_COOLDOWN = 0.4
 local RESPAWN_DELAY = 5
+-- Enemy swings telegraph before they land: damage resolves when the blade comes down, and only
+-- if the target is still within reach (+ grace for movement during the swing). Heavy hitters
+-- (slow attack cycles) wind up longer. Archetypes may override with `windup`.
+local ENEMY_WINDUP = 0.32 -- [TUNING] seconds from raise to impact for ordinary attackers
+local HEAVY_WINDUP = 0.5 -- [TUNING] attackCooldown >= HEAVY_COOLDOWN
+local HEAVY_COOLDOWN = 1.6
+local CHOP_TIME = 0.12
+local HIT_GRACE = 1.5 -- [TUNING] studs beyond attackReach that still count at impact
 local DEFAULT_ARCHETYPE = "IronSquire"
 
 -- Classic Shirt/Pants texture pairs per boss family, so every archetype in a zone
@@ -61,12 +69,10 @@ local MOVE_COMMAND_INTERVAL = 0.35
 local MOVE_TARGET_EPSILON = 2
 
 local ATTACK_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("EnemyAttack")
-local TOGGLE_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToggleAutoAttack")
 local DAMAGE_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("DamageNumber")
 
 local playerCooldowns = {}
 local playerEnemyHitAt = {}
-local autoAttackState = {} -- [player] = bool (auto-attack on/off)
 
 -- ==============================================================================
 -- 1. ENEMY & BOSS ARCHETYPES CONFIGURATION
@@ -727,6 +733,45 @@ local function createEnemyRig(archetypeKey, spawnPosition, level)
 			}):Play()
 			hpText.Text = string.format("%d / %d", math.max(0, math.floor(newHp)), humanoid.MaxHealth)
 		end)
+	else
+		-- Ordinary enemies get a compact plate too: name, level and health, readable at fighting
+		-- distance and hidden beyond it so a room full of enemies stays uncluttered.
+		local bb = Instance.new("BillboardGui")
+		bb.Name = "NameTag"
+		bb.Size = UDim2.fromOffset(150, 30)
+		bb.StudsOffsetWorldSpace = Vector3.new(0, 2.2 * s, 0)
+		bb.AlwaysOnTop = false
+		bb.MaxDistance = 60 -- [TUNING]
+		bb.Parent = head
+
+		local lbl = Instance.new("TextLabel")
+		lbl.Name = "Title"
+		lbl.BackgroundTransparency = 1
+		lbl.Size = UDim2.new(1, 0, 0, 16)
+		lbl.Font = Enum.Font.GothamBold
+		lbl.TextSize = 13
+		lbl.TextColor3 = Color3.fromRGB(240, 120, 110)
+		lbl.TextStrokeTransparency = 0.3
+		lbl.TextStrokeColor3 = Color3.fromRGB(10, 10, 15)
+		lbl.Text = string.format("%s  Lv %d", arch.name, level)
+		lbl.Parent = bb
+
+		local hpBg = Instance.new("Frame")
+		hpBg.Size = UDim2.new(0.7, 0, 0, 6)
+		hpBg.Position = UDim2.new(0.15, 0, 0, 19)
+		hpBg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+		hpBg.BorderSizePixel = 0
+		hpBg.Parent = bb
+
+		local hpFill = Instance.new("Frame")
+		hpFill.Size = UDim2.new(1, 0, 1, 0)
+		hpFill.BackgroundColor3 = Color3.fromRGB(220, 70, 60)
+		hpFill.BorderSizePixel = 0
+		hpFill.Parent = hpBg
+
+		humanoid.HealthChanged:Connect(function(newHp)
+			hpFill.Size = UDim2.new(math.clamp(newHp / humanoid.MaxHealth, 0, 1), 0, 1, 0)
+		end)
 	end
 
 	-- Attributes and tags
@@ -811,21 +856,27 @@ local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 	end
 end
 
-local function swingWeapon(model)
+local function getWindup(arch)
+	return arch.windup or (arch.attackCooldown >= HEAVY_COOLDOWN and HEAVY_WINDUP or ENEMY_WINDUP)
+end
+
+-- Plays the raise-and-chop swing and returns the seconds until the blade lands.
+local function swingWeapon(model, arch)
+	local windup = getWindup(arch)
 	local torso = model:FindFirstChild("Torso")
 	local shoulder = torso and torso:FindFirstChild("Right Shoulder")
 	if not (shoulder and shoulder:IsA("Motor6D")) then
-		return
+		return windup
 	end
 	local base = shoulder:GetAttribute("BaseC0")
 	if not base or shoulder:GetAttribute("Swinging") then
-		return
+		return windup
 	end
 	shoulder:SetAttribute("Swinging", true)
 
-	local raise = TweenService:Create(shoulder, TweenInfo.new(0.20, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+	local raise = TweenService:Create(shoulder, TweenInfo.new(windup - CHOP_TIME, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
 		{ C0 = base * CFrame.Angles(math.rad(-120), 0, 0) })
-	local chop = TweenService:Create(shoulder, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+	local chop = TweenService:Create(shoulder, TweenInfo.new(CHOP_TIME, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
 		{ C0 = base * CFrame.Angles(math.rad(35), 0, 0) })
 	local recover = TweenService:Create(shoulder, TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 		{ C0 = base })
@@ -840,6 +891,7 @@ local function swingWeapon(model)
 			end)
 		end)
 	end)
+	return windup
 end
 
 local function startEnemyAI(model, humanoid, hrp, arch, spawnPos, level, onDeath)
@@ -935,12 +987,21 @@ task.spawn(function()
 					commandMove(state, humanoid, state.spawnPos, now)
 				elseif targetDist <= arch.attackReach then
 					commandMove(state, humanoid, hrp.Position, now)
-					if now - state.lastAttackTime >= arch.attackCooldown then
+					if now - state.lastAttackTime >= arch.attackCooldown and not state.windingUp then
 						state.lastAttackTime = now
-						-- Every enemy telegraphs its swing so the player can react before
-						-- damage lands; boss weapons still use their distinct blade pose.
-						swingWeapon(model)
-						applyEnemyDamageToPlayer(model, state.targetChar, arch, level)
+						state.windingUp = true
+						local target = state.targetChar
+						-- Every enemy telegraphs its swing; damage waits for the chop so a player
+						-- who reads the raise can step out of reach.
+						task.delay(swingWeapon(model, arch), function()
+							state.windingUp = false
+							local root = model.PrimaryPart
+							local targetRoot = target and target:FindFirstChild("HumanoidRootPart")
+							if humanoid.Health > 0 and model.Parent and root and targetRoot
+								and (targetRoot.Position - root.Position).Magnitude <= arch.attackReach + HIT_GRACE then
+								applyEnemyDamageToPlayer(model, target, arch, level)
+							end
+						end)
 					end
 				else
 					commandMove(state, humanoid, targetHrp.Position, now)
@@ -953,7 +1014,9 @@ task.spawn(function()
 				local _, pChar, pHrp = findNearestLivingPlayer(hrp.Position, arch.aggroRange)
 				-- Refuse to acquire a target standing in the sanctuary, so enemies never
 				-- line up on players who are shopping, questing or rebirthing.
-				if pChar and pHrp and SafeHub.canEnemyAttack(hrp.Position, pHrp.Position) then
+				-- ...and only players they can actually see, so nothing aggroes through cliffs or walls.
+				if pChar and pHrp and SafeHub.canEnemyAttack(hrp.Position, pHrp.Position)
+					and CombatUtil.hasLineOfSight(hrp.Position, pHrp.Position, { model, pChar }) then
 					state.mode = "CHASE"
 					state.targetChar = pChar
 				end
@@ -989,6 +1052,15 @@ local function spawnEnemy(config)
 	end
 	if config.role then
 		model:SetAttribute("SpawnRole", config.role)
+	end
+	if config.role == "elite" then
+		local head = model:FindFirstChild("Head")
+		local tag = head and head:FindFirstChild("NameTag")
+		local title = tag and tag:FindFirstChild("Title")
+		if title then
+			title.Text = "Elite " .. title.Text
+			title.TextColor3 = Color3.fromRGB(255, 200, 90)
+		end
 	end
 	startEnemyAI(model, humanoid, hrp, arch, groundedPos, config.level, function()
 		task.delay(RESPAWN_DELAY, function()
@@ -1108,31 +1180,9 @@ end
 
 ATTACK_REMOTE.OnServerEvent:Connect(tryUnarmedAttack)
 
-TOGGLE_REMOTE.OnServerEvent:Connect(function(player, enabled)
-	if enabled == nil then
-		enabled = not autoAttackState[player]
-	end
-	autoAttackState[player] = enabled == true
-	print(string.format("[EnemyCombat] %s auto-attack %s", player.Name, autoAttackState[player] and "ON" or "OFF"))
-end)
-
-task.spawn(function()
-	while true do
-		task.wait(ATTACK_COOLDOWN)
-		for player, on in pairs(autoAttackState) do
-			if on and player.Parent then
-				-- Tool auto-attacks are driven by the equipped Tool's server script. This
-				-- loop covers unarmed players only, avoiding a second hit every swing.
-				tryUnarmedAttack(player)
-			end
-		end
-	end
-end)
-
 Players.PlayerRemoving:Connect(function(player)
 	playerCooldowns[player] = nil
 	playerEnemyHitAt[player] = nil
-	autoAttackState[player] = nil
 end)
 
 -- Spawn positions come from the anchor contract that also places the arenas and
@@ -1155,4 +1205,4 @@ end
 
 print(string.format("[EnemyCombat] %d enemies across %d arenas and %d field groups (%d skipped) | world: %s",
 	spawned, #WorldLayout.ZONES, #WorldLayout.FIELD_SPAWNS, skipped,
-	WorldLayout.IsImportedMap() and "imported" or "fallback"))
+	WorldLayout.MODE or (WorldLayout.IsImportedMap() and "imported" or "fallback")))

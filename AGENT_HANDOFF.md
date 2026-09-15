@@ -1,5 +1,9 @@
 # AI Agent Handoff Guide
 
+> **Current task (2026-09-15):** Read [CLAUDE_IMPLEMENTATION_HANDOFF.md](CLAUDE_IMPLEMENTATION_HANDOFF.md)
+> before the historical overview below. The new Legendary Swords inspired plan supersedes the
+> old map direction. The active gameplay-only baseline is documented in [GAMEPLAY_ONLY.md](GAMEPLAY_ONLY.md).
+
 > **Purpose**: This document is your onboarding when you pull `lemonade-graph`. Read it top to bottom before touching any code. It tells you what exists, where to find it, what the research says, and what rules you must never break.
 
 ---
