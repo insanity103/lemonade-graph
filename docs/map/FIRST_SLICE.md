@@ -25,7 +25,7 @@ whenever `MapMarkers` and `Workspace.LemonadeMap/Markers` are both present.
 | Project | Adds | Mode |
 | --- | --- | --- |
 | `default.project.json` | gameplay only (18 server, 13 client) | baseplate |
-| `map.project.json` | default + `Workspace.LemonadeMap`, `MapMarkers`, `MapTravel`, `MapClient` | map |
+| `map.project.json` | default + `Workspace.LemonadeMap`, `MapMarkers`, `MapTravel`, `MapClient`, `HubAmbience` | map |
 
 `tools/check_map_project.py` fails if `map.project.json` drops or changes any default mapping.
 
@@ -109,6 +109,17 @@ nearest living quest enemy or the boss, depending on quest state.
 
 Balance note from the footage: leveling is very fast (Lv 13 at the boss, Lv 24 after its XP).
 Boss XP and the level curve need a tuning pass before Briarwood exists.
+
+## Playtest 2 changes (2026-09-15)
+
+- Removed the Iron Lowlands arch and signs at the pass; the hub gate already names the region.
+- Sword monument assembled along its tilted axis (the hilt floated beside the blade).
+- Quest Master stall; well rebuilt as a round stone rim with winch, bucket and a roof on posts.
+- Rebirth shrine: hologram sword projector instead of the floating crystal.
+- Waystones are glowing crystal clusters; the travel prompt sits on an invisible `PromptAnchor`.
+- Doorway mid rails no longer cross the opening.
+- `HubAmbience` (client, map only): Skill Trainer walks to a dummy, swings a practice sword and
+  returns; hologram spins and flickers; waystone splinters orbit.
 
 ## Known limitations / next
 

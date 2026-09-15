@@ -378,16 +378,25 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
         if side == front and open_front:
             continue
         pad = 0.25
+        mid0, mid1 = y + 0.8 + wall_h * 0.45, y + 0.8 + wall_h * 0.45 + 0.7
+        # The mid rail stops either side of the doorway; a full rail crossed the opening at
+        # chest height and players walked straight through it.
         if side in "NS":
             bz = b0 - pad if side == "N" else b1 + pad
             kids.append(box(f"TopBeam{side}", a0, a1, top - 0.9, top, bz - 0.3, bz + 0.3, BEAM, "Wood", collide=False))
-            kids.append(box(f"MidBeam{side}", a0, a1, y + 0.8 + wall_h * 0.45, y + 0.8 + wall_h * 0.45 + 0.7,
-                            bz - 0.3, bz + 0.3, BEAM, "Wood", collide=False))
+            spans = [(a0, a1)] if side != front else [(a0, (a0 + a1) / 2 - door_w / 2), ((a0 + a1) / 2 + door_w / 2, a1)]
+            for si, (m0, m1) in enumerate(spans):
+                if m1 - m0 > 0.2:
+                    kids.append(box(f"MidBeam{side}{si}", m0, m1, mid0, mid1, bz - 0.3, bz + 0.3, BEAM, "Wood",
+                                    collide=False))
         else:
             bx = a0 - pad if side == "W" else a1 + pad
             kids.append(box(f"TopBeam{side}", bx - 0.3, bx + 0.3, top - 0.9, top, b0, b1, BEAM, "Wood", collide=False))
-            kids.append(box(f"MidBeam{side}", bx - 0.3, bx + 0.3, y + 0.8 + wall_h * 0.45,
-                            y + 0.8 + wall_h * 0.45 + 0.7, b0, b1, BEAM, "Wood", collide=False))
+            spans = [(b0, b1)] if side != front else [(b0, (b0 + b1) / 2 - door_w / 2), ((b0 + b1) / 2 + door_w / 2, b1)]
+            for si, (m0, m1) in enumerate(spans):
+                if m1 - m0 > 0.2:
+                    kids.append(box(f"MidBeam{side}{si}", bx - 0.3, bx + 0.3, mid0, mid1, m0, m1, BEAM, "Wood",
+                                    collide=False))
     # Gable roof, ridge along the longer axis, built from two tilted slabs + stepped gable fill.
     span_x, span_z = x1 - x0, z1 - z0
     pitch = 34.0
@@ -470,6 +479,40 @@ def gate(name, cx, y, cz, yaw, width, height, title, subtitle, sealed, stone=STO
         kids.append(part("SealProxy", (width + 0.5, height, 2), (cx, y + height / 2, cz), (255, 0, 255),
                          transparency=1, query=False, shadow=False, rot=r, layer="proxy"))
     return model(name, kids, attrs={"Region": region, "Sealed": sealed, "RequiredLevel": required_level})
+
+
+HOLO = (110, 220, 255)
+
+
+def hologram_sword(name, x, floor_y, z):
+    """Projector on the shrine dais with a translucent sword image floating above it.
+
+    HubAmbience (client) spins and bobs every part named Holo* around the model's HoloAxis
+    attribute point and flickers their transparency; the projector stays still.
+    """
+    center_y = floor_y + 6.8
+    holo = dict(collide=False, query=False, shadow=False, layer="prop")
+    kids = [
+        part("ProjectorBase", (0.6, 4.2, 4.2), (x, floor_y + 0.3, z), IRON, "Metal", rot_z(90), shape="Cylinder",
+             collide=False),
+        part("ProjectorLens", (0.3, 2.4, 2.4), (x, floor_y + 0.75, z), HOLO, "Neon", rot_z(90), shape="Cylinder",
+             collide=False, query=False, shadow=False, children=[light(16, 1.2, HOLO)]),
+        part("ProjectorBeam", (3.8, 1.8, 1.8), (x, floor_y + 2.8, z), HOLO, "Neon", rot_z(90), shape="Cylinder",
+             transparency=0.88, **holo),
+        # The sword, tip down: blade, fuller, crossguard, grip, pommel.
+        part("HoloBlade", (0.35, 6.4, 1.5), (x, center_y - 0.6, z), HOLO, "ForceField", transparency=0.15, **holo),
+        part("HoloEdge", (0.2, 6.6, 1.7), (x, center_y - 0.6, z), (200, 245, 255), "Neon", transparency=0.7, **holo),
+        part("HoloTip", (0.35, 1.06, 1.06), (x, center_y - 3.8, z), HOLO, "ForceField", rot_x(45),
+             transparency=0.15, **holo),
+        part("HoloGuard", (0.6, 0.5, 4.6), (x, center_y + 2.85, z), HOLO, "Neon", transparency=0.45, **holo),
+        part("HoloGrip", (0.5, 1.9, 0.5), (x, center_y + 4.05, z), HOLO, "ForceField", transparency=0.2, **holo),
+        part("HoloPommel", (0.9, 0.9, 0.9), (x, center_y + 5.3, z), HOLO, "Neon", shape="Ball", transparency=0.4,
+             **holo),
+    ]
+    for k in range(3):  # scan rings the client slides up and down the image
+        kids.append(part(f"HoloRing{k}", (0.08, 3.4, 3.4), (x, center_y - 3 + k * 3, z), HOLO, "Neon", rot_z(90),
+                         shape="Cylinder", transparency=0.75, **holo))
+    return model(name, kids, attrs={"Hologram": True, "HoloAxisY": center_y, "HoloX": x, "HoloZ": z})
 
 
 FABRIC_GREEN = (78, 112, 72)
@@ -562,6 +605,53 @@ def quest_stall(name, npc_x, y, cz):
                      rot_y(yaw_facing(-1, 0)), collide=False,
                      children=[label_gui("Front", "Quests", "", (255, 232, 170), px=60),
                                label_gui("Back", "Quests", "", (255, 232, 170), px=60)]))
+    return model(name, kids)
+
+
+def well(name, x, y, z, rng, radius=3.2):
+    """Round stone well: block rim, dark shaft with water, winch frame, bucket and a small roof."""
+    kids = []
+    rim_top = y + 2.8
+    # Round rim: a stone cylinder with a darker, slightly inset shaft cylinder inside it.
+    kids.append(part("Rim", (rim_top - y, (radius + 0.2) * 2, (radius + 0.2) * 2), (x, (y + rim_top) / 2, z),
+                     STONE, "Cobblestone", rot_z(90), shape="Cylinder"))
+    kids.append(part("RimCap", (0.35, (radius + 0.5) * 2, (radius + 0.5) * 2), (x, rim_top + 0.1, z), STONE_DARK,
+                     "Cobblestone", rot_z(90), shape="Cylinder", collide=False))
+    kids.append(part("Shaft", (rim_top - y + 0.6, (radius - 0.9) * 2, (radius - 0.9) * 2), (x, (y + rim_top) / 2 - 0.1, z),
+                     (26, 26, 30), "Slate", rot_z(90), shape="Cylinder", collide=False))
+    kids.append(part("Water", (0.4, (radius - 1.1) * 2, (radius - 1.1) * 2), (x, y + 0.9, z), (58, 96, 128), "Glass",
+                     rot_z(90), shape="Cylinder", collide=False, transparency=0.25))
+    # Winch frame: two posts up to the eaves, a crossbeam, the roller and a crank.
+    post_top = y + 9.4
+    for side in (-1, 1):
+        kids.append(part(f"Post{side}", (0.7, post_top - y, 0.7), (x + side * (radius + 0.4), (y + post_top) / 2, z),
+                         BEAM, "Wood"))
+    kids.append(part("Crossbeam", (radius * 2 + 2.4, 0.7, 0.7), (x, y + 8.6, z), BEAM, "Wood", collide=False))
+    kids.append(part("Roller", (radius * 2 - 0.4, 0.8, 0.8), (x, y + 7.4, z), (120, 78, 46), "Wood", rot_z(90),
+                     shape="Cylinder", collide=False))
+    kids.append(part("Crank", (0.35, 1.4, 0.35), (x + radius + 0.2, y + 6.9, z), IRON, "Metal", collide=False))
+    kids.append(part("CrankHandle", (0.9, 0.3, 0.3), (x + radius + 0.6, y + 6.3, z), IRON, "Metal", collide=False))
+    # Rope and bucket hanging over the shaft.
+    kids.append(part("Rope", (0.14, 2.6, 0.14), (x, y + 5.9, z - 0.2), (120, 104, 78), "Fabric", collide=False))
+    kids.append(part("Bucket", (1.5, 1.5, 1.5), (x, y + 3.9, z - 0.2), (118, 80, 48), "WoodPlanks", rot_y(12),
+                     collide=False))
+    kids.append(part("BucketBand", (1.62, 0.3, 1.62), (x, y + 4.2, z - 0.2), IRON, "Metal", rot_y(12), collide=False))
+    # Small pitched roof resting on the posts: eave plates on the post tops, rafters, two slabs.
+    pitch, half = 32.0, radius + 1.6
+    rise = math.tan(math.radians(pitch)) * half
+    slope = half / math.cos(math.radians(pitch))
+    eave = post_top
+    for side in (-1, 1):
+        kids.append(part(f"EavePlate{side}", (0.7, 0.6, half * 2 + 0.6), (x + side * (radius + 0.4), eave + 0.3, z),
+                         BEAM, "Wood", collide=False))
+        for sgn in (-1, 1):
+            kids.append(part(f"Rafter{side}{sgn}", (0.5, 0.5, slope), (x + side * (radius + 0.4), eave + 0.6 + rise / 2,
+                                                                       z + sgn * half / 2), BEAM, "Wood",
+                             rot_x(pitch * sgn), collide=False))
+    kids.append(part("RidgeBeam", (radius * 2 + 1.6, 0.6, 0.6), (x, eave + 0.6 + rise, z), BEAM, "Wood", collide=False))
+    for sgn in (-1, 1):
+        kids.append(part(f"Roof{sgn}", (radius * 2 + 3, 0.4, slope + 0.4), (x, eave + 1.05 + rise / 2, z + sgn * half / 2),
+                         ROOF, "RoofShingles", rot_x(pitch * sgn), collide=False, layer="roof"))
     return model(name, kids)
 
 
@@ -674,15 +764,39 @@ def brazier(name, x, y, z):
     ])
 
 
-def waystone(name, waypoint_id, x, y, z, glow=(120, 200, 230)):
-    return model(name, [
-        part("Plinth", (5, 1.2, 5), (x, y + 0.6, z), STONE_DARK, "Cobblestone"),
-        part("Obelisk", (2.6, 8, 2.6), (x, y + 5.2, z), STONE, "Granite", rot_y(45)),
-        part("Rune", (0.2, 3.2, 1.2), (x + 1.35, y + 5.6, z + 1.35), glow, "Neon", rot_y(45), collide=False,
-             query=False, shadow=False, transparency=0.2),
-        part("RuneBack", (0.2, 3.2, 1.2), (x - 1.35, y + 5.6, z - 1.35), glow, "Neon", rot_y(45), collide=False,
-             query=False, shadow=False, transparency=0.2, children=[light(14, 0.8, glow)]),
-    ], attrs={"Waystone": True, "WaypointId": waypoint_id})
+def waystone(name, waypoint_id, x, y, z, glow=(120, 210, 240)):
+    """Giant crystal waystone: a glowing shard cluster on a rough stone base.
+
+    The tallest shard is named Core: MapTravel puts the travel prompt on it, and HubAmbience
+    slowly turns the FloatShard pieces around the cluster.
+    """
+    rng = random.Random(hash(waypoint_id) & 0xFFFF)
+    kids = [part("Base", (1.6, 7.6, 7.6), (x, y + 0.8, z), STONE_DARK, "Slate", rot_z(90), shape="Cylinder")]
+    shards = [("Core", 11.0, 2.1, 0.0, 0.0, 6.0), ("Shard1", 7.0, 1.5, -2.2, 1.4, 13.0),
+              ("Shard2", 5.4, 1.2, 1.9, -1.7, -15.0), ("Shard3", 3.6, 1.0, 0.6, 2.6, 20.0)]
+    for label, height, width, dx, dz, tilt in shards:
+        yaw = rng.uniform(0, 90)
+        rot = mul(rot_y(yaw), rot_z(tilt))
+        up = apply(rot, (0, 1, 0))
+        base = (x + dx, y + 1.4, z + dz)
+        centre = tuple(base[i] + up[i] * height / 2 for i in range(3))
+        tip = tuple(base[i] + up[i] * (height + width * 0.45) for i in range(3))
+        kids.append(part(label, (width, height, width), centre, glow, "Glass", rot, collide=(label == "Core"),
+                         query=(label == "Core"), transparency=0.35))
+        kids.append(part(label + "Core", (width * 0.42, height * 0.94, width * 0.42), centre, (210, 250, 255), "Neon",
+                         rot, collide=False, query=False, shadow=False, transparency=0.25,
+                         children=[light(22, 1.1, glow)] if label == "Core" else None))
+        kids.append(part(label + "Tip", (width * 0.72, width * 0.72, width * 0.72), tip, glow, "Glass",
+                         mul(rot, mul(rot_x(45), rot_z(45))), collide=False, query=False, transparency=0.3))
+    kids.append(part("PromptAnchor", (4, 5, 4), (x, y + 2.5, z), (255, 0, 255), "SmoothPlastic", collide=False,
+                     query=False, shadow=False, transparency=1))
+    for k in range(3):  # slow-turning splinters, animated by HubAmbience
+        a = math.tau * k / 3
+        kids.append(part(f"FloatShard{k}", (0.5, 1.6, 0.5), (x + math.cos(a) * 3.4, y + 5 + k * 1.4, z + math.sin(a) * 3.4),
+                         (200, 245, 255), "Neon", mul(rot_y(20 * k), rot_z(25)), collide=False, query=False,
+                         shadow=False, transparency=0.35))
+    return model(name, kids, attrs={"Waystone": True, "WaypointId": waypoint_id, "OrbitX": x, "OrbitY": y + 6.5,
+                                    "OrbitZ": z})
 
 
 def disc(name, x, z, radius, top, thickness, color, material, collide=True, layer="ground"):
@@ -863,7 +977,7 @@ def build_hub(rng):
             part("Post", (0.8, 6, 0.8), (x, HUB_Y + 3, z), BEAM, "Wood", collide=False),
             part("Body", (2.4, 3, 1.4), (x, HUB_Y + 4.4, z), (196, 170, 100), "Sand", collide=False),
             part("Arms", (5, 0.6, 0.6), (x, HUB_Y + 5.2, z), BEAM, "Wood", collide=False),
-        ]))
+        ], attrs={"TrainingDummy": True}))  # HubAmbience: the Skill Trainer practises on these
     visual.append(sign("TrainerSign", 50, HUB_Y, -10.5, 180, 10, 3.6, "Skill Trainer", "Reset your skill points"))
 
     # Rebirth shrine (south-east): octagonal dais, pillars, a pale floating crystal.
@@ -874,9 +988,7 @@ def build_hub(rng):
         px, pz = 64 + math.cos(a) * 12, 40 + math.sin(a) * 12
         visual.append(part(f"ShrinePillar{k}", (2.4, 14, 2.4), (px, HUB_Y + 1.2 + 7, pz), (220, 216, 204), "Marble"))
         visual.append(part(f"ShrineCap{k}", (3.4, 1, 3.4), (px, HUB_Y + 15.7, pz), GOLD, "Metal", collide=False))
-    visual.append(part("RebirthCrystal", (3, 5, 3), (64, HUB_Y + 9, 40), (170, 220, 255), "Glass",
-                       mul(rot_y(45), rot_x(45)), collide=False, query=False, transparency=0.25,
-                       children=[light(18, 1.0, (170, 210, 255))]))
+    visual.append(hologram_sword("RebirthHologram", 64, HUB_Y + 2.2, 40))
     visual.append(sign("ShrineSign", 76, HUB_Y, 22, yaw_facing(0, -1), 10, 3.6, "Rebirth Shrine", "Begin again, stronger"))
 
     # Quest court beside the route out: the Quest Master's market stall, open toward the road.
@@ -887,14 +999,7 @@ def build_hub(rng):
     visual.append(timber_house("HouseNW2", -48, -26, -88, -68, HUB_Y, 10, "S", rng, wall_color=(206, 184, 150),
                                roof_color=(90, 64, 48)))
     visual.append(timber_house("HouseSW", -86, -64, 66, 90, HUB_Y, 10, "E", rng, roof_color=(96, 58, 46)))
-    visual.append(model("Well", [
-        part("WellRing", (7, 3, 7), (-50, HUB_Y + 1.5, 48), STONE, "Cobblestone"),
-        part("WellWater", (5.4, 0.4, 5.4), (-50, HUB_Y + 2.7, 48), (70, 110, 140), "Glass", collide=False,
-             transparency=0.2),
-        part("WellPostL", (0.8, 7, 0.8), (-53.2, HUB_Y + 3.5, 48), BEAM, "Wood"),
-        part("WellPostR", (0.8, 7, 0.8), (-46.8, HUB_Y + 3.5, 48), BEAM, "Wood"),
-        part("WellRoof", (8.5, 0.6, 5), (-50, HUB_Y + 7.3, 48), ROOF, "RoofShingles", collide=False),
-    ]))
+    visual.append(well("Well", -50, HUB_Y, 48, rng))
 
     # Sealed destinations: visible milestones through barred gates.
     visual.append(gate("GateIronLowlands", 0, HUB_Y, 100, 0, 24, 22, "Iron Lowlands", "Lv 1 - 10  |  Open",
@@ -1000,13 +1105,13 @@ def build_iron_lowlands(rng):
     for side, (x0, x1) in ((-1, (-110, -20)), (1, (20, 110))):
         for k, xs in enumerate(range(int(x0), int(x1), 15)):
             xe = min(xs + 15, x1)
-            h = rng.uniform(16, 24)
+            h = free_top(Y + rng.uniform(16, 24) - 1) - Y + 1
             visual.append(part(f"Ridge{side}_{k}", (xe - xs + 2, h, 16), ((xs + xe) / 2, Y + h / 2 - 1, 375),
                                QUARRY_CLIFF_DARK, "Sandstone", rot_y(rng.uniform(-5, 5)), collide=False, layer="cliff"))
         proxies.append(box(f"RidgeProxy{side}", x0, x1, Y - 1, Y + 26, 368, 382, (255, 0, 255), transparency=1,
                            query=False, shadow=False, layer="proxy"))
 
-    visual.append(waystone("OverlookWaystone", "IronOverlook", 28, T, 148))
+    visual.append(waystone("OverlookWaystone", "IronOverlook", 31, T, 145))
     visual.append(sign("OverlookGuide", -26, T, 160, yaw_facing(0, -1), 12, 5, "Squire Yard  >  Crusher Pits",
                        "The Iron Warlord waits beyond the ridge"))
 

@@ -5031,24 +5031,706 @@
    "className": "Model",
    "attributes": {
     "Waystone": true,
-    "WaypointId": "HubSpawn"
+    "WaypointId": "HubSpawn",
+    "OrbitX": -16,
+    "OrbitY": 16.5,
+    "OrbitZ": -36
    },
    "children": [
     {
-     "name": "Plinth",
+     "name": "Base",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       5.0,
-       1.2,
-       5.0
+       1.6,
+       7.6,
+       7.6
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          -16.0,
-         10.6,
+         10.8,
+         -36.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4392,
+       0.4235,
+       0.4
+      ],
+      "Material": "Slate",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": true,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "Core",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.1,
+       11.0,
+       2.1
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -16.3319,
+         16.8699,
+         -35.5306
+        ],
+        "orientation": [
+         [
+          0.5742,
+          -0.0603,
+          0.8165
+         ],
+         [
+          0.1045,
+          0.9945,
+          0.0
+         ],
+         [
+          -0.812,
+          0.0853,
+          0.5773
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4706,
+       0.8235,
+       0.9412
+      ],
+      "Material": "Glass",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": true,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Transparency": 0.35
+     }
+    },
+    {
+     "name": "CoreCore",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.882,
+       10.34,
+       0.882
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -16.3319,
+         16.8699,
+         -35.5306
+        ],
+        "orientation": [
+         [
+          0.5742,
+          -0.0603,
+          0.8165
+         ],
+         [
+          0.1045,
+          0.9945,
+          0.0
+         ],
+         [
+          -0.812,
+          0.0853,
+          0.5773
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8235,
+       0.9804,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.25
+     },
+     "children": [
+      {
+       "name": "Light",
+       "className": "PointLight",
+       "properties": {
+        "Range": 22,
+        "Brightness": 1.1,
+        "Color": [
+         0.4706,
+         0.8235,
+         0.9412
+        ],
+        "Shadows": false
+       }
+      }
+     ]
+    },
+    {
+     "name": "CoreTip",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.512,
+       1.512,
+       1.512
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -16.7209,
+         23.2796,
+         -34.9805
+        ],
+        "orientation": [
+         [
+          0.7841,
+          -0.0279,
+          0.62
+         ],
+         [
+          0.5712,
+          0.4233,
+          -0.7032
+         ],
+         [
+          -0.2428,
+          0.9055,
+          0.3479
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4706,
+       0.8235,
+       0.9412
+      ],
+      "Material": "Glass",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Transparency": 0.3
+     }
+    },
+    {
+     "name": "Shard1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.5,
+       7.0,
+       1.5
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -18.2906,
+         14.8103,
+         -33.8179
+        ],
+        "orientation": [
+         [
+          0.1122,
+          -0.0259,
+          0.9934
+         ],
+         [
+          0.225,
+          0.9744,
+          0.0
+         ],
+         [
+          -0.9679,
+          0.2235,
+          0.1151
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4706,
+       0.8235,
+       0.9412
+      ],
+      "Material": "Glass",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Transparency": 0.35
+     }
+    },
+    {
+     "name": "Shard1Core",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.63,
+       6.58,
+       0.63
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -18.2906,
+         14.8103,
+         -33.8179
+        ],
+        "orientation": [
+         [
+          0.1122,
+          -0.0259,
+          0.9934
+         ],
+         [
+          0.225,
+          0.9744,
+          0.0
+         ],
+         [
+          -0.9679,
+          0.2235,
+          0.1151
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8235,
+       0.9804,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.25
+     }
+    },
+    {
+     "name": "Shard1Tip",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.08,
+       1.08,
+       1.08
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -18.3987,
+         18.8783,
+         -32.885
+        ],
+        "orientation": [
+         [
+          0.563,
+          0.4044,
+          0.7207
+         ],
+         [
+          0.6462,
+          0.3281,
+          -0.689
+         ],
+         [
+          -0.5151,
+          0.8537,
+          -0.0766
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4706,
+       0.8235,
+       0.9412
+      ],
+      "Material": "Glass",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Transparency": 0.3
+     }
+    },
+    {
+     "name": "Shard2",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.2,
+       5.4,
+       1.2
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -13.4296,
+         14.008,
+         -37.8972
+        ],
+        "orientation": [
+         [
+          0.9267,
+          0.2483,
+          0.2822
+         ],
+         [
+          -0.2588,
+          0.9659,
+          0.0
+         ],
+         [
+          -0.2726,
+          -0.073,
+          0.9594
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4706,
+       0.8235,
+       0.9412
+      ],
+      "Material": "Glass",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Transparency": 0.35
+     }
+    },
+    {
+     "name": "Shard2Core",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.504,
+       5.076,
+       0.504
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -13.4296,
+         14.008,
+         -37.8972
+        ],
+        "orientation": [
+         [
+          0.9267,
+          0.2483,
+          0.2822
+         ],
+         [
+          -0.2588,
+          0.9659,
+          0.0
+         ],
+         [
+          -0.2726,
+          -0.073,
+          0.9594
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8235,
+       0.9804,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.25
+     }
+    },
+    {
+     "name": "Shard2Tip",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.864,
+       0.864,
+       0.864
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -12.6251,
+         17.1376,
+         -38.1338
+        ],
+        "orientation": [
+         [
+          0.9205,
+          -0.39,
+          0.024
+         ],
+         [
+          0.3,
+          0.666,
+          -0.683
+         ],
+         [
+          0.2504,
+          0.6359,
+          0.73
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4706,
+       0.8235,
+       0.9412
+      ],
+      "Material": "Glass",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Transparency": 0.3
+     }
+    },
+    {
+     "name": "Shard3",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.0,
+       3.6,
+       1.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -15.9959,
+         13.0914,
+         -33.2453
+        ],
+        "orientation": [
+         [
+          0.9095,
+          -0.331,
+          0.2514
+         ],
+         [
+          0.342,
+          0.9397,
+          0.0
+         ],
+         [
+          -0.2362,
+          0.086,
+          0.9679
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4706,
+       0.8235,
+       0.9412
+      ],
+      "Material": "Glass",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Transparency": 0.35
+     }
+    },
+    {
+     "name": "Shard3Core",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.42,
+       3.384,
+       0.42
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -15.9959,
+         13.0914,
+         -33.2453
+        ],
+        "orientation": [
+         [
+          0.9095,
+          -0.331,
+          0.2514
+         ],
+         [
+          0.342,
+          0.9397,
+          0.0
+         ],
+         [
+          -0.2362,
+          0.086,
+          0.9679
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8235,
+       0.9804,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.25
+     }
+    },
+    {
+     "name": "Shard3Tip",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.72,
+       0.72,
+       0.72
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -16.7407,
+         15.2058,
+         -33.0518
+        ],
+        "orientation": [
+         [
+          0.6033,
+          -0.683,
+          0.4118
+         ],
+         [
+          0.7117,
+          0.228,
+          -0.6645
+         ],
+         [
+          0.3599,
+          0.694,
+          0.6236
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4706,
+       0.8235,
+       0.9412
+      ],
+      "Material": "Glass",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Transparency": 0.3
+     }
+    },
+    {
+     "name": "PromptAnchor",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       4.0,
+       5.0,
+       4.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -16.0,
+         12.5,
          -36.0
         ],
         "orientation": [
@@ -5071,109 +5753,60 @@
        }
       },
       "Color": [
-       0.4392,
-       0.4235,
-       0.4
+       1.0,
+       0.0,
+       1.0
       ],
-      "Material": "Cobblestone",
+      "Material": "SmoothPlastic",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": true,
-      "CanQuery": true,
+      "CanCollide": false,
+      "CanQuery": false,
       "CanTouch": false,
-      "CastShadow": true
+      "CastShadow": false,
+      "Transparency": 1.0
      }
     },
     {
-     "name": "Obelisk",
+     "name": "FloatShard0",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       2.6,
-       8.0,
-       2.6
+       0.5,
+       1.6,
+       0.5
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -16.0,
-         15.2,
+         -12.6,
+         15.0,
          -36.0
         ],
         "orientation": [
          [
-          0.7071,
-          0.0,
-          0.7071
-         ],
-         [
-          0.0,
-          1.0,
+          0.9063,
+          -0.4226,
           0.0
          ],
          [
-          -0.7071,
+          0.4226,
+          0.9063,
+          0.0
+         ],
+         [
           0.0,
-          0.7071
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Color": [
-       0.5961,
-       0.5804,
-       0.549
-      ],
-      "Material": "Granite",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": true,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Rune",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       0.2,
-       3.2,
-       1.2
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -14.65,
-         15.6,
-         -34.65
-        ],
-        "orientation": [
-         [
-          0.7071,
-          0.0,
-          0.7071
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          -0.7071,
-          0.0,
-          0.7071
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.4706,
        0.7843,
-       0.902
+       0.9608,
+       1.0
       ],
       "Material": "Neon",
       "TopSurface": "Smooth",
@@ -5182,49 +5815,49 @@
       "CanQuery": false,
       "CanTouch": false,
       "CastShadow": false,
-      "Transparency": 0.2
+      "Transparency": 0.35
      }
     },
     {
-     "name": "RuneBack",
+     "name": "FloatShard1",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       0.2,
-       3.2,
-       1.2
+       0.5,
+       1.6,
+       0.5
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -17.35,
-         15.6,
-         -37.35
+         -17.7,
+         16.4,
+         -33.0555
         ],
         "orientation": [
          [
-          0.7071,
-          0.0,
-          0.7071
+          0.8517,
+          -0.3971,
+          0.342
          ],
          [
-          0.0,
-          1.0,
+          0.4226,
+          0.9063,
           0.0
          ],
          [
-          -0.7071,
-          0.0,
-          0.7071
+          -0.31,
+          0.1445,
+          0.9397
          ]
         ]
        }
       },
       "Color": [
-       0.4706,
        0.7843,
-       0.902
+       0.9608,
+       1.0
       ],
       "Material": "Neon",
       "TopSurface": "Smooth",
@@ -5233,24 +5866,59 @@
       "CanQuery": false,
       "CanTouch": false,
       "CastShadow": false,
-      "Transparency": 0.2
-     },
-     "children": [
-      {
-       "name": "Light",
-       "className": "PointLight",
-       "properties": {
-        "Range": 14,
-        "Brightness": 0.8,
-        "Color": [
-         0.4706,
-         0.7843,
-         0.902
+      "Transparency": 0.35
+     }
+    },
+    {
+     "name": "FloatShard2",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       1.6,
+       0.5
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -17.7,
+         17.8,
+         -38.9445
         ],
-        "Shadows": false
+        "orientation": [
+         [
+          0.6943,
+          -0.3237,
+          0.6428
+         ],
+         [
+          0.4226,
+          0.9063,
+          0.0
+         ],
+         [
+          -0.5826,
+          0.2717,
+          0.766
+         ]
+        ]
        }
-      }
-     ]
+      },
+      "Color": [
+       0.7843,
+       0.9608,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.35
+     }
     }
    ]
   },
@@ -5809,7 +6477,7 @@
      }
     },
     {
-     "name": "MidBeamN",
+     "name": "MidBeamN0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -5909,19 +6577,69 @@
      }
     },
     {
-     "name": "MidBeamS",
+     "name": "MidBeamS0",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       38.0,
+       13.0,
        0.7,
        0.6
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -63.0,
+         -75.5,
+         17.0,
+         -19.75
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "MidBeamS1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       13.0,
+       0.7,
+       0.6
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -50.5,
          17.0,
          -19.75
         ],
@@ -6009,7 +6727,7 @@
      }
     },
     {
-     "name": "MidBeamW",
+     "name": "MidBeamW0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -6109,7 +6827,7 @@
      }
     },
     {
-     "name": "MidBeamE",
+     "name": "MidBeamE0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -7879,7 +8597,7 @@
      }
     },
     {
-     "name": "MidBeamN",
+     "name": "MidBeamN0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -7979,7 +8697,7 @@
      }
     },
     {
-     "name": "MidBeamS",
+     "name": "MidBeamS0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -8079,21 +8797,71 @@
      }
     },
     {
-     "name": "MidBeamW",
+     "name": "MidBeamW0",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
        0.6,
        0.7,
-       12.0
+       3.5
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          69.75,
          15.65,
-         -43.0
+         -47.25
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "MidBeamW1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.6,
+       0.7,
+       3.5
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         69.75,
+         15.65,
+         -38.75
         ],
         "orientation": [
          [
@@ -8179,7 +8947,7 @@
      }
     },
     {
-     "name": "MidBeamE",
+     "name": "MidBeamE0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -9451,6 +10219,9 @@
   {
    "name": "Dummy0",
    "className": "Model",
+   "attributes": {
+    "TrainingDummy": true
+   },
    "children": [
     {
      "name": "Post",
@@ -9607,6 +10378,9 @@
   {
    "name": "Dummy1",
    "className": "Model",
+   "attributes": {
+    "TrainingDummy": true
+   },
    "children": [
     {
      "name": "Post",
@@ -9763,6 +10537,9 @@
   {
    "name": "Dummy2",
    "className": "Model",
+   "attributes": {
+    "TrainingDummy": true
+   },
    "children": [
     {
      "name": "Post",
@@ -9919,6 +10696,9 @@
   {
    "name": "Dummy3",
    "className": "Model",
+   "attributes": {
+    "TrainingDummy": true
+   },
    "children": [
     {
      "name": "Post",
@@ -10939,68 +11719,646 @@
    }
   },
   {
-   "name": "RebirthCrystal",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     3.0,
-     5.0,
-     3.0
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       64.0,
-       19.0,
-       40.0
-      ],
-      "orientation": [
-       [
-        0.7071,
-        0.5,
-        0.5
-       ],
-       [
-        0.0,
-        0.7071,
-        -0.7071
-       ],
-       [
-        -0.7071,
-        0.5,
-        0.5
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.8627,
-     1.0
-    ],
-    "Material": "Glass",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": true,
-    "Transparency": 0.25
+   "name": "RebirthHologram",
+   "className": "Model",
+   "attributes": {
+    "Hologram": true,
+    "HoloAxisY": 19.0,
+    "HoloX": 64,
+    "HoloZ": 40
    },
    "children": [
     {
-     "name": "Light",
-     "className": "PointLight",
+     "name": "ProjectorBase",
+     "className": "Part",
      "properties": {
-      "Range": 18,
-      "Brightness": 1.0,
+      "Anchored": true,
+      "Size": [
+       0.6,
+       4.2,
+       4.2
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         12.5,
+         40.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
       "Color": [
-       0.6667,
-       0.8235,
+       0.3608,
+       0.3686,
+       0.3922
+      ],
+      "Material": "Metal",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "ProjectorLens",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.3,
+       2.4,
+       2.4
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         12.95,
+         40.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4314,
+       0.8627,
        1.0
       ],
-      "Shadows": false
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Shape": "Cylinder"
+     },
+     "children": [
+      {
+       "name": "Light",
+       "className": "PointLight",
+       "properties": {
+        "Range": 16,
+        "Brightness": 1.2,
+        "Color": [
+         0.4314,
+         0.8627,
+         1.0
+        ],
+        "Shadows": false
+       }
+      }
+     ]
+    },
+    {
+     "name": "ProjectorBeam",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       3.8,
+       1.8,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         15.0,
+         40.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4314,
+       0.8627,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.88,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "HoloBlade",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.35,
+       6.4,
+       1.5
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         18.4,
+         40.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4314,
+       0.8627,
+       1.0
+      ],
+      "Material": "ForceField",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.15
+     }
+    },
+    {
+     "name": "HoloEdge",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.2,
+       6.6,
+       1.7
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         18.4,
+         40.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.7843,
+       0.9608,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.7
+     }
+    },
+    {
+     "name": "HoloTip",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.35,
+       1.06,
+       1.06
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         15.2,
+         40.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.7071,
+          -0.7071
+         ],
+         [
+          0.0,
+          0.7071,
+          0.7071
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4314,
+       0.8627,
+       1.0
+      ],
+      "Material": "ForceField",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.15
+     }
+    },
+    {
+     "name": "HoloGuard",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.6,
+       0.5,
+       4.6
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         21.85,
+         40.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4314,
+       0.8627,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.45
+     }
+    },
+    {
+     "name": "HoloGrip",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       1.9,
+       0.5
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         23.05,
+         40.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4314,
+       0.8627,
+       1.0
+      ],
+      "Material": "ForceField",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.2
+     }
+    },
+    {
+     "name": "HoloPommel",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.9,
+       0.9,
+       0.9
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         24.3,
+         40.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4314,
+       0.8627,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.4,
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "HoloRing0",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.08,
+       3.4,
+       3.4
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         16.0,
+         40.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4314,
+       0.8627,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.75,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "HoloRing1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.08,
+       3.4,
+       3.4
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         19.0,
+         40.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4314,
+       0.8627,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.75,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "HoloRing2",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.08,
+       3.4,
+       3.4
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         64.0,
+         22.0,
+         40.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4314,
+       0.8627,
+       1.0
+      ],
+      "Material": "Neon",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 0.75,
+      "Shape": "Cylinder"
      }
     }
    ]
@@ -15563,7 +16921,7 @@
      }
     },
     {
-     "name": "MidBeamN",
+     "name": "MidBeamN0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -15663,19 +17021,69 @@
      }
     },
     {
-     "name": "MidBeamS",
+     "name": "MidBeamS0",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       26.0,
+       10.0,
        0.7,
        0.6
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -73.0,
+         -81.0,
+         16.1,
+         -69.75
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "MidBeamS1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       10.0,
+       0.7,
+       0.6
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -65.0,
          16.1,
          -69.75
         ],
@@ -15763,7 +17171,7 @@
      }
     },
     {
-     "name": "MidBeamW",
+     "name": "MidBeamW0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -15863,7 +17271,7 @@
      }
     },
     {
-     "name": "MidBeamE",
+     "name": "MidBeamE0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -16769,7 +18177,7 @@
      }
     },
     {
-     "name": "MidBeamN",
+     "name": "MidBeamN0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -16869,19 +18277,69 @@
      }
     },
     {
-     "name": "MidBeamS",
+     "name": "MidBeamS0",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       22.0,
+       8.0,
        0.7,
        0.6
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -37.0,
+         -44.0,
+         15.65,
+         -67.75
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "MidBeamS1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       8.0,
+       0.7,
+       0.6
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -30.0,
          15.65,
          -67.75
         ],
@@ -16969,7 +18427,7 @@
      }
     },
     {
-     "name": "MidBeamW",
+     "name": "MidBeamW0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -17069,7 +18527,7 @@
      }
     },
     {
-     "name": "MidBeamE",
+     "name": "MidBeamE0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -17975,7 +19433,7 @@
      }
     },
     {
-     "name": "MidBeamN",
+     "name": "MidBeamN0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -18075,7 +19533,7 @@
      }
     },
     {
-     "name": "MidBeamS",
+     "name": "MidBeamS0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -18175,7 +19633,7 @@
      }
     },
     {
-     "name": "MidBeamW",
+     "name": "MidBeamW0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -18275,21 +19733,71 @@
      }
     },
     {
-     "name": "MidBeamE",
+     "name": "MidBeamE0",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
        0.6,
        0.7,
-       22.0
+       8.0
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          -63.75,
          15.65,
-         78.0
+         71.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "MidBeamE1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.6,
+       0.7,
+       8.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -63.75,
+         15.65,
+         85.0
         ],
         "orientation": [
          [
@@ -18631,31 +20139,31 @@
    "className": "Model",
    "children": [
     {
-     "name": "WellRing",
+     "name": "Rim",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       7.0,
-       3.0,
-       7.0
+       2.8,
+       6.8,
+       6.8
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          -50.0,
-         11.5,
+         11.4,
          48.0
         ],
         "orientation": [
          [
-          1.0,
           0.0,
+          -1.0,
           0.0
          ],
          [
-          0.0,
           1.0,
+          0.0,
           0.0
          ],
          [
@@ -18677,35 +20185,36 @@
       "CanCollide": true,
       "CanQuery": true,
       "CanTouch": false,
-      "CastShadow": true
+      "CastShadow": true,
+      "Shape": "Cylinder"
      }
     },
     {
-     "name": "WellWater",
+     "name": "RimCap",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       5.4,
-       0.4,
-       5.4
+       0.35,
+       7.4,
+       7.4
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          -50.0,
-         12.7,
+         12.9,
          48.0
         ],
         "orientation": [
          [
-          1.0,
           0.0,
+          -1.0,
           0.0
          ],
          [
-          0.0,
           1.0,
+          0.0,
           0.0
          ],
          [
@@ -18717,9 +20226,111 @@
        }
       },
       "Color": [
-       0.2745,
-       0.4314,
-       0.549
+       0.4392,
+       0.4235,
+       0.4
+      ],
+      "Material": "Cobblestone",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "Shaft",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       3.4,
+       4.6,
+       4.6
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -50.0,
+         11.3,
+         48.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.102,
+       0.102,
+       0.1176
+      ],
+      "Material": "Slate",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "Water",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.4,
+       4.2,
+       4.2
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -50.0,
+         10.9,
+         48.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2275,
+       0.3765,
+       0.502
       ],
       "Material": "Glass",
       "TopSurface": "Smooth",
@@ -18728,24 +20339,25 @@
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true,
-      "Transparency": 0.2
+      "Transparency": 0.25,
+      "Shape": "Cylinder"
      }
     },
     {
-     "name": "WellPostL",
+     "name": "Post-1",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       0.8,
-       7.0,
-       0.8
+       0.7,
+       9.4,
+       0.7
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -53.2,
-         13.5,
+         -53.6,
+         14.7,
          48.0
         ],
         "orientation": [
@@ -18782,20 +20394,20 @@
      }
     },
     {
-     "name": "WellPostR",
+     "name": "Post1",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       0.8,
-       7.0,
-       0.8
+       0.7,
+       9.4,
+       0.7
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -46.8,
-         13.5,
+         -46.4,
+         14.7,
          48.0
         ],
         "orientation": [
@@ -18832,20 +20444,20 @@
      }
     },
     {
-     "name": "WellRoof",
+     "name": "Crossbeam",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       8.5,
-       0.6,
-       5.0
+       8.8,
+       0.7,
+       0.7
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          -50.0,
-         17.3,
+         18.6,
          48.0
         ],
         "orientation": [
@@ -18863,6 +20475,757 @@
           0.0,
           0.0,
           1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Roller",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       6.0,
+       0.8,
+       0.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -50.0,
+         17.4,
+         48.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4706,
+       0.3059,
+       0.1804
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "Crank",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.35,
+       1.4,
+       0.35
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -46.6,
+         16.9,
+         48.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.3608,
+       0.3686,
+       0.3922
+      ],
+      "Material": "Metal",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "CrankHandle",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.9,
+       0.3,
+       0.3
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -46.2,
+         16.3,
+         48.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.3608,
+       0.3686,
+       0.3922
+      ],
+      "Material": "Metal",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Rope",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.14,
+       2.6,
+       0.14
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -50.0,
+         15.9,
+         47.8
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4706,
+       0.4078,
+       0.3059
+      ],
+      "Material": "Fabric",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Bucket",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.5,
+       1.5,
+       1.5
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -50.0,
+         13.9,
+         47.8
+        ],
+        "orientation": [
+         [
+          0.9781,
+          0.0,
+          0.2079
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.2079,
+          0.0,
+          0.9781
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4627,
+       0.3137,
+       0.1882
+      ],
+      "Material": "WoodPlanks",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "BucketBand",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.62,
+       0.3,
+       1.62
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -50.0,
+         14.2,
+         47.8
+        ],
+        "orientation": [
+         [
+          0.9781,
+          0.0,
+          0.2079
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.2079,
+          0.0,
+          0.9781
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.3608,
+       0.3686,
+       0.3922
+      ],
+      "Material": "Metal",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "EavePlate-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.7,
+       0.6,
+       10.2
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -53.6,
+         19.7,
+         48.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Rafter-1-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       5.6601
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -53.6,
+         21.4997,
+         45.6
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.848,
+          0.5299
+         ],
+         [
+          0.0,
+          -0.5299,
+          0.848
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Rafter-11",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       5.6601
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -53.6,
+         21.4997,
+         50.4
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.848,
+          -0.5299
+         ],
+         [
+          0.0,
+          0.5299,
+          0.848
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "EavePlate1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.7,
+       0.6,
+       10.2
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -46.4,
+         19.7,
+         48.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Rafter1-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       5.6601
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -46.4,
+         21.4997,
+         45.6
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.848,
+          0.5299
+         ],
+         [
+          0.0,
+          -0.5299,
+          0.848
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Rafter11",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       5.6601
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -46.4,
+         21.4997,
+         50.4
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.848,
+          -0.5299
+         ],
+         [
+          0.0,
+          0.5299,
+          0.848
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "RidgeBeam",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       8.0,
+       0.6,
+       0.6
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -50.0,
+         22.9994,
+         48.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Roof-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       9.4,
+       0.4,
+       6.0601
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -50.0,
+         21.9497,
+         45.6
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.848,
+          0.5299
+         ],
+         [
+          0.0,
+          -0.5299,
+          0.848
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.4392,
+       0.2118,
+       0.1725
+      ],
+      "Material": "RoofShingles",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Roof1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       9.4,
+       0.4,
+       6.0601
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -50.0,
+         21.9497,
+         50.4
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.848,
+          -0.5299
+         ],
+         [
+          0.0,
+          0.5299,
+          0.848
          ]
         ]
        }

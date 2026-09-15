@@ -324,7 +324,8 @@ def main():
     for st in stones:
         wid = st.attrs.get("WaypointId")
         w = waypoints.get(wid)
-        obelisk = next((c for c in st.children if c.name == "Obelisk"), None)
+        obelisk = (next((c for c in st.children if c.name == "PromptAnchor"), None)
+                   or next((c for c in st.children if c.name == "Core"), None))
         if not w or not obelisk:
             fail(f"Waystone {st.path()} links to unknown waypoint {wid}")
             continue
@@ -518,7 +519,8 @@ def check_projects():
     default = json.loads((ROOT / "default.project.json").read_text())["tree"]
     mapped = json.loads((ROOT / "map.project.json").read_text())["tree"]
     allowed_extra = {("Workspace",), ("ServerScriptService", "MapMarkers"), ("ServerScriptService", "MapTravel"),
-                     ("StarterPlayer", "StarterPlayerScripts", "MapClient")}
+                     ("StarterPlayer", "StarterPlayerScripts", "MapClient"),
+                     ("StarterPlayer", "StarterPlayerScripts", "HubAmbience")}
 
     def walk(d, m, path=()):
         for key, value in d.items():

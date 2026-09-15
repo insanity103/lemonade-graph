@@ -156,7 +156,9 @@ function MapMarkers.waystones()
 	for _, model in map:GetDescendants() do
 		if model:GetAttribute("Waystone") == true then
 			local id = model:GetAttribute("WaypointId")
-			local anchor = model:FindFirstChild("Obelisk") or model:FindFirstChildWhichIsA("BasePart")
+			-- PromptAnchor sits at player height; Core is the tall crystal itself.
+			local anchor = model:FindFirstChild("PromptAnchor") or model:FindFirstChild("Core")
+				or model:FindFirstChildWhichIsA("BasePart")
 			if typeof(id) == "string" and anchor and anchor:IsA("BasePart") then
 				table.insert(list, { WaypointId = id, Anchor = anchor, Model = model })
 			end
