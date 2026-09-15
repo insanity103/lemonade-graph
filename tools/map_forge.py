@@ -1061,6 +1061,150 @@ def market_stall(name, npc_x, y, cz, rng, canopy=(196, 70, 60)):
     return model(name, kids, attrs={"Vendor": True, "VendorX": npc_x + 1.2, "VendorY": y, "VendorZ": cz})
 
 
+SLATE_ROOF = (72, 72, 80)
+STONE_WALL = (118, 112, 104)
+STONE_WALL_DARK = (94, 88, 82)
+
+
+def smithy(name, x0, x1, z0, z1, y, rng):
+    """The Relic Blacksmith's workshop: thick stone walls, open timber-framed front, a low slate
+    roof with a big chimney, and the forge, anvil, quench trough and racks inside where they can
+    be seen. The merchant stands behind the counter across the opening; HubAmbience walks him to
+    the anvil (AnvilStand*) to hammer between customers.
+    """
+    wall_h, t = 12.0, 1.4
+    cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
+    top = y + wall_h
+    ox0, ox1 = cx - 8.0, cx + 8.0  # front opening
+    kids = [box("Paving", x0 - 1.5, x1 + 1.5, y, y + 0.2, z0 - 1.5, z1 + 1.5, STONE_DARK, "Cobblestone", layer="prop")]
+    # Walls: back and front (with the opening), sides inset between them so no tops overlap.
+    kids.append(box("WallN", x0, x1, y, top, z0, z0 + t, STONE_WALL, "Cobblestone"))
+    kids.append(box("WallSL", x0, ox0 - 1.2, y, top, z1 - t, z1, STONE_WALL, "Cobblestone"))
+    kids.append(box("WallSR", ox1 + 1.2, x1, y, top, z1 - t, z1, STONE_WALL, "Cobblestone"))
+    kids.append(box("WallW", x0, x0 + t, y, top, z0 + t, z1 - t, STONE_WALL, "Cobblestone"))
+    kids.append(box("WallE", x1 - t, x1, y, top, z0 + t, z1 - t, STONE_WALL, "Cobblestone"))
+    for k in range(6):  # darker courses break up the stone
+        zz = z0 + t + 0.02 if k % 2 else z1 - t - 0.02
+        kids.append(box(f"Course{k}", x0 + 2 + k * 5.5, x0 + 5.5 + k * 5.5, y + 2 + (k % 3) * 3.2, y + 3.2 + (k % 3) * 3.2,
+                        z0 - 0.1, z0 + 0.1, STONE_WALL_DARK, "Cobblestone", collide=False))
+    # Timber front frame around the opening and a heavy lintel.
+    for px_ in (ox0 - 0.6, ox1 + 0.6):
+        kids.append(box("FramePost", px_ - 0.7, px_ + 0.7, y, top - 2.4, z1 - t - 0.3, z1 + 0.3, BEAM, "Wood"))
+    kids.append(box("Lintel", ox0 - 1.6, ox1 + 1.6, top - 2.4, top - 0.8, z1 - t - 0.35, z1 + 0.35, BEAM, "Wood"))
+    kids.append(box("LintelBrace", ox0 - 1.2, ox1 + 1.2, top - 0.8, top + 0.6, z1 - t - 0.3, z1 + 0.3, STONE_WALL_DARK,
+                    "Cobblestone", collide=False))
+    # Barred windows on the side walls with a warm glow inside.
+    for side, wx in (("W", x0 - 0.2), ("E", x1 + 0.2)):
+        for wi, wz in enumerate((z0 + 9, z1 - 9)):
+            kids.append(part(f"Window{side}{wi}", (0.4, 2.8, 2.8), (wx, y + 7.2, wz), (28, 26, 24), "Slate", collide=False,
+                             children=[light(9, 0.9, (255, 170, 90))]))
+            for b in (-0.7, 0, 0.7):
+                kids.append(part(f"Bar{side}{wi}", (0.5, 3.0, 0.18), (wx, y + 7.2, wz + b), IRON, "Metal", collide=False))
+            kids.append(part(f"Sill{side}{wi}", (0.9, 0.3, 3.4), (wx, y + 5.7, wz), STONE_WALL_DARK, "Cobblestone", collide=False))
+    # Low slate roof, ridge along X, stone gables, big overhang.
+    pitch, overhang = 22.0, 2.4
+    span_z = z1 - z0
+    half = span_z / 2 + overhang
+    rise = math.tan(math.radians(pitch)) * (span_z / 2)
+    slope = half / math.cos(math.radians(pitch))
+    for sgn, label in ((-1, "N"), (1, "S")):
+        kids.append(part(f"Roof{label}", (x1 - x0 + overhang * 2, 0.7, slope), (cx, top + math.tan(math.radians(pitch)) * (span_z / 4 - overhang / 2),
+                                                                             cz + sgn * half / 2), SLATE_ROOF, "Slate",
+                         rot_x(pitch * sgn), collide=False, layer="roof"))
+        kids.append(part(f"Eave{label}", (x1 - x0 + overhang * 2 + 0.4, 0.5, 0.5), (cx, top - 0.35, cz + sgn * (span_z / 2 + overhang - 0.2)),
+                         BEAM, "Wood", collide=False, layer="roof"))
+    kids.append(part("Ridge", (x1 - x0 + overhang * 2 + 0.6, 0.6, 0.9), (cx, top + rise + 0.3, cz), STONE_WALL_DARK, "Slate",
+                     collide=False, layer="roof"))
+    for gx in (x0 + 0.7, x1 - 0.7):
+        for sgn, yaw in ((-1, 0), (1, 180)):
+            kids.append(part(f"Gable{'N' if sgn < 0 else 'S'}", (1.4, rise, span_z / 2), (gx, top + rise / 2, cz + sgn * span_z / 4),
+                             STONE_WALL, "Cobblestone", rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
+    # Hearth against the back wall, its stack rising into the chimney through the roof.
+    hx, hz = cx + 11, z0 + 4.2
+    kids += [
+        box("HearthBase", hx - 3.2, hx + 3.2, y + 0.2, y + 3.6, hz - 2.4, hz + 2.4, STONE_WALL_DARK, "Cobblestone"),
+        box("HearthBack", hx - 3.2, hx + 3.2, y + 3.6, y + 9.0, hz - 2.4, hz - 0.8, STONE_WALL_DARK, "Cobblestone", collide=False),
+        part("Coals", (4.4, 0.5, 2.6), (hx, y + 3.85, hz + 0.5), EMBER, "Neon", collide=False, query=False, shadow=False,
+             children=[fire(5, 10), light(22, 1.8, (255, 140, 70))]),
+        part("Hood", (6.0, 0.8, 4.6), (hx, y + 9.2, hz + 0.6), IRON, "Metal", collide=False),
+        part("HoodFront", (6.0, 2.2, 0.4), (hx, y + 7.9, hz + 2.7), IRON, "Metal", collide=False),
+        part("Stack", (3.2, top + rise + 5 - (y + 9.6), 3.2), (hx, (y + 9.6 + top + rise + 5) / 2, hz - 0.6), STONE_WALL_DARK,
+             "Cobblestone", collide=False),
+        part("StackCap", (4.0, 0.7, 4.0), (hx, top + rise + 5.35, hz - 0.6), STONE_WALL, "Slate", collide=False),
+        part("StackFlue", (1.6, 0.3, 1.6), (hx, top + rise + 5.8, hz - 0.6), (30, 28, 26), "Slate", collide=False, query=False,
+             children=[smoke(5.0, 0.45, 4.0, (110, 106, 102))]),
+        part("Bellows", (2.6, 1.0, 1.8), (hx - 4.6, y + 2.8, hz + 0.4), (110, 72, 42), "Wood", rot_y(-20), collide=False),
+        part("BellowsHandle", (0.3, 0.3, 2.4), (hx - 5.8, y + 3.4, hz + 1.2), BEAM, "Wood", rot_y(-20), collide=False),
+    ]
+    # Anvil on a stump mid-room, where the smith works.
+    ax, az = cx + 3, cz + 4
+    kids += [
+        part("AnvilStump", (2.0, 3.0, 3.0), (ax, y + 1.2, az), TRUNK, "Wood", rot_z(90), shape="Cylinder"),
+        part("AnvilBase", (1.5, 1.0, 1.8), (ax, y + 2.7, az), IRON, "Metal", collide=False),
+        part("AnvilTop", (3.6, 0.8, 1.5), (ax, y + 3.6, az), (120, 122, 128), "Metal", collide=False),
+        part("AnvilHorn", (1.3, 0.55, 0.8), (ax + 2.35, y + 3.7, az), (120, 122, 128), "Metal", rot_z(-12), collide=False),
+        part("Workpiece", (1.6, 0.24, 0.32), (ax - 0.3, y + 4.12, az), (255, 150, 60), "Neon", collide=False, query=False,
+             shadow=False, children=[light(8, 0.7, (255, 140, 60))]),
+    ]
+    # Quench trough along the east wall, workbench and racks along the west wall, tools on the back wall.
+    kids += [
+        box("Trough", x1 - t - 2.6, x1 - t - 0.4, y + 0.2, y + 2.4, cz - 4, cz + 4, (100, 70, 44), "WoodPlanks"),
+        box("TroughWater", x1 - t - 2.4, x1 - t - 0.6, y + 1.9, y + 2.25, cz - 3.8, cz + 3.8, (60, 100, 130), "Glass",
+            collide=False, transparency=0.3),
+        box("Bench", x0 + t + 0.4, x0 + t + 3.2, y + 2.6, y + 3.0, z0 + 5, z0 + 13, TIMBER, "WoodPlanks"),
+        box("BenchLegA", x0 + t + 0.6, x0 + t + 1.0, y + 0.2, y + 2.6, z0 + 5.3, z0 + 5.7, BEAM, "Wood", collide=False),
+        box("BenchLegB", x0 + t + 0.6, x0 + t + 1.0, y + 0.2, y + 2.6, z0 + 12.3, z0 + 12.7, BEAM, "Wood", collide=False),
+        part("Vise", (1.0, 1.0, 1.4), (x0 + t + 2.4, y + 3.5, z0 + 7), IRON, "Metal", collide=False),
+        box("RackBoard", x0 + t, x0 + t + 0.4, y + 3.0, y + 8.6, z1 - 12, z1 - 3, BEAM, "Wood", collide=False),
+    ]
+    for k in range(5):  # finished blades hanging on the rack
+        zz = z1 - 11 + k * 1.8
+        kids.append(part(f"RackBlade{k}", (0.25, 4.0, 0.7), (x0 + t + 0.55, y + 5.4, zz), (200, 204, 210), "Metal",
+                         rot_x(rng.uniform(-3, 3)), collide=False))
+        kids.append(part(f"RackHilt{k}", (0.35, 0.9, 0.35), (x0 + t + 0.55, y + 7.8, zz), (84, 52, 36), "Fabric", collide=False))
+        kids.append(part(f"RackGuard{k}", (0.3, 0.25, 1.3), (x0 + t + 0.55, y + 7.35, zz), GOLD, "Metal", collide=False))
+    for k, (dz, kind) in enumerate(((-11, "tongs"), (-9.2, "hammer"), (-7.4, "tongs"), (-5.6, "hammer"))):
+        px_, pz = cx + dz, z0 + t + 0.4
+        if kind == "tongs":
+            kids.append(part(f"Tool{k}", (0.22, 2.8, 0.22), (px_, y + 7.0, pz), IRON, "Metal", rot_z(6), collide=False))
+            kids.append(part(f"ToolB{k}", (0.22, 2.8, 0.22), (px_ + 0.35, y + 7.0, pz), IRON, "Metal", rot_z(-6), collide=False))
+        else:
+            kids.append(part(f"Tool{k}", (0.3, 2.4, 0.3), (px_, y + 6.8, pz), (120, 84, 50), "Wood", collide=False))
+            kids.append(part(f"ToolB{k}", (1.0, 0.5, 0.5), (px_, y + 8.1, pz), IRON, "Metal", collide=False))
+    kids.append(box("ToolBoard", cx - 12.2, cx - 4.4, y + 5.2, y + 8.8, z0 + t, z0 + t + 0.25, BEAM, "Wood", collide=False))
+    # Counter across the opening with two display blades; the merchant stands behind it.
+    kz = z1 - 0.9
+    kids.append(box("CounterTop", ox0 - 0.4, ox1 + 0.4, y + 3.3, y + 3.7, kz - 1.3, kz + 1.0, TIMBER, "WoodPlanks"))
+    kids.append(box("CounterFront", ox0 - 0.2, ox1 + 0.2, y + 0.2, y + 3.3, kz + 0.6, kz + 1.0, (104, 68, 40), "WoodPlanks"))
+    kids.append(box("CounterBack", ox0 - 0.2, ox1 + 0.2, y + 0.2, y + 3.3, kz - 1.3, kz - 0.9, (104, 68, 40), "WoodPlanks",
+                    collide=False))
+    for k, dx in enumerate((-4.5, 4.5)):
+        kids.append(part(f"DisplayBlade{k}", (3.8, 0.2, 0.7), (cx + dx, y + 3.85, kz - 0.2), (200, 204, 210), "Metal",
+                         rot_y(12 * (1 if k else -1)), collide=False))
+        kids.append(part(f"DisplayGuard{k}", (0.3, 0.3, 1.3), (cx + dx - 2.0 * (1 if k else -1), y + 3.85, kz - 0.2), GOLD, "Metal",
+                         rot_y(12 * (1 if k else -1)), collide=False))
+    # Hanging shop sign on a bracket at the front corner.
+    bx_ = x1 + 0.6
+    kids.append(part("SignBracket", (3.2, 0.4, 0.4), (bx_ + 1.4, y + 9.6, z1 - 3), IRON, "Metal", collide=False))
+    kids.append(part("SignChainA", (0.12, 1.2, 0.12), (bx_ + 1.4, y + 8.9, z1 - 2.2), IRON, "Metal", collide=False))
+    kids.append(part("SignChainB", (0.12, 1.2, 0.12), (bx_ + 1.4, y + 8.9, z1 - 3.8), IRON, "Metal", collide=False))
+    kids.append(part("SignBoard", (0.35, 2.6, 3.4), (bx_ + 1.4, y + 7.0, z1 - 3), (58, 38, 26), "WoodPlanks", collide=False,
+                     children=[label_gui("Right", "Sword Shop", "Relic blades", (255, 232, 170), px=50),
+                               label_gui("Left", "Sword Shop", "Relic blades", (255, 232, 170), px=50)]))
+    kids.append(part("SignAnvilIcon", (0.5, 0.6, 1.3), (bx_ + 1.4, y + 5.2, z1 - 3), IRON, "Metal", collide=False))
+    # Outside: coal heap, ingot stack, water bucket.
+    for k in range(5):
+        kids.append(part(f"Coal{k}", (rng.uniform(1.2, 2.0), rng.uniform(0.8, 1.3), rng.uniform(1.2, 2.0)),
+                         (x1 + 3.5 + rng.uniform(-1, 1), y + 0.5 + k * 0.12, z0 + 6 + rng.uniform(-1.5, 1.5)), (36, 34, 34),
+                         "Slate", mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-8, 8))), collide=False))
+    for k in range(6):
+        kids.append(part(f"Ingot{k}", (2.2, 0.5, 0.9), (x1 + 3.5 + (k % 2) * 1.0 - 0.5, y + 0.45 + (k // 2) * 0.5, z0 + 12 + (k // 2) * 0.1),
+                         (150, 152, 158), "Metal", rot_y((k // 2) * 90), collide=False))
+    return model(name, kids, attrs={"Forge": True, "Smithy": True, "AnvilX": ax - 0.3, "AnvilY": y + 4.1, "AnvilZ": az,
+                                    "AnvilStandX": ax - 3.0, "AnvilStandY": y + 0.2, "AnvilStandZ": az,
+                                    "CounterX": cx, "CounterY": y + 0.2, "CounterZ": kz - 3.4})
+
+
 def campfire(name, x, y, z, rng):
     kids = []
     for k in range(7):
@@ -1251,7 +1395,7 @@ WAYPOINTS = [
 def build_markers():
     npcs = model("NPCs", [
         marker("QuestMaster", (15, HUB_Y + 0.2, 50), yaw_facing(-1, 0)),
-        marker("Merchant", (-62, HUB_Y, -16.5), yaw_facing(0, 1)),
+        marker("Merchant", (-63, HUB_Y + 0.2, -24.6), yaw_facing(0, 1)),
         marker("SkillTrainer", (58, HUB_Y, -12), yaw_facing(0, 1)),
         marker("RebirthKeeper", (64, HUB_Y, 22), yaw_facing(0, -1)),
     ], cls="Folder")
@@ -1367,17 +1511,8 @@ def build_hub(rng):
     visual.append(sign("TravelBoard", -16, HUB_Y, -44, yaw_facing(1, 0), 7, 5, "Travel", "Waystones you have found"))
     visual.append(waystone("HubWaystone", "HubSpawn", -16, HUB_Y, -36))
 
-    # Sword shop (west): timber house, open counter facing the west road.
-    visual.append(timber_house("SwordShop", -82, -44, -50, -20, HUB_Y, 13, "S", rng, door_w=12, roof_color=ROOF))
-    visual.append(box("ShopCounter", -70, -54, HUB_Y, HUB_Y + 3.4, -14.6, -12.4, TIMBER, "WoodPlanks"))
-    visual.append(part("ShopAwning", (26, 0.5, 7), (-62, HUB_Y + 11.2, -16.5), (176, 60, 52), "Fabric",
-                       rot_x(16), collide=False))
-    visual.append(sign("ShopSign", -38, HUB_Y, -12, yaw_facing(1, 0), 10, 3.6, "Sword Shop", "Relic blades"))
-    for k, x in enumerate((-76, -48)):
-        visual.append(part(f"WeaponRack{k}", (6, 5, 1), (x, HUB_Y + 2.5, -18.5), BEAM, "Wood", collide=True))
-        for j in range(3):
-            visual.append(part(f"RackBlade{k}{j}", (0.4, 4.2, 1), (x - 2 + j * 2, HUB_Y + 3.6, -17.8),
-                               (190, 194, 200), "Metal", collide=False))
+    # The smithy (west): stone workshop with an open front; forge, anvil and racks inside.
+    visual.append(smithy("Smithy", -82, -44, -50, -20, HUB_Y, rng))
 
     # Skill trainer (east): fenced yard with dummies and a hut.
     visual.append(timber_house("TrainerHut", 70, 88, -50, -36, HUB_Y, 10, "W", rng, door_w=5, roof_color=(84, 70, 60), door=True))
@@ -1420,8 +1555,6 @@ def build_hub(rng):
     visual.append(barrel("BarrelNW2", -49.2, HUB_Y, -65, rng))
     visual.append(hand_cart("CartSW", -58, HUB_Y, 74, yaw_facing(0, -1)))
     visual.append(barrel("BarrelSW", -60, HUB_Y, 88, rng))
-    # Blacksmith at work beside the shop counter.
-    visual.append(forge_set("Forge", -46, HUB_Y + 0.2, -14, rng))
     visual.append(barrel("BarrelShop", -41.5, HUB_Y, -34, rng))
     visual.append(crate_stack("CratesShop", -40, HUB_Y, -40, rng))
     # Plaza life: benches facing the monument, a ring of flowers, market bunting over the roads.
@@ -1747,7 +1880,7 @@ def render_topdown(path: Path):
         draw.ellipse([cx - dot, cz - dot, cx + dot, cz + dot], fill=arch_color[arch], outline=(0, 0, 0))
         draw.text((cx + 9, cz - 7), f"{arch.replace('Iron', '').replace('Boss_', '')} L{level}", fill=(255, 255, 255),
                   font=font)
-    for name, (x, z) in (("Quest Master", (15, 50)), ("Merchant", (-62, -16.5)), ("Skill Trainer", (58, -12)),
+    for name, (x, z) in (("Quest Master", (15, 50)), ("Merchant", (-63, -24.6)), ("Skill Trainer", (58, -12)),
                          ("Rebirth", (64, 22)), ("Travel board", (-16, -40))):
         cx, cz = px(x, z)
         draw.rectangle([cx - 5, cz - 5, cx + 5, cz + 5], fill=(90, 170, 255), outline=(0, 0, 0))

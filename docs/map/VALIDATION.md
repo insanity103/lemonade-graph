@@ -1,6 +1,6 @@
 # Map validation
 
-- 2361 parts: 17 floor, 389 collidable solids, 26 wall proxies, 31 markers/volumes
+- 2355 parts: 17 floor, 386 collidable solids, 26 wall proxies, 31 markers/volumes
 
 ## Walk distance from player spawn
 
@@ -8,7 +8,7 @@
 | --- | ---: | ---: | ---: |
 | Iron Lowlands gate | 140 | 8.8 s | 5.4 s |
 | NPC QuestMaster | 91 | 5.7 s | 3.5 s |
-| NPC Merchant | 66 | 4.1 s | 2.5 s |
+| NPC Merchant | 69 | 4.3 s | 2.7 s |
 | NPC SkillTrainer | 61 | 3.8 s | 2.4 s |
 | NPC RebirthKeeper | 81 | 5.1 s | 3.1 s |
 | Waypoint HubSpawn | 0 | 0.0 s | 0.0 s |

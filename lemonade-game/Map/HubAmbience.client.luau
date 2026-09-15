@@ -477,21 +477,24 @@ for i = 1, VILLAGER_COUNT do
 end
 
 -- ── Blacksmith hammer ───────────────────────────────────────────────────────
+-- The Relic Blacksmith leaves his counter between customers, walks to the anvil and hammers
+-- the workpiece (his hammer accessory is welded to his right arm, so the swing carries it).
 local function smithRoutine(forge: Model)
-	local head = forge:FindFirstChild("SmithHammerHead")
-	local handle = forge:FindFirstChild("SmithHammerHandle")
 	local anvilPos = Vector3.new(forge:GetAttribute("AnvilX") or 0, forge:GetAttribute("AnvilY") or 0, forge:GetAttribute("AnvilZ") or 0)
-	local pivot = Vector3.new(forge:GetAttribute("HammerX") or 0, forge:GetAttribute("HammerY") or 0, forge:GetAttribute("HammerZ") or 0)
-	if not (head and handle) then return end
-	local rng = Random.new()
-	local function place(angle: number)
-		-- rotate the hammer about the hand pivot; handle points up from the hand, head at its end
-		local frame = CFrame.new(pivot) * CFrame.Angles(angle, 0, 0)
-		handle.CFrame = frame * CFrame.new(0, 1.3, 0)
-		head.CFrame = frame * CFrame.new(0, 2.6, 0)
+	local stand = Vector3.new(forge:GetAttribute("AnvilStandX") or 0, (forge:GetAttribute("AnvilStandY") or floorY) + 3,
+		forge:GetAttribute("AnvilStandZ") or 0)
+	local model = workspace:WaitForChild("RelicMerchantNPC", 60)
+	if not model or not model:IsA("Model") or not model.PrimaryPart then
+		warn("[HubAmbience] Relic Blacksmith rig not found; forge idle")
+		return
 	end
+	local parts = rigParts(model)
+	if not parts then return end
+	local home = model.PrimaryPart.CFrame
+	local prompt = model.PrimaryPart:FindFirstChildOfClass("ProximityPrompt")
+	local rng = Random.new()
 	local function spark()
-		for _ = 1, 4 do
+		for _ = 1, 5 do
 			local bit = Instance.new("Part")
 			bit.Size = Vector3.new(0.18, 0.18, 0.18)
 			bit.Color = Color3.fromRGB(255, 200, 90)
@@ -500,11 +503,10 @@ local function smithRoutine(forge: Model)
 			bit.Position = anvilPos
 			bit.Parent = workspace.CurrentCamera
 			local dir = Vector3.new(rng:NextNumber(-1, 1), rng:NextNumber(0.6, 1.4), rng:NextNumber(-1, 1)) * 5
-			local t = 0
 			task.spawn(function()
+				local t = 0
 				while t < 0.45 do
-					local dt = RunService.Heartbeat:Wait()
-					t += dt
+					t += RunService.Heartbeat:Wait()
 					bit.Position = anvilPos + dir * t - Vector3.new(0, 12 * t * t, 0)
 					bit.Transparency = t / 0.45
 				end
@@ -512,36 +514,47 @@ local function smithRoutine(forge: Model)
 			end)
 		end
 	end
-	while forge.Parent do
-		task.wait(rng:NextNumber(4, 9))
-		for _ = 1, rng:NextInteger(3, 5) do
-			local t = 0
-			local struck = false
+	print("[HubAmbience] Relic Blacksmith forge routine running")
+	while model.Parent do
+		task.wait(rng:NextNumber(8, 16))
+		if prompt then prompt.Enabled = false end
+		local arrived = walkPath(model, parts, home, stand, WALK_SPEED, nil)
+		local facing = CFrame.lookAt(stand, Vector3.new(anvilPos.X, stand.Y, anvilPos.Z))
+		walk(model, parts, arrived, facing, nil)
+		for _ = 1, rng:NextInteger(4, 7) do
+			local t, struck = 0, false
 			while t < 0.5 do
 				t += RunService.Heartbeat:Wait()
 				local phase = math.min(t / 0.5, 1)
 				local angle
-				if phase < 0.6 then
-					angle = math.rad(-95) * (phase / 0.6) -- raise back
+				if phase < 0.55 then
+					angle = -math.rad(140) * (phase / 0.55)
 				else
-					angle = math.rad(-95) + math.rad(115) * ((phase - 0.6) / 0.4)
-					if not struck and phase > 0.95 then
+					angle = -math.rad(140) + math.rad(175) * ((phase - 0.55) / 0.45)
+					if not struck and phase > 0.92 then
 						struck = true
 						spark()
-						AudioManager.PlaySFX("crit_hit", head)
+						AudioManager.PlaySFX("crit_hit", parts["Right Arm"])
 					end
 				end
-				place(angle)
+				pose(model, parts, facing, 0, angle, nil)
 			end
-			place(math.rad(20))
-			task.wait(rng:NextNumber(0.25, 0.45))
+			pose(model, parts, facing, 0, math.rad(20), nil)
+			task.wait(rng:NextNumber(0.25, 0.5))
 		end
-		place(0)
+		pose(model, parts, facing, 0, 0, nil)
+		task.wait(0.6)
+		local back = walkPath(model, parts, facing, home.Position, WALK_SPEED, nil)
+		walk(model, parts, back, home, nil)
+		if prompt then prompt.Enabled = true end
 	end
 end
 for _, model in ipairs(map:GetDescendants()) do
 	if model:IsA("Model") and model:GetAttribute("Forge") == true then
-		task.spawn(smithRoutine, model)
+		task.spawn(function()
+			local ok, err = pcall(smithRoutine, model)
+			if not ok then warn("[HubAmbience] smith routine stopped: " .. tostring(err)) end
+		end)
 	end
 end
 
