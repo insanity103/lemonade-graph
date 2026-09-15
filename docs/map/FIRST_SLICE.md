@@ -121,6 +121,20 @@ Boss XP and the level curve need a tuning pass before Briarwood exists.
 - `HubAmbience` (client, map only): Skill Trainer walks to a dummy, swings a practice sword and
   returns; hologram spins and flickers; waystone splinters orbit.
 
+## Hearthmere life pass (2026-09-15)
+
+Geometry (`map_forge.py`): houses got collidable plank doors, framed lit windows with flower
+boxes, and smoking chimneys; a working blacksmith corner (forge fire, anvil, hammer, quench
+barrel) beside the shop; benches and a flower ring around the monument; flower beds, bunting
+strung over every road, a fingerpost and welcome sign by spawn with a rune ring and lamps; a
+produce stall and gathering fire by the well; a waterfall and pool on the east cliff; hay,
+rack, barrels, crates, woodpile, hand cart, bushes, stumps and boulders. 1931 parts total.
+
+Motion (`HubAmbience`, client only): five villagers stroll between spots (detouring round the
+monument) and chat; the smith hammers in bursts with sparks and a clink; butterflies over the
+beds, three birds circling the plaza, waterfall sheets shimmer; plus the trainer, hologram and
+waystone splinters from before.
+
 ## Known limitations / next
 
 - `canLeaveCombat` in `MapTravel.server.luau` decides the travel combat restriction (see TODO).

@@ -1,6 +1,6 @@
 # Map validation
 
-- 1119 parts: 17 floor, 302 collidable solids, 26 wall proxies, 31 markers/volumes
+- 1932 parts: 17 floor, 381 collidable solids, 26 wall proxies, 31 markers/volumes
 
 ## Walk distance from player spawn
 
@@ -8,9 +8,9 @@
 | --- | ---: | ---: | ---: |
 | Iron Lowlands gate | 140 | 8.8 s | 5.4 s |
 | NPC QuestMaster | 91 | 5.7 s | 3.5 s |
-| NPC Merchant | 66 | 4.1 s | 2.5 s |
+| NPC Merchant | 69 | 4.3 s | 2.6 s |
 | NPC SkillTrainer | 61 | 3.8 s | 2.4 s |
-| NPC RebirthKeeper | 84 | 5.2 s | 3.2 s |
+| NPC RebirthKeeper | 85 | 5.3 s | 3.3 s |
 | Waypoint HubSpawn | 0 | 0.0 s | 0.0 s |
 | Waypoint IronOverlook | 193 | 12.0 s | 7.4 s |
 | Waypoint WarlordGate | 390 | 24.4 s | 15.0 s |
@@ -35,7 +35,7 @@
 | IL_B1 | IL_B2 | 21 | 1.3 s |
 | IL_B2 | IL_B1 | 21 | 1.3 s |
 | IL_B3 | IL_B2 | 40 | 2.5 s |
-| IL_E1 | IL_S7 | 76 | 4.8 s |
+| IL_E1 | IL_S7 | 77 | 4.8 s |
 | IL_S1 | IL_S3 | 35 | 2.2 s |
 | IL_S2 | IL_S3 | 36 | 2.2 s |
 | IL_S3 | IL_S1 | 35 | 2.2 s |

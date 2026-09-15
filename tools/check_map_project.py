@@ -383,7 +383,7 @@ def check_coplanar_tops(parts):
     z-fight, which reads in-game as floor textures crawling while the camera moves."""
     buckets = {}
     for p in parts:
-        if p.transparency >= 0.9 or p.cls == "WedgePart":
+        if p.transparency >= 0.9 or p.cls == "WedgePart" or p.shape == 0:  # balls have no flat top
             continue
         r = p.rot
         if p.shape == 2 and abs(r[1][0]) > 0.99:

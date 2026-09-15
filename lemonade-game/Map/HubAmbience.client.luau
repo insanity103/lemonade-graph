@@ -174,6 +174,247 @@ local function trainerRoutine()
 end
 task.spawn(trainerRoutine)
 
+-- ── Villagers ───────────────────────────────────────────────────────────────
+-- Client-side wanderers built from the same block rig as the hub NPCs. They stroll between
+-- spots around the village, pause, and occasionally say something. Nothing replicates.
+local VILLAGER_COUNT = 5
+local VILLAGER_SPEED = 7
+local VILLAGER_SPOTS = { -- [TUNING] x, z on grass or paving, clear of props
+	Vector3.new(-30, 0, -22), Vector3.new(-12, 0, -26), Vector3.new(22, 0, -20), Vector3.new(30, 0, 12),
+	Vector3.new(18, 0, 30), Vector3.new(-18, 0, 30), Vector3.new(-44, 0, 40), Vector3.new(-30, 0, 58),
+	Vector3.new(-16, 0, 60), Vector3.new(-56, 0, 14), Vector3.new(56, 0, 10), Vector3.new(-30, 0, -60),
+	Vector3.new(30, 0, -60), Vector3.new(-6, 0, 24), Vector3.new(8, 0, -18),
+}
+local CHATTER = {
+	"Fine weather for the market.", "The smith's been at it since dawn.", "Mind the road south, adventurer.",
+	"Fresh pears, picked this morning!", "The waystones hum louder these days.", "Heard the Warlord's back in the quarry.",
+	"Lovely evening by the fire.", "Someone's been at my apples.", "Rest a while, the benches are free.",
+}
+local OUTFITS = {
+	{ Color3.fromRGB(150, 60, 60), Color3.fromRGB(70, 60, 50) }, { Color3.fromRGB(70, 110, 160), Color3.fromRGB(60, 50, 45) },
+	{ Color3.fromRGB(90, 130, 80), Color3.fromRGB(80, 70, 60) }, { Color3.fromRGB(200, 170, 110), Color3.fromRGB(60, 60, 70) },
+	{ Color3.fromRGB(130, 80, 150), Color3.fromRGB(50, 45, 40) }, { Color3.fromRGB(190, 120, 70), Color3.fromRGB(65, 55, 50) },
+}
+local SKIN = Color3.fromRGB(226, 190, 150)
+
+local floorY = 10
+do
+	local grounds = map:FindFirstChild("Grounds_Hub")
+	local floor = grounds and grounds:FindFirstChild("HubFloor")
+	if floor then floorY = floor.Position.Y + floor.Size.Y / 2 end
+end
+
+-- Straight lines between spots would cut through the monument; route around the plaza centre.
+local MONUMENT_CLEARANCE = 12
+local function legsBetween(from: Vector3, to: Vector3): { Vector3 }
+	local a = Vector3.new(from.X, 0, from.Z)
+	local b = Vector3.new(to.X, 0, to.Z)
+	local ab = b - a
+	local t = math.clamp(-a:Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
+	local closest = a + ab * t
+	if closest.Magnitude >= MONUMENT_CLEARANCE or t <= 0 or t >= 1 then
+		return { to }
+	end
+	local side = if closest.Magnitude > 0.01 then closest.Unit else Vector3.new(1, 0, 0)
+	local detour = side * (MONUMENT_CLEARANCE + 3)
+	return { Vector3.new(detour.X, to.Y, detour.Z), to }
+end
+
+local function makeVillager(index: number, outfit)
+	local model = Instance.new("Model")
+	model.Name = "Villager"
+	local pieces = {
+		{ "HumanoidRootPart", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0), nil },
+		{ "Torso", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0), outfit[1] },
+		{ "Head", Vector3.new(1.2, 1.2, 1.2), Vector3.new(0, 4.6, 0), SKIN },
+		{ "Left Arm", Vector3.new(1, 2, 1), Vector3.new(-1.5, 3, 0), SKIN },
+		{ "Right Arm", Vector3.new(1, 2, 1), Vector3.new(1.5, 3, 0), SKIN },
+		{ "Left Leg", Vector3.new(1, 2, 1), Vector3.new(-0.5, 1, 0), outfit[2] },
+		{ "Right Leg", Vector3.new(1, 2, 1), Vector3.new(0.5, 1, 0), outfit[2] },
+	}
+	for _, spec in ipairs(pieces) do
+		local part = Instance.new("Part")
+		part.Name, part.Size = spec[1], spec[2]
+		part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
+		part.Material = Enum.Material.SmoothPlastic
+		part.Color = spec[4] or SKIN
+		part.TopSurface, part.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+		if spec[1] == "HumanoidRootPart" then
+			part.Transparency = 1
+			model.PrimaryPart = part
+		elseif spec[1] == "Head" then
+			local mesh = Instance.new("SpecialMesh")
+			mesh.MeshType = Enum.MeshType.Head
+			mesh.Scale = Vector3.new(1.25, 1.25, 1.25)
+			mesh.Parent = part
+		end
+		part.Parent = model
+	end
+	local bubble = Instance.new("BillboardGui")
+	bubble.Name = "Chatter"
+	bubble.Size = UDim2.fromOffset(220, 30)
+	bubble.StudsOffsetWorldSpace = Vector3.new(0, 2.4, 0)
+	bubble.MaxDistance = 45
+	bubble.Enabled = false
+	bubble.Parent = model.Head
+	local text = Instance.new("TextLabel")
+	text.BackgroundColor3 = Color3.fromRGB(24, 22, 20)
+	text.BackgroundTransparency = 0.25
+	text.Size = UDim2.fromScale(1, 1)
+	text.Font = Enum.Font.Gotham
+	text.TextSize = 13
+	text.TextColor3 = Color3.fromRGB(236, 230, 218)
+	text.Text = ""
+	text.Parent = bubble
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 6)
+	corner.Parent = text
+	model.Parent = workspace.CurrentCamera
+	return model, text, bubble
+end
+
+local function villagerRoutine(index: number)
+	local rng = Random.new(index * 7919)
+	local model, text, bubble = makeVillager(index, OUTFITS[(index - 1) % #OUTFITS + 1])
+	local parts = rigParts(model)
+	local spot = VILLAGER_SPOTS[rng:NextInteger(1, #VILLAGER_SPOTS)]
+	local here = CFrame.new(spot.X, floorY + 3, spot.Z)
+	pose(model, parts, here, 0, 0, nil)
+	while model.Parent do
+		task.wait(rng:NextNumber(2, 7))
+		if rng:NextNumber() < 0.35 then
+			text.Text = CHATTER[rng:NextInteger(1, #CHATTER)]
+			bubble.Enabled = true
+			task.wait(3)
+			bubble.Enabled = false
+		end
+		local nextSpot = VILLAGER_SPOTS[rng:NextInteger(1, #VILLAGER_SPOTS)]
+		if (nextSpot - spot).Magnitude < 4 then continue end
+		local destination = Vector3.new(nextSpot.X, floorY + 3, nextSpot.Z)
+		for _, target in ipairs(legsBetween(here.Position, destination)) do
+			local facing = CFrame.lookAt(here.Position, target)
+			local duration = (target - here.Position).Magnitude / VILLAGER_SPEED
+			local elapsed = 0
+			while elapsed < duration do
+				elapsed += RunService.Heartbeat:Wait()
+				local alpha = math.min(elapsed / duration, 1)
+				local root = CFrame.new(here.Position:Lerp(target, alpha)) * facing.Rotation
+				local swing = math.sin(elapsed * 7) * 0.55
+				pose(model, parts, root, swing, swing * 0.5, nil)
+			end
+			here = CFrame.new(target) * facing.Rotation
+		end
+		pose(model, parts, here, 0, 0, nil)
+		spot = nextSpot
+	end
+end
+for i = 1, VILLAGER_COUNT do
+	task.spawn(villagerRoutine, i)
+end
+
+-- ── Blacksmith hammer ───────────────────────────────────────────────────────
+local function smithRoutine(forge: Model)
+	local head = forge:FindFirstChild("SmithHammerHead")
+	local handle = forge:FindFirstChild("SmithHammerHandle")
+	local anvilPos = Vector3.new(forge:GetAttribute("AnvilX") or 0, forge:GetAttribute("AnvilY") or 0, forge:GetAttribute("AnvilZ") or 0)
+	local pivot = Vector3.new(forge:GetAttribute("HammerX") or 0, forge:GetAttribute("HammerY") or 0, forge:GetAttribute("HammerZ") or 0)
+	if not (head and handle) then return end
+	local rng = Random.new()
+	local function place(angle: number)
+		-- rotate the hammer about the hand pivot; handle points up from the hand, head at its end
+		local frame = CFrame.new(pivot) * CFrame.Angles(angle, 0, 0)
+		handle.CFrame = frame * CFrame.new(0, 1.3, 0)
+		head.CFrame = frame * CFrame.new(0, 2.6, 0)
+	end
+	local function spark()
+		for _ = 1, 4 do
+			local bit = Instance.new("Part")
+			bit.Size = Vector3.new(0.18, 0.18, 0.18)
+			bit.Color = Color3.fromRGB(255, 200, 90)
+			bit.Material = Enum.Material.Neon
+			bit.Anchored, bit.CanCollide, bit.CanQuery, bit.CanTouch = true, false, false, false
+			bit.Position = anvilPos
+			bit.Parent = workspace.CurrentCamera
+			local dir = Vector3.new(rng:NextNumber(-1, 1), rng:NextNumber(0.6, 1.4), rng:NextNumber(-1, 1)) * 5
+			local t = 0
+			task.spawn(function()
+				while t < 0.45 do
+					local dt = RunService.Heartbeat:Wait()
+					t += dt
+					bit.Position = anvilPos + dir * t - Vector3.new(0, 12 * t * t, 0)
+					bit.Transparency = t / 0.45
+				end
+				bit:Destroy()
+			end)
+		end
+	end
+	while forge.Parent do
+		task.wait(rng:NextNumber(4, 9))
+		for _ = 1, rng:NextInteger(3, 5) do
+			local t = 0
+			local struck = false
+			while t < 0.5 do
+				t += RunService.Heartbeat:Wait()
+				local phase = math.min(t / 0.5, 1)
+				local angle
+				if phase < 0.6 then
+					angle = math.rad(-95) * (phase / 0.6) -- raise back
+				else
+					angle = math.rad(-95) + math.rad(115) * ((phase - 0.6) / 0.4)
+					if not struck and phase > 0.95 then
+						struck = true
+						spark()
+						AudioManager.PlaySFX("crit_hit", head)
+					end
+				end
+				place(angle)
+			end
+			place(math.rad(20))
+			task.wait(rng:NextNumber(0.25, 0.45))
+		end
+		place(0)
+	end
+end
+for _, model in ipairs(map:GetDescendants()) do
+	if model:IsA("Model") and model:GetAttribute("Forge") == true then
+		task.spawn(smithRoutine, model)
+	end
+end
+
+-- ── Butterflies, birds, waterfall ───────────────────────────────────────────
+local flutters = {}
+for _, model in ipairs(map:GetDescendants()) do
+	if model:IsA("Model") and model:GetAttribute("FlowerBed") == true and #flutters < 12 and math.random() < 0.6 then
+		local centre = Vector3.new(model:GetAttribute("BedX"), model:GetAttribute("BedY"), model:GetAttribute("BedZ"))
+		local wing = Instance.new("Part")
+		wing.Size = Vector3.new(0.9, 0.08, 0.6)
+		wing.Color = ({ Color3.fromRGB(255, 190, 60), Color3.fromRGB(120, 170, 255), Color3.fromRGB(255, 255, 255) })[math.random(3)]
+		wing.Material = Enum.Material.SmoothPlastic
+		wing.Anchored, wing.CanCollide, wing.CanQuery, wing.CanTouch, wing.CastShadow = true, false, false, false, false
+		wing.Parent = workspace.CurrentCamera
+		table.insert(flutters, { part = wing, centre = centre, phase = math.random() * 6.28, radius = 2.5 + math.random() * 2 })
+	end
+end
+local birds = {}
+for k = 1, 3 do
+	local body = Instance.new("Part")
+	body.Size = Vector3.new(1.6, 0.25, 0.7)
+	body.Color = Color3.fromRGB(40, 38, 42)
+	body.Anchored, body.CanCollide, body.CanQuery, body.CanTouch, body.CastShadow = true, false, false, false, false
+	body.Parent = workspace.CurrentCamera
+	table.insert(birds, { part = body, phase = k * 2.1, radius = 24 + k * 6, height = floorY + 36 + k * 4 })
+end
+local sheets = {}
+for _, model in ipairs(map:GetDescendants()) do
+	if model:IsA("Model") and model:GetAttribute("Waterfall") == true then
+		for _, sheet in ipairs(model:GetChildren()) do
+			if sheet:IsA("BasePart") and string.match(sheet.Name, "^WaterSheet") then
+				table.insert(sheets, { part = sheet, base = sheet.Transparency, phase = #sheets * 2.1 })
+			end
+		end
+	end
+end
+
 -- ── Holograms and waystone splinters ────────────────────────────────────────
 local spinners = {} -- { part, centre (Vector3), offset (Vector3 from centre), base (CFrame rotation), kind }
 
@@ -205,6 +446,20 @@ local SHARD_ORBIT = math.rad(14)
 local clock = 0
 RunService.Heartbeat:Connect(function(dt)
 	clock += dt
+	for _, f in ipairs(flutters) do
+		local a = clock * 0.9 + f.phase
+		local pos = f.centre + Vector3.new(math.cos(a) * f.radius, math.sin(clock * 5 + f.phase) * 0.5 + 0.8,
+			math.sin(a * 1.3) * f.radius * 0.6)
+		f.part.CFrame = CFrame.new(pos) * CFrame.Angles(0, -a, math.sin(clock * 22 + f.phase) * 0.9)
+	end
+	for _, b in ipairs(birds) do
+		local a = clock * 0.25 + b.phase
+		local pos = Vector3.new(math.cos(a) * b.radius, b.height + math.sin(clock * 0.7 + b.phase) * 2, math.sin(a) * b.radius)
+		b.part.CFrame = CFrame.new(pos) * CFrame.Angles(0, -a - math.pi / 2, 0) * CFrame.Angles(0, 0, math.sin(clock * 9 + b.phase) * 0.5)
+	end
+	for _, w in ipairs(sheets) do
+		w.part.Transparency = w.base + math.sin(clock * 3.1 + w.phase) * 0.08
+	end
 	for _, s in ipairs(spinners) do
 		if s.kind == "hologram" then
 			local bob = math.sin(clock * 1.3) * 0.35
