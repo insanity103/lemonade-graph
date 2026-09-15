@@ -93,6 +93,7 @@ class Node:
         self.touch = boolean("CanTouch", True)
         self.anchored = boolean("Anchored", False)
         self.transparency = float(props.findtext("float[@name='Transparency']") or 0)
+        self.shape = int(props.findtext("token[@name='shape']") or 1)  # 0 Ball, 1 Block, 2 Cylinder
         for child in item.findall("Item"):
             self.children.append(Node(child, self))
 
@@ -132,6 +133,10 @@ def inside(node, p, inflate=0.0):
 def top_at(node, x, z):
     """World Y of the part's top face above (x, z), or None if (x, z) is outside its footprint."""
     r = node.rot
+    if node.shape == 2 and abs(r[1][0]) > 0.99:  # disc: cylinder axis (local X) vertical
+        if math.hypot(x - node.pos[0], z - node.pos[2]) <= node.size[1] / 2:
+            return node.pos[1] + node.size[0] / 2
+        return None
     if abs(r[1][1]) < 0.2:
         return None
     sx, sy, sz = node.size
@@ -366,8 +371,47 @@ def main():
                 fail(f"Camera clearance: {p.path()} hangs over {thing.name}")
                 break
 
+    check_coplanar_tops(visual_parts)
+
     travel = navigate(grounds, solids, spawn_location, spawns, waypoints, lemap, markers)
     finish(report_path, travel)
+
+
+def check_coplanar_tops(parts):
+    """Visible horizontal top faces at the same height must not overlap: coplanar overlaps
+    z-fight, which reads in-game as floor textures crawling while the camera moves."""
+    buckets = {}
+    for p in parts:
+        if p.transparency >= 0.9 or p.cls == "WedgePart":
+            continue
+        r = p.rot
+        if p.shape == 2 and abs(r[1][0]) > 0.99:
+            top = p.pos[1] + p.size[0] / 2
+        elif abs(abs(r[1][1]) - 1) < 1e-3:
+            top = p.pos[1] + p.size[1] / 2
+        else:
+            continue
+        p.box = getattr(p, "box", None) or xz_aabb(p)
+        buckets.setdefault(round(top * 20), []).append(p)
+    seen = set()
+    for key, group in buckets.items():
+        group = group + buckets.get(key + 1, [])
+        for i, a in enumerate(group):
+            for b in group[i + 1:]:
+                pair = tuple(sorted((id(a), id(b))))
+                if pair in seen:
+                    continue
+                seen.add(pair)
+                ax0, ax1, _, _, az0, az1 = a.box
+                bx0, bx1, _, _, bz0, bz1 = b.box
+                ox, oz = min(ax1, bx1) - max(ax0, bx0), min(az1, bz1) - max(az0, bz0)
+                if ox <= 0.05 or oz <= 0.05 or ox * oz < 1.5:  # slivers under trim are not visible
+                    continue
+                # confirm with a sample point inside both footprints
+                cx, cz = (max(ax0, bx0) + min(ax1, bx1)) / 2, (max(az0, bz0) + min(az1, bz1)) / 2
+                ya, yb = top_at(a, cx, cz), top_at(b, cx, cz)
+                if ya is not None and yb is not None and abs(ya - yb) < 0.05:
+                    fail(f"Coplanar overlapping tops (z-fighting): {a.path()} and {b.path()} at y={ya:.2f}")
 
 
 def navigate(grounds, solids, spawn_location, spawns, waypoints, lemap, markers):

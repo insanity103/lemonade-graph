@@ -1,5 +1,5 @@
 {
- "className": "Folder",
+ "className": "Model",
  "attributes": {
   "SchemaVersion": 1
  },
@@ -21,8 +21,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         14.0,
-         10.0,
+         15.0,
+         10.2,
          50.0
         ],
         "orientation": [
@@ -1451,6 +1451,7 @@
       "Transparency": 1.0
      },
      "attributes": {
+      "DisplayName": "Iron Lowlands",
       "Region": "IronLowlands",
       "Sealed": false,
       "RequiredLevel": 1
@@ -1507,6 +1508,7 @@
       "Transparency": 1.0
      },
      "attributes": {
+      "DisplayName": "Frostbound Glacier",
       "Region": "FrostboundGlacier",
       "Sealed": true,
       "RequiredLevel": 18
@@ -1563,6 +1565,7 @@
       "Transparency": 1.0
      },
      "attributes": {
+      "DisplayName": "Infernal Caldera",
       "Region": "InfernalCaldera",
       "Sealed": true,
       "RequiredLevel": 34
@@ -1619,6 +1622,7 @@
       "Transparency": 1.0
      },
      "attributes": {
+      "DisplayName": "Celestial Summit",
       "Region": "CelestialSummit",
       "Sealed": true,
       "RequiredLevel": 80
@@ -1675,6 +1679,7 @@
       "Transparency": 1.0
      },
      "attributes": {
+      "DisplayName": "Void Rift",
       "Region": "VoidRift",
       "Sealed": true,
       "RequiredLevel": 55
@@ -1731,6 +1736,7 @@
       "Transparency": 1.0
      },
      "attributes": {
+      "DisplayName": "Briarwood",
       "Region": "Briarwood",
       "Sealed": true,
       "RequiredLevel": 9
@@ -1784,5 +1790,8 @@
     "CastShadow": false
    }
   }
- ]
+ ],
+ "properties": {
+  "ModelStreamingMode": "Persistent"
+ }
 }

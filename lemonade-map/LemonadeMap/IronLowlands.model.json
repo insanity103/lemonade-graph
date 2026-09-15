@@ -11,14 +11,14 @@
     "Anchored": true,
     "Size": [
      15.5791,
-     29.8364,
+     30.0864,
      17.8851
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -22.9425,
-       23.9182,
+       24.0432,
        107.1895
       ],
       "orientation": [
@@ -68,7 +68,7 @@
      "CFrame": {
       "position": [
        -33.3982,
-       40.0364,
+       40.2864,
        107.1895
       ],
       "orientation": [
@@ -111,14 +111,14 @@
     "Anchored": true,
     "Size": [
      17.046,
-     29.5749,
+     31.0749,
      20.3767
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -24.1883,
-       23.7874,
+       24.5374,
        122.302
       ],
       "orientation": [
@@ -468,7 +468,7 @@
      "CFrame": {
       "position": [
        -39.7342,
-       35.9885,
+       36.4885,
        121.5144
       ],
       "orientation": [
@@ -568,7 +568,7 @@
      "CFrame": {
       "position": [
        -59.8624,
-       41.1587,
+       42.9087,
        148.9804
       ],
       "orientation": [
@@ -611,14 +611,14 @@
     "Anchored": true,
     "Size": [
      11.2393,
-     31.9239,
+     32.1739,
      19.8176
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -49.9088,
-       24.9619,
+       25.0869,
        162.9804
       ],
       "orientation": [
@@ -668,7 +668,7 @@
      "CFrame": {
       "position": [
        -61.3883,
-       42.1239,
+       42.3739,
        162.9804
       ],
       "orientation": [
@@ -711,14 +711,14 @@
     "Anchored": true,
     "Size": [
      17.0566,
-     32.9967,
+     33.9967,
      19.5946
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        49.7973,
-       25.4984,
+       25.9984,
        160.0717
       ],
       "orientation": [
@@ -768,7 +768,7 @@
      "CFrame": {
       "position": [
        61.4449,
-       43.1967,
+       44.9467,
        160.0717
       ],
       "orientation": [
@@ -811,14 +811,14 @@
     "Anchored": true,
     "Size": [
      13.3434,
-     31.0318,
+     32.0318,
      17.1353
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        48.5677,
-       24.5159,
+       25.0159,
        146.0717
       ],
       "orientation": [
@@ -861,14 +861,14 @@
     "Anchored": true,
     "Size": [
      16.6366,
-     28.9712,
+     29.9712,
      17.0732
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        32.2817,
-       23.4856,
+       23.9856,
        131.4634
       ],
       "orientation": [
@@ -918,7 +918,7 @@
      "CFrame": {
       "position": [
        32.2817,
-       39.1712,
+       40.1712,
        121.5258
       ],
       "orientation": [
@@ -961,14 +961,14 @@
     "Anchored": true,
     "Size": [
      11.7634,
-     33.0721,
+     33.3221,
      14.8026
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        19.2817,
-       25.5361,
+       25.6611,
        132.5987
       ],
       "orientation": [
@@ -1061,14 +1061,14 @@
     "Anchored": true,
     "Size": [
      14.7095,
-     26.7536,
+     27.0036,
      20.3382
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        24.1691,
-       22.3768,
+       22.5018,
        121.3168
       ],
       "orientation": [
@@ -1118,7 +1118,7 @@
      "CFrame": {
       "position": [
        35.8407,
-       36.9536,
+       37.9536,
        121.3168
       ],
       "orientation": [
@@ -1311,14 +1311,14 @@
     "Anchored": true,
     "Size": [
      16.2813,
-     44.5529,
+     46.0529,
      17.8113
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -83.2117,
-       23.2764,
+       24.0264,
        159.0944
       ],
       "orientation": [
@@ -1368,7 +1368,7 @@
      "CFrame": {
       "position": [
        -83.2117,
-       46.7529,
+       48.5029,
        148.5335
       ],
       "orientation": [
@@ -1411,14 +1411,14 @@
     "Anchored": true,
     "Size": [
      16.205,
-     41.3543,
+     41.6043,
      15.9641
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -98.2548,
-       21.6772,
+       21.8022,
        160.0179
       ],
       "orientation": [
@@ -1468,7 +1468,7 @@
      "CFrame": {
       "position": [
        -98.2548,
-       43.5543,
+       46.3043,
        150.7457
       ],
       "orientation": [
@@ -1511,14 +1511,14 @@
     "Anchored": true,
     "Size": [
      5.4427,
-     40.4575,
+     43.7075,
      19.5311
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -107.8786,
-       21.2288,
+       22.8538,
        158.2345
       ],
       "orientation": [
@@ -1561,14 +1561,14 @@
     "Anchored": true,
     "Size": [
      18.2583,
-     37.7205,
+     38.4705,
      19.9048
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -119.9524,
-       19.8603,
+       20.2353,
        176.5292
       ],
       "orientation": [
@@ -1618,7 +1618,7 @@
      "CFrame": {
       "position": [
        -131.8254,
-       39.9205,
+       45.4205,
        176.5292
       ],
       "orientation": [
@@ -1761,14 +1761,14 @@
     "Anchored": true,
     "Size": [
      13.7295,
-     41.2354,
+     46.2354,
      14.7484
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -117.3742,
-       21.6177,
+       24.1177,
        213.7051
       ],
       "orientation": [
@@ -1818,7 +1818,7 @@
      "CFrame": {
       "position": [
        -126.6967,
-       43.4354,
+       48.4354,
        213.7051
       ],
       "orientation": [
@@ -1861,14 +1861,14 @@
     "Anchored": true,
     "Size": [
      11.8476,
-     40.2648,
+     46.7648,
      15.8804
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -117.9402,
-       21.1324,
+       24.3824,
        225.2936
       ],
       "orientation": [
@@ -1911,14 +1911,14 @@
     "Anchored": true,
     "Size": [
      12.296,
-     48.0462,
+     48.2962,
      17.3776
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -118.6888,
-       25.0231,
+       25.1481,
        236.1654
       ],
       "orientation": [
@@ -1961,14 +1961,14 @@
     "Anchored": true,
     "Size": [
      14.0468,
-     44.4215,
+     45.9215,
      19.3376
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -119.6688,
-       23.2108,
+       23.9608,
        248.1368
       ],
       "orientation": [
@@ -2018,7 +2018,7 @@
      "CFrame": {
       "position": [
        -130.7859,
-       46.6215,
+       48.1215,
        248.1368
       ],
       "orientation": [
@@ -2061,14 +2061,14 @@
     "Anchored": true,
     "Size": [
      16.1754,
-     47.4888,
+     47.7388,
      19.1899
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -119.5949,
-       24.7444,
+       24.8694,
        262.0479
       ],
       "orientation": [
@@ -2411,14 +2411,14 @@
     "Anchored": true,
     "Size": [
      11.8146,
-     44.4858,
+     46.7358,
      14.6801
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -159.6927,
-       23.2429,
+       24.3679,
        277.6599
       ],
       "orientation": [
@@ -2468,7 +2468,7 @@
      "CFrame": {
       "position": [
        -159.6927,
-       46.6858,
+       49.1858,
        268.6672
       ],
       "orientation": [
@@ -2568,7 +2568,7 @@
      "CFrame": {
       "position": [
        -184.9743,
-       40.8337,
+       46.8337,
        290.8235
       ],
       "orientation": [
@@ -2711,14 +2711,14 @@
     "Anchored": true,
     "Size": [
      16.9253,
-     38.1977,
+     38.6977,
      19.745
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -174.8725,
-       20.0988,
+       20.3488,
        320.1439
       ],
       "orientation": [
@@ -2961,14 +2961,14 @@
     "Anchored": true,
     "Size": [
      18.5371,
-     41.4363,
+     46.9363,
      16.6374
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -142.4501,
-       21.7181,
+       24.4681,
        353.3187
       ],
       "orientation": [
@@ -3018,7 +3018,7 @@
      "CFrame": {
       "position": [
        -142.4501,
-       43.6363,
+       49.3863,
        362.6596
       ],
       "orientation": [
@@ -3061,14 +3061,14 @@
     "Anchored": true,
     "Size": [
      16.8971,
-     43.4931,
+     46.9931,
      16.4729
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -125.933,
-       22.7466,
+       24.4966,
        353.2364
       ],
       "orientation": [
@@ -3161,14 +3161,14 @@
     "Anchored": true,
     "Size": [
      15.3621,
-     41.4552,
+     47.2052,
      17.3568
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -118.6784,
-       21.7276,
+       24.6026,
        352.0811
       ],
       "orientation": [
@@ -3218,7 +3218,7 @@
      "CFrame": {
       "position": [
        -128.4768,
-       43.6552,
+       49.4052,
        352.0811
       ],
       "orientation": [
@@ -3261,14 +3261,14 @@
     "Anchored": true,
     "Size": [
      13.305,
-     44.5556,
+     47.5556,
      18.6266
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -119.3133,
-       23.2778,
+       24.7778,
        365.2146
       ],
       "orientation": [
@@ -3361,14 +3361,14 @@
     "Anchored": true,
     "Size": [
      13.3112,
-     50.8573,
+     51.1073,
      15.4579
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -117.7289,
-       26.4287,
+       26.5537,
        389.2321
       ],
       "orientation": [
@@ -3411,14 +3411,14 @@
     "Anchored": true,
     "Size": [
      15.7539,
-     38.2863,
+     47.7863,
      15.6315
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -117.8158,
-       20.1431,
+       24.8931,
        402.5646
       ],
       "orientation": [
@@ -3468,7 +3468,7 @@
      "CFrame": {
       "position": [
        -126.8792,
-       40.4863,
+       49.9863,
        402.5646
       ],
       "orientation": [
@@ -3511,14 +3511,14 @@
     "Anchored": true,
     "Size": [
      12.1641,
-     38.8694,
+     47.3694,
      18.8469
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -119.4235,
-       20.4347,
+       24.6847,
        415.3236
       ],
       "orientation": [
@@ -3568,7 +3568,7 @@
      "CFrame": {
       "position": [
        -130.6402,
-       41.0694,
+       49.5694,
        415.3236
       ],
       "orientation": [
@@ -3611,14 +3611,14 @@
     "Anchored": true,
     "Size": [
      13.6254,
-     46.352,
+     47.852,
      20.4556
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -120.2278,
-       24.176,
+       24.926,
        427.0184
       ],
       "orientation": [
@@ -3668,7 +3668,7 @@
      "CFrame": {
       "position": [
        -131.5881,
-       48.552,
+       50.052,
        427.0184
       ],
       "orientation": [
@@ -3761,14 +3761,14 @@
     "Anchored": true,
     "Size": [
      13.9506,
-     40.0385,
+     49.0385,
      15.3499
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -117.675,
-       21.0193,
+       25.5193,
        450.1383
       ],
       "orientation": [
@@ -3818,7 +3818,7 @@
      "CFrame": {
       "position": [
        -126.5211,
-       42.2385,
+       51.2385,
        450.1383
       ],
       "orientation": [
@@ -3861,14 +3861,14 @@
     "Anchored": true,
     "Size": [
      14.6864,
-     38.6135,
+     48.1135,
      17.7838
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -118.8919,
-       20.3067,
+       25.0567,
        463.2568
       ],
       "orientation": [
@@ -3911,14 +3911,14 @@
     "Anchored": true,
     "Size": [
      14.6622,
-     39.8091,
+     48.5591,
      14.6759
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -103.2689,
-       20.9045,
+       25.2795,
        477.338
       ],
       "orientation": [
@@ -3961,14 +3961,14 @@
     "Anchored": true,
     "Size": [
      14.5713,
-     51.1734,
+     51.4234,
      19.8352
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -89.8521,
-       26.5867,
+       26.7117,
        479.9176
       ],
       "orientation": [
@@ -4018,7 +4018,7 @@
      "CFrame": {
       "position": [
        -89.8521,
-       53.3734,
+       53.6234,
        491.675
       ],
       "orientation": [
@@ -4061,14 +4061,14 @@
     "Anchored": true,
     "Size": [
      16.2929,
-     42.9914,
+     48.2414,
      19.0517
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -75.62,
-       22.4957,
+       25.1207,
        479.5258
       ],
       "orientation": [
@@ -4111,14 +4111,14 @@
     "Anchored": true,
     "Size": [
      17.175,
-     48.5064,
+     50.5064,
      20.0953
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -60.0861,
-       25.2532,
+       26.2532,
        480.0476
       ],
       "orientation": [
@@ -4161,14 +4161,14 @@
     "Anchored": true,
     "Size": [
      15.8513,
-     50.8323,
+     52.3323,
      19.8504
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -44.7729,
-       26.4162,
+       27.1662,
        479.9252
       ],
       "orientation": [
@@ -4211,14 +4211,14 @@
     "Anchored": true,
     "Size": [
      18.8597,
-     44.141,
+     49.141,
      18.0746
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -28.6174,
-       23.0705,
+       25.5705,
        479.0373
       ],
       "orientation": [
@@ -4261,14 +4261,14 @@
     "Anchored": true,
     "Size": [
      8.9876,
-     45.5062,
+     49.5062,
      19.3053
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -15.8938,
-       23.7531,
+       25.7531,
        479.6526
       ],
       "orientation": [
@@ -4311,14 +4311,14 @@
     "Anchored": true,
     "Size": [
      11.3318,
-     38.9474,
+     49.9474,
      16.1011
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        17.0659,
-       20.4737,
+       25.9737,
        478.0505
       ],
       "orientation": [
@@ -4368,7 +4368,7 @@
      "CFrame": {
       "position": [
        17.0659,
-       41.1474,
+       52.3974,
        487.2394
       ],
       "orientation": [
@@ -4411,14 +4411,14 @@
     "Anchored": true,
     "Size": [
      11.5122,
-     40.128,
+     50.378,
      20.0441
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        27.2879,
-       21.064,
+       26.189,
        480.0221
       ],
       "orientation": [
@@ -4468,7 +4468,7 @@
      "CFrame": {
       "position": [
        27.2879,
-       42.328,
+       52.578,
        491.3907
       ],
       "orientation": [
@@ -4511,14 +4511,14 @@
     "Anchored": true,
     "Size": [
      12.0357,
-     50.2253,
+     51.9753,
      18.3958
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        37.8619,
-       26.1126,
+       26.9876,
        479.1979
       ],
       "orientation": [
@@ -4568,7 +4568,7 @@
      "CFrame": {
       "position": [
        37.8619,
-       52.4253,
+       54.1753,
        489.7333
       ],
       "orientation": [
@@ -4611,14 +4611,14 @@
     "Anchored": true,
     "Size": [
      17.6112,
-     46.341,
+     50.841,
      15.588
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        51.4854,
-       24.1705,
+       26.4205,
        477.794
       ],
       "orientation": [
@@ -4668,7 +4668,7 @@
      "CFrame": {
       "position": [
        51.4854,
-       48.541,
+       53.041,
        487.2168
       ],
       "orientation": [
@@ -4711,14 +4711,14 @@
     "Anchored": true,
     "Size": [
      13.1682,
-     45.4152,
+     50.6652,
      15.2123
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        65.6751,
-       23.7076,
+       26.3326,
        477.6062
       ],
       "orientation": [
@@ -4768,7 +4768,7 @@
      "CFrame": {
       "position": [
        65.6751,
-       47.6152,
+       52.8652,
        486.4449
       ],
       "orientation": [
@@ -4811,14 +4811,14 @@
     "Anchored": true,
     "Size": [
      16.248,
-     51.8695,
+     52.1195,
      18.5643
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        79.1832,
-       26.9348,
+       27.0598,
        479.2821
       ],
       "orientation": [
@@ -4868,7 +4868,7 @@
      "CFrame": {
       "position": [
        79.1832,
-       54.0695,
+       54.3195,
        489.7901
       ],
       "orientation": [
@@ -4911,14 +4911,14 @@
     "Anchored": true,
     "Size": [
      12.2584,
-     40.8026,
+     51.8026,
      14.7687
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        92.2364,
-       21.4013,
+       26.9013,
        477.3843
       ],
       "orientation": [
@@ -4961,14 +4961,14 @@
     "Anchored": true,
     "Size": [
      13.3633,
-     44.2877,
+     51.0377,
      19.6706
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        103.8473,
-       23.1438,
+       26.5188,
        479.8353
       ],
       "orientation": [
@@ -5018,7 +5018,7 @@
      "CFrame": {
       "position": [
        103.8473,
-       46.4877,
+       53.2377,
        491.4309
       ],
       "orientation": [
@@ -5061,14 +5061,14 @@
     "Anchored": true,
     "Size": [
      12.3407,
-     45.4834,
+     52.7334,
      18.4678
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.2339,
-       23.7417,
+       27.3667,
        464.4296
       ],
       "orientation": [
@@ -5118,7 +5118,7 @@
      "CFrame": {
       "position": [
        130.0446,
-       47.6834,
+       54.9334,
        464.4296
       ],
       "orientation": [
@@ -5161,14 +5161,14 @@
     "Anchored": true,
     "Size": [
      12.7886,
-     51.0329,
+     53.0329,
      16.1488
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        118.0744,
-       26.5165,
+       27.5165,
        453.065
       ],
       "orientation": [
@@ -5218,7 +5218,7 @@
      "CFrame": {
       "position": [
        127.8099,
-       53.2329,
+       55.2329,
        453.065
       ],
       "orientation": [
@@ -5261,14 +5261,14 @@
     "Anchored": true,
     "Size": [
      14.2262,
-     49.6008,
+     52.8508,
      18.6825
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.3412,
-       25.8004,
+       27.4254,
        440.7576
       ],
       "orientation": [
@@ -5318,7 +5318,7 @@
      "CFrame": {
       "position": [
        130.419,
-       51.8008,
+       55.0508,
        440.7576
       ],
       "orientation": [
@@ -5361,14 +5361,14 @@
     "Anchored": true,
     "Size": [
      12.9326,
-     52.7423,
+     54.2423,
      20.6922
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        120.3461,
-       27.3712,
+       28.1212,
        428.3783
       ],
       "orientation": [
@@ -5411,14 +5411,14 @@
     "Anchored": true,
     "Size": [
      17.3656,
-     42.5358,
+     53.7858,
      16.2998
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        118.1499,
-       22.2679,
+       27.8929,
        414.4292
       ],
       "orientation": [
@@ -5468,7 +5468,7 @@
      "CFrame": {
       "position": [
        128.0336,
-       44.7358,
+       55.9858,
        414.4292
       ],
       "orientation": [
@@ -5511,14 +5511,14 @@
     "Anchored": true,
     "Size": [
      11.9342,
-     38.8389,
+     53.5889,
      18.7464
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.3732,
-       20.4195,
+       27.7945,
        400.9793
       ],
       "orientation": [
@@ -5568,7 +5568,7 @@
      "CFrame": {
       "position": [
        129.8154,
-       41.0389,
+       55.7889,
        400.9793
       ],
       "orientation": [
@@ -5611,14 +5611,14 @@
     "Anchored": true,
     "Size": [
      16.5486,
-     43.6341,
+     54.1341,
      15.8057
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        117.9028,
-       22.8171,
+       28.0671,
        387.9379
       ],
       "orientation": [
@@ -5668,7 +5668,7 @@
      "CFrame": {
       "position": [
        127.4027,
-       45.8341,
+       56.3341,
        387.9379
       ],
       "orientation": [
@@ -5711,14 +5711,14 @@
     "Anchored": true,
     "Size": [
      19.1754,
-     54.2234,
+     55.7234,
      14.6653
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        117.3327,
-       28.1117,
+       28.8617,
        371.2759
       ],
       "orientation": [
@@ -5761,14 +5761,14 @@
     "Anchored": true,
     "Size": [
      14.1643,
-     41.1198,
+     54.8698,
      16.3288
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        118.1644,
-       21.5599,
+       28.4349,
        355.8061
       ],
       "orientation": [
@@ -5818,7 +5818,7 @@
      "CFrame": {
       "position": [
        127.4969,
-       43.3198,
+       57.0698,
        355.8061
       ],
       "orientation": [
@@ -5861,14 +5861,14 @@
     "Anchored": true,
     "Size": [
      12.0881,
-     42.1559,
+     53.6559,
      17.6385
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        118.8192,
-       22.078,
+       27.828,
        343.8799
       ],
       "orientation": [
@@ -5911,14 +5911,14 @@
     "Anchored": true,
     "Size": [
      12.8663,
-     50.5979,
+     54.3479,
      20.681
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        120.3405,
-       26.2989,
+       28.1739,
        332.6026
       ],
       "orientation": [
@@ -5961,14 +5961,14 @@
     "Anchored": true,
     "Size": [
      13.9021,
-     38.5885,
+     54.8385,
      14.7248
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        117.3624,
-       20.2943,
+       28.4193,
        320.4184
       ],
       "orientation": [
@@ -6011,14 +6011,14 @@
     "Anchored": true,
     "Size": [
      12.8384,
-     52.2858,
+     54.0358,
      19.8187
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.9094,
-       27.1429,
+       28.0179,
        308.2481
       ],
       "orientation": [
@@ -6061,14 +6061,14 @@
     "Anchored": true,
     "Size": [
      15.6149,
-     46.2972,
+     54.5472,
      18.5458
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.2729,
-       24.1486,
+       28.2736,
        295.2215
       ],
       "orientation": [
@@ -6111,14 +6111,14 @@
     "Anchored": true,
     "Size": [
      19.0748,
-     43.9184,
+     54.6684,
      20.0176
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        120.0088,
-       22.9592,
+       28.3342,
        279.0766
       ],
       "orientation": [
@@ -6168,7 +6168,7 @@
      "CFrame": {
       "position": [
        131.1902,
-       46.1184,
+       56.8684,
        279.0766
       ],
       "orientation": [
@@ -6211,14 +6211,14 @@
     "Anchored": true,
     "Size": [
      12.7817,
-     39.4181,
+     55.4181,
      18.0158
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.0079,
-       20.709,
+       28.709,
        264.3483
       ],
       "orientation": [
@@ -6261,14 +6261,14 @@
     "Anchored": true,
     "Size": [
      12.4297,
-     51.1254,
+     55.1254,
      19.1157
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.5578,
-       26.5627,
+       28.5627,
        252.9426
       ],
       "orientation": [
@@ -6318,7 +6318,7 @@
      "CFrame": {
       "position": [
        130.9138,
-       53.3254,
+       57.3254,
        252.9426
       ],
       "orientation": [
@@ -6361,14 +6361,14 @@
     "Anchored": true,
     "Size": [
      16.0881,
-     37.8021,
+     55.5521,
      19.5398
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.7699,
-       19.901,
+       28.776,
        239.8836
       ],
       "orientation": [
@@ -6411,14 +6411,14 @@
     "Anchored": true,
     "Size": [
      14.2344,
-     41.4578,
+     54.9578,
      19.222
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.611,
-       21.7289,
+       28.4789,
        225.9224
       ],
       "orientation": [
@@ -6461,14 +6461,14 @@
     "Anchored": true,
     "Size": [
      12.1221,
-     47.6344,
+     55.8844,
      16.2258
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        118.1129,
-       24.8172,
+       28.9422,
        213.9441
       ],
       "orientation": [
@@ -6518,7 +6518,7 @@
      "CFrame": {
       "position": [
        127.7249,
-       49.8344,
+       58.0844,
        213.9441
       ],
       "orientation": [
@@ -6561,14 +6561,14 @@
     "Anchored": true,
     "Size": [
      17.8792,
-     40.147,
+     56.147,
      18.1803
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.0902,
-       21.0735,
+       29.0735,
        200.1434
       ],
       "orientation": [
@@ -6611,14 +6611,14 @@
     "Anchored": true,
     "Size": [
      17.5517,
-     39.1035,
+     56.3535,
      20.6265
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        120.3132,
-       20.5518,
+       29.1768,
        183.628
       ],
       "orientation": [
@@ -6668,7 +6668,7 @@
      "CFrame": {
       "position": [
        132.1903,
-       41.3035,
+       58.5535,
        183.628
       ],
       "orientation": [
@@ -6711,14 +6711,14 @@
     "Anchored": true,
     "Size": [
      8.6521,
-     40.0844,
+     55.8344,
      17.9507
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        118.9754,
-       21.0422,
+       28.9172,
        171.7261
       ],
       "orientation": [
@@ -6761,14 +6761,14 @@
     "Anchored": true,
     "Size": [
      11.4133,
-     48.3019,
+     56.3019,
      18.977
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        104.8933,
-       25.151,
+       29.151,
        158.5115
       ],
       "orientation": [
@@ -6811,14 +6811,14 @@
     "Anchored": true,
     "Size": [
      15.9188,
-     45.7855,
+     56.5355,
      18.8655
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        92.4273,
-       23.8927,
+       29.2677,
        158.5672
       ],
       "orientation": [
@@ -6868,7 +6868,7 @@
      "CFrame": {
       "position": [
        92.4273,
-       47.9855,
+       58.7355,
        147.2543
       ],
       "orientation": [
@@ -6911,14 +6911,14 @@
     "Anchored": true,
     "Size": [
      15.8513,
-     49.5505,
+     56.8005,
      16.2534
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        77.7423,
-       25.7752,
+       29.4002,
        159.8733
       ],
       "orientation": [
@@ -6968,7 +6968,7 @@
      "CFrame": {
       "position": [
        77.7423,
-       51.7505,
+       59.0005,
        150.6176
       ],
       "orientation": [
@@ -7011,14 +7011,14 @@
     "Anchored": true,
     "Size": [
      15.5945,
-     43.4527,
+     56.7027,
      18.6785
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        63.2193,
-       22.7263,
+       29.3513,
        158.6607
       ],
       "orientation": [
@@ -7068,7 +7068,7 @@
      "CFrame": {
       "position": [
        63.2193,
-       45.6527,
+       58.9027,
        148.0485
       ],
       "orientation": [
@@ -7111,14 +7111,14 @@
     "Anchored": true,
     "Size": [
      14.8555,
-     42.6018,
+     56.8518,
      18.9229
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        49.1943,
-       22.3009,
+       29.4259,
        158.5385
       ],
       "orientation": [
@@ -7168,7 +7168,7 @@
      "CFrame": {
       "position": [
        49.1943,
-       44.8018,
+       59.3018,
        147.3029
       ],
       "orientation": [
@@ -7211,14 +7211,14 @@
     "Anchored": true,
     "Size": [
      3.5666,
-     50.8882,
+     57.3882,
      20.7971
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        41.1833,
-       26.4441,
+       29.6941,
        157.6015
       ],
       "orientation": [
@@ -9134,13 +9134,13 @@
       "Size": [
        18.0,
        4.2,
-       0.6
+       0.5
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         24.3,
+         24.0,
          137.3
         ],
         "orientation": [
@@ -9184,7 +9184,8 @@
         "SizingMode": "PixelsPerStud",
         "PixelsPerStud": 40,
         "LightInfluence": 0.4,
-        "MaxDistance": 260
+        "MaxDistance": 260,
+        "ClipsDescendants": true
        },
        "children": [
         {
@@ -9193,22 +9194,22 @@
          "properties": {
           "Text": "Iron Lowlands",
           "TextScaled": true,
-          "Font": "Fantasy",
+          "Font": "Merriweather",
           "BackgroundTransparency": 1,
           "TextColor3": [
            1.0,
            0.9333,
            0.7843
           ],
-          "TextStrokeTransparency": 0.6,
+          "TextStrokeTransparency": 0.7,
           "Size": {
            "UDim2": [
             [
-             0.94,
+             0.84,
              0
             ],
             [
-             0.58,
+             0.5,
              0
             ]
            ]
@@ -9216,16 +9217,26 @@
           "Position": {
            "UDim2": [
             [
-             0.03,
+             0.08,
              0
             ],
             [
-             0.04,
+             0.08,
              0
             ]
            ]
           }
-         }
+         },
+         "children": [
+          {
+           "name": "MaxSize",
+           "className": "UITextSizeConstraint",
+           "properties": {
+            "MaxTextSize": 200,
+            "MinTextSize": 6
+           }
+          }
+         ]
         },
         {
          "name": "Subtitle",
@@ -9233,7 +9244,7 @@
          "properties": {
           "Text": "Recommended Lv 1 - 10",
           "TextScaled": true,
-          "Font": "GothamBold",
+          "Font": "GothamMedium",
           "BackgroundTransparency": 1,
           "TextColor3": [
            0.9255,
@@ -9243,11 +9254,11 @@
           "Size": {
            "UDim2": [
             [
-             0.9,
+             0.84,
              0
             ],
             [
-             0.3,
+             0.26,
              0
             ]
            ]
@@ -9255,7 +9266,7 @@
           "Position": {
            "UDim2": [
             [
-             0.05,
+             0.08,
              0
             ],
             [
@@ -9276,7 +9287,8 @@
         "SizingMode": "PixelsPerStud",
         "PixelsPerStud": 40,
         "LightInfluence": 0.4,
-        "MaxDistance": 260
+        "MaxDistance": 260,
+        "ClipsDescendants": true
        },
        "children": [
         {
@@ -9285,22 +9297,22 @@
          "properties": {
           "Text": "Iron Lowlands",
           "TextScaled": true,
-          "Font": "Fantasy",
+          "Font": "Merriweather",
           "BackgroundTransparency": 1,
           "TextColor3": [
            1.0,
            0.9333,
            0.7843
           ],
-          "TextStrokeTransparency": 0.6,
+          "TextStrokeTransparency": 0.7,
           "Size": {
            "UDim2": [
             [
-             0.94,
+             0.84,
              0
             ],
             [
-             0.58,
+             0.5,
              0
             ]
            ]
@@ -9308,16 +9320,26 @@
           "Position": {
            "UDim2": [
             [
-             0.03,
+             0.08,
              0
             ],
             [
-             0.04,
+             0.08,
              0
             ]
            ]
           }
-         }
+         },
+         "children": [
+          {
+           "name": "MaxSize",
+           "className": "UITextSizeConstraint",
+           "properties": {
+            "MaxTextSize": 200,
+            "MinTextSize": 6
+           }
+          }
+         ]
         },
         {
          "name": "Subtitle",
@@ -9325,7 +9347,7 @@
          "properties": {
           "Text": "Recommended Lv 1 - 10",
           "TextScaled": true,
-          "Font": "GothamBold",
+          "Font": "GothamMedium",
           "BackgroundTransparency": 1,
           "TextColor3": [
            0.9255,
@@ -9335,11 +9357,11 @@
           "Size": {
            "UDim2": [
             [
-             0.9,
+             0.84,
              0
             ],
             [
-             0.3,
+             0.26,
              0
             ]
            ]
@@ -9347,7 +9369,7 @@
           "Position": {
            "UDim2": [
             [
-             0.05,
+             0.08,
              0
             ],
             [
@@ -9376,13 +9398,13 @@
       "Size": [
        18.0,
        4.2,
-       0.6
+       0.5
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         24.3,
+         24.0,
          140.7
         ],
         "orientation": [
@@ -9426,7 +9448,8 @@
         "SizingMode": "PixelsPerStud",
         "PixelsPerStud": 40,
         "LightInfluence": 0.4,
-        "MaxDistance": 260
+        "MaxDistance": 260,
+        "ClipsDescendants": true
        },
        "children": [
         {
@@ -9435,22 +9458,22 @@
          "properties": {
           "Text": "Hearthmere",
           "TextScaled": true,
-          "Font": "Fantasy",
+          "Font": "Merriweather",
           "BackgroundTransparency": 1,
           "TextColor3": [
            1.0,
            0.9333,
            0.7843
           ],
-          "TextStrokeTransparency": 0.6,
+          "TextStrokeTransparency": 0.7,
           "Size": {
            "UDim2": [
             [
-             0.94,
+             0.84,
              0
             ],
             [
-             0.58,
+             0.5,
              0
             ]
            ]
@@ -9458,16 +9481,26 @@
           "Position": {
            "UDim2": [
             [
-             0.03,
+             0.08,
              0
             ],
             [
-             0.04,
+             0.08,
              0
             ]
            ]
           }
-         }
+         },
+         "children": [
+          {
+           "name": "MaxSize",
+           "className": "UITextSizeConstraint",
+           "properties": {
+            "MaxTextSize": 200,
+            "MinTextSize": 6
+           }
+          }
+         ]
         },
         {
          "name": "Subtitle",
@@ -9475,7 +9508,7 @@
          "properties": {
           "Text": "Return north",
           "TextScaled": true,
-          "Font": "GothamBold",
+          "Font": "GothamMedium",
           "BackgroundTransparency": 1,
           "TextColor3": [
            0.9255,
@@ -9485,11 +9518,11 @@
           "Size": {
            "UDim2": [
             [
-             0.9,
+             0.84,
              0
             ],
             [
-             0.3,
+             0.26,
              0
             ]
            ]
@@ -9497,7 +9530,7 @@
           "Position": {
            "UDim2": [
             [
-             0.05,
+             0.08,
              0
             ],
             [
@@ -9518,7 +9551,8 @@
         "SizingMode": "PixelsPerStud",
         "PixelsPerStud": 40,
         "LightInfluence": 0.4,
-        "MaxDistance": 260
+        "MaxDistance": 260,
+        "ClipsDescendants": true
        },
        "children": [
         {
@@ -9527,22 +9561,22 @@
          "properties": {
           "Text": "Hearthmere",
           "TextScaled": true,
-          "Font": "Fantasy",
+          "Font": "Merriweather",
           "BackgroundTransparency": 1,
           "TextColor3": [
            1.0,
            0.9333,
            0.7843
           ],
-          "TextStrokeTransparency": 0.6,
+          "TextStrokeTransparency": 0.7,
           "Size": {
            "UDim2": [
             [
-             0.94,
+             0.84,
              0
             ],
             [
-             0.58,
+             0.5,
              0
             ]
            ]
@@ -9550,16 +9584,26 @@
           "Position": {
            "UDim2": [
             [
-             0.03,
+             0.08,
              0
             ],
             [
-             0.04,
+             0.08,
              0
             ]
            ]
           }
-         }
+         },
+         "children": [
+          {
+           "name": "MaxSize",
+           "className": "UITextSizeConstraint",
+           "properties": {
+            "MaxTextSize": 200,
+            "MinTextSize": 6
+           }
+          }
+         ]
         },
         {
          "name": "Subtitle",
@@ -9567,7 +9611,7 @@
          "properties": {
           "Text": "Return north",
           "TextScaled": true,
-          "Font": "GothamBold",
+          "Font": "GothamMedium",
           "BackgroundTransparency": 1,
           "TextColor3": [
            0.9255,
@@ -9577,11 +9621,11 @@
           "Size": {
            "UDim2": [
             [
-             0.9,
+             0.84,
              0
             ],
             [
-             0.3,
+             0.26,
              0
             ]
            ]
@@ -9589,7 +9633,7 @@
           "Position": {
            "UDim2": [
             [
-             0.05,
+             0.08,
              0
             ],
             [
@@ -9851,7 +9895,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -31.6,
+         -32.45,
          14.0,
          160.0
         ],
@@ -9901,7 +9945,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -20.4,
+         -19.55,
          14.0,
          160.0
         ],
@@ -9946,13 +9990,13 @@
       "Size": [
        12.0,
        5.0,
-       0.6
+       0.5
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          -26.0,
-         15.5,
+         15.2,
          160.0
         ],
         "orientation": [
@@ -9996,31 +10040,32 @@
         "SizingMode": "PixelsPerStud",
         "PixelsPerStud": 40,
         "LightInfluence": 0.4,
-        "MaxDistance": 260
+        "MaxDistance": 260,
+        "ClipsDescendants": true
        },
        "children": [
         {
          "name": "Title",
          "className": "TextLabel",
          "properties": {
-          "Text": "Squire Yard  \u203a  Crusher Pits",
+          "Text": "Squire Yard  >  Crusher Pits",
           "TextScaled": true,
-          "Font": "Fantasy",
+          "Font": "Merriweather",
           "BackgroundTransparency": 1,
           "TextColor3": [
            1.0,
            0.9333,
            0.7843
           ],
-          "TextStrokeTransparency": 0.6,
+          "TextStrokeTransparency": 0.7,
           "Size": {
            "UDim2": [
             [
-             0.94,
+             0.84,
              0
             ],
             [
-             0.58,
+             0.5,
              0
             ]
            ]
@@ -10028,16 +10073,26 @@
           "Position": {
            "UDim2": [
             [
-             0.03,
+             0.08,
              0
             ],
             [
-             0.04,
+             0.08,
              0
             ]
            ]
           }
-         }
+         },
+         "children": [
+          {
+           "name": "MaxSize",
+           "className": "UITextSizeConstraint",
+           "properties": {
+            "MaxTextSize": 200,
+            "MinTextSize": 6
+           }
+          }
+         ]
         },
         {
          "name": "Subtitle",
@@ -10045,7 +10100,7 @@
          "properties": {
           "Text": "The Iron Warlord waits beyond the ridge",
           "TextScaled": true,
-          "Font": "GothamBold",
+          "Font": "GothamMedium",
           "BackgroundTransparency": 1,
           "TextColor3": [
            0.9255,
@@ -10055,11 +10110,11 @@
           "Size": {
            "UDim2": [
             [
-             0.9,
+             0.84,
              0
             ],
             [
-             0.3,
+             0.26,
              0
             ]
            ]
@@ -10067,7 +10122,7 @@
           "Position": {
            "UDim2": [
             [
-             0.05,
+             0.08,
              0
             ],
             [
@@ -10088,31 +10143,32 @@
         "SizingMode": "PixelsPerStud",
         "PixelsPerStud": 40,
         "LightInfluence": 0.4,
-        "MaxDistance": 260
+        "MaxDistance": 260,
+        "ClipsDescendants": true
        },
        "children": [
         {
          "name": "Title",
          "className": "TextLabel",
          "properties": {
-          "Text": "Squire Yard  \u203a  Crusher Pits",
+          "Text": "Squire Yard  >  Crusher Pits",
           "TextScaled": true,
-          "Font": "Fantasy",
+          "Font": "Merriweather",
           "BackgroundTransparency": 1,
           "TextColor3": [
            1.0,
            0.9333,
            0.7843
           ],
-          "TextStrokeTransparency": 0.6,
+          "TextStrokeTransparency": 0.7,
           "Size": {
            "UDim2": [
             [
-             0.94,
+             0.84,
              0
             ],
             [
-             0.58,
+             0.5,
              0
             ]
            ]
@@ -10120,16 +10176,26 @@
           "Position": {
            "UDim2": [
             [
-             0.03,
+             0.08,
              0
             ],
             [
-             0.04,
+             0.08,
              0
             ]
            ]
           }
-         }
+         },
+         "children": [
+          {
+           "name": "MaxSize",
+           "className": "UITextSizeConstraint",
+           "properties": {
+            "MaxTextSize": 200,
+            "MinTextSize": 6
+           }
+          }
+         ]
         },
         {
          "name": "Subtitle",
@@ -10137,7 +10203,7 @@
          "properties": {
           "Text": "The Iron Warlord waits beyond the ridge",
           "TextScaled": true,
-          "Font": "GothamBold",
+          "Font": "GothamMedium",
           "BackgroundTransparency": 1,
           "TextColor3": [
            0.9255,
@@ -10147,11 +10213,11 @@
           "Size": {
            "UDim2": [
             [
-             0.9,
+             0.84,
              0
             ],
             [
-             0.3,
+             0.26,
              0
             ]
            ]
@@ -10159,7 +10225,7 @@
           "Position": {
            "UDim2": [
             [
-             0.05,
+             0.08,
              0
             ],
             [
@@ -13193,7 +13259,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         70.4,
+         69.7,
          3.6,
          235.87
         ],
@@ -13293,7 +13359,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         81.6,
+         82.3,
          3.6,
          236.1888
         ],
@@ -16377,7 +16443,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -91.6,
+         -92.3,
          3.6,
          289.6777
         ],
@@ -16477,7 +16543,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -80.4,
+         -79.7,
          3.6,
          289.5877
         ],
@@ -16533,7 +16599,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -97.6,
+         -98.3,
          3.6,
          352.3768
         ],
@@ -16633,7 +16699,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -86.4,
+         -85.7,
          3.6,
          352.571
         ],
@@ -16683,7 +16749,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -94.8,
+         -95.15,
          6.8,
          352.2144
         ],
@@ -16733,7 +16799,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -89.2,
+         -88.85,
          6.8,
          351.9861
         ],
@@ -16789,7 +16855,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         64.4,
+         63.7,
          3.6,
          356.0269
         ],
@@ -16889,7 +16955,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         75.6,
+         76.3,
          3.6,
          355.6271
         ],
@@ -16939,7 +17005,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         67.2,
+         66.85,
          6.8,
          355.6022
         ],
@@ -16989,7 +17055,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         72.8,
+         73.15,
          6.8,
          355.499
         ],
@@ -17045,7 +17111,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -75.6,
+         -76.3,
          3.6,
          275.5379
         ],
@@ -17145,7 +17211,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -64.4,
+         -63.7,
          3.6,
          275.7997
         ],
@@ -17195,7 +17261,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -72.8,
+         -73.15,
          6.8,
          275.7264
         ],
@@ -17245,7 +17311,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -67.2,
+         -66.85,
          6.8,
          275.7607
         ],
@@ -20581,7 +20647,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -35.6,
+         -36.45,
          6.0,
          360.0
         ],
@@ -20631,7 +20697,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -24.4,
+         -23.55,
          6.0,
          360.0
         ],
@@ -20676,13 +20742,13 @@
       "Size": [
        12.0,
        5.0,
-       0.6
+       0.5
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          -30.0,
-         7.5,
+         7.2,
          360.0
         ],
         "orientation": [
@@ -20726,7 +20792,8 @@
         "SizingMode": "PixelsPerStud",
         "PixelsPerStud": 40,
         "LightInfluence": 0.4,
-        "MaxDistance": 260
+        "MaxDistance": 260,
+        "ClipsDescendants": true
        },
        "children": [
         {
@@ -20735,22 +20802,22 @@
          "properties": {
           "Text": "Warlord's Pit",
           "TextScaled": true,
-          "Font": "Fantasy",
+          "Font": "Merriweather",
           "BackgroundTransparency": 1,
           "TextColor3": [
            1.0,
            0.9333,
            0.7843
           ],
-          "TextStrokeTransparency": 0.6,
+          "TextStrokeTransparency": 0.7,
           "Size": {
            "UDim2": [
             [
-             0.94,
+             0.84,
              0
             ],
             [
-             0.58,
+             0.5,
              0
             ]
            ]
@@ -20758,24 +20825,34 @@
           "Position": {
            "UDim2": [
             [
-             0.03,
+             0.08,
              0
             ],
             [
-             0.04,
+             0.08,
              0
             ]
            ]
           }
-         }
+         },
+         "children": [
+          {
+           "name": "MaxSize",
+           "className": "UITextSizeConstraint",
+           "properties": {
+            "MaxTextSize": 200,
+            "MinTextSize": 6
+           }
+          }
+         ]
         },
         {
          "name": "Subtitle",
          "className": "TextLabel",
          "properties": {
-          "Text": "Iron Warlord  \u00b7  Lv 10  \u00b7  Boss",
+          "Text": "Iron Warlord  |  Lv 10  |  Boss",
           "TextScaled": true,
-          "Font": "GothamBold",
+          "Font": "GothamMedium",
           "BackgroundTransparency": 1,
           "TextColor3": [
            0.9255,
@@ -20785,11 +20862,11 @@
           "Size": {
            "UDim2": [
             [
-             0.9,
+             0.84,
              0
             ],
             [
-             0.3,
+             0.26,
              0
             ]
            ]
@@ -20797,7 +20874,7 @@
           "Position": {
            "UDim2": [
             [
-             0.05,
+             0.08,
              0
             ],
             [
@@ -20818,7 +20895,8 @@
         "SizingMode": "PixelsPerStud",
         "PixelsPerStud": 40,
         "LightInfluence": 0.4,
-        "MaxDistance": 260
+        "MaxDistance": 260,
+        "ClipsDescendants": true
        },
        "children": [
         {
@@ -20827,22 +20905,22 @@
          "properties": {
           "Text": "Warlord's Pit",
           "TextScaled": true,
-          "Font": "Fantasy",
+          "Font": "Merriweather",
           "BackgroundTransparency": 1,
           "TextColor3": [
            1.0,
            0.9333,
            0.7843
           ],
-          "TextStrokeTransparency": 0.6,
+          "TextStrokeTransparency": 0.7,
           "Size": {
            "UDim2": [
             [
-             0.94,
+             0.84,
              0
             ],
             [
-             0.58,
+             0.5,
              0
             ]
            ]
@@ -20850,24 +20928,34 @@
           "Position": {
            "UDim2": [
             [
-             0.03,
+             0.08,
              0
             ],
             [
-             0.04,
+             0.08,
              0
             ]
            ]
           }
-         }
+         },
+         "children": [
+          {
+           "name": "MaxSize",
+           "className": "UITextSizeConstraint",
+           "properties": {
+            "MaxTextSize": 200,
+            "MinTextSize": 6
+           }
+          }
+         ]
         },
         {
          "name": "Subtitle",
          "className": "TextLabel",
          "properties": {
-          "Text": "Iron Warlord  \u00b7  Lv 10  \u00b7  Boss",
+          "Text": "Iron Warlord  |  Lv 10  |  Boss",
           "TextScaled": true,
-          "Font": "GothamBold",
+          "Font": "GothamMedium",
           "BackgroundTransparency": 1,
           "TextColor3": [
            0.9255,
@@ -20877,11 +20965,11 @@
           "Size": {
            "UDim2": [
             [
-             0.9,
+             0.84,
              0
             ],
             [
-             0.3,
+             0.26,
              0
             ]
            ]
@@ -20889,7 +20977,7 @@
           "Position": {
            "UDim2": [
             [
-             0.05,
+             0.08,
              0
             ],
             [
@@ -21540,7 +21628,7 @@
         "position": [
          0.0,
          26.8,
-         465.45
+         464.85
         ],
         "orientation": [
          [
@@ -21583,7 +21671,8 @@
         "SizingMode": "PixelsPerStud",
         "PixelsPerStud": 30,
         "LightInfluence": 0.4,
-        "MaxDistance": 260
+        "MaxDistance": 260,
+        "ClipsDescendants": true
        },
        "children": [
         {
@@ -21592,22 +21681,22 @@
          "properties": {
           "Text": "Briarwood",
           "TextScaled": true,
-          "Font": "Fantasy",
+          "Font": "Merriweather",
           "BackgroundTransparency": 1,
           "TextColor3": [
            1.0,
            0.8863,
            0.6275
           ],
-          "TextStrokeTransparency": 0.6,
+          "TextStrokeTransparency": 0.7,
           "Size": {
            "UDim2": [
             [
-             0.94,
+             0.84,
              0
             ],
             [
-             0.58,
+             0.5,
              0
             ]
            ]
@@ -21615,24 +21704,34 @@
           "Position": {
            "UDim2": [
             [
-             0.03,
+             0.08,
              0
             ],
             [
-             0.04,
+             0.08,
              0
             ]
            ]
           }
-         }
+         },
+         "children": [
+          {
+           "name": "MaxSize",
+           "className": "UITextSizeConstraint",
+           "properties": {
+            "MaxTextSize": 200,
+            "MinTextSize": 6
+           }
+          }
+         ]
         },
         {
          "name": "Subtitle",
          "className": "TextLabel",
          "properties": {
-          "Text": "Lv 9+  \u00b7  Path sealed",
+          "Text": "Lv 9+  |  Coming soon",
           "TextScaled": true,
-          "Font": "GothamBold",
+          "Font": "GothamMedium",
           "BackgroundTransparency": 1,
           "TextColor3": [
            0.9255,
@@ -21642,11 +21741,11 @@
           "Size": {
            "UDim2": [
             [
-             0.9,
+             0.84,
              0
             ],
             [
-             0.3,
+             0.26,
              0
             ]
            ]
@@ -21654,7 +21753,7 @@
           "Position": {
            "UDim2": [
             [
-             0.05,
+             0.08,
              0
             ],
             [
@@ -21684,7 +21783,7 @@
         "position": [
          0.0,
          26.8,
-         474.55
+         475.15
         ],
         "orientation": [
          [
@@ -21727,7 +21826,8 @@
         "SizingMode": "PixelsPerStud",
         "PixelsPerStud": 30,
         "LightInfluence": 0.4,
-        "MaxDistance": 260
+        "MaxDistance": 260,
+        "ClipsDescendants": true
        },
        "children": [
         {
@@ -21736,22 +21836,22 @@
          "properties": {
           "Text": "Briarwood",
           "TextScaled": true,
-          "Font": "Fantasy",
+          "Font": "Merriweather",
           "BackgroundTransparency": 1,
           "TextColor3": [
            1.0,
            0.8863,
            0.6275
           ],
-          "TextStrokeTransparency": 0.6,
+          "TextStrokeTransparency": 0.7,
           "Size": {
            "UDim2": [
             [
-             0.94,
+             0.84,
              0
             ],
             [
-             0.9,
+             0.76,
              0
             ]
            ]
@@ -21759,16 +21859,26 @@
           "Position": {
            "UDim2": [
             [
-             0.03,
+             0.08,
              0
             ],
             [
-             0.04,
+             0.12,
              0
             ]
            ]
           }
-         }
+         },
+         "children": [
+          {
+           "name": "MaxSize",
+           "className": "UITextSizeConstraint",
+           "properties": {
+            "MaxTextSize": 200,
+            "MinTextSize": 6
+           }
+          }
+         ]
         }
        ]
       }

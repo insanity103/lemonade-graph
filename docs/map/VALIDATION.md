@@ -1,30 +1,30 @@
 # Map validation
 
-- 1023 parts: 23 floor, 298 collidable solids, 26 wall proxies, 31 markers/volumes
+- 1051 parts: 17 floor, 304 collidable solids, 26 wall proxies, 31 markers/volumes
 
 ## Walk distance from player spawn
 
 | Target | Studs | Walk (16) | Run (26) |
 | --- | ---: | ---: | ---: |
 | Iron Lowlands gate | 140 | 8.8 s | 5.4 s |
-| NPC QuestMaster | 87 | 5.5 s | 3.4 s |
+| NPC QuestMaster | 91 | 5.7 s | 3.5 s |
 | NPC Merchant | 66 | 4.1 s | 2.5 s |
 | NPC SkillTrainer | 61 | 3.8 s | 2.4 s |
 | NPC RebirthKeeper | 84 | 5.2 s | 3.2 s |
 | Waypoint HubSpawn | 0 | 0.0 s | 0.0 s |
-| Waypoint IronOverlook | 191 | 11.9 s | 7.3 s |
+| Waypoint IronOverlook | 193 | 12.0 s | 7.4 s |
 | Waypoint WarlordGate | 390 | 24.4 s | 15.0 s |
-| IL_S2 (IronSquire L1) | 257 | 16.1 s | 9.9 s |
+| IL_S2 (IronSquire L1) | 259 | 16.2 s | 9.9 s |
 | IL_S1 (IronSquire L1) | 264 | 16.5 s | 10.2 s |
 | IL_S3 (IronSquire L2) | 275 | 17.2 s | 10.6 s |
-| IL_S5 (IronSquire L3) | 300 | 18.7 s | 11.5 s |
+| IL_S5 (IronSquire L3) | 301 | 18.8 s | 11.6 s |
 | IL_S4 (IronSquire L2) | 303 | 19.0 s | 11.7 s |
 | IL_S6 (IronSquire L3) | 329 | 20.5 s | 12.6 s |
-| IL_B1 (IronBerserker L3) | 340 | 21.2 s | 13.1 s |
+| IL_B1 (IronBerserker L3) | 342 | 21.3 s | 13.1 s |
 | IL_E1 (IronBerserker L6) | 413 | 25.8 s | 15.9 s |
 | IL_S7 (IronSquire L4) | 374 | 23.4 s | 14.4 s |
-| IL_B2 (IronBerserker L4) | 355 | 22.2 s | 13.7 s |
-| IL_B3 (IronBerserker L5) | 391 | 24.4 s | 15.0 s |
+| IL_B2 (IronBerserker L4) | 356 | 22.3 s | 13.7 s |
+| IL_B3 (IronBerserker L5) | 393 | 24.5 s | 15.1 s |
 | IL_S8 (IronSquire L4) | 392 | 24.5 s | 15.1 s |
 | IL_BOSS (Boss_Gorgon L10) | 470 | 29.4 s | 18.1 s |
 

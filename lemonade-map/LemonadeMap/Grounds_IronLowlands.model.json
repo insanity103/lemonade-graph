@@ -352,114 +352,14 @@
    }
   },
   {
-   "name": "ArenaFloor0",
+   "name": "ArenaFloor",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     76.0,
      0.5,
-     31.4802
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       2.0,
-       424.0
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.4627,
-     0.4235,
-     0.3843
-    ],
-    "Material": "Cobblestone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": true,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "ArenaFloor1",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
      76.0,
-     0.5,
-     31.4802
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       2.0,
-       424.0
-      ],
-      "orientation": [
-       [
-        0.7071,
-        0.0,
-        0.7071
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.7071,
-        0.0,
-        0.7071
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.4627,
-     0.4235,
-     0.3843
-    ],
-    "Material": "Cobblestone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": true,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "ArenaFloor2",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     76.0,
-     0.5,
-     31.4802
+     76.0
     ],
     "CFrame": {
      "CFrame": {
@@ -471,68 +371,18 @@
       "orientation": [
        [
         0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
         -1.0,
-        0.0,
         0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.4627,
-     0.4235,
-     0.3843
-    ],
-    "Material": "Cobblestone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": true,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "ArenaFloor3",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     76.0,
-     0.5,
-     31.4802
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       2.0,
-       424.0
-      ],
-      "orientation": [
-       [
-        -0.7071,
-        0.0,
-        0.7071
        ],
        [
-        0.0,
         1.0,
+        0.0,
         0.0
        ],
        [
-        -0.7071,
         0.0,
-        -0.7071
+        0.0,
+        1.0
        ]
       ]
      }
@@ -548,7 +398,8 @@
     "CanCollide": true,
     "CanQuery": true,
     "CanTouch": false,
-    "CastShadow": true
+    "CastShadow": true,
+    "Shape": "Cylinder"
    }
   }
  ]

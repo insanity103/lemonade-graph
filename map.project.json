@@ -107,9 +107,6 @@
         "Notifications": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/Notifications.client.luau"
         },
-        "OnboardingGui": {
-          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/OnboardingGui.client.luau"
-        },
         "QuestGui": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/QuestGui.client.luau"
         },

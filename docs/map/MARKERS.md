@@ -11,14 +11,14 @@ Workspace.LemonadeMap            Folder  attrs MapVersion, MapName
 ├─ Grounds_<Region>              Model   walkable floors/ramps (enemy ground raycasts use only these)
 ├─ Collision                     Model   invisible wall proxies (CanCollide, CanQuery=false)
 ├─ <Region>                      Model   visual geometry, attr Region; waystone models live here
-└─ Markers                       Folder  attr SchemaVersion = 1
+└─ Markers                       Model   ModelStreamingMode = Persistent, attr SchemaVersion = 1
    ├─ PlayerSpawn                SpawnLocation (invisible, Neutral) → Player.RespawnLocation
    ├─ NPCs/QuestMaster|Merchant|SkillTrainer|RebirthKeeper      Part (position + facing)
    ├─ SafeZones/<name>           Part volume, attr Region — enemies never attack in or into these
    ├─ Regions/<RegionName>       Part volume, attrs DisplayName, Subtitle, Order (higher wins overlaps)
    ├─ EnemySpawns/<id>           Part, attrs below
    ├─ Waypoints/<id>             Part arrival point, attrs DisplayName, Region, Order, DiscoverRadius
-   └─ Gates/<RegionName>         Part, attrs Region, Sealed, RequiredLevel
+   └─ Gates/<RegionName>         Part, attrs DisplayName, Region, Sealed, RequiredLevel
 ```
 
 ## EnemySpawns attributes

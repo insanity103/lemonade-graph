@@ -53,11 +53,12 @@ local function readSorted(folderName: string)
 	return list
 end
 
-local regionParts = readSorted("Regions")
-local waypointParts = readSorted("Waypoints")
-local regionByName = {}
-for _, part in ipairs(regionParts) do
-	regionByName[part.Name] = part
+-- Markers are read on use rather than cached at startup: the client can start before the
+-- persistent Markers model has finished replicating.
+local function markerChild(folderName: string, name: string): BasePart?
+	local folder = markers:FindFirstChild(folderName)
+	local part = folder and folder:FindFirstChild(name)
+	return if part and part:IsA("BasePart") then part else nil
 end
 
 -- ── GUI scaffolding ─────────────────────────────────────────────────────────
@@ -127,7 +128,7 @@ hubButton.BackgroundColor3 = COLORS.button
 hubButton.TextColor3 = COLORS.title
 hubButton.Font = Enum.Font.GothamBold
 hubButton.TextSize = 15
-hubButton.Text = "⌂  Return to Hub"
+hubButton.Text = "Return to Hub"
 hubButton.Visible = false
 hubButton.Parent = gui
 round(hubButton, 8)
@@ -172,7 +173,7 @@ closeButton.AnchorPoint = Vector2.new(1, 0)
 closeButton.Position = UDim2.new(1, 0, 0, 0)
 closeButton.Size = UDim2.fromOffset(34, 34)
 closeButton.BackgroundColor3 = COLORS.button
-closeButton.Text = "✕"
+closeButton.Text = "X"
 closeButton.TextColor3 = COLORS.text
 closeButton.Font = Enum.Font.GothamBold
 closeButton.TextSize = 18
@@ -214,7 +215,7 @@ local function showToast(text: string, color: Color3?)
 end
 
 local function displayName(id: string): string
-	local part = markers.Waypoints:FindFirstChild(id)
+	local part = markerChild("Waypoints", id)
 	return part and part:GetAttribute("DisplayName") or id
 end
 
@@ -237,7 +238,7 @@ local function openMenu(sourceId: string, discovered: { string })
 	end
 	known[HUB_WAYPOINT] = true
 	local firstSelectable
-	for index, part in ipairs(waypointParts) do
+	for index, part in ipairs(readSorted("Waypoints")) do
 		local id = part.Name
 		local button = Instance.new("TextButton")
 		button.Name = id
@@ -252,21 +253,21 @@ local function openMenu(sourceId: string, discovered: { string })
 		local inset = Instance.new("UIPadding")
 		inset.PaddingLeft = UDim.new(0, 12)
 		inset.Parent = button
-		local region = regionByName[part:GetAttribute("Region") or ""]
+		local region = markerChild("Regions", part:GetAttribute("Region") or "")
 		local regionText = region and region:GetAttribute("DisplayName") or ""
 		if id == sourceId then
-			button.Text = "◆  " .. displayName(id) .. "   (you are here)"
+			button.Text = displayName(id) .. "   (you are here)"
 			button.TextColor3 = COLORS.muted
 			button.Active, button.AutoButtonColor, button.Selectable = false, false, false
 		elseif known[id] then
-			button.Text = "➜  " .. displayName(id) .. (regionText ~= "" and ("   ·  " .. regionText) or "")
+			button.Text = "Travel to " .. displayName(id) .. (regionText ~= "" and ("   |  " .. regionText) or "")
 			button.TextColor3 = COLORS.text
 			button.Activated:Connect(function()
 				travelRemote:FireServer("Travel", id)
 			end)
 			firstSelectable = firstSelectable or button
 		else
-			button.Text = "?  Undiscovered waystone" .. (regionText ~= "" and ("   ·  " .. regionText) or "")
+			button.Text = "Undiscovered waystone" .. (regionText ~= "" and ("   |  " .. regionText) or "")
 			button.TextColor3 = COLORS.muted
 			button.Active, button.AutoButtonColor, button.Selectable = false, false, false
 		end
@@ -323,8 +324,18 @@ guide.LightInfluence = 0
 guide.Size = UDim2.fromOffset(220, 46)
 guide.Enabled = false
 guide.Parent = gui
-local guideIcon = label(guide, { Size = UDim2.new(1, 0, 0, 24), Text = "◆", TextSize = 24, TextColor3 = COLORS.title,
-	TextStrokeTransparency = 0.2, Font = Enum.Font.GothamBold })
+local guideIcon = Instance.new("Frame") -- a rotated square; fonts lack a reliable diamond glyph
+guideIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+guideIcon.Position = UDim2.new(0.5, 0, 0, 12)
+guideIcon.Size = UDim2.fromOffset(14, 14)
+guideIcon.Rotation = 45
+guideIcon.BackgroundColor3 = COLORS.title
+guideIcon.BorderSizePixel = 0
+guideIcon.Parent = guide
+local guideIconStroke = Instance.new("UIStroke")
+guideIconStroke.Color = Color3.new(0, 0, 0)
+guideIconStroke.Thickness = 1.5
+guideIconStroke.Parent = guideIcon
 local guideText = label(guide, { Position = UDim2.fromOffset(0, 24), Size = UDim2.new(1, 0, 0, 20), TextSize = 14,
 	TextStrokeTransparency = 0.3, Font = Enum.Font.GothamBold, TextColor3 = COLORS.title })
 
@@ -387,7 +398,8 @@ end
 -- Nearest spawn marker matching the objective, preferring the region entrance while in the hub.
 local function combatTarget(objective, root: BasePart, inRegion)
 	local best, bestDistance
-	for _, spawnPart in ipairs(markers.EnemySpawns:GetChildren()) do
+	local spawnFolder = markers:FindFirstChild("EnemySpawns")
+	for _, spawnPart in ipairs(spawnFolder and spawnFolder:GetChildren() or {}) do
 		local matches = (objective.type == "KILL")
 			or (objective.type == "KILL_ZONE" and spawnPart:GetAttribute("Zone") == objective.zone)
 			or (objective.type == "KILL_BOSS" and spawnPart:GetAttribute("Archetype") == objective.archetype)
@@ -400,9 +412,10 @@ local function combatTarget(objective, root: BasePart, inRegion)
 	end
 	if not best then return nil end
 	local regionName = best:GetAttribute("Region")
-	if inRegion and inRegion.Name == "Hub" and markers.Gates:FindFirstChild(regionName) then
-		local region = regionByName[regionName]
-		return markers.Gates[regionName].Position, ((region and region:GetAttribute("DisplayName")) or regionName) .. " gate"
+	local gate = markerChild("Gates", regionName or "")
+	if inRegion and inRegion.Name == "Hub" and gate then
+		local region = markerChild("Regions", regionName)
+		return gate.Position, ((region and region:GetAttribute("DisplayName")) or regionName) .. " gate"
 	end
 	local label = if objective.type == "KILL_BOSS" then "Boss" else "Enemies"
 	local enemy = liveEnemy(objective, root.Position)
@@ -444,15 +457,34 @@ local function updateGuide(root: BasePart, inRegion)
 		return
 	end
 	guideAnchor.Position = target + Vector3.new(0, GUIDE_HEIGHT, 0)
-	guideText.Text = string.format("%s  ·  %d", text, math.floor((target - root.Position).Magnitude))
+	guideText.Text = string.format("%s  |  %d", text, math.floor((target - root.Position).Magnitude))
 	guide.Enabled = true
+end
+
+-- Sealed gates lead to regions that are not built yet; say so once per approach.
+local GATE_NOTICE_RANGE, GATE_RESET_RANGE = 18, 40
+local gateNoticed = {}
+local function checkSealedGates(root: BasePart)
+	local gates = markers:FindFirstChild("Gates")
+	for _, gate in ipairs(gates and gates:GetChildren() or {}) do
+		if gate:IsA("BasePart") and gate:GetAttribute("Sealed") == true then
+			local distance = (gate.Position - root.Position).Magnitude
+			if distance <= GATE_NOTICE_RANGE and not gateNoticed[gate] then
+				gateNoticed[gate] = true
+				showToast(string.format("%s is still being built - recommended Lv %d+ once it opens.",
+					gate:GetAttribute("DisplayName") or gate.Name, gate:GetAttribute("RequiredLevel") or 1), COLORS.title)
+			elseif distance > GATE_RESET_RANGE then
+				gateNoticed[gate] = nil
+			end
+		end
+	end
 end
 
 -- Region tracking: the highest-Order volume containing the character wins.
 local currentRegion = nil
 local function regionAt(position: Vector3)
 	local found
-	for _, part in ipairs(regionParts) do
+	for _, part in ipairs(readSorted("Regions")) do
 		local p = part.CFrame:PointToObjectSpace(position)
 		local half = part.Size / 2
 		if math.abs(p.X) <= half.X and math.abs(p.Y) <= half.Y and math.abs(p.Z) <= half.Z then
@@ -473,6 +505,7 @@ task.spawn(function()
 			end
 			hubButton.Visible = region ~= nil and region.Name ~= "Hub"
 			updateGuide(root, region)
+			checkSealedGates(root)
 		else
 			guide.Enabled = false
 			focus.Adornee = nil

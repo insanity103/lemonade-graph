@@ -69,12 +69,10 @@ local MOVE_COMMAND_INTERVAL = 0.35
 local MOVE_TARGET_EPSILON = 2
 
 local ATTACK_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("EnemyAttack")
-local TOGGLE_REMOTE = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToggleAutoAttack")
 local DAMAGE_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("DamageNumber")
 
 local playerCooldowns = {}
 local playerEnemyHitAt = {}
-local autoAttackState = {} -- [player] = bool (auto-attack on/off)
 
 -- ==============================================================================
 -- 1. ENEMY & BOSS ARCHETYPES CONFIGURATION
@@ -1060,7 +1058,7 @@ local function spawnEnemy(config)
 		local tag = head and head:FindFirstChild("NameTag")
 		local title = tag and tag:FindFirstChild("Title")
 		if title then
-			title.Text = "★ Elite " .. title.Text
+			title.Text = "Elite " .. title.Text
 			title.TextColor3 = Color3.fromRGB(255, 200, 90)
 		end
 	end
@@ -1182,31 +1180,9 @@ end
 
 ATTACK_REMOTE.OnServerEvent:Connect(tryUnarmedAttack)
 
-TOGGLE_REMOTE.OnServerEvent:Connect(function(player, enabled)
-	if enabled == nil then
-		enabled = not autoAttackState[player]
-	end
-	autoAttackState[player] = enabled == true
-	print(string.format("[EnemyCombat] %s auto-attack %s", player.Name, autoAttackState[player] and "ON" or "OFF"))
-end)
-
-task.spawn(function()
-	while true do
-		task.wait(ATTACK_COOLDOWN)
-		for player, on in pairs(autoAttackState) do
-			if on and player.Parent then
-				-- Tool auto-attacks are driven by the equipped Tool's server script. This
-				-- loop covers unarmed players only, avoiding a second hit every swing.
-				tryUnarmedAttack(player)
-			end
-		end
-	end
-end)
-
 Players.PlayerRemoving:Connect(function(player)
 	playerCooldowns[player] = nil
 	playerEnemyHitAt[player] = nil
-	autoAttackState[player] = nil
 end)
 
 -- Spawn positions come from the anchor contract that also places the arenas and

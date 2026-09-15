@@ -164,21 +164,23 @@ def fire(size=4, heat=6) -> dict:
 
 
 def label_gui(face: str, title: str, subtitle: str, text_color, px=40) -> dict:
+    """Sign text. Labels are inset from the board edge and use Merriweather: the decorative
+    Fantasy face overhangs its bounds under TextScaled, so its first/last letters got cut off."""
     rows = [inst("Title", "TextLabel", {
-        "Text": title, "TextScaled": True, "Font": "Fantasy", "BackgroundTransparency": 1,
-        "TextColor3": [_r(c / 255) for c in text_color], "TextStrokeTransparency": 0.6,
-        "Size": {"UDim2": [[0.94, 0], [0.58 if subtitle else 0.9, 0]]},
-        "Position": {"UDim2": [[0.03, 0], [0.04, 0]]},
-    })]
+        "Text": title, "TextScaled": True, "Font": "Merriweather", "BackgroundTransparency": 1,
+        "TextColor3": [_r(c / 255) for c in text_color], "TextStrokeTransparency": 0.7,
+        "Size": {"UDim2": [[0.84, 0], [0.5 if subtitle else 0.76, 0]]},
+        "Position": {"UDim2": [[0.08, 0], [0.08 if subtitle else 0.12, 0]]},
+    }, children=[inst("MaxSize", "UITextSizeConstraint", {"MaxTextSize": 200, "MinTextSize": 6})])]
     if subtitle:
         rows.append(inst("Subtitle", "TextLabel", {
-            "Text": subtitle, "TextScaled": True, "Font": "GothamBold", "BackgroundTransparency": 1,
+            "Text": subtitle, "TextScaled": True, "Font": "GothamMedium", "BackgroundTransparency": 1,
             "TextColor3": [_r(c / 255) for c in (236, 228, 210)],
-            "Size": {"UDim2": [[0.9, 0], [0.3, 0]]}, "Position": {"UDim2": [[0.05, 0], [0.64, 0]]},
+            "Size": {"UDim2": [[0.84, 0], [0.26, 0]]}, "Position": {"UDim2": [[0.08, 0], [0.64, 0]]},
         }))
     return inst("Label" + face, "SurfaceGui", {
         "Face": face, "SizingMode": "PixelsPerStud", "PixelsPerStud": px, "LightInfluence": 0.4,
-        "MaxDistance": 260,
+        "MaxDistance": 260, "ClipsDescendants": True,
     }, children=rows)
 
 
@@ -199,6 +201,17 @@ def ramp(name, x0, x1, z0, z1, y_at_z0, y_at_z1, color, material, thickness=1.6)
     return part(name, (x1 - x0, thickness, length + 0.4), centre, color, material, r, layer="ground")
 
 
+USED_CLIFF_TOPS: set[int] = set()
+
+
+def free_top(top: float) -> float:
+    """Nudge a cliff top until no other cliff top sits within 0.1 studs of it."""
+    while round(top * 10) in USED_CLIFF_TOPS:
+        top += 0.25
+    USED_CLIFF_TOPS.add(round(top * 10))
+    return top
+
+
 def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, chunk=(10, 18),
               material="Sandstone"):
     """Visual cliff chunks along segment a→b whose inner faces sit on the segment line.
@@ -216,9 +229,14 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
     out = []
     s = 0.0
     i = 0
+    last_h = -1.0
     while s < seg - 0.5:
         length = min(rng.uniform(*chunk), seg - s)
         h = height * rng.uniform(0.82, 1.18)
+        if abs(h - last_h) < 0.6:  # equal neighbouring tops would z-fight where the chunks overlap
+            h += 1.5
+        h = free_top(base_y + h - 1) - base_y + 1
+        last_h = h
         d = depth * rng.uniform(0.9, 1.3)
         cx = ax + dx * (s + length / 2) - nx * d / 2
         cz = az + dz * (s + length / 2) - nz * d / 2
@@ -231,7 +249,8 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
             ld = rng.uniform(3, 5)
             lx = ax + dx * (s + length / 2) - nx * (d + ld / 2 - 0.5)
             lz = az + dz * (s + length / 2) - nz * (d + ld / 2 - 0.5)
-            out.append(part(f"{name}_{i:02d}_cap", (length * 0.8, 2.5, ld), (lx, base_y + h + 0.2, lz),
+            cap_top = free_top(base_y + h + 1.45)
+            out.append(part(f"{name}_{i:02d}_cap", (length * 0.8, 2.5, ld), (lx, cap_top - 1.25, lz),
                             dark, material, rot_y(yaw + jitter * 0.5), collide=False, layer="cliff"))
         s += length
         i += 1
@@ -281,22 +300,24 @@ def lamp_post(name, x, y, z, yaw=0.0):
 
 def sign(name, x, y, z, yaw, width, height, title, subtitle="", board=TIMBER, text=(255, 238, 200),
          post_h=None):
+    """Signboard between two posts. Posts sit outside the board's width so they can't cover text."""
     post_h = post_h if post_h is not None else height + 3
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
-    board_y = y + post_h - height / 2
+    board_y = y + post_h - height / 2 - 0.3
     kids = []
     if post_h > height:
         for side in (-1, 1):
-            px, pz = x + right[0] * side * (width / 2 - 0.4), z + right[2] * side * (width / 2 - 0.4)
-            kids.append(part(f"Post{side}", (0.8, post_h, 0.8), (px, y + post_h / 2, pz), BEAM, "Wood", r))
-    kids.append(part("Board", (width, height, 0.6), (x, board_y, z), board, "WoodPlanks", r,
+            offset = side * (width / 2 + 0.45)
+            kids.append(part(f"Post{side}", (0.8, post_h, 0.8), (x + right[0] * offset, y + post_h / 2, z + right[2] * offset),
+                             BEAM, "Wood", r))
+    kids.append(part("Board", (width, height, 0.5), (x, board_y, z), board, "WoodPlanks", r,
                      collide=False, children=[label_gui("Front", title, subtitle, text),
                                               label_gui("Back", title, subtitle, text)]))
     return model(name, kids)
 
 
-def fence_run(name, a, b, y, height=3.2, gap=None, collide=True):
+def fence_run(name, a, b, y, height=3.2, gap=None, collide=True, skip_first_post=False):
     """Timber fence with posts every ~8 studs. `gap` = (s0, s1) distances along the run left open."""
     ax, az = a
     bx, bz = b
@@ -310,6 +331,8 @@ def fence_run(name, a, b, y, height=3.2, gap=None, collide=True):
             continue
         n = max(1, round((s1 - s0) / 8))
         for k in range(n + 1):
+            if skip_first_post and si == 0 and k == 0:
+                continue
             s = s0 + (s1 - s0) * k / n
             kids.append(part(f"Post{si}_{k}", (0.9, height + 0.6, 0.9),
                              (ax + dx * s, y + (height + 0.6) / 2, az + dz * s), BEAM, "Wood", rot_y(yaw),
@@ -329,7 +352,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
     t = 1.0
     walls = {
         "N": (x0, x1, z0, z0 + t), "S": (x0, x1, z1 - t, z1),
-        "W": (x0, x0 + t, z0, z1), "E": (x1 - t, x1, z0, z1),
+        "W": (x0, x0 + t, z0 + t, z1 - t), "E": (x1 - t, x1, z0 + t, z1 - t),
     }
     top = y + 0.8 + wall_h
     for side, (a0, a1, b0, b1) in walls.items():
@@ -350,7 +373,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
     # Timber frame: corner posts, sill and top beams, a diagonal brace per long wall.
     for cx in (x0, x1):
         for cz in (z0, z1):
-            kids.append(box("CornerPost", cx - 0.7, cx + 0.7, y + 0.8, top + 0.4, cz - 0.7, cz + 0.7, BEAM, "Wood"))
+            kids.append(box("CornerPost", cx - 0.7, cx + 0.7, y + 0.8, top - 0.2, cz - 0.7, cz + 0.7, BEAM, "Wood"))
     for side, (a0, a1, b0, b1) in walls.items():
         if side == front and open_front:
             continue
@@ -379,13 +402,12 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
             kids.append(part(f"Roof{'N' if sgn < 0 else 'S'}", (span_x + overhang * 2, 0.9, slope_len),
                              (cx, top + math.tan(math.radians(pitch)) * (span_z / 4 - overhang / 2), cz + sgn * half / 2), roof_color, "RoofShingles", r,
                              collide=False, layer="roof"))
-        steps = 4
-        for k in range(steps):
-            hk = rise * (k + 1) / steps
-            wk = span_z * (1 - (k + 0.5) / steps)
-            for gx in (x0 + 0.5, x1 - 0.5):
-                kids.append(box(f"Gable{k}", gx - 0.5, gx + 0.5, top + rise * k / steps, top + hk,
-                                cz - wk / 2, cz + wk / 2, wall_color, "Plaster", collide=False))
+        # WedgePart: bottom face flat, vertical face at local +Z, slope descending toward -Z.
+        for gx in (x0 + 0.5, x1 - 0.5):
+            for sgn, yaw in ((-1, 0), (1, 180)):  # north half rises toward +Z, south half toward -Z
+                kids.append(part(f"Gable{'N' if sgn < 0 else 'S'}", (1, rise, span_z / 2),
+                                 (gx, top + rise / 2, cz + sgn * span_z / 4), wall_color, "Plaster", rot_y(yaw),
+                                 cls="WedgePart", collide=False, layer="roof"))
     else:
         half = span_x / 2 + overhang
         rise = math.tan(math.radians(pitch)) * (span_x / 2)
@@ -396,13 +418,11 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
             kids.append(part(f"Roof{'W' if sgn < 0 else 'E'}", (slope_len, 0.9, span_z + overhang * 2),
                              (cx + sgn * half / 2, top + math.tan(math.radians(pitch)) * (span_x / 4 - overhang / 2), cz), roof_color, "RoofShingles", r,
                              collide=False, layer="roof"))
-        steps = 4
-        for k in range(steps):
-            hk = rise * (k + 1) / steps
-            wk = span_x * (1 - (k + 0.5) / steps)
-            for gz in (z0 + 0.5, z1 - 0.5):
-                kids.append(box(f"Gable{k}", cx - wk / 2, cx + wk / 2, top + rise * k / steps, top + hk,
-                                gz - 0.5, gz + 0.5, wall_color, "Plaster", collide=False))
+        for gz in (z0 + 0.5, z1 - 0.5):
+            for sgn, yaw in ((-1, 90), (1, -90)):  # west half rises toward +X, east half toward -X
+                kids.append(part(f"Gable{'W' if sgn < 0 else 'E'}", (1, rise, span_x / 2),
+                                 (cx + sgn * span_x / 4, top + rise / 2, gz), wall_color, "Plaster", rot_y(yaw),
+                                 cls="WedgePart", collide=False, layer="roof"))
     return model(name, kids)
 
 
@@ -427,10 +447,11 @@ def gate(name, cx, y, cz, yaw, width, height, title, subtitle, sealed, stone=STO
         kids.append(part(f"Torch{side}", (0.9, 1.4, 0.9), (tx, y + height * 0.62, tz), LANTERN, "Neon", r,
                          collide=False, query=False, shadow=False, children=[light(18, 1.0)]))
     kids.append(part("Lintel", (width + pw * 2 + 2, 4, pw + 1.4), (cx, y + height + 2.6, cz), BEAM, "Wood", r))
-    sx, sz = at(0, -(pw + 1.4) / 2 - 0.35)
+    sign_depth = (pw + 2.5) / 2 + 0.4  # clear of the pillar caps, which are the deepest part
+    sx, sz = at(0, -sign_depth)
     kids.append(part("Sign", (width + 4, 5.2, 0.5), (sx, y + height + 2.8, sz), (58, 38, 26), "WoodPlanks", r,
                      collide=False, children=[label_gui("Front", title, subtitle, (255, 226, 160), px=30)]))
-    bx2, bz2 = at(0, (pw + 1.4) / 2 + 0.35)
+    bx2, bz2 = at(0, sign_depth)
     kids.append(part("SignBack", (width + 4, 5.2, 0.5), (bx2, y + height + 2.8, bz2), (58, 38, 26), "WoodPlanks",
                      r, collide=False, children=[label_gui("Back", back_title, back_subtitle, (255, 226, 160), px=30)]))
     for side in (-1, 1):
@@ -449,6 +470,99 @@ def gate(name, cx, y, cz, yaw, width, height, title, subtitle, sealed, stone=STO
         kids.append(part("SealProxy", (width + 0.5, height, 2), (cx, y + height / 2, cz), (255, 0, 255),
                          transparency=1, query=False, shadow=False, rot=r, layer="proxy"))
     return model(name, kids, attrs={"Region": region, "Sealed": sealed, "RequiredLevel": required_level})
+
+
+FABRIC_GREEN = (78, 112, 72)
+FABRIC_CREAM = (222, 206, 166)
+
+
+def quest_stall(name, npc_x, y, cz):
+    """Timber market stall with a peaked striped canopy; counter on the -X (road) side.
+
+    The Quest Master marker stands at (npc_x, y, cz) behind the counter, facing -X.
+    Footprint x npc_x-5 .. npc_x+5, z cz-7 .. cz+7. Ridge runs along Z.
+    """
+    x0, x1 = npc_x - 4.5, npc_x + 4.5        # post lines (front, back)
+    z0, z1 = cz - 6.5, cz + 6.5
+    eave, ridge = y + 8.4, y + 11.6
+    kids = []
+    # Corner posts up to the eaves, king posts at each end up to the ridge.
+    for px_ in (x0, x1):
+        for pz in (z0, z1):
+            kids.append(part("Post", (0.9, eave - y, 0.9), (px_, y + (eave - y) / 2, pz), BEAM, "Wood"))
+    for pz in (z0, z1):
+        kids.append(part("KingPost", (0.8, ridge - y, 0.8), (npc_x, y + (ridge - y) / 2, pz), BEAM, "Wood"))
+    # Frame: eave plates along Z, tie beams along X, ridge beam, rafters on each gable.
+    for px_ in (x0, x1):
+        kids.append(part("EavePlate", (0.7, 0.7, z1 - z0 + 1.2), (px_, eave - 0.35, cz), BEAM, "Wood", collide=False))
+    for pz in (z0, z1):
+        kids.append(part("TieBeam", (x1 - x0 + 1.2, 0.6, 0.7), (npc_x, eave - 1.2, pz), BEAM, "Wood", collide=False))
+    kids.append(part("RidgeBeam", (0.8, 0.8, z1 - z0 + 1.6), (npc_x, ridge + 0.1, cz), BEAM, "Wood", collide=False))
+    run = npc_x - x0
+    pitch = math.degrees(math.atan2(ridge - eave, run))
+    rafter = math.hypot(run, ridge - eave) + 0.6
+    for pz in (z0, z1):
+        for sgn in (-1, 1):  # front rafter rises toward +X (rot_z +), back rafter toward -X
+            kids.append(part("Rafter", (rafter, 0.55, 0.55), (npc_x + sgn * run / 2, (eave + ridge) / 2, pz), BEAM,
+                             "Wood", rot_z(-sgn * pitch), collide=False))
+    # Striped canopy: strips run down each slope, alternating green and cream, with an overhang.
+    overhang = 1.4
+    slope_run = run + overhang
+    slope_len = slope_run / math.cos(math.radians(pitch))
+    strips = 8
+    strip_w = (z1 - z0 + 2.4) / strips
+    for sgn in (-1, 1):
+        mid_x = npc_x + sgn * slope_run / 2
+        mid_y = ridge + 0.45 - math.tan(math.radians(pitch)) * slope_run / 2
+        for k in range(strips):
+            zk = z0 - 1.2 + strip_w * (k + 0.5)
+            color = FABRIC_GREEN if k % 2 == 0 else FABRIC_CREAM
+            kids.append(part(f"Canopy{'F' if sgn < 0 else 'B'}{k}", (slope_len, 0.22, strip_w),
+                             (mid_x, mid_y, zk), color, "Fabric", rot_z(-sgn * pitch),
+                             collide=False, layer="roof"))
+        # Valance: short hanging flaps along the low edge.
+        edge_x = npc_x + sgn * (slope_run - 0.05)
+        edge_y = ridge + 0.45 - math.tan(math.radians(pitch)) * slope_run
+        for k in range(strips):
+            zk = z0 - 1.2 + strip_w * (k + 0.5)
+            color = FABRIC_CREAM if k % 2 == 0 else FABRIC_GREEN
+            kids.append(part(f"Valance{'F' if sgn < 0 else 'B'}{k}", (0.15, 0.9, strip_w - 0.1),
+                             (edge_x, edge_y - 0.45, zk), color, "Fabric", collide=False, layer="roof"))
+    # Counter on the road side: plank top, slatted front, lower shelf, legs.
+    cx0, cx1 = x0 - 0.4, x0 + 2.4
+    top_y = y + 3.4
+    kids.append(box("CounterTop", cx0 - 0.3, cx1 + 0.2, top_y - 0.35, top_y, z0 + 0.6, z1 - 0.6, TIMBER, "WoodPlanks"))
+    kids.append(box("CounterShelf", cx0 + 0.3, cx1 - 0.2, y + 1.0, y + 1.3, z0 + 0.9, z1 - 0.9, TIMBER, "WoodPlanks",
+                    collide=False))
+    slats = 9
+    for k in range(slats):
+        zk = z0 + 1.1 + (z1 - z0 - 2.2) * (k + 0.5) / slats
+        kids.append(box(f"Slat{k}", cx0 - 0.15, cx0 + 0.15, y, top_y - 0.35, zk - 0.55, zk + 0.55,
+                        (120, 78, 46) if k % 2 else (104, 68, 40), "Wood"))
+    for lz in (z0 + 0.8, z1 - 0.8):
+        kids.append(box("CounterLeg", cx1 - 0.5, cx1, y, top_y - 0.35, lz - 0.25, lz + 0.25, BEAM, "Wood",
+                        collide=False))
+    # Goods: rolled quest scrolls, a stack of notices, an ink pot and a small crate.
+    for k, (dz, length) in enumerate(((-3.8, 1.6), (-2.6, 1.3), (-3.2, 1.4))):
+        kids.append(part(f"Scroll{k}", (length, 0.45, 0.45), (x0 + 0.9 + 0.1 * k, top_y + 0.23 + (0.4 if k == 2 else 0),
+                                                            cz + dz), FABRIC_CREAM, "Fabric",
+                         rot_y(15 * k), shape="Cylinder", collide=False))
+    kids.append(part("Notices", (1.4, 0.3, 1.9), (x0 + 1.0, top_y + 0.15, cz + 2.8), (236, 224, 196), "SmoothPlastic",
+                     rot_y(-8), collide=False))
+    kids.append(part("InkPot", (0.45, 0.5, 0.45), (x0 + 1.2, top_y + 0.25, cz + 4.4), (36, 32, 40), "Glass",
+                     collide=False))
+    kids.append(part("Crate", (2.2, 2.2, 2.2), (x1 - 0.9, y + 1.1, z1 - 1.6), TIMBER, "WoodPlanks", rot_y(10)))
+    kids.append(part("CrateSmall", (1.5, 1.5, 1.5), (x1 - 1.0, y + 2.95, z1 - 1.8), (140, 92, 54), "WoodPlanks",
+                     rot_y(-14), collide=False))
+    # Hanging sign under the front eave.
+    sign_y = eave - 2.1
+    for dz in (-1.8, 1.8):
+        kids.append(part("SignChain", (0.12, 1.0, 0.12), (x0 - 0.2, eave - 1.0, cz + dz), IRON, "Metal", collide=False))
+    kids.append(part("SignBoard", (4.6, 1.8, 0.35), (x0 - 0.2, sign_y, cz), (70, 46, 30), "WoodPlanks",
+                     rot_y(yaw_facing(-1, 0)), collide=False,
+                     children=[label_gui("Front", "Quests", "", (255, 232, 170), px=60),
+                               label_gui("Back", "Quests", "", (255, 232, 170), px=60)]))
+    return model(name, kids)
 
 
 def campfire(name, x, y, z, rng):
@@ -524,7 +638,7 @@ def stone_stack(name, x, y, z, rng, color=(186, 160, 120)):
         for k in range(max(1, 3 - lv)):
             w = rng.uniform(4.5, 6)
             kids.append(part(f"Block{lv}_{k}", (w, 3.2, w * 0.8),
-                             (x + (k - (2 - lv) / 2) * 5.6, y + 1.6 + lv * 3.2, z + rng.uniform(-0.6, 0.6)),
+                             (x + (k - (2 - lv) / 2) * 6.3, y + 1.6 + lv * 3.2, z + rng.uniform(-0.6, 0.6)),
                              color, "Limestone", rot_y(rng.uniform(-6, 6)), collide=(lv == 0)))
     return model(name, kids)
 
@@ -571,11 +685,11 @@ def waystone(name, waypoint_id, x, y, z, glow=(120, 200, 230)):
     ], attrs={"Waystone": True, "WaypointId": waypoint_id})
 
 
-def octagon(name, x, z, radius, top, thickness, color, material, collide=True, layer="ground"):
-    """Regular octagon (inradius `radius`) as the union of four 2r × side bands at 45° steps."""
-    side = 2 * radius * math.tan(math.pi / 8)
-    return [part(f"{name}{k}", (radius * 2, thickness, side), (x, top - thickness / 2, z), color, material,
-                 rot_y(45 * k), collide=collide, layer=layer) for k in range(4)]
+def disc(name, x, z, radius, top, thickness, color, material, collide=True, layer="ground"):
+    """Flat round slab: a Cylinder part with its axis turned vertical. Replaces the old
+    four-band octagon, whose overlapping coplanar tops z-fought as the camera moved."""
+    return [part(name, (thickness, radius * 2, radius * 2), (x, top - thickness / 2, z), color, material,
+                 rot_z(90), shape="Cylinder", collide=collide, layer=layer)]
 
 
 # ── Markers ───────────────────────────────────────────────────────────────────
@@ -616,7 +730,7 @@ WAYPOINTS = [
 
 def build_markers():
     npcs = model("NPCs", [
-        marker("QuestMaster", (14, HUB_Y, 50), yaw_facing(-1, 0)),
+        marker("QuestMaster", (15, HUB_Y + 0.2, 50), yaw_facing(-1, 0)),
         marker("Merchant", (-62, HUB_Y, -16.5), yaw_facing(0, 1)),
         marker("SkillTrainer", (58, HUB_Y, -12), yaw_facing(0, 1)),
         marker("RebirthKeeper", (64, HUB_Y, 22), yaw_facing(0, -1)),
@@ -650,27 +764,31 @@ def build_markers():
         "Duration": 0, "Enabled": True, "CastShadow": False,
     })
     gates = model("Gates", [
-        marker("IronLowlands", (0, HUB_Y, 100), 0, attrs={"Region": "IronLowlands", "Sealed": False, "RequiredLevel": 1}),
-        marker("FrostboundGlacier", (-100, HUB_Y, 0), 0, attrs={"Region": "FrostboundGlacier", "Sealed": True, "RequiredLevel": 18}),
-        marker("InfernalCaldera", (100, HUB_Y, 0), 0, attrs={"Region": "InfernalCaldera", "Sealed": True, "RequiredLevel": 34}),
-        marker("CelestialSummit", (0, HUB_Y, -100), 0, attrs={"Region": "CelestialSummit", "Sealed": True, "RequiredLevel": 80}),
-        marker("VoidRift", (68, HUB_Y, -72), 0, attrs={"Region": "VoidRift", "Sealed": True, "RequiredLevel": 55}),
-        marker("Briarwood", (0, QUARRY_Y, 470), 0, attrs={"Region": "Briarwood", "Sealed": True, "RequiredLevel": 9}),
+        marker("IronLowlands", (0, HUB_Y, 100), 0, attrs={"DisplayName": "Iron Lowlands", "Region": "IronLowlands", "Sealed": False, "RequiredLevel": 1}),
+        marker("FrostboundGlacier", (-100, HUB_Y, 0), 0, attrs={"DisplayName": "Frostbound Glacier", "Region": "FrostboundGlacier", "Sealed": True, "RequiredLevel": 18}),
+        marker("InfernalCaldera", (100, HUB_Y, 0), 0, attrs={"DisplayName": "Infernal Caldera", "Region": "InfernalCaldera", "Sealed": True, "RequiredLevel": 34}),
+        marker("CelestialSummit", (0, HUB_Y, -100), 0, attrs={"DisplayName": "Celestial Summit", "Region": "CelestialSummit", "Sealed": True, "RequiredLevel": 80}),
+        marker("VoidRift", (68, HUB_Y, -72), 0, attrs={"DisplayName": "Void Rift", "Region": "VoidRift", "Sealed": True, "RequiredLevel": 55}),
+        marker("Briarwood", (0, QUARRY_Y, 470), 0, attrs={"DisplayName": "Briarwood", "Region": "Briarwood", "Sealed": True, "RequiredLevel": 9}),
     ], cls="Folder")
-    return model("Markers", [npcs, safe, regions, enemy, waypoints, gates, spawn_location],
-                 attrs={"SchemaVersion": 1}, cls="Folder")
+    # A Persistent model is sent to every client on join and never streamed out, so client UI
+    # (region banner, travel menu, quest guide) can read markers anywhere on the map.
+    markers = model("Markers", [npcs, safe, regions, enemy, waypoints, gates, spawn_location],
+                    attrs={"SchemaVersion": 1})
+    markers["properties"] = {"ModelStreamingMode": "Persistent"}
+    return markers
 
 
 # ── Hub: Hearthmere ───────────────────────────────────────────────────────────
 def build_hub(rng):
     ground = [slab("HubFloor", -104, 104, -104, 104, HUB_Y, GRASS, "Grass")]
     road = HUB_Y + 0.2
-    ground += octagon("Plaza", 0, 0, 27, road, 0.6, PATH, "Cobblestone")
+    ground += disc("Plaza", 0, 0, 27, road + 0.1, 0.7, PATH, "Cobblestone")
     ground += [
-        box("RoadSouth", -8, 8, road - 0.6, road, 20, 104, PATH, "Cobblestone", layer="ground"),
-        box("RoadNorth", -8, 8, road - 0.6, road, -104, -20, PATH, "Cobblestone", layer="ground"),
-        box("RoadWest", -104, -20, road - 0.6, road, -8, 8, PATH, "Cobblestone", layer="ground"),
-        box("RoadEast", 20, 104, road - 0.6, road, -8, 8, PATH, "Cobblestone", layer="ground"),
+        box("RoadSouth", -8, 8, road - 0.6, road, 25, 104, PATH, "Cobblestone", layer="ground"),
+        box("RoadNorth", -8, 8, road - 0.6, road, -104, -25, PATH, "Cobblestone", layer="ground"),
+        box("RoadWest", -104, -25, road - 0.6, road, -8, 8, PATH, "Cobblestone", layer="ground"),
+        box("RoadEast", 25, 104, road - 0.6, road, -8, 8, PATH, "Cobblestone", layer="ground"),
         box("ShopYard", -84, -40, road - 0.6, road, -18, -8, PATH_EDGE, "Cobblestone", layer="ground"),
         box("TrainingYard", 42, 86, road - 0.6, road, -48, -8, (150, 120, 86), "Ground", layer="ground"),
         box("QuestCourt", 8, 26, road - 0.6, road, 40, 62, PATH_EDGE, "Cobblestone", layer="ground"),
@@ -712,7 +830,7 @@ def build_hub(rng):
     visual.append(model("SwordMonument", mon))
 
     # Spawn pad + travel board.
-    visual += octagon("SpawnPad", 0, -40, 6, HUB_Y + 0.45, 0.5, STONE, "Slate", collide=False, layer="decal")
+    visual += disc("SpawnPad", 0, -40, 6, HUB_Y + 0.45, 0.5, STONE, "Slate", collide=False, layer="decal")
     visual.append(sign("TravelBoard", -16, HUB_Y, -44, yaw_facing(1, 0), 7, 5, "Travel", "Waystones you have found"))
     visual.append(waystone("HubWaystone", "HubSpawn", -16, HUB_Y, -36))
 
@@ -731,7 +849,7 @@ def build_hub(rng):
     # Skill trainer (east): fenced yard with dummies and a hut.
     visual.append(timber_house("TrainerHut", 70, 88, -50, -36, HUB_Y, 10, "W", rng, door_w=5, roof_color=(84, 70, 60)))
     visual.append(fence_run("TrainingFenceN", (42, -50), (70, -50), road))
-    visual.append(fence_run("TrainingFenceW", (42, -50), (42, -10), road, gap=(26, 40)))
+    visual.append(fence_run("TrainingFenceW", (42, -49.5), (42, -10), road, gap=(26, 40), skip_first_post=True))
     visual.append(fence_run("TrainingFenceE", (88, -36), (88, -10), road))
     for k, (x, z) in enumerate(((52, -40), (60, -30), (68, -22), (76, -28))):
         visual.append(model(f"Dummy{k}", [
@@ -742,8 +860,8 @@ def build_hub(rng):
     visual.append(sign("TrainerSign", 50, HUB_Y, -10.5, 180, 10, 3.6, "Skill Trainer", "Reset your skill points"))
 
     # Rebirth shrine (south-east): octagonal dais, pillars, a pale floating crystal.
-    visual += octagon("ShrineDais", 64, 40, 15, HUB_Y + 1.2, 1.2, STONE, "Marble", layer="prop")
-    visual += octagon("ShrineInner", 64, 40, 9, HUB_Y + 2.2, 1.0, (200, 196, 186), "Marble", layer="prop")
+    visual += disc("ShrineDais", 64, 40, 15, HUB_Y + 1.2, 1.2, STONE, "Marble", layer="prop")
+    visual += disc("ShrineInner", 64, 40, 9, HUB_Y + 2.2, 1.0, (200, 196, 186), "Marble", layer="prop")
     for k in range(4):
         a = math.radians(45 + 90 * k)
         px, pz = 64 + math.cos(a) * 12, 40 + math.sin(a) * 12
@@ -754,12 +872,8 @@ def build_hub(rng):
                        children=[light(18, 1.0, (170, 210, 255))]))
     visual.append(sign("ShrineSign", 76, HUB_Y, 22, yaw_facing(0, -1), 10, 3.6, "Rebirth Shrine", "Begin again, stronger"))
 
-    # Quest court beside the route out: notice board and a small awning.
-    visual.append(sign("QuestBoard", 22, HUB_Y, 58, yaw_facing(-1, 0), 9, 6, "Quests", "Speak with the Quest Master"))
-    visual.append(part("QuestAwning", (10, 0.5, 14), (20, HUB_Y + 9.5, 50), (70, 96, 150), "Fabric", rot_z(12),
-                       collide=False))
-    for z in (43.5, 56.5):
-        visual.append(part("AwningPost", (0.8, 9.6, 0.8), (24.5, HUB_Y + 4.8, z), BEAM, "Wood"))
+    # Quest court beside the route out: the Quest Master's market stall, open toward the road.
+    visual.append(quest_stall("QuestStall", 14, HUB_Y + 0.2, 50))
 
     # Houses and dressing (north-west, south-west).
     visual.append(timber_house("HouseNW1", -86, -60, -90, -70, HUB_Y, 11, "S", rng))
@@ -776,13 +890,13 @@ def build_hub(rng):
     ]))
 
     # Sealed destinations: visible milestones through barred gates.
-    visual.append(gate("GateIronLowlands", 0, HUB_Y, 100, 0, 24, 22, "Iron Lowlands", "Lv 1 - 10  ·  Open",
+    visual.append(gate("GateIronLowlands", 0, HUB_Y, 100, 0, 24, 22, "Iron Lowlands", "Lv 1 - 10  |  Open",
                        sealed=False, region="IronLowlands", required_level=1))
-    visual.append(gate("GateFrostbound", -100, HUB_Y, 0, -90, 24, 22, "Frostbound Glacier", "Lv 18+  ·  Sealed",
+    visual.append(gate("GateFrostbound", -100, HUB_Y, 0, -90, 24, 22, "Frostbound Glacier", "Lv 18+  |  Coming soon",
                        sealed=True, accent=(90, 140, 190), region="FrostboundGlacier", required_level=18))
-    visual.append(gate("GateCaldera", 100, HUB_Y, 0, 90, 24, 22, "Infernal Caldera", "Lv 34+  ·  Sealed",
+    visual.append(gate("GateCaldera", 100, HUB_Y, 0, 90, 24, 22, "Infernal Caldera", "Lv 34+  |  Coming soon",
                        sealed=True, accent=(190, 80, 30), region="InfernalCaldera", required_level=34))
-    visual.append(gate("GateAscension", 0, HUB_Y, -100, 180, 24, 26, "Ascension Gate", "Celestial Summit  ·  Lv 80+",
+    visual.append(gate("GateAscension", 0, HUB_Y, -100, 180, 24, 26, "Ascension Gate", "Celestial Summit  |  Coming soon",
                        sealed=True, stone=CELESTIAL, accent=GOLD, region="CelestialSummit", required_level=80))
     # Vistas behind sealed gates (collidable floors, unreachable past the portcullis).
     for k in range(8):  # celestial stair rising north
@@ -816,7 +930,7 @@ def build_hub(rng):
     vr.append(part("VoidArch", (21, 3.5, 4.4), (fx, HUB_Y + 19.5, fz), VOID, "Basalt", r))
     vr.append(part("VoidVeil", (12, 16, 0.4), (fx, HUB_Y + 8.5, fz), VOID_GLOW, "ForceField", r, collide=True,
                    query=False, transparency=0.3, shadow=False, children=[light(20, 0.9, VOID_GLOW)]))
-    vr.append(sign("VoidSign", fx - 9, HUB_Y, fz + 9, yaw_facing(-1, 1), 9, 3.4, "Void Rift", "Lv 55+  ·  Sealed",
+    vr.append(sign("VoidSign", fx - 9, HUB_Y, fz + 9, yaw_facing(-1, 1), 9, 3.4, "Void Rift", "Lv 55+  |  Coming soon",
                    board=(50, 36, 70), text=(220, 190, 255)))
     visual.append(model("VoidRiftPortal", vr, attrs={"Region": "VoidRift", "Sealed": True, "RequiredLevel": 55}))
 
@@ -845,7 +959,7 @@ def build_iron_lowlands(rng):
         box("QuarryPath", -10, 10, Y, Y + 0.2, 200, 382, QUARRY_PATH, "Pebble", layer="ground"),
         box("SidePath", -140, -10, Y, Y + 0.2, 309, 321, QUARRY_PATH, "Pebble", layer="ground"),
     ]
-    ground += octagon("ArenaFloor", 0, 424, 38, Y + 0.25, 0.5, (118, 108, 98), "Cobblestone")
+    ground += disc("ArenaFloor", 0, 424, 38, Y + 0.25, 0.5, (118, 108, 98), "Cobblestone")
     visual, proxies = [], []
 
     def cliffs(name, pts, inward, base, height, depth=16):
@@ -897,7 +1011,7 @@ def build_iron_lowlands(rng):
     visual.append(sign("OverlookSignInner", 0, T + 12.2, 140.7, 180, 18, 4.2, "Hearthmere", "Return north",
                        post_h=4.2))
     visual.append(waystone("OverlookWaystone", "IronOverlook", 28, T, 148))
-    visual.append(sign("OverlookGuide", -26, T, 160, yaw_facing(0, -1), 12, 5, "Squire Yard  ›  Crusher Pits",
+    visual.append(sign("OverlookGuide", -26, T, 160, yaw_facing(0, -1), 12, 5, "Squire Yard  >  Crusher Pits",
                        "The Iron Warlord waits beyond the ridge"))
 
     # Squire Yard dressing (outside lanes: |x| >= 66 or tucked against cliffs).
@@ -959,9 +1073,9 @@ def build_iron_lowlands(rng):
     for k, x in enumerate((-18, -6, 6, 18)):
         visual.append(banner_pole(f"WarlordBanner{k}", x, Y, 462, 0))
     visual.append(sign("WarlordSign", -30, Y, 360, yaw_facing(0, -1), 12, 5, "Warlord's Pit",
-                       "Iron Warlord  ·  Lv 10  ·  Boss", board=(70, 36, 36)))
+                       "Iron Warlord  |  Lv 10  |  Boss", board=(70, 36, 36)))
     visual.append(waystone("WarlordWaystone", "WarlordGate", -18, Y, 356))
-    visual.append(gate("GateBriarwood", 0, Y, 470, 0, 24, 22, "Briarwood", "Lv 9+  ·  Path sealed", sealed=True,
+    visual.append(gate("GateBriarwood", 0, Y, 470, 0, 24, 22, "Briarwood", "Lv 9+  |  Coming soon", sealed=True,
                        accent=(90, 120, 60), region="Briarwood", required_level=9,
                        back_title="Briarwood"))
     for k, (x, z) in enumerate(((-7, 486), (7, 495), (-2, 506))):
@@ -979,6 +1093,7 @@ def write_model(path: Path, node: dict):
 def main():
     rng = random.Random(20260915)
     REGISTRY.clear()
+    USED_CLIFF_TOPS.clear()
     hub_ground, hub_visual, hub_proxies = build_hub(rng)
     il_ground, il_visual, il_proxies = build_iron_lowlands(rng)
     markers = build_markers()
@@ -1032,6 +1147,11 @@ def render_topdown(path: Path):
     for e in sorted(REGISTRY, key=lambda e: (order.get(e["layer"], 4), e["pos"][1] + e["size"][1] / 2)):
         if e["layer"] in ("marker", "volume"):
             continue
+        if abs(e["rot"][1][0]) > 0.99:  # vertical-axis cylinder disc
+            cx, cz = px(e["pos"][0], e["pos"][2])
+            rr = e["size"][1] / 2 * scale
+            draw.ellipse([cx - rr, cz - rr, cx + rr, cz + rr], fill=(*e["color"], 255))
+            continue
         sx, _, sz = e["size"]
         corners = []
         for cx, cz in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
@@ -1064,7 +1184,7 @@ def render_topdown(path: Path):
         draw.ellipse([cx - dot, cz - dot, cx + dot, cz + dot], fill=arch_color[arch], outline=(0, 0, 0))
         draw.text((cx + 9, cz - 7), f"{arch.replace('Iron', '').replace('Boss_', '')} L{level}", fill=(255, 255, 255),
                   font=font)
-    for name, (x, z) in (("Quest Master", (14, 50)), ("Merchant", (-62, -16.5)), ("Skill Trainer", (58, -12)),
+    for name, (x, z) in (("Quest Master", (15, 50)), ("Merchant", (-62, -16.5)), ("Skill Trainer", (58, -12)),
                          ("Rebirth", (64, 22)), ("Travel board", (-16, -40))):
         cx, cz = px(x, z)
         draw.rectangle([cx - 5, cz - 5, cx + 5, cz + 5], fill=(90, 170, 255), outline=(0, 0, 0))

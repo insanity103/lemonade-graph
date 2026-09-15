@@ -27,7 +27,6 @@ local REMOTE_NAMES = {
 	"SpendSkillPoint",
 	"SwordDrop",
 	"SwordLostOnDeath",
-	"ToggleAutoAttack",
 	"ToggleAutoSell",
 	"XPGain",
 }

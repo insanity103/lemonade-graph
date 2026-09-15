@@ -24,7 +24,7 @@ whenever `MapMarkers` and `Workspace.LemonadeMap/Markers` are both present.
 
 | Project | Adds | Mode |
 | --- | --- | --- |
-| `default.project.json` | gameplay only (18 server, 14 client) | baseplate |
+| `default.project.json` | gameplay only (18 server, 13 client) | baseplate |
 | `map.project.json` | default + `Workspace.LemonadeMap`, `MapMarkers`, `MapTravel`, `MapClient` | map |
 
 `tools/check_map_project.py` fails if `map.project.json` drops or changes any default mapping.
@@ -33,7 +33,7 @@ whenever `MapMarkers` and `Workspace.LemonadeMap/Markers` are both present.
 
 | Area | Extent | Floor top | Contents |
 | --- | --- | --- | --- |
-| Hearthmere hub | x −100..100, z −100..100 | 10 | spawn (0,−40) facing the south gate; plaza + sword monument; Sword Shop (W), Skill Trainer yard (E), Rebirth Shrine (SE), Quest Master beside the south road (14,50); sealed gates W/E/N and Void Rift portal (NE) with visible vistas |
+| Hearthmere hub | x −100..100, z −100..100 | 10 | spawn (0,−40) facing the south gate; plaza + sword monument; Sword Shop (W), Skill Trainer yard (E), Rebirth Shrine (SE), Quest Master in a striped market stall beside the south road (15,50); sealed gates W/E/N and Void Rift portal (NE) with visible vistas |
 | Pass | x −14..14, z 104..140 | 10 | timber arch "Iron Lowlands · Lv 1–10" |
 | Quarry Overlook | x −40..40, z 140..168 | 10 | safe staging area, waystone, route sign; 32-stud ramp down (14°) |
 | Squire Yard | z 200..265 | 2 | 5 Squires Lv 1–3, spaced 35–41 studs; tents, campfire, scaffolds at the edges |
@@ -84,14 +84,34 @@ nearest living quest enemy or the boss, depending on quest state.
 | Check | Result |
 | --- | --- |
 | `rojo build` both projects | pass |
-| `check_gameplay_project.py` (baseline contract) | pass: 18 server / 14 client, no environment services |
+| `check_gameplay_project.py` (baseline contract) | pass: 18 server / 13 client, no environment services |
 | `check_map_project.py` (schema, floors, overlaps, safe zones, aggro vs arrivals, camera clearance, reachability) | pass |
-| `luau_balance_check.py` (65 files) | pass |
-| Studio playtest: travel, sword hits, camera, rewards | **not yet run** |
+| `luau_balance_check.py` (64 files) | pass |
+| Studio playtest 1 (user footage, 2026-09-15) | loop completed: combat, rewards, boss drop, waystone discovery, hub NPCs, notifications; fixes below |
+
+## Playtest 1 fixes (2026-09-15)
+
+- Waystone menu was empty and the region banner / Return to Hub never showed: the client cached
+  markers at startup before they streamed in. `Markers` is now a Persistent model and the client
+  reads markers on use.
+- Signs: posts crossed the board faces and the Fantasy font overhung its bounds, cutting letters.
+  Posts now stand outside the board, text is inset Merriweather; gate signs sit in front of caps.
+- Floors crawling as the camera moved: overlapping coplanar tops z-fought (four-band octagons,
+  roads under the plaza). Round surfaces are single cylinder discs; the validator now fails on
+  any overlapping same-height tops.
+- Roof gables were stepped blocks that poked through the roof; now wedges under the roof slabs.
+- Quest Master ignored E: CombatController binds E to Attack via ContextActionService, which sinks
+  the key. The Quest Master now uses a ProximityPrompt. (Baseline bug too.)
+- Quest Master stands behind a new striped market stall; the blue awning and board are gone.
+- Sealed gates read "Coming soon" and toast when approached; they lead to unbuilt regions.
+- Removed by request: auto-attack (HUD, Q toggle, settings row, server loop, remote), auto skill
+  allocation (P), OnboardingGui (welcome card, arrow, tips) and the level panel hint line.
+
+Balance note from the footage: leveling is very fast (Lv 13 at the boss, Lv 24 after its XP).
+Boss XP and the level curve need a tuning pass before Briarwood exists.
 
 ## Known limitations / next
 
-- Studio playtest outstanding: walk the loop, confirm ramp/roof orientation, prompt ranges, spawn facing.
 - `canLeaveCombat` in `MapTravel.server.luau` decides the travel combat restriction (see TODO).
 - Supply cache, collection hall and a travel-board UI in the hub are decorative/placeholder.
 - No keyboard/controller shortcut for Return to Hub yet (button only; menu supports gamepad/touch).

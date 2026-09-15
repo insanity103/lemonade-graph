@@ -52,187 +52,37 @@
    }
   },
   {
-   "name": "Plaza0",
+   "name": "Plaza",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
+     0.7,
      54.0,
-     0.6,
-     22.3675
+     54.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        0.0,
-       9.9,
-       0.0
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.4863,
-     0.4745,
-     0.451
-    ],
-    "Material": "Cobblestone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": true,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "Plaza1",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     54.0,
-     0.6,
-     22.3675
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       9.9,
-       0.0
-      ],
-      "orientation": [
-       [
-        0.7071,
-        0.0,
-        0.7071
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.7071,
-        0.0,
-        0.7071
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.4863,
-     0.4745,
-     0.451
-    ],
-    "Material": "Cobblestone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": true,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "Plaza2",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     54.0,
-     0.6,
-     22.3675
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       9.9,
+       9.95,
        0.0
       ],
       "orientation": [
        [
         0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
         -1.0,
-        0.0,
         0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.4863,
-     0.4745,
-     0.451
-    ],
-    "Material": "Cobblestone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": true,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "Plaza3",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     54.0,
-     0.6,
-     22.3675
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       9.9,
-       0.0
-      ],
-      "orientation": [
-       [
-        -0.7071,
-        0.0,
-        0.7071
        ],
        [
-        0.0,
         1.0,
+        0.0,
         0.0
        ],
        [
-        -0.7071,
         0.0,
-        -0.7071
+        0.0,
+        1.0
        ]
       ]
      }
@@ -248,7 +98,8 @@
     "CanCollide": true,
     "CanQuery": true,
     "CanTouch": false,
-    "CastShadow": true
+    "CastShadow": true,
+    "Shape": "Cylinder"
    }
   },
   {
@@ -259,14 +110,14 @@
     "Size": [
      16.0,
      0.6,
-     84.0
+     79.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        0.0,
        9.9,
-       62.0
+       64.5
       ],
       "orientation": [
        [
@@ -309,14 +160,14 @@
     "Size": [
      16.0,
      0.6,
-     84.0
+     79.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        0.0,
        9.9,
-       -62.0
+       -64.5
       ],
       "orientation": [
        [
@@ -357,14 +208,14 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     84.0,
+     79.0,
      0.6,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -62.0,
+       -64.5,
        9.9,
        0.0
       ],
@@ -407,14 +258,14 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     84.0,
+     79.0,
      0.6,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       62.0,
+       64.5,
        9.9,
        0.0
       ],
