@@ -821,11 +821,18 @@ def build_hub(rng):
                         rot_y(45 * k)))
     top = HUB_Y + 0.2 + 5.8
     tilt = rot_z(7)
+    axis = apply(tilt, (0, 1, 0))  # every piece is placed along the tilted blade axis
+
+    def along(distance):
+        return tuple(axis[i] * distance + (0, top, 0)[i] for i in range(3))
+
+    # Distances along the axis from where the blade enters the stone (negative = buried).
     mon += [
-        part("Blade", (0.7, 12, 2.2), (0.5, top + 5.2, 0), (196, 200, 206), "Metal", tilt, collide=False),
-        part("Guard", (1.3, 0.9, 7), (1.25, top + 11.4, 0), GOLD, "Metal", tilt, collide=False),
-        part("Grip", (0.9, 3.2, 0.9), (1.5, top + 13.4, 0), (84, 52, 36), "Fabric", tilt, collide=False),
-        part("Pommel", (1.6, 1.6, 1.6), (1.75, top + 15.4, 0), GOLD, "Metal", collide=False, shape="Ball"),
+        part("Blade", (0.6, 12, 2.2), along(4.5), (196, 200, 206), "Metal", tilt, collide=False),  # -1.5 .. 10.5
+        part("Fuller", (0.64, 9, 0.5), along(5.2), (150, 154, 162), "Metal", tilt, collide=False),
+        part("Guard", (1.2, 0.9, 7), along(10.95), GOLD, "Metal", tilt, collide=False),
+        part("Grip", (0.9, 3.2, 0.9), along(13.0), (84, 52, 36), "Fabric", tilt, collide=False),
+        part("Pommel", (1.6, 1.6, 1.6), along(15.2), GOLD, "Metal", tilt, collide=False, shape="Ball"),
     ]
     visual.append(model("SwordMonument", mon))
 
