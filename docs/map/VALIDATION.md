@@ -1,6 +1,6 @@
 # Map validation
 
-- 2281 parts: 17 floor, 369 collidable solids, 26 wall proxies, 31 markers/volumes
+- 2361 parts: 17 floor, 389 collidable solids, 26 wall proxies, 31 markers/volumes
 
 ## Walk distance from player spawn
 

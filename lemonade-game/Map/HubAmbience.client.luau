@@ -9,6 +9,12 @@ local TweenService = game:GetService("TweenService")
 
 local map = workspace:WaitForChild("LemonadeMap", 20)
 if not map then return end
+-- The Hub model streams in atomically; wait for it so every scan below sees the whole village.
+local hub = map:WaitForChild("Hub", 60)
+if not hub then
+	warn("[HubAmbience] Hub model never streamed in; ambience idle")
+	return
+end
 local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
 local NpcOutfits = require(ReplicatedStorage:WaitForChild("NpcOutfits"))
 
@@ -358,6 +364,42 @@ local function doorSwing(house: Model, open: boolean)
 			if base then piece.CFrame = swing * base end
 		end
 	end
+end
+
+-- Players can open doors too: a local prompt swings the door and lifts its collision for this
+-- client only; it closes itself after a while.
+local DOOR_AUTO_CLOSE = 8
+for _, house in ipairs(houses) do
+	local door = house:FindFirstChild("Door")
+	if not door then continue end
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "DoorPrompt"
+	prompt.ActionText = "Open"
+	prompt.ObjectText = "Door"
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = 7
+	prompt.RequiresLineOfSight = false
+	prompt.Parent = door
+	local open, busy, closeToken = false, false, 0
+	local function setOpen(state: boolean)
+		if busy or open == state then return end
+		busy = true
+		open = state
+		prompt.ActionText = if state then "Close" else "Open"
+		door.CanCollide = not state
+		doorSwing(house, state)
+		busy = false
+	end
+	prompt.Triggered:Connect(function()
+		setOpen(not open)
+		closeToken += 1
+		local token = closeToken
+		if open then
+			task.delay(DOOR_AUTO_CLOSE, function()
+				if token == closeToken and open then setOpen(false) end
+			end)
+		end
+	end)
 end
 
 local function villagerRoutine(index: number)

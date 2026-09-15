@@ -183,7 +183,16 @@ function NpcOutfits.apply(model: Model, outfitName: string)
 		if body and body:IsA("BasePart") then body.Color = color end
 	end
 	local head = model:FindFirstChild("Head")
-	if head and head:IsA("BasePart") then head.Color = SKIN end
+	if head and head:IsA("BasePart") then
+		head.Color = SKIN
+		if not head:FindFirstChildOfClass("Decal") then
+			local face = Instance.new("Decal")
+			face.Name = "face"
+			face.Texture = "rbxasset://textures/face.png" -- the built-in classic smile, no upload needed
+			face.Face = Enum.NormalId.Front
+			face.Parent = head
+		end
+	end
 	for _, spec in ipairs(outfit.accessories) do
 		local body = model:FindFirstChild(spec.part)
 		if not (body and body:IsA("BasePart")) then continue end

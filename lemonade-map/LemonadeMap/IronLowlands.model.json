@@ -10,22 +10,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     17.9598,
-     45.0377,
-     18.6635
+     17.2774,
+     45.0432,
+     16.5163
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -23.3317,
-       31.5188,
-       108.3799
+       -22.2582,
+       31.5216,
+       108.0387
       ],
       "orientation": [
        [
-        -0.0074,
+        0.0413,
         0.0,
-        -1.0
+        -0.9991
        ],
        [
         0.0,
@@ -33,9 +33,9 @@
         0.0
        ],
        [
-        1.0,
+        0.9991,
         0.0,
-        -0.0074
+        0.0413
        ]
       ]
      }
@@ -60,22 +60,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     13.4079,
+     12.8619,
      2.5,
-     4.096
+     4.3825
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -34.2115,
-       55.2377,
-       108.3799
+       -32.2076,
+       55.2432,
+       108.0387
       ],
       "orientation": [
        [
-        -0.0037,
+        0.0206,
         0.0,
-        -1.0
+        -0.9998
        ],
        [
         0.0,
@@ -83,9 +83,9 @@
         0.0
        ],
        [
-        1.0,
+        0.9998,
         0.0,
-        -0.0037
+        0.0206
        ]
       ]
      }
@@ -110,20 +110,20 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     12.803,
-     43.2791,
-     18.6504
+     12.1818,
+     44.5997,
+     14.5988
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -23.3252,
-       30.6395,
-       122.5613
+       -21.2994,
+       31.2999,
+       121.5683
       ],
       "orientation": [
        [
-        -0.0296,
+        0.0279,
         0.0,
         -0.9996
        ],
@@ -135,7 +135,7 @@
        [
         0.9996,
         0.0,
-        -0.0296
+        0.0279
        ]
       ]
      }
@@ -155,27 +155,27 @@
    }
   },
   {
-   "name": "PassWest0_02",
+   "name": "PassWest0_01_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     12.8372,
-     44.5918,
-     20.6672
+     8.7854,
+     2.5,
+     3.6333
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -24.3336,
-       31.2959,
-       134.1814
+       -29.9155,
+       54.7997,
+       121.5683
       ],
       "orientation": [
        [
-        -0.0451,
+        0.014,
         0.0,
-        -0.999
+        -0.9999
        ],
        [
         0.0,
@@ -183,9 +183,59 @@
         0.0
        ],
        [
-        0.999,
+        0.9999,
         0.0,
-        -0.0451
+        0.014
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PassWest0_02",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     14.1408,
+     45.1733,
+     19.2745
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -23.6372,
+       31.5866,
+       133.5296
+      ],
+      "orientation": [
+       [
+        -0.0219,
+        0.0,
+        -0.9998
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9998,
+        0.0,
+        -0.0219
        ]
       ]
      }
@@ -210,22 +260,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     18.2599,
-     45.4045,
-     19.2256
+     14.5511,
+     45.6364,
+     14.7791
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -22.53,
-       31.7023,
-       130.3872
+       -20.6756,
+       31.8182,
+       132.6104
       ],
       "orientation": [
        [
-        -0.9997,
+        -0.9996,
         0.0,
-        0.0236
+        0.0295
        ],
        [
         0.0,
@@ -233,9 +283,59 @@
         0.0
        ],
        [
-        -0.0236,
+        -0.0295,
         0.0,
-        -0.9997
+        -0.9996
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PassWest1_00_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     10.6809,
+     2.5,
+     4.0415
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -20.6756,
+       55.8364,
+       123.7001
+      ],
+      "orientation": [
+       [
+        -0.9999,
+        0.0,
+        0.0148
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0148,
+        0.0,
+        -0.9999
        ]
       ]
      }
@@ -260,22 +360,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     10.1401,
-     45.2345,
-     18.8241
+     12.8529,
+     43.3306,
+     15.6685
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -35.53,
-       31.6172,
-       130.5879
+       -33.1776,
+       30.6653,
+       132.1657
       ],
       "orientation": [
        [
-        -0.9986,
+        -0.9996,
         0.0,
-        0.0527
+        0.0298
        ],
        [
         0.0,
@@ -283,9 +383,9 @@
         0.0
        ],
        [
-        -0.0527,
+        -0.0298,
         0.0,
-        -0.9986
+        -0.9996
        ]
       ]
      }
@@ -310,22 +410,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     7.1521,
+     9.3223,
      2.5,
-     4.4004
+     4.1596
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -35.53,
-       55.4345,
-       119.4757
+       -33.1776,
+       53.5306,
+       122.7517
       ],
       "orientation": [
        [
-        -0.9997,
+        -0.9999,
         0.0,
-        0.0263
+        0.0149
        ],
        [
         0.0,
@@ -333,9 +433,109 @@
         0.0
        ],
        [
-        -0.0263,
+        -0.0149,
         0.0,
-        -0.9997
+        -0.9999
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PassWest1_02",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     2.196,
+     46.3704,
+     14.5634
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -39.502,
+       32.1852,
+       132.7183
+      ],
+      "orientation": [
+       [
+        -0.9996,
+        0.0,
+        -0.0273
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0273,
+        0.0,
+        -0.9996
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PassWest1_02_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.7968,
+     2.5,
+     3.3955
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -39.502,
+       56.5704,
+       124.2389
+      ],
+      "orientation": [
+       [
+        -0.9999,
+        0.0,
+        -0.0137
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0137,
+        0.0,
+        -0.9999
        ]
       ]
      }
@@ -360,22 +560,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     13.4807,
-     45.8395,
-     16.4265
+     17.4645,
+     26.6984,
+     18.3895
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -48.2133,
-       31.9198,
-       146.1404
+       -49.1947,
+       22.3492,
+       148.1323
       ],
       "orientation": [
        [
-        0.0643,
+        -0.0396,
         0.0,
-        -0.9979
+        -0.9992
        ],
        [
         0.0,
@@ -383,9 +583,9 @@
         0.0
        ],
        [
-        0.9979,
+        0.9992,
         0.0,
-        0.0643
+        -0.0396
        ]
       ]
      }
@@ -410,22 +610,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     16.9193,
-     32.5097,
-     20.5645
+     12.9355,
+     47.7055,
+     18.6491
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -50.2822,
-       25.2548,
-       160.1404
+       -49.3246,
+       32.8528,
+       162.1323
       ],
       "orientation": [
        [
-        -0.0113,
+        -0.0201,
         0.0,
-        -0.9999
+        -0.9998
        ],
        [
         0.0,
@@ -433,9 +633,9 @@
         0.0
        ],
        [
-        0.9999,
+        0.9998,
         0.0,
-        -0.0113
+        -0.0201
        ]
       ]
      }
@@ -460,22 +660,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     12.5754,
+     9.3884,
      2.5,
-     3.577
+     3.3447
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -61.853,
-       54.1097,
-       160.1404
+       -59.8215,
+       57.9055,
+       162.1323
       ],
       "orientation": [
        [
-        -0.0057,
+        -0.01,
         0.0,
-        -1.0
+        -0.9999
        ],
        [
         0.0,
@@ -483,9 +683,9 @@
         0.0
        ],
        [
-        1.0,
+        0.9999,
         0.0,
-        -0.0057
+        -0.01
        ]
       ]
      }
@@ -510,356 +710,6 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     13.4494,
-     47.0061,
-     17.7329
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       48.8665,
-       32.5031,
-       161.8753
-      ],
-      "orientation": [
-       [
-        0.041,
-        0.0,
-        0.9992
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.9992,
-        0.0,
-        0.041
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "PassEast0_01",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.7857,
-     45.9929,
-     15.7887
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       47.8943,
-       31.9964,
-       149.9578
-      ],
-      "orientation": [
-       [
-        0.0218,
-        0.0,
-        0.9998
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.9998,
-        0.0,
-        0.0218
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "PassEast0_02",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     5.3649,
-     47.2704,
-     14.5634
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       47.2817,
-       32.6352,
-       142.0825
-      ],
-      "orientation": [
-       [
-        -0.0273,
-        0.0,
-        0.9996
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.9996,
-        0.0,
-        -0.0273
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "PassEast0_02_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     3.3319,
-     2.5,
-     3.3955
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       55.7611,
-       57.4704,
-       142.0825
-      ],
-      "orientation": [
-       [
-        -0.0137,
-        0.0,
-        0.9999
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.9999,
-        0.0,
-        -0.0137
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "PassEast1_00",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     17.4645,
-     26.6984,
-     18.3895
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       31.8677,
-       22.3492,
-       130.8053
-      ],
-      "orientation": [
-       [
-        -0.9992,
-        0.0,
-        0.0396
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.0396,
-        0.0,
-        -0.9992
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "PassEast1_01",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.9355,
-     45.6055,
-     18.6491
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       18.8677,
-       31.8028,
-       130.6754
-      ],
-      "orientation": [
-       [
-        -0.9998,
-        0.0,
-        0.0201
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.0201,
-        0.0,
-        -0.9998
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "PassEast1_01_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     7.7884,
-     2.5,
-     3.3447
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       18.8677,
-       55.8055,
-       120.1785
-      ],
-      "orientation": [
-       [
-        -0.9999,
-        0.0,
-        0.01
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.01,
-        0.0,
-        -0.9999
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "PassEast2_00",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
      14.1838,
      48.3009,
      20.6431
@@ -867,9 +717,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       24.3215,
+       50.3215,
        33.1504,
-       133.5081
+       161.5081
       ],
       "orientation": [
        [
@@ -905,7 +755,7 @@
    }
   },
   {
-   "name": "PassEast2_00_cap",
+   "name": "PassEast0_00_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -917,9 +767,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       35.8085,
+       61.8085,
        58.5009,
-       133.5081
+       161.5081
       ],
       "orientation": [
        [
@@ -955,21 +805,21 @@
    }
   },
   {
-   "name": "PassEast2_01",
+   "name": "PassEast0_01",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     16.706,
+     16.2162,
      48.6136,
      15.1077
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       21.5538,
+       47.5538,
        33.3068,
-       119.2632
+       147.5081
       ],
       "orientation": [
        [
@@ -1005,21 +855,21 @@
    }
   },
   {
-   "name": "PassEast2_01_cap",
+   "name": "PassEast0_01_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     12.4048,
+     12.013,
      2.5,
      3.1216
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       30.1685,
+       56.1685,
        58.8136,
-       119.2632
+       147.5081
       ],
       "orientation": [
        [
@@ -1055,77 +905,27 @@
    }
   },
   {
-   "name": "PassEast2_02",
+   "name": "PassEast1_00",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     12.7102,
-     48.8917,
+     16.0449,
+     49.1917,
      16.313
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       22.1565,
-       33.4459,
-       105.7551
+       32.5775,
+       33.5959,
+       131.8435
       ],
       "orientation": [
-       [
-        -0.0133,
-        0.0,
-        0.9999
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
        [
         -0.9999,
         0.0,
         -0.0133
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "PassEast2_02_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     9.2081,
-     2.5,
-     4.043
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       31.8344,
-       59.0917,
-       105.7551
-      ],
-      "orientation": [
-       [
-        -0.0066,
-        0.0,
-        1.0
        ],
        [
         0.0,
@@ -1133,9 +933,9 @@
         0.0
        ],
        [
-        -1.0,
+        0.0133,
         0.0,
-        -0.0066
+        -0.9999
        ]
       ]
      }
@@ -1155,21 +955,71 @@
    }
   },
   {
-   "name": "QuarryNorthW0_00",
+   "name": "PassEast1_00_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     17.9994,
-     55.9127,
+     11.876,
+     2.5,
+     4.043
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       32.5775,
+       59.3917,
+       122.1656
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0066
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0066,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PassEast1_01",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     12.3551,
+     26.0952,
      15.6855
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -48.3997,
-       28.9564,
-       160.1573
+       19.5775,
+       22.0476,
+       132.1573
       ],
       "orientation": [
        [
@@ -1186,6 +1036,256 @@
         -0.0475,
         0.0,
         -0.9989
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PassEast2_00",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     15.9471,
+     49.5357,
+     16.2227
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       22.1113,
+       33.7678,
+       132.6264
+      ],
+      "orientation": [
+       [
+        0.0369,
+        0.0,
+        0.9993
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9993,
+        0.0,
+        0.0369
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PassEast2_00_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     11.7977,
+     2.5,
+     3.0352
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       31.2403,
+       59.7357,
+       132.6264
+      ],
+      "orientation": [
+       [
+        0.0184,
+        0.0,
+        0.9998
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9998,
+        0.0,
+        0.0184
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PassEast2_01",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     18.5434,
+     25.7452,
+     15.09
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       21.545,
+       21.8726,
+       116.5812
+      ],
+      "orientation": [
+       [
+        0.0246,
+        0.0,
+        0.9997
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9997,
+        0.0,
+        0.0246
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PassEast2_02",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     9.1095,
+     49.8291,
+     16.9287
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       22.4643,
+       33.9145,
+       103.9547
+      ],
+      "orientation": [
+       [
+        0.0686,
+        0.0,
+        0.9976
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9976,
+        0.0,
+        0.0686
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryNorthW0_00",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     18.4328,
+     55.34,
+     14.9333
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -48.6164,
+       28.67,
+       160.5334
+      ],
+      "orientation": [
+       [
+        -0.9999,
+        0.0,
+        0.0109
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0109,
+        0.0,
+        -0.9999
        ]
       ]
      }
@@ -1210,22 +1310,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     15.9471,
-     54.5947,
-     16.2227
+     11.6341,
+     55.8769,
+     16.3374
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -64.1729,
-       28.2974,
-       159.8887
+       -62.4499,
+       28.9385,
+       159.8313
       ],
       "orientation": [
        [
-        -0.9993,
+        -0.9995,
         0.0,
-        0.0369
+        -0.0324
        ],
        [
         0.0,
@@ -1233,9 +1333,9 @@
         0.0
        ],
        [
-        -0.0369,
+        0.0324,
         0.0,
-        -0.9993
+        -0.9995
        ]
       ]
      }
@@ -1260,22 +1360,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     11.7977,
+     8.3473,
      2.5,
-     3.0352
+     4.5611
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -64.1729,
-       57.0947,
-       150.7597
+       -62.4499,
+       58.3769,
+       149.8821
       ],
       "orientation": [
        [
-        -0.9998,
+        -0.9999,
         0.0,
-        0.0184
+        -0.0162
        ],
        [
         0.0,
@@ -1283,9 +1383,9 @@
         0.0
        ],
        [
-        -0.0184,
+        0.0162,
         0.0,
-        -0.9998
+        -0.9999
        ]
       ]
      }
@@ -1310,22 +1410,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     18.5434,
-     57.476,
-     15.09
+     14.149,
+     53.3593,
+     15.5928
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -80.2182,
-       29.738,
-       160.455
+       -74.1415,
+       27.6797,
+       160.2036
       ],
       "orientation": [
        [
-        -0.9997,
+        -0.9999,
         0.0,
-        0.0246
+        0.0144
        ],
        [
         0.0,
@@ -1333,9 +1433,9 @@
         0.0
        ],
        [
-        -0.0246,
+        -0.0144,
         0.0,
-        -0.9997
+        -0.9999
        ]
       ]
      }
@@ -1360,22 +1460,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     16.6146,
-     58.1046,
-     16.9287
+     11.8679,
+     54.0401,
+     14.9391
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -96.5972,
-       30.0523,
-       159.5357
+       -85.9499,
+       28.02,
+       160.5304
       ],
       "orientation": [
        [
-        -0.9976,
+        -1.0,
         0.0,
-        0.0686
+        -0.0042
        ],
        [
         0.0,
@@ -1383,9 +1483,59 @@
         0.0
        ],
        [
-        -0.0686,
+        0.0042,
         0.0,
-        -0.9976
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryNorthW0_03_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     8.5343,
+     2.5,
+     3.0166
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -85.9499,
+       57.7401,
+       152.0526
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0021
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0021,
+        0.0,
+        -1.0
        ]
       ]
      }
@@ -1410,22 +1560,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     6.8955,
-     57.14,
-     14.9333
+     14.5318,
+     59.7917,
+     19.2683
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -107.1523,
-       29.57,
-       160.5334
+       -97.9498,
+       30.8959,
+       158.3659
       ],
       "orientation": [
        [
-        -0.9999,
+        -1.0,
         0.0,
-        0.0109
+        0.0053
        ],
        [
         0.0,
@@ -1433,9 +1583,9 @@
         0.0
        ],
        [
-        -0.0109,
+        -0.0053,
         0.0,
-        -0.9999
+        -1.0
        ]
       ]
      }
@@ -1455,27 +1605,27 @@
    }
   },
   {
-   "name": "QuarryWestN0_00",
+   "name": "QuarryNorthW0_05",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     11.6341,
-     58.2769,
-     16.3374
+     6.5843,
+     40.4715,
+     16.1147
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -118.1687,
-       30.1385,
-       173.217
+       -107.3078,
+       21.2357,
+       159.9427
       ],
       "orientation": [
        [
-        0.0324,
+        -1.0,
         0.0,
-        -0.9995
+        0.0001
        ],
        [
         0.0,
@@ -1483,9 +1633,109 @@
         0.0
        ],
        [
-        0.9995,
+        -0.0001,
         0.0,
-        0.0324
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryNorthW0_05_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     4.3075,
+     2.5,
+     4.9626
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -107.3078,
+       54.3715,
+       149.904
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN0_00",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     15.9179,
+     57.0031,
+     16.77
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -118.385,
+       29.5015,
+       175.3589
+      ],
+      "orientation": [
+       [
+        0.0092,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0092
        ]
       ]
      }
@@ -1510,406 +1760,6 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     8.3473,
-     2.5,
-     4.5611
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -128.1179,
-       60.4769,
-       173.217
-      ],
-      "orientation": [
-       [
-        0.0162,
-        0.0,
-        -0.9999
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.9999,
-        0.0,
-        0.0162
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN0_01",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     14.149,
-     57.8593,
-     15.5928
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -117.7964,
-       29.9297,
-       184.9086
-      ],
-      "orientation": [
-       [
-        -0.0144,
-        0.0,
-        -0.9999
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.9999,
-        0.0,
-        -0.0144
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN0_02",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     11.8679,
-     58.5401,
-     14.9391
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -117.4696,
-       30.27,
-       196.7171
-      ],
-      "orientation": [
-       [
-        0.0042,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0042
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN0_02_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     8.5343,
-     2.5,
-     3.0166
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -125.9474,
-       60.7401,
-       196.7171
-      ],
-      "orientation": [
-       [
-        0.0021,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0021
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN0_03",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     14.5318,
-     59.4917,
-     19.2683
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -119.6341,
-       30.7459,
-       208.7169
-      ],
-      "orientation": [
-       [
-        -0.0053,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        -0.0053
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN0_04",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     17.0097,
-     59.6715,
-     16.1147
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -118.0573,
-       30.8357,
-       223.2877
-      ],
-      "orientation": [
-       [
-        -0.0001,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        -0.0001
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN0_04_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.6478,
-     2.5,
-     4.9626
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -128.096,
-       61.8715,
-       223.2877
-      ],
-      "orientation": [
-       [
-        -0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        -0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN0_05",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     15.9179,
-     60.0031,
-     16.77
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -118.385,
-       31.0015,
-       238.5515
-      ],
-      "orientation": [
-       [
-        0.0092,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0092
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN0_05_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
      11.7743,
      2.5,
      3.7545
@@ -1918,8 +1768,8 @@
      "CFrame": {
       "position": [
        -128.1473,
-       62.2031,
-       238.5515
+       60.1031,
+       175.3589
       ],
       "orientation": [
        [
@@ -1955,21 +1805,21 @@
    }
   },
   {
-   "name": "QuarryWestN0_06",
+   "name": "QuarryWestN0_01",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      18.5714,
-     60.3922,
+     60.6922,
      18.5559
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -119.2779,
-       31.1961,
-       254.5961
+       31.3461,
+       191.4036
       ],
       "orientation": [
        [
@@ -1991,9 +1841,9 @@
      }
     },
     "Color": [
-     0.5569,
-     0.3922,
-     0.2588
+     0.6667,
+     0.4784,
+     0.3137
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -2005,7 +1855,7 @@
    }
   },
   {
-   "name": "QuarryWestN0_06_cap",
+   "name": "QuarryWestN0_01_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -2018,8 +1868,8 @@
      "CFrame": {
       "position": [
        -129.669,
-       62.5922,
-       254.5961
+       62.8922,
+       191.4036
       ],
       "orientation": [
        [
@@ -2055,21 +1905,21 @@
    }
   },
   {
-   "name": "QuarryWestN0_07",
+   "name": "QuarryWestN0_02",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      11.6069,
-     61.2619,
+     60.9619,
      16.7062
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -118.3531,
-       31.631,
-       268.4853
+       31.481,
+       205.2927
       ],
       "orientation": [
        [
@@ -2105,7 +1955,7 @@
    }
   },
   {
-   "name": "QuarryWestN0_07_cap",
+   "name": "QuarryWestN0_02_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -2118,8 +1968,8 @@
      "CFrame": {
       "position": [
        -128.4607,
-       63.4619,
-       268.4853
+       63.1619,
+       205.2927
       ],
       "orientation": [
        [
@@ -2155,21 +2005,21 @@
    }
   },
   {
-   "name": "QuarryWestN0_08",
+   "name": "QuarryWestN0_03",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      12.357,
-     61.5412,
+     59.4412,
      14.9355
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -117.4678,
-       31.7706,
-       279.2672
+       30.7206,
+       216.0747
       ],
       "orientation": [
        [
@@ -2191,9 +2041,9 @@
      }
     },
     "Color": [
-     0.6667,
-     0.4784,
-     0.3137
+     0.5569,
+     0.3922,
+     0.2588
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -2205,7 +2055,7 @@
    }
   },
   {
-   "name": "QuarryWestN0_08_cap",
+   "name": "QuarryWestN0_03_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -2218,8 +2068,8 @@
      "CFrame": {
       "position": [
        -126.5579,
-       63.7412,
-       279.2672
+       61.6412,
+       216.0747
       ],
       "orientation": [
        [
@@ -2255,27 +2105,27 @@
    }
   },
   {
-   "name": "QuarryWestN1_00",
+   "name": "QuarryWestN0_04",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      15.6719,
-     61.81,
+     61.21,
      19.261
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -117.2359,
-       31.905,
-       275.3695
+       -119.6305,
+       31.605,
+       228.8892
       ],
       "orientation": [
        [
-        -0.9998,
+        0.0204,
         0.0,
-        -0.0204
+        -0.9998
        ],
        [
         0.0,
@@ -2283,9 +2133,409 @@
         0.0
        ],
        [
-        0.0204,
+        0.9998,
+        0.0,
+        0.0204
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN0_04_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     11.5775,
+     2.5,
+     3.3134
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -130.4177,
+       63.41,
+       228.8892
+      ],
+      "orientation": [
+       [
+        0.0102,
+        0.0,
+        -0.9999
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9999,
+        0.0,
+        0.0102
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN0_05",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     15.3427,
+     58.4249,
+     16.981
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -118.4905,
+       30.2124,
+       243.1964
+      ],
+      "orientation": [
+       [
+        -0.0691,
+        0.0,
+        -0.9976
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9976,
+        0.0,
+        -0.0691
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN0_05_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     11.3141,
+     2.5,
+     3.2913
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -128.1267,
+       61.2249,
+       243.1964
+      ],
+      "orientation": [
+       [
+        -0.0346,
+        0.0,
+        -0.9994
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9994,
+        0.0,
+        -0.0346
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN0_06",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     14.7929,
+     60.2442,
+     19.4369
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -119.7185,
+       31.1221,
+       257.0642
+      ],
+      "orientation": [
+       [
+        -0.0189,
         0.0,
         -0.9998
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9998,
+        0.0,
+        -0.0189
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN0_06_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     10.8743,
+     2.5,
+     4.4288
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -131.1513,
+       62.4442,
+       257.0642
+      ],
+      "orientation": [
+       [
+        -0.0095,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        -0.0095
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN0_07",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     13.8718,
+     62.1949,
+     17.4683
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -118.7341,
+       32.0975,
+       270.1965
+      ],
+      "orientation": [
+       [
+        0.0574,
+        0.0,
+        -0.9984
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9984,
+        0.0,
+        0.0574
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN0_08",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     9.6676,
+     62.4981,
+     20.4733
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -120.2367,
+       32.249,
+       280.7662
+      ],
+      "orientation": [
+       [
+        0.049,
+        0.0,
+        -0.9988
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9988,
+        0.0,
+        0.049
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN1_00",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     19.1008,
+     61.7154,
+     19.2195
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -118.9504,
+       31.8577,
+       275.3902
+      ],
+      "orientation": [
+       [
+        -0.9996,
+        0.0,
+        -0.0286
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0286,
+        0.0,
+        -0.9996
        ]
       ]
      }
@@ -2310,22 +2560,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     11.5775,
+     14.3207,
      2.5,
-     3.3134
+     4.9224
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -117.2359,
-       64.01,
-       264.5823
+       -118.9504,
+       63.9154,
+       263.8192
       ],
       "orientation": [
        [
         -0.9999,
         0.0,
-        -0.0102
+        -0.0143
        ],
        [
         0.0,
@@ -2333,7 +2583,7 @@
         0.0
        ],
        [
-        0.0102,
+        0.0143,
         0.0,
         -0.9999
        ]
@@ -2360,22 +2610,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     15.3427,
-     60.2249,
-     16.981
+     17.5675,
+     63.9863,
+     16.6891
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -131.5432,
-       31.1124,
-       276.5095
+       -136.0846,
+       32.9931,
+       276.6555
       ],
       "orientation": [
        [
-        -0.9976,
+        -0.9997,
         0.0,
-        0.0691
+        -0.0242
        ],
        [
         0.0,
@@ -2383,9 +2633,9 @@
         0.0
        ],
        [
-        -0.0691,
+        0.0242,
         0.0,
-        -0.9976
+        -0.9997
        ]
       ]
      }
@@ -2410,22 +2660,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     11.3141,
+     13.094,
      2.5,
-     3.2913
+     4.029
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -131.5432,
-       62.7249,
-       266.8733
+       -136.0846,
+       66.1863,
+       266.7964
       ],
       "orientation": [
        [
-        -0.9994,
+        -0.9999,
         0.0,
-        0.0346
+        -0.0121
        ],
        [
         0.0,
@@ -2433,9 +2683,9 @@
         0.0
        ],
        [
-        -0.0346,
+        0.0121,
         0.0,
-        -0.9994
+        -0.9999
        ]
       ]
      }
@@ -2460,22 +2710,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     14.7929,
-     62.3442,
-     19.4369
+     17.1775,
+     62.9101,
+     20.6308
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -145.411,
-       32.1721,
-       275.2815
+       -152.2571,
+       32.4551,
+       274.6846
       ],
       "orientation": [
        [
-        -0.9998,
+        -1.0,
         0.0,
-        0.0189
+        0.0044
        ],
        [
         0.0,
@@ -2483,9 +2733,9 @@
         0.0
        ],
        [
-        -0.0189,
+        -0.0044,
         0.0,
-        -0.9998
+        -1.0
        ]
       ]
      }
@@ -2510,22 +2760,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     10.8743,
+     12.782,
      2.5,
-     4.4288
+     3.5485
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -145.411,
-       64.5442,
-       263.8487
+       -152.2571,
+       65.1101,
+       263.0949
       ],
       "orientation": [
        [
         -1.0,
         0.0,
-        0.0095
+        0.0022
        ],
        [
         0.0,
@@ -2533,7 +2783,7 @@
         0.0
        ],
        [
-        -0.0095,
+        -0.0022,
         0.0,
         -1.0
        ]
@@ -2560,22 +2810,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     13.8718,
-     63.3949,
-     17.4683
+     5.9542,
+     64.6223,
+     14.4681
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -158.5433,
-       32.6975,
-       276.2659
+       -162.6229,
+       33.3112,
+       277.766
       ],
       "orientation": [
        [
-        -0.9984,
+        -0.9999,
         0.0,
-        -0.0574
+        -0.0141
        ],
        [
         0.0,
@@ -2583,9 +2833,9 @@
         0.0
        ],
        [
-        0.0574,
+        0.0141,
         0.0,
-        -0.9984
+        -0.9999
        ]
       ]
      }
@@ -2610,22 +2860,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     15.9267,
-     64.5981,
-     20.4733
+     15.355,
+     64.8291,
+     16.462
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -175.2367,
-       33.299,
-       292.3633
+       -173.231,
+       33.4145,
+       292.0775
       ],
       "orientation": [
        [
-        0.049,
+        -0.0692,
         0.0,
-        -0.9988
+        -0.9976
        ],
        [
         0.0,
@@ -2633,9 +2883,9 @@
         0.0
        ],
        [
-        0.9988,
+        0.9976,
         0.0,
-        0.049
+        -0.0692
        ]
       ]
      }
@@ -2660,20 +2910,20 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     19.1008,
-     63.2154,
-     19.2195
+     13.5992,
+     64.3746,
+     15.5079
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -174.6098,
-       32.6077,
-       308.6771
+       -172.754,
+       33.1873,
+       305.3546
       ],
       "orientation": [
        [
-        0.0286,
+        0.0274,
         0.0,
         -0.9996
        ],
@@ -2685,7 +2935,7 @@
        [
         0.9996,
         0.0,
-        0.0286
+        0.0274
        ]
       ]
      }
@@ -2694,56 +2944,6 @@
      0.6667,
      0.4784,
      0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN2_01_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     14.3207,
-     2.5,
-     4.9224
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -186.1808,
-       65.4154,
-       308.6771
-      ],
-      "orientation": [
-       [
-        0.0143,
-        0.0,
-        -0.9999
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.9999,
-        0.0,
-        0.0143
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -2760,22 +2960,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     17.5675,
-     65.1863,
-     16.6891
+     12.529,
+     64.9967,
+     16.2482
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -173.3445,
-       33.5931,
-       325.8113
+       -173.1241,
+       33.4984,
+       317.2187
       ],
       "orientation": [
        [
-        0.0242,
+        0.0012,
         0.0,
-        -0.9997
+        -1.0
        ],
        [
         0.0,
@@ -2783,9 +2983,9 @@
         0.0
        ],
        [
-        0.9997,
+        1.0,
         0.0,
-        0.0242
+        0.0012
        ]
       ]
      }
@@ -2805,77 +3005,27 @@
    }
   },
   {
-   "name": "QuarryWestN2_02_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     13.094,
-     2.5,
-     4.029
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -183.2036,
-       67.3863,
-       325.8113
-      ],
-      "orientation": [
-       [
-        0.0121,
-        0.0,
-        -0.9999
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.9999,
-        0.0,
-        0.0121
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
    "name": "QuarryWestN2_03",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     12.205,
-     65.0101,
-     20.6308
+     14.1593,
+     65.618,
+     17.5325
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -175.3154,
-       33.5051,
-       339.4975
+       -173.7662,
+       33.809,
+       329.3628
       ],
       "orientation": [
        [
-        -0.0044,
+        0.0397,
         0.0,
-        -1.0
+        -0.9992
        ],
        [
         0.0,
@@ -2883,9 +3033,9 @@
         0.0
        ],
        [
-        1.0,
+        0.9992,
         0.0,
-        -0.0044
+        0.0397
        ]
       ]
      }
@@ -2910,22 +3060,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     8.804,
+     10.3674,
      2.5,
-     3.5485
+     4.087
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -186.9051,
-       67.5101,
-       339.4975
+       -184.076,
+       67.818,
+       329.3628
       ],
       "orientation": [
        [
-        -0.0022,
+        0.0199,
         0.0,
-        -1.0
+        -0.9998
        ],
        [
         0.0,
@@ -2933,9 +3083,9 @@
         0.0
        ],
        [
-        1.0,
+        0.9998,
         0.0,
-        -0.0022
+        0.0199
        ]
       ]
      }
@@ -2955,27 +3105,27 @@
    }
   },
   {
-   "name": "QuarryWestN3_00",
+   "name": "QuarryWestN2_04",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     15.5718,
-     65.5223,
-     14.4681
+     10.3575,
+     65.9629,
+     16.1708
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -157.8141,
-       33.7612,
-       352.234
+       -173.0854,
+       33.9814,
+       340.4212
       ],
       "orientation": [
        [
-        0.9999,
+        -0.0395,
         0.0,
-        0.0141
+        -0.9992
        ],
        [
         0.0,
@@ -2983,9 +3133,59 @@
         0.0
        ],
        [
-        -0.0141,
+        0.9992,
         0.0,
-        0.9999
+        -0.0395
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN3_00",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     12.5278,
+     66.1899,
+     18.6786
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -159.3361,
+       34.095,
+       354.3393
+      ],
+      "orientation": [
+       [
+        0.998,
+        0.0,
+        -0.0632
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0632,
+        0.0,
+        0.998
        ]
       ]
      }
@@ -3010,22 +3210,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     15.355,
-     66.0291,
-     16.462
+     18.2276,
+     65.2495,
+     14.601
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -143.5507,
-       34.0145,
-       353.231
+       -145.1584,
+       33.6248,
+       352.3005
       ],
       "orientation": [
        [
-        0.9976,
+        0.9988,
         0.0,
-        -0.0692
+        -0.0485
        ],
        [
         0.0,
@@ -3033,9 +3233,9 @@
         0.0
        ],
        [
-        0.0692,
+        0.0485,
         0.0,
-        0.9976
+        0.9988
        ]
       ]
      }
@@ -3060,22 +3260,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     13.5992,
-     66.1746,
-     15.5079
+     12.7081,
+     66.6075,
+     15.2069
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -130.2736,
-       34.0873,
-       352.754
+       -130.8906,
+       34.3038,
+       352.6034
       ],
       "orientation": [
        [
-        0.9996,
+        0.9994,
         0.0,
-        0.0274
+        -0.0342
        ],
        [
         0.0,
@@ -3083,9 +3283,9 @@
         0.0
        ],
        [
-        -0.0274,
+        0.0342,
         0.0,
-        0.9996
+        0.9994
        ]
       ]
      }
@@ -3105,27 +3305,27 @@
    }
   },
   {
-   "name": "QuarryWestN3_03",
+   "name": "QuarryWestN3_02_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     12.529,
-     66.4967,
-     16.2482
+     9.2064,
+     2.5,
+     4.1393
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -118.4095,
-       34.2484,
-       353.1241
+       -130.8906,
+       68.8075,
+       361.7765
       ],
       "orientation": [
        [
-        1.0,
+        0.9999,
         0.0,
-        0.0012
+        -0.0171
        ],
        [
         0.0,
@@ -3133,7 +3333,57 @@
         0.0
        ],
        [
-        -0.0012,
+        0.0171,
+        0.0,
+        0.9999
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN3_03",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     12.1389,
+     66.8343,
+     15.3059
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -119.6671,
+       34.4172,
+       352.653
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0031
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0031,
         0.0,
         1.0
        ]
@@ -3160,22 +3410,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     3.945,
-     66.818,
-     17.5325
+     5.3977,
+     65.7598,
+     15.6688
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -111.3725,
-       34.409,
-       353.7662
+       -112.0988,
+       33.8799,
+       352.8344
       ],
       "orientation": [
        [
-        0.9992,
+        0.9984,
         0.0,
-        0.0397
+        -0.0569
        ],
        [
         0.0,
@@ -3183,9 +3433,9 @@
         0.0
        ],
        [
-        -0.0397,
+        0.0569,
         0.0,
-        0.9992
+        0.9984
        ]
       ]
      }
@@ -3210,22 +3460,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     2.196,
+     3.3581,
      2.5,
-     4.087
+     4.7398
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -111.3725,
-       69.018,
-       364.076
+       -112.0988,
+       68.2598,
+       362.5386
       ],
       "orientation": [
        [
-        0.9998,
+        0.9996,
         0.0,
-        0.0199
+        -0.0285
        ],
        [
         0.0,
@@ -3233,9 +3483,9 @@
         0.0
        ],
        [
-        -0.0199,
+        0.0285,
         0.0,
-        0.9998
+        0.9996
        ]
       ]
      }
@@ -3260,416 +3510,16 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     17.6619,
-     67.1629,
-     16.1708
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -118.0854,
-       34.5814,
-       353.231
-      ],
-      "orientation": [
-       [
-        -0.0395,
-        0.0,
-        -0.9992
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.9992,
-        0.0,
-        -0.0395
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN4_01",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.5278,
-     67.3899,
-     18.6786
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -119.3393,
-       34.695,
-       367.1258
-      ],
-      "orientation": [
-       [
-        -0.0632,
-        0.0,
-        -0.998
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.998,
-        0.0,
-        -0.0632
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN4_02",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     18.2276,
-     67.0495,
-     14.601
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -117.3005,
-       34.5248,
-       381.3035
-      ],
-      "orientation": [
-       [
-        -0.0485,
-        0.0,
-        -0.9988
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.9988,
-        0.0,
-        -0.0485
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN4_03",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.7081,
-     68.1075,
-     15.2069
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -117.6034,
-       35.0538,
-       395.5714
-      ],
-      "orientation": [
-       [
-        -0.0342,
-        0.0,
-        -0.9994
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.9994,
-        0.0,
-        -0.0342
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN4_03_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     9.2064,
-     2.5,
-     4.1393
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -126.7765,
-       70.3075,
-       395.5714
-      ],
-      "orientation": [
-       [
-        -0.0171,
-        0.0,
-        -0.9999
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.9999,
-        0.0,
-        -0.0171
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN4_04",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.1389,
-     68.3343,
-     15.3059
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -117.653,
-       35.1672,
-       406.7948
-      ],
-      "orientation": [
-       [
-        0.0031,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0031
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN4_05",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     16.4018,
-     68.4598,
-     15.6688
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -117.8344,
-       35.2299,
-       419.8651
-      ],
-      "orientation": [
-       [
-        -0.0569,
-        0.0,
-        -0.9984
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.9984,
-        0.0,
-        -0.0569
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN4_05_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.1614,
-     2.5,
-     4.7398
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -127.5386,
-       70.6598,
-       419.8651
-      ],
-      "orientation": [
-       [
-        -0.0285,
-        0.0,
-        -0.9996
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.9996,
-        0.0,
-        -0.0285
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryWestN4_06",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
      13.9614,
-     68.8886,
+     67.0886,
      14.5748
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -117.2874,
-       35.4443,
-       433.8467
+       34.5443,
+       351.3807
       ],
       "orientation": [
        [
@@ -3705,21 +3555,21 @@
    }
   },
   {
-   "name": "QuarryWestN4_07",
+   "name": "QuarryWestN4_01",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      15.2148,
-     69.0985,
+     67.2985,
      20.1087
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -120.0544,
-       35.5493,
-       447.2348
+       34.6493,
+       364.7688
       ],
       "orientation": [
        [
@@ -3755,7 +3605,7 @@
    }
   },
   {
-   "name": "QuarryWestN4_07_cap",
+   "name": "QuarryWestN4_01_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -3768,8 +3618,8 @@
      "CFrame": {
       "position": [
        -131.5416,
-       71.2985,
-       447.2348
+       69.4985,
+       364.7688
       ],
       "orientation": [
        [
@@ -3805,21 +3655,21 @@
    }
   },
   {
-   "name": "QuarryWestN4_08",
+   "name": "QuarryWestN4_02",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      11.9679,
-     69.679,
+     67.579,
      14.4367
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -117.2183,
-       35.8395,
-       459.6261
+       34.7895,
+       377.1601
       ],
       "orientation": [
        [
@@ -3855,7 +3705,7 @@
    }
   },
   {
-   "name": "QuarryWestN4_08_cap",
+   "name": "QuarryWestN4_02_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -3868,8 +3718,8 @@
      "CFrame": {
       "position": [
        -126.2359,
-       71.879,
-       459.6261
+       69.779,
+       377.1601
       ],
       "orientation": [
        [
@@ -3905,21 +3755,21 @@
    }
   },
   {
-   "name": "QuarryWestN4_09",
+   "name": "QuarryWestN4_03",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     6.1899,
-     69.5043,
+     18.4499,
+     68.3043,
      15.841
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -117.9205,
-       35.7521,
-       467.505
+       35.1521,
+       391.169
       ],
       "orientation": [
        [
@@ -3955,27 +3805,27 @@
    }
   },
   {
-   "name": "QuarrySouth0_00",
+   "name": "QuarryWestN4_04",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      13.3257,
-     68.7255,
+     67.8255,
      15.3424
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -103.9372,
-       35.3628,
-       477.6712
+       -117.6712,
+       34.9128,
+       405.8568
       ],
       "orientation": [
        [
-        1.0,
+        -0.0017,
         0.0,
-        -0.0017
+        -1.0
        ],
        [
         0.0,
@@ -3983,17 +3833,17 @@
         0.0
        ],
        [
-        0.0017,
+        1.0,
         0.0,
-        1.0
+        -0.0017
        ]
       ]
      }
     },
     "Color": [
-     0.5569,
-     0.3922,
-     0.2588
+     0.6667,
+     0.4784,
+     0.3137
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -4005,27 +3855,27 @@
    }
   },
   {
-   "name": "QuarrySouth0_01",
+   "name": "QuarryWestN4_05",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      13.3738,
-     70.0503,
+     68.8503,
      15.9709
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -91.7874,
-       36.0251,
-       477.9855
+       -117.9855,
+       35.4251,
+       418.0066
       ],
       "orientation": [
        [
-        0.9988,
+        -0.049,
         0.0,
-        -0.049
+        -0.9988
        ],
        [
         0.0,
@@ -4033,9 +3883,9 @@
         0.0
        ],
        [
-        0.049,
+        0.9988,
         0.0,
-        0.9988
+        -0.049
        ]
       ]
      }
@@ -4055,87 +3905,37 @@
    }
   },
   {
-   "name": "QuarrySouth0_02",
+   "name": "QuarryWestN4_06",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      15.4362,
-     70.4379,
+     69.5379,
      18.9357
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -78.5824,
-       36.219,
-       479.4679
+       -119.4679,
+       35.769,
+       431.2116
       ],
       "orientation": [
+       [
+        0.0199,
+        0.0,
+        -0.9998
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
        [
         0.9998,
         0.0,
         0.0199
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.0199,
-        0.0,
-        0.9998
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarrySouth0_03",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     13.1991,
-     71.315,
-     17.0098
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -65.4648,
-       36.6575,
-       478.5049
-      ],
-      "orientation": [
-       [
-        0.9985,
-        0.0,
-        -0.0548
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0548,
-        0.0,
-        0.9985
        ]
       ]
      }
@@ -4155,27 +3955,27 @@
    }
   },
   {
-   "name": "QuarrySouth0_04",
+   "name": "QuarryWestN4_07",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     11.2712,
-     71.8952,
-     14.9541
+     13.1991,
+     70.415,
+     17.0098
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -54.4296,
-       36.9476,
-       477.4771
+       -118.5049,
+       36.2075,
+       444.3292
       ],
       "orientation": [
        [
-        0.9999,
+        -0.0548,
         0.0,
-        -0.0159
+        -0.9985
        ],
        [
         0.0,
@@ -4183,9 +3983,9 @@
         0.0
        ],
        [
-        0.0159,
+        0.9985,
         0.0,
-        0.9999
+        -0.0548
        ]
       ]
      }
@@ -4205,7 +4005,57 @@
    }
   },
   {
-   "name": "QuarrySouth0_04_cap",
+   "name": "QuarryWestN4_08",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     11.2712,
+     70.6952,
+     14.9541
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -117.4771,
+       36.3476,
+       455.3644
+      ],
+      "orientation": [
+       [
+        -0.0159,
+        0.0,
+        -0.9999
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9999,
+        0.0,
+        -0.0159
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryWestN4_08_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -4217,15 +4067,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -54.4296,
-       74.0952,
-       486.8777
+       -126.8777,
+       72.8952,
+       455.3644
       ],
       "orientation": [
        [
-        1.0,
+        -0.0079,
         0.0,
-        -0.0079
+        -1.0
        ],
        [
         0.0,
@@ -4233,9 +4083,9 @@
         0.0
        ],
        [
-        0.0079,
+        1.0,
         0.0,
-        1.0
+        -0.0079
        ]
       ]
      }
@@ -4255,27 +4105,27 @@
    }
   },
   {
-   "name": "QuarrySouth0_05",
+   "name": "QuarryWestN4_09",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     14.9512,
-     72.4358,
+     10.8,
+     70.9358,
      20.7626
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -42.5184,
-       37.2179,
-       480.3813
+       -120.3813,
+       36.4679,
+       465.2
       ],
       "orientation": [
        [
-        0.9981,
+        -0.0613,
         0.0,
-        -0.0613
+        -0.9981
        ],
        [
         0.0,
@@ -4283,17 +4133,17 @@
         0.0
        ],
        [
-        0.0613,
+        0.9981,
         0.0,
-        0.9981
+        -0.0613
        ]
       ]
      }
     },
     "Color": [
-     0.6667,
-     0.4784,
-     0.3137
+     0.5569,
+     0.3922,
+     0.2588
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -4305,20 +4155,20 @@
    }
   },
   {
-   "name": "QuarrySouth0_06",
+   "name": "QuarrySouth0_00",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      13.0422,
-     72.8073,
+     71.3073,
      14.6605
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -29.7217,
-       37.4036,
+       -104.0789,
+       36.6536,
        477.3303
       ],
       "orientation": [
@@ -4355,20 +4205,20 @@
    }
   },
   {
-   "name": "QuarrySouth0_07",
+   "name": "QuarrySouth0_01",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      12.6021,
-     69.882,
+     68.682,
      15.1141
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -18.0995,
-       35.941,
+       -92.4567,
+       35.341,
        477.5571
       ],
       "orientation": [
@@ -4405,20 +4255,20 @@
    }
   },
   {
-   "name": "QuarrySouthE0_00",
+   "name": "QuarrySouth0_02",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      16.0197,
-     71.073,
+     69.273,
      18.9904
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       19.4098,
-       36.5365,
+       -79.3458,
+       35.6365,
        479.4952
       ],
       "orientation": [
@@ -4441,9 +4291,9 @@
      }
     },
     "Color": [
-     0.5569,
-     0.3922,
-     0.2588
+     0.6667,
+     0.4784,
+     0.3137
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -4455,7 +4305,7 @@
    }
   },
   {
-   "name": "QuarrySouthE0_00_cap",
+   "name": "QuarrySouth0_02_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -4467,8 +4317,8 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       19.4098,
-       73.273,
+       -79.3458,
+       71.473,
        490.4937
       ],
       "orientation": [
@@ -4505,20 +4355,20 @@
    }
   },
   {
-   "name": "QuarrySouthE0_01",
+   "name": "QuarrySouth0_03",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      11.9333,
-     73.1159,
+     71.9159,
      20.2471
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       32.1863,
-       37.558,
+       -66.5693,
+       36.958,
        480.1236
       ],
       "orientation": [
@@ -4541,9 +4391,9 @@
      }
     },
     "Color": [
-     0.6667,
-     0.4784,
-     0.3137
+     0.5569,
+     0.3922,
+     0.2588
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -4555,7 +4405,7 @@
    }
   },
   {
-   "name": "QuarrySouthE0_01_cap",
+   "name": "QuarrySouth0_03_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -4567,8 +4417,8 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       32.1863,
-       75.3159,
+       -66.5693,
+       74.1159,
        491.9665
       ],
       "orientation": [
@@ -4605,20 +4455,20 @@
    }
   },
   {
-   "name": "QuarrySouthE0_02",
+   "name": "QuarrySouth0_04",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      14.5534,
-     73.3244,
+     71.5244,
      16.1967
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       44.2297,
-       37.6622,
+       -54.5259,
+       36.7622,
        478.0984
       ],
       "orientation": [
@@ -4655,20 +4505,20 @@
    }
   },
   {
-   "name": "QuarrySouthE0_03",
+   "name": "QuarrySouth0_05",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      19.131,
-     71.6838,
+     70.1838,
      19.6439
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       59.8719,
-       36.8419,
+       -38.8837,
+       36.0919,
        479.8219
       ],
       "orientation": [
@@ -4691,9 +4541,9 @@
      }
     },
     "Color": [
-     0.5569,
-     0.3922,
-     0.2588
+     0.6667,
+     0.4784,
+     0.3137
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -4705,20 +4555,20 @@
    }
   },
   {
-   "name": "QuarrySouthE0_04",
+   "name": "QuarrySouth0_06",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      14.4377,
-     73.8849,
+     72.0849,
      18.3899
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       75.4563,
-       37.9424,
+       -23.2994,
+       37.0424,
        479.195
       ],
       "orientation": [
@@ -4741,9 +4591,9 @@
      }
     },
     "Color": [
-     0.6667,
-     0.4784,
-     0.3137
+     0.5569,
+     0.3922,
+     0.2588
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -4755,20 +4605,20 @@
    }
   },
   {
-   "name": "QuarrySouthE0_05",
+   "name": "QuarrySouth0_07",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     12.0264,
-     74.4561,
+     5.8805,
+     72.3561,
      18.3118
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       87.4883,
-       38.228,
+       -14.3403,
+       37.178,
        479.1559
       ],
       "orientation": [
@@ -4805,20 +4655,20 @@
    }
   },
   {
-   "name": "QuarrySouthE0_05_cap",
+   "name": "QuarrySouth0_07_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     8.6611,
+     3.7444,
      2.5,
      3.152
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       87.4883,
-       76.6561,
+       -14.3403,
+       74.5561,
        489.3878
       ],
       "orientation": [
@@ -4855,20 +4705,20 @@
    }
   },
   {
-   "name": "QuarrySouthE0_06",
+   "name": "QuarrySouthE0_00",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      12.3181,
-     72.5874,
+     71.0874,
      14.6833
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       98.4606,
-       37.2937,
+       17.5591,
+       36.5437,
        477.3416
       ],
       "orientation": [
@@ -4905,20 +4755,20 @@
    }
   },
   {
-   "name": "QuarrySouthE0_07",
+   "name": "QuarrySouthE0_01",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     7.1803,
-     73.6622,
+     18.5326,
+     72.7622,
      18.0538
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       107.0098,
-       37.8311,
+       31.7844,
+       37.3811,
        479.0269
       ],
       "orientation": [
@@ -4955,20 +4805,20 @@
    }
   },
   {
-   "name": "QuarrySouthE0_07_cap",
+   "name": "QuarrySouthE0_01_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     4.7843,
+     13.866,
      2.5,
      4.8908
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       107.0098,
-       75.8622,
+       31.7844,
+       74.9622,
        489.9992
       ],
       "orientation": [
@@ -5005,27 +4855,27 @@
    }
   },
   {
-   "name": "QuarryEast0_00",
+   "name": "QuarrySouthE0_02",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      17.058,
-     74.1097,
+     72.6097,
      19.9396
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       119.9698,
-       38.0548,
-       462.071
+       48.3797,
+       37.3048,
+       479.9698
       ],
       "orientation": [
        [
-        -0.0056,
+        1.0,
         0.0,
-        1.0
+        0.0056
        ],
        [
         0.0,
@@ -5033,9 +4883,409 @@
         0.0
        ],
        [
-        -1.0,
+        -0.0056,
         0.0,
-        -0.0056
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarrySouthE0_02_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     12.6864,
+     2.5,
+     3.6886
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       48.3797,
+       75.1097,
+       491.2839
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0028
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0028,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarrySouthE0_03",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     16.8122,
+     73.4397,
+     18.3399
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       64.1149,
+       37.7198,
+       479.1699
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0014
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0014,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarrySouthE0_03_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     12.4898,
+     2.5,
+     3.2908
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       64.1149,
+       75.6397,
+       489.4853
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0007
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0007,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarrySouthE0_04",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     19.0819,
+     73.7513,
+     17.6488
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       80.8619,
+       37.8757,
+       478.8244
+      ],
+      "orientation": [
+       [
+        0.9988,
+        0.0,
+        0.0486
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0486,
+        0.0,
+        0.9988
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarrySouthE0_04_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     14.3055,
+     2.5,
+     3.8149
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       80.8619,
+       75.9513,
+       489.0562
+      ],
+      "orientation": [
+       [
+        0.9997,
+        0.0,
+        0.0243
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0243,
+        0.0,
+        0.9997
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarrySouthE0_05",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     13.0749,
+     74.0139,
+     15.352
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       95.7403,
+       38.007,
+       477.676
+      ],
+      "orientation": [
+       [
+        0.9996,
+        0.0,
+        0.0288
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0288,
+        0.0,
+        0.9996
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarrySouthE0_06",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     9.5222,
+     75.0069,
+     16.7322
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       105.8389,
+       38.5035,
+       478.3661
+      ],
+      "orientation": [
+       [
+        0.9977,
+        0.0,
+        0.068
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.068,
+        0.0,
+        0.9977
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryEast0_00",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     16.7046,
+     75.6107,
+     16.8937
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       118.4469,
+       38.8054,
+       462.2477
+      ],
+      "orientation": [
+       [
+        -0.0148,
+        0.0,
+        0.9999
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9999,
+        0.0,
+        -0.0148
        ]
       ]
      }
@@ -5060,406 +5310,6 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     12.6864,
-     2.5,
-     3.6886
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       131.2839,
-       76.3097,
-       462.071
-      ],
-      "orientation": [
-       [
-        -0.0028,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        -0.0028
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryEast0_01",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     16.8122,
-     74.9397,
-     18.3399
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       119.1699,
-       38.4698,
-       446.3358
-      ],
-      "orientation": [
-       [
-        -0.0014,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        -0.0014
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryEast0_01_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.4898,
-     2.5,
-     3.2908
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       129.4853,
-       77.1397,
-       446.3358
-      ],
-      "orientation": [
-       [
-        -0.0007,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        -0.0007
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryEast0_02",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     19.0819,
-     74.6513,
-     17.6488
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       118.8244,
-       38.3257,
-       429.5887
-      ],
-      "orientation": [
-       [
-        -0.0486,
-        0.0,
-        0.9988
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.9988,
-        0.0,
-        -0.0486
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryEast0_02_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     14.3055,
-     2.5,
-     3.8149
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       129.0562,
-       76.8513,
-       429.5887
-      ],
-      "orientation": [
-       [
-        -0.0243,
-        0.0,
-        0.9997
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.9997,
-        0.0,
-        -0.0243
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryEast0_03",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     13.0749,
-     75.2139,
-     15.352
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       117.676,
-       38.607,
-       414.7103
-      ],
-      "orientation": [
-       [
-        -0.0288,
-        0.0,
-        0.9996
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.9996,
-        0.0,
-        -0.0288
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryEast0_04",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     14.1744,
-     75.9069,
-     16.7322
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       118.3661,
-       38.9535,
-       402.2857
-      ],
-      "orientation": [
-       [
-        -0.068,
-        0.0,
-        0.9977
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.9977,
-        0.0,
-        -0.068
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryEast0_05",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     16.7046,
-     77.7107,
-     16.8937
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       118.4469,
-       39.8554,
-       388.0462
-      ],
-      "orientation": [
-       [
-        -0.0148,
-        0.0,
-        0.9999
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.9999,
-        0.0,
-        -0.0148
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryEast0_05_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
      12.4037,
      2.5,
      4.2732
@@ -5468,8 +5318,8 @@
      "CFrame": {
       "position": [
        128.5303,
-       79.9107,
-       388.0462
+       77.8107,
+       462.2477
       ],
       "orientation": [
        [
@@ -5505,21 +5355,21 @@
    }
   },
   {
-   "name": "QuarryEast0_06",
+   "name": "QuarryEast0_01",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      14.4297,
-     76.436,
+     74.636,
      14.5487
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        117.2744,
-       39.218,
-       373.679
+       38.318,
+       447.8806
       ],
       "orientation": [
        [
@@ -5541,9 +5391,9 @@
      }
     },
     "Color": [
-     0.5569,
-     0.3922,
-     0.2588
+     0.6667,
+     0.4784,
+     0.3137
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -5555,21 +5405,21 @@
    }
   },
   {
-   "name": "QuarryEast0_07",
+   "name": "QuarryEast0_02",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      14.4503,
-     77.9866,
+     76.4866,
      20.316
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        120.158,
-       39.9933,
-       360.439
+       39.2433,
+       434.6406
       ],
       "orientation": [
        [
@@ -5605,7 +5455,7 @@
    }
   },
   {
-   "name": "QuarryEast0_07_cap",
+   "name": "QuarryEast0_02_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -5618,8 +5468,8 @@
      "CFrame": {
       "position": [
        131.9709,
-       80.1866,
-       360.439
+       78.6866,
+       434.6406
       ],
       "orientation": [
        [
@@ -5655,21 +5505,21 @@
    }
   },
   {
-   "name": "QuarryEast0_08",
+   "name": "QuarryEast0_03",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      17.4486,
-     78.2542,
+     76.7542,
      15.4559
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        117.7279,
-       40.1271,
-       345.6896
+       39.3771,
+       419.8911
       ],
       "orientation": [
        [
@@ -5691,9 +5541,9 @@
      }
     },
     "Color": [
-     0.6667,
-     0.4784,
-     0.3137
+     0.5569,
+     0.3922,
+     0.2588
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -5705,21 +5555,21 @@
    }
   },
   {
-   "name": "QuarryEast0_09",
+   "name": "QuarryEast0_04",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      13.6054,
-     78.5175,
+     77.0175,
      20.2738
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        120.1369,
-       40.2587,
-       331.3626
+       39.5087,
+       405.5641
       ],
       "orientation": [
        [
@@ -5741,9 +5591,9 @@
      }
     },
     "Color": [
-     0.5569,
-     0.3922,
-     0.2588
+     0.6667,
+     0.4784,
+     0.3137
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -5755,21 +5605,21 @@
    }
   },
   {
-   "name": "QuarryEast0_10",
+   "name": "QuarryEast0_05",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      11.2879,
-     78.9341,
+     77.4341,
      18.9744
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.4872,
-       40.4671,
-       320.116
+       39.7171,
+       394.3175
       ],
       "orientation": [
        [
@@ -5805,21 +5655,21 @@
    }
   },
   {
-   "name": "QuarryEast0_11",
+   "name": "QuarryEast0_06",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      19.0078,
-     79.2094,
+     77.7094,
      15.2315
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        117.6157,
-       40.6047,
-       306.1681
+       39.8547,
+       380.3696
       ],
       "orientation": [
        [
@@ -5841,9 +5691,9 @@
      }
     },
     "Color": [
-     0.6667,
-     0.4784,
-     0.3137
+     0.5569,
+     0.3922,
+     0.2588
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -5855,21 +5705,21 @@
    }
   },
   {
-   "name": "QuarryEast0_12",
+   "name": "QuarryEast0_07",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      15.7038,
-     79.4451,
+     77.9451,
      20.3084
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        120.1542,
-       40.7225,
-       290.0123
+       39.9725,
+       364.2138
       ],
       "orientation": [
        [
@@ -5891,9 +5741,9 @@
      }
     },
     "Color": [
-     0.5569,
-     0.3922,
-     0.2588
+     0.6667,
+     0.4784,
+     0.3137
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -5905,21 +5755,21 @@
    }
   },
   {
-   "name": "QuarryEast0_13",
+   "name": "QuarryEast0_08",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      16.9973,
-     75.3665,
+     73.5665,
      17.1151
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        118.5575,
-       38.6832,
-       274.8617
+       37.7832,
+       349.0633
       ],
       "orientation": [
        [
@@ -5955,21 +5805,21 @@
    }
   },
   {
-   "name": "QuarryEast0_14",
+   "name": "QuarryEast0_09",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      12.5703,
-     79.8368,
+     78.3368,
      14.9982
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        117.4991,
-       40.9184,
-       261.278
+       40.1684,
+       335.4795
       ],
       "orientation": [
        [
@@ -5991,9 +5841,9 @@
      }
     },
     "Color": [
-     0.6667,
-     0.4784,
-     0.3137
+     0.5569,
+     0.3922,
+     0.2588
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -6005,7 +5855,7 @@
    }
   },
   {
-   "name": "QuarryEast0_14_cap",
+   "name": "QuarryEast0_09_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -6018,8 +5868,8 @@
      "CFrame": {
       "position": [
        126.1566,
-       82.0368,
-       261.278
+       80.5368,
+       335.4795
       ],
       "orientation": [
        [
@@ -6055,21 +5905,21 @@
    }
   },
   {
-   "name": "QuarryEast0_15",
+   "name": "QuarryEast0_10",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      12.9333,
-     80.6674,
+     78.5674,
      14.8749
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        117.4374,
-       41.3337,
-       249.7261
+       40.2837,
+       323.9276
       ],
       "orientation": [
        [
@@ -6091,9 +5941,9 @@
      }
     },
     "Color": [
-     0.5569,
-     0.3922,
-     0.2588
+     0.6667,
+     0.4784,
+     0.3137
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -6105,7 +5955,7 @@
    }
   },
   {
-   "name": "QuarryEast0_15_cap",
+   "name": "QuarryEast0_10_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -6118,8 +5968,8 @@
      "CFrame": {
       "position": [
        126.7351,
-       82.8674,
-       249.7261
+       80.7674,
+       323.9276
       ],
       "orientation": [
        [
@@ -6155,21 +6005,21 @@
    }
   },
   {
-   "name": "QuarryEast0_16",
+   "name": "QuarryEast0_11",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      17.685,
-     81.0003,
+     79.2003,
      19.8535
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.9268,
-       41.5001,
-       235.617
+       40.6001,
+       309.8185
       ],
       "orientation": [
        [
@@ -6205,21 +6055,21 @@
    }
   },
   {
-   "name": "QuarryEast0_17",
+   "name": "QuarryEast0_12",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      15.329,
-     81.292,
+     79.492,
      16.9656
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        118.4828,
-       41.646,
-       220.31
+       40.746,
+       294.5115
       ],
       "orientation": [
        [
@@ -6241,9 +6091,9 @@
      }
     },
     "Color": [
-     0.6667,
-     0.4784,
-     0.3137
+     0.5569,
+     0.3922,
+     0.2588
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -6255,21 +6105,21 @@
    }
   },
   {
-   "name": "QuarryEast0_18",
+   "name": "QuarryEast0_13",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      14.2904,
-     81.6348,
+     79.8348,
      16.8125
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        118.4062,
-       41.8174,
-       206.7003
+       40.9174,
+       280.9018
       ],
       "orientation": [
        [
@@ -6291,9 +6141,9 @@
      }
     },
     "Color": [
-     0.5569,
-     0.3922,
-     0.2588
+     0.6667,
+     0.4784,
+     0.3137
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -6305,7 +6155,7 @@
    }
   },
   {
-   "name": "QuarryEast0_18_cap",
+   "name": "QuarryEast0_13_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -6318,8 +6168,8 @@
      "CFrame": {
       "position": [
        128.7561,
-       83.8348,
-       206.7003
+       82.0348,
+       280.9018
       ],
       "orientation": [
        [
@@ -6355,21 +6205,21 @@
    }
   },
   {
-   "name": "QuarryEast0_19",
+   "name": "QuarryEast0_14",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      15.1409,
-     81.9147,
+     80.1147,
      16.5934
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        118.2967,
-       41.9574,
-       193.1846
+       41.0574,
+       267.3862
       ],
       "orientation": [
        [
@@ -6405,7 +6255,7 @@
    }
   },
   {
-   "name": "QuarryEast0_19_cap",
+   "name": "QuarryEast0_14_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -6418,8 +6268,8 @@
      "CFrame": {
       "position": [
        127.8188,
-       84.1147,
-       193.1846
+       82.3147,
+       267.3862
       ],
       "orientation": [
        [
@@ -6455,21 +6305,21 @@
    }
   },
   {
-   "name": "QuarryEast0_20",
+   "name": "QuarryEast0_15",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      17.68,
-     79.9787,
+     80.2787,
      18.1026
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        119.0513,
-       40.9893,
-       177.9742
+       41.1393,
+       252.1757
       ],
       "orientation": [
        [
@@ -6491,9 +6341,9 @@
      }
     },
     "Color": [
-     0.6667,
-     0.4784,
-     0.3137
+     0.5569,
+     0.3922,
+     0.2588
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -6505,7 +6355,7 @@
    }
   },
   {
-   "name": "QuarryEast0_20_cap",
+   "name": "QuarryEast0_15_cap",
    "className": "Part",
    "properties": {
     "Anchored": true,
@@ -6518,8 +6368,8 @@
      "CFrame": {
       "position": [
        129.5617,
-       82.4787,
-       177.9742
+       82.7787,
+       252.1757
       ],
       "orientation": [
        [
@@ -6555,21 +6405,21 @@
    }
   },
   {
-   "name": "QuarryEast0_21",
+   "name": "QuarryEast0_16",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     2.9342,
-     82.1082,
+     15.8659,
+     80.6082,
      20.1218
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        120.0609,
-       42.0541,
-       168.8671
+       41.3041,
+       236.6027
       ],
       "orientation": [
        [
@@ -6586,6 +6436,406 @@
         -0.9976,
         0.0,
         0.0689
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryEast0_17",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     12.8532,
+     81.1591,
+     15.075
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       117.5375,
+       41.5796,
+       223.4432
+      ],
+      "orientation": [
+       [
+        -0.0161,
+        0.0,
+        0.9999
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9999,
+        0.0,
+        -0.0161
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryEast0_18",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     12.0531,
+     81.4901,
+     16.3903
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       118.1952,
+       41.7451,
+       212.1901
+      ],
+      "orientation": [
+       [
+        -0.055,
+        0.0,
+        0.9985
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9985,
+        0.0,
+        -0.055
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryEast0_19",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     14.9181,
+     81.783,
+     17.3163
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       118.6581,
+       41.8915,
+       199.9045
+      ],
+      "orientation": [
+       [
+        0.0689,
+        0.0,
+        0.9976
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9976,
+        0.0,
+        0.0689
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryEast0_19_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     10.9745,
+     2.5,
+     4.009
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       128.8208,
+       83.983,
+       199.9045
+      ],
+      "orientation": [
+       [
+        0.0345,
+        0.0,
+        0.9994
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9994,
+        0.0,
+        0.0345
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryEast0_20",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     14.2432,
+     82.0547,
+     14.8072
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       117.4036,
+       42.0274,
+       186.5238
+      ],
+      "orientation": [
+       [
+        0.0093,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0093
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6667,
+     0.4784,
+     0.3137
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryEast0_20_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     10.4346,
+     2.5,
+     3.3873
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       126.0009,
+       84.2547,
+       186.5238
+      ],
+      "orientation": [
+       [
+        0.0046,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0046
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryEast0_21",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     13.2022,
+     82.7574,
+     19.9978
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       119.9989,
+       42.3787,
+       174.0011
+      ],
+      "orientation": [
+       [
+        0.0315,
+        0.0,
+        0.9995
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9995,
+        0.0,
+        0.0315
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5569,
+     0.3922,
+     0.2588
+    ],
+    "Material": "Sandstone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "QuarryEast0_21_cap",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     9.6018,
+     2.5,
+     4.5824
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       131.789,
+       84.9574,
+       174.0011
+      ],
+      "orientation": [
+       [
+        0.0157,
+        0.0,
+        0.9999
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9999,
+        0.0,
+        0.0157
        ]
       ]
      }
@@ -6610,22 +6860,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     12.8532,
-     83.2591,
-     15.075
+     13.2418,
+     83.395,
+     16.4204
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       104.1734,
-       42.6296,
-       160.4625
+       103.9791,
+       42.6975,
+       159.7898
       ],
       "orientation": [
        [
-        -0.9999,
+        -0.9996,
         0.0,
-        -0.0161
+        -0.0297
        ],
        [
         0.0,
@@ -6633,9 +6883,9 @@
         0.0
        ],
        [
-        0.0161,
+        0.0297,
         0.0,
-        -0.9999
+        -0.9996
        ]
       ]
      }
@@ -6660,22 +6910,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     12.0531,
-     83.5901,
-     16.3903
+     16.1997,
+     74.2095,
+     20.6867
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       92.9203,
-       42.7951,
-       159.8048
+       90.4584,
+       38.1048,
+       157.6566
       ],
       "orientation": [
        [
-        -0.9985,
+        -0.9989,
         0.0,
-        -0.055
+        0.0461
        ],
        [
         0.0,
@@ -6683,9 +6933,9 @@
         0.0
        ],
        [
-        0.055,
+        -0.0461,
         0.0,
-        -0.9985
+        -0.9989
        ]
       ]
      }
@@ -6710,22 +6960,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     14.9181,
-     83.883,
-     17.3163
+     13.6266,
+     83.7264,
+     20.7802
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       80.6347,
-       42.9415,
-       159.3419
+       76.7453,
+       42.8632,
+       157.6099
       ],
       "orientation": [
        [
-        -0.9976,
+        -0.9988,
         0.0,
-        0.0689
+        0.0496
        ],
        [
         0.0,
@@ -6733,9 +6983,9 @@
         0.0
        ],
        [
-        -0.0689,
+        -0.0496,
         0.0,
-        -0.9976
+        -0.9988
        ]
       ]
      }
@@ -6760,22 +7010,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     10.9745,
+     9.9413,
      2.5,
-     4.009
+     4.8038
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       80.6347,
-       86.083,
-       149.1792
+       76.7453,
+       85.9264,
+       145.3179
       ],
       "orientation": [
        [
-        -0.9994,
+        -0.9997,
         0.0,
-        0.0345
+        0.0248
        ],
        [
         0.0,
@@ -6783,9 +7033,9 @@
         0.0
        ],
        [
-        -0.0345,
+        -0.0248,
         0.0,
-        -0.9994
+        -0.9997
        ]
       ]
      }
@@ -6810,22 +7060,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     14.2432,
-     84.7547,
-     14.8072
+     19.1828,
+     77.1977,
+     20.4196
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       67.254,
-       43.3774,
-       160.5964
+       61.5406,
+       39.5988,
+       157.7902
       ],
       "orientation": [
        [
         -1.0,
         0.0,
-        0.0093
+        0.0089
        ],
        [
         0.0,
@@ -6833,57 +7083,7 @@
         0.0
        ],
        [
-        -0.0093,
-        0.0,
-        -1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5569,
-     0.3922,
-     0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryEast1_03_cap",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.4346,
-     2.5,
-     3.3873
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       67.254,
-       86.9547,
-       151.9991
-      ],
-      "orientation": [
-       [
-        -1.0,
-        0.0,
-        0.0046
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.0046,
+        -0.0089,
         0.0,
         -1.0
        ]
@@ -6910,22 +7110,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     14.6564,
-     82.4574,
-     19.9978
+     13.7492,
+     83.8594,
+     19.1675
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       54.0042,
-       42.2287,
-       158.0011
+       46.2746,
+       42.9297,
+       158.4163
       ],
       "orientation": [
        [
-        -0.9995,
+        -0.9996,
         0.0,
-        0.0315
+        -0.0285
        ],
        [
         0.0,
@@ -6933,9 +7133,9 @@
         0.0
        ],
        [
-        -0.0315,
+        0.0285,
         0.0,
-        -0.9995
+        -0.9996
        ]
       ]
      }
@@ -6960,22 +7160,22 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     10.7651,
+     10.0393,
      2.5,
-     4.5824
+     3.9166
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       54.0042,
-       84.9574,
-       146.211
+       46.2746,
+       86.3594,
+       147.3742
       ],
       "orientation": [
        [
         -0.9999,
         0.0,
-        0.0157
+        -0.0142
        ],
        [
         0.0,
@@ -6983,7 +7183,7 @@
         0.0
        ],
        [
-        -0.0157,
+        0.0142,
         0.0,
         -0.9999
        ]
@@ -6994,56 +7194,6 @@
      0.5569,
      0.3922,
      0.2588
-    ],
-    "Material": "Sandstone",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "QuarryEast1_05",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     8.4761,
-     84.595,
-     16.4204
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       43.638,
-       43.2975,
-       159.7898
-      ],
-      "orientation": [
-       [
-        -0.9996,
-        0.0,
-        -0.0297
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0297,
-        0.0,
-        -0.9996
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.6667,
-     0.4784,
-     0.3137
     ],
     "Material": "Sandstone",
     "TopSurface": "Smooth",
@@ -8173,21 +8323,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     20.9997,
+     23.7246,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -102.5,
-       11.4998,
+       12.8623,
        375.0
       ],
       "orientation": [
        [
         1.0,
         0.0,
-        -0.0062
+        0.0048
        ],
        [
         0.0,
@@ -8195,7 +8345,7 @@
         0.0
        ],
        [
-        0.0062,
+        -0.0048,
         0.0,
         1.0
        ]
@@ -8223,21 +8373,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     23.8584,
+     22.1812,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -87.5,
-       12.9292,
+       12.0906,
        375.0
       ],
       "orientation": [
        [
-        0.9983,
+        0.9992,
         0.0,
-        -0.0576
+        0.0395
        ],
        [
         0.0,
@@ -8245,9 +8395,9 @@
         0.0
        ],
        [
-        0.0576,
+        -0.0395,
         0.0,
-        0.9983
+        0.9992
        ]
       ]
      }
@@ -8273,21 +8423,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     19.9646,
+     22.3847,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -72.5,
-       10.9823,
+       12.1923,
        375.0
       ],
       "orientation": [
        [
-        0.9994,
+        0.9967,
         0.0,
-        -0.0343
+        -0.0814
        ],
        [
         0.0,
@@ -8295,9 +8445,9 @@
         0.0
        ],
        [
-        0.0343,
+        0.0814,
         0.0,
-        0.9994
+        0.9967
        ]
       ]
      }
@@ -8323,21 +8473,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     21.9934,
+     23.9363,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -57.5,
-       11.9967,
+       12.9682,
        375.0
       ],
       "orientation": [
        [
-        0.9962,
+        0.9989,
         0.0,
-        0.0866
+        -0.0471
        ],
        [
         0.0,
@@ -8345,9 +8495,9 @@
         0.0
        ],
        [
-        -0.0866,
+        0.0471,
         0.0,
-        0.9962
+        0.9989
        ]
       ]
      }
@@ -8373,21 +8523,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     17.1576,
+     19.3308,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -42.5,
-       9.5788,
+       10.6654,
        375.0
       ],
       "orientation": [
        [
-        0.9994,
+        0.9982,
         0.0,
-        -0.0354
+        0.0607
        ],
        [
         0.0,
@@ -8395,9 +8545,9 @@
         0.0
        ],
        [
-        0.0354,
+        -0.0607,
         0.0,
-        0.9994
+        0.9982
        ]
       ]
      }
@@ -8423,21 +8573,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     17.6606,
+     23.0403,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -27.5,
-       9.8303,
+       12.5201,
        375.0
       ],
       "orientation": [
        [
-        0.9975,
+        0.9998,
         0.0,
-        0.0701
+        0.0184
        ],
        [
         0.0,
@@ -8445,9 +8595,9 @@
         0.0
        ],
        [
-        -0.0701,
+        -0.0184,
         0.0,
-        0.9975
+        0.9998
        ]
       ]
      }
@@ -8473,21 +8623,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     24.2828,
+     19.948,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        27.5,
-       13.1414,
+       10.974,
        375.0
       ],
       "orientation": [
        [
-        0.9976,
+        0.9978,
         0.0,
-        0.0695
+        0.0659
        ],
        [
         0.0,
@@ -8495,9 +8645,9 @@
         0.0
        ],
        [
-        -0.0695,
+        -0.0659,
         0.0,
-        0.9976
+        0.9978
        ]
       ]
      }
@@ -8523,21 +8673,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     23.5245,
+     22.5613,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        42.5,
-       12.7622,
+       12.2806,
        375.0
       ],
       "orientation": [
        [
-        0.9999,
+        0.9989,
         0.0,
-        -0.0111
+        -0.047
        ],
        [
         0.0,
@@ -8545,9 +8695,9 @@
         0.0
        ],
        [
-        0.0111,
+        0.047,
         0.0,
-        0.9999
+        0.9989
        ]
       ]
      }
@@ -8573,21 +8723,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     20.1751,
+     23.2966,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        57.5,
-       11.0876,
+       12.6483,
        375.0
       ],
       "orientation": [
        [
-        0.9971,
+        0.9962,
         0.0,
-        0.0757
+        -0.087
        ],
        [
         0.0,
@@ -8595,9 +8745,9 @@
         0.0
        ],
        [
-        -0.0757,
+        0.087,
         0.0,
-        0.9971
+        0.9962
        ]
       ]
      }
@@ -8623,21 +8773,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     21.3331,
+     23.5136,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        72.5,
-       11.6665,
+       12.7568,
        375.0
       ],
       "orientation": [
        [
-        0.9991,
+        0.9963,
         0.0,
-        0.0427
+        0.0859
        ],
        [
         0.0,
@@ -8645,9 +8795,9 @@
         0.0
        ],
        [
-        -0.0427,
+        -0.0859,
         0.0,
-        0.9991
+        0.9963
        ]
       ]
      }
@@ -8673,21 +8823,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     21.6313,
+     20.3781,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        87.5,
-       11.8156,
+       11.1891,
        375.0
       ],
       "orientation": [
        [
-        0.9968,
+        0.9981,
         0.0,
-        -0.0793
+        -0.0615
        ],
        [
         0.0,
@@ -8695,9 +8845,9 @@
         0.0
        ],
        [
-        0.0793,
+        0.0615,
         0.0,
-        0.9968
+        0.9981
        ]
       ]
      }
@@ -8723,21 +8873,21 @@
     "Anchored": true,
     "Size": [
      17.0,
-     22.6037,
+     21.8158,
      16.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        102.5,
-       12.3018,
+       11.9079,
        375.0
       ],
       "orientation": [
        [
-        1.0,
+        0.9995,
         0.0,
-        -0.0073
+        0.0311
        ],
        [
         0.0,
@@ -8745,9 +8895,9 @@
         0.0
        ],
        [
-        0.0073,
+        -0.0311,
         0.0,
-        1.0
+        0.9995
        ]
       ]
      }
@@ -8841,15 +8991,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         30.4416,
+         30.7675,
          16.8699,
-         145.1369
+         145.5258
         ],
         "orientation": [
          [
-          0.9659,
-          -0.1015,
-          0.2381
+          0.4021,
+          -0.0423,
+          0.9146
          ],
          [
           0.1045,
@@ -8857,9 +9007,9 @@
           0.0
          ],
          [
-          -0.2368,
-          0.0249,
-          0.9712
+          -0.9096,
+          0.0956,
+          0.4043
          ]
         ]
        }
@@ -8892,15 +9042,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         30.4416,
+         30.7675,
          16.8699,
-         145.1369
+         145.5258
         ],
         "orientation": [
          [
-          0.9659,
-          -0.1015,
-          0.2381
+          0.4021,
+          -0.0423,
+          0.9146
          ],
          [
           0.1045,
@@ -8908,9 +9058,9 @@
           0.0
          ],
          [
-          -0.2368,
-          0.0249,
-          0.9712
+          -0.9096,
+          0.0956,
+          0.4043
          ]
         ]
        }
@@ -8959,15 +9109,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         29.7873,
+         30.4951,
          23.2796,
-         145.2973
+         146.142
         ],
         "orientation": [
          [
-          0.7513,
-          -0.6147,
-          0.2402
+          0.7205,
+          0.1518,
+          0.6766
          ],
          [
           0.5712,
@@ -8975,9 +9125,9 @@
           -0.7032
          ],
          [
-          0.3306,
-          0.6655,
-          0.6692
+          -0.3932,
+          0.8932,
+          0.2183
          ]
         ]
        }
@@ -9010,15 +9160,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         28.3947,
+         28.0288,
          14.8103,
-         147.075
+         146.5586
         ],
         "orientation": [
          [
-          0.5016,
-          -0.1158,
-          0.8573
+          0.9544,
+          -0.2203,
+          0.2014
          ],
          [
           0.225,
@@ -9026,9 +9176,9 @@
           0.0
          ],
          [
-          -0.8353,
-          0.1929,
-          0.5148
+          -0.1962,
+          0.0453,
+          0.9795
          ]
         ]
        }
@@ -9061,15 +9211,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         28.3947,
+         28.0288,
          14.8103,
-         147.075
+         146.5586
         ],
         "orientation": [
          [
-          0.5016,
-          -0.1158,
-          0.8573
+          0.9544,
+          -0.2203,
+          0.2014
          ],
          [
           0.225,
@@ -9077,9 +9227,9 @@
           0.0
          ],
          [
-          -0.8353,
-          0.1929,
-          0.5148
+          -0.1962,
+          0.0453,
+          0.9795
          ]
         ]
        }
@@ -9112,15 +9262,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         27.9112,
+         27.1089,
          18.8783,
-         147.8801
+         146.7477
         ],
         "orientation": [
          [
-          0.7254,
-          0.0161,
-          0.6881
+          0.6654,
+          -0.6843,
+          0.2982
          ],
          [
           0.6462,
@@ -9128,9 +9278,9 @@
           -0.689
          ],
          [
-          -0.2368,
-          0.9445,
-          0.2277
+          0.3736,
+          0.6512,
+          0.6606
          ]
         ]
        }
@@ -9163,15 +9313,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         33.3188,
+         32.9622,
          14.008,
-         142.7406
+         142.604
         ],
         "orientation": [
          [
-          0.5788,
-          0.1551,
-          0.8006
+          0.086,
+          0.0231,
+          0.996
          ],
          [
           -0.2588,
@@ -9179,9 +9329,9 @@
           0.0
          ],
          [
-          -0.7733,
-          -0.2072,
-          0.5992
+          -0.9621,
+          -0.2578,
+          0.0891
          ]
         ]
        }
@@ -9214,15 +9364,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         33.3188,
+         32.9622,
          14.008,
-         142.7406
+         142.604
         ],
         "orientation": [
          [
-          0.5788,
-          0.1551,
-          0.8006
+          0.086,
+          0.0231,
+          0.996
          ],
          [
           -0.2588,
@@ -9230,9 +9380,9 @@
           0.0
          ],
          [
-          -0.7733,
-          -0.2072,
-          0.5992
+          -0.9621,
+          -0.2578,
+          0.0891
          ]
         ]
        }
@@ -9265,15 +9415,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         33.8213,
+         33.0369,
          17.1376,
-         142.0692
+         141.7687
         ],
         "orientation": [
          [
-          0.8871,
-          0.0685,
-          0.4564
+          0.5704,
+          0.4487,
+          0.688
          ],
          [
           0.3,
@@ -9281,9 +9431,9 @@
           -0.683
          ],
          [
-          -0.3508,
-          0.7428,
-          0.5702
+          -0.7647,
+          0.5959,
+          0.2453
          ]
         ]
        }
@@ -9318,13 +9468,13 @@
         "position": [
          31.0174,
          13.0914,
-         147.799
+         147.7989
         ],
         "orientation": [
          [
           0.8893,
           -0.3237,
-          0.3232
+          0.323
          ],
          [
           0.342,
@@ -9332,9 +9482,9 @@
           0.0
          ],
          [
-          -0.3037,
+          -0.3035,
           0.1105,
-          0.9463
+          0.9464
          ]
         ]
        }
@@ -9369,13 +9519,13 @@
         "position": [
          31.0174,
          13.0914,
-         147.799
+         147.7989
         ],
         "orientation": [
          [
           0.8893,
           -0.3237,
-          0.3232
+          0.323
          ],
          [
           0.342,
@@ -9383,9 +9533,9 @@
           0.0
          ],
          [
-          -0.3037,
+          -0.3035,
           0.1105,
-          0.9463
+          0.9464
          ]
         ]
        }
@@ -9418,15 +9568,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         30.2892,
+         30.2891,
          15.2058,
-         148.0477
+         148.0474
         ],
         "orientation": [
          [
-          0.6286,
-          -0.629,
-          0.4574
+          0.6285,
+          -0.6292,
+          0.4573
          ],
          [
           0.7117,
@@ -9434,9 +9584,9 @@
           -0.6645
          ],
          [
-          0.3137,
-          0.7432,
-          0.591
+          0.3138,
+          0.7431,
+          0.5911
          ]
         ]
        }
@@ -9672,32 +9822,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       7.9657,
-       6.2451,
-       8.2867
+       8.2292,
+       5.4118,
+       6.9206
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -89.4984,
-         4.5226,
-         185.5188
+         -88.6355,
+         4.1059,
+         187.0462
         ],
         "orientation": [
          [
-          0.071,
-          0.0067,
-          0.9975
+          0.6694,
+          -0.1082,
+          0.735
          ],
          [
-          -0.0941,
-          0.9956,
+          0.1595,
+          0.9872,
           0.0
          ],
          [
-          -0.993,
-          -0.0938,
-          0.0713
+          -0.7256,
+          0.1173,
+          0.6781
          ]
         ]
        }
@@ -9722,132 +9872,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       7.2981,
-       6.5613,
-       9.0242
+       10.0449,
+       3.0946,
+       8.1365
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -90.9871,
-         4.6806,
-         189.9376
+         -88.8444,
+         2.9473,
+         191.5477
         ],
         "orientation": [
          [
-          0.1899,
-          -0.0213,
-          0.9816
+          0.1521,
+          0.0095,
+          0.9883
          ],
          [
-          0.1115,
-          0.9938,
+          -0.0626,
+          0.998,
           0.0
          ],
          [
-          -0.9755,
-          0.1095,
-          0.1911
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.4627,
-       0.3922,
-       0.3294
-      ],
-      "Material": "Slate",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": false,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Rock2",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       6.1825,
-       6.3582,
-       4.8031
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -87.7837,
-         4.5791,
-         194.7298
-        ],
-        "orientation": [
-         [
-          0.6478,
-          0.0802,
-          0.7576
-         ],
-         [
-          -0.1228,
-          0.9924,
-          0.0
-         ],
-         [
-          -0.7519,
-          -0.0931,
-          0.6527
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.4627,
-       0.3922,
-       0.3294
-      ],
-      "Material": "Slate",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": false,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Rock3",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       9.1618,
-       5.8473,
-       8.7353
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -91.3132,
-         4.3237,
-         190.7126
-        ],
-        "orientation": [
-         [
-          0.763,
-          -0.0938,
-          0.6396
-         ],
-         [
-          0.122,
-          0.9925,
-          0.0
-         ],
-         [
-          -0.6348,
-          0.0781,
-          0.7687
+          -0.9864,
+          -0.0618,
+          0.1524
          ]
         ]
        }
@@ -9878,32 +9928,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       8.6383,
-       6.9268,
-       6.9582
+       8.9564,
+       4.7265,
+       8.8099
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -81.4933,
-         4.8634,
-         239.1384
+         -78.998,
+         3.7633,
+         236.9109
         ],
         "orientation": [
          [
-          0.7064,
-          0.0846,
-          0.7027
+          0.452,
+          0.0012,
+          0.892
          ],
          [
-          -0.1189,
-          0.9929,
+          -0.0026,
+          1.0,
           0.0
          ],
          [
-          -0.6977,
-          -0.0835,
-          0.7115
+          -0.892,
+          -0.0023,
+          0.452
          ]
         ]
        }
@@ -9928,32 +9978,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       8.594,
-       6.1686,
-       6.1064
+       9.2073,
+       6.794,
+       7.595
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -78.1498,
-         4.4843,
-         235.1464
+         -79.132,
+         4.797,
+         236.003
         ],
         "orientation": [
          [
-          0.2555,
-          -0.0093,
-          0.9668
+          0.2824,
+          -0.0302,
+          0.9588
          ],
          [
-          0.0364,
-          0.9993,
+          0.1062,
+          0.9943,
           0.0
          ],
          [
-          -0.9661,
-          0.0352,
-          0.2557
+          -0.9534,
+          0.1018,
+          0.284
          ]
         ]
        }
@@ -9984,32 +10034,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       9.2822,
-       3.1028,
-       7.4706
+       8.2529,
+       4.6454,
+       5.3035
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         91.7485,
-         2.9514,
-         209.2507
+         92.0208,
+         3.7227,
+         216.8821
         ],
         "orientation": [
          [
-          0.412,
-          0.0601,
-          0.9092
+          0.9051,
+          0.1227,
+          0.4072
          ],
          [
-          -0.1443,
-          0.9895,
+          -0.1343,
+          0.9909,
           0.0
          ],
          [
-          -0.8997,
-          -0.1312,
-          0.4164
+          -0.4035,
+          -0.0547,
+          0.9133
          ]
         ]
        }
@@ -10034,32 +10084,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       6.7985,
-       5.6529,
-       6.6569
+       9.8774,
+       4.3236,
+       5.4997
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         95.127,
-         4.2265,
-         216.23
+         93.3809,
+         3.5618,
+         214.9299
         ],
         "orientation": [
          [
-          0.8151,
-          0.1141,
-          0.568
+          0.1564,
+          -0.0082,
+          0.9877
          ],
          [
-          -0.1386,
-          0.9903,
+          0.0523,
+          0.9986,
           0.0
          ],
          [
-          -0.5625,
-          -0.0787,
-          0.823
+          -0.9863,
+          0.0516,
+          0.1567
          ]
         ]
        }
@@ -10084,32 +10134,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       9.6714,
-       6.9282,
-       8.9566
+       9.1884,
+       4.241,
+       5.5451
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         96.8457,
-         4.8641,
-         212.3086
+         95.3108,
+         3.5205,
+         218.4944
         ],
         "orientation": [
          [
-          0.5058,
-          0.0147,
-          0.8625
+          0.7057,
+          -0.0771,
+          0.7043
          ],
          [
-          -0.029,
-          0.9996,
+          0.1086,
+          0.9941,
           0.0
          ],
          [
-          -0.8622,
-          -0.025,
-          0.506
+          -0.7002,
+          0.0765,
+          0.7099
          ]
         ]
        }
@@ -10134,32 +10184,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       10.1681,
-       3.366,
-       5.7181
+       10.0591,
+       5.435,
+       6.9445
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         97.3796,
-         3.083,
-         217.6841
+         90.4994,
+         4.1175,
+         213.8666
         ],
         "orientation": [
          [
-          0.8892,
-          -0.0946,
-          0.4476
+          0.2598,
+          -0.0009,
+          0.9657
          ],
          [
-          0.1058,
-          0.9944,
+          0.0034,
+          1.0,
           0.0
          ],
          [
-          -0.4451,
-          0.0474,
-          0.8942
+          -0.9657,
+          0.0033,
+          0.2598
          ]
         ]
        }
@@ -10190,32 +10240,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       7.7851,
-       6.4087,
-       9.0073
+       9.9219,
+       3.9236,
+       5.1769
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         86.7656,
-         4.6043,
-         261.4891
+         81.4422,
+         3.3618,
+         259.7858
         ],
         "orientation": [
          [
-          0.9775,
-          0.0047,
-          0.211
+          0.7605,
+          0.0638,
+          0.6463
          ],
          [
-          -0.0048,
-          1.0,
+          -0.0836,
+          0.9965,
           0.0
          ],
          [
-          -0.211,
-          -0.001,
-          0.9775
+          -0.644,
+          -0.054,
+          0.7631
          ]
         ]
        }
@@ -10240,32 +10290,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       9.7963,
-       5.141,
-       8.6351
+       8.1662,
+       3.1775,
+       5.1099
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         89.395,
-         3.9705,
-         259.3112
+         87.3743,
+         2.9888,
+         263.6025
         ],
         "orientation": [
          [
-          0.9788,
-          0.1637,
-          0.123
+          0.8733,
+          0.0416,
+          0.4854
          ],
          [
-          -0.165,
-          0.9863,
+          -0.0475,
+          0.9989,
           0.0
          ],
          [
-          -0.1213,
-          -0.0203,
-          0.9924
+          -0.4849,
+          -0.0231,
+          0.8743
          ]
         ]
        }
@@ -10290,32 +10340,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       6.4161,
-       4.8788,
-       6.0495
+       7.9146,
+       5.5202,
+       7.6184
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         86.5859,
-         3.8394,
-         257.6058
+         89.4064,
+         4.1601,
+         264.4452
         ],
         "orientation": [
          [
-          0.9936,
-          -0.0497,
-          0.1012
+          0.9519,
+          -0.1104,
+          0.2859
          ],
          [
-          0.05,
-          0.9988,
+          0.1152,
+          0.9933,
           0.0
          ],
          [
-          -0.1011,
-          0.0051,
-          0.9949
+          -0.284,
+          0.0329,
+          0.9583
          ]
         ]
        }
@@ -10340,32 +10390,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       8.8016,
-       4.3552,
-       6.5462
+       9.6615,
+       7.0013,
+       9.1355
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         86.1833,
-         3.5776,
-         262.9606
+         85.4876,
+         4.9007,
+         258.5176
         ],
         "orientation": [
          [
-          0.5994,
-          -0.0746,
-          0.797
+          0.8814,
+          0.1473,
+          0.4488
          ],
          [
-          0.1235,
-          0.9923,
+          -0.1648,
+          0.9863,
           0.0
          ],
          [
-          -0.7909,
-          0.0985,
-          0.604
+          -0.4427,
+          -0.074,
+          0.8936
          ]
         ]
        }
@@ -10396,32 +10446,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       5.9076,
-       6.4887,
-       8.6892
+       10.4798,
+       4.0809,
+       7.5585
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -93.6541,
-         4.6444,
-         265.871
+         -96.6923,
+         3.4405,
+         257.848
         ],
         "orientation": [
          [
-          0.7577,
-          0.0965,
-          0.6454
+          0.9872,
+          0.0861,
+          0.1345
          ],
          [
-          -0.1263,
-          0.992,
+          -0.0869,
+          0.9962,
           0.0
          ],
          [
-          -0.6402,
-          -0.0815,
-          0.7638
+          -0.134,
+          -0.0117,
+          0.9909
          ]
         ]
        }
@@ -10446,32 +10496,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       6.5778,
-       3.1083,
-       6.8872
+       7.4375,
+       6.7735,
+       5.0101
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -95.2824,
-         2.9541,
-         259.4094
+         -96.5011,
+         4.7867,
+         259.7504
         ],
         "orientation": [
          [
-          0.9781,
-          -0.1441,
-          0.1505
+          0.8993,
+          -0.0937,
+          0.4271
          ],
          [
-          0.1457,
-          0.9893,
+          0.1037,
+          0.9946,
           0.0
          ],
          [
-          -0.1489,
-          0.0219,
-          0.9886
+          -0.4248,
+          0.0443,
+          0.9042
          ]
         ]
        }
@@ -10496,82 +10546,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       8.2927,
-       6.705,
-       9.3691
+       6.1468,
+       6.4334,
+       5.727
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -98.6367,
-         4.7525,
-         265.0033
+         -102.6505,
+         4.6167,
+         257.7656
         ],
         "orientation": [
          [
-          0.3771,
-          -0.029,
-          0.9257
+          0.9992,
+          0.0081,
+          0.0397
          ],
          [
-          0.0767,
-          0.9971,
+          -0.0081,
+          1.0,
           0.0
          ],
          [
-          -0.923,
-          0.071,
-          0.3782
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.4627,
-       0.3922,
-       0.3294
-      ],
-      "Material": "Slate",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": false,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Rock3",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       5.0014,
-       3.7273,
-       8.4031
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -100.4792,
-         3.2637,
-         261.9729
-        ],
-        "orientation": [
-         [
-          0.9335,
-          0.0655,
-          0.3524
-         ],
-         [
-          -0.0699,
-          0.9976,
-          0.0
-         ],
-         [
-          -0.3516,
-          -0.0247,
-          0.9358
+          -0.0397,
+          -0.0003,
+          0.9992
          ]
         ]
        }
@@ -10602,32 +10602,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       4.9515,
-       5.0024,
-       9.2883
+       7.2612,
+       5.221,
+       6.0105
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         69.1379,
-         3.9012,
-         190.2766
+         74.7252,
+         4.0105,
+         194.3299
         ],
         "orientation": [
          [
-          0.909,
-          -0.1577,
-          0.3859
+          0.9398,
+          0.0745,
+          0.3336
          ],
          [
-          0.171,
-          0.9853,
+          -0.079,
+          0.9969,
           0.0
          ],
          [
-          -0.3802,
-          0.066,
-          0.9226
+          -0.3326,
+          -0.0264,
+          0.9427
          ]
         ]
        }
@@ -10652,32 +10652,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       10.5062,
-       3.9094,
-       6.1127
+       8.1269,
+       3.7631,
+       8.5618
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         70.5231,
-         3.3547,
-         186.9443
+         68.3214,
+         3.2816,
+         189.7366
         ],
         "orientation": [
          [
-          0.3326,
-          0.0203,
-          0.9428
+          0.9085,
+          0.0142,
+          0.4177
          ],
          [
-          -0.061,
-          0.9981,
+          -0.0157,
+          0.9999,
           0.0
          ],
          [
-          -0.9411,
-          -0.0575,
-          0.3333
+          -0.4177,
+          -0.0065,
+          0.9086
          ]
         ]
        }
@@ -10702,82 +10702,32 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       7.6354,
-       4.1522,
-       6.9846
+       8.1646,
+       4.7037,
+       8.5064
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         70.5833,
-         3.4761,
-         189.0943
+         67.0871,
+         3.7519,
+         194.594
         ],
         "orientation": [
          [
-          0.3483,
-          0.037,
-          0.9366
+          0.0989,
+          -0.0167,
+          0.995
          ],
          [
-          -0.1057,
-          0.9944,
+          0.1661,
+          0.9861,
           0.0
          ],
          [
-          -0.9314,
-          -0.099,
-          0.3503
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.4627,
-       0.3922,
-       0.3294
-      ],
-      "Material": "Slate",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": false,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Rock3",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       10.6712,
-       6.9313,
-       9.4942
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         74.1077,
-         4.8656,
-         190.5581
-        ],
-        "orientation": [
-         [
-          0.1838,
-          0.0003,
-          0.983
-         ],
-         [
-          -0.0017,
-          1.0,
-          0.0
-         ],
-         [
-          -0.983,
-          -0.0016,
-          0.1838
+          -0.9811,
+          0.1652,
+          0.1003
          ]
         ]
        }
@@ -12922,6 +12872,56 @@
      "properties": {
       "Anchored": true,
       "Size": [
+       4.8906,
+       3.2,
+       3.9125
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         69.7,
+         3.6,
+         236.2579
+        ],
+        "orientation": [
+         [
+          0.9957,
+          0.0,
+          0.0923
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0923,
+          0.0,
+          0.9957
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.7294,
+       0.6275,
+       0.4706
+      ],
+      "Material": "Limestone",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": true,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Block0_1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
        5.925,
        3.2,
        4.74
@@ -12929,7 +12929,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         69.7,
+         76.0,
          3.6,
          236.1645
         ],
@@ -12967,7 +12967,7 @@
      }
     },
     {
-     "name": "Block0_1",
+     "name": "Block0_2",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -12979,7 +12979,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         76.0,
+         82.3,
          3.6,
          235.8937
         ],
@@ -13017,7 +13017,7 @@
      }
     },
     {
-     "name": "Block0_2",
+     "name": "Block1_0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -13029,8 +13029,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         82.3,
-         3.6,
+         72.85,
+         6.8,
          236.4198
         ],
         "orientation": [
@@ -13060,14 +13060,14 @@
       "Material": "Limestone",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": true,
+      "CanCollide": false,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true
      }
     },
     {
-     "name": "Block1_0",
+     "name": "Block1_1",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -13079,7 +13079,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         72.85,
+         79.15,
          6.8,
          235.5066
         ],
@@ -13117,7 +13117,7 @@
      }
     },
     {
-     "name": "Block1_1",
+     "name": "Block2_0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -13129,8 +13129,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         79.15,
-         6.8,
+         76.0,
+         10.0,
          235.5418
         ],
         "orientation": [
@@ -13148,56 +13148,6 @@
           -0.0751,
           0.0,
           0.9972
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.7294,
-       0.6275,
-       0.4706
-      ],
-      "Material": "Limestone",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": false,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Block2_0",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       5.2827,
-       3.2,
-       4.2262
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         76.0,
-         10.0,
-         236.1005
-        ],
-        "orientation": [
-         [
-          0.9967,
-          0.0,
-          -0.0808
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0808,
-          0.0,
-          0.9967
          ]
         ]
        }
@@ -16256,6 +16206,56 @@
      "properties": {
       "Anchored": true,
       "Size": [
+       5.2222,
+       3.2,
+       4.1778
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -92.3,
+         3.6,
+         289.9731
+        ],
+        "orientation": [
+         [
+          0.9996,
+          0.0,
+          -0.0288
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0288,
+          0.0,
+          0.9996
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.7294,
+       0.6275,
+       0.4706
+      ],
+      "Material": "Limestone",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": true,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Block0_1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
        5.6121,
        3.2,
        4.4897
@@ -16263,7 +16263,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -92.3,
+         -86.0,
          3.6,
          290.2598
         ],
@@ -16301,7 +16301,7 @@
      }
     },
     {
-     "name": "Block0_1",
+     "name": "Block0_2",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -16313,7 +16313,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -86.0,
+         -79.7,
          3.6,
          289.9224
         ],
@@ -16351,7 +16351,7 @@
      }
     },
     {
-     "name": "Block0_2",
+     "name": "Block1_0",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -16363,8 +16363,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -79.7,
-         3.6,
+         -89.15,
+         6.8,
          290.3959
         ],
         "orientation": [
@@ -16394,7 +16394,107 @@
       "Material": "Limestone",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": true,
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Block1_1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       5.164,
+       3.2,
+       4.1312
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -82.85,
+         6.8,
+         290.2851
+        ],
+        "orientation": [
+         [
+          0.9994,
+          0.0,
+          0.0345
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0345,
+          0.0,
+          0.9994
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.7294,
+       0.6275,
+       0.4706
+      ],
+      "Material": "Limestone",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Block2_0",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       5.0804,
+       3.2,
+       4.0643
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -86.0,
+         10.0,
+         289.8617
+        ],
+        "orientation": [
+         [
+          0.9964,
+          0.0,
+          0.0847
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0847,
+          0.0,
+          0.9964
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.7294,
+       0.6275,
+       0.4706
+      ],
+      "Material": "Limestone",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true
@@ -16412,106 +16512,6 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       5.3731,
-       3.2,
-       4.2984
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -98.3,
-         3.6,
-         352.2444
-        ],
-        "orientation": [
-         [
-          0.9989,
-          0.0,
-          -0.0476
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0476,
-          0.0,
-          0.9989
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.7294,
-       0.6275,
-       0.4706
-      ],
-      "Material": "Limestone",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": true,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Block0_1",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       5.2581,
-       3.2,
-       4.2065
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -92.0,
-         3.6,
-         351.9291
-        ],
-        "orientation": [
-         [
-          0.9994,
-          0.0,
-          0.0356
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          -0.0356,
-          0.0,
-          0.9994
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.7294,
-       0.6275,
-       0.4706
-      ],
-      "Material": "Limestone",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": true,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Block0_2",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
        4.7624,
        3.2,
        3.8099
@@ -16519,7 +16519,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -85.7,
+         -98.3,
          3.6,
          352.2861
         ],
@@ -16557,7 +16557,7 @@
      }
     },
     {
-     "name": "Block1_0",
+     "name": "Block0_1",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -16569,8 +16569,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -95.15,
-         6.8,
+         -92.0,
+         3.6,
          352.5796
         ],
         "orientation": [
@@ -16600,14 +16600,14 @@
       "Material": "Limestone",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": false,
+      "CanCollide": true,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true
      }
     },
     {
-     "name": "Block1_1",
+     "name": "Block0_2",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -16619,8 +16619,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -88.85,
-         6.8,
+         -85.7,
+         3.6,
          352.074
         ],
         "orientation": [
@@ -16638,6 +16638,106 @@
           -0.0907,
           0.0,
           0.9959
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.7294,
+       0.6275,
+       0.4706
+      ],
+      "Material": "Limestone",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": true,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Block1_0",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       5.1579,
+       3.2,
+       4.1264
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -95.15,
+         6.8,
+         352.1495
+        ],
+        "orientation": [
+         [
+          0.996,
+          0.0,
+          0.0889
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0889,
+          0.0,
+          0.996
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.7294,
+       0.6275,
+       0.4706
+      ],
+      "Material": "Limestone",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Block1_1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       5.9749,
+       3.2,
+       4.78
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -88.85,
+         6.8,
+         351.7522
+        ],
+        "orientation": [
+         [
+          0.9998,
+          0.0,
+          -0.0173
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0173,
+          0.0,
+          0.9998
          ]
         ]
        }
@@ -16668,106 +16768,6 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       4.6698,
-       3.2,
-       3.7358
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         63.7,
-         3.6,
-         356.0849
-        ],
-        "orientation": [
-         [
-          0.9968,
-          0.0,
-          0.0802
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          -0.0802,
-          0.0,
-          0.9968
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.7294,
-       0.6275,
-       0.4706
-      ],
-      "Material": "Limestone",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": true,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Block0_1",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       4.9507,
-       3.2,
-       3.9605
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         70.0,
-         3.6,
-         355.9701
-        ],
-        "orientation": [
-         [
-          0.9981,
-          0.0,
-          -0.0611
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0611,
-          0.0,
-          0.9981
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.7294,
-       0.6275,
-       0.4706
-      ],
-      "Material": "Limestone",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": true,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Block0_2",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
        4.7252,
        3.2,
        3.7802
@@ -16775,7 +16775,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         76.3,
+         63.7,
          3.6,
          356.0932
         ],
@@ -16813,7 +16813,7 @@
      }
     },
     {
-     "name": "Block1_0",
+     "name": "Block0_1",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -16825,8 +16825,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         66.85,
-         6.8,
+         70.0,
+         3.6,
          355.4485
         ],
         "orientation": [
@@ -16856,14 +16856,14 @@
       "Material": "Limestone",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": false,
+      "CanCollide": true,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true
      }
     },
     {
-     "name": "Block1_1",
+     "name": "Block0_2",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -16875,8 +16875,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         73.15,
-         6.8,
+         76.3,
+         3.6,
          355.7051
         ],
         "orientation": [
@@ -16906,7 +16906,7 @@
       "Material": "Limestone",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": false,
+      "CanCollide": true,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true
@@ -20889,15 +20889,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -18.5413,
+         -18.344,
          8.8699,
-         356.1937
+         356.4607
         ],
         "orientation": [
          [
-          0.9364,
-          -0.0984,
-          0.3369
+          0.595,
+          -0.0625,
+          0.8013
          ],
          [
           0.1045,
@@ -20905,9 +20905,9 @@
           0.0
          ],
          [
-          -0.335,
-          0.0352,
-          0.9416
+          -0.7969,
+          0.0838,
+          0.5983
          ]
         ]
        }
@@ -20940,15 +20940,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -18.5413,
+         -18.344,
          8.8699,
-         356.1937
+         356.4607
         ],
         "orientation": [
          [
-          0.9364,
-          -0.0984,
-          0.3369
+          0.595,
+          -0.0625,
+          0.8013
          ],
          [
           0.1045,
@@ -20956,9 +20956,9 @@
           0.0
          ],
          [
-          -0.335,
-          0.0352,
-          0.9416
+          -0.7969,
+          0.0838,
+          0.5983
          ]
         ]
        }
@@ -21007,15 +21007,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -19.1756,
+         -18.7471,
          15.2796,
-         356.4206
+         357.0004
         ],
         "orientation": [
          [
-          0.7814,
-          -0.5429,
-          0.3078
+          0.7901,
+          -0.0514,
+          0.6108
          ],
          [
           0.5712,
@@ -21023,9 +21023,9 @@
           -0.7032
          ],
          [
-          0.2515,
-          0.7253,
-          0.6409
+          -0.2224,
+          0.9045,
+          0.3638
          ]
         ]
        }
@@ -21058,15 +21058,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -20.2607,
+         -20.9828,
          6.8103,
-         358.185
+         357.484
         ],
         "orientation": [
          [
-          0.0751,
-          -0.0173,
-          0.997
+          0.9688,
+          -0.2237,
+          0.1067
          ],
          [
           0.225,
@@ -21074,9 +21074,9 @@
           0.0
          ],
          [
-          -0.9715,
-          0.2243,
-          0.0771
+          -0.104,
+          0.024,
+          0.9943
          ]
         ]
        }
@@ -21109,15 +21109,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -20.2607,
+         -20.9828,
          6.8103,
-         358.185
+         357.484
         ],
         "orientation": [
          [
-          0.0751,
-          -0.0173,
-          0.997
+          0.9688,
+          -0.2237,
+          0.1067
          ],
          [
           0.225,
@@ -21125,9 +21125,9 @@
           0.0
          ],
          [
-          -0.9715,
-          0.2243,
-          0.0771
+          -0.104,
+          0.024,
+          0.9943
          ]
         ]
        }
@@ -21160,15 +21160,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -20.3331,
+         -21.9166,
          10.8783,
-         359.1214
+         357.5842
         ],
         "orientation": [
          [
-          0.543,
-          0.4367,
-          0.7173
+          0.6266,
+          -0.7435,
+          0.2336
          ],
          [
           0.6462,
@@ -21176,9 +21176,9 @@
           -0.689
          ],
          [
-          -0.5362,
-          0.8376,
-          -0.1041
+          0.4356,
+          0.5827,
+          0.6861
          ]
         ]
        }
@@ -21211,15 +21211,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -15.4854,
+         -15.8725,
          6.008,
-         353.9675
+         353.6393
         ],
         "orientation": [
          [
-          0.8496,
-          0.2276,
-          0.4759
+          0.3145,
+          0.0843,
+          0.9455
          ],
          [
           -0.2588,
@@ -21227,9 +21227,9 @@
           0.0
          ],
          [
-          -0.4596,
-          -0.1232,
-          0.8795
+          -0.9133,
+          -0.2447,
+          0.3256
          ]
         ]
        }
@@ -21262,15 +21262,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -15.4854,
+         -15.8725,
          6.008,
-         353.9675
+         353.6393
         ],
         "orientation": [
          [
-          0.8496,
-          0.2276,
-          0.4759
+          0.3145,
+          0.0843,
+          0.9455
          ],
          [
           -0.2588,
@@ -21278,9 +21278,9 @@
           0.0
          ],
          [
-          -0.4596,
-          -0.1232,
-          0.8795
+          -0.9133,
+          -0.2447,
+          0.3256
          ]
         ]
        }
@@ -21313,15 +21313,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -14.7478,
+         -15.5994,
          9.1376,
-         353.5684
+         352.8464
         ],
         "orientation": [
          [
-          0.9525,
-          -0.249,
-          0.1755
+          0.7373,
+          0.2925,
+          0.609
          ],
          [
           0.3,
@@ -21329,9 +21329,9 @@
           -0.683
          ],
          [
-          0.0532,
-          0.7032,
-          0.709
+          -0.6053,
+          0.6862,
+          0.4033
          ]
         ]
        }
@@ -21364,15 +21364,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -17.7964,
+         -18.015,
          5.0914,
-         359.0711
+         358.6287
         ],
         "orientation": [
          [
-          0.605,
-          -0.2202,
-          0.7652
+          0.9387,
+          -0.3416,
+          0.0467
          ],
          [
           0.342,
@@ -21380,9 +21380,9 @@
           0.0
          ],
          [
-          -0.719,
-          0.2617,
-          0.6438
+          -0.0439,
+          0.016,
+          0.9989
          ]
         ]
        }
@@ -21415,15 +21415,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -17.7964,
+         -18.015,
          5.0914,
-         359.0711
+         358.6287
         ],
         "orientation": [
          [
-          0.605,
-          -0.2202,
-          0.7652
+          0.9387,
+          -0.3416,
+          0.0467
          ],
          [
           0.342,
@@ -21431,9 +21431,9 @@
           0.0
          ],
          [
-          -0.719,
-          0.2617,
-          0.6438
+          -0.0439,
+          0.016,
+          0.9989
          ]
         ]
        }
@@ -21466,15 +21466,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -18.2918,
+         -18.7837,
          7.2058,
-         359.6599
+         358.6647
         ],
         "orientation": [
          [
-          0.7003,
-          -0.1553,
-          0.6968
+          0.5163,
+          -0.8112,
+          0.2746
          ],
          [
           0.7117,
@@ -21482,9 +21482,9 @@
           -0.6645
          ],
          [
-          -0.0556,
-          0.9612,
-          0.2702
+          0.4764,
+          0.5385,
+          0.695
          ]
         ]
        }

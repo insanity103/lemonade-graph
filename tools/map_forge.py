@@ -526,6 +526,40 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
         kids.append(part("ChimneyCap", (3.0, 0.6, 3.0), (chx, ch_top + 0.3, chz), STONE, "Slate", collide=False))
         kids.append(part("ChimneyFlue", (1.2, 0.3, 1.2), (chx, ch_top + 0.6, chz), (30, 28, 26), "Slate",
                          collide=False, query=False, children=[smoke(3.5, 0.3, 2.5)]))
+    if door and not open_front:
+        # A furnished room so an opened door shows a home, not an empty box.
+        fl = y + 0.8
+        ix0, ix1, iz0, iz1 = x0 + 1.2, x1 - 1.2, z0 + 1.2, z1 - 1.2
+        cxi, czi = (ix0 + ix1) / 2, (iz0 + iz1) / 2
+        kids.append(box("FloorBoards", ix0, ix1, fl, fl + 0.12, iz0, iz1, (150, 112, 70), "WoodPlanks", collide=False))
+        kids.append(part("Rug", (min(7, (ix1 - ix0) * 0.5), 0.08, min(5, (iz1 - iz0) * 0.4)), (cxi, fl + 0.18, czi),
+                         rng.choice([(150, 60, 60), (70, 100, 150), (120, 90, 60)]), "Fabric", collide=False))
+        # Bed along the wall opposite the door; table and stools in the middle; shelf on a side wall.
+        if front in "NS":
+            bz = iz0 + 2.2 if front == "S" else iz1 - 2.2
+            kids.append(part("BedFrame", (4.4, 1.2, 3.2), (ix0 + 3.0, fl + 0.6, bz), BEAM, "Wood"))
+            kids.append(part("Mattress", (4.2, 0.6, 3.0), (ix0 + 3.0, fl + 1.5, bz), (226, 214, 190), "Fabric", collide=False))
+            kids.append(part("Blanket", (2.6, 0.25, 3.05), (ix0 + 3.8, fl + 1.9, bz), (120, 60, 60), "Fabric", collide=False))
+            kids.append(part("Pillow", (1.2, 0.5, 1.6), (ix0 + 1.4, fl + 2.0, bz), (240, 236, 226), "Fabric", collide=False))
+            kids.append(part("Shelf", (3.0, 0.3, 0.9), (ix1 - 2.0, fl + 5.0, iz0 + 0.5 if front == "S" else iz1 - 0.5),
+                             BEAM, "Wood", collide=False))
+        else:
+            bx = ix0 + 2.2 if front == "E" else ix1 - 2.2
+            kids.append(part("BedFrame", (3.2, 1.2, 4.4), (bx, fl + 0.6, iz0 + 3.0), BEAM, "Wood"))
+            kids.append(part("Mattress", (3.0, 0.6, 4.2), (bx, fl + 1.5, iz0 + 3.0), (226, 214, 190), "Fabric", collide=False))
+            kids.append(part("Blanket", (3.05, 0.25, 2.6), (bx, fl + 1.9, iz0 + 3.8), (120, 60, 60), "Fabric", collide=False))
+            kids.append(part("Pillow", (1.6, 0.5, 1.2), (bx, fl + 2.0, iz0 + 1.4), (240, 236, 226), "Fabric", collide=False))
+            kids.append(part("Shelf", (0.9, 0.3, 3.0), (ix0 + 0.5 if front == "E" else ix1 - 0.5, fl + 5.0, iz1 - 2.0),
+                             BEAM, "Wood", collide=False))
+        kids.append(part("TableTop", (3.6, 0.3, 2.4), (cxi, fl + 2.6, czi), TIMBER, "WoodPlanks"))
+        for sx, sz in ((-1.5, -0.9), (1.5, -0.9), (-1.5, 0.9), (1.5, 0.9)):
+            kids.append(part("TableLeg", (0.3, 2.5, 0.3), (cxi + sx, fl + 1.25, czi + sz), BEAM, "Wood", collide=False))
+        for sx in (-2.8, 2.8):
+            kids.append(part("Stool", (1.1, 1.4, 1.1), (cxi + sx, fl + 0.7, czi), BEAM, "Wood"))
+        kids.append(part("Candle", (0.25, 0.7, 0.25), (cxi + 0.6, fl + 3.1, czi - 0.4), (240, 230, 200), "SmoothPlastic",
+                         collide=False, query=False, children=[fire(0.6, 4), light(10, 0.8, (255, 200, 130))]))
+        kids.append(part("Bowl", (0.9, 0.3, 0.9), (cxi - 0.8, fl + 2.9, czi + 0.3), (110, 72, 42), "Wood", rot_z(90),
+                         shape="Cylinder", collide=False))
     attrs = None
     if door and not open_front:
         # Doorway centre, a doorstep outside and a spot inside: HubAmbience villagers live here.
@@ -1635,7 +1669,9 @@ def main():
     write_model(OUT / "Grounds_Hub.model.json", model("Grounds_Hub", hub_ground))
     write_model(OUT / "Grounds_IronLowlands.model.json", model("Grounds_IronLowlands", il_ground))
     write_model(OUT / "Collision.model.json", model("Collision", hub_proxies + il_proxies))
-    write_model(OUT / "Hub.model.json", model("Hub", hub_visual, attrs={"Region": "Hub"}))
+    hub_model = model("Hub", hub_visual, attrs={"Region": "Hub"})
+    hub_model["properties"] = {"ModelStreamingMode": "Atomic"}  # arrives complete, so HubAmbience finds everything
+    write_model(OUT / "Hub.model.json", hub_model)
     write_model(OUT / "IronLowlands.model.json", model("IronLowlands", il_visual, attrs={"Region": "IronLowlands"}))
     write_model(OUT / "Markers.model.json", markers)
 
