@@ -5509,15 +5509,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -16.4227,
+         -16.3377,
          16.8699,
-         -35.6103
+         -35.5348
         ],
         "orientation": [
          [
-          0.7312,
-          -0.0769,
-          0.6778
+          0.5843,
+          -0.0614,
+          0.8092
          ],
          [
           0.1045,
@@ -5525,9 +5525,9 @@
           0.0
          ],
          [
-          -0.6741,
-          0.0709,
-          0.7352
+          -0.8048,
+          0.0846,
+          0.5875
          ]
         ]
        }
@@ -5560,15 +5560,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -16.4227,
+         -16.3377,
          16.8699,
-         -35.6103
+         -35.5348
         ],
         "orientation": [
          [
-          0.7312,
-          -0.0769,
-          0.6778
+          0.5843,
+          -0.0614,
+          0.8092
          ],
          [
           0.1045,
@@ -5576,9 +5576,9 @@
           0.0
          ],
          [
-          -0.6741,
-          0.0709,
-          0.7352
+          -0.8048,
+          0.0846,
+          0.5875
          ]
         ]
        }
@@ -5627,15 +5627,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -16.918,
+         -16.7335,
          23.2796,
-         -35.1537
+         -34.9896
         ],
         "orientation": [
          [
-          0.8175,
-          -0.2165,
-          0.5336
+          0.787,
+          -0.0392,
+          0.6156
          ],
          [
           0.5712,
@@ -5643,9 +5643,9 @@
           -0.7032
          ],
          [
-          -0.0736,
-          0.8797,
-          0.4698
+          -0.2331,
+          0.9051,
+          0.3556
          ]
         ]
        }
@@ -5678,15 +5678,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -18.3574,
+         -18.7429,
          14.8103,
-         -33.8286
+         -34.0298
         ],
         "orientation": [
          [
-          0.1949,
-          -0.045,
-          0.9798
+          0.6719,
+          -0.1551,
+          0.7242
          ],
          [
           0.225,
@@ -5694,9 +5694,9 @@
           0.0
          ],
          [
-          -0.9547,
-          0.2204,
-          0.2
+          -0.7057,
+          0.1629,
+          0.6896
          ]
         ]
        }
@@ -5729,15 +5729,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -18.3574,
+         -18.7429,
          14.8103,
-         -33.8286
+         -34.0298
         ],
         "orientation": [
          [
-          0.1949,
-          -0.045,
-          0.9798
+          0.6719,
+          -0.1551,
+          0.7242
          ],
          [
           0.225,
@@ -5745,9 +5745,9 @@
           0.0
          ],
          [
-          -0.9547,
-          0.2204,
-          0.2
+          -0.7057,
+          0.1629,
+          0.6896
          ]
         ]
        }
@@ -5780,15 +5780,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -18.5453,
+         -19.3905,
          18.8783,
-         -32.9084
+         -33.3496
         ],
         "orientation": [
          [
-          0.6052,
-          0.3296,
-          0.7246
+          0.7597,
+          -0.1905,
+          0.6218
          ],
          [
           0.6462,
@@ -5796,9 +5796,9 @@
           -0.689
          ],
          [
-          -0.4649,
-          0.8853,
-          -0.0144
+          -0.0727,
+          0.9252,
+          0.3724
          ]
         ]
        }
@@ -5831,15 +5831,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -13.5383,
+         -13.9302,
          14.008,
-         -38.1157
+         -38.3779
         ],
         "orientation": [
          [
-          0.7765,
-          0.2081,
-          0.5948
+          0.2347,
+          0.0629,
+          0.97
          ],
          [
           -0.2588,
@@ -5847,9 +5847,9 @@
           0.0
          ],
          [
-          -0.5745,
-          -0.1539,
-          0.8039
+          -0.937,
+          -0.2511,
+          0.243
          ]
         ]
        }
@@ -5882,15 +5882,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -13.5383,
+         -13.9302,
          14.008,
-         -38.1157
+         -38.3779
         ],
         "orientation": [
          [
-          0.7765,
-          0.2081,
-          0.5948
+          0.2347,
+          0.0629,
+          0.97
          ],
          [
           -0.2588,
@@ -5898,9 +5898,9 @@
           0.0
          ],
          [
-          -0.5745,
-          -0.1539,
-          0.8039
+          -0.937,
+          -0.2511,
+          0.243
          ]
         ]
        }
@@ -5933,15 +5933,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -12.8642,
+         -13.7264,
          17.1376,
-         -38.6145
+         -39.1913
         ],
         "orientation": [
          [
-          0.9505,
-          -0.1476,
-          0.2735
+          0.6825,
+          0.3505,
+          0.6414
          ],
          [
           0.3,
@@ -5949,9 +5949,9 @@
           -0.683
          ],
          [
-          -0.0813,
-          0.7312,
-          0.6773
+          -0.6666,
+          0.6585,
+          0.3494
          ]
         ]
        }
@@ -5984,15 +5984,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -15.5433,
+         -15.7934,
          13.0914,
-         -32.8013
+         -32.9264
         ],
         "orientation": [
          [
-          0.2187,
-          -0.0796,
-          0.9725
+          0.6004,
+          -0.2185,
+          0.7692
          ],
          [
           0.342,
@@ -6000,9 +6000,9 @@
           0.0
          ],
          [
-          -0.9139,
-          0.3326,
-          0.2328
+          -0.7228,
+          0.2631,
+          0.639
          ]
         ]
        }
@@ -6035,15 +6035,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -15.5433,
+         -15.7934,
          13.0914,
-         -32.8013
+         -32.9264
         ],
         "orientation": [
          [
-          0.2187,
-          -0.0796,
-          0.9725
+          0.6004,
+          -0.2185,
+          0.7692
          ],
          [
           0.342,
@@ -6051,9 +6051,9 @@
           0.0
          ],
          [
-          -0.9139,
-          0.3326,
-          0.2328
+          -0.7228,
+          0.2631,
+          0.639
          ]
         ]
        }
@@ -6086,15 +6086,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -15.7224,
+         -16.2851,
          15.2058,
-         -32.0529
+         -32.3345
         ],
         "orientation": [
          [
-          0.6011,
-          0.2918,
-          0.744
+          0.6999,
+          -0.1492,
+          0.6985
          ],
          [
           0.7117,
@@ -6102,9 +6102,9 @@
           -0.6645
          ],
          [
-          -0.3635,
-          0.9289,
-          -0.0706
+          -0.0601,
+          0.9622,
+          0.2658
          ]
         ]
        }
@@ -73031,370 +73031,6 @@
       "CastShadow": false,
       "Shape": "Ball"
      }
-    }
-   ]
-  },
-  {
-   "name": "WelcomeSign",
-   "className": "Model",
-   "children": [
-    {
-     "name": "Post-1",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       0.8,
-       7.6,
-       0.8
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         7.45,
-         13.8,
-         -54.0
-        ],
-        "orientation": [
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          -0.0,
-          0.0,
-          -1.0
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.2824,
-       0.1882,
-       0.1255
-      ],
-      "Material": "Wood",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": true,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Post1",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       0.8,
-       7.6,
-       0.8
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -7.45,
-         13.8,
-         -54.0
-        ],
-        "orientation": [
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          -0.0,
-          0.0,
-          -1.0
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.2824,
-       0.1882,
-       0.1255
-      ],
-      "Material": "Wood",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": true,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     }
-    },
-    {
-     "name": "Board",
-     "className": "Part",
-     "properties": {
-      "Anchored": true,
-      "Size": [
-       14.0,
-       4.6,
-       0.5
-      ],
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0,
-         15.0,
-         -54.0
-        ],
-        "orientation": [
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          -0.0,
-          0.0,
-          -1.0
-         ]
-        ]
-       }
-      },
-      "Color": [
-       0.6118,
-       0.3922,
-       0.2353
-      ],
-      "Material": "WoodPlanks",
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanCollide": false,
-      "CanQuery": true,
-      "CanTouch": false,
-      "CastShadow": true
-     },
-     "children": [
-      {
-       "name": "LabelFront",
-       "className": "SurfaceGui",
-       "properties": {
-        "Face": "Front",
-        "SizingMode": "PixelsPerStud",
-        "PixelsPerStud": 40,
-        "LightInfluence": 0.4,
-        "MaxDistance": 260,
-        "ClipsDescendants": true
-       },
-       "children": [
-        {
-         "name": "Title",
-         "className": "TextLabel",
-         "properties": {
-          "Text": "Hearthmere",
-          "TextScaled": true,
-          "Font": "Merriweather",
-          "BackgroundTransparency": 1,
-          "TextColor3": [
-           1.0,
-           0.9333,
-           0.7843
-          ],
-          "TextStrokeTransparency": 0.7,
-          "Size": {
-           "UDim2": [
-            [
-             0.84,
-             0
-            ],
-            [
-             0.5,
-             0
-            ]
-           ]
-          },
-          "Position": {
-           "UDim2": [
-            [
-             0.08,
-             0
-            ],
-            [
-             0.08,
-             0
-            ]
-           ]
-          }
-         },
-         "children": [
-          {
-           "name": "MaxSize",
-           "className": "UITextSizeConstraint",
-           "properties": {
-            "MaxTextSize": 200,
-            "MinTextSize": 6
-           }
-          }
-         ]
-        },
-        {
-         "name": "Subtitle",
-         "className": "TextLabel",
-         "properties": {
-          "Text": "Safe haven",
-          "TextScaled": true,
-          "Font": "GothamMedium",
-          "BackgroundTransparency": 1,
-          "TextColor3": [
-           0.9255,
-           0.8941,
-           0.8235
-          ],
-          "Size": {
-           "UDim2": [
-            [
-             0.84,
-             0
-            ],
-            [
-             0.26,
-             0
-            ]
-           ]
-          },
-          "Position": {
-           "UDim2": [
-            [
-             0.08,
-             0
-            ],
-            [
-             0.64,
-             0
-            ]
-           ]
-          }
-         }
-        }
-       ]
-      },
-      {
-       "name": "LabelBack",
-       "className": "SurfaceGui",
-       "properties": {
-        "Face": "Back",
-        "SizingMode": "PixelsPerStud",
-        "PixelsPerStud": 40,
-        "LightInfluence": 0.4,
-        "MaxDistance": 260,
-        "ClipsDescendants": true
-       },
-       "children": [
-        {
-         "name": "Title",
-         "className": "TextLabel",
-         "properties": {
-          "Text": "Hearthmere",
-          "TextScaled": true,
-          "Font": "Merriweather",
-          "BackgroundTransparency": 1,
-          "TextColor3": [
-           1.0,
-           0.9333,
-           0.7843
-          ],
-          "TextStrokeTransparency": 0.7,
-          "Size": {
-           "UDim2": [
-            [
-             0.84,
-             0
-            ],
-            [
-             0.5,
-             0
-            ]
-           ]
-          },
-          "Position": {
-           "UDim2": [
-            [
-             0.08,
-             0
-            ],
-            [
-             0.08,
-             0
-            ]
-           ]
-          }
-         },
-         "children": [
-          {
-           "name": "MaxSize",
-           "className": "UITextSizeConstraint",
-           "properties": {
-            "MaxTextSize": 200,
-            "MinTextSize": 6
-           }
-          }
-         ]
-        },
-        {
-         "name": "Subtitle",
-         "className": "TextLabel",
-         "properties": {
-          "Text": "Safe haven",
-          "TextScaled": true,
-          "Font": "GothamMedium",
-          "BackgroundTransparency": 1,
-          "TextColor3": [
-           0.9255,
-           0.8941,
-           0.8235
-          ],
-          "Size": {
-           "UDim2": [
-            [
-             0.84,
-             0
-            ],
-            [
-             0.26,
-             0
-            ]
-           ]
-          },
-          "Position": {
-           "UDim2": [
-            [
-             0.08,
-             0
-            ],
-            [
-             0.64,
-             0
-            ]
-           ]
-          }
-         }
-        }
-       ]
-      }
-     ]
     }
    ]
   },

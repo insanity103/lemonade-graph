@@ -1402,7 +1402,6 @@ def build_hub(rng):
     for k, (x, z, w, d) in enumerate(((-24, -34, 8, 3.2), (24, -34, 8, 3.2), (-24, 34, 8, 3.2), (24, 34, 8, 3.2),
                                       (-36, -22, 3.2, 8), (36, 22, 3.2, 8))):
         visual.append(flower_bed(f"Bed{k}", x, HUB_Y, z, w, d, 0, rng))
-    visual.append(sign("WelcomeSign", 0, HUB_Y, -54, 180, 14, 4.6, "Hearthmere", "Safe haven"))
     # Market corner by the well: produce stall, gathering fire with log seats.
     visual.append(market_stall("ProduceStall", -38, HUB_Y, 52, rng))
     visual.append(campfire("GatheringFire", -24, HUB_Y, 66, rng))
