@@ -3,6 +3,7 @@
 -- hologram turns and flickers; waystone splinters orbit their crystal. Everything here is
 -- client-side CFrame animation of anchored parts, so nothing replicates or affects gameplay.
 local RunService = game:GetService("RunService")
+local PathfindingService = game:GetService("PathfindingService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
@@ -111,6 +112,45 @@ local function walk(model: Model, parts, from: CFrame, to: CFrame, sword: BasePa
 	pose(model, parts, to, 0, 0, sword)
 end
 
+-- Walk a rig along a navmesh path so it goes round props and buildings instead of through them.
+-- Falls back to a straight line only when no path exists. Returns the final root CFrame.
+local pathParams = { AgentRadius = 2.5, AgentHeight = 5, AgentCanJump = false, WaypointSpacing = 4 }
+local function walkPath(model: Model, parts, from: CFrame, destination: Vector3, speed: number, sword: BasePart?): CFrame
+	local path = PathfindingService:CreatePath(pathParams)
+	local ok = pcall(function()
+		path:ComputeAsync(from.Position - Vector3.new(0, 3, 0), destination - Vector3.new(0, 3, 0))
+	end)
+	local points = {}
+	if ok and path.Status == Enum.PathStatus.Success then
+		for i, waypoint in ipairs(path:GetWaypoints()) do
+			if i > 1 then
+				table.insert(points, waypoint.Position + Vector3.new(0, 3, 0))
+			end
+		end
+	end
+	if #points == 0 then
+		points = { destination }
+	end
+	local here = from
+	for _, target in ipairs(points) do
+		local flat = Vector3.new(target.X, here.Position.Y, target.Z)
+		if (flat - here.Position).Magnitude < 0.3 then continue end
+		local facing = CFrame.lookAt(here.Position, flat)
+		local duration = (flat - here.Position).Magnitude / speed
+		local elapsed = 0
+		while elapsed < duration do
+			elapsed += RunService.Heartbeat:Wait()
+			local alpha = math.min(elapsed / duration, 1)
+			local root = CFrame.new(here.Position:Lerp(flat, alpha)) * facing.Rotation
+			local swing = math.sin(elapsed * (speed * 0.9)) * 0.55
+			pose(model, parts, root, swing, swing * 0.5, sword)
+		end
+		here = CFrame.new(flat) * facing.Rotation
+	end
+	pose(model, parts, here, 0, 0, sword)
+	return here
+end
+
 local function trainerRoutine()
 	local model = workspace:WaitForChild(TRAINER_NAME, 30)
 	if not model or not model:IsA("Model") or not model.PrimaryPart then return end
@@ -132,15 +172,14 @@ local function trainerRoutine()
 		away = if away.Magnitude > 0.01 then away.Unit else Vector3.new(0, 0, 1)
 		local standAt = Vector3.new(target.X, home.Position.Y, target.Z) + away * STAND_OFF
 		local facing = CFrame.lookAt(standAt, Vector3.new(target.X, standAt.Y, target.Z))
-		local turnToward = CFrame.lookAt(home.Position, standAt)
 
 		-- The server never moves him, so his respec prompt stays at the post: hide it while away.
 		local prompt = model.PrimaryPart:FindFirstChildOfClass("ProximityPrompt")
 		if prompt then prompt.Enabled = false end
 		local sword = makePracticeSword()
 		sword.Parent = workspace.CurrentCamera
-		walk(model, parts, home, turnToward, sword)
-		walk(model, parts, turnToward, facing, sword)
+		local arrived = walkPath(model, parts, home, standAt, WALK_SPEED, sword)
+		walk(model, parts, arrived, facing, sword)
 
 		for _ = 1, rng:NextInteger(SWINGS_PER_VISIT[1], SWINGS_PER_VISIT[2]) do
 			-- Raise, chop, recover: same shape as the enemies' telegraphed swing.
@@ -165,10 +204,9 @@ local function trainerRoutine()
 			task.wait(rng:NextNumber(0.3, 0.7))
 		end
 
-		walk(model, parts, facing, CFrame.lookAt(standAt, home.Position), sword)
-		walk(model, parts, CFrame.lookAt(standAt, home.Position), CFrame.lookAt(home.Position, home.Position + (home.Position - standAt)), sword)
 		sword:Destroy()
-		walk(model, parts, model.PrimaryPart.CFrame, home, nil)
+		local back = walkPath(model, parts, facing, home.Position, WALK_SPEED, nil)
+		walk(model, parts, back, home, nil)
 		if prompt then prompt.Enabled = true end
 	end
 end
@@ -202,22 +240,6 @@ do
 	local grounds = map:FindFirstChild("Grounds_Hub")
 	local floor = grounds and grounds:FindFirstChild("HubFloor")
 	if floor then floorY = floor.Position.Y + floor.Size.Y / 2 end
-end
-
--- Straight lines between spots would cut through the monument; route around the plaza centre.
-local MONUMENT_CLEARANCE = 12
-local function legsBetween(from: Vector3, to: Vector3): { Vector3 }
-	local a = Vector3.new(from.X, 0, from.Z)
-	local b = Vector3.new(to.X, 0, to.Z)
-	local ab = b - a
-	local t = math.clamp(-a:Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
-	local closest = a + ab * t
-	if closest.Magnitude >= MONUMENT_CLEARANCE or t <= 0 or t >= 1 then
-		return { to }
-	end
-	local side = if closest.Magnitude > 0.01 then closest.Unit else Vector3.new(1, 0, 0)
-	local detour = side * (MONUMENT_CLEARANCE + 3)
-	return { Vector3.new(detour.X, to.Y, detour.Z), to }
 end
 
 local function makeVillager(index: number, outfit)
@@ -290,21 +312,7 @@ local function villagerRoutine(index: number)
 		end
 		local nextSpot = VILLAGER_SPOTS[rng:NextInteger(1, #VILLAGER_SPOTS)]
 		if (nextSpot - spot).Magnitude < 4 then continue end
-		local destination = Vector3.new(nextSpot.X, floorY + 3, nextSpot.Z)
-		for _, target in ipairs(legsBetween(here.Position, destination)) do
-			local facing = CFrame.lookAt(here.Position, target)
-			local duration = (target - here.Position).Magnitude / VILLAGER_SPEED
-			local elapsed = 0
-			while elapsed < duration do
-				elapsed += RunService.Heartbeat:Wait()
-				local alpha = math.min(elapsed / duration, 1)
-				local root = CFrame.new(here.Position:Lerp(target, alpha)) * facing.Rotation
-				local swing = math.sin(elapsed * 7) * 0.55
-				pose(model, parts, root, swing, swing * 0.5, nil)
-			end
-			here = CFrame.new(target) * facing.Rotation
-		end
-		pose(model, parts, here, 0, 0, nil)
+		here = walkPath(model, parts, here, Vector3.new(nextSpot.X, floorY + 3, nextSpot.Z), VILLAGER_SPEED, nil)
 		spot = nextSpot
 	end
 end
