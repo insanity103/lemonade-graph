@@ -479,7 +479,7 @@ end
 -- ── Butterflies, birds, waterfall ───────────────────────────────────────────
 -- Butterflies roam the whole village: each picks a destination (usually a flower bed, sometimes
 -- anywhere on the green), flies there on a wavering line, lingers, then picks another.
-local BUTTERFLY_COUNT = 10
+local BUTTERFLY_COUNT = 4
 local BUTTERFLY_SPEED = { 4, 7 }
 local HUB_ROAM = 84
 local beds = {}
