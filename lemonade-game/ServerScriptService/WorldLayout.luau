@@ -3,7 +3,9 @@
 -- reaches gameplay through MapAnchors -- the generated anchor contract. This module is
 -- the gameplay adapter for that contract: zone metadata, spawn resolution, level gates.
 --
--- Two modes, chosen at runtime:
+-- Three modes, chosen at runtime:
+--   BlankSlate -- the current design reset: clears all terrain and imported visuals,
+--                then leaves only a clean plastic baseplate and spawn.
 --   Imported -- Workspace.FivefoldSanctuary exists with a matching MapRedesignVersion.
 --               The imported meshes own every visual; this module places no geometry
 --               and only resolves gameplay anchors.
@@ -23,6 +25,8 @@ local WorldLayout = {}
 WorldLayout.VERSION = 7
 WorldLayout.MAP_MODEL_NAME = "FivefoldSanctuary"
 WorldLayout.ANCHOR_VERSION = MapAnchors.Version
+-- [DESIGN] Keep the place as a clean level-design starting point until a new map is authored.
+WorldLayout.BLANK_SLATE = true
 
 local function v3(t)
 	return Vector3.new(t[1], t[2], t[3])
@@ -850,7 +854,10 @@ local function resetSpawn()
 		spawn.Parent = Workspace
 	end
 	spawn.Size = Vector3.new(12, 1, 12)
-	spawn.CFrame = CFrame.new(WorldLayout.HUB.SpawnPosition)
+	local spawnPosition = WorldLayout.BLANK_SLATE
+		and Vector3.new(WorldLayout.HUB.Center.X, 0.5, WorldLayout.HUB.Center.Z)
+		or WorldLayout.HUB.SpawnPosition
+	spawn.CFrame = CFrame.new(spawnPosition)
 	spawn.Anchored = true
 	spawn.CanCollide = true
 	spawn.Neutral = true
@@ -859,6 +866,26 @@ local function resetSpawn()
 	spawn.Material = Enum.Material.Neon
 	spawn.Color = Color3.fromRGB(255, 226, 112)
 	spawn.Transparency = 0.15
+end
+
+local function buildBlankSlate()
+	local terrain = Workspace.Terrain
+	terrain:Clear()
+	-- Decoration is NotScriptable; default.project.json sets it in the saved place.
+	restoreBaseplate()
+
+	for _, name in ipairs({ "WorldGenerated", "BossRooms", "Trees", "Boulders", "Landmarks", "Causeways",
+		"HubCampfire", "HubLeaderboard", "RespecShrine", "RelicMerchantNPC",
+		"Wandering Villager", "Sitting Farmer", "Pacing Guard" }) do
+		local existing = Workspace:FindFirstChild(name)
+		if existing then existing:Destroy() end
+	end
+
+	-- Keep the folder available for systems that wait for boss-room collision geometry.
+	local rooms = Instance.new("Folder")
+	rooms.Name = "BossRooms"
+	rooms.Parent = Workspace
+	resetSpawn()
 end
 
 local function relocateLoosePlacedPart(generated)
@@ -889,6 +916,7 @@ end
 -- straight from the anchor contract, which already applied the arena frame -- applying
 -- it a second time here would mirror every minion to the wrong side of its boss.
 function WorldLayout.GetEnemySpawns()
+	if WorldLayout.BLANK_SLATE then return {} end
 	local configs = {}
 	for _, zone in ipairs(WorldLayout.ZONES) do
 		local entries = table.clone(zone.Spawns)
@@ -924,6 +952,16 @@ function WorldLayout.EnsureBuilt()
 	if built then return end
 	built = true
 	Workspace:SetAttribute("WorldReady", false)
+
+	if WorldLayout.BLANK_SLATE then
+		local imported = Workspace:FindFirstChild(WorldLayout.MAP_MODEL_NAME)
+		if imported then imported:Destroy() end
+		buildBlankSlate()
+		Workspace:SetAttribute("WorldLayoutVersion", WorldLayout.VERSION)
+		Workspace:SetAttribute("WorldSource", "BlankSlate")
+		Workspace:SetAttribute("WorldReady", true)
+		return
+	end
 
 	local imported = WorldLayout.GetImportedMap()
 	if imported then

@@ -7,6 +7,7 @@ local MerchantConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForC
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 WorldLayout.EnsureBuilt()
+if WorldLayout.BLANK_SLATE then return end
 
 local REMOTES = ReplicatedStorage:WaitForChild("RemoteEvents")
 local MERCHANT_ACTION = REMOTES:WaitForChild("MerchantAction")
@@ -59,6 +60,14 @@ local function attachPromptToImportedMerchant(importedMap)
 end
 
 local function setupMerchantNPC()
+	if WorldLayout.GAMEPLAY_ONLY then
+		local actors = require(script.Parent:WaitForChild("GameplayActors"))
+		local npc = actors.create("RelicMerchantNPC", WorldLayout.HUB.MerchantPosition, Color3.fromRGB(90, 70, 50))
+		actors.prompt(npc, "Browse Relic Swords").Triggered:Connect(function(player)
+			MERCHANT_ACTION:FireClient(player, "OpenShop")
+		end)
+		return npc
+	end
 	-- Two bodies on one anchor reads as a bug, so the block-part stall only stands in
 	-- while the world is still the procedural fallback.
 	local importedMap = Workspace:FindFirstChild("FivefoldSanctuary")

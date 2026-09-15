@@ -1155,4 +1155,4 @@ end
 
 print(string.format("[EnemyCombat] %d enemies across %d arenas and %d field groups (%d skipped) | world: %s",
 	spawned, #WorldLayout.ZONES, #WorldLayout.FIELD_SPAWNS, skipped,
-	WorldLayout.IsImportedMap() and "imported" or "fallback"))
+	WorldLayout.GAMEPLAY_ONLY and "existing baseplate" or (WorldLayout.IsImportedMap() and "imported" or "fallback")))

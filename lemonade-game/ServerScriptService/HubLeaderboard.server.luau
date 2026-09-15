@@ -5,6 +5,7 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
+if WorldLayout.BLANK_SLATE then return end
 
 local hub = WorldLayout.HUB
 local features = WorldLayout.HUB_FEATURES or {}
