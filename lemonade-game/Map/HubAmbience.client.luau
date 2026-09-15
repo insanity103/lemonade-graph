@@ -4,6 +4,7 @@
 -- client-side CFrame animation of anchored parts, so nothing replicates or affects gameplay.
 local RunService = game:GetService("RunService")
 local PathfindingService = game:GetService("PathfindingService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
@@ -492,6 +493,14 @@ local function smithRoutine(forge: Model)
 	if not parts then return end
 	local home = model.PrimaryPart.CFrame
 	local prompt = model.PrimaryPart:FindFirstChildOfClass("ProximityPrompt")
+	-- The shop prompt stays usable while he works (it follows him to the anvil). Using it
+	-- makes him put the hammer down and come back to the counter.
+	local wanted = false
+	if prompt then
+		ProximityPromptService.PromptTriggered:Connect(function(triggered)
+			if triggered == prompt then wanted = true end
+		end)
+	end
 	local rng = Random.new()
 	local function spark()
 		for _ = 1, 5 do
@@ -516,12 +525,13 @@ local function smithRoutine(forge: Model)
 	end
 	print("[HubAmbience] Relic Blacksmith forge routine running")
 	while model.Parent do
-		task.wait(rng:NextNumber(8, 16))
-		if prompt then prompt.Enabled = false end
+		task.wait(rng:NextNumber(10, 20))
+		if wanted then wanted = false continue end
 		local arrived = walkPath(model, parts, home, stand, WALK_SPEED, nil)
 		local facing = CFrame.lookAt(stand, Vector3.new(anvilPos.X, stand.Y, anvilPos.Z))
 		walk(model, parts, arrived, facing, nil)
-		for _ = 1, rng:NextInteger(4, 7) do
+		for _ = 1, rng:NextInteger(3, 5) do
+			if wanted then break end
 			local t, struck = 0, false
 			while t < 0.5 do
 				t += RunService.Heartbeat:Wait()
@@ -544,9 +554,9 @@ local function smithRoutine(forge: Model)
 		end
 		pose(model, parts, facing, 0, 0, nil)
 		task.wait(0.6)
-		local back = walkPath(model, parts, facing, home.Position, WALK_SPEED, nil)
+		local back = walkPath(model, parts, facing, home.Position, WALK_SPEED * (wanted and 1.4 or 1), nil)
 		walk(model, parts, back, home, nil)
-		if prompt then prompt.Enabled = true end
+		wanted = false
 	end
 end
 for _, model in ipairs(map:GetDescendants()) do
