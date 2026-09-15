@@ -9,7 +9,7 @@ local openRebirth = remotes:WaitForChild("RebirthStationOpen")
 local notify = remotes:WaitForChild("Notify")
 if layout.HUB.RebirthPosition then
 	local rebirth = actors.create("Rebirth Keeper", layout.HUB.RebirthPosition, Color3.fromRGB(80, 130, 180),
-		{ facing = layout.HUB.RebirthCFrame, subtitle = "Rebirth" })
+		{ facing = layout.HUB.RebirthCFrame, subtitle = "Rebirth", outfit = "RebirthKeeper" })
 	actors.prompt(rebirth, "Rebirth").Triggered:Connect(function(player)
 		openRebirth:FireClient(player) -- The existing RebirthSystem validates and performs the purchase.
 	end)
@@ -17,7 +17,7 @@ end
 
 if not layout.HUB.RespecPosition then return end -- map lacks the marker: respec idle
 local respec = actors.create("Skill Trainer", layout.HUB.RespecPosition, Color3.fromRGB(120, 80, 150),
-	{ facing = layout.HUB.RespecCFrame, subtitle = "Reset skill points" })
+	{ facing = layout.HUB.RespecCFrame, subtitle = "Reset skill points", outfit = "Trainer" })
 local cooldowns = {}
 local ATTRIBUTES = {"Strength", "Health", "Defense", "ExperienceGain"}
 local BASE_COST, REBIRTH_COST, COOLDOWN = 200, 100, 2 -- [TUNING] Existing respec prices and cooldown.
