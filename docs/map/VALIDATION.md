@@ -1,6 +1,6 @@
 # Map validation
 
-- 2356 parts: 17 floor, 383 collidable solids, 26 wall proxies, 31 markers/volumes
+- 2284 parts: 17 floor, 371 collidable solids, 26 wall proxies, 31 markers/volumes
 
 ## Walk distance from player spawn
 
@@ -10,7 +10,7 @@
 | NPC QuestMaster | 91 | 5.7 s | 3.5 s |
 | NPC Merchant | 66 | 4.1 s | 2.5 s |
 | NPC SkillTrainer | 61 | 3.8 s | 2.4 s |
-| NPC RebirthKeeper | 84 | 5.2 s | 3.2 s |
+| NPC RebirthKeeper | 81 | 5.1 s | 3.1 s |
 | Waypoint HubSpawn | 0 | 0.0 s | 0.0 s |
 | Waypoint IronOverlook | 193 | 12.0 s | 7.4 s |
 | Waypoint WarlordGate | 390 | 24.4 s | 15.0 s |
