@@ -44,6 +44,15 @@ local function rigParts(model: Model)
 		parts[name] = model:FindFirstChild(name)
 		if not parts[name] then return nil end
 	end
+	parts.model = model
+	-- outfit pieces: (part, body part, offset) so pose() can carry them without physics
+	parts.accessories = {}
+	for _, acc in ipairs(model:GetChildren()) do
+		local bodyName, offset = acc:GetAttribute("AccPart"), acc:GetAttribute("AccOffset")
+		if acc:IsA("BasePart") and bodyName and typeof(offset) == "CFrame" and parts[bodyName] then
+			table.insert(parts.accessories, { acc, parts[bodyName], offset })
+		end
+	end
 	return parts
 end
 
@@ -63,6 +72,22 @@ local function pose(model: Model, parts, root: CFrame, legSwing: number, armAngl
 		-- grip in the hand (arm bottom), blade continuing along the arm's -Y
 		sword.CFrame = rightArm * CFrame.new(0, -1.0, 0) * CFrame.new(0, -2.0, 0)
 	end
+	for _, entry in ipairs(parts.accessories) do
+		entry[1].CFrame = entry[2].CFrame * entry[3]
+	end
+end
+
+-- Turn in place toward a target rotation over `seconds`, then return the new root CFrame.
+local function turnToward(model: Model, parts, from: CFrame, target: CFrame, seconds: number, sword: BasePart?): CFrame
+	local goal = CFrame.new(from.Position) * target.Rotation
+	local t = 0
+	while t < seconds do
+		t += RunService.Heartbeat:Wait()
+		local alpha = math.min(t / seconds, 1)
+		pose(model, parts, from:Lerp(goal, alpha), 0, 0, sword)
+	end
+	pose(model, parts, goal, 0, 0, sword)
+	return goal
 end
 
 -- The trainer's sword: steel blade, crossguard and wrapped grip, CFrame-driven from the hand.
@@ -117,13 +142,14 @@ end
 
 local function walk(model: Model, parts, from: CFrame, to: CFrame, sword: BasePart?)
 	local distance = (to.Position - from.Position).Magnitude
-	local duration = math.max(0.3, distance / WALK_SPEED)
+	local duration = math.max(0.35, distance / WALK_SPEED)
 	local elapsed = 0
 	while elapsed < duration do
 		elapsed += RunService.Heartbeat:Wait()
 		local alpha = math.min(elapsed / duration, 1)
+		alpha = alpha * alpha * (3 - 2 * alpha)
 		local root = from:Lerp(to, alpha)
-		local swing = math.sin(elapsed * 9) * 0.6
+		local swing = if distance > 1 then math.sin(elapsed * 9) * 0.6 else 0
 		pose(model, parts, root, swing, swing * 0.5, sword)
 	end
 	pose(model, parts, to, 0, 0, sword)
@@ -150,17 +176,27 @@ local function walkPath(model: Model, parts, from: CFrame, destination: Vector3,
 		points = { destination }
 	end
 	local here = from
+	local stride = 0
 	for _, target in ipairs(points) do
 		local flat = Vector3.new(target.X, here.Position.Y, target.Z)
 		if (flat - here.Position).Magnitude < 0.3 then continue end
 		local facing = CFrame.lookAt(here.Position, flat)
+		-- turn first (quick, proportional to how far round the new heading is), then walk
+		local dot = math.clamp(here.LookVector:Dot(facing.LookVector), -1, 1)
+		local turnTime = math.acos(dot) / math.pi * 0.45
+		if turnTime > 0.03 then
+			here = turnToward(model, parts, here, facing, turnTime, sword)
+		end
 		local duration = (flat - here.Position).Magnitude / speed
 		local elapsed = 0
 		while elapsed < duration do
-			elapsed += RunService.Heartbeat:Wait()
+			local dt = RunService.Heartbeat:Wait()
+			elapsed += dt
+			stride += dt * speed * 0.9
 			local alpha = math.min(elapsed / duration, 1)
-			local root = CFrame.new(here.Position:Lerp(flat, alpha)) * facing.Rotation
-			local swing = math.sin(elapsed * (speed * 0.9)) * 0.55
+			local bob = math.abs(math.sin(stride)) * 0.12
+			local root = CFrame.new(here.Position:Lerp(flat, alpha) + Vector3.new(0, bob, 0)) * facing.Rotation
+			local swing = math.sin(stride) * 0.55
 			pose(model, parts, root, swing, swing * 0.5, sword)
 		end
 		here = CFrame.new(flat) * facing.Rotation

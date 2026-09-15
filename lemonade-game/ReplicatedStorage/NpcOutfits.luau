@@ -1,7 +1,8 @@
 -- ModuleScript | ReplicatedStorage.NpcOutfits | Distinct looks for the block-rig NPCs.
 -- apply(model, outfitName) recolours the rig and welds accessory parts (hats, aprons, beards,
--- tools) onto it. Accessories are unanchored and welded, so they follow when a script moves the
--- anchored body parts (HubAmbience walks the trainer and villagers by setting CFrames).
+-- tools) onto it. Accessories are anchored like the rig and carry AccPart/AccOffset attributes;
+-- anything that moves the rig by CFrame (HubAmbience) re-places them with NpcOutfits.follow.
+-- (Welded physics parts were tried first: the server kept snapping them back to the counter.)
 -- Works for GameplayActors rigs (server) and the client-built villagers alike.
 local NpcOutfits = {}
 
@@ -204,19 +205,31 @@ function NpcOutfits.apply(model: Model, outfitName: string)
 		if spec.shape then acc.Shape = Enum.PartType[spec.shape] end
 		acc.Transparency = spec.transparency or 0
 		acc.CanCollide, acc.CanQuery, acc.CanTouch, acc.CastShadow = false, false, false, false
-		acc.Massless = true
-		acc.Anchored = false
+		acc.Anchored = true
 		acc.TopSurface, acc.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
 		acc.CFrame = body.CFrame * spec.offset
-		local weld = Instance.new("WeldConstraint")
-		weld.Part0, weld.Part1 = body, acc
-		weld.Parent = acc
+		acc:SetAttribute("AccPart", spec.part)
+		acc:SetAttribute("AccOffset", spec.offset)
 		if spec.light then
 			local light = Instance.new("PointLight")
 			light.Range, light.Brightness, light.Color = spec.light[1], spec.light[2], spec.color
 			light.Parent = acc
 		end
 		acc.Parent = model
+	end
+end
+
+-- Re-place every accessory from its body part's current CFrame. Call after moving the rig.
+function NpcOutfits.follow(model: Model)
+	for _, acc in ipairs(model:GetChildren()) do
+		local partName = acc:GetAttribute("AccPart")
+		if partName and acc:IsA("BasePart") then
+			local body = model:FindFirstChild(partName)
+			local offset = acc:GetAttribute("AccOffset")
+			if body and body:IsA("BasePart") and typeof(offset) == "CFrame" then
+				acc.CFrame = body.CFrame * offset
+			end
+		end
 	end
 end
 
