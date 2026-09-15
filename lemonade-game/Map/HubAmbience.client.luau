@@ -488,6 +488,25 @@ for _, model in ipairs(map:GetDescendants()) do
 		table.insert(beds, Vector3.new(model:GetAttribute("BedX"), model:GetAttribute("BedY"), model:GetAttribute("BedZ")))
 	end
 end
+-- Tree canopies are the other favourite; butterflies flit round their edges.
+local canopies = {}
+for _, model in ipairs(map:GetDescendants()) do
+	if model:IsA("Model") and string.match(model.Name, "^Tree") then
+		local canopy = model:FindFirstChild("Canopy")
+		if canopy then table.insert(canopies, { pos = canopy.Position, radius = canopy.Size.X / 2 }) end
+	end
+end
+-- A point on the green: off the roads (|x| or |z| under 10) and outside the paved plaza.
+local function grassPoint(): Vector3
+	for _ = 1, 12 do
+		local a, r = math.random() * math.pi * 2, 30 + math.sqrt(math.random()) * (HUB_ROAM - 30)
+		local x, z = math.cos(a) * r, math.sin(a) * r
+		if math.abs(x) > 12 and math.abs(z) > 12 then
+			return Vector3.new(x, floorY + 1.5 + math.random() * 2.5, z)
+		end
+	end
+	return Vector3.new(-40, floorY + 2, -40)
+end
 local WING_COLORS = { Color3.fromRGB(255, 190, 60), Color3.fromRGB(120, 170, 255), Color3.fromRGB(255, 255, 255),
 	Color3.fromRGB(255, 120, 150), Color3.fromRGB(180, 220, 90) }
 local flutters = {}
@@ -512,14 +531,21 @@ local function newButterfly(k: number)
 		speed = BUTTERFLY_SPEED[1] + math.random() * (BUTTERFLY_SPEED[2] - BUTTERFLY_SPEED[1]), linger = 0 }
 end
 local function pickButterflyTarget(f)
-	if #beds > 0 and math.random() < 0.65 then
+	local roll = math.random()
+	if #beds > 0 and roll < 0.45 then
 		local bed = beds[math.random(#beds)]
 		f.target = bed + Vector3.new((math.random() - 0.5) * 3, 0.4 + math.random() * 1.2, (math.random() - 0.5) * 3)
+		f.linger = 1.5 + math.random() * 3
+	elseif #canopies > 0 and roll < 0.75 then
+		local tree = canopies[math.random(#canopies)]
+		local a = math.random() * math.pi * 2
+		local d = tree.radius + 0.5 + math.random() * 2
+		f.target = tree.pos + Vector3.new(math.cos(a) * d, (math.random() - 0.3) * tree.radius, math.sin(a) * d)
+		f.linger = 0.5 + math.random() * 2
 	else
-		local a, r = math.random() * math.pi * 2, math.sqrt(math.random()) * HUB_ROAM
-		f.target = Vector3.new(math.cos(a) * r, floorY + 2 + math.random() * 7, math.sin(a) * r)
+		f.target = grassPoint()
+		f.linger = if math.random() < 0.5 then 1 + math.random() * 2 else 0
 	end
-	f.linger = if math.random() < 0.5 then 1 + math.random() * 3 else 0
 end
 for k = 1, BUTTERFLY_COUNT do
 	local f = newButterfly(k)
