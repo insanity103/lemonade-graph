@@ -1408,10 +1408,7 @@ def build_hub(rng):
     visual.append(bunting("BuntingW2", (-70, -11), (-70, 11), HUB_Y, 10.0, rng))
     visual.append(bunting("BuntingE1", (52, -11), (52, 11), HUB_Y, 10.5, rng))
     visual.append(bunting("BuntingN1", (-11, -58), (11, -58), HUB_Y, 10.5, rng))
-    visual.append(fingerpost("Fingerpost", 14, HUB_Y, -30, [
-        ("Sword Shop", yaw_facing(-1, 0), 9.4), ("Skill Trainer", yaw_facing(1, 0), 8.3),
-        ("Quests", yaw_facing(0, 1), 7.2), ("Iron Lowlands", yaw_facing(0.3, 1), 6.1)]))
-    visual.append(sign("WelcomeSign", 0, HUB_Y, -54, 180, 14, 4.6, "Hearthmere", "The road south leads to the Iron Lowlands"))
+    visual.append(sign("WelcomeSign", 0, HUB_Y, -54, 180, 14, 4.6, "Hearthmere", "Safe haven"))
     # Market corner by the well: produce stall, gathering fire with log seats.
     visual.append(market_stall("ProduceStall", -38, HUB_Y, 52, rng))
     visual.append(campfire("GatheringFire", -24, HUB_Y, 66, rng))
@@ -1550,8 +1547,6 @@ def build_iron_lowlands(rng):
                            query=False, shadow=False, layer="proxy"))
 
     visual.append(waystone("OverlookWaystone", "IronOverlook", 31, T, 145))
-    visual.append(sign("OverlookGuide", -26, T, 160, yaw_facing(0, -1), 12, 5, "Squire Yard  >  Crusher Pits",
-                       "The Iron Warlord waits beyond the ridge"))
 
     # Squire Yard dressing (outside lanes: |x| >= 66 or tucked against cliffs).
     for k, (x, z) in enumerate(((-92, 190), (-80, 236), (94, 214), (86, 262), (-98, 262), (70, 190))):
