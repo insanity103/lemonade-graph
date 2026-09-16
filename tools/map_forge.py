@@ -142,7 +142,7 @@ def part(name, size, pos, color, material="SmoothPlastic", rot=None, cls="Part",
         props["Shape"] = shape
     if extra:
         props.update(extra)
-    REGISTRY.append({"name": name, "size": size, "pos": pos, "rot": rot, "color": color,
+    REGISTRY.append({"name": name, "size": size, "pos": pos, "rot": rot, "color": color, "shape": shape,
                      "collide": collide, "transparency": transparency, "layer": layer, "cls": cls})
     return inst(name, cls, props, attrs, children)
 
@@ -212,8 +212,46 @@ def free_top(top: float) -> float:
     return top
 
 
+# When True, prop helpers ignore the caller's Y and rest on the floor generated under (x, z):
+# benches, ramps and paths included. Off for the hub, whose props were placed by hand.
+AUTO_GROUND = False
+
+
+def entry_top(e, x, z):
+    """World Y of a REGISTRY entry's top face above (x, z), or None outside its footprint.
+    Same math as check_map_project.top_at, so props and the validator agree on the floor."""
+    r, (px, py, pz), (sx, sy, sz) = e["rot"], e["pos"], e["size"]
+    if e["shape"] == "Cylinder" and abs(r[1][0]) > 0.99:  # disc: axis vertical
+        return py + sx / 2 if math.hypot(x - px, z - pz) <= sy / 2 else None
+    if abs(r[1][1]) < 0.2:
+        return None
+    dx, dz = x - px, z - pz
+    y = py + (sy / 2 - r[0][1] * dx - r[2][1] * dz) / r[1][1]
+    d = (dx, y - py, dz)
+    lx = sum(r[i][0] * d[i] for i in range(3))
+    lz = sum(r[i][2] * d[i] for i in range(3))
+    if abs(lx) <= sx / 2 + 1e-6 and abs(lz) <= sz / 2 + 1e-6:
+        return y
+    return None
+
+
+def floor_at(x, z, default=None):
+    """Highest Grounds_* top generated so far under (x, z); `default` when AUTO_GROUND is off
+    or no floor covers the point."""
+    if not AUTO_GROUND:
+        return default
+    best = None
+    for e in REGISTRY:
+        if e["layer"] != "ground":
+            continue
+        y = entry_top(e, x, z)
+        if y is not None and (best is None or y > best):
+            best = y
+    return default if best is None else best
+
+
 def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, chunk=(10, 18),
-              material="Sandstone"):
+              material="Sandstone", h_jitter=(0.82, 1.18), caps=True, proxy=True):
     """Visual cliff chunks along segment a→b whose inner faces sit on the segment line.
 
     `inward` is +1 when the play area lies to the left of a→b (looking down from +Y), else -1.
@@ -232,7 +270,7 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
     last_h = -1.0
     while s < seg - 0.5:
         length = min(rng.uniform(*chunk), seg - s)
-        h = height * rng.uniform(0.82, 1.18)
+        h = height * rng.uniform(*h_jitter)
         if abs(h - last_h) < 0.6:  # equal neighbouring tops would z-fight where the chunks overlap
             h += 1.5
         h = free_top(base_y + h - 1) - base_y + 1
@@ -244,7 +282,7 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
         col = color if i % 3 else dark
         out.append(part(f"{name}_{i:02d}", (length + 1.2, h, d), (cx, base_y + h / 2 - 1, cz), col,
                         material, rot_y(yaw + jitter), collide=False, layer="cliff"))
-        if rng.random() < 0.45:  # stepped ledge breaks the silhouette
+        if caps and rng.random() < 0.45:  # stepped ledge breaks the silhouette
             lh = h * rng.uniform(0.25, 0.45)
             ld = rng.uniform(3, 5)
             lx = ax + dx * (s + length / 2) - nx * (d + ld / 2 - 0.5)
@@ -254,6 +292,8 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
                             dark, material, rot_y(yaw + jitter * 0.5), collide=False, layer="cliff"))
         s += length
         i += 1
+    if not proxy:
+        return out, None
     proxy = part(f"{name}_Proxy", (seg, PROXY_TOP - base_y + 2, 6),
                  ((ax + bx) / 2 - nx * 3, (base_y - 2 + PROXY_TOP) / 2, (az + bz) / 2 - nz * 3),
                  (255, 0, 255), "SmoothPlastic", rot_y(yaw), transparency=1, query=False,
@@ -262,6 +302,7 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
 
 
 def tree(name, x, y, z, rng, scale=1.0):
+    y = floor_at(x, z, y)
     s = scale * rng.uniform(0.85, 1.15)
     trunk_h = 11 * s
     leaves = rng.choice(LEAVES)
@@ -276,6 +317,7 @@ def tree(name, x, y, z, rng, scale=1.0):
 
 
 def rock_cluster(name, x, y, z, rng, color=ROCK_GRAY, size=1.0, collide=True):
+    y = floor_at(x, z, y)
     kids = []
     for i in range(rng.randint(2, 4)):
         w, h, d = (rng.uniform(4, 9) * size, rng.uniform(2.5, 6) * size, rng.uniform(4, 8) * size)
@@ -287,6 +329,7 @@ def rock_cluster(name, x, y, z, rng, color=ROCK_GRAY, size=1.0, collide=True):
 
 
 def lamp_post(name, x, y, z, yaw=0.0):
+    y = floor_at(x, z, y)
     fwd = apply(rot_y(yaw), (0, 0, -1))
     arm = (x + fwd[0] * 1.6, y + 9.2, z + fwd[2] * 1.6)
     return model(name, [
@@ -301,6 +344,7 @@ def lamp_post(name, x, y, z, yaw=0.0):
 def sign(name, x, y, z, yaw, width, height, title, subtitle="", board=TIMBER, text=(255, 238, 200),
          post_h=None):
     """Signboard between two posts. Posts sit outside the board's width so they can't cover text."""
+    y = floor_at(x, z, y)
     post_h = post_h if post_h is not None else height + 3
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
@@ -319,6 +363,7 @@ def sign(name, x, y, z, yaw, width, height, title, subtitle="", board=TIMBER, te
 
 def fence_run(name, a, b, y, height=3.2, gap=None, collide=True, skip_first_post=False):
     """Timber fence with posts every ~8 studs. `gap` = (s0, s1) distances along the run left open."""
+    y = floor_at((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, y)
     ax, az = a
     bx, bz = b
     seg = math.hypot(bx - ax, bz - az)
@@ -802,6 +847,7 @@ BUNTING_COLORS = [(196, 60, 52), (232, 200, 90), (70, 120, 176), (78, 140, 90), 
 
 
 def bush(name, x, y, z, rng, scale=1.0):
+    y = floor_at(x, z, y)
     kids = []
     for k in range(3):
         d = rng.uniform(2.0, 3.2) * scale
@@ -856,6 +902,7 @@ def bench(name, x, y, z, yaw):
 
 
 def barrel(name, x, y, z, rng):
+    y = floor_at(x, z, y)
     kids = [part("Body", (3.0, 2.6, 2.6), (x, y + 1.5, z), (118, 84, 52), "Wood", rot_z(90), shape="Cylinder")]
     for k, hy in enumerate((0.7, 2.3)):
         kids.append(part(f"Band{k}", (0.25, 2.75, 2.75), (x, y + hy, z), IRON, "Metal", rot_z(90), shape="Cylinder",
@@ -864,6 +911,7 @@ def barrel(name, x, y, z, rng):
 
 
 def crate_stack(name, x, y, z, rng):
+    y = floor_at(x, z, y)
     return model(name, [
         part("Crate0", (3, 3, 3), (x, y + 1.5, z), TIMBER, "WoodPlanks", rot_y(rng.uniform(-8, 8))),
         part("Crate1", (2.4, 2.4, 2.4), (x + 0.3, y + 4.2, z - 0.2), (140, 96, 58), "WoodPlanks",
@@ -874,6 +922,7 @@ def crate_stack(name, x, y, z, rng):
 
 
 def woodpile(name, x, y, z, yaw, rng):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     kids = []
     for row in range(3):
@@ -885,6 +934,7 @@ def woodpile(name, x, y, z, yaw, rng):
 
 
 def hand_cart(name, x, y, z, yaw):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     fwd = apply(r, (0, 0, -1))
@@ -906,6 +956,7 @@ def hand_cart(name, x, y, z, yaw):
 
 
 def hay_bale(name, x, y, z, yaw):
+    y = floor_at(x, z, y)
     return model(name, [
         part("Bale", (3.2, 2.2, 2.2), (x, y + 1.1, z), (214, 186, 96), "Grass", rot_y(yaw)),
         part("Twine", (3.3, 0.15, 2.3), (x, y + 1.35, z), (120, 92, 60), "Fabric", rot_y(yaw), collide=False),
@@ -913,6 +964,7 @@ def hay_bale(name, x, y, z, yaw):
 
 
 def stump(name, x, y, z, rng):
+    y = floor_at(x, z, y)
     d = rng.uniform(2.2, 3.0)
     return model(name, [
         part("Stump", (1.4, d, d), (x, y + 0.7, z), TRUNK, "Wood", rot_z(90), shape="Cylinder"),
@@ -1312,6 +1364,7 @@ def storage_shack(name, x0, x1, z0, z1, y, rng):
 
 
 def campfire(name, x, y, z, rng):
+    y = floor_at(x, z, y)
     kids = []
     for k in range(7):
         a = k / 7 * math.tau
@@ -1326,6 +1379,7 @@ def campfire(name, x, y, z, rng):
 
 
 def scaffold(name, x, y, z, yaw, length, height=16):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     kids = []
@@ -1349,6 +1403,7 @@ def scaffold(name, x, y, z, yaw, length, height=16):
 
 
 def mine_cart(name, x, y, z, yaw):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     kids = [part("Body", (4.5, 2.6, 6.5), (x, y + 2.3, z), (88, 70, 54), "WoodPlanks", r),
             part("Load", (3.8, 1.2, 5.6), (x, y + 3.7, z), ROCK_GRAY, "Slate", r, collide=False)]
@@ -1364,6 +1419,7 @@ def mine_cart(name, x, y, z, yaw):
 
 
 def rail_track(name, x, y, z0, z1):
+    y = floor_at(x, (z0 + z1) / 2, y)
     kids = []
     for sx in (-1.6, 1.6):
         kids.append(box(f"Rail{sx}", x + sx - 0.2, x + sx + 0.2, y, y + 0.35, z0, z1, IRON, "Metal", collide=False))
@@ -1378,6 +1434,7 @@ def rail_track(name, x, y, z0, z1):
 
 
 def stone_stack(name, x, y, z, rng, color=(186, 160, 120)):
+    y = floor_at(x, z, y)
     kids = []
     layers = rng.randint(1, 3)
     for lv in range(layers):
@@ -1390,6 +1447,7 @@ def stone_stack(name, x, y, z, rng, color=(186, 160, 120)):
 
 
 def tent(name, x, y, z, yaw, color=(150, 120, 90)):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     kids = []
     for sgn in (-1, 1):
@@ -1401,6 +1459,7 @@ def tent(name, x, y, z, yaw, color=(150, 120, 90)):
 
 
 def banner_pole(name, x, y, z, yaw, color=WARLORD_RED):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     return model(name, [
@@ -1412,6 +1471,7 @@ def banner_pole(name, x, y, z, yaw, color=WARLORD_RED):
 
 
 def brazier(name, x, y, z):
+    y = floor_at(x, z, y)
     return model(name, [
         part("Base", (2.6, 3.2, 2.6), (x, y + 1.6, z), STONE_DARK, "Cobblestone"),
         part("Bowl", (3.6, 1.2, 3.6), (x, y + 3.8, z), IRON, "Metal", collide=False),
@@ -1426,6 +1486,7 @@ def waystone(name, waypoint_id, x, y, z, glow=(120, 210, 240)):
     The tallest shard is named Core: MapTravel puts the travel prompt on it, and HubAmbience
     slowly turns the FloatShard pieces around the cluster.
     """
+    y = floor_at(x, z, y)
     rng = random.Random(hash(waypoint_id) & 0xFFFF)
     kids = [part("Base", (1.6, 7.6, 7.6), (x, y + 0.8, z), STONE_DARK, "Slate", rot_z(90), shape="Cylinder")]
     shards = [("Core", 11.0, 2.1, 0.0, 0.0, 6.0), ("Shard1", 7.0, 1.5, -2.2, 1.4, 13.0),
@@ -1474,19 +1535,19 @@ def volume(name, x0, x1, y0, y1, z0, z1, attrs=None):
 
 
 ENEMY_SPAWNS = [
-    # id, archetype, level, role, (x, z), leash — [TUNING] first-slice placement, see FIRST_SLICE.md
-    ("IL_S1", "IronSquire", 1, "minion", (-35, 212), 20),
-    ("IL_S2", "IronSquire", 1, "minion", (30, 206), 20),
-    ("IL_S3", "IronSquire", 2, "minion", (-2, 236), 20),
-    ("IL_S4", "IronSquire", 2, "minion", (-48, 252), 20),
-    ("IL_S5", "IronSquire", 3, "minion", (44, 250), 20),
-    ("IL_S6", "IronSquire", 3, "minion", (-22, 288), 20),
-    ("IL_B1", "IronBerserker", 3, "minion", (30, 296), 22),
-    ("IL_S7", "IronSquire", 4, "minion", (-60, 318), 20),
-    ("IL_B2", "IronBerserker", 4, "minion", (12, 318), 22),
-    ("IL_B3", "IronBerserker", 5, "minion", (52, 338), 22),
-    ("IL_S8", "IronSquire", 4, "minion", (-40, 345), 20),
-    ("IL_E1", "IronBerserker", 6, "elite", (-142, 315), 18),
+    # id, archetype, level, role, (x, z), leash — [TUNING] rim bench → mid bench → pit, see FIRST_SLICE.md
+    ("IL_S1", "IronSquire", 1, "minion", (-36, 206), 20),
+    ("IL_S2", "IronSquire", 1, "minion", (34, 200), 20),
+    ("IL_S3", "IronSquire", 2, "minion", (-6, 224), 20),
+    ("IL_S4", "IronSquire", 2, "minion", (-46, 268), 20),
+    ("IL_S5", "IronSquire", 3, "minion", (50, 278), 20),
+    ("IL_S6", "IronSquire", 3, "minion", (-14, 306), 20),
+    ("IL_B1", "IronBerserker", 3, "minion", (40, 314), 22),
+    ("IL_S7", "IronSquire", 4, "minion", (-66, 348), 20),
+    ("IL_B2", "IronBerserker", 4, "minion", (44, 350), 22),
+    ("IL_B3", "IronBerserker", 5, "minion", (-44, 359), 22),
+    ("IL_S8", "IronSquire", 4, "minion", (66, 390), 20),
+    ("IL_E1", "IronBerserker", 6, "elite", (-142, 300), 18),
     ("IL_BOSS", "Boss_Gorgon", 10, "boss", (0, 432), 50),
 ]
 
@@ -1494,7 +1555,7 @@ WAYPOINTS = [
     # id, display, region, (x, y, z) arrival, facing yaw, order — waystone models carry WaypointId
     ("HubSpawn", "Hearthmere", "Hub", (0, HUB_Y, -40), 180.0, 1),
     ("IronOverlook", "Quarry Overlook", "IronLowlands", (18, HUB_Y, 152), 180.0, 2),
-    ("WarlordGate", "Warlord's Gate", "IronLowlands", (0, QUARRY_Y, 352), 180.0, 3),
+    ("WarlordGate", "Warlord's Gate", "IronLowlands", (0, QUARRY_Y, 358), 180.0, 3),
 ]
 
 
@@ -1518,7 +1579,7 @@ def build_markers():
     ], cls="Folder")
     spawns = []
     for sid, arch, level, role, (x, z), leash in ENEMY_SPAWNS:
-        spawns.append(marker(sid, (x, QUARRY_Y, z), 0, attrs={
+        spawns.append(marker(sid, (x, floor_at(x, z, QUARRY_Y), z), 0, attrs={
             "Archetype": arch, "Level": level, "Role": role, "Zone": "IronLowlands",
             "Region": "IronLowlands", "LeashRadius": leash}))
     enemy = model("EnemySpawns", spawns, cls="Folder")
@@ -1764,19 +1825,112 @@ def build_hub(rng):
 
 
 # ── Iron Lowlands: pass → overlook → yard → pits → Warlord's Pit ─────────────
+# ── Iron Lowlands: the bandit quarry ─────────────────────────────────────────
+# Three worked benches step down from the Overlook rim (Y 10) to the pit (Y 2). [TUNING]
+RIM_Y, MID_Y, PIT_Y = HUB_Y, 6.0, QUARRY_Y
+RIM_Z, MID_Z, PIT_Z = (168, 232), (232, 330), (330, 472)
+RAMP1 = (6, 34, 232, 254)      # rim → mid, x0 x1 z0 z1 (10.3°)
+RAMP2 = (-36, -8, 330, 352)    # mid → pit
+SUMP = (76, 112, 330, 372)     # drainage corner of the pit, bed at PIT_Y - 1.2
+PASSAGE = (-167, -112, 270, 330)  # the gang's back-door passage off the mid bench
+HAUL_ROAD = (128, 100, 70)
+RUT = (96, 74, 52)
+RUST = (150, 82, 44)
+IRON_DARK = (58, 56, 54)
+MOSS = (92, 128, 60)
+MUD = (104, 80, 54)
+SUMP_WATER = (84, 66, 44)
+
+
+def haul_ramp(name, x0, x1, z0, z1, y_top, y_bottom):
+    """Packed-earth ramp with a timber curb log on each side, laid along the slope."""
+    floor = ramp(name, x0, x1, z0, z1, y_top, y_bottom, HAUL_ROAD, "Ground")
+    dz, dy = z1 - z0, y_bottom - y_top
+    angle = -math.degrees(math.atan2(dy, dz))
+    length = math.hypot(dz, dy)
+    curbs = []
+    for side, x in ((-1, x0 + 0.6), (1, x1 - 0.6)):
+        curbs.append(part(f"{name}Curb{side}", (0.9, 0.9, length - 1.5), (x, (y_top + y_bottom) / 2 + 0.42, (z0 + z1) / 2),
+                          BEAM, "Wood", rot_x(angle), collide=False, layer="prop"))
+    return floor, curbs
+
+
+def haul_road(name, x0, x1, z0, z1, y, along="z"):
+    """Worn earth strip (a floor) plus two cart ruts (decals, slightly proud so they read at a
+    distance). Returns (floor_parts, decal_parts): decals belong in the region model, not Grounds_*."""
+    floor = [box(f"{name}", x0, x1, y, y + 0.2, z0, z1, HAUL_ROAD, "Ground", layer="ground")]
+    ruts = []
+    if along == "z":
+        for k, x in enumerate(((x0 + x1) / 2 - 2.6, (x0 + x1) / 2 + 2.6)):
+            ruts.append(box(f"{name}Rut{k}", x - 0.35, x + 0.35, y + 0.2, y + 0.32, z0 + 1, z1 - 1, RUT, "Ground",
+                            collide=False, layer="decal"))
+    else:
+        for k, z in enumerate(((z0 + z1) / 2 - 2.6, (z0 + z1) / 2 + 2.6)):
+            ruts.append(box(f"{name}Rut{k}", x0 + 1, x1 - 1, y + 0.2, y + 0.32, z - 0.35, z + 0.35, RUT, "Ground",
+                            collide=False, layer="decal"))
+    return floor, ruts
+
+
+def bench_face(name, a, b, inward, lower_y, drop, rng):
+    """Rough rock lip embedded in the upper slab along a bench edge; only the jittered fronts show.
+    The slab itself is the collider (players may drop off the edge), so no proxy."""
+    chunks, _ = cliff_run(name, a, b, inward, lower_y, drop + 0.4, QUARRY_CLIFF, QUARRY_CLIFF_DARK, rng, depth=3.5,
+                          chunk=(6, 11), h_jitter=(0.86, 1.06), caps=False, proxy=False)
+    return chunks
+
+
+def spoil_heap(name, x, z, rng, radius=12.0, color=QUARRY_CLIFF_DARK):
+    """Rubble mound: two collidable discs with loose rock scattered over them."""
+    y = floor_at(x, z, PIT_Y)
+    kids = disc("Mound", x, z, radius, y + 2.6, 2.6, color, "Slate")
+    kids += disc("Crown", x + rng.uniform(-2, 2), z + rng.uniform(-2, 2), radius * 0.55, y + 4.4, 1.8, color, "Slate")
+    for k in range(rng.randint(7, 10)):
+        a, rr = rng.uniform(0, math.tau), rng.uniform(0.2, 0.95) * radius
+        rx, rz = x + math.cos(a) * rr, z + math.sin(a) * rr
+        top = y + (4.4 if rr < radius * 0.5 else 2.6)
+        w, h, d = rng.uniform(1.6, 3.4), rng.uniform(1.0, 2.2), rng.uniform(1.6, 3.2)
+        kids.append(part(f"Rubble{k}", (w, h, d), (rx, top + h / 2 - 0.3, rz), rng.choice((ROCK_GRAY, STONE_DARK, color)),
+                         "Slate", mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-14, 14))), collide=False, layer="rock"))
+    return model(name, kids)
+
+
 def build_iron_lowlands(rng):
-    Y, T = QUARRY_Y, HUB_Y
+    global AUTO_GROUND
+    AUTO_GROUND = True
+    T = HUB_Y
+    # Reserve the floor heights so no cliff or lip chunk top lands coplanar with a walkable top.
+    for top in (RIM_Y, MID_Y, PIT_Y, PIT_Y - 1.2, PIT_Y + 0.2, MID_Y + 0.2, PIT_Y + 0.25, PIT_Y + 0.32, MID_Y + 0.32):
+        USED_CLIFF_TOPS.add(round(top * 10))
     ground = [
         slab("PassFloor", -14, 14, 104, 140, T, (140, 130, 116), "Cobblestone"),
         slab("OverlookFloor", -40, 40, 140, 168, T, (140, 112, 84), "Ground"),
-        slab("QuarryFloor", -112, 112, 168, 472, Y, QUARRY_FLOOR, "Ground"),
-        slab("SidePassageFloor", -167, -112, 283, 347, Y, QUARRY_FLOOR, "Ground"),
-        ramp("OverlookRamp", -14, 14, 168, 200, T, Y, (132, 104, 78), "WoodPlanks"),
-        box("QuarryPath", -10, 10, Y, Y + 0.2, 200, 382, QUARRY_PATH, "Pebble", layer="ground"),
-        box("SidePath", -140, -10, Y, Y + 0.2, 309, 321, QUARRY_PATH, "Pebble", layer="ground"),
+        # Bench 1, the rim: level with the overlook; the gang's front yard.
+        slab("RimBench", -112, 112, RIM_Z[0], RIM_Z[1], RIM_Y, QUARRY_FLOOR, "Ground"),
+        # Bench 2: machinery level, plus the back-door passage west.
+        slab("MidBench", -112, 112, MID_Z[0], MID_Z[1], MID_Y, (146, 106, 72), "Ground"),
+        slab("PassageFloor", PASSAGE[0], PASSAGE[1], PASSAGE[2], PASSAGE[3], MID_Y, (146, 106, 72), "Ground"),
+        # Bench 3, the pit: split around the drainage sump in its east corner.
+        slab("PitFloorW", -112, SUMP[0], PIT_Z[0], PIT_Z[1], PIT_Y, (140, 100, 68), "Ground"),
+        slab("PitFloorE", SUMP[0], 112, SUMP[3], PIT_Z[1], PIT_Y, (140, 100, 68), "Ground"),
+        slab("SumpBed", SUMP[0], SUMP[1], SUMP[2], SUMP[3], PIT_Y - 1.2, MUD, "Mud"),
     ]
-    ground += disc("ArenaFloor", 0, 424, 38, Y + 0.25, 0.5, (118, 108, 98), "Cobblestone")
-    visual, proxies = [], []
+    ruts = []
+    for name, rect, y0, y1 in (("HaulRamp1", RAMP1, RIM_Y, MID_Y), ("HaulRamp2", RAMP2, MID_Y, PIT_Y)):
+        floor, curbs = haul_ramp(name, *rect, y0, y1)
+        ground.append(floor)
+        ruts += curbs
+    # Haul road: ramp 1 foot → south → west → ramp 2; ramp 2 foot → east → through the ridge gap.
+    for args in (("HaulRoadA", RAMP1[0] + 2, RAMP1[1] - 2, RAMP1[3], 296, MID_Y),
+                 ("HaulRoadB", RAMP2[0] + 2, RAMP1[1] - 2, 296, 318, MID_Y, "x"),
+                 ("HaulRoadC", RAMP2[0] + 2, RAMP2[1] - 2, 318, RAMP2[2], MID_Y),
+                 ("HaulRoadD", RAMP2[0] + 2, RAMP2[1] - 2, RAMP2[3], 362, PIT_Y),
+                 ("HaulRoadE", RAMP2[0] + 2, 12, 362, 372, PIT_Y, "x"),
+                 ("HaulRoadF", -12, 12, 372, 385.5, PIT_Y)):
+        floor, decals = haul_road(*args)
+        ground += floor
+        ruts += decals
+    ground += disc("ArenaFloor", 0, 424, 38, PIT_Y + 0.25, 0.5, (118, 108, 98), "Cobblestone")
+    visual, proxies = [model("HaulRuts", ruts)], []
 
     def cliffs(name, pts, inward, base, height, depth=16):
         for i in range(len(pts) - 1):
@@ -1785,105 +1939,108 @@ def build_iron_lowlands(rng):
             visual.extend(chunks)
             proxies.append(proxy)
 
-    # Pass and overlook walls (upper level), quarry perimeter (lower level).
+    # Pass and overlook walls, then the quarry perimeter with its base stepping down per bench.
     cliffs("PassWest", [(-14, 100), (-14, 140), (-40, 140), (-40, 168)], 1, T, 30)
     cliffs("PassEast", [(40, 168), (40, 140), (14, 140), (14, 100)], 1, T, 30)
-    cliffs("QuarryNorthW", [(-40, 168), (-110, 168)], 1, Y, 46)
-    cliffs("QuarryWestN", [(-110, 168), (-110, 285), (-165, 285), (-165, 345), (-110, 345), (-110, 470)], 1, Y, 46)
-    cliffs("QuarrySouth", [(-110, 470), (-12, 470)], 1, Y, 46)
-    cliffs("QuarrySouthE", [(12, 470), (110, 470)], 1, Y, 46)
-    cliffs("QuarryEast", [(110, 470), (110, 168), (40, 168)], 1, Y, 46)
-    # Retaining face under the overlook edge (the slab's own face shows; dress it with timber).
-    for x0, x1 in ((-40, -14), (14, 40)):
-        visual.append(box(f"RetainingBeam{x0}", x0, x1, Y + 3.5, Y + 4.5, 168, 168.8, BEAM, "Wood", collide=False))
-    for side in (-1, 1):  # stepped curbs hide the void beside the ramp and keep players on it
-        for k in range(4):
-            z0 = 168 + k * 8
-            h = (T - Y) * (1 - k / 4)
-            visual.append(box(f"RampCurb{side}_{k}", side * 14.8 - 0.8, side * 14.8 + 0.8, Y, Y + h + 0.6, z0, z0 + 8,
-                              STONE_DARK, "Cobblestone", layer="prop"))
-    visual.append(fence_run("OverlookFenceW", (-40, 167.4), (-14, 167.4), T))
-    visual.append(fence_run("OverlookFenceE", (14, 167.4), (40, 167.4), T))
+    cliffs("RimNorthW", [(-40, 168), (-110, 168), (-110, MID_Z[0])], 1, RIM_Y, 40)
+    cliffs("RimEast", [(110, MID_Z[0]), (110, 168), (40, 168)], 1, RIM_Y, 40)
+    cliffs("MidWest", [(-110, MID_Z[0]), (-110, PASSAGE[2]), (PASSAGE[0] + 2, PASSAGE[2]), (PASSAGE[0] + 2, PASSAGE[3]),
+                       (-110, PASSAGE[3])], 1, MID_Y, 44)
+    cliffs("MidEast", [(110, PIT_Z[0]), (110, MID_Z[0])], 1, MID_Y, 44)
+    cliffs("PitWest", [(-110, PIT_Z[0]), (-110, 470)], 1, PIT_Y, 46)
+    cliffs("PitSouth", [(-110, 470), (-12, 470)], 1, PIT_Y, 46)
+    cliffs("PitSouthE", [(12, 470), (110, 470)], 1, PIT_Y, 46)
+    cliffs("PitEast", [(110, 470), (110, PIT_Z[0])], 1, PIT_Y, 46)
+    # Bench faces: rock lips along each drop, broken by the haul ramps.
+    visual += bench_face("RimFaceW", (RAMP1[0], MID_Z[0]), (-112, MID_Z[0]), 1, MID_Y, RIM_Y - MID_Y, rng)
+    visual += bench_face("RimFaceE", (112, MID_Z[0]), (RAMP1[1], MID_Z[0]), 1, MID_Y, RIM_Y - MID_Y, rng)
+    visual += bench_face("MidFaceW", (RAMP2[0], PIT_Z[0]), (-112, PIT_Z[0]), 1, PIT_Y, MID_Y - PIT_Y, rng)
+    visual += bench_face("MidFaceE", (SUMP[0], PIT_Z[0]), (RAMP2[1], PIT_Z[0]), 1, PIT_Y, MID_Y - PIT_Y, rng)
+    visual += bench_face("MidFaceSump", (112, PIT_Z[0]), (SUMP[0], PIT_Z[0]), 1, PIT_Y - 1.2, MID_Y - PIT_Y + 1.2, rng)
+    # Drill-hole row on the west rim face: the last blast line the crews cut before leaving.
+    for k, x in enumerate(range(-100, -44, 3)):
+        visual.append(part(f"DrillHole{k}", (0.9, 0.7, 0.7), (x, RIM_Y - 1.3, MID_Z[0] + 0.25), (40, 34, 30), "Slate",
+                           rot_y(90), shape="Cylinder", collide=False, query=False, shadow=False))
 
-    # Boss gap: two rock ridges leave a 40-stud opening so the Warlord is visible early.
+    # Drainage sump: still brown water in the lowest corner, stone curb on the pit side.
+    visual.append(model("Sump", [
+        box("Water", SUMP[0] + 0.6, SUMP[1] - 0.6, PIT_Y - 1.2, PIT_Y - 0.35, SUMP[2] + 0.6, SUMP[3] - 0.6, SUMP_WATER,
+            "Glass", transparency=0.35, collide=False, query=False, layer="decal"),
+        box("CurbW", SUMP[0] - 1.2, SUMP[0] + 0.2, PIT_Y, PIT_Y + 0.8, SUMP[2], SUMP[3] + 1.2, STONE_DARK, "Cobblestone"),
+        box("CurbS", SUMP[0] + 0.2, SUMP[1], PIT_Y, PIT_Y + 0.8, SUMP[3], SUMP[3] + 1.2, STONE_DARK, "Cobblestone"),
+        box("MudStainA", SUMP[0] - 30, SUMP[0], PIT_Y, PIT_Y + 0.12, 344, 358, MUD, "Mud", collide=False, layer="decal"),
+        box("MudStainB", SUMP[0] - 16, SUMP[0], PIT_Y, PIT_Y + 0.12, 358, 366, MUD, "Mud", collide=False, layer="decal"),
+    ]))
+
+    # Ridge across the pit with a 40-stud gap so the boss is visible before aggro.
     for side, (x0, x1) in ((-1, (-110, -20)), (1, (20, 110))):
         for k, xs in enumerate(range(int(x0), int(x1), 15)):
             xe = min(xs + 15, x1)
-            h = free_top(Y + rng.uniform(16, 24) - 1) - Y + 1
-            visual.append(part(f"Ridge{side}_{k}", (xe - xs + 2, h, 16), ((xs + xe) / 2, Y + h / 2 - 1, 375),
+            h = free_top(PIT_Y + rng.uniform(16, 24) - 1) - PIT_Y + 1
+            visual.append(part(f"Ridge{side}_{k}", (xe - xs + 2, h, 16), ((xs + xe) / 2, PIT_Y + h / 2 - 1, 375),
                                QUARRY_CLIFF_DARK, "Sandstone", rot_y(rng.uniform(-5, 5)), collide=False, layer="cliff"))
-        proxies.append(box(f"RidgeProxy{side}", x0, x1, Y - 1, Y + 26, 368, 382, (255, 0, 255), transparency=1,
+        proxies.append(box(f"RidgeProxy{side}", x0, x1, PIT_Y - 1, PIT_Y + 26, 368, 382, (255, 0, 255), transparency=1,
                            query=False, shadow=False, layer="proxy"))
 
     visual.append(waystone("OverlookWaystone", "IronOverlook", 31, T, 145))
+    visual.append(spoil_heap("SpoilHeapRim", -84, 200, rng, radius=11))
+    visual.append(spoil_heap("SpoilHeapPit", -80, 404, rng, radius=14))
 
-    # Squire Yard dressing (outside lanes: |x| >= 66 or tucked against cliffs).
-    for k, (x, z) in enumerate(((-92, 190), (-80, 236), (94, 214), (86, 262), (-98, 262), (70, 190))):
-        visual.append(rock_cluster(f"YardRocks{k}", x, Y, z, rng, color=(118, 100, 84), size=1.2))
-    visual.append(scaffold("YardScaffoldE", 104, Y, 236, 90, 30))
-    visual.append(scaffold("YardScaffoldW", -104, Y, 204, -90, 24))
-    visual.append(campfire("YardCampfire", -72, Y, 212, rng))
-    visual.append(tent("YardTentA", -88, Y, 222, 10))
-    visual.append(tent("YardTentB", -86, Y, 200, -8, color=(130, 100, 80)))
-    visual.append(stone_stack("YardStones", 76, Y, 236, rng))
-    visual.append(lamp_post("YardLampW", -16, Y, 206, yaw_facing(1, 0)))
-    visual.append(lamp_post("YardLampE", 16, Y, 262, yaw_facing(-1, 0)))
+    # Rim yard (stage 1 dressing; the camp comes in stage 3).
+    for k, (x, z) in enumerate(((-100, 186), (96, 192), (92, 224), (-56, 226), (60, 178))):
+        visual.append(rock_cluster(f"RimRocks{k}", x, 0, z, rng, color=(118, 100, 84), size=1.2))
+    visual.append(lamp_post("RimLampW", -16, 0, 204, yaw_facing(1, 0)))
+    visual.append(lamp_post("RampLamp", RAMP1[1] + 3, 0, 244, yaw_facing(-1, 0)))
 
-    # Crusher Pits dressing: rail line with carts, crane tower, stone stacks.
-    visual.append(rail_track("PitRails", 94, Y + 0.2, 272, 364))
-    visual.append(mine_cart("PitCartA", 94, Y + 0.4, 292, 0))
-    visual.append(mine_cart("PitCartB", 94, Y + 0.4, 340, 0))
-    crane = [part(f"CraneLeg{k}", (1.2, 26, 1.2), (78 + dx, Y + 13, 306 + dz), BEAM, "Wood", collide=(k == 0))
-             for k, (dx, dz) in enumerate(((0, 0), (6, 0), (0, 6), (6, 6)))]
-    crane += [part("CraneDeck", (8, 0.8, 8), (81, Y + 26, 309), TIMBER, "WoodPlanks", collide=False),
-              part("CraneBoom", (22, 1, 1), (70, Y + 27.5, 309), BEAM, "Wood", collide=False),
-              part("CraneRope", (0.25, 14, 0.25), (61, Y + 20.5, 309), (90, 80, 60), "Fabric", collide=False),
-              part("CraneLoad", (4, 3.4, 4), (61, Y + 12, 309), (186, 160, 120), "Limestone", collide=False)]
-    visual.append(model("PitCrane", crane))
-    for k, (x, z) in enumerate(((-86, 290), (-92, 352), (70, 356), (-70, 276))):
-        visual.append(stone_stack(f"PitStones{k}", x, Y, z, rng))
-    for k, (x, z) in enumerate(((66, 276), (-96, 322), (100, 318))):
-        visual.append(rock_cluster(f"PitRocks{k}", x, Y, z, rng, color=ROCK_GRAY))
-    visual.append(lamp_post("PitLampW", -16, Y, 300, yaw_facing(1, 0)))
-    visual.append(lamp_post("PitLampE", 16, Y, 344, yaw_facing(-1, 0)))
+    # Mid bench: rail spur, crane, stone stacks.
+    visual.append(rail_track("PitRails", 94, 0.2, 240, 322))
+    visual.append(mine_cart("PitCartA", 94, 0.4, 262, 0))
+    visual.append(mine_cart("PitCartB", 94, 0.4, 306, 0))
+    for k, (x, z) in enumerate(((-86, 250), (-92, 312), (70, 320), (-60, 296))):
+        visual.append(stone_stack(f"MidStones{k}", x, 0, z, rng))
+    for k, (x, z) in enumerate(((66, 240), (-100, 280), (100, 300))):
+        visual.append(rock_cluster(f"MidRocks{k}", x, 0, z, rng, color=ROCK_GRAY))
+    visual.append(lamp_post("MidLampE", 36, 0, 300, yaw_facing(-1, 0)))
 
-    # Optional side passage: lantern arch, hidden elite, a supply cache (decorative for now).
+    # Back-door passage: lantern arch, hidden elite, a supply cache (decorative for now).
     visual.append(model("SideArch", [
-        part("PostN", (1.6, 12, 1.6), (-111, Y + 6, 296), BEAM, "Wood"),
-        part("PostS", (1.6, 12, 1.6), (-111, Y + 6, 334), BEAM, "Wood"),
-        part("Beam", (1.8, 1.6, 40), (-111, Y + 12.4, 315), BEAM, "Wood", collide=False),
-        part("LanternN", (1.2, 1.6, 1.2), (-109.5, Y + 10.5, 299), LANTERN, "Neon", collide=False, query=False,
+        part("PostN", (1.6, 12, 1.6), (-111, MID_Y + 6, PASSAGE[2] + 12), BEAM, "Wood"),
+        part("PostS", (1.6, 12, 1.6), (-111, MID_Y + 6, PASSAGE[3] - 12), BEAM, "Wood"),
+        part("Beam", (1.8, 1.6, PASSAGE[3] - PASSAGE[2] - 22.4), (-111, MID_Y + 12.4, (PASSAGE[2] + PASSAGE[3]) / 2), BEAM, "Wood",
+             collide=False),
+        part("LanternN", (1.2, 1.6, 1.2), (-109.5, MID_Y + 10.5, PASSAGE[2] + 15), LANTERN, "Neon", collide=False, query=False,
              children=[light(16, 1.0)]),
     ]))
     visual.append(model("SupplyCache", [
-        part("Chest", (4.5, 3, 3), (-158, Y + 1.5, 315), (110, 70, 40), "WoodPlanks"),
-        part("ChestBand", (4.7, 0.5, 3.2), (-158, Y + 2.2, 315), GOLD, "Metal", collide=False),
-        part("Crate1", (4, 4, 4), (-156, Y + 2, 305), TIMBER, "WoodPlanks", rot_y(12)),
-        part("Crate2", (3.4, 3.4, 3.4), (-159, Y + 1.7, 326), TIMBER, "WoodPlanks", rot_y(-20)),
+        part("Chest", (4.5, 3, 3), (-158, MID_Y + 1.5, 300), (110, 70, 40), "WoodPlanks"),
+        part("ChestBand", (4.7, 0.5, 3.2), (-158, MID_Y + 2.2, 300), GOLD, "Metal", collide=False),
+        part("Crate1", (4, 4, 4), (-156, MID_Y + 2, 290), TIMBER, "WoodPlanks", rot_y(12)),
+        part("Crate2", (3.4, 3.4, 3.4), (-159, MID_Y + 1.7, 311), TIMBER, "WoodPlanks", rot_y(-20)),
     ]))
 
-    # Warlord's Pit: standing stones, braziers, banners, sealed Briarwood gate beyond.
+    # Pit: lamps at the ramp foot, standing stones and braziers around the boss, sealed Briarwood gate.
+    visual.append(lamp_post("PitLampW", RAMP2[0] - 8, 0, 338, yaw_facing(1, 0)))
     for k in range(14):
         a = math.tau * k / 14
         if k in (0, 7):  # openings facing the ridge gap (north) and the Briarwood gate (south)
             continue
         x, z = math.sin(a) * 42, 424 - math.cos(a) * 42
         h = rng.uniform(10, 15)
-        visual.append(part(f"StandingStone{k:02d}", (4.5, h, 3), (x, Y + h / 2, z), (130, 118, 104), "Slate",
+        visual.append(part(f"StandingStone{k:02d}", (4.5, h, 3), (x, PIT_Y + h / 2, z), (130, 118, 104), "Slate",
                            rot_y(-math.degrees(a)), layer="rock"))
     for k, (x, z) in enumerate(((-22, 390), (22, 390), (-42, 440), (42, 440))):
-        visual.append(brazier(f"PitBrazier{k}", x, Y, z))
+        visual.append(brazier(f"PitBrazier{k}", x, 0, z))
     for k, x in enumerate((-18, -6, 6, 18)):
-        visual.append(banner_pole(f"WarlordBanner{k}", x, Y, 462, 0))
-    visual.append(sign("WarlordSign", -30, Y, 360, yaw_facing(0, -1), 12, 5, "Warlord's Pit",
+        visual.append(banner_pole(f"WarlordBanner{k}", x, 0, 462, 0))
+    visual.append(sign("WarlordSign", 26, 0, 362, yaw_facing(0, -1), 12, 5, "Warlord's Pit",
                        "Iron Warlord  |  Lv 10  |  Boss", board=(70, 36, 36)))
-    visual.append(waystone("WarlordWaystone", "WarlordGate", -18, Y, 356))
-    visual.append(gate("GateBriarwood", 0, Y, 470, 0, 24, 22, "Briarwood", "Lv 9+  |  Coming soon", sealed=True,
+    visual.append(waystone("WarlordWaystone", "WarlordGate", -16, 0, 358))
+    visual.append(gate("GateBriarwood", 0, PIT_Y, 470, 0, 24, 22, "Briarwood", "Lv 9+  |  Coming soon", sealed=True,
                        accent=(90, 120, 60), region="Briarwood", required_level=9,
                        back_title="Briarwood"))
     for k, (x, z) in enumerate(((-7, 486), (7, 495), (-2, 506))):
-        visual.append(tree(f"BriarVistaTree{k}", x, Y, z, rng, scale=1.4))
-    visual.append(box("BriarVistaFloor", -14, 14, 0, Y, 472, 514, GRASS_DARK, "Grass", layer="vista"))
+        visual.append(tree(f"BriarVistaTree{k}", x, PIT_Y, z, rng, scale=1.4))
+    visual.append(box("BriarVistaFloor", -14, 14, 0, PIT_Y, 472, 514, GRASS_DARK, "Grass", layer="vista"))
     return ground, visual, proxies
 
 
@@ -1900,6 +2057,8 @@ def main():
     hub_ground, hub_visual, hub_proxies = build_hub(rng)
     il_ground, il_visual, il_proxies = build_iron_lowlands(rng)
     markers = build_markers()
+    global AUTO_GROUND
+    AUTO_GROUND = False
 
     if OUT.exists():
         shutil.rmtree(OUT)
