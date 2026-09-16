@@ -108,6 +108,47 @@ still the plate's parent). Do not change stats, ranges or the swing timing.
 `AudioManager` keys only. Light: braziers and lanterns at the camp, a low orange glow in the
 crusher house, cold blue-grey elsewhere; keep total PointLights in the region under 20.
 
+## Audit the result (same method as the Hearthmere audit)
+
+After the build passes the validator, run the deeper audit that produced `docs/map/AUDIT.md` on
+the Iron Lowlands region and fix what it finds before committing. Reuse the checks from that
+session (they load the built `.rbxlx` through `tools/check_map_project.py`'s `Node`/geometry
+helpers; consider promoting them into a `tools/audit_map.py` so they can be re-run):
+
+1. **Property census** for `LemonadeMap.IronLowlands`, `Grounds_IronLowlands` and the region's
+   `Collision` proxies: part count by class, unanchored parts (must be 0), collidable vs
+   decorative counts, PointLight / Fire / Smoke / SurfaceGui counts.
+2. **Full-volume overlaps between different models** among collidable, opaque parts: list every
+   pair with more than ~8 studs³ of intersection, excluding intentional grounding (rocks sunk
+   ≤ 0.6 into floors, foundations in floors). Any prop clipping into a structure, a bench
+   face, a ramp or another prop is a defect: move or resize it.
+3. **Props buried in cut faces**: any opaque non-cliff part whose centre lies inside a bench
+   face or cliff chunk. Half-set-into-rock is fine only when it reads that way from the play
+   side (lip rocks, wall braziers); machinery and camp props must not.
+4. **Floating collidables**: collidable parts whose bottom sits more than 0.6 studs above the
+   floor under their centre with no other solid supporting them. Table tops on legs and
+   lintels on posts are fine; anything a player could stand under and see hanging is not.
+5. **Seams and gaps**: adjacent floors and ramps must meet within 0.05 studs (no grass or
+   void strip between bench, ramp and haul road); parallel faces closer than 0.1 studs
+   (window glass on walls, plates on posts) must be separated or merged.
+6. **Terrain and grounding**: the region uses no Smooth Terrain; confirm every floor rests on
+   the Baseplate (bottom Y 0) or on another floor, and every ramp's ends meet their benches
+   flush (top and bottom). Report every ramp grade; none above 15°.
+7. **Collision fidelity and physics**: all Parts/WedgeParts (no MeshParts or unions to
+   downgrade); no `CanCollide=false` on something that must block (bench faces without a proxy
+   behind them, barricades that are meant to block the road); no `CanCollide=true` on pure
+   decoration (rubble, banners, moss plates, lanterns).
+8. **Streaming and hierarchy**: the region model stays `ModelStreamingMode = Default` (not
+   Atomic like the hub); new sub-structures are their own named models under `IronLowlands`;
+   part count and PointLights reported against the budget (≤ 20 lights).
+9. **Navmesh and lanes**: the validator's reachability table plus a check that no collidable
+   prop sits inside the two main lanes (ramp → haul road → pit) or within 4 studs of a spawn.
+
+Write the findings to `docs/map/AUDIT.md` as a new dated section with the same three parts as
+the Hearthmere one: **Critical errors**, **Moderate warnings** (with what was fixed vs
+accepted), and **Actionable fixes applied** with file paths. Zero critical errors is the bar
+for committing.
+
 ## Deliverables
 
 1. `tools/map_forge.py`: new/replaced helpers (`bench_face`, `haul_ramp`, `spoil_heap`,
@@ -119,7 +160,8 @@ crusher house, cold blue-grey elsewhere; keep total PointLights in the region un
 3. Regenerated `lemonade-map/`, updated `docs/map/first_slice_topdown.png` and
    `docs/map/VALIDATION.md`, a section in `docs/map/FIRST_SLICE.md` describing the new
    layout with a dimension table, and `docs/map/MARKERS.md` if any marker attribute changes.
-4. All four checks green. Commit in two steps (map, then enemies) with descriptive messages.
+4. All four checks green and the audit section written with zero critical errors. Commit in
+   three steps (map, audit fixes, enemies) with descriptive messages.
 5. In the final message: what changed, the walk-time table, part/light counts for the region,
    and anything that needs a Studio playtest to confirm (ramp grades, accessory placement on
    walking rigs, boss visibility from the ramp foot).
