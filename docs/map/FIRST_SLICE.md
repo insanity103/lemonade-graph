@@ -135,6 +135,19 @@ monument) and chat; the smith hammers in bursts with sparks and a clink; butterf
 beds, three birds circling the plaza, waterfall sheets shimmer; plus the trainer, hologram and
 waystone splinters from before.
 
+## Sword economy (2026-09-15)
+
+- `SwordValue` rates a relic sword from rarity base x modifier tier weights (+Blessed, +boss
+  tier); a player's **Wealth** attribute sums every sword carried or vaulted. Leaderstats are
+  unchanged (Level, Rebirths...); Wealth shows in the vault and trade UIs.
+- **Vaultkeeper** (log shack NE of spawn): store up to 12 relic swords in the profile vault;
+  they survive rebirths and server hops. `VaultSystem` + `VaultGui`.
+- **Trading** (Menu > Trade): the tab lists players in the server first; a request notifies
+  the other player (toast + menu opens on the Trade tab) to accept or decline. In a trade your
+  side shows your whole inventory and vault to offer from; their side shows only their offer.
+  Both confirm, any change resets confirmations, then swords swap (rebuilt from saved attrs).
+  `TradeSystem`, server-authoritative.
+
 ## Known limitations / next
 
 - `canLeaveCombat` in `MapTravel.server.luau` decides the travel combat restriction (see TODO).

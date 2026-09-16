@@ -18,7 +18,7 @@ required = {
     "RuntimeBootstrap", "WorldLayout", "SafeHub", "GameplayActors", "GameplayServices",
     "EnemyCombat", "SwordSystem", "SwordDropSystem", "BossSwordFactory", "CombatUtil",
     "InventoryService", "InventorySystem", "LevelingSystem", "MerchantSystem", "QuestSystem",
-    "RebirthSystem", "PlayerDataService", "PlayerDataStore", "VaultSystem",
+    "RebirthSystem", "PlayerDataService", "PlayerDataStore", "VaultSystem", "TradeSystem",
 }
 assert required == server.keys(), required ^ server.keys()
 assert server["WorldLayout"].attrib["class"] == "ModuleScript"

@@ -66,6 +66,9 @@
       "VaultSystem": {
         "$path": "lemonade-game/ServerScriptService/VaultSystem.server.luau"
       },
+      "TradeSystem": {
+        "$path": "lemonade-game/ServerScriptService/TradeSystem.server.luau"
+      },
       "MapMarkers": {
         "$path": "lemonade-game/Gameplay/MapMarkers.luau"
       },
