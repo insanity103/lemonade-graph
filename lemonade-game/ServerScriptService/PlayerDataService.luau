@@ -38,6 +38,9 @@ local function defaultData()
 		leaderstats = {}, attributes = {}, inventory = {}, swords = {},
 		vault = {},  -- boss swords stored with the Vaultkeeper (same entry shape as `swords`)
 		reforgePity = 0,  -- consecutive reforges that did not improve the sword (ReforgeSystem)
+		reforgeFreeAt = 0,  -- os.time() when the next free daily reforge unlocks
+		reforgeBest = 0,  -- best rating ever produced by a reforge
+		reforgeCount = 0,  -- lifetime reforges
 		isNew = true,
 	}
 	for name, default in pairs(SaveConfig.LEADERSTATS) do data.leaderstats[name] = default end
@@ -119,8 +122,8 @@ function PlayerDataService.Load(player)
 	if typeof(record.vault) ~= "table" then
 		record.vault = {}
 	end
-	if typeof(record.reforgePity) ~= "number" then
-		record.reforgePity = 0
+	for _, key in ipairs({ "reforgePity", "reforgeFreeAt", "reforgeBest", "reforgeCount" }) do
+		if typeof(record[key]) ~= "number" then record[key] = 0 end
 	end
 	if not record.version or record.version < SaveConfig.SCHEMA_VERSION then
 		record.version = SaveConfig.SCHEMA_VERSION

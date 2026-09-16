@@ -146,13 +146,32 @@ end
 -- damage and look stay; a Blessed sword keeps its extra slot. Returns the new mods and name.
 -- minTopTier (optional): the pity floor — if no rolled modifier reaches it, the best one is
 -- raised to it, so a run of bad luck cannot leave the sword worse at the top end.
-function BossSwordFactory.reroll(tool, blessedBonus, minTopTier)
+-- keepName (optional): a modifier name currently on the sword to lock; it survives the reroll
+-- in place of one rolled slot (the locked category is never rolled twice).
+function BossSwordFactory.reroll(tool, blessedBonus, minTopTier, keepName)
 	local tier = tonumber(tool:GetAttribute("BossTier")) or 1
 	local archetypeKey = BossWeapons.ArchetypeByTier[tier]
 	local weaponData = archetypeKey and BossWeapons.Get(archetypeKey)
 	if not weaponData then return nil end
 	local mods, gotExtraSlot = WeaponModifiers.RollModifiers(weaponData.rarity, blessedBonus or 0,
 		tool:GetAttribute("ExtraSlot") == true)
+	if keepName then
+		local kept
+		for category, data in pairs(WeaponModifiers.Categories) do
+			for tierIndex, entry in ipairs(data.Tiers) do
+				if entry.name == keepName then
+					kept = { category = category, name = entry.name, bonus = entry.bonus, desc = entry.desc, tier = tierIndex }
+				end
+			end
+		end
+		if kept then
+			for i = #mods, 1, -1 do -- drop any fresh roll in the locked category
+				if mods[i].category == kept.category then table.remove(mods, i) end
+			end
+			if #mods >= 4 then table.remove(mods) end
+			table.insert(mods, 1, kept)
+		end
+	end
 	local pityApplied = false
 	if minTopTier and #mods > 0 then
 		local best, bestIndex = 0, 1

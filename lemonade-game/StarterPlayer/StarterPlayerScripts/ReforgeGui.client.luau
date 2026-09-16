@@ -179,6 +179,17 @@ skipBtn.Activated:Connect(function()
 	skipBtn.Text = skipAnimation and "Animation: skipped" or "Animation: on"
 end)
 local oddsInfo = nil
+local lockedName = nil -- modifier chosen to survive the reroll (costs more)
+
+-- Lock row: one small chip per modifier on the selected sword; tap to keep it.
+local lockRow = Instance.new("Frame")
+lockRow.Position = UDim2.fromOffset(14, 84 + CARD_H + 36 + 122 + 50)
+lockRow.Size = UDim2.new(1, -28, 0, 26)
+lockRow.BackgroundTransparency = 1
+lockRow.Parent = stage
+do local l = Instance.new("UIListLayout"); l.FillDirection = Enum.FillDirection.Horizontal; l.Padding = UDim.new(0, 6); l.Parent = lockRow end
+local statsLabel = text(modal, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -60, 0, 42), Size = UDim2.fromOffset(300, 20),
+	TextXAlignment = Enum.TextXAlignment.Right, TextSize = 12, TextColor3 = COLORS.Muted, Text = "" })
 
 local strikeBtn = Instance.new("TextButton")
 strikeBtn.AnchorPoint = Vector2.new(0.5, 1)
@@ -217,14 +228,30 @@ local selected = nil
 local spinning = false
 local gold = 0
 
+local function currentCost()
+	if not selected then return 0 end
+	if lockedName then
+		return math.floor(selected.cost * ((oddsInfo and oddsInfo.lockMultiplier) or 2.5) / 10 + 0.5) * 10
+	end
+	if oddsInfo and (oddsInfo.freeIn or 1) <= 0 then return 0 end
+	return selected.cost
+end
+
 local function setStrike()
 	if spinning then
 		strikeBtn.Text = "Reforging..."
 		strikeBtn.BackgroundColor3 = COLORS.Button
 		strikeBtn.TextColor3 = COLORS.Muted
 	elseif selected then
-		local afford = gold >= selected.cost
-		strikeBtn.Text = string.format("Strike the anvil  ·  %d gold", selected.cost)
+		local cost = currentCost()
+		local afford = gold >= cost
+		if cost == 0 then
+			strikeBtn.Text = "Strike the anvil  ·  FREE today"
+		elseif lockedName then
+			strikeBtn.Text = string.format("Strike, keeping %s  ·  %d gold", lockedName, cost)
+		else
+			strikeBtn.Text = string.format("Strike the anvil  ·  %d gold", cost)
+		end
 		strikeBtn.BackgroundColor3 = afford and COLORS.Ember or COLORS.Button
 		strikeBtn.TextColor3 = afford and Color3.fromRGB(20, 12, 8) or COLORS.Muted
 	else
@@ -259,9 +286,38 @@ local function describeOdds(rarity)
 		table.concat(parts, "  "), o.slots, (o.bonusSlotChance or 0) * 100, (oddsInfo.blessedChance or 0) * 100, pityText)
 end
 
+local function rebuildLockRow()
+	for _, c in ipairs(lockRow:GetChildren()) do
+		if c:IsA("TextButton") or c:IsA("TextLabel") then c:Destroy() end
+	end
+	if not selected then return end
+	local mods = SwordValue.modifiersFromPrefixes(selected.prefixes)
+	if #mods == 0 then return end
+	text(lockRow, { Size = UDim2.fromOffset(78, 26), TextSize = 11, TextColor3 = COLORS.Muted, Text = "Keep one:" })
+	for _, mod in ipairs(mods) do
+		local chip = Instance.new("TextButton")
+		chip.Size = UDim2.fromOffset(math.max(70, #mod.name * 8 + 20), 26)
+		chip.BackgroundColor3 = (lockedName == mod.name) and COLORS.Ember or COLORS.Button
+		chip.Text = string.format("%s T%d", mod.name, mod.tier)
+		chip.TextColor3 = (lockedName == mod.name) and Color3.fromRGB(20, 12, 8) or TIER_COLORS[mod.tier]
+		chip.Font = Enum.Font.GothamBold
+		chip.TextSize = 11
+		chip.Parent = lockRow
+		corner(chip, 6)
+		chip.Activated:Connect(function()
+			if spinning then return end
+			lockedName = (lockedName == mod.name) and nil or mod.name
+			rebuildLockRow()
+			setStrike()
+		end)
+	end
+end
+
 local function selectRow(info)
+	if not selected or selected.toolName ~= info.toolName then lockedName = nil end
 	selected = info
 	oddsLabel.Text = describeOdds(info.rarity)
+	rebuildLockRow()
 	selectedTitle.Text = info.name
 	selectedTitle.TextColor3 = RARITY_COLORS[info.rarity] or COLORS.Text
 	selectedInfo.Text = string.format("%s  ·  rating %s  ·  %s", info.rarity, SwordValue.short(info.rating), describeMods(info.prefixes, info.blessed))
@@ -277,7 +333,12 @@ end
 local function render(stateRows, goldValue, highlight, disclosure)
 	rows = stateRows
 	gold = goldValue
-	if disclosure then oddsInfo = disclosure end
+	if disclosure then
+		oddsInfo = disclosure
+		local freeIn = disclosure.freeIn or 0
+		local freeText = freeIn <= 0 and "Free reforge ready" or string.format("Free reforge in %dh %02dm", math.floor(freeIn / 3600), math.floor(freeIn % 3600 / 60))
+		statsLabel.Text = string.format("%s  ·  best roll %s  ·  %d reforges", freeText, SwordValue.short(disclosure.best or 0), disclosure.count or 0)
+	end
 	goldLabel.Text = "Gold " .. tostring(gold)
 	for _, r in ipairs(list:GetChildren()) do
 		if r:IsA("Frame") then r:Destroy() end
@@ -393,10 +454,13 @@ local function spin(result)
 	if result.blessed then table.insert(parts, "Blessed slot") end
 	for _, m in ipairs(result.mods) do table.insert(parts, string.format("%s (T%d %s)", m.name, m.tier, m.desc or m.category)) end
 	revealMods.Text = (#parts > 0 and table.concat(parts, "  ·  ") or "No modifiers this time.")
-		.. (result.pityApplied and "   (pity floor applied)" or "")
+		.. (result.pityApplied and "   (pity floor applied)" or "") .. (result.kept and ("   (kept " .. result.kept .. ")") or "")
+	if result.personalBest then
+		revealName.Text = revealName.Text .. "   NEW PERSONAL BEST"
+	end
 	local delta = result.after - result.before
-	revealRating.Text = string.format("Rating %s  ->  %s   (%s%d)   -%d gold", SwordValue.short(result.before), SwordValue.short(result.after),
-		delta >= 0 and "+" or "", delta, result.cost)
+	revealRating.Text = string.format("Rating %s  ->  %s   (%s%d)   %s", SwordValue.short(result.before), SwordValue.short(result.after),
+		delta >= 0 and "+" or "", delta, result.free and "free" or ("-" .. result.cost .. " gold"))
 	revealRating.TextColor3 = delta > 0 and COLORS.Success or (delta < 0 and COLORS.Error or COLORS.Muted)
 	reveal.BackgroundColor3 = delta > 0 and Color3.fromRGB(18, 40, 26) or (delta < 0 and Color3.fromRGB(44, 18, 18) or COLORS.Dark)
 	TweenService:Create(reveal, TweenInfo.new(1.2), { BackgroundColor3 = COLORS.Dark }):Play()
@@ -406,8 +470,9 @@ end
 
 strikeBtn.Activated:Connect(function()
 	if spinning or not selected then return end
-	if gold < selected.cost then return end
-	REFORGE:FireServer("Reroll", selected.toolName)
+	if gold < currentCost() then return end
+	REFORGE:FireServer("Reroll", selected.toolName, lockedName)
+	lockedName = nil
 end)
 
 local function close()

@@ -156,6 +156,8 @@ waystone splinters from before.
   Compliance/UX: gold only (no Robux, so not a paid random item); exact per-tier odds, slot and
   Blessed chances are shown before paying; a persisted pity counter guarantees a T4+ modifier
   after 5 non-improving reforges; animation can be skipped; a T6 result is broadcast server-wide.
+  Engagement: one free reforge per day; lock one modifier to keep it through the reroll (x2.5
+  price); personal-best and lifetime reforge counters with a "NEW PERSONAL BEST" reveal.
 
 ## Known limitations / next
 
