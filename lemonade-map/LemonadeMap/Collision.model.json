@@ -7,14 +7,14 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     88.0,
+     80.5,
      102.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -56.0,
+       -59.75,
        59.0,
        -103.0
       ],
@@ -58,14 +58,14 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     88.0,
+     80.5,
      102.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       56.0,
+       59.75,
        59.0,
        -103.0
       ],
@@ -109,7 +109,7 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     88.0,
+     80.5,
      102.0,
      6.0
     ],
@@ -118,7 +118,7 @@
       "position": [
        103.0,
        59.0,
-       -56.0
+       -59.75
       ],
       "orientation": [
        [
@@ -160,7 +160,7 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     88.0,
+     80.5,
      102.0,
      6.0
     ],
@@ -169,7 +169,7 @@
       "position": [
        103.0,
        59.0,
-       56.0
+       59.75
       ],
       "orientation": [
        [
@@ -211,14 +211,14 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     88.0,
+     80.5,
      102.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       56.0,
+       59.75,
        59.0,
        103.0
       ],
@@ -262,14 +262,14 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     88.0,
+     80.5,
      102.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -56.0,
+       -59.75,
        59.0,
        103.0
       ],
@@ -313,7 +313,7 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     88.0,
+     80.5,
      102.0,
      6.0
     ],
@@ -322,7 +322,7 @@
       "position": [
        -103.0,
        59.0,
-       56.0
+       59.75
       ],
       "orientation": [
        [
@@ -364,7 +364,7 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     88.0,
+     80.5,
      102.0,
      6.0
     ],
@@ -373,7 +373,7 @@
       "position": [
        -103.0,
        59.0,
-       -56.0
+       -59.75
       ],
       "orientation": [
        [

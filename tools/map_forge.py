@@ -423,7 +423,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
             for wi, frac in enumerate(slots):
                 if side in "NS":
                     wx = a0 + length * frac
-                    wz = b0 - 0.2 if side == "N" else b1 + 0.2
+                    wz = b0 - 0.3 if side == "N" else b1 + 0.3
                     size, fsize, sides_size = (2.6, 2.6, 0.3), (3.2, 0.3, 0.5), (0.3, 2.9, 0.5)
                     glass_pos = (wx, wy, wz)
                     frame_h, frame_l = (wx, wy + 1.45, wz), (wx, wy - 1.45, wz)
@@ -432,7 +432,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
                     box_size = (3.0, 0.7, 0.9)
                 else:
                     wz = b0 + length * frac
-                    wx = a0 - 0.2 if side == "W" else a1 + 0.2
+                    wx = a0 - 0.3 if side == "W" else a1 + 0.3
                     size, fsize, sides_size = (0.3, 2.6, 2.6), (0.5, 0.3, 3.2), (0.5, 2.9, 0.3)
                     glass_pos = (wx, wy, wz)
                     frame_h, frame_l = (wx, wy + 1.45, wz), (wx, wy - 1.45, wz)
@@ -1076,7 +1076,7 @@ def smithy(name, x0, x1, z0, z1, y, rng):
     cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
     top = y + wall_h
     ox0, ox1 = cx - 8.0, cx + 8.0  # front opening
-    kids = [box("Paving", x0 - 1.5, x1 + 1.5, y, y + 0.2, z0 - 1.5, z1 + 1.5, STONE_DARK, "Cobblestone", layer="prop")]
+    kids = [box("Paving", x0 - 1.5, x1 + 1.5, y, y + 0.2, z0 - 1.5, z1 + 2.0, STONE_DARK, "Cobblestone", layer="prop")]
     # Walls: back and front (with the opening), sides inset between them so no tops overlap.
     kids.append(box("WallN", x0, x1, y, top, z0, z0 + t, STONE_WALL, "Cobblestone"))
     kids.append(box("WallSL", x0, ox0 - 1.2, y, top, z1 - t, z1, STONE_WALL, "Cobblestone"))
@@ -1569,11 +1569,12 @@ def build_hub(rng):
 
     # Perimeter cliffs with 24-stud gate openings at each side's midpoint.
     wall_h = 32
+    g = 19.5  # gate half-width 12 + pillar 7 + clearance: the wall meets the pillar's outer face
     segments = [
-        ((-100, -100), (-12, -100), -1), ((12, -100), (100, -100), -1),   # north (play area to +Z)
-        ((100, -100), (100, -12), -1), ((100, 12), (100, 100), -1),       # east
-        ((100, 100), (12, 100), -1), ((-12, 100), (-100, 100), -1),       # south
-        ((-100, 100), (-100, 12), -1), ((-100, -12), (-100, -100), -1),   # west
+        ((-100, -100), (-g, -100), -1), ((g, -100), (100, -100), -1),   # north (play area to +Z)
+        ((100, -100), (100, -g), -1), ((100, g), (100, 100), -1),       # east
+        ((100, 100), (g, 100), -1), ((-g, 100), (-100, 100), -1),       # south
+        ((-100, 100), (-100, g), -1), ((-100, -g), (-100, -100), -1),   # west
     ]
     for i, (a, b, inward) in enumerate(segments):
         chunks, proxy = cliff_run(f"HubCliff{i}", a, b, inward, HUB_Y, wall_h, HUB_ROCK, HUB_ROCK_DARK, rng,
@@ -1581,7 +1582,7 @@ def build_hub(rng):
         visual += chunks
         proxies.append(proxy)
     for cx, cz in ((-100, -100), (100, -100), (100, 100), (-100, 100)):
-        visual.append(part("CornerBastion", (22, wall_h + 8, 22), (cx, HUB_Y + (wall_h + 8) / 2 - 1, cz),
+        visual.append(part("CornerBastion", (18, wall_h + 8, 18), (cx, HUB_Y + (wall_h + 8) / 2 - 1, cz),
                            HUB_ROCK_DARK, "Rock", rot_y(45), layer="cliff"))
 
     # Monument: a sword in a stepped stone plinth, orientation landmark at the plaza centre.
@@ -1700,7 +1701,7 @@ def build_hub(rng):
         visual.append(bush(f"Bush{k:02d}", x, HUB_Y, z, rng, scale=rng.uniform(0.9, 1.5)))
     for k, (x, z) in enumerate(((-78, -52), (28, -74), (-24, 20), (44, 62))):
         visual.append(stump(f"Stump{k}", x, HUB_Y, z, rng))
-    for k, (x, z) in enumerate(((-94, -20), (94, -62), (-50, 94), (82, 94), (-94, 86))):
+    for k, (x, z) in enumerate(((-94, -34), (94, -62), (-50, 94), (82, 94), (-94, 86))):
         visual.append(rock_cluster(f"HubBoulder{k}", x, HUB_Y, z, rng, color=HUB_ROCK_DARK, size=0.9))
     visual.append(well("Well", -50, HUB_Y, 48, rng))
 
