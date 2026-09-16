@@ -1,25 +1,21 @@
 -- Script | ServerScriptService.ReforgeSystem | The Reforge anvil: pay gold to re-roll a relic
 -- sword's modifiers. Price = rarity base x current roll quality (SwordValue.rerollCost), so a
 -- bare Rare is a cheap gamble and a well-rolled Legendary costs real gold.
--- In map mode the prompt sits on the smithy's anvil; on the baseplate it rides the merchant.
+-- Opened from the on-screen menu (no world prompt); usable anywhere.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Workspace = game:GetService("Workspace")
 
 local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
 local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
-local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
 local REFORGE = remotes:WaitForChild("ReforgeAction")
 local NOTIFY = remotes:WaitForChild("Notify")
 
-local INTERACT_RANGE = 16 -- [TUNING] studs from the anvil prompt
 local REQUEST_INTERVAL = 0.3
 local SAVE_COOLDOWN = 8
 
-local anvilPart = nil
 local lastRequestAt = {}
 local lastSaveAt = {}
 
@@ -56,11 +52,6 @@ local function sendState(player, highlight)
 	table.sort(rows, function(a, b) return a.rating > b.rating end)
 	local gold = goldOf(player)
 	REFORGE:FireClient(player, "State", rows, gold and gold.Value or 0, highlight)
-end
-
-local function nearAnvil(player)
-	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-	return anvilPart ~= nil and root ~= nil and (root.Position - anvilPart.Position).Magnitude <= INTERACT_RANGE
 end
 
 local function findRelic(player, toolName)
@@ -120,9 +111,10 @@ REFORGE.OnServerEvent:Connect(function(player, action, arg)
 	local now = os.clock()
 	if now - (lastRequestAt[player] or -math.huge) < REQUEST_INTERVAL then return end
 	lastRequestAt[player] = now
-	if player:GetAttribute("DataLoaded") ~= true or not nearAnvil(player) then return end
+	if player:GetAttribute("DataLoaded") ~= true then return end
 	if action == "Open" then
 		sendState(player)
+		REFORGE:FireClient(player, "Open")
 	elseif action == "Reroll" and typeof(arg) == "string" then
 		reroll(player, arg)
 	end
@@ -132,47 +124,4 @@ Players.PlayerRemoving:Connect(function(player)
 	lastRequestAt[player], lastSaveAt[player] = nil, nil
 end)
 
--- ── The anvil prompt ─────────────────────────────────────────────────────────
-local function attachPrompt(part)
-	anvilPart = part
-	local prompt = Instance.new("ProximityPrompt")
-	prompt.Name = "ReforgePrompt"
-	prompt.ActionText = "Reforge a sword"
-	prompt.ObjectText = "Anvil"
-	prompt.HoldDuration = 0
-	prompt.MaxActivationDistance = 10
-	prompt.RequiresLineOfSight = false
-	prompt.Parent = part
-	prompt.Triggered:Connect(function(player)
-		if player:GetAttribute("DataLoaded") ~= true then return end
-		sendState(player)
-		REFORGE:FireClient(player, "Open")
-	end)
-end
-
-task.spawn(function()
-	if WorldLayout.MODE == "map" then
-		local map = Workspace:WaitForChild(WorldLayout.MAP_MODEL_NAME, 30)
-		local hub = map and map:WaitForChild("Hub", 30)
-		local smithy = hub and hub:FindFirstChild("Smithy")
-		local anvil = smithy and smithy:FindFirstChild("AnvilTop")
-		if anvil then
-			attachPrompt(anvil)
-			print("[ReforgeSystem] Reforge prompt on the smithy anvil")
-			return
-		end
-	end
-	local merchant = Workspace:WaitForChild("RelicMerchantNPC", 30)
-	local root = merchant and merchant.PrimaryPart
-	if root then
-		attachPrompt(root)
-		local existing = root:FindFirstChildOfClass("ProximityPrompt")
-		if existing and existing.Name ~= "ReforgePrompt" then
-			-- two prompts on one part: offset ours so both show
-			root.ReforgePrompt.UIOffset = Vector2.new(0, 60)
-		end
-		print("[ReforgeSystem] Reforge prompt on the Relic Blacksmith")
-	else
-		warn("[ReforgeSystem] No anvil or merchant found; reforging idle")
-	end
-end)
+print("[ReforgeSystem] Reforge ready (opened from the menu)")
