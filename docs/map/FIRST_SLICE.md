@@ -138,8 +138,8 @@ waystone splinters from before.
 ## Sword economy (2026-09-15)
 
 - `SwordValue` rates a relic sword from rarity base x modifier tier weights (+Blessed, +boss
-  tier); a player's **Wealth** attribute sums every sword carried or vaulted. Leaderstats are
-  unchanged (Level, Rebirths...); Wealth shows in the vault and trade UIs.
+  tier); a player's **Wealth** sums every sword carried or vaulted. It is a player attribute
+  (vault and trade UIs) and a leaderstat beside Level and Rebirths; derived, never saved.
 - **Vaultkeeper** (log shack NE of spawn): store up to 12 relic swords in the profile vault;
   they survive rebirths and server hops. `VaultSystem` + `VaultGui`.
 - **Trading** (Menu > Trade): the tab lists players in the server first; a request notifies

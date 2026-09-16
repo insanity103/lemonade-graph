@@ -61,12 +61,23 @@ local function computeWealth(player): number
 	return total
 end
 
--- Wealth is a player attribute, not a leaderstat: the Roblox leaderboard keeps showing
--- Level and Rebirths; menus and the vault read player:GetAttribute("Wealth").
+-- Wealth is both a player attribute (menus, vault, trade read it) and a leaderstat, so the
+-- Roblox leaderboard shows it beside Level and Rebirths. It is derived from the swords each
+-- time, never saved (SaveConfig.LEADERSTATS does not list it).
 local function refreshWealth(player)
 	local value = computeWealth(player)
 	if player:GetAttribute("Wealth") ~= value then
 		player:SetAttribute("Wealth", value)
+	end
+	local stats = player:FindFirstChild("leaderstats")
+	if stats then
+		local stat = stats:FindFirstChild("Wealth")
+		if not stat then
+			stat = Instance.new("IntValue")
+			stat.Name = "Wealth"
+			stat.Parent = stats
+		end
+		if stat.Value ~= value then stat.Value = value end
 	end
 end
 
