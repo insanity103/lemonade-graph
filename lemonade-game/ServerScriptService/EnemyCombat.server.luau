@@ -5,6 +5,7 @@ local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
+local EnemyOutfits = require(ReplicatedStorage:WaitForChild("EnemyOutfits"))
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 local SafeHub = require(script.Parent:WaitForChild("SafeHub"))
 local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
@@ -78,9 +79,9 @@ local playerEnemyHitAt = {}
 -- 1. ENEMY & BOSS ARCHETYPES CONFIGURATION
 -- ==============================================================================
 local ENEMY_ARCHETYPES = {
-	-- 1. Iron Warlord Minions (South-West Courtyard, Lv 4-8)
+	-- 1. Quarry Bandits (Iron Lowlands, Lv 1-10). Looks: ReplicatedStorage.EnemyOutfits.
 	IronSquire = {
-		name = "Iron Vanguard",
+		name = "Quarry Cutthroat",
 		color = Color3.fromRGB(150, 65, 75),
 		scale = 1.05,
 		walkSpeed = 12.5,
@@ -96,7 +97,7 @@ local ENEMY_ARCHETYPES = {
 		leashDistance = 35,
 	},
 	IronBerserker = {
-		name = "Iron Crusher",
+		name = "Pit Brute",
 		color = Color3.fromRGB(110, 35, 45),
 		scale = 1.25,
 		walkSpeed = 10.0,
@@ -303,8 +304,8 @@ local ENEMY_ARCHETYPES = {
 
 	-- 5 UNIQUE SPREAD-OUT PROGRESSIVE BOSSES (High-Level & High-Stakes)
 	Boss_Gorgon = {
-		name = "Iron Warlord",
-		title = "Warlord of Iron",
+		name = "Warden of the Pit",
+		title = "Boss of the Quarry Bandits",
 		color = Color3.fromRGB(130, 45, 55),
 		scale = 1.5,
 		walkSpeed = 12,
@@ -517,7 +518,7 @@ local function resolveGroundPosition(pos)
 	return pos
 end
 
-local function createEnemyRig(archetypeKey, spawnPosition, level)
+local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 	local arch = ENEMY_ARCHETYPES[archetypeKey]
 	if not arch then
 		warn(string.format("[EnemyCombat] Unknown archetype %s; using %s", tostring(archetypeKey), DEFAULT_ARCHETYPE))
@@ -656,6 +657,10 @@ local function createEnemyRig(archetypeKey, spawnPosition, level)
 			weld.Parent = sword
 		end
 	end
+
+	-- Outfit: welded accessory parts (rust, leather, rag for the quarry gang) on top of the
+	-- shirt/pants base layer. Applied after the joints and the weapon so nothing is re-parented.
+	EnemyOutfits.apply(model, archetypeKey, s, role)
 
 	-- Humanoid setup
 	local humanoid = Instance.new("Humanoid")
@@ -1037,7 +1042,7 @@ task.spawn(function()
 end)
 
 local function spawnEnemy(config)
-	local model, humanoid, hrp, arch, groundedPos = createEnemyRig(config.archetype, config.position, config.level)
+	local model, humanoid, hrp, arch, groundedPos = createEnemyRig(config.archetype, config.position, config.level, config.role)
 	-- Carry the anchor contract's per-spawn metadata onto the rig: the leash keeps
 	-- field groups in their territory, and Zone/Region let quest and drop systems ask
 	-- the rig where it came from instead of inferring it from the archetype name.

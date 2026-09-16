@@ -716,20 +716,20 @@
    }
   },
   {
-   "name": "QuarryNorthW0_Proxy",
+   "name": "RimNorthW0_Proxy",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      70.0,
-     110.0,
+     102.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -75.0,
-       55.0,
+       59.0,
        165.0
       ],
       "orientation": [
@@ -767,21 +767,21 @@
    }
   },
   {
-   "name": "QuarryWestN0_Proxy",
+   "name": "RimNorthW1_Proxy",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     117.0,
-     110.0,
+     64.0,
+     102.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -113.0,
-       55.0,
-       226.5
+       59.0,
+       200.0
       ],
       "orientation": [
        [
@@ -818,21 +818,72 @@
    }
   },
   {
-   "name": "QuarryWestN1_Proxy",
+   "name": "RimEast0_Proxy",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     55.0,
-     110.0,
+     64.0,
+     102.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -137.5,
-       55.0,
-       282.0
+       113.0,
+       59.0,
+       200.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "RimEast1_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     70.0,
+     102.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       75.0,
+       59.0,
+       165.0
       ],
       "orientation": [
        [
@@ -869,21 +920,21 @@
    }
   },
   {
-   "name": "QuarryWestN2_Proxy",
+   "name": "MidWest0_Proxy",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     60.0,
-     110.0,
+     38.0,
+     106.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -168.0,
-       55.0,
-       315.0
+       -113.0,
+       57.0,
+       251.0
       ],
       "orientation": [
        [
@@ -920,21 +971,123 @@
    }
   },
   {
-   "name": "QuarryWestN3_Proxy",
+   "name": "MidWest1_Proxy",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      55.0,
-     110.0,
+     106.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -137.5,
-       55.0,
-       348.0
+       57.0,
+       267.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "MidWest2_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     60.0,
+     106.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -168.0,
+       57.0,
+       300.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "MidWest3_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     55.0,
+     106.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -137.5,
+       57.0,
+       333.0
       ],
       "orientation": [
        [
@@ -971,12 +1124,63 @@
    }
   },
   {
-   "name": "QuarryWestN4_Proxy",
+   "name": "MidEast0_Proxy",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     125.0,
+     98.0,
+     106.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       113.0,
+       57.0,
+       281.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "PitWest0_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     140.0,
      110.0,
      6.0
     ],
@@ -985,7 +1189,7 @@
       "position": [
        -113.0,
        55.0,
-       407.5
+       400.0
       ],
       "orientation": [
        [
@@ -1022,19 +1226,19 @@
    }
   },
   {
-   "name": "QuarrySouth0_Proxy",
+   "name": "PitSouth0_Proxy",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     98.0,
+     90.5,
      110.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -61.0,
+       -64.75,
        55.0,
        473.0
       ],
@@ -1073,19 +1277,19 @@
    }
   },
   {
-   "name": "QuarrySouthE0_Proxy",
+   "name": "PitSouthE0_Proxy",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     98.0,
+     90.5,
      110.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       61.0,
+       64.75,
        55.0,
        473.0
       ],
@@ -1124,12 +1328,12 @@
    }
   },
   {
-   "name": "QuarryEast0_Proxy",
+   "name": "PitEast0_Proxy",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     302.0,
+     140.0,
      110.0,
      6.0
     ],
@@ -1138,7 +1342,7 @@
       "position": [
        113.0,
        55.0,
-       319.0
+       400.0
       ],
       "orientation": [
        [
@@ -1155,57 +1359,6 @@
         -1.0,
         0.0,
         0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     1.0,
-     0.0,
-     1.0
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": true,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "Transparency": 1.0
-   }
-  },
-  {
-   "name": "QuarryEast1_Proxy",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     70.0,
-     110.0,
-     6.0
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       75.0,
-       55.0,
-       165.0
-      ],
-      "orientation": [
-       [
-        -1.0,
-        0.0,
-        -0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        -1.0
        ]
       ]
      }

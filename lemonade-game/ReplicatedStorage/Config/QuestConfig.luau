@@ -49,7 +49,7 @@ QuestConfig.QUESTS = {
 	{
 		id = "q3_boss_hunter",
 		name = "Boss Hunter",
-		description = "Defeat the Iron Warlord.",
+		description = "Defeat the Warden of the Pit.",
 		objective = { type = "KILL_BOSS", archetype = "Boss_Gorgon", count = 1 },
 		reward = { type = "LEVEL", amount = 1 },
 	},

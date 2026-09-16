@@ -61,6 +61,15 @@ CELESTIAL = (232, 226, 212)
 VOID = (72, 42, 104)
 VOID_GLOW = (150, 90, 220)
 LANTERN = (255, 196, 120)
+# Quarry palette: packed earth, cart ruts, rusted iron, moss, sump mud and water.
+HAUL_ROAD = (128, 100, 70)
+RUT = (96, 74, 52)
+RUST = (150, 82, 44)
+IRON_DARK = (58, 56, 54)
+MOSS = (92, 128, 60)
+MUD = (104, 80, 54)
+SUMP_WATER = (84, 66, 44)
+SPLINTER = (58, 40, 26)
 
 IDENTITY = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 
@@ -142,7 +151,7 @@ def part(name, size, pos, color, material="SmoothPlastic", rot=None, cls="Part",
         props["Shape"] = shape
     if extra:
         props.update(extra)
-    REGISTRY.append({"name": name, "size": size, "pos": pos, "rot": rot, "color": color,
+    REGISTRY.append({"name": name, "size": size, "pos": pos, "rot": rot, "color": color, "shape": shape,
                      "collide": collide, "transparency": transparency, "layer": layer, "cls": cls})
     return inst(name, cls, props, attrs, children)
 
@@ -212,8 +221,46 @@ def free_top(top: float) -> float:
     return top
 
 
+# When True, prop helpers ignore the caller's Y and rest on the floor generated under (x, z):
+# benches, ramps and paths included. Off for the hub, whose props were placed by hand.
+AUTO_GROUND = False
+
+
+def entry_top(e, x, z):
+    """World Y of a REGISTRY entry's top face above (x, z), or None outside its footprint.
+    Same math as check_map_project.top_at, so props and the validator agree on the floor."""
+    r, (px, py, pz), (sx, sy, sz) = e["rot"], e["pos"], e["size"]
+    if e["shape"] == "Cylinder" and abs(r[1][0]) > 0.99:  # disc: axis vertical
+        return py + sx / 2 if math.hypot(x - px, z - pz) <= sy / 2 else None
+    if abs(r[1][1]) < 0.2:
+        return None
+    dx, dz = x - px, z - pz
+    y = py + (sy / 2 - r[0][1] * dx - r[2][1] * dz) / r[1][1]
+    d = (dx, y - py, dz)
+    lx = sum(r[i][0] * d[i] for i in range(3))
+    lz = sum(r[i][2] * d[i] for i in range(3))
+    if abs(lx) <= sx / 2 + 1e-6 and abs(lz) <= sz / 2 + 1e-6:
+        return y
+    return None
+
+
+def floor_at(x, z, default=None):
+    """Highest Grounds_* top generated so far under (x, z); `default` when AUTO_GROUND is off
+    or no floor covers the point."""
+    if not AUTO_GROUND:
+        return default
+    best = None
+    for e in REGISTRY:
+        if e["layer"] != "ground":
+            continue
+        y = entry_top(e, x, z)
+        if y is not None and (best is None or y > best):
+            best = y
+    return default if best is None else best
+
+
 def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, chunk=(10, 18),
-              material="Sandstone"):
+              material="Sandstone", h_jitter=(0.82, 1.18), caps=True, proxy=True, protrude=0.0, solid=False):
     """Visual cliff chunks along segment a→b whose inner faces sit on the segment line.
 
     `inward` is +1 when the play area lies to the left of a→b (looking down from +Y), else -1.
@@ -232,28 +279,31 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
     last_h = -1.0
     while s < seg - 0.5:
         length = min(rng.uniform(*chunk), seg - s)
-        h = height * rng.uniform(0.82, 1.18)
+        h = height * rng.uniform(*h_jitter)
         if abs(h - last_h) < 0.6:  # equal neighbouring tops would z-fight where the chunks overlap
             h += 1.5
         h = free_top(base_y + h - 1) - base_y + 1
         last_h = h
         d = depth * rng.uniform(0.9, 1.3)
-        cx = ax + dx * (s + length / 2) - nx * d / 2
-        cz = az + dz * (s + length / 2) - nz * d / 2
+        cx = ax + dx * (s + length / 2) - nx * (d / 2 - protrude)
+        cz = az + dz * (s + length / 2) - nz * (d / 2 - protrude)
         jitter = rng.uniform(-4, 4)
         col = color if i % 3 else dark
         out.append(part(f"{name}_{i:02d}", (length + 1.2, h, d), (cx, base_y + h / 2 - 1, cz), col,
-                        material, rot_y(yaw + jitter), collide=False, layer="cliff"))
-        if rng.random() < 0.45:  # stepped ledge breaks the silhouette
+                        material, rot_y(yaw + jitter), collide=solid, layer="cliff"))
+        if caps and rng.random() < 0.45:  # stepped ledge breaks the silhouette
             lh = h * rng.uniform(0.25, 0.45)
             ld = rng.uniform(3, 5)
-            lx = ax + dx * (s + length / 2) - nx * (d + ld / 2 - 0.5)
-            lz = az + dz * (s + length / 2) - nz * (d + ld / 2 - 0.5)
+            lx = ax + dx * (s + length / 2) - nx * (d + ld / 2 - 1.5)
+            lz = az + dz * (s + length / 2) - nz * (d + ld / 2 - 1.5)
             cap_top = free_top(base_y + h + 1.45)
-            out.append(part(f"{name}_{i:02d}_cap", (length * 0.8, 2.5, ld), (lx, cap_top - 1.25, lz),
+            cap_bottom = base_y + h - 1.6  # 0.6 below the chunk top, so the ledge always sits on it
+            out.append(part(f"{name}_{i:02d}_cap", (length * 0.8, cap_top - cap_bottom, ld), (lx, (cap_top + cap_bottom) / 2, lz),
                             dark, material, rot_y(yaw + jitter * 0.5), collide=False, layer="cliff"))
         s += length
         i += 1
+    if not proxy:
+        return out, None
     proxy = part(f"{name}_Proxy", (seg, PROXY_TOP - base_y + 2, 6),
                  ((ax + bx) / 2 - nx * 3, (base_y - 2 + PROXY_TOP) / 2, (az + bz) / 2 - nz * 3),
                  (255, 0, 255), "SmoothPlastic", rot_y(yaw), transparency=1, query=False,
@@ -262,6 +312,7 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
 
 
 def tree(name, x, y, z, rng, scale=1.0):
+    y = floor_at(x, z, y)
     s = scale * rng.uniform(0.85, 1.15)
     trunk_h = 11 * s
     leaves = rng.choice(LEAVES)
@@ -276,9 +327,14 @@ def tree(name, x, y, z, rng, scale=1.0):
 
 
 def rock_cluster(name, x, y, z, rng, color=ROCK_GRAY, size=1.0, collide=True):
+    y = floor_at(x, z, y)
     kids = []
+    tops = set()
     for i in range(rng.randint(2, 4)):
         w, h, d = (rng.uniform(4, 9) * size, rng.uniform(2.5, 6) * size, rng.uniform(4, 8) * size)
+        while round(h * 10) in tops:  # two flat-ish rocks with equal tops would z-fight where they overlap
+            h += 0.35
+        tops.add(round(h * 10))
         ox, oz = rng.uniform(-4, 4) * size, rng.uniform(-4, 4) * size
         r = mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-10, 10)))
         kids.append(part(f"Rock{i}", (w, h, d), (x + ox, y + h / 2 - 0.6, z + oz), color, "Slate", r,
@@ -287,6 +343,7 @@ def rock_cluster(name, x, y, z, rng, color=ROCK_GRAY, size=1.0, collide=True):
 
 
 def lamp_post(name, x, y, z, yaw=0.0):
+    y = floor_at(x, z, y)
     fwd = apply(rot_y(yaw), (0, 0, -1))
     arm = (x + fwd[0] * 1.6, y + 9.2, z + fwd[2] * 1.6)
     return model(name, [
@@ -301,6 +358,7 @@ def lamp_post(name, x, y, z, yaw=0.0):
 def sign(name, x, y, z, yaw, width, height, title, subtitle="", board=TIMBER, text=(255, 238, 200),
          post_h=None):
     """Signboard between two posts. Posts sit outside the board's width so they can't cover text."""
+    y = floor_at(x, z, y)
     post_h = post_h if post_h is not None else height + 3
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
@@ -319,6 +377,7 @@ def sign(name, x, y, z, yaw, width, height, title, subtitle="", board=TIMBER, te
 
 def fence_run(name, a, b, y, height=3.2, gap=None, collide=True, skip_first_post=False):
     """Timber fence with posts every ~8 studs. `gap` = (s0, s1) distances along the run left open."""
+    y = floor_at((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, y)
     ax, az = a
     bx, bz = b
     seg = math.hypot(bx - ax, bz - az)
@@ -393,7 +452,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
                 kids.append(box(f"DoorBand{k}", mid - door_w / 2 + 0.3, mid + door_w / 2 - 0.3,
                                 y + 0.8 + door_h * hy - 0.2, y + 0.8 + door_h * hy + 0.2, bz - 0.32, bz + 0.32,
                                 IRON, "Metal", collide=False))
-            hz = b0 - 0.35 if front == "N" else b1 + 0.35
+            hz = bz - 0.3 if front == "N" else bz + 0.3  # 0.05 into the leaf so it moves with the door
             kids.append(part("DoorHandle", (0.5, 0.5, 0.3), (mid + door_w / 2 - 1.1, y + 0.8 + door_h * 0.45, hz),
                              GOLD, "Metal", collide=False))
             kids.append(box("DoorLintel", mid - door_w / 2 - 0.6, mid + door_w / 2 + 0.6, y + 0.8 + door_h,
@@ -407,7 +466,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
                 kids.append(box(f"DoorBand{k}", bx - 0.32, bx + 0.32, y + 0.8 + door_h * hy - 0.2,
                                 y + 0.8 + door_h * hy + 0.2, mid - door_w / 2 + 0.3, mid + door_w / 2 - 0.3,
                                 IRON, "Metal", collide=False))
-            hx = a0 - 0.35 if front == "W" else a1 + 0.35
+            hx = bx - 0.3 if front == "W" else bx + 0.3
             kids.append(part("DoorHandle", (0.3, 0.5, 0.5), (hx, y + 0.8 + door_h * 0.45, mid + door_w / 2 - 1.1),
                              GOLD, "Metal", collide=False))
             kids.append(box("DoorLintel", a0 - 0.15, a1 + 0.15, y + 0.8 + door_h, y + 0.8 + door_h + 0.7,
@@ -541,7 +600,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
             kids.append(part("Mattress", (4.2, 0.6, 3.0), (ix0 + 3.0, fl + 1.5, bz), (226, 214, 190), "Fabric", collide=False))
             kids.append(part("Blanket", (2.6, 0.25, 3.05), (ix0 + 3.8, fl + 1.9, bz), (120, 60, 60), "Fabric", collide=False))
             kids.append(part("Pillow", (1.2, 0.5, 1.6), (ix0 + 1.4, fl + 2.0, bz), (240, 236, 226), "Fabric", collide=False))
-            kids.append(part("Shelf", (3.0, 0.3, 0.9), (ix1 - 2.0, fl + 5.0, iz0 + 0.5 if front == "S" else iz1 - 0.5),
+            kids.append(part("Shelf", (3.0, 0.3, 0.9), (ix1 - 2.0, fl + 5.0, iz0 + 0.35 if front == "S" else iz1 - 0.35),
                              BEAM, "Wood", collide=False))
         else:
             bx = ix0 + 2.2 if front == "E" else ix1 - 2.2
@@ -549,7 +608,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
             kids.append(part("Mattress", (3.0, 0.6, 4.2), (bx, fl + 1.5, iz0 + 3.0), (226, 214, 190), "Fabric", collide=False))
             kids.append(part("Blanket", (3.05, 0.25, 2.6), (bx, fl + 1.9, iz0 + 3.8), (120, 60, 60), "Fabric", collide=False))
             kids.append(part("Pillow", (1.6, 0.5, 1.2), (bx, fl + 2.0, iz0 + 1.4), (240, 236, 226), "Fabric", collide=False))
-            kids.append(part("Shelf", (0.9, 0.3, 3.0), (ix0 + 0.5 if front == "E" else ix1 - 0.5, fl + 5.0, iz1 - 2.0),
+            kids.append(part("Shelf", (0.9, 0.3, 3.0), (ix0 + 0.35 if front == "E" else ix1 - 0.35, fl + 5.0, iz1 - 2.0),
                              BEAM, "Wood", collide=False))
         kids.append(part("TableTop", (3.6, 0.3, 2.4), (cxi, fl + 2.6, czi), TIMBER, "WoodPlanks"))
         for sx, sz in ((-1.5, -0.9), (1.5, -0.9), (-1.5, 0.9), (1.5, 0.9)):
@@ -605,6 +664,11 @@ def gate(name, cx, y, cz, yaw, width, height, title, subtitle, sealed, stone=STO
     bx2, bz2 = at(0, sign_depth)
     kids.append(part("SignBack", (width + 4, 5.2, 0.5), (bx2, y + height + 2.8, bz2), (58, 38, 26), "WoodPlanks",
                      r, collide=False, children=[label_gui("Back", back_title, back_subtitle, (255, 226, 160), px=30)]))
+    for side in (-1, 1):  # brackets tie both boards to the lintel
+        for sgn in (-1, 1):
+            kx, kz = at(side * (width / 2 + 1.2), sgn * (sign_depth - 0.7))
+            kids.append(part(f"SignBracket{side}{sgn}", (0.5, 0.5, 1.8), (kx, y + height + 4.4, kz), BEAM, "Wood", r,
+                             collide=False))
     for side in (-1, 1):
         bx, bz = at(side * (width / 2 + pw / 2), -(pw + 1) / 2 - 0.3)
         kids.append(part(f"Banner{side}", (4.2, 9, 0.3), (bx, y + height - 5.5, bz), accent, "Fabric", r,
@@ -802,6 +866,7 @@ BUNTING_COLORS = [(196, 60, 52), (232, 200, 90), (70, 120, 176), (78, 140, 90), 
 
 
 def bush(name, x, y, z, rng, scale=1.0):
+    y = floor_at(x, z, y)
     kids = []
     for k in range(3):
         d = rng.uniform(2.0, 3.2) * scale
@@ -856,6 +921,7 @@ def bench(name, x, y, z, yaw):
 
 
 def barrel(name, x, y, z, rng):
+    y = floor_at(x, z, y)
     kids = [part("Body", (3.0, 2.6, 2.6), (x, y + 1.5, z), (118, 84, 52), "Wood", rot_z(90), shape="Cylinder")]
     for k, hy in enumerate((0.7, 2.3)):
         kids.append(part(f"Band{k}", (0.25, 2.75, 2.75), (x, y + hy, z), IRON, "Metal", rot_z(90), shape="Cylinder",
@@ -864,6 +930,7 @@ def barrel(name, x, y, z, rng):
 
 
 def crate_stack(name, x, y, z, rng):
+    y = floor_at(x, z, y)
     return model(name, [
         part("Crate0", (3, 3, 3), (x, y + 1.5, z), TIMBER, "WoodPlanks", rot_y(rng.uniform(-8, 8))),
         part("Crate1", (2.4, 2.4, 2.4), (x + 0.3, y + 4.2, z - 0.2), (140, 96, 58), "WoodPlanks",
@@ -874,6 +941,7 @@ def crate_stack(name, x, y, z, rng):
 
 
 def woodpile(name, x, y, z, yaw, rng):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     kids = []
     for row in range(3):
@@ -885,6 +953,7 @@ def woodpile(name, x, y, z, yaw, rng):
 
 
 def hand_cart(name, x, y, z, yaw):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     fwd = apply(r, (0, 0, -1))
@@ -906,6 +975,7 @@ def hand_cart(name, x, y, z, yaw):
 
 
 def hay_bale(name, x, y, z, yaw):
+    y = floor_at(x, z, y)
     return model(name, [
         part("Bale", (3.2, 2.2, 2.2), (x, y + 1.1, z), (214, 186, 96), "Grass", rot_y(yaw)),
         part("Twine", (3.3, 0.15, 2.3), (x, y + 1.35, z), (120, 92, 60), "Fabric", rot_y(yaw), collide=False),
@@ -913,6 +983,7 @@ def hay_bale(name, x, y, z, yaw):
 
 
 def stump(name, x, y, z, rng):
+    y = floor_at(x, z, y)
     d = rng.uniform(2.2, 3.0)
     return model(name, [
         part("Stump", (1.4, d, d), (x, y + 0.7, z), TRUNK, "Wood", rot_z(90), shape="Cylinder"),
@@ -1185,7 +1256,7 @@ def smithy(name, x0, x1, z0, z1, y, rng):
                          rot_y(12 * (1 if k else -1)), collide=False))
     # Hanging shop sign on a bracket at the front corner.
     bx_ = x1 + 0.6
-    kids.append(part("SignBracket", (3.2, 0.4, 0.4), (bx_ + 1.4, y + 9.6, z1 - 3), IRON, "Metal", collide=False))
+    kids.append(part("SignBracket", (3.6, 0.4, 0.4), (bx_ + 1.1, y + 9.6, z1 - 3), IRON, "Metal", collide=False))
     kids.append(part("SignChainA", (0.12, 1.2, 0.12), (bx_ + 1.4, y + 8.9, z1 - 2.2), IRON, "Metal", collide=False))
     kids.append(part("SignChainB", (0.12, 1.2, 0.12), (bx_ + 1.4, y + 8.9, z1 - 3.8), IRON, "Metal", collide=False))
     kids.append(part("SignBoard", (0.35, 2.6, 3.4), (bx_ + 1.4, y + 7.0, z1 - 3), (58, 38, 26), "WoodPlanks", collide=False,
@@ -1312,6 +1383,7 @@ def storage_shack(name, x0, x1, z0, z1, y, rng):
 
 
 def campfire(name, x, y, z, rng):
+    y = floor_at(x, z, y)
     kids = []
     for k in range(7):
         a = k / 7 * math.tau
@@ -1326,6 +1398,7 @@ def campfire(name, x, y, z, rng):
 
 
 def scaffold(name, x, y, z, yaw, length, height=16):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     kids = []
@@ -1349,6 +1422,7 @@ def scaffold(name, x, y, z, yaw, length, height=16):
 
 
 def mine_cart(name, x, y, z, yaw):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     kids = [part("Body", (4.5, 2.6, 6.5), (x, y + 2.3, z), (88, 70, 54), "WoodPlanks", r),
             part("Load", (3.8, 1.2, 5.6), (x, y + 3.7, z), ROCK_GRAY, "Slate", r, collide=False)]
@@ -1358,15 +1432,16 @@ def mine_cart(name, x, y, z, yaw):
         for sz in (-1, 1):
             wx = x + right[0] * sx * 2.4 + fwd[0] * sz * 2.2
             wz = z + right[2] * sx * 2.4 + fwd[2] * sz * 2.2
-            kids.append(part(f"Wheel{sx}{sz}", (0.6, 1.8, 1.8), (wx, y + 0.9, wz), IRON, "Metal", r, shape="Cylinder",
+            kids.append(part(f"Wheel{sx}{sz}", (0.6, 1.8, 1.8), (wx, y + 0.9, wz), RUST, "CorrodedMetal", r, shape="Cylinder",
                              collide=False))
     return model(name, kids)
 
 
 def rail_track(name, x, y, z0, z1):
+    y = floor_at(x, (z0 + z1) / 2, y)
     kids = []
     for sx in (-1.6, 1.6):
-        kids.append(box(f"Rail{sx}", x + sx - 0.2, x + sx + 0.2, y, y + 0.35, z0, z1, IRON, "Metal", collide=False))
+        kids.append(box(f"Rail{sx}", x + sx - 0.2, x + sx + 0.2, y, y + 0.35, z0, z1, RUST, "CorrodedMetal", collide=False))
     k = 0
     zz = z0 + 1
     while zz < z1:
@@ -1378,6 +1453,7 @@ def rail_track(name, x, y, z0, z1):
 
 
 def stone_stack(name, x, y, z, rng, color=(186, 160, 120)):
+    y = floor_at(x, z, y)
     kids = []
     layers = rng.randint(1, 3)
     for lv in range(layers):
@@ -1390,6 +1466,7 @@ def stone_stack(name, x, y, z, rng, color=(186, 160, 120)):
 
 
 def tent(name, x, y, z, yaw, color=(150, 120, 90)):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     kids = []
     for sgn in (-1, 1):
@@ -1401,6 +1478,7 @@ def tent(name, x, y, z, yaw, color=(150, 120, 90)):
 
 
 def banner_pole(name, x, y, z, yaw, color=WARLORD_RED):
+    y = floor_at(x, z, y)
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     return model(name, [
@@ -1412,6 +1490,7 @@ def banner_pole(name, x, y, z, yaw, color=WARLORD_RED):
 
 
 def brazier(name, x, y, z):
+    y = floor_at(x, z, y)
     return model(name, [
         part("Base", (2.6, 3.2, 2.6), (x, y + 1.6, z), STONE_DARK, "Cobblestone"),
         part("Bowl", (3.6, 1.2, 3.6), (x, y + 3.8, z), IRON, "Metal", collide=False),
@@ -1426,6 +1505,7 @@ def waystone(name, waypoint_id, x, y, z, glow=(120, 210, 240)):
     The tallest shard is named Core: MapTravel puts the travel prompt on it, and HubAmbience
     slowly turns the FloatShard pieces around the cluster.
     """
+    y = floor_at(x, z, y)
     rng = random.Random(hash(waypoint_id) & 0xFFFF)
     kids = [part("Base", (1.6, 7.6, 7.6), (x, y + 0.8, z), STONE_DARK, "Slate", rot_z(90), shape="Cylinder")]
     shards = [("Core", 11.0, 2.1, 0.0, 0.0, 6.0), ("Shard1", 7.0, 1.5, -2.2, 1.4, 13.0),
@@ -1474,19 +1554,19 @@ def volume(name, x0, x1, y0, y1, z0, z1, attrs=None):
 
 
 ENEMY_SPAWNS = [
-    # id, archetype, level, role, (x, z), leash — [TUNING] first-slice placement, see FIRST_SLICE.md
-    ("IL_S1", "IronSquire", 1, "minion", (-35, 212), 20),
-    ("IL_S2", "IronSquire", 1, "minion", (30, 206), 20),
-    ("IL_S3", "IronSquire", 2, "minion", (-2, 236), 20),
-    ("IL_S4", "IronSquire", 2, "minion", (-48, 252), 20),
-    ("IL_S5", "IronSquire", 3, "minion", (44, 250), 20),
-    ("IL_S6", "IronSquire", 3, "minion", (-22, 288), 20),
-    ("IL_B1", "IronBerserker", 3, "minion", (30, 296), 22),
-    ("IL_S7", "IronSquire", 4, "minion", (-60, 318), 20),
-    ("IL_B2", "IronBerserker", 4, "minion", (12, 318), 22),
-    ("IL_B3", "IronBerserker", 5, "minion", (52, 338), 22),
-    ("IL_S8", "IronSquire", 4, "minion", (-40, 345), 20),
-    ("IL_E1", "IronBerserker", 6, "elite", (-142, 315), 18),
+    # id, archetype, level, role, (x, z), leash — [TUNING] rim bench → mid bench → pit, see FIRST_SLICE.md
+    ("IL_S1", "IronSquire", 1, "minion", (-36, 206), 20),
+    ("IL_S2", "IronSquire", 1, "minion", (34, 200), 20),
+    ("IL_S3", "IronSquire", 2, "minion", (-6, 224), 20),
+    ("IL_S4", "IronSquire", 2, "minion", (-46, 268), 20),
+    ("IL_S5", "IronSquire", 3, "minion", (50, 278), 20),
+    ("IL_S6", "IronSquire", 3, "minion", (-14, 306), 20),
+    ("IL_B1", "IronBerserker", 3, "minion", (40, 314), 22),
+    ("IL_S7", "IronSquire", 4, "minion", (-66, 348), 20),
+    ("IL_B2", "IronBerserker", 4, "minion", (44, 350), 22),
+    ("IL_B3", "IronBerserker", 5, "minion", (-44, 359), 22),
+    ("IL_S8", "IronSquire", 4, "minion", (66, 390), 20),
+    ("IL_E1", "IronBerserker", 6, "elite", (-142, 300), 18),
     ("IL_BOSS", "Boss_Gorgon", 10, "boss", (0, 432), 50),
 ]
 
@@ -1494,7 +1574,7 @@ WAYPOINTS = [
     # id, display, region, (x, y, z) arrival, facing yaw, order — waystone models carry WaypointId
     ("HubSpawn", "Hearthmere", "Hub", (0, HUB_Y, -40), 180.0, 1),
     ("IronOverlook", "Quarry Overlook", "IronLowlands", (18, HUB_Y, 152), 180.0, 2),
-    ("WarlordGate", "Warlord's Gate", "IronLowlands", (0, QUARRY_Y, 352), 180.0, 3),
+    ("WarlordGate", "Warlord's Gate", "IronLowlands", (0, QUARRY_Y, 358), 180.0, 3),
 ]
 
 
@@ -1518,7 +1598,7 @@ def build_markers():
     ], cls="Folder")
     spawns = []
     for sid, arch, level, role, (x, z), leash in ENEMY_SPAWNS:
-        spawns.append(marker(sid, (x, QUARRY_Y, z), 0, attrs={
+        spawns.append(marker(sid, (x, floor_at(x, z, QUARRY_Y), z), 0, attrs={
             "Archetype": arch, "Level": level, "Role": role, "Zone": "IronLowlands",
             "Region": "IronLowlands", "LeashRadius": leash}))
     enemy = model("EnemySpawns", spawns, cls="Folder")
@@ -1764,19 +1844,516 @@ def build_hub(rng):
 
 
 # ── Iron Lowlands: pass → overlook → yard → pits → Warlord's Pit ─────────────
+# ── Iron Lowlands: the bandit quarry ─────────────────────────────────────────
+# Three worked benches step down from the Overlook rim (Y 10) to the pit (Y 2). [TUNING]
+RIM_Y, MID_Y, PIT_Y = HUB_Y, 6.0, QUARRY_Y
+RIM_Z, MID_Z, PIT_Z = (168, 232), (232, 330), (330, 472)
+RAMP1 = (6, 34, 232, 254)      # rim → mid, x0 x1 z0 z1 (10.3°)
+RAMP2 = (-36, -8, 330, 352)    # mid → pit
+SUMP = (76, 112, 330, 364)     # drainage corner of the pit, bed at PIT_Y - 1.2 (clear of the ridge)
+PASSAGE = (-167, -112, 270, 330)  # the gang's back-door passage off the mid bench
+
+
+def haul_ramp(name, x0, x1, z0, z1, y_top, y_bottom):
+    """Packed-earth ramp with a timber curb log on each side, laid along the slope."""
+    floor = ramp(name, x0, x1, z0, z1, y_top, y_bottom, HAUL_ROAD, "Ground")
+    dz, dy = z1 - z0, y_bottom - y_top
+    angle = -math.degrees(math.atan2(dy, dz))
+    length = math.hypot(dz, dy)
+    curbs = []
+    for side, x in ((-1, x0 + 0.6), (1, x1 - 0.6)):
+        curbs.append(part(f"{name}Curb{side}", (0.9, 0.9, length - 1.5), (x, (y_top + y_bottom) / 2 + 0.42, (z0 + z1) / 2),
+                          BEAM, "Wood", rot_x(angle), collide=False, layer="prop"))
+    return floor, curbs
+
+
+def haul_road(name, x0, x1, z0, z1, y, along="z"):
+    """Worn earth strip (a floor) plus two cart ruts (decals, slightly proud so they read at a
+    distance). Returns (floor_parts, decal_parts): decals belong in the region model, not Grounds_*."""
+    floor = [box(f"{name}", x0, x1, y, y + 0.2, z0, z1, HAUL_ROAD, "Ground", layer="ground")]
+    ruts = []
+    if along == "z":
+        for k, x in enumerate(((x0 + x1) / 2 - 2.6, (x0 + x1) / 2 + 2.6)):
+            ruts.append(box(f"{name}Rut{k}", x - 0.35, x + 0.35, y + 0.2, y + 0.32, z0 + 1, z1 - 1, RUT, "Ground",
+                            collide=False, layer="decal"))
+    else:
+        for k, z in enumerate(((z0 + z1) / 2 - 2.6, (z0 + z1) / 2 + 2.6)):
+            ruts.append(box(f"{name}Rut{k}", x0 + 1, x1 - 1, y + 0.2, y + 0.32, z - 0.35, z + 0.35, RUT, "Ground",
+                            collide=False, layer="decal"))
+    return floor, ruts
+
+
+def bench_face(name, a, b, inward, lower_y, drop, rng):
+    """Rough rock toe along a bench edge: chunks straddle the slab face (2 studs proud of it) and
+    collide, so the drop reads as broken rock rather than a sawn slab. No proxy: the slab itself
+    is the wall, and players may drop off the edge."""
+    chunks, _ = cliff_run(name, a, b, inward, lower_y, drop + 0.4, QUARRY_CLIFF, QUARRY_CLIFF_DARK, rng, depth=3.5,
+                          chunk=(6, 11), h_jitter=(0.86, 1.06), caps=False, proxy=False, protrude=2.6, solid=True)
+    return chunks
+
+
+def spoil_heap(name, x, z, rng, radius=12.0, color=QUARRY_CLIFF_DARK):
+    """Rubble mound: two collidable discs with loose rock scattered over them."""
+    y = floor_at(x, z, PIT_Y)
+    kids = disc("Mound", x, z, radius, y + 2.6, 2.6, color, "Slate")
+    kids += disc("Crown", x + rng.uniform(-2, 2), z + rng.uniform(-2, 2), radius * 0.55, y + 4.4, 1.8, color, "Slate")
+    for k in range(rng.randint(7, 10)):
+        a, rr = rng.uniform(0, math.tau), rng.uniform(0.2, 0.95) * radius
+        rx, rz = x + math.cos(a) * rr, z + math.sin(a) * rr
+        top = y + (4.4 if rr < radius * 0.5 else 2.6)
+        w, h, d = rng.uniform(1.6, 3.4), rng.uniform(1.0, 2.2), rng.uniform(1.6, 3.2)
+        kids.append(part(f"Rubble{k}", (w, h, d), (rx, top + h / 2 - 0.3, rz), rng.choice((ROCK_GRAY, STONE_DARK, color)),
+                         "Slate", mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-14, 14))), collide=False, layer="rock"))
+    return model(name, kids)
+
+
+
+def moss_plate(name, x, y, z, w, h, yaw):
+    """Thin moss plate on a north-facing wall; 0.05 into the wall, 0.17 proud of it (never coplanar)."""
+    r = rot_y(yaw)
+    fwd = apply(r, (0, 0, -1))
+    return part(name, (w, h, 0.22), (x + fwd[0] * 0.06, y, z + fwd[2] * 0.06), MOSS, "Grass", r, collide=False,
+                query=False, shadow=False)
+
+
+def ladder(name, x, z, yaw, height, lean=14.0):
+    """Timber ladder leaning back against a face: rails and rungs tilted by `lean` toward local -Z."""
+    y = floor_at(x, z, MID_Y)
+    r = mul(rot_y(yaw), rot_x(lean))
+    up = apply(r, (0, 1, 0))
+    right = apply(r, (1, 0, 0))
+    kids = []
+    for side in (-1, 1):
+        c = tuple((x, y, z)[i] + up[i] * height / 2 + right[i] * side * 1.1 for i in range(3))
+        kids.append(part(f"Rail{side}", (0.4, height, 0.35), c, SPLINTER, "Wood", r, collide=False))
+    n = int(height / 1.3)
+    for k in range(n):
+        c = tuple((x, y, z)[i] + up[i] * (0.9 + k * 1.3) for i in range(3))
+        kids.append(part(f"Rung{k}", (2.2, 0.3, 0.3), c, TIMBER, "Wood", r, collide=False))
+    return model(name, kids)
+
+
+def bench_lines(name, x, z0, z1, base, rng, inward=-1):
+    """Stepped ledges every 6 studs up a tall cut face (the old working benches, too narrow to walk)."""
+    kids = []
+    for lv, dy in enumerate((8, 14, 20, 26)):
+        z = z0 + rng.uniform(2, 8)
+        k = 0
+        while z < z1 - 8:
+            length = rng.uniform(10, 26)
+            length = min(length, z1 - z - 1)
+            top = free_top(base + dy + rng.uniform(-0.6, 0.6))
+            kids.append(part(f"Ledge{lv}_{k}", (3.6, 1.4, length), (x - inward * 0.4, top - 0.7, z + length / 2),
+                             QUARRY_CLIFF_DARK, "Sandstone", rot_y(rng.uniform(-2, 2)), collide=False, layer="cliff"))
+            z += length + rng.uniform(4, 14)
+            k += 1
+    return model(name, kids)
+
+
+def head_frame(name, x, z, rng, height=24.0):
+    """Timber A-frame hoist over the pit edge: sheave at the apex, snapped boom, a hook still dangling."""
+    y = floor_at(x, z, MID_Y)
+    kids = []
+    spread, top_gap = 5.0, 0.7
+    lean = math.degrees(math.atan2(spread - top_gap, height))
+    leg_len = math.hypot(spread - top_gap, height)
+    for sx in (-1, 1):
+        for sz in (-1, 1):
+            cx = x + sx * (spread + top_gap) / 2
+            kids.append(part(f"Leg{sx}{sz}", (1.2, leg_len, 1.2), (cx, y + height / 2, z + sz * 3.2), BEAM, "Wood",
+                             rot_z(sx * lean), collide=(sz == -1)))
+            for k, hy in enumerate((7.0, 15.0)):  # rusted iron straps
+                lx = x + sx * ((spread + top_gap) / 2 - (hy - height / 2) * math.tan(math.radians(lean)))
+                kids.append(part(f"Strap{sx}{sz}{k}", (1.5, 0.5, 1.5), (lx, y + hy, z + sz * 3.2), RUST, "CorrodedMetal",
+                                 rot_z(sx * lean), collide=False, query=False))
+        # X-brace on each long side
+        for k, tilt in enumerate((52, -52)):
+            kids.append(part(f"Brace{sx}{k}", (0.6, 11.5, 0.6), (x + sx * 3.1, y + 9.5, z), BEAM, "Wood",
+                             mul(rot_y(90), rot_z(tilt)), collide=False))
+    kids.append(part("Apex", (1.6, 1.4, 9.0), (x, y + height + 0.4, z), BEAM, "Wood", collide=False))
+    kids.append(part("Sheave", (0.8, 4.2, 4.2), (x, y + height - 2.2, z), RUST, "CorrodedMetal", shape="Cylinder", collide=False))
+    kids.append(part("SheavePin", (2.4, 0.5, 0.5), (x, y + height - 2.2, z), IRON_DARK, "CorrodedMetal", collide=False))
+    # Boom: a stub still pinned at the apex, tilted down where it snapped; the rest lies below.
+    stub = 6.0
+    kids.append(part("BoomStub", (0.9, 0.9, stub), (x, y + height - stub / 2 * math.sin(math.radians(32)),
+                                                    z + 4.0 + stub / 2 * math.cos(math.radians(32))),
+                     SPLINTER, "Wood", rot_x(32), collide=False))
+    kids.append(part("BoomFallen", (0.9, 0.9, 16), (x + 2.5, y + 0.45, z + 12), SPLINTER, "Wood", rot_y(-14), collide=False))
+    kids.append(part("Rope", (0.25, 9.5, 0.25), (x, y + height - 2.2 - 4.75, z - 1.6), (90, 80, 60), "Fabric", collide=False))
+    kids.append(part("Hook", (0.5, 1.6, 0.5), (x, y + height - 7.7, z - 1.6), RUST, "CorrodedMetal", collide=False))
+    kids.append(part("HookTip", (0.5, 0.5, 1.4), (x, y + height - 8.4, z - 1.1), RUST, "CorrodedMetal", collide=False))
+    for sx in (-1, 1):  # moss on the north face of the north legs (legs lean, so find their x at that height)
+        leg_x = x + sx * ((spread + top_gap) / 2 + (height / 2 - 2.6) * math.tan(math.radians(lean)))
+        kids.append(moss_plate(f"Moss{sx}", leg_x, y + 2.6, z - 3.8, 1.2, 3.0, 0))
+    return model(name, kids)
+
+
+def ore_chute(name, x, z_top, z_bottom, y_top, rng):
+    """Timber trough on legs from the upper bench down to the lower one; the lower legs gave way, so
+    it now lies with its foot on the lower floor, spilling grey rubble."""
+    y_bottom = floor_at(x, z_bottom, MID_Y)
+    length = z_bottom - z_top
+    dy = (y_top + 0.9) - (y_bottom + 0.5)
+    angle = math.degrees(math.atan2(dy, length))
+    r = rot_x(angle)
+    cy, cz = (y_top + 0.9 + y_bottom + 0.5) / 2, (z_top + z_bottom) / 2
+    slope = math.hypot(length, dy)
+    kids = [part("Bed", (4.2, 0.4, slope), (x, cy, cz), SPLINTER, "WoodPlanks", r, collide=False)]
+    for side in (-1, 1):
+        kids.append(part(f"Side{side}", (0.4, 1.6, slope), (x + side * 1.95, cy + 0.6, cz), TIMBER, "WoodPlanks", r,
+                         collide=False))
+    kids.append(part("Cradle", (5.2, 1.2, 3.0), (x, y_top + 0.6, z_top + 1.2), BEAM, "Wood", collide=False))
+    kids.append(part("CradleStrap", (5.4, 0.4, 0.6), (x, y_top + 1.05, z_top + 1.6), RUST, "CorrodedMetal", collide=False))
+    # Broken legs and the rubble that ran out of it.
+    kids.append(part("BrokenLegA", (0.8, 4.0, 0.8), (x + 3.4, y_bottom + 0.9, z_bottom - 3), SPLINTER, "Wood",
+                     mul(rot_y(20), rot_z(66)), collide=False))
+    kids.append(part("BrokenLegB", (0.8, 2.6, 0.8), (x - 3.0, y_bottom + 0.6, z_bottom - 6), SPLINTER, "Wood",
+                     mul(rot_y(-35), rot_z(-72)), collide=False))
+    kids += disc("Gravel", x + 0.5, z_bottom + 2.5, 3.4, y_bottom + 0.36, 0.36, ROCK_GRAY, "Slate", collide=False, layer="decal")
+    for k in range(6):
+        a, rr = rng.uniform(0, math.tau), rng.uniform(0.5, 3.6)
+        d = rng.uniform(0.8, 1.7)
+        kids.append(part(f"Rubble{k}", (d, d * 0.7, d * 0.9), (x + 0.5 + math.cos(a) * rr, y_bottom + d * 0.35 - 0.1,
+                                                            z_bottom + 2.5 + math.sin(a) * rr), ROCK_GRAY, "Slate",
+                         rot_y(rng.uniform(0, 90)), collide=False, layer="rock"))
+    return model(name, kids)
+
+
+def crusher_house(name, x0, x1, z0, z1, rng):
+    """Stone crushing shed: roof half caved in, rusted flywheel and belt in the open east bay, a cold
+    ember pit with the only light. The gang sleeps in here (camp props added by bandit_camp)."""
+    y = floor_at((x0 + x1) / 2, (z0 + z1) / 2, MID_Y)
+    cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
+    wall_h, t = 9.0, 1.2
+    stone = (120, 110, 98)
+    kids = [
+        box("WallN", x0, x1, y, y + wall_h, z0, z0 + t, stone, "Cobblestone"),
+        box("WallW", x0, x0 + t, y, y + wall_h, z0 + t, z1 - t, stone, "Cobblestone"),
+        box("WallS", x0, x1 - 9, y, y + wall_h, z1 - t, z1, stone, "Cobblestone"),
+        box("WallS_Fallen", x1 - 9, x1, y, y + 3.2, z1 - t, z1, stone, "Cobblestone"),
+        box("WallE_N", x1 - t, x1, y, y + wall_h, z0 + t, cz - 5, stone, "Cobblestone"),
+        box("WallE_S", x1 - t, x1, y, y + 5.5, cz + 5, z1 - t, stone, "Cobblestone"),
+        box("BayLintel", x1 - t - 0.3, x1 + 0.3, y + wall_h - 1.4, y + wall_h, cz - 5.6, cz + 5.6, SPLINTER, "Wood", collide=False),
+        box("Floor", x0 + t, x1 - t, y, y + 0.16, z0 + t, z1 - t, (96, 88, 80), "Slate", collide=False, layer="decal"),
+    ]
+    # Roof: west slope still up (sagging), east slope fallen into the room, ridge beam snapped.
+    span = x1 - x0
+    pitch = 24.0
+    half = span / 2 + 0.8
+    rise = math.tan(math.radians(pitch)) * span / 2
+    slope_len = half / math.cos(math.radians(pitch))
+    kids.append(part("RoofW", (slope_len, 0.7, z1 - z0 + 1.6), (cx - half / 2 + 0.4, y + wall_h + rise / 2 - 0.9, cz),
+                     (88, 60, 44), "WoodPlanks", rot_z(pitch + 5), collide=False, layer="roof"))
+    for gz, yaw in ((z0 + 0.6, 90), (z1 - 0.6, 90)):
+        kids.append(part("GableW", (1.2, rise, span / 2), (cx - span / 4, y + wall_h + rise / 2, gz), stone, "Cobblestone",
+                         rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
+    fallen_len = 14.0
+    fa = 40.0
+    kids.append(part("RoofE_Fallen", (fallen_len, 0.7, z1 - z0 - 6), (x1 - t - fallen_len / 2 * math.cos(math.radians(fa)),
+                     y + wall_h - 0.4 - fallen_len / 2 * math.sin(math.radians(fa)), cz + 1), (88, 60, 44), "WoodPlanks",
+                     rot_z(fa), collide=False, layer="roof"))
+    kids.append(part("RidgeBeam", (span / 2 + 1, 0.9, 0.9), (cx - span / 4, y + wall_h + rise + 0.2, cz), BEAM, "Wood",
+                     collide=False, layer="roof"))
+    kids.append(part("RidgeSnapped", (7, 0.9, 0.9), (cx + 3.2, y + wall_h + rise - 2.4, cz), SPLINTER, "Wood",
+                     rot_z(-38), collide=False, layer="roof"))
+    # Flywheel on a plinth in the bay, belt to a small pulley on the wall.
+    wx, wz = x1 - 7.5, cz - 4
+    kids += [
+        part("Plinth", (2.6, 1.4, 2.6), (wx, y + 0.7, wz), STONE_DARK, "Cobblestone"),
+        part("Bearing", (1.2, 3.2, 1.6), (wx, y + 2.6, wz), IRON_DARK, "CorrodedMetal", collide=False),
+        part("Flywheel", (1.0, 6.4, 6.4), (wx, y + 4.4, wz), RUST, "CorrodedMetal", shape="Cylinder", collide=False),
+        part("Axle", (3.6, 0.6, 0.6), (wx, y + 4.4, wz), IRON_DARK, "CorrodedMetal", collide=False),
+        part("Pulley", (0.9, 2.2, 2.2), (wx, y + 6.4, wz + 8), RUST, "CorrodedMetal", shape="Cylinder", collide=False),
+        part("PulleyBracket", (0.8, 0.8, 1.6), (wx, y + 6.4, wz + 8.6), IRON_DARK, "CorrodedMetal", collide=False),
+    ]
+    belt_len = math.hypot(8, 2)
+    belt_tilt = -math.degrees(math.atan2(2, 8))  # rot_x(-a) raises the +Z end
+    for k, (dy, off) in enumerate(((3.0, 1.1), (-3.0, -1.1))):
+        kids.append(part(f"Belt{k}", (0.16, 0.5, belt_len), (wx + 0.55, y + 4.4 + dy + (off - dy) / 2 + 1.0, wz + 4),
+                         (52, 40, 30), "Fabric", rot_x(belt_tilt), collide=False))
+    kids.append(part("Crusher", (4.6, 3.2, 3.6), (x0 + 5, y + 1.6, z0 + 5), IRON_DARK, "CorrodedMetal"))
+    kids.append(part("CrusherJaw", (2.2, 2.0, 2.4), (x0 + 5, y + 4.2, z0 + 5), RUST, "CorrodedMetal", rot_y(8), collide=False))
+    # The only light: a cold ember pit the bandits keep barely alive.
+    kids.append(part("EmberRing", (0.9, 3.6, 3.6), (cx - 2, y + 0.45, cz + 5), STONE_DARK, "Slate", rot_z(90), shape="Cylinder",
+                     collide=False))
+    kids.append(part("Embers", (2.2, 0.4, 2.2), (cx - 2, y + 0.95, cz + 5), (150, 60, 24), "Neon", collide=False, query=False,
+                     shadow=False, children=[light(18, 0.9, (255, 120, 50))]))
+    # Rubble from the fallen corner, moss on the north wall.
+    for k in range(5):
+        d = rng.uniform(1.2, 2.6)
+        kids.append(part(f"Rubble{k}", (d, d * 0.6, d * 0.8), (x1 - 6 + rng.uniform(-3, 3), y + d * 0.3 - 0.2, z1 + 1.5 + rng.uniform(-1, 2)),
+                         stone, "Cobblestone", mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-12, 12))), collide=False, layer="rock"))
+    for k, mx in enumerate((x0 + 6, x0 + 14, x1 - 5)):
+        kids.append(moss_plate(f"Moss{k}", mx, y + 2.2 + k * 0.6, z0, rng.uniform(2.5, 4.5), rng.uniform(2, 3.4), 0))
+    return model(name, kids)
+
+
+def lean_to_ruin(name, x0, x1, z0, z1, rng):
+    """The old smithy lean-to: back wall standing, one post gone, roof half down, a cold forge."""
+    y = floor_at((x0 + x1) / 2, (z0 + z1) / 2, RIM_Y)
+    cx = (x0 + x1) / 2
+    stone = (124, 112, 100)
+    kids = [box("BackWall", x0, x1, y, y + 5.2, z1 - 1, z1, stone, "Cobblestone"),
+            part("PostW", (0.8, 6.6, 0.8), (x0 + 0.6, y + 3.3, z0 + 0.6), BEAM, "Wood"),
+            part("PostStub", (0.8, 1.6, 0.8), (x1 - 0.6, y + 0.8, z0 + 0.6), SPLINTER, "Wood", rot_z(12))]
+    depth = z1 - z0
+    w = (x1 - x0) / 2
+    pitch = math.degrees(math.atan2(6.6 - 5.2, depth))
+    kids.append(part("RoofW", (w + 0.6, 0.4, depth + 1.2), (x0 + w / 2, y + 5.9 + 0.2, (z0 + z1) / 2), TIMBER, "WoodPlanks",
+                     rot_x(pitch), collide=False, layer="roof"))
+    # East half dropped: tilted sideways, one corner on the ground, the other on the wall top.
+    tilt = math.degrees(math.atan2(5.0, w))
+    kids.append(part("RoofE_Fallen", (w + 0.6, 0.4, depth + 1.2), (cx + w / 2 - 0.4, y + 2.7, (z0 + z1) / 2 + 0.3), SPLINTER,
+                     "WoodPlanks", mul(rot_x(pitch), rot_z(tilt)), collide=False, layer="roof"))
+    kids += [
+        part("ForgeBody", (4.2, 3.0, 4.0), (x0 + 3.6, y + 1.5, z1 - 3.4), STONE_DARK, "Cobblestone"),
+        part("ForgeHood", (3.4, 0.9, 3.2), (x0 + 3.6, y + 3.45, z1 - 3.4), IRON_DARK, "CorrodedMetal", collide=False),
+        part("ForgeAsh", (2.6, 0.3, 2.4), (x0 + 3.6, y + 3.1, z1 - 3.4), (70, 66, 62), "Slate", collide=False),
+        part("AnvilStump", (1.4, 1.8, 1.8), (cx + 1, y + 0.9, z1 - 4), TRUNK, "Wood", rot_z(90), shape="Cylinder"),
+        part("Anvil", (2.6, 1.0, 1.1), (cx + 1, y + 2.3, z1 - 4), IRON_DARK, "CorrodedMetal", collide=False),
+        part("AnvilHorn", (1.2, 0.6, 0.6), (cx + 2.6, y + 2.35, z1 - 4), IRON_DARK, "CorrodedMetal", rot_y(0), collide=False),
+        part("Wheel", (0.5, 3.6, 3.6), (x1 - 3, y + 0.25, z0 + 3), (96, 64, 40), "Wood", rot_z(90), shape="Cylinder", collide=False),
+        part("WheelHub", (0.7, 1.0, 1.0), (x1 - 3, y + 0.35, z0 + 3), RUST, "CorrodedMetal", rot_z(90), shape="Cylinder",
+             collide=False),
+    ]
+    kids.append(barrel("BarrelA", x0 + 2, 0, z0 + 2.4, rng))
+    kids.append(barrel("BarrelB", x0 + 5.2, 0, z0 + 1.8, rng))
+    kids.append(moss_plate("Moss", cx - 2, y + 2.0, z1, 5, 2.6, 180))
+    return model(name, kids)
+
+
+def collapsed_scaffold(name, x, z, rng, height=16.0):
+    """A scaffold that came down: posts leaning at 55°, decks slid off, all lying on each other."""
+    y = floor_at(x, z, RIM_Y)
+    kids = []
+    for k, (dx, dz, tilt, yaw) in enumerate(((0, -3, 56, 0), (0, 2, 60, 8), (7, -2, 52, -6), (7, 3, 64, 4))):
+        h = height * rng.uniform(0.8, 1.0)
+        c = (x + dx + math.sin(math.radians(tilt)) * h / 2, y + math.cos(math.radians(tilt)) * h / 2 + 0.2, z + dz)
+        kids.append(part(f"Post{k}", (0.8, h, 0.8), c, SPLINTER, "Wood", mul(rot_y(yaw), rot_z(-tilt)), collide=False))
+    kids.append(part("DeckA", (10, 0.5, 5), (x + 5, y + 2.6, z), TIMBER, "WoodPlanks", mul(rot_y(10), rot_z(-24)), collide=False))
+    kids.append(part("DeckB", (9, 0.5, 5), (x + 9, y + 1.4, z + 3), TIMBER, "WoodPlanks", mul(rot_y(-18), rot_z(-9)), collide=False))
+    kids.append(part("Brace", (0.5, 0.5, 12), (x + 4, y + 0.6, z - 1), SPLINTER, "Wood", mul(rot_y(35), rot_x(6)), collide=False))
+    return model(name, kids)
+
+
+def derailed_cart(name, x, z, rng, yaw=15.0, roll=28.0):
+    """Mine cart off its rails, tipped on one side with its load spilled."""
+    y = floor_at(x, z, MID_Y)
+    r = mul(rot_y(yaw), rot_z(roll))
+    drop = 1.3 * math.cos(math.radians(roll)) + 2.25 * math.sin(math.radians(roll)) + 0.3
+    kids = [part("Body", (4.5, 2.6, 6.5), (x, y + drop, z), (88, 70, 54), "WoodPlanks", r)]
+    right = apply(r, (1, 0, 0))
+    fwd = apply(r, (0, 0, 1))
+    for sx in (-1, 1):
+        for sz in (-1, 1):
+            c = tuple((x, y + drop, z)[i] + right[i] * sx * 2.4 + fwd[i] * sz * 2.2 - apply(r, (0, 1, 0))[i] * 1.4 for i in range(3))
+            kids.append(part(f"Wheel{sx}{sz}", (0.6, 1.8, 1.8), c, RUST, "CorrodedMetal", r, shape="Cylinder", collide=False))
+    for k in range(6):
+        d = rng.uniform(0.8, 1.6)
+        kids.append(part(f"Spill{k}", (d, d * 0.7, d), (x - 3.2 + rng.uniform(-2, 2), y + d * 0.35 - 0.1, z + rng.uniform(-3, 3)),
+                         ROCK_GRAY, "Slate", rot_y(rng.uniform(0, 90)), collide=False, layer="rock"))
+    return model(name, kids)
+
+
+def bent_rails(name, x, z, rng):
+    """Where the spur ends: two rails curled up off the sleepers."""
+    y = floor_at(x, z, MID_Y)
+    kids = []
+    for k, (sx, yaw, lift) in enumerate(((-1.6, -18, -26), (1.6, 14, -32))):
+        kids.append(part(f"Rail{k}", (0.4, 0.35, 5.5), (x + sx, y + 0.4 + 2.75 * math.sin(math.radians(-lift)), z + 2.6),
+                         RUST, "CorrodedMetal", mul(rot_y(yaw), rot_x(lift)), collide=False))
+    return model(name, kids)
+
+
+def broken_cart(name, x, z, yaw, rng):
+    """Hand cart with a wheel gone, dropped on its axle stub."""
+    y = floor_at(x, z, RIM_Y)
+    r = mul(rot_y(yaw), rot_z(-16))
+    right = apply(r, (1, 0, 0))
+    fwd = apply(r, (0, 0, -1))
+    side_off = apply(r, (2.0, 0.85, 0))
+    kids = [part("Bed", (4.2, 0.5, 6.0), (x, y + 1.6, z), SPLINTER, "WoodPlanks", r),
+            part("SideL", (0.3, 1.4, 5.6), (x + side_off[0], y + 1.6 + side_off[1], z + side_off[2]), SPLINTER, "WoodPlanks", r,
+                 collide=False),
+            part("Axle", (5.4, 0.35, 0.35), (x, y + 1.2, z), RUST, "CorrodedMetal", r, collide=False),
+            part("Wheel", (0.5, 3.6, 3.6), (x + right[0] * 2.6 + 0.2, y + 1.9, z + right[2] * 2.6), (96, 64, 40), "Wood", r,
+                 shape="Cylinder", collide=False),
+            part("Handle", (0.35, 0.35, 4.0), (x + fwd[0] * 4.2, y + 1.3, z + fwd[2] * 4.2), SPLINTER, "Wood",
+                 mul(r, rot_x(8)), collide=False)]
+    kids.append(part("LostWheel", (0.5, 3.6, 3.6), (x - right[0] * 5, y + 0.25, z - right[2] * 5 + 2), (96, 64, 40), "Wood",
+                     rot_z(90), shape="Cylinder", collide=False))
+    return model(name, kids)
+
+
+
+def bedroll(name, x, z, yaw, color=(120, 92, 70)):
+    y = floor_at(x, z, MID_Y)
+    r = rot_y(yaw)
+    fwd = apply(r, (0, 0, -1))
+    return model(name, [
+        part("Roll", (2.4, 0.45, 5.6), (x, y + 0.22, z), color, "Fabric", r, collide=False),
+        part("Pillow", (1.8, 0.7, 1.4), (x + fwd[0] * 2.2, y + 0.55, z + fwd[2] * 2.2), (170, 150, 120), "Fabric", r,
+             collide=False),
+    ])
+
+
+def cook_fire(name, x, z, rng):
+    """Campfire with a spit: two forked posts, an iron rod, something roasting."""
+    y = floor_at(x, z, MID_Y)
+    kids = [campfire("Fire", x, 0, z, rng)]
+    for side in (-1, 1):
+        kids.append(part(f"SpitPost{side}", (0.5, 3.4, 0.5), (x + side * 2.8, y + 1.7, z), BEAM, "Wood", rot_z(side * 6),
+                         collide=False))
+    kids.append(part("SpitRod", (6.6, 0.3, 0.3), (x, y + 3.2, z), IRON_DARK, "CorrodedMetal", collide=False))
+    kids.append(part("Roast", (2.2, 1.1, 1.1), (x - 0.4, y + 3.2, z), (140, 84, 56), "Fabric", rot_x(90), shape="Cylinder",
+                     collide=False))
+    return model(name, kids)
+
+
+def hanging_lantern(name, x, y_hook, z, drop=1.6, bright=1.0):
+    """Lantern on a short chain below a beam or bracket at y_hook (the chain overlaps the beam)."""
+    return model(name, [
+        part("Chain", (0.18, drop + 0.4, 0.18), (x, y_hook - drop / 2 + 0.2, z), IRON_DARK, "CorrodedMetal", collide=False),
+        part("Lantern", (1.1, 1.4, 1.1), (x, y_hook - drop - 0.6, z), LANTERN, "Neon", collide=False, query=False, shadow=False,
+             transparency=0.15, children=[light(16, bright)]),
+        part("Cap", (1.3, 0.25, 1.3), (x, y_hook - drop + 0.2, z), IRON_DARK, "CorrodedMetal", collide=False),
+    ])
+
+
+def rag_banner(name, x, z, yaw, height=9.0, color=(96, 40, 40), on_y=None):
+    """Torn gang banner: pole with two ragged cloth strips. on_y = base height when it stands on a deck."""
+    y = floor_at(x, z, MID_Y) if on_y is None else on_y
+    r = rot_y(yaw)
+    right = apply(r, (1, 0, 0))
+    kids = [part("Pole", (0.5, height, 0.5), (x, y + height / 2, z), SPLINTER, "Wood", collide=False)]
+    for k, (w, h, dy) in enumerate(((2.6, 4.2, height - 2.6), (1.4, 5.0, height - 3.4))):
+        kids.append(part(f"Rag{k}", (w, h, 0.2), (x + right[0] * (0.25 + w / 2 + k * 1.2), y + dy, z + right[2] * (0.25 + w / 2 + k * 1.2)),
+                         color, "Fabric", mul(r, rot_z(-6 - k * 8)), collide=False))
+    return model(name, kids)
+
+
+def barricade(name, x, z, yaw, length, rng):
+    """Quarry timber and cart wheels piled across part of a road; the planks block, the rest is dressing."""
+    y = floor_at(x, z, MID_Y)
+    r = rot_y(yaw)
+    right = apply(r, (1, 0, 0))
+    fwd = apply(r, (0, 0, -1))
+    kids = [part("Planks", (length, 3.2, 1.6), (x, y + 1.6, z), SPLINTER, "WoodPlanks", r),
+            part("TopPlank", (length * 0.8, 0.7, 1.8), (x + right[0] * 0.6, y + 3.6, z + right[2] * 0.6), TIMBER, "WoodPlanks",
+                 mul(r, rot_z(3)), collide=False)]
+    for k in range(int(length / 4)):
+        sx = -length / 2 + 2 + k * 4
+        kids.append(part(f"Stake{k}", (0.45, 4.6, 0.45), (x + right[0] * sx + fwd[0] * 1.3, y + 1.9, z + right[2] * sx + fwd[2] * 1.3),
+                         SPLINTER, "Wood", mul(r, rot_x(-38)), collide=False))
+    for k, sx in enumerate((-length / 2 + 1.5, length / 2 - 1.5)):
+        wx, wz = x + right[0] * sx - fwd[0] * 1.2, z + right[2] * sx - fwd[2] * 1.2
+        kids.append(part(f"Wheel{k}", (0.5, 3.6, 3.6), (wx, y + 1.8, wz), (96, 64, 40), "Wood", mul(r, rot_y(90 + rng.uniform(-8, 8))),
+                         shape="Cylinder", collide=False))
+    return model(name, kids)
+
+
+def skull_sign(name, x, z, yaw, title, subtitle):
+    """Bandit warning: a signboard with a bone-white skull spiked on the post."""
+    y = floor_at(x, z, RIM_Y)
+    r = rot_y(yaw)
+    kids = [sign("Board", x, 0, z, yaw, 9, 3.6, title, subtitle, board=(58, 40, 30), text=(230, 210, 180), post_h=7.6)]
+    right = apply(r, (1, 0, 0))
+    sx, sz = x + right[0] * 4.95, z + right[2] * 4.95
+    kids.append(part("Skull", (1.3, 1.4, 1.3), (sx, y + 8.2, sz), (226, 214, 190), "SmoothPlastic", shape="Ball", collide=False,
+                     query=False))
+    kids.append(part("Jaw", (1.0, 0.5, 0.9), (sx, y + 7.55, sz), (214, 200, 176), "SmoothPlastic", r, collide=False, query=False))
+    kids.append(part("Spike", (0.3, 1.4, 0.3), (sx, y + 7.4, sz), IRON_DARK, "CorrodedMetal", collide=False, query=False))
+    return model(name, kids)
+
+
+def scrap_gate(name, x, z, yaw, width=9.0, height=12.0):
+    """One leaf of a gate welded from cart plates, hung open on a timber post."""
+    y = floor_at(x, z, PIT_Y)
+    r = rot_y(yaw)
+    right = apply(r, (1, 0, 0))
+    kids = [part("HingePost", (1.4, height + 1, 1.4), (x, y + (height + 1) / 2, z), BEAM, "Wood")]
+    cx, cz = x + right[0] * (width / 2 + 0.7), z + right[2] * (width / 2 + 0.7)
+    kids.append(part("Frame", (width, height, 0.6), (cx, y + height / 2, cz), IRON_DARK, "CorrodedMetal", r))
+    for k, (dx, dy, w, h) in enumerate(((-2.2, 3.2, 3.6, 4.4), (1.9, 2.6, 4.0, 3.6), (-1.4, 8.0, 4.4, 3.2), (2.4, 7.4, 3.0, 4.6))):
+        kids.append(part(f"Plate{k}", (w, h, 0.35), (cx + right[0] * dx, y + dy, cz + right[2] * dx), RUST, "CorrodedMetal", r,
+                         collide=False))
+    kids.append(part("Spikes", (width - 1, 1.2, 0.4), (cx, y + height + 0.4, cz), IRON_DARK, "CorrodedMetal", r, collide=False))
+    return model(name, kids)
+
+
+def throne(name, x, z, yaw):
+    """The Warden's seat: a stone block, a mine-cart body for a back, axles for armrests, rusted plates."""
+    y = floor_at(x, z, PIT_Y)
+    r = rot_y(yaw)
+    fwd = apply(r, (0, 0, -1))
+    right = apply(r, (1, 0, 0))
+    def at(dx, dz, dy):
+        return (x + right[0] * dx - fwd[0] * dz, y + dy, z + right[2] * dx - fwd[2] * dz)
+    kids = [part("Block", (7.0, 2.0, 5.5), at(0, 0, 1.0), STONE_DARK, "Cobblestone", r),
+            part("Step", (7.0, 0.8, 2.0), at(0, -3.6, 0.4), STONE_DARK, "Cobblestone", r),
+            part("Seat", (4.0, 0.7, 3.4), at(0, 0.3, 2.35), SPLINTER, "WoodPlanks", r, collide=False),
+            part("Back", (4.4, 5.2, 0.6), at(0, 2.2, 4.6), (88, 70, 54), "WoodPlanks", mul(r, rot_x(-8)), collide=False),
+            part("BackPlate", (3.0, 3.0, 0.3), at(0, 2.55, 5.0), RUST, "CorrodedMetal", mul(r, rot_x(-8)), collide=False),
+            part("Crest", (1.6, 1.6, 0.4), at(0, 2.3, 7.4), IRON_DARK, "CorrodedMetal", mul(r, rot_y(45)), collide=False)]
+    for side in (-1, 1):
+        kids.append(part(f"Arm{side}", (0.4, 0.4, 3.6), at(side * 2.2, 0.2, 3.3), RUST, "CorrodedMetal", r, collide=False))
+        kids.append(part(f"ArmPost{side}", (0.4, 1.2, 0.4), at(side * 2.2, -1.2, 2.6), IRON_DARK, "CorrodedMetal", r, collide=False))
+    return model(name, kids)
+
+
+def manacles(name, x, y, z, yaw):
+    """Empty iron cuffs on a short chain, pinned to a rock face at (x, y, z) facing `yaw`."""
+    r = rot_y(yaw)
+    right = apply(r, (1, 0, 0))
+    fwd = apply(r, (0, 0, -1))
+    kids = [part("Pin", (0.5, 0.5, 0.9), (x - fwd[0] * 0.25, y, z - fwd[2] * 0.25), IRON_DARK, "CorrodedMetal", r, collide=False)]
+    for side in (-1, 1):
+        kids.append(part(f"Chain{side}", (0.16, 1.6, 0.16), (x + right[0] * side * 0.5 + fwd[0] * 0.3, y - 0.8,
+                                                            z + right[2] * side * 0.5 + fwd[2] * 0.3), IRON_DARK, "CorrodedMetal",
+                         rot_z(side * 12), collide=False))
+        kids.append(part(f"Cuff{side}", (0.45, 0.9, 0.9), (x + right[0] * side * 0.7 + fwd[0] * 0.35, y - 1.7,
+                                                          z + right[2] * side * 0.7 + fwd[2] * 0.35), RUST, "CorrodedMetal",
+                         mul(r, rot_y(90)), shape="Cylinder", collide=False))
+    return model(name, kids)
+
+
 def build_iron_lowlands(rng):
-    Y, T = QUARRY_Y, HUB_Y
+    global AUTO_GROUND
+    AUTO_GROUND = True
+    T = HUB_Y
+    # Reserve the floor heights so no cliff or lip chunk top lands coplanar with a walkable top.
+    for top in (RIM_Y, MID_Y, PIT_Y, PIT_Y - 1.2, PIT_Y + 0.2, MID_Y + 0.2, PIT_Y + 0.25, PIT_Y + 0.32, MID_Y + 0.32):
+        USED_CLIFF_TOPS.add(round(top * 10))
     ground = [
         slab("PassFloor", -14, 14, 104, 140, T, (140, 130, 116), "Cobblestone"),
         slab("OverlookFloor", -40, 40, 140, 168, T, (140, 112, 84), "Ground"),
-        slab("QuarryFloor", -112, 112, 168, 472, Y, QUARRY_FLOOR, "Ground"),
-        slab("SidePassageFloor", -167, -112, 283, 347, Y, QUARRY_FLOOR, "Ground"),
-        ramp("OverlookRamp", -14, 14, 168, 200, T, Y, (132, 104, 78), "WoodPlanks"),
-        box("QuarryPath", -10, 10, Y, Y + 0.2, 200, 382, QUARRY_PATH, "Pebble", layer="ground"),
-        box("SidePath", -140, -10, Y, Y + 0.2, 309, 321, QUARRY_PATH, "Pebble", layer="ground"),
+        # Bench 1, the rim: level with the overlook; the gang's front yard.
+        slab("RimBench", -112, 112, RIM_Z[0], RIM_Z[1], RIM_Y, QUARRY_FLOOR, "Ground"),
+        # Bench 2: machinery level, plus the back-door passage west.
+        slab("MidBench", -112, 112, MID_Z[0], MID_Z[1], MID_Y, (146, 106, 72), "Ground"),
+        slab("PassageFloor", PASSAGE[0], PASSAGE[1], PASSAGE[2], PASSAGE[3], MID_Y, (146, 106, 72), "Ground"),
+        # Bench 3, the pit: split around the drainage sump in its east corner.
+        slab("PitFloorW", -112, SUMP[0], PIT_Z[0], PIT_Z[1], PIT_Y, (140, 100, 68), "Ground"),
+        slab("PitFloorE", SUMP[0], 112, SUMP[3], PIT_Z[1], PIT_Y, (140, 100, 68), "Ground"),
+        slab("SumpBed", SUMP[0], SUMP[1], SUMP[2], SUMP[3], PIT_Y - 1.2, MUD, "Mud"),
     ]
-    ground += disc("ArenaFloor", 0, 424, 38, Y + 0.25, 0.5, (118, 108, 98), "Cobblestone")
-    visual, proxies = [], []
+    ruts = []
+    for name, rect, y0, y1 in (("HaulRamp1", RAMP1, RIM_Y, MID_Y), ("HaulRamp2", RAMP2, MID_Y, PIT_Y)):
+        floor, curbs = haul_ramp(name, *rect, y0, y1)
+        ground.append(floor)
+        ruts += curbs
+    # Haul road: ramp 1 foot → south → west → ramp 2; ramp 2 foot → east → through the ridge gap.
+    for args in (("HaulRoadA", RAMP1[0] + 2, RAMP1[1] - 2, RAMP1[3], 296, MID_Y),
+                 ("HaulRoadB", RAMP2[0] + 2, RAMP1[1] - 2, 296, 318, MID_Y, "x"),
+                 ("HaulRoadC", RAMP2[0] + 2, RAMP2[1] - 2, 318, RAMP2[2], MID_Y),
+                 ("HaulRoadD", RAMP2[0] + 2, RAMP2[1] - 2, RAMP2[3], 362, PIT_Y),
+                 ("HaulRoadE", RAMP2[0] + 2, 12, 362, 372, PIT_Y, "x"),
+                 ("HaulRoadF", -12, 12, 372, 385.5, PIT_Y)):
+        floor, decals = haul_road(*args)
+        ground += floor
+        ruts += decals
+    ground += disc("ArenaFloor", 0, 424, 38, PIT_Y + 0.25, 0.5, (118, 108, 98), "Cobblestone")
+    visual, proxies = [model("HaulRuts", ruts)], []
 
     def cliffs(name, pts, inward, base, height, depth=16):
         for i in range(len(pts) - 1):
@@ -1785,105 +2362,163 @@ def build_iron_lowlands(rng):
             visual.extend(chunks)
             proxies.append(proxy)
 
-    # Pass and overlook walls (upper level), quarry perimeter (lower level).
+    # Pass and overlook walls, then the quarry perimeter with its base stepping down per bench.
     cliffs("PassWest", [(-14, 100), (-14, 140), (-40, 140), (-40, 168)], 1, T, 30)
     cliffs("PassEast", [(40, 168), (40, 140), (14, 140), (14, 100)], 1, T, 30)
-    cliffs("QuarryNorthW", [(-40, 168), (-110, 168)], 1, Y, 46)
-    cliffs("QuarryWestN", [(-110, 168), (-110, 285), (-165, 285), (-165, 345), (-110, 345), (-110, 470)], 1, Y, 46)
-    cliffs("QuarrySouth", [(-110, 470), (-12, 470)], 1, Y, 46)
-    cliffs("QuarrySouthE", [(12, 470), (110, 470)], 1, Y, 46)
-    cliffs("QuarryEast", [(110, 470), (110, 168), (40, 168)], 1, Y, 46)
-    # Retaining face under the overlook edge (the slab's own face shows; dress it with timber).
-    for x0, x1 in ((-40, -14), (14, 40)):
-        visual.append(box(f"RetainingBeam{x0}", x0, x1, Y + 3.5, Y + 4.5, 168, 168.8, BEAM, "Wood", collide=False))
-    for side in (-1, 1):  # stepped curbs hide the void beside the ramp and keep players on it
-        for k in range(4):
-            z0 = 168 + k * 8
-            h = (T - Y) * (1 - k / 4)
-            visual.append(box(f"RampCurb{side}_{k}", side * 14.8 - 0.8, side * 14.8 + 0.8, Y, Y + h + 0.6, z0, z0 + 8,
-                              STONE_DARK, "Cobblestone", layer="prop"))
-    visual.append(fence_run("OverlookFenceW", (-40, 167.4), (-14, 167.4), T))
-    visual.append(fence_run("OverlookFenceE", (14, 167.4), (40, 167.4), T))
+    cliffs("RimNorthW", [(-40, 168), (-110, 168), (-110, MID_Z[0])], 1, RIM_Y, 40)
+    cliffs("RimEast", [(110, MID_Z[0]), (110, 168), (40, 168)], 1, RIM_Y, 40)
+    cliffs("MidWest", [(-110, MID_Z[0]), (-110, PASSAGE[2]), (PASSAGE[0] + 2, PASSAGE[2]), (PASSAGE[0] + 2, PASSAGE[3]),
+                       (-110, PASSAGE[3])], 1, MID_Y, 44)
+    cliffs("MidEast", [(110, PIT_Z[0]), (110, MID_Z[0])], 1, MID_Y, 44)
+    cliffs("PitWest", [(-110, PIT_Z[0]), (-110, 470)], 1, PIT_Y, 46)
+    cliffs("PitSouth", [(-110, 470), (-19.5, 470)], 1, PIT_Y, 46)  # stop at the gate pillars' outer faces
+    cliffs("PitSouthE", [(19.5, 470), (110, 470)], 1, PIT_Y, 46)
+    cliffs("PitEast", [(110, 470), (110, PIT_Z[0])], 1, PIT_Y, 46)
+    # Bench faces: rock lips along each drop, broken by the haul ramps.
+    visual += bench_face("RimFaceW", (RAMP1[0], MID_Z[0]), (-112, MID_Z[0]), 1, MID_Y, RIM_Y - MID_Y, rng)
+    visual += bench_face("RimFaceE", (112, MID_Z[0]), (RAMP1[1], MID_Z[0]), 1, MID_Y, RIM_Y - MID_Y, rng)
+    visual += bench_face("MidFaceW", (RAMP2[0], PIT_Z[0]), (-112, PIT_Z[0]), 1, PIT_Y, MID_Y - PIT_Y, rng)
+    visual += bench_face("MidFaceE", (SUMP[0], PIT_Z[0]), (RAMP2[1], PIT_Z[0]), 1, PIT_Y, MID_Y - PIT_Y, rng)
+    visual += bench_face("MidFaceSump", (112, PIT_Z[0]), (SUMP[0], PIT_Z[0]), 1, PIT_Y - 1.2, MID_Y - PIT_Y + 1.2, rng)
+    # Drill-hole row on the west rim face: the last blast line the crews cut before leaving.
+    for k, x in enumerate(range(-100, -44, 3)):
+        visual.append(part(f"DrillHole{k}", (0.9, 0.7, 0.7), (x, RIM_Y - 1.3, MID_Z[0] + 0.25), (40, 34, 30), "Slate",
+                           rot_y(90), shape="Cylinder", collide=False, query=False, shadow=False))
 
-    # Boss gap: two rock ridges leave a 40-stud opening so the Warlord is visible early.
+    # Drainage sump: still brown water in the lowest corner, stone curb on the pit side.
+    visual.append(model("Sump", [
+        box("Water", SUMP[0] + 0.6, SUMP[1] - 0.6, PIT_Y - 1.2, PIT_Y - 0.35, SUMP[2] + 0.6, SUMP[3] - 0.6, SUMP_WATER,
+            "Glass", transparency=0.35, collide=False, query=False, layer="decal"),
+        box("CurbW", SUMP[0] - 1.2, SUMP[0] + 0.2, PIT_Y, PIT_Y + 0.8, SUMP[2], SUMP[3] + 1.2, STONE_DARK, "Cobblestone"),
+        box("CurbS", SUMP[0] + 0.2, SUMP[1], PIT_Y, PIT_Y + 0.8, SUMP[3], SUMP[3] + 1.2, STONE_DARK, "Cobblestone"),
+        box("MudStainA", SUMP[0] - 30, SUMP[0], PIT_Y, PIT_Y + 0.12, 344, 358, MUD, "Mud", collide=False, layer="decal"),
+        box("MudStainB", SUMP[0] - 16, SUMP[0], PIT_Y, PIT_Y + 0.12, 358, 366, MUD, "Mud", collide=False, layer="decal"),
+    ]))
+
+    # Ridge across the pit with a 40-stud gap so the boss is visible before aggro.
     for side, (x0, x1) in ((-1, (-110, -20)), (1, (20, 110))):
         for k, xs in enumerate(range(int(x0), int(x1), 15)):
             xe = min(xs + 15, x1)
-            h = free_top(Y + rng.uniform(16, 24) - 1) - Y + 1
-            visual.append(part(f"Ridge{side}_{k}", (xe - xs + 2, h, 16), ((xs + xe) / 2, Y + h / 2 - 1, 375),
+            h = free_top(PIT_Y + rng.uniform(16, 24) - 1) - PIT_Y + 1
+            visual.append(part(f"Ridge{side}_{k}", (xe - xs + 2, h, 16), ((xs + xe) / 2, PIT_Y + h / 2 - 1, 375),
                                QUARRY_CLIFF_DARK, "Sandstone", rot_y(rng.uniform(-5, 5)), collide=False, layer="cliff"))
-        proxies.append(box(f"RidgeProxy{side}", x0, x1, Y - 1, Y + 26, 368, 382, (255, 0, 255), transparency=1,
+        proxies.append(box(f"RidgeProxy{side}", x0, x1, PIT_Y - 1, PIT_Y + 26, 368, 382, (255, 0, 255), transparency=1,
                            query=False, shadow=False, layer="proxy"))
 
     visual.append(waystone("OverlookWaystone", "IronOverlook", 31, T, 145))
+    visual.append(spoil_heap("SpoilHeapRim", -84, 200, rng, radius=11))
+    visual.append(spoil_heap("SpoilHeapPit", -80, 404, rng, radius=14))
 
-    # Squire Yard dressing (outside lanes: |x| >= 66 or tucked against cliffs).
-    for k, (x, z) in enumerate(((-92, 190), (-80, 236), (94, 214), (86, 262), (-98, 262), (70, 190))):
-        visual.append(rock_cluster(f"YardRocks{k}", x, Y, z, rng, color=(118, 100, 84), size=1.2))
-    visual.append(scaffold("YardScaffoldE", 104, Y, 236, 90, 30))
-    visual.append(scaffold("YardScaffoldW", -104, Y, 204, -90, 24))
-    visual.append(campfire("YardCampfire", -72, Y, 212, rng))
-    visual.append(tent("YardTentA", -88, Y, 222, 10))
-    visual.append(tent("YardTentB", -86, Y, 200, -8, color=(130, 100, 80)))
-    visual.append(stone_stack("YardStones", 76, Y, 236, rng))
-    visual.append(lamp_post("YardLampW", -16, Y, 206, yaw_facing(1, 0)))
-    visual.append(lamp_post("YardLampE", 16, Y, 262, yaw_facing(-1, 0)))
+    # Rim bench: the yard the crews worked from; the gang's front door.
+    for k, (x, z) in enumerate(((-100, 186), (96, 192), (92, 224), (60, 178))):
+        visual.append(rock_cluster(f"RimRocks{k}", x, 0, z, rng, color=(118, 100, 84), size=1.2))
+    visual.append(lean_to_ruin("SmithyRuin", 70, 86, 198, 212, rng))
+    visual.append(collapsed_scaffold("FallenScaffold", -104, 212, rng))
+    visual.append(broken_cart("BrokenCart", -20, 186, 40, rng))
+    visual.append(ore_chute("OreChute", -58, 224, 248, RIM_Y, rng))
+    visual.append(ladder("RimLadder", -22, MID_Z[0] + 3.6, 0, 5.2))  # foot clear of the rock toe, top leaning on it
+    visual.append(lamp_post("RimLampW", -16, 0, 204, yaw_facing(1, 0)))
+    visual.append(lamp_post("RampLamp", RAMP1[1] + 3, 0, 244, yaw_facing(-1, 0)))
 
-    # Crusher Pits dressing: rail line with carts, crane tower, stone stacks.
-    visual.append(rail_track("PitRails", 94, Y + 0.2, 272, 364))
-    visual.append(mine_cart("PitCartA", 94, Y + 0.4, 292, 0))
-    visual.append(mine_cart("PitCartB", 94, Y + 0.4, 340, 0))
-    crane = [part(f"CraneLeg{k}", (1.2, 26, 1.2), (78 + dx, Y + 13, 306 + dz), BEAM, "Wood", collide=(k == 0))
-             for k, (dx, dz) in enumerate(((0, 0), (6, 0), (0, 6), (6, 6)))]
-    crane += [part("CraneDeck", (8, 0.8, 8), (81, Y + 26, 309), TIMBER, "WoodPlanks", collide=False),
-              part("CraneBoom", (22, 1, 1), (70, Y + 27.5, 309), BEAM, "Wood", collide=False),
-              part("CraneRope", (0.25, 14, 0.25), (61, Y + 20.5, 309), (90, 80, 60), "Fabric", collide=False),
-              part("CraneLoad", (4, 3.4, 4), (61, Y + 12, 309), (186, 160, 120), "Limestone", collide=False)]
-    visual.append(model("PitCrane", crane))
-    for k, (x, z) in enumerate(((-86, 290), (-92, 352), (70, 356), (-70, 276))):
-        visual.append(stone_stack(f"PitStones{k}", x, Y, z, rng))
-    for k, (x, z) in enumerate(((66, 276), (-96, 322), (100, 318))):
-        visual.append(rock_cluster(f"PitRocks{k}", x, Y, z, rng, color=ROCK_GRAY))
-    visual.append(lamp_post("PitLampW", -16, Y, 300, yaw_facing(1, 0)))
-    visual.append(lamp_post("PitLampE", 16, Y, 344, yaw_facing(-1, 0)))
+    # Mid bench: machinery level. Crusher house west, head-frame east, rail spur along the east wall.
+    visual.append(crusher_house("CrusherHouse", -102, -72, 246, 272, rng))
+    visual.append(head_frame("HeadFrame", 64, 246, rng))
+    visual.append(rail_track("SpurRails", 94, 0.2, 240, 322))
+    visual.append(mine_cart("SpurCartA", 94, 0.4, 262, 0))
+    visual.append(derailed_cart("DerailedCart", 88, 300, rng))
+    visual.append(bent_rails("SpurEnd", 94, 322, rng))
+    visual.append(ladder("MidLadder", 60, PIT_Z[0] + 3.6, 0, 5.2))
+    for k, (x, z) in enumerate(((-88, 296), (-92, 316), (70, 322), (-58, 300))):
+        visual.append(stone_stack(f"MidStones{k}", x, 0, z, rng))
+    for k, (x, z) in enumerate(((82, 252), (-100, 284), (100, 250))):
+        visual.append(rock_cluster(f"MidRocks{k}", x, 0, z, rng, color=ROCK_GRAY))
+    for k, (x, z) in enumerate(((-68, 250), (-70, 278), (-64, 282))):
+        visual.append(barrel(f"MidBarrel{k}", x, 0, z, rng))
+    visual.append(lamp_post("MidLampE", 36, 0, 300, yaw_facing(-1, 0)))
 
-    # Optional side passage: lantern arch, hidden elite, a supply cache (decorative for now).
+    # Bandit occupation: they sleep in the crusher house and cook outside its bay.
+    visual.append(bedroll("BedrollA", -96, 252, 90))
+    visual.append(bedroll("BedrollB", -96, 259, 84, color=(96, 84, 70)))
+    visual.append(bedroll("BedrollC", -82, 265, 100, color=(110, 70, 60)))
+    visual.append(crate_stack("LootCrates", -78, 0, 252, rng))
+    visual.append(model("LootChest", [
+        part("Chest", (4.0, 2.6, 2.6), (-92, MID_Y + 1.3, 268), (110, 70, 40), "WoodPlanks", rot_y(-14)),
+        part("ChestBand", (4.2, 0.45, 2.8), (-92, MID_Y + 1.9, 268), GOLD, "Metal", rot_y(-14), collide=False),
+        part("Coins", (1.6, 0.5, 1.2), (-90.2, MID_Y + 2.75, 267.2), GOLD, "Metal", rot_y(20), collide=False, query=False),
+    ]))
+    visual.append(hanging_lantern("BayLantern", -73.5, MID_Y + 7.6, 259))
+    visual.append(cook_fire("CookFire", -62, 264, rng))
+    visual.append(hay_bale("CampHay", -56, 0, 256, 30))
+    visual.append(hand_cart("StolenCart", 40, 0, 184, 70))
+    visual.append(skull_sign("TurnBackSign", 38, 258, yaw_facing(0, -1), "TURN BACK", "Quarry Bandits"))
+    visual.append(barricade("BarricadeA", RAMP1[0] + 6, 276, 0, 12, rng))
+    visual.append(barricade("BarricadeB", -20, 302, 90, 10, rng))
+    # Lookout on the head-frame with the gang's rag banner.
+    visual.append(part("LookoutDeck", (6.4, 0.5, 6.0), (64, MID_Y + 12, 246), TIMBER, "WoodPlanks", collide=False))
+    visual.append(part("LookoutRail", (6.4, 0.3, 0.3), (64, MID_Y + 13.6, 249.2), SPLINTER, "Wood", collide=False))
+    visual.append(ladder("LookoutLadder", 64, 250.4, 0, 12.6, lean=18))
+    visual.append(rag_banner("LookoutBanner", 66.4, 243.6, 0, height=8, on_y=MID_Y + 12.25))
+    visual.append(hanging_lantern("LookoutLantern", 61.6, MID_Y + 12.25, 243.6, drop=0.2))
+    # Back-door hideout in the passage.
+    visual.append(tent("HideoutTentA", -150, 0, 282, 10))
+    visual.append(tent("HideoutTentB", -128, 0, 318, -12, color=(130, 100, 80)))
+    visual.append(bedroll("HideoutBedroll", -150, 312, 80, color=(96, 84, 70)))
+    visual.append(crate_stack("HideoutCrates", -134, 0, 284, rng))
+    visual.append(rag_banner("HideoutBanner", -118, 276, 90))
+    visual.append(bench_lines("EastBenchLines", 110, PIT_Z[0] + 4, 468, PIT_Y, rng))
+    visual.append(bench_lines("WestBenchLines", -110, PIT_Z[0] + 30, 468, PIT_Y, rng, inward=1))
+
+    # Back-door passage: lantern arch, hidden elite, a supply cache (decorative for now).
     visual.append(model("SideArch", [
-        part("PostN", (1.6, 12, 1.6), (-111, Y + 6, 296), BEAM, "Wood"),
-        part("PostS", (1.6, 12, 1.6), (-111, Y + 6, 334), BEAM, "Wood"),
-        part("Beam", (1.8, 1.6, 40), (-111, Y + 12.4, 315), BEAM, "Wood", collide=False),
-        part("LanternN", (1.2, 1.6, 1.2), (-109.5, Y + 10.5, 299), LANTERN, "Neon", collide=False, query=False,
-             children=[light(16, 1.0)]),
+        part("PostN", (1.6, 12, 1.6), (-111, MID_Y + 6, PASSAGE[2] + 12), BEAM, "Wood"),
+        part("PostS", (1.6, 12, 1.6), (-111, MID_Y + 6, PASSAGE[3] - 12), BEAM, "Wood"),
+        part("Beam", (1.8, 1.6, PASSAGE[3] - PASSAGE[2] - 22.4), (-111, MID_Y + 12.4, (PASSAGE[2] + PASSAGE[3]) / 2), BEAM, "Wood",
+             collide=False),
+        hanging_lantern("LanternN", -111, MID_Y + 11.6, PASSAGE[2] + 15, drop=1.2),
     ]))
     visual.append(model("SupplyCache", [
-        part("Chest", (4.5, 3, 3), (-158, Y + 1.5, 315), (110, 70, 40), "WoodPlanks"),
-        part("ChestBand", (4.7, 0.5, 3.2), (-158, Y + 2.2, 315), GOLD, "Metal", collide=False),
-        part("Crate1", (4, 4, 4), (-156, Y + 2, 305), TIMBER, "WoodPlanks", rot_y(12)),
-        part("Crate2", (3.4, 3.4, 3.4), (-159, Y + 1.7, 326), TIMBER, "WoodPlanks", rot_y(-20)),
+        part("Chest", (4.5, 3, 3), (-158, MID_Y + 1.5, 300), (110, 70, 40), "WoodPlanks"),
+        part("ChestBand", (4.7, 0.5, 3.2), (-158, MID_Y + 2.2, 300), GOLD, "Metal", collide=False),
+        part("Crate1", (4, 4, 4), (-156, MID_Y + 2, 290), TIMBER, "WoodPlanks", rot_y(12)),
+        part("Crate2", (3.4, 3.4, 3.4), (-159, MID_Y + 1.7, 311), TIMBER, "WoodPlanks", rot_y(-20)),
     ]))
 
-    # Warlord's Pit: standing stones, braziers, banners, sealed Briarwood gate beyond.
+    # Pit: lamps at the ramp foot, standing stones and braziers around the boss, sealed Briarwood gate.
+    visual.append(lamp_post("PitLampW", RAMP2[0] - 8, 0, 338, yaw_facing(1, 0)))
     for k in range(14):
         a = math.tau * k / 14
         if k in (0, 7):  # openings facing the ridge gap (north) and the Briarwood gate (south)
             continue
         x, z = math.sin(a) * 42, 424 - math.cos(a) * 42
         h = rng.uniform(10, 15)
-        visual.append(part(f"StandingStone{k:02d}", (4.5, h, 3), (x, Y + h / 2, z), (130, 118, 104), "Slate",
+        visual.append(part(f"StandingStone{k:02d}", (4.5, h, 3), (x, PIT_Y + h / 2, z), (130, 118, 104), "Slate",
                            rot_y(-math.degrees(a)), layer="rock"))
     for k, (x, z) in enumerate(((-22, 390), (22, 390), (-42, 440), (42, 440))):
-        visual.append(brazier(f"PitBrazier{k}", x, Y, z))
-    for k, x in enumerate((-18, -6, 6, 18)):
-        visual.append(banner_pole(f"WarlordBanner{k}", x, Y, 462, 0))
-    visual.append(sign("WarlordSign", -30, Y, 360, yaw_facing(0, -1), 12, 5, "Warlord's Pit",
-                       "Iron Warlord  |  Lv 10  |  Boss", board=(70, 36, 36)))
-    visual.append(waystone("WarlordWaystone", "WarlordGate", -18, Y, 356))
-    visual.append(gate("GateBriarwood", 0, Y, 470, 0, 24, 22, "Briarwood", "Lv 9+  |  Coming soon", sealed=True,
+        visual.append(brazier(f"PitBrazier{k}", x, 0, z))
+    # The Warden's throne behind the arena, gang banners, empty manacles on three standing stones.
+    visual.append(throne("WardenThrone", 0, 454, yaw_facing(0, -1)))
+    for k, x in enumerate((-9, 9)):
+        visual.append(rag_banner(f"ThroneBanner{k}", x, 458, yaw_facing(0, -1), height=11, color=(110, 36, 40)))
+    for k, x in enumerate((-18, 18)):
+        visual.append(banner_pole(f"WarlordBanner{k}", x, 0, 464, 0))
+    for k in (3, 5, 10):
+        a = math.tau * k / 14
+        x, z = math.sin(a) * 42, 424 - math.cos(a) * 42
+        visual.append(manacles(f"Manacles{k}", x - math.sin(a) * 1.55, PIT_Y + 5.2, z + math.cos(a) * 1.55,
+                               yaw_facing(-math.sin(a), math.cos(a))))
+    # Gate leaves hang open, folded back flat against the ridge ends inside the gap: the lane and the
+    # view of the Warden stay clear.
+    visual.append(scrap_gate("ScrapGateW", -18.3, 367.5, -90))
+    visual.append(scrap_gate("ScrapGateE", 18.3, 367.5, -90))
+    visual.append(sign("WardenSign", 36, 0, 360, yaw_facing(0, -1), 12, 5, "Warden's Pit",
+                       "Warden of the Pit  |  Lv 10  |  Boss", board=(70, 36, 36)))
+    visual.append(waystone("WarlordWaystone", "WarlordGate", 12, 0, 352))
+    visual.append(gate("GateBriarwood", 0, PIT_Y, 470, 0, 24, 22, "Briarwood", "Lv 9+  |  Coming soon", sealed=True,
                        accent=(90, 120, 60), region="Briarwood", required_level=9,
                        back_title="Briarwood"))
     for k, (x, z) in enumerate(((-7, 486), (7, 495), (-2, 506))):
-        visual.append(tree(f"BriarVistaTree{k}", x, Y, z, rng, scale=1.4))
-    visual.append(box("BriarVistaFloor", -14, 14, 0, Y, 472, 514, GRASS_DARK, "Grass", layer="vista"))
+        visual.append(tree(f"BriarVistaTree{k}", x, PIT_Y, z, rng, scale=1.4))
+    visual.append(box("BriarVistaFloor", -14, 14, 0, PIT_Y, 472, 514, GRASS_DARK, "Grass", layer="vista"))
     return ground, visual, proxies
 
 
@@ -1900,6 +2535,8 @@ def main():
     hub_ground, hub_visual, hub_proxies = build_hub(rng)
     il_ground, il_visual, il_proxies = build_iron_lowlands(rng)
     markers = build_markers()
+    global AUTO_GROUND
+    AUTO_GROUND = False
 
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -2006,7 +2643,7 @@ def render_topdown(path: Path):
         draw.text(((ax + bx) / 2 - 30, (az + bz) / 2 + offset - 18), text, fill=(255, 255, 255), font=font_b)
 
     dim((-100, -100), (100, -100), "Hub 200 × 200", -22)
-    dim((-110, 472), (110, 472), "Quarry 220 × 304", 26)
+    dim((-110, 472), (110, 472), "Quarry 220 × 304: rim Y10 / mid Y6 / pit Y2", 26)
     draw.text((pad, h - pad + 18), "Hearthmere + Iron Lowlands — map_forge top-down (1 grid = 50 studs, +Z down)",
               fill=(230, 230, 230), font=font_b)
     path.parent.mkdir(parents=True, exist_ok=True)

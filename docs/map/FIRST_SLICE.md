@@ -35,17 +35,18 @@ whenever `MapMarkers` and `Workspace.LemonadeMap/Markers` are both present.
 | --- | --- | --- | --- |
 | Hearthmere hub | x −100..100, z −100..100 | 10 | spawn (0,−40) facing the south gate; plaza + sword monument; Sword Shop (W), Skill Trainer yard (E), Rebirth Shrine (SE), Quest Master in a striped market stall beside the south road (15,50); sealed gates W/E/N and Void Rift portal (NE) with visible vistas |
 | Pass | x −14..14, z 104..140 | 10 | canyon pass from the hub gate |
-| Quarry Overlook | x −40..40, z 140..168 | 10 | safe staging area, waystone, route sign; 32-stud ramp down (14°) |
-| Squire Yard | z 200..265 | 2 | 5 Squires Lv 1–3, spaced 35–41 studs; tents, campfire, scaffolds at the edges |
-| Crusher Pits | z 270..360 | 2 | Squires Lv 3–4 + Berserkers Lv 3–5; rail line, crane, stone stacks |
-| Side passage | x −167..−110, z 283..347 | 2 | optional elite Berserker Lv 6, supply cache (decorative for now) |
-| Warlord's Gate | (0, 352) | 2 | waystone, boss sign; 40-stud gap in a rock ridge shows the boss early |
-| Warlord's Pit | centre (0, 424), r 42 | 2 | Iron Warlord Lv 10, standing stones, braziers, banners |
+| Quarry Overlook | x −40..40, z 140..168 | 10 | safe staging area, waystone; opens straight onto the rim bench |
+| Rim bench | x −112..112, z 168..232 | 10 | Squires Lv 1–2 (S1–S3); smithy lean-to ruin, collapsed scaffold, broken and stolen carts, spoil heap, drill-hole row on the west face, ladder; haul ramp 1 at x 6..34 (10.3°) |
+| Mid bench | x −112..112, z 232..330 | 6 | Squires Lv 2–3 + Berserker Lv 3 (S4–S6, B1); crusher house camp (W), head-frame with lookout (E), rail spur + derailed cart, ore chute from the rim, TURN BACK sign at the ramp foot, two half-road barricades, haul road with ruts; haul ramp 2 at x −36..−8 (10.3°) |
+| Back-door passage | x −167..−112, z 270..330 | 6 | optional elite Berserker Lv 6, tents, bedroll, crates, supply cache, lantern arch |
+| Pit | x −112..112, z 330..472 | 2 | Squires Lv 4 + Berserkers Lv 4–5 (S7, S8, B2, B3); drainage sump (x 76..112, z 330..364, bed 0.8, water 1.65), mud stains, spoil heap, bench lines up both walls |
+| Warden's Gate | arrival (0, 358), waystone (12, 352) | 2 | waystone, boss sign; 40-stud gap in the ridge at z 375 with scrap-iron gate leaves folded open against the ridge ends |
+| Warden's Pit | centre (0, 424), r 42 | 2 | Warden of the Pit Lv 10 (Boss_Gorgon), standing stones with empty manacles, braziers, throne at (0, 454), rag banners |
 | Briarwood gate | (0, 470) | 2 | sealed milestone "Lv 9+" with forest vista |
 
 Measured on the navigation grid (`docs/map/VALIDATION.md`): spawn → Iron Lowlands gate 8.8 s
-walking; first enemy 16 s (10 s running); boss 29 s (18 s); nearest-encounter spacing 1.6–2.6 s.
-Merchant/trainer/quest/rebirth are 4–5.5 s from spawn.
+walking; first enemy 15.5 s (9.5 s running); boss 30 s (18.5 s); nearest-encounter spacing
+1.4–2.7 s. Merchant/trainer/quest/rebirth are 4–5.5 s from spawn.
 
 ## Decisions
 
@@ -159,6 +160,44 @@ waystone splinters from before.
   Engagement: one free reforge every 3 hours; lock any number of modifiers to keep them through the
   reroll, each adding a share of the base price by its tier (T1 +50% ... T6 +360%); personal-best
   and lifetime reforge counters with a "NEW PERSONAL BEST" reveal.
+
+## Bandit quarry revamp (2026-09-16)
+
+The flat 220×304 slab became a benched open-pit quarry: rim (Y 10) → mid bench (Y 6) → pit
+(Y 2), joined by two 22-stud haul ramps at 10.3°. Bench faces are the slabs' own sides dressed
+with collidable rock toes (`bench_face`); the tall perimeter walls carry stepped bench lines every
+6 studs. The gang's marks: crusher house camp, lookout on the head-frame, barricades, TURN BACK
+skull sign, scrap gate, throne. Everything visible must now pass the validator's support rule
+(floating/buried search), and prop helpers resolve their own floor height via `floor_at()` so a
+prop dropped on a bench, a ramp or a path lands correctly.
+
+| Piece | Where | Notes |
+| --- | --- | --- |
+| Haul ramp 1 | x 6..34, z 232..254 | rim → mid, timber curb logs |
+| Haul ramp 2 | x −36..−8, z 330..352 | mid → pit |
+| Haul road | A x 8..32 z 254..296 → B z 296..318 → C x −34..−10 → D/E/F to the ridge gap | 0.2 proud, two ruts |
+| Crusher house | x −102..−72, z 246..272 | roof half caved, flywheel + belt, ember pit (1 light), 3 bedrolls, loot |
+| Head-frame | (64, 246) | 24 high, snapped boom, hook, lookout deck at +12 with rag banner and lantern |
+| Ore chute | x −58, z 224 → 248 | rim to mid, broken legs, gravel |
+| Smithy ruin | x 70..86, z 198..212 | rim bench |
+| Rail spur | x 94, z 240..322 | cart, derailed cart at (88, 300), bent rails |
+| Sump | x 76..112, z 330..364 | bed 0.8, water top 1.65, stone curbs |
+| Spoil heaps | (−84, 200) r 11; (−80, 404) r 14 | collidable mounds, loose rubble |
+| Barricades | (12, 276) across road A; (−20, 302) across road B | planks collide, ≥ 10 studs stay open |
+| Scrap gate | leaves at x ±18.3, z 368..377 | folded flat against the ridge ends; gap 36 studs |
+| Throne | (0, 454) facing north | behind the boss; two rag banners, two banner poles |
+
+Enemy family — the Quarry Bandits (`EnemyCombat.server.luau` display names; archetype keys,
+stats, drops and the `Warlord Greatsword` unchanged): `IronSquire` → **Quarry Cutthroat**
+(hood, mask, leather vest, wrapped forearms, rusty pick), `IronBerserker` → **Pit Brute**
+(cart-plate pauldron, chain belt, chest plate, scars, sledge; the `IL_E1` elite adds a red sash
+and a bone mask), `Boss_Gorgon` → **Warden of the Pit** (scavenged plate, crested helm, cape of
+stitched banners, hip lantern, the existing sword). Looks live in
+`ReplicatedStorage/EnemyOutfits.luau` as welded, massless accessory parts scaled by the archetype.
+
+Region budget: 781 parts (779 Part, 2 WedgePart), 157 collidable, 17 PointLights (budget 20),
+5 Fire, 6 SurfaceGuis, streaming Default. Preview any box of it with
+`python3 tools/preview_model.py out.png --box x0 x1 z0 z1`.
 
 ## Known limitations / next
 

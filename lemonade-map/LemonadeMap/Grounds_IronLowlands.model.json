@@ -102,71 +102,21 @@
    }
   },
   {
-   "name": "QuarryFloor",
+   "name": "RimBench",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      224.0,
-     2.0,
-     304.0
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       1.0,
-       320.0
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.5961,
-     0.4314,
-     0.2902
-    ],
-    "Material": "Ground",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": true,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true
-   }
-  },
-  {
-   "name": "SidePassageFloor",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     55.0,
-     2.0,
+     10.0,
      64.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -139.5,
-       1.0,
-       315.0
+       0.0,
+       5.0,
+       200.0
       ],
       "orientation": [
        [
@@ -202,21 +152,271 @@
    }
   },
   {
-   "name": "OverlookRamp",
+   "name": "MidBench",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     224.0,
+     6.0,
+     98.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       3.0,
+       281.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5725,
+     0.4157,
+     0.2824
+    ],
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PassageFloor",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     55.0,
+     6.0,
+     60.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -139.5,
+       3.0,
+       300.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5725,
+     0.4157,
+     0.2824
+    ],
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PitFloorW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     188.0,
+     2.0,
+     142.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -18.0,
+       1.0,
+       401.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.549,
+     0.3922,
+     0.2667
+    ],
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PitFloorE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     36.0,
+     2.0,
+     108.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       94.0,
+       1.0,
+       418.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.549,
+     0.3922,
+     0.2667
+    ],
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "SumpBed",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     36.0,
+     0.8,
+     34.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       94.0,
+       0.4,
+       347.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.4078,
+     0.3137,
+     0.2118
+    ],
+    "Material": "Mud",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "HaulRamp1",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
      28.0,
      1.6,
-     33.3848
+     22.7607
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       5.2239,
-       183.806
+       20.0,
+       7.2129,
+       242.8569
       ],
       "orientation": [
        [
@@ -226,23 +426,23 @@
        ],
        [
         0.0,
-        0.9701,
-        -0.2425
+        0.9839,
+        -0.1789
        ],
        [
         0.0,
-        0.2425,
-        0.9701
+        0.1789,
+        0.9839
        ]
       ]
      }
     },
     "Color": [
-     0.5176,
-     0.4078,
-     0.3059
+     0.502,
+     0.3922,
+     0.2745
     ],
-    "Material": "WoodPlanks",
+    "Material": "Ground",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -252,21 +452,71 @@
    }
   },
   {
-   "name": "QuarryPath",
+   "name": "HaulRamp2",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     20.0,
-     0.2,
-     182.0
+     28.0,
+     1.6,
+     22.7607
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       2.1,
-       291.0
+       -22.0,
+       3.2129,
+       340.8569
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.9839,
+        -0.1789
+       ],
+       [
+        0.0,
+        0.1789,
+        0.9839
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.502,
+     0.3922,
+     0.2745
+    ],
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "HaulRoadA",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     24.0,
+     0.2,
+     42.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       20.0,
+       6.1,
+       275.0
       ],
       "orientation": [
        [
@@ -289,10 +539,10 @@
     },
     "Color": [
      0.502,
-     0.3725,
-     0.2588
+     0.3922,
+     0.2745
     ],
-    "Material": "Pebble",
+    "Material": "Ground",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -302,21 +552,71 @@
    }
   },
   {
-   "name": "SidePath",
+   "name": "HaulRoadB",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     130.0,
+     66.0,
+     0.2,
+     22.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -1.0,
+       6.1,
+       307.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.502,
+     0.3922,
+     0.2745
+    ],
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "HaulRoadC",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     24.0,
      0.2,
      12.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -75.0,
-       2.1,
-       315.0
+       -22.0,
+       6.1,
+       324.0
       ],
       "orientation": [
        [
@@ -339,10 +639,160 @@
     },
     "Color": [
      0.502,
-     0.3725,
-     0.2588
+     0.3922,
+     0.2745
     ],
-    "Material": "Pebble",
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "HaulRoadD",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     24.0,
+     0.2,
+     10.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -22.0,
+       2.1,
+       357.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.502,
+     0.3922,
+     0.2745
+    ],
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "HaulRoadE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     46.0,
+     0.2,
+     10.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -11.0,
+       2.1,
+       367.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.502,
+     0.3922,
+     0.2745
+    ],
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "HaulRoadF",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     24.0,
+     0.2,
+     13.5
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       2.1,
+       378.75
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.502,
+     0.3922,
+     0.2745
+    ],
+    "Material": "Ground",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,

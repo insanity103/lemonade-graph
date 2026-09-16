@@ -94,6 +94,9 @@ class Node:
         self.anchored = boolean("Anchored", False)
         self.transparency = float(props.findtext("float[@name='Transparency']") or 0)
         self.shape = int(props.findtext("token[@name='shape']") or 1)  # 0 Ball, 1 Block, 2 Cylinder
+        mode = props.findtext("token[@name='ModelStreamingMode']")
+        self.streaming = {None: "Default", "0": "Default", "1": "Atomic", "2": "Persistent", "3": "PersistentPerPlayer",
+                          "4": "Nonatomic"}.get(mode, mode)
         for child in item.findall("Item"):
             self.children.append(Node(child, self))
 
@@ -146,6 +149,62 @@ def top_at(node, x, z):
     if abs(lx) <= sx / 2 + 1e-6 and abs(lz) <= sz / 2 + 1e-6:
         return y
     return None
+
+
+def vertical_extent(node):
+    """(bottom, top) world Y of the part on the vertical line through its centre. For rotated boxes
+    the ray leaves through whichever face it meets first, so a tilted beam's 'bottom' is its
+    underside, not its lowest corner."""
+    r = node.rot
+    if node.shape == 0:  # ball
+        h = node.size[0] / 2
+    elif node.shape == 2 and abs(r[1][0]) > 0.99:  # disc
+        h = node.size[0] / 2
+    else:
+        h = min(node.size[k] / (2 * abs(r[1][k])) for k in range(3) if abs(r[1][k]) > 1e-6)
+        if node.shape == 2:  # cylinder radius bounds the vertical extent
+            h = min(h, max(node.size[1], node.size[2]) / 2) if abs(r[1][0]) < 0.99 else h
+    return node.pos[1] - h, node.pos[1] + h
+
+
+def bottom_at(node, x, z):
+    """World Y of the part's bottom face below (x, z), or None outside its footprint."""
+    r = node.rot
+    if node.shape == 2 and abs(r[1][0]) > 0.99:
+        if math.hypot(x - node.pos[0], z - node.pos[2]) <= node.size[1] / 2:
+            return node.pos[1] - node.size[0] / 2
+        return None
+    if abs(r[1][1]) < 0.2:
+        return None
+    sx, sy, sz = node.size
+    dx, dz = x - node.pos[0], z - node.pos[2]
+    y = node.pos[1] + (-sy / 2 - r[0][1] * dx - r[2][1] * dz) / r[1][1]
+    lx, _, lz = to_local(node, (x, y, z))
+    if abs(lx) <= sx / 2 + 1e-6 and abs(lz) <= sz / 2 + 1e-6:
+        return y
+    return None
+
+
+def sample_points(node):
+    """Centre, 8 corners, 12 edge midpoints and 6 face centres in world space."""
+    sx, sy, sz = node.size
+    pts = []
+    for ix in (-1, 0, 1):
+        for iy in (-1, 0, 1):
+            for iz in (-1, 0, 1):
+                l = (ix * sx / 2, iy * sy / 2, iz * sz / 2)
+                pts.append(tuple(sum(node.rot[i][k] * l[k] for k in range(3)) + node.pos[i] for i in range(3)))
+    return pts
+
+
+def touches(a, b, inflate=0.12):
+    """True when a sample point of either part lies inside the other (inflated a little, so parts
+    butted against each other with a hairline gap still count as attached)."""
+    if getattr(a, "pts", None) is None:
+        a.pts = sample_points(a)
+    if getattr(b, "pts", None) is None:
+        b.pts = sample_points(b)
+    return any(inside(b, p, inflate) for p in a.pts) or any(inside(a, p, inflate) for p in b.pts)
 
 
 def xz_aabb(node):
@@ -373,9 +432,96 @@ def main():
                 break
 
     check_coplanar_tops(visual_parts)
+    check_support([p for p in visual_parts if id(p) not in ground_ids and p not in collision.descendants()], grounds)
 
     travel = navigate(grounds, solids, spawn_location, spawns, waypoints, lemap, markers)
     finish(report_path, travel)
+
+
+def check_support(parts, grounds, tol_float=0.4):
+    """Every visible part must stand on a floor, rest on / hang from / be attached to another part.
+    Reports floating parts (nothing within reach) and buried ones (entirely inside a floor)."""
+    floors = list(grounds)
+    for f in floors:
+        f.box = getattr(f, "box", None) or xz_aabb(f)
+    # FloatShard pieces orbit the waystones by design (HubAmbience animates them).
+    opaque = [p for p in parts if p.transparency < 0.9 and not p.name.startswith("FloatShard")]
+    for p in opaque:
+        p.box = getattr(p, "box", None) or xz_aabb(p)
+    # coarse XZ grid for neighbour lookup
+    cell = 16.0
+    grid = {}
+    for p in opaque:
+        x0, x1, _, _, z0, z1 = p.box
+        for i in range(int(x0 // cell), int(x1 // cell) + 1):
+            for j in range(int(z0 // cell), int(z1 // cell) + 1):
+                grid.setdefault((i, j), []).append(p)
+
+    def floor_under(x, z):
+        best = None
+        for f in floors:
+            if aabb_distance_xz(f.box, x, z) > 0:
+                continue
+            y = top_at(f, x, z)
+            if y is not None and (best is None or y > best):
+                best = y
+        return best
+
+    floating, buried = [], []
+    for p in opaque:
+        bottom, top = vertical_extent(p)
+        cx, cz = p.pos[0], p.pos[2]
+        fy = floor_under(cx, cz)
+        if fy is not None and top <= fy + 0.05:
+            buried.append((p, fy))
+            continue
+        if fy is not None and bottom - fy <= tol_float:
+            continue  # on the floor (or sunk into it)
+        # lowest corner on a floor (tilted posts, ladders, curb logs)
+        _, _, ymin, _, _, _ = p.box
+        low = min(p.pts if getattr(p, "pts", None) else sample_points(p), key=lambda q: q[1])
+        p.pts = p.pts if getattr(p, "pts", None) else sample_points(p)
+        fyc = floor_under(low[0], low[2])
+        if fyc is not None and low[1] - fyc <= tol_float:
+            continue
+        # resting on, hanging from, or attached to another part
+        x0, x1, _, _, z0, z1 = p.box
+        supported = False
+        seen = set()
+        for i in range(int(x0 // cell), int(x1 // cell) + 1):
+            for j in range(int(z0 // cell), int(z1 // cell) + 1):
+                for q in grid.get((i, j), ()):
+                    if q is p or id(q) in seen:
+                        continue
+                    seen.add(id(q))
+                    qb = q.box
+                    if qb[0] > x1 + 0.5 or qb[1] < x0 - 0.5 or qb[4] > z1 + 0.5 or qb[5] < z0 - 0.5:
+                        continue
+                    if qb[3] < bottom - 0.5 or qb[2] > top + 0.5:
+                        continue
+                    qt = top_at(q, cx, cz)
+                    if qt is not None and abs(bottom - qt) <= tol_float:
+                        supported = True
+                        break
+                    qb_y = bottom_at(q, cx, cz)
+                    if qb_y is not None and abs(top - qb_y) <= tol_float:
+                        supported = True
+                        break
+                    if touches(p, q):
+                        supported = True
+                        break
+                if supported:
+                    break
+            if supported:
+                break
+        if not supported:
+            floating.append((p, bottom, fy))
+    for p, bottom, fy in floating:
+        gap = "no floor" if fy is None else f"{bottom - fy:.2f} above floor y={fy:.2f}"
+        fail(f"Floating: {p.path()} bottom y={bottom:.2f}, {gap}, touching nothing")
+    for p, fy in buried:
+        fail(f"Buried: {p.path()} lies entirely under floor y={fy:.2f}")
+    notes.append(f"support rule: {len(opaque)} visible parts checked, {len(floating)} floating, {len(buried)} buried")
 
 
 def check_coplanar_tops(parts):
