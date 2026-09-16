@@ -67,6 +67,7 @@ local NAV_ITEMS = {
 	{ id = "Inventory", icon = ICONS.Inventory },
 	{ id = "Skills", icon = ICONS.Skills },
 	{ id = "Rebirth", icon = "rbxassetid://80234316052758" },
+	{ id = "Trade", icon = ICONS.Sword },
 	{ id = "Settings", icon = ICONS.Settings },
 }
 
@@ -702,6 +703,171 @@ local function buildRebirthPanel()
 	rebirthButton.Activated:Connect(function() remotes:WaitForChild("Rebirth"):FireServer() end)
 end
 
+-- ═══════════════════════════════════════════════════════════════════════════
+--  TRADE TAB: pick a player from the lobby, then build an offer side by side
+-- ═══════════════════════════════════════════════════════════════════════════
+local tradeRemote = remotes:WaitForChild("TradeAction")
+local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
+local tradeState = { players = {}, incoming = nil, session = nil }
+local TRADE_RARITY = {
+	Common = Color3.fromRGB(180, 180, 180), Uncommon = Color3.fromRGB(80, 200, 120), Rare = Color3.fromRGB(80, 160, 255),
+	Epic = Color3.fromRGB(180, 80, 240), Legendary = Color3.fromRGB(255, 200, 40),
+}
+
+local function tradeCard(order, height)
+	local card = Instance.new("Frame")
+	card.Size = UDim2.new(1, 0, 0, height)
+	card.BackgroundColor3 = COLORS.PanelLight
+	card.BackgroundTransparency = 0.1
+	card.BorderSizePixel = 0
+	card.LayoutOrder = order
+	card.ZIndex = 23
+	card.Parent = body
+	addCorner(card, 12)
+	addStroke(card, COLORS.Stroke, 0.4, 1)
+	addPadding(card, 8, 12, 8, 12)
+	return card
+end
+
+local function tradeButton(parent, text, color, pos, size, onClick)
+	local btn = Instance.new("TextButton")
+	btn.Size = size or UDim2.fromOffset(92, 30)
+	btn.Position = pos
+	btn.AnchorPoint = Vector2.new(1, 0.5)
+	btn.BackgroundColor3 = color
+	btn.BorderSizePixel = 0
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 13
+	btn.TextColor3 = COLORS.Text
+	btn.Text = text
+	btn.ZIndex = 24
+	btn.Parent = parent
+	addCorner(btn, 8)
+	btn.Activated:Connect(onClick)
+	return btn
+end
+
+local function swordLine(card, info, y, withButton, buttonText, buttonColor, onClick)
+	createText(card, { text = info.name, font = Enum.Font.GothamBold, size = 13, color = TRADE_RARITY[info.rarity] or COLORS.Text,
+		pos = UDim2.fromOffset(0, y), size2 = UDim2.new(1, -110, 0, 16), zIndex = 24 })
+	createText(card, { text = string.format("%s · %s · rating %s", info.rarity, info.prefixes ~= "" and info.prefixes or "no modifiers",
+		SwordValue.short(info.rating or 0)), font = Enum.Font.Gotham, size = 11, color = COLORS.Muted,
+		pos = UDim2.fromOffset(0, y + 16), size2 = UDim2.new(1, -110, 0, 14), zIndex = 24 })
+	if withButton then
+		tradeButton(card, buttonText, buttonColor, UDim2.new(1, 0, 0, y + 15), UDim2.fromOffset(84, 28), onClick)
+	end
+end
+
+local function buildTradeLobby(order)
+	if tradeState.incoming then
+		local card = tradeCard(order, 64); order += 1
+		createText(card, { text = tradeState.incoming.name .. " wants to trade with you", font = Enum.Font.GothamBold, size = 14,
+			color = COLORS.Gold, size2 = UDim2.new(1, -200, 0, 24), zIndex = 24 })
+		createText(card, { text = "Accept to open the trade window.", font = Enum.Font.Gotham, size = 11, color = COLORS.Muted,
+			pos = UDim2.fromOffset(0, 24), size2 = UDim2.new(1, -200, 0, 16), zIndex = 24 })
+		local fromId = tradeState.incoming.userId
+		tradeButton(card, "Accept", COLORS.Success, UDim2.new(1, -96, 0.5, 0), UDim2.fromOffset(88, 30), function()
+			tradeRemote:FireServer("Accept", fromId)
+		end)
+		tradeButton(card, "Decline", COLORS.Button, UDim2.new(1, 0, 0.5, 0), UDim2.fromOffset(88, 30), function()
+			tradeRemote:FireServer("Decline", fromId)
+		end)
+	end
+	local head = tradeCard(order, 40); order += 1
+	createText(head, { text = "Players in this server", font = Enum.Font.GothamBold, size = 14, color = COLORS.Text,
+		size2 = UDim2.new(1, -100, 1, 0), zIndex = 24 })
+	tradeButton(head, "Refresh", COLORS.Button, UDim2.new(1, 0, 0.5, 0), UDim2.fromOffset(84, 26), function()
+		tradeRemote:FireServer("Refresh")
+	end)
+	if #tradeState.players == 0 then
+		local card = tradeCard(order, 48); order += 1
+		createText(card, { text = "Nobody else is here yet. Trades need another player in the server.", font = Enum.Font.Gotham,
+			size = 12, color = COLORS.Muted, wrap = true, size2 = UDim2.new(1, 0, 1, 0), zIndex = 24 })
+	end
+	for _, info in ipairs(tradeState.players) do
+		local card = tradeCard(order, 56); order += 1
+		createText(card, { text = info.name, font = Enum.Font.GothamBold, size = 14, color = COLORS.Text,
+			size2 = UDim2.new(1, -110, 0, 20), zIndex = 24 })
+		createText(card, { text = string.format("Level %d · Wealth %s%s", info.level, SwordValue.short(info.wealth or 0),
+			info.busy and " · trading" or ""), font = Enum.Font.Gotham, size = 11, color = COLORS.Muted,
+			pos = UDim2.fromOffset(0, 22), size2 = UDim2.new(1, -110, 0, 16), zIndex = 24 })
+		if not info.busy then
+			local userId = info.userId
+			tradeButton(card, "Trade", COLORS.Success, UDim2.new(1, 0, 0.5, 0), UDim2.fromOffset(84, 30), function()
+				tradeRemote:FireServer("Request", userId)
+			end)
+		end
+	end
+	return order
+end
+
+local function buildTradeSession(order)
+	local st = tradeState.session
+	local status = tradeCard(order, 60); order += 1
+	createText(status, { text = "Trading with " .. st.partnerName, font = Enum.Font.GothamBold, size = 15, color = COLORS.Gold,
+		size2 = UDim2.new(1, -110, 0, 22), zIndex = 24 })
+	local mine = st.myConfirmed and "You: confirmed" or "You: not confirmed"
+	local theirs = st.theirConfirmed and (st.partnerName .. ": confirmed") or (st.partnerName .. ": waiting")
+	createText(status, { text = mine .. "  ·  " .. theirs, font = Enum.Font.Gotham, size = 11, color = COLORS.Muted,
+		pos = UDim2.fromOffset(0, 24), size2 = UDim2.new(1, -110, 0, 16), zIndex = 24 })
+	tradeButton(status, "Cancel", COLORS.Error, UDim2.new(1, 0, 0.5, 0), UDim2.fromOffset(84, 30), function()
+		tradeRemote:FireServer("Cancel")
+	end)
+
+	local function section(title, rows, emptyText, withButton, buttonText, buttonColor, action)
+		local card = tradeCard(order, 30 + math.max(#rows, 1) * 36 + 6); order += 1
+		createText(card, { text = title, font = Enum.Font.GothamBold, size = 13, color = COLORS.Text,
+			size2 = UDim2.new(1, 0, 0, 20), zIndex = 24 })
+		if #rows == 0 then
+			createText(card, { text = emptyText, font = Enum.Font.Gotham, size = 11, color = COLORS.Muted,
+				pos = UDim2.fromOffset(0, 24), size2 = UDim2.new(1, 0, 0, 16), zIndex = 24 })
+		end
+		for i, info in ipairs(rows) do
+			local key = info.key
+			swordLine(card, info, 22 + (i - 1) * 36, withButton, buttonText, buttonColor, function()
+				tradeRemote:FireServer(action, key)
+			end)
+		end
+	end
+	-- Your side shows everything you own (carried and vaulted); theirs shows only their offer.
+	section(string.format("Your offer (%d / %d)", #st.mine, st.maxOffer or 6), st.mine,
+		"Add swords from your inventory or vault below.", true, "Remove", COLORS.Button, "Offer")
+	section(st.partnerName .. "'s offer", st.theirs, "They have not offered anything yet.", false)
+	local offered = {}
+	for _, info in ipairs(st.mine) do offered[info.key] = true end
+	local function unoffered(list)
+		local out = {}
+		for _, info in ipairs(list or {}) do
+			if not offered[info.key] then table.insert(out, info) end
+		end
+		return out
+	end
+	section("Your inventory", unoffered(st.carried), "No relic swords on you.", true, "Add", COLORS.Success, "Offer")
+	section("Your vault", unoffered(st.vaulted), "Nothing stored with the Vaultkeeper.", true, "Add", COLORS.Success, "Offer")
+
+	local confirmCard = tradeCard(order, 52); order += 1
+	createText(confirmCard, { text = st.myConfirmed and "Waiting for " .. st.partnerName .. " to confirm..." or
+		"Check both offers, then confirm.", font = Enum.Font.Gotham, size = 12, color = COLORS.Muted,
+		size2 = UDim2.new(1, -120, 1, 0), zIndex = 24 })
+	if not st.myConfirmed then
+		tradeButton(confirmCard, "Confirm", COLORS.Success, UDim2.new(1, 0, 0.5, 0), UDim2.fromOffset(100, 34), function()
+			tradeRemote:FireServer("Confirm")
+		end)
+	end
+	return order
+end
+
+local function buildTradePanel()
+	clearBody()
+	headerTitle.Text = "Trade"
+	local order = 1
+	if tradeState.session then
+		buildTradeSession(order)
+	else
+		buildTradeLobby(order)
+	end
+end
+
 local function buildSettingsPanel()
 	clearBody()
 	headerTitle.Text = "Settings"
@@ -1043,8 +1209,10 @@ local function openTab(tabId)
 	elseif tabId == 'Inventory' then buildInventoryPanel()
 	elseif tabId == 'Skills' then buildSkillsPanel(); refreshSkills()
 	elseif tabId == 'Rebirth' then buildRebirthPanel()
+	elseif tabId == 'Trade' then buildTradePanel(); tradeRemote:FireServer("Refresh")
 	elseif tabId == 'Settings' then buildSettingsPanel() end
 end
+
 
 local function setMenuOpen(open)
 	if panelOpen == open then return end
@@ -1057,6 +1225,30 @@ local function setMenuOpen(open)
 end
 
 local function toggleMenu() setMenuOpen(not panelOpen) end
+
+-- Trade tab events (after setMenuOpen so an incoming request can open the menu).
+tradeRemote.OnClientEvent:Connect(function(kind, a, b)
+	if kind == "Players" then
+		tradeState.players = a or {}
+		tradeState.incoming = b
+	elseif kind == "Incoming" then
+		tradeState.incoming = { userId = a, name = b }
+		if not panelOpen then
+			setMenuOpen(true)
+			openTab("Trade")
+			return
+		end
+	elseif kind == "Session" then
+		tradeState.session = a
+		tradeState.incoming = nil
+		if not panelOpen then setMenuOpen(true) end
+		if activeTab ~= "Trade" then openTab("Trade") return end
+	elseif kind == "Ended" then
+		tradeState.session = nil
+		tradeRemote:FireServer("Refresh")
+	end
+	if panelOpen and activeTab == "Trade" then buildTradePanel() end
+end)
 
 -- Talking to the Keeper of Renewal at the hub's rebirth pavilion opens this panel on
 -- the Rebirth tab. It only opens the panel: the existing confirm button and

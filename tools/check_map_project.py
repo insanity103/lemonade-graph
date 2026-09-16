@@ -247,7 +247,7 @@ def main():
 
     # NPC markers.
     npcs = markers.find("NPCs")
-    for required in ("QuestMaster", "Merchant", "SkillTrainer", "RebirthKeeper"):
+    for required in ("QuestMaster", "Merchant", "SkillTrainer", "RebirthKeeper", "Vaultkeeper"):
         n = npcs.find(required)
         if not n:
             fail(f"NPC marker {required} missing")

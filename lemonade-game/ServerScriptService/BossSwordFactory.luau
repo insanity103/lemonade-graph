@@ -67,6 +67,36 @@ function BossSwordFactory.build(archetypeKey, opts)
 		gotExtraSlot = false
 	end
 
+	local fullName = BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExtraSlot)
+
+	local handle = tool:FindFirstChild("Handle")
+	if handle then
+		CombatUtil.applyWeaponAppearance(handle, weaponData.color, weaponData.material)
+	end
+
+	-- The BossSwordTool template ships without the activation script or swing sounds;
+	-- copy both from ClassicSword so every sword swings and sounds the same.
+	local classic = StarterPack:FindFirstChild("ClassicSword")
+	local clientScript = classic and classic:FindFirstChild("SwordClient")
+	if clientScript and not tool:FindFirstChild("SwordClient") then
+		clientScript:Clone().Parent = tool
+	end
+	local classicHandle = classic and classic:FindFirstChild("Handle")
+	local bossHandle = tool:FindFirstChild("Handle")
+	if classicHandle and bossHandle then
+		for _, sound in ipairs(classicHandle:GetChildren()) do
+			if sound:IsA("Sound") and not bossHandle:FindFirstChild(sound.Name) then
+				sound:Clone().Parent = bossHandle
+			end
+		end
+	end
+
+	return tool, mods, fullName, gotExtraSlot, weaponData
+end
+
+-- Write a modifier roll onto a tool: name, prefixes and the combat attributes. Shared by
+-- build (fresh drops and purchases) and reroll (the Reforge anvil).
+function BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExtraSlot)
 	local prefixNames = {}
 	local bonusDamage = weaponData.inherentBonusDmg or 0
 	local critChance = weaponData.inherentCrit or 0
@@ -109,30 +139,20 @@ function BossSwordFactory.build(archetypeKey, opts)
 	tool:SetAttribute("BossDrop", true)
 	tool:SetAttribute("BaseWeaponName", weaponData.name)
 	tool:SetAttribute("WeaponAppearanceMaterial", weaponData.material.Name)
+	return fullName
+end
 
-	local handle = tool:FindFirstChild("Handle")
-	if handle then
-		CombatUtil.applyWeaponAppearance(handle, weaponData.color, weaponData.material)
-	end
-
-	-- The BossSwordTool template ships without the activation script or swing sounds;
-	-- copy both from ClassicSword so every sword swings and sounds the same.
-	local classic = StarterPack:FindFirstChild("ClassicSword")
-	local clientScript = classic and classic:FindFirstChild("SwordClient")
-	if clientScript and not tool:FindFirstChild("SwordClient") then
-		clientScript:Clone().Parent = tool
-	end
-	local classicHandle = classic and classic:FindFirstChild("Handle")
-	local bossHandle = tool:FindFirstChild("Handle")
-	if classicHandle and bossHandle then
-		for _, sound in ipairs(classicHandle:GetChildren()) do
-			if sound:IsA("Sound") and not bossHandle:FindFirstChild(sound.Name) then
-				sound:Clone().Parent = bossHandle
-			end
-		end
-	end
-
-	return tool, mods, fullName, gotExtraSlot, weaponData
+-- Re-roll an existing boss sword's modifiers in place (the Reforge anvil). Rarity, base
+-- damage and look stay; a Blessed sword keeps its extra slot. Returns the new mods and name.
+function BossSwordFactory.reroll(tool, blessedBonus)
+	local tier = tonumber(tool:GetAttribute("BossTier")) or 1
+	local archetypeKey = BossWeapons.ArchetypeByTier[tier]
+	local weaponData = archetypeKey and BossWeapons.Get(archetypeKey)
+	if not weaponData then return nil end
+	local mods, gotExtraSlot = WeaponModifiers.RollModifiers(weaponData.rarity, blessedBonus or 0,
+		tool:GetAttribute("ExtraSlot") == true)
+	local fullName = BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExtraSlot)
+	return mods, fullName, gotExtraSlot
 end
 
 -- Rebuild a previously-saved boss sword from its serialized attribute set (see

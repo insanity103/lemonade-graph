@@ -63,6 +63,15 @@
       "GameplayServices": {
         "$path": "lemonade-game/Gameplay/GameplayServices.server.luau"
       },
+      "VaultSystem": {
+        "$path": "lemonade-game/ServerScriptService/VaultSystem.server.luau"
+      },
+      "TradeSystem": {
+        "$path": "lemonade-game/ServerScriptService/TradeSystem.server.luau"
+      },
+      "ReforgeSystem": {
+        "$path": "lemonade-game/ServerScriptService/ReforgeSystem.server.luau"
+      },
       "MapMarkers": {
         "$path": "lemonade-game/Gameplay/MapMarkers.luau"
       },
@@ -115,6 +124,12 @@
         },
         "SwordDropToast": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau"
+        },
+        "VaultGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/VaultGui.client.luau"
+        },
+        "ReforgeGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGui.client.luau"
         },
         "XPGainUI": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau"

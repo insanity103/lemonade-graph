@@ -135,6 +135,25 @@ monument) and chat; the smith hammers in bursts with sparks and a clink; butterf
 beds, three birds circling the plaza, waterfall sheets shimmer; plus the trainer, hologram and
 waystone splinters from before.
 
+## Sword economy (2026-09-15)
+
+- `SwordValue` rates a relic sword from rarity base x modifier tier weights (+Blessed, +boss
+  tier); a player's **Wealth** sums every sword carried or vaulted. It is a player attribute
+  (vault and trade UIs) and a leaderstat beside Level and Rebirths; derived, never saved.
+- **Vaultkeeper** (log shack NE of spawn): store up to 12 relic swords in the profile vault;
+  they survive rebirths and server hops. `VaultSystem` + `VaultGui`.
+- **Trading** (Menu > Trade): the tab lists players in the server first; a request notifies
+  the other player (toast + menu opens on the Trade tab) to accept or decline. In a trade your
+  side shows your whole inventory and vault to offer from; their side shows only their offer.
+  Both confirm, any change resets confirmations, then swords swap (rebuilt from saved attrs).
+  `TradeSystem`, server-authoritative.
+
+- **Reforge** (bottom-left "Reforge (reroll)" button, no world prompt, works anywhere): pay gold to re-roll
+  a relic sword's modifiers. Cost = rarity base (40 / 120 / 400 / 1500 / 6000) x current roll
+  quality, so better rolls cost more to gamble. Rarity, base damage and a Blessed slot stay.
+  `ReforgeGui` plays a case-opening reel of modifier cards that lands on the server's roll,
+  then reveals the new sword and its rating change. `ReforgeSystem`, server-authoritative.
+
 ## Known limitations / next
 
 - `canLeaveCombat` in `MapTravel.server.luau` decides the travel combat restriction (see TODO).

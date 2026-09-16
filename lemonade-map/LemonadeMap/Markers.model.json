@@ -211,6 +211,57 @@
       "CastShadow": false,
       "Transparency": 1.0
      }
+    },
+    {
+     "name": "Vaultkeeper",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         30.0,
+         10.52,
+         -84.0
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     }
     }
    ]
   },
