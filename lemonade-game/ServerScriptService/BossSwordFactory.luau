@@ -146,31 +146,34 @@ end
 -- damage and look stay; a Blessed sword keeps its extra slot. Returns the new mods and name.
 -- minTopTier (optional): the pity floor — if no rolled modifier reaches it, the best one is
 -- raised to it, so a run of bad luck cannot leave the sword worse at the top end.
--- keepName (optional): a modifier name currently on the sword to lock; it survives the reroll
--- in place of one rolled slot (the locked category is never rolled twice).
-function BossSwordFactory.reroll(tool, blessedBonus, minTopTier, keepName)
+-- keepNames (optional): modifier names currently on the sword to lock; each survives the reroll
+-- in place of one rolled slot (a locked category is never rolled twice). The slot count is
+-- whatever the rarity rolled, so locks never add slots.
+function BossSwordFactory.reroll(tool, blessedBonus, minTopTier, keepNames)
 	local tier = tonumber(tool:GetAttribute("BossTier")) or 1
 	local archetypeKey = BossWeapons.ArchetypeByTier[tier]
 	local weaponData = archetypeKey and BossWeapons.Get(archetypeKey)
 	if not weaponData then return nil end
 	local mods, gotExtraSlot = WeaponModifiers.RollModifiers(weaponData.rarity, blessedBonus or 0,
 		tool:GetAttribute("ExtraSlot") == true)
-	if keepName then
-		local kept
-		for category, data in pairs(WeaponModifiers.Categories) do
-			for tierIndex, entry in ipairs(data.Tiers) do
-				if entry.name == keepName then
-					kept = { category = category, name = entry.name, bonus = entry.bonus, desc = entry.desc, tier = tierIndex }
+	if keepNames and #keepNames > 0 then
+		local rolledCount = #mods
+		local kept, keptCategories = {}, {}
+		for _, keepName in ipairs(keepNames) do
+			for category, data in pairs(WeaponModifiers.Categories) do
+				for tierIndex, entry in ipairs(data.Tiers) do
+					if entry.name == keepName and not keptCategories[category] then
+						keptCategories[category] = true
+						table.insert(kept, { category = category, name = entry.name, bonus = entry.bonus, desc = entry.desc, tier = tierIndex })
+					end
 				end
 			end
 		end
-		if kept then
-			for i = #mods, 1, -1 do -- drop any fresh roll in the locked category
-				if mods[i].category == kept.category then table.remove(mods, i) end
-			end
-			if #mods >= 4 then table.remove(mods) end
-			table.insert(mods, 1, kept)
+		for i = #mods, 1, -1 do -- drop fresh rolls in locked categories
+			if keptCategories[mods[i].category] then table.remove(mods, i) end
 		end
+		while #mods > math.max(rolledCount, #kept) - #kept do table.remove(mods) end
+		for i = #kept, 1, -1 do table.insert(mods, 1, kept[i]) end
 	end
 	local pityApplied = false
 	if minTopTier and #mods > 0 then

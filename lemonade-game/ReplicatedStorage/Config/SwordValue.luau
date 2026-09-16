@@ -90,6 +90,29 @@ function SwordValue.rerollCost(attrs): number
 	return math.floor(base * quality / 10 + 0.5) * 10
 end
 
+-- [TUNING] Locking a modifier through a reforge adds this fraction of the base price per lock,
+-- by the locked modifier's tier: keeping a T6 costs far more than keeping a T1.
+SwordValue.LOCK_TIER_FACTOR = { 0.5, 0.8, 1.2, 1.8, 2.6, 3.6 }
+
+-- Full reforge price for a sword with the named modifiers locked.
+function SwordValue.rerollCostWithLocks(attrs, lockNames): number
+	local base = SwordValue.rerollCost(attrs)
+	local factor = 1
+	local onSword = {}
+	for _, mod in ipairs(SwordValue.modifiersFromPrefixes(attrs and attrs.Prefixes)) do
+		onSword[mod.name] = mod.tier
+	end
+	local seen = {}
+	for _, name in ipairs(lockNames or {}) do
+		local tier = onSword[name]
+		if tier and not seen[name] then
+			seen[name] = true
+			factor += SwordValue.LOCK_TIER_FACTOR[tier] or 0
+		end
+	end
+	return math.floor(base * factor / 10 + 0.5) * 10
+end
+
 function SwordValue.rerollCostForTool(tool: Instance): number
 	return SwordValue.rerollCost({
 		Rarity = tool:GetAttribute("Rarity"),

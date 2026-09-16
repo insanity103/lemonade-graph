@@ -179,7 +179,7 @@ skipBtn.Activated:Connect(function()
 	skipBtn.Text = skipAnimation and "Animation: skipped" or "Animation: on"
 end)
 local oddsInfo = nil
-local lockedName = nil -- modifier chosen to survive the reroll (costs more)
+local locked = {} -- modifier names chosen to survive the reroll (each one raises the price by its tier)
 
 -- Lock row: one small chip per modifier on the selected sword; tap to keep it.
 local lockRow = Instance.new("Frame")
@@ -228,10 +228,20 @@ local selected = nil
 local spinning = false
 local gold = 0
 
+local function lockList()
+	local names = {}
+	for _, mod in ipairs(SwordValue.modifiersFromPrefixes(selected and selected.prefixes or "")) do
+		if locked[mod.name] then table.insert(names, mod.name) end
+	end
+	return names
+end
+
 local function currentCost()
 	if not selected then return 0 end
-	if lockedName then
-		return math.floor(selected.cost * ((oddsInfo and oddsInfo.lockMultiplier) or 2.5) / 10 + 0.5) * 10
+	local names = lockList()
+	if #names > 0 then
+		return SwordValue.rerollCostWithLocks({ Rarity = selected.rarity, Prefixes = selected.prefixes, ExtraSlot = selected.blessed,
+			BossTier = selected.tier }, names)
 	end
 	if oddsInfo and (oddsInfo.freeIn or 1) <= 0 then return 0 end
 	return selected.cost
@@ -245,10 +255,11 @@ local function setStrike()
 	elseif selected then
 		local cost = currentCost()
 		local afford = gold >= cost
+		local names = lockList()
 		if cost == 0 then
 			strikeBtn.Text = "Strike the anvil  ·  FREE today"
-		elseif lockedName then
-			strikeBtn.Text = string.format("Strike, keeping %s  ·  %d gold", lockedName, cost)
+		elseif #names > 0 then
+			strikeBtn.Text = string.format("Strike, keeping %d  ·  %d gold", #names, cost)
 		else
 			strikeBtn.Text = string.format("Strike the anvil  ·  %d gold", cost)
 		end
@@ -293,20 +304,22 @@ local function rebuildLockRow()
 	if not selected then return end
 	local mods = SwordValue.modifiersFromPrefixes(selected.prefixes)
 	if #mods == 0 then return end
-	text(lockRow, { Size = UDim2.fromOffset(78, 26), TextSize = 11, TextColor3 = COLORS.Muted, Text = "Keep one:" })
+	text(lockRow, { Size = UDim2.fromOffset(52, 26), TextSize = 11, TextColor3 = COLORS.Muted, Text = "Lock:" })
+	local factors = (oddsInfo and oddsInfo.lockTierFactor) or SwordValue.LOCK_TIER_FACTOR
 	for _, mod in ipairs(mods) do
+		local on = locked[mod.name] == true
 		local chip = Instance.new("TextButton")
-		chip.Size = UDim2.fromOffset(math.max(70, #mod.name * 8 + 20), 26)
-		chip.BackgroundColor3 = (lockedName == mod.name) and COLORS.Ember or COLORS.Button
-		chip.Text = string.format("%s T%d", mod.name, mod.tier)
-		chip.TextColor3 = (lockedName == mod.name) and Color3.fromRGB(20, 12, 8) or TIER_COLORS[mod.tier]
+		chip.Size = UDim2.fromOffset(math.max(84, #mod.name * 8 + 34), 26)
+		chip.BackgroundColor3 = on and COLORS.Ember or COLORS.Button
+		chip.Text = string.format("%s T%d  +%d%%", mod.name, mod.tier, math.floor((factors[mod.tier] or 0) * 100 + 0.5))
+		chip.TextColor3 = on and Color3.fromRGB(20, 12, 8) or TIER_COLORS[mod.tier]
 		chip.Font = Enum.Font.GothamBold
 		chip.TextSize = 11
 		chip.Parent = lockRow
 		corner(chip, 6)
 		chip.Activated:Connect(function()
 			if spinning then return end
-			lockedName = (lockedName == mod.name) and nil or mod.name
+			locked[mod.name] = (not on) or nil
 			rebuildLockRow()
 			setStrike()
 		end)
@@ -314,7 +327,7 @@ local function rebuildLockRow()
 end
 
 local function selectRow(info)
-	if not selected or selected.toolName ~= info.toolName then lockedName = nil end
+	if not selected or selected.toolName ~= info.toolName then locked = {} end
 	selected = info
 	oddsLabel.Text = describeOdds(info.rarity)
 	rebuildLockRow()
@@ -471,8 +484,8 @@ end
 strikeBtn.Activated:Connect(function()
 	if spinning or not selected then return end
 	if gold < currentCost() then return end
-	REFORGE:FireServer("Reroll", selected.toolName, lockedName)
-	lockedName = nil
+	REFORGE:FireServer("Reroll", selected.toolName, lockList())
+	locked = {}
 end)
 
 local function close()
