@@ -1205,6 +1205,112 @@ def smithy(name, x0, x1, z0, z1, y, rng):
                                     "CounterX": cx, "CounterY": y + 0.2, "CounterZ": kz - 3.4})
 
 
+def chest(name, x, y, z, yaw, open_lid=False, rng=None):
+    """Iron-banded wooden chest; an open one shows sword hilts standing in it."""
+    r = rot_y(yaw)
+    kids = [part("Body", (3.4, 1.8, 2.2), (x, y + 0.9, z), (110, 72, 42), "WoodPlanks", r),
+            part("BandL", (0.25, 1.9, 2.3), (x + apply(r, (-1.0, 0, 0))[0], y + 0.9, z + apply(r, (-1.0, 0, 0))[2]), IRON, "Metal", r, collide=False),
+            part("BandR", (0.25, 1.9, 2.3), (x + apply(r, (1.0, 0, 0))[0], y + 0.9, z + apply(r, (1.0, 0, 0))[2]), IRON, "Metal", r, collide=False),
+            part("Lock", (0.5, 0.6, 0.2), (x + apply(r, (0, 0, -1.15))[0], y + 1.1, z + apply(r, (0, 0, -1.15))[2]), GOLD, "Metal", r, collide=False)]
+    if open_lid:
+        back = apply(r, (0, 0, 1.0))
+        kids.append(part("Lid", (3.5, 0.5, 2.3), (x + back[0], y + 2.9, z + back[2]), (96, 62, 36), "WoodPlanks",
+                         mul(r, rot_x(-100)), collide=False))
+        for k in range(3):
+            off = apply(r, ((k - 1) * 0.9, 0, 0.1))
+            kids.append(part(f"Hilt{k}", (0.3, 1.3, 0.3), (x + off[0], y + 2.3, z + off[2]), (84, 52, 36), "Fabric",
+                             mul(r, rot_z((k - 1) * 8)), collide=False))
+            kids.append(part(f"Guard{k}", (1.0, 0.22, 0.3), (x + off[0], y + 1.75, z + off[2]), GOLD, "Metal",
+                             mul(r, rot_z((k - 1) * 8)), collide=False))
+            kids.append(part(f"Pommel{k}", (0.45, 0.45, 0.45), (x + off[0], y + 3.0, z + off[2]), GOLD, "Metal",
+                             shape="Ball", collide=False))
+    else:
+        kids.append(part("Lid", (3.5, 0.5, 2.3), (x, y + 2.05, z), (96, 62, 36), "WoodPlanks", r, collide=False))
+    return model(name, kids)
+
+
+def storage_shack(name, x0, x1, z0, z1, y, rng):
+    """The Vaultkeeper's shack: stacked-log walls on a stone base, plank roof, open doorway on
+    the south side, chests and shelves inside. Attribute VaultShack marks it for docs/tools.
+    """
+    cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
+    wall_h = 9.0
+    base_top = y + 0.4
+    kids = [box("Base", x0 - 0.8, x1 + 0.8, y, base_top, z0 - 0.8, z1 + 0.8, STONE_DARK, "Cobblestone"),
+            box("Floor", x0 + 0.6, x1 - 0.6, base_top, base_top + 0.12, z0 + 0.6, z1 - 0.6, (150, 112, 70), "WoodPlanks", collide=False)]
+    # Log walls: horizontal cylinders stacked; the south wall leaves a doorway.
+    logs = int(wall_h / 1.15)
+    door_w = 5.0
+    for k in range(logs):
+        ly = base_top + 0.575 + k * 1.15
+        shade = TRUNK if k % 2 else (86, 58, 36)
+        kids.append(part(f"LogN{k}", (x1 - x0 + 1.2, 1.15, 1.15), (cx, ly, z0), shade, "Wood", collide=(k < 3)))
+        kids.append(part(f"LogW{k}", (1.15, 1.15, z1 - z0 + 1.2), (x0, ly, cz), shade, "Wood", collide=(k < 3)))
+        kids.append(part(f"LogE{k}", (1.15, 1.15, z1 - z0 + 1.2), (x1, ly, cz), shade, "Wood", collide=(k < 3)))
+        if k >= 7:  # above the doorway the south logs run full width
+            kids.append(part(f"LogS{k}", (x1 - x0 + 1.2, 1.15, 1.15), (cx, ly, z1), shade, "Wood", collide=False))
+        else:
+            kids.append(part(f"LogSL{k}", (cx - door_w / 2 - x0 + 0.6, 1.15, 1.15), ((x0 - 0.6 + cx - door_w / 2) / 2, ly, z1),
+                             shade, "Wood", collide=(k < 3)))
+            kids.append(part(f"LogSR{k}", (x1 + 0.6 - cx - door_w / 2, 1.15, 1.15), ((cx + door_w / 2 + x1 + 0.6) / 2, ly, z1),
+                             shade, "Wood", collide=(k < 3)))
+    # Invisible wall proxies so the round logs feel solid.
+    top = base_top + logs * 1.15
+    for label, (a0, a1, b0, b1) in (("N", (x0 - 0.6, x1 + 0.6, z0 - 0.6, z0 + 0.6)), ("W", (x0 - 0.6, x0 + 0.6, z0, z1)),
+                                    ("E", (x1 - 0.6, x1 + 0.6, z0, z1))):
+        kids.append(box(f"Proxy{label}", a0, a1, base_top, top, b0, b1, (255, 0, 255), transparency=1, query=False, shadow=False))
+    kids.append(box("ProxySL", x0 - 0.6, cx - door_w / 2, base_top, top, z1 - 0.6, z1 + 0.6, (255, 0, 255), transparency=1, query=False, shadow=False))
+    kids.append(box("ProxySR", cx + door_w / 2, x1 + 0.6, base_top, top, z1 - 0.6, z1 + 0.6, (255, 0, 255), transparency=1, query=False, shadow=False))
+    for px_ in (cx - door_w / 2 - 0.5, cx + door_w / 2 + 0.5):
+        kids.append(box("DoorPost", px_ - 0.5, px_ + 0.5, base_top, base_top + 7 * 1.15, z1 - 0.7, z1 + 0.7, BEAM, "Wood"))
+    kids.append(box("DoorLintel", cx - door_w / 2 - 1.0, cx + door_w / 2 + 1.0, base_top + 7 * 1.15, base_top + 7 * 1.15 + 0.8,
+                    z1 - 0.7, z1 + 0.7, BEAM, "Wood", collide=False))
+    # Plank roof: two slabs meeting at a ridge along X, plus a rear chimney-less cap.
+    pitch, overhang = 26.0, 1.8
+    span_z = z1 - z0
+    half = span_z / 2 + overhang
+    rise = math.tan(math.radians(pitch)) * (span_z / 2)
+    slope = half / math.cos(math.radians(pitch))
+    for sgn, label in ((-1, "N"), (1, "S")):
+        kids.append(part(f"Roof{label}", (x1 - x0 + overhang * 2, 0.6, slope), (cx, top + math.tan(math.radians(pitch)) * (span_z / 4 - overhang / 2),
+                                                                             cz + sgn * half / 2), (98, 66, 44), "WoodPlanks",
+                         rot_x(pitch * sgn), collide=False, layer="roof"))
+    kids.append(part("RoofRidge", (x1 - x0 + overhang * 2 + 0.4, 0.5, 0.8), (cx, top + rise + 0.25, cz), BEAM, "Wood",
+                     collide=False, layer="roof"))
+    for gx in (x0 + 0.5, x1 - 0.5):
+        for sgn, yaw in ((-1, 0), (1, 180)):
+            kids.append(part(f"Gable{'N' if sgn < 0 else 'S'}", (1.1, rise, span_z / 2), (gx, top + rise / 2, cz + sgn * span_z / 4),
+                             (86, 58, 36), "Wood", rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
+    # Inside: chests along the back and side walls, one open; shelves with crates and sacks.
+    fl = base_top + 0.12
+    kids.append(chest("ChestOpen", cx - 4.2, fl, z0 + 2.4, 0, open_lid=True))
+    kids.append(chest("Chest1", cx, fl, z0 + 2.4, 0))
+    kids.append(chest("Chest2", cx + 4.2, fl, z0 + 2.4, 0))
+    kids.append(chest("Chest3", x0 + 2.4, fl, cz + 1.0, 90))
+    kids.append(chest("Chest4", x0 + 2.4, fl, cz + 4.4, 90))
+    kids.append(box("Shelf1", x1 - 2.6, x1 - 1.0, fl + 3.2, fl + 3.5, z0 + 1.2, z1 - 1.2, BEAM, "Wood", collide=False))
+    kids.append(box("Shelf2", x1 - 2.6, x1 - 1.0, fl + 6.0, fl + 6.3, z0 + 1.2, z1 - 1.2, BEAM, "Wood", collide=False))
+    for k, zz in enumerate((z0 + 2.4, z0 + 5.4, z1 - 3.0)):
+        kids.append(part(f"ShelfCrate{k}", (1.4, 1.4, 1.4), (x1 - 1.8, fl + 4.2, zz), TIMBER, "WoodPlanks", rot_y(k * 17), collide=False))
+    kids.append(part("ShelfSack", (1.5, 1.2, 1.5), (x1 - 1.8, fl + 6.9, cz), (190, 168, 120), "Fabric", collide=False))
+    kids.append(part("ShelfJar", (0.6, 0.9, 0.6), (x1 - 1.8, fl + 6.75, z0 + 2.4), (120, 150, 170), "Glass", rot_z(90),
+                     shape="Cylinder", collide=False, transparency=0.3))
+    # Keeper's desk by the door with a ledger and lantern.
+    kids.append(box("Desk", cx + 1.4, cx + 5.0, fl + 2.5, fl + 2.8, z1 - 5.2, z1 - 3.2, TIMBER, "WoodPlanks"))
+    for dx, dz in ((cx + 1.7, z1 - 5.0), (cx + 4.7, z1 - 5.0), (cx + 1.7, z1 - 3.4), (cx + 4.7, z1 - 3.4)):
+        kids.append(part("DeskLeg", (0.3, 2.5, 0.3), (dx, fl + 1.25, dz), BEAM, "Wood", collide=False))
+    kids.append(part("Ledger", (1.4, 0.25, 1.0), (cx + 3.2, fl + 2.95, z1 - 4.2), (90, 50, 40), "Fabric", rot_y(-12), collide=False))
+    kids.append(part("DeskLantern", (0.9, 1.2, 0.9), (cx + 4.4, fl + 3.4, z1 - 3.6), LANTERN, "Neon", collide=False, query=False,
+                     shadow=False, transparency=0.15, children=[light(14, 1.0)]))
+    # Hanging sign by the door.
+    kids.append(part("SignBracket", (0.3, 0.3, 2.6), (cx + door_w / 2 + 1.6, base_top + 7.4, z1 + 1.0), IRON, "Metal", collide=False))
+    kids.append(part("SignBoard", (2.8, 1.6, 0.3), (cx + door_w / 2 + 1.6, base_top + 6.2, z1 + 2.0), (58, 38, 26), "WoodPlanks",
+                     collide=False, children=[label_gui("Front", "Vault", "", (255, 232, 170), px=60),
+                                              label_gui("Back", "Vault", "", (255, 232, 170), px=60)]))
+    kids.append(lamp_post("DoorLamp", cx - door_w / 2 - 2.4, y, z1 + 2.6, yaw_facing(1, 0)))
+    return model(name, kids, attrs={"VaultShack": True, "InsideX": cx - 1.0, "InsideY": fl, "InsideZ": z1 - 6.0})
+
+
 def campfire(name, x, y, z, rng):
     kids = []
     for k in range(7):
@@ -1398,6 +1504,7 @@ def build_markers():
         marker("Merchant", (-63, HUB_Y + 0.2, -24.6), yaw_facing(0, 1)),
         marker("SkillTrainer", (58, HUB_Y, -12), yaw_facing(0, 1)),
         marker("RebirthKeeper", (64, HUB_Y, 22), yaw_facing(0, -1)),
+        marker("Vaultkeeper", (30, HUB_Y + 0.52, -84), yaw_facing(0, 1)),
     ], cls="Folder")
     safe = model("SafeZones", [
         volume("Hub", -100, 100, 0, 90, -100, 100, attrs={"Region": "Hub"}),
@@ -1549,6 +1656,7 @@ def build_hub(rng):
     visual.append(timber_house("HouseSE", 46, 68, 76, 94, HUB_Y, 10, "W", rng, wall_color=(214, 196, 158),
                                roof_color=(84, 60, 50), door=True))
     visual.append(barrel("BarrelSE", 70, HUB_Y, 92, rng))
+    visual.append(storage_shack("VaultShack", 22, 40, -94, -78, HUB_Y, rng))
     visual.append(woodpile("WoodpileNW", -58, HUB_Y, -84, 0, rng))
     visual.append(crate_stack("CratesNW", -22, HUB_Y, -76, rng))
     visual.append(barrel("BarrelNW1", -52, HUB_Y, -66, rng))
@@ -1643,7 +1751,7 @@ def build_hub(rng):
 
     # Trees in the green quarters, lamp posts along roads.
     tree_spots = [(-88, -54), (-70, -58), (-30, -54), (-20, -80), (-14, -62),
-                  (32, -84), (48, -62), (86, -64), (24, -28), (-28, 24),
+                  (48, -62), (86, -64), (24, -28), (-28, 24),
                   (-70, 30), (-34, 66), (-18, 86), (-88, 46), (36, 86),
                   (40, 70), (86, 16), (30, 26), (-88, 12), (-40, 90)]
     for k, (x, z) in enumerate(tree_spots):
@@ -1881,7 +1989,7 @@ def render_topdown(path: Path):
         draw.text((cx + 9, cz - 7), f"{arch.replace('Iron', '').replace('Boss_', '')} L{level}", fill=(255, 255, 255),
                   font=font)
     for name, (x, z) in (("Quest Master", (15, 50)), ("Merchant", (-63, -24.6)), ("Skill Trainer", (58, -12)),
-                         ("Rebirth", (64, 22)), ("Travel board", (-16, -40))):
+                         ("Rebirth", (64, 22)), ("Vaultkeeper", (30, -84)), ("Travel board", (-16, -40))):
         cx, cz = px(x, z)
         draw.rectangle([cx - 5, cz - 5, cx + 5, cz + 5], fill=(90, 170, 255), outline=(0, 0, 0))
         draw.text((cx + 8, cz - 7), name, fill=(170, 210, 255), font=font)

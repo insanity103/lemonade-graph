@@ -28,6 +28,7 @@ local REMOTE_NAMES = {
 	"SwordDrop",
 	"SwordLostOnDeath",
 	"ToggleAutoSell",
+	"VaultAction",
 	"XPGain",
 }
 

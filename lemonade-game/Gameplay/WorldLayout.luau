@@ -55,6 +55,7 @@ if useMap then
 	hub.QuestGiverPosition, hub.QuestGiverCFrame = place("QuestMaster")
 	hub.RebirthPosition, hub.RebirthCFrame = place("RebirthKeeper")
 	hub.RespecPosition, hub.RespecCFrame = place("SkillTrainer")
+	hub.VaultPosition, hub.VaultCFrame = place("Vaultkeeper")
 	WorldLayout.HUB = hub
 else
 	local plate = WorldLayout.GetBaseplate()
@@ -66,6 +67,7 @@ else
 		QuestGiverPosition = WorldLayout.SurfacePosition(-safeRadius * 0.6, 0),
 		RebirthPosition = WorldLayout.SurfacePosition(0, safeRadius * 0.6),
 		RespecPosition = WorldLayout.SurfacePosition(0, -safeRadius * 0.6),
+		VaultPosition = WorldLayout.SurfacePosition(-safeRadius * 0.6, safeRadius * 0.6),
 	}
 end
 

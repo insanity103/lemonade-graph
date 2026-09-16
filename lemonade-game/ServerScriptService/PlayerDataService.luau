@@ -36,6 +36,7 @@ local function defaultData()
 	local data = {
 		version = SaveConfig.SCHEMA_VERSION,
 		leaderstats = {}, attributes = {}, inventory = {}, swords = {},
+		vault = {},  -- boss swords stored with the Vaultkeeper (same entry shape as `swords`)
 		isNew = true,
 	}
 	for name, default in pairs(SaveConfig.LEADERSTATS) do data.leaderstats[name] = default end
@@ -114,6 +115,9 @@ function PlayerDataService.Load(player)
 			record.attributes[name] = default
 		end
 	end
+	if typeof(record.vault) ~= "table" then
+		record.vault = {}
+	end
 	if not record.version or record.version < SaveConfig.SCHEMA_VERSION then
 		record.version = SaveConfig.SCHEMA_VERSION
 	end
@@ -189,6 +193,21 @@ function PlayerDataService.Apply(player)
 end
 
 -- ---------------------------------------------------------------- serialize
+-- One boss sword Tool as a save entry (the shape BossSwordFactory.rebuild accepts).
+function PlayerDataService.SerializeTool(tool, equipped)
+	local attrs = {}
+	for _, key in ipairs(SaveConfig.SWORD_ATTRS) do
+		attrs[key] = tool:GetAttribute(key)
+	end
+	local handle = tool:FindFirstChild("Handle")
+	local color, material
+	if handle then
+		color = { handle.Color.R, handle.Color.G, handle.Color.B }
+		material = handle.Material.Name
+	end
+	return { name = tool.Name, attrs = attrs, color = color, material = material, equipped = equipped == true }
+end
+
 local function serializeSwords(player)
 	local out = {}
 	local equippedTool = player.Character and player.Character:FindFirstChildOfClass("Tool")
@@ -196,25 +215,24 @@ local function serializeSwords(player)
 		if container then
 			for _, tool in ipairs(container:GetChildren()) do
 				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true then
-					local attrs = {}
-					for _, key in ipairs(SaveConfig.SWORD_ATTRS) do
-						attrs[key] = tool:GetAttribute(key)
-					end
-					local handle = tool:FindFirstChild("Handle")
-					local color, material
-					if handle then
-						color = { handle.Color.R, handle.Color.G, handle.Color.B }
-						material = handle.Material.Name
-					end
-					out[#out + 1] = {
-						name = tool.Name, attrs = attrs, color = color, material = material,
-						equipped = (tool == equippedTool),
-					}
+					out[#out + 1] = PlayerDataService.SerializeTool(tool, tool == equippedTool)
 				end
 			end
 		end
 	end
 	return out
+end
+
+-- The vault lives only in the profile data (never as Tools), so VaultSystem edits it in place.
+function PlayerDataService.GetVault(player)
+	local profile = profiles[player]
+	if not profile or not profile.ready then return nil end
+	return profile.data.vault
+end
+
+function PlayerDataService.MarkDirty(player)
+	local profile = profiles[player]
+	if profile then profile.dirty = true end
 end
 
 function PlayerDataService.Serialize(player)

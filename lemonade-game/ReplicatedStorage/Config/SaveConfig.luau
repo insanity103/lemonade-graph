@@ -32,6 +32,8 @@ SaveConfig.ATTRIBUTES = {
 	DiscoveredWaypoints = '',  -- comma-separated map waypoint IDs (map project; empty on the baseplate)
 }
 
+SaveConfig.VAULT_CAPACITY = 12       -- [TUNING] boss swords the Vaultkeeper holds per player
+
 -- attributes copied verbatim off each saved boss / merchant sword Tool
 SaveConfig.SWORD_ATTRS = {
 	"DamageMult", "BonusDamagePct", "CritChance", "RangeBonus", "KnockbackBonus",

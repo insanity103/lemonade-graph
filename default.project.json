@@ -62,6 +62,9 @@
       },
       "GameplayServices": {
         "$path": "lemonade-game/Gameplay/GameplayServices.server.luau"
+      },
+      "VaultSystem": {
+        "$path": "lemonade-game/ServerScriptService/VaultSystem.server.luau"
       }
     },
     "StarterPack": {
@@ -109,6 +112,9 @@
         },
         "SwordDropToast": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau"
+        },
+        "VaultGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/VaultGui.client.luau"
         },
         "XPGainUI": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau"
