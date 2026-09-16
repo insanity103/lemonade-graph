@@ -1,6 +1,7 @@
 # Map validation
 
-- 2795 parts: 26 floor, 434 collidable solids, 29 wall proxies, 32 markers/volumes
+- 2813 parts: 26 floor, 483 collidable solids, 29 wall proxies, 32 markers/volumes
+- support rule: 2704 visible parts checked, 0 floating, 0 buried
 
 ## Walk distance from player spawn
 
@@ -14,29 +15,29 @@
 | NPC Vaultkeeper | 50 | 3.2 s | 1.9 s |
 | Waypoint HubSpawn | 0 | 0.0 s | 0.0 s |
 | Waypoint IronOverlook | 193 | 12.0 s | 7.4 s |
-| Waypoint WarlordGate | 397 | 24.8 s | 15.3 s |
+| Waypoint WarlordGate | 406 | 25.4 s | 15.6 s |
 | IL_S2 (IronSquire L1) | 247 | 15.5 s | 9.5 s |
 | IL_S1 (IronSquire L1) | 252 | 15.8 s | 9.7 s |
 | IL_S3 (IronSquire L2) | 262 | 16.4 s | 10.1 s |
-| IL_S4 (IronSquire L2) | 319 | 19.9 s | 12.3 s |
+| IL_S4 (IronSquire L2) | 337 | 21.1 s | 13.0 s |
 | IL_S5 (IronSquire L3) | 332 | 20.7 s | 12.8 s |
-| IL_E1 (IronBerserker L6) | 392 | 24.5 s | 15.1 s |
-| IL_S6 (IronSquire L3) | 344 | 21.5 s | 13.2 s |
+| IL_E1 (IronBerserker L6) | 446 | 27.9 s | 17.2 s |
+| IL_S6 (IronSquire L3) | 350 | 21.9 s | 13.5 s |
 | IL_B1 (IronBerserker L3) | 364 | 22.7 s | 14.0 s |
-| IL_S7 (IronSquire L4) | 407 | 25.4 s | 15.6 s |
-| IL_B2 (IronBerserker L4) | 401 | 25.1 s | 15.4 s |
-| IL_B3 (IronBerserker L5) | 408 | 25.5 s | 15.7 s |
-| IL_S8 (IronSquire L4) | 476 | 29.7 s | 18.3 s |
-| IL_BOSS (Boss_Gorgon L10) | 471 | 29.4 s | 18.1 s |
+| IL_S7 (IronSquire L4) | 423 | 26.4 s | 16.3 s |
+| IL_B2 (IronBerserker L4) | 440 | 27.5 s | 16.9 s |
+| IL_B3 (IronBerserker L5) | 414 | 25.9 s | 15.9 s |
+| IL_S8 (IronSquire L4) | 489 | 30.6 s | 18.8 s |
+| IL_BOSS (Boss_Gorgon L10) | 480 | 30.0 s | 18.5 s |
 
 ## Encounter spacing (walk to nearest other spawn)
 
 | Spawn | Nearest | Studs | Walk |
 | --- | --- | ---: | ---: |
-| IL_B1 | IL_B2 | 30 | 1.9 s |
-| IL_B2 | IL_B3 | 83 | 5.2 s |
+| IL_B1 | IL_S5 | 32 | 2.0 s |
+| IL_B2 | IL_B3 | 84 | 5.3 s |
 | IL_B3 | IL_S7 | 18 | 1.1 s |
-| IL_E1 | IL_S7 | 87 | 5.5 s |
+| IL_E1 | IL_S4 | 101 | 6.3 s |
 | IL_S1 | IL_S3 | 29 | 1.8 s |
 | IL_S2 | IL_S3 | 41 | 2.6 s |
 | IL_S3 | IL_S1 | 29 | 1.8 s |

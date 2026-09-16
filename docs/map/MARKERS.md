@@ -48,3 +48,7 @@ arrival marker. `HubSpawn` is the Return to Hub destination and is always discov
 2. Add spawns to `ENEMY_SPAWNS` with the existing archetype/zone identities; add waypoints + waystones.
 3. Add `Regions/` and (if staging) `SafeZones/` volumes; flip its gate marker and gate model `Sealed`.
 4. Regenerate, build, run `check_map_project.py`, then playtest before starting the next region.
+
+> Spawn, waypoint and NPC markers sit exactly on the floor top under them. `tools/map_forge.py`
+> resolves that height with `floor_at(x, z)` (benches, ramps and paths included), so a marker
+> moved onto a ramp or a higher bench needs no hand-set Y.

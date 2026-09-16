@@ -1,3 +1,77 @@
+# Map audit — Iron Lowlands bandit quarry (2026-09-16)
+
+Scope: `Workspace.LemonadeMap.IronLowlands`, `Grounds_IronLowlands` and the region's `Collision`
+proxies in the built `map.project.json` output, after the quarry revamp. Method: the validator
+(`tools/check_map_project.py`, now with the support rule) plus `tools/audit_map.py`, which
+re-runs the deeper checks from the Hearthmere audit against the built `.rbxlx`: property census,
+cross-model collidable overlaps, props buried in cut faces, parts sunk into floors, floor seams and
+ramp grades, collision fidelity, streaming, light budget, lane and spawn clearance. No Studio
+session; nothing here is a rendered observation (oblique Pillow renders from
+`tools/preview_model.py` were used to eyeball the new models).
+
+Census: 781 parts (779 Part, 2 WedgePart), 17 floors, 23 wall proxies, 0 unanchored, 157
+collidable / 624 decorative, 17 PointLights (budget 20, all `Shadows=false`), 5 Fire, 0 Smoke,
+6 SurfaceGuis, region model streaming `Default`.
+
+## Critical errors
+
+None after the fixes below. Specifically:
+
+- Floating entities: the new validator rule checks every visible part (2,704 in the map) for a
+  floor within 0.4 under its centre or its lowest corner, a part it rests on or hangs from
+  (within 0.4), or a part it touches (0.12 tolerance). First run: 41 floating, 10 buried. Now
+  0 / 0, with `FloatShard` pieces exempt because HubAmbience orbits them by design.
+- Coplanar tops, spawns on floors and clear of solids, camera clearance, reachability: pass.
+- Buried props: no prop centre inside a cut face or cliff chunk (bench-line ledges and drill
+  holes are exempt; they are meant to be set into the rock).
+- Lanes: no collidable part in the rim → ramp 1 → road → ramp 2 → gap corridors (open halves of
+  the barricaded segments); nothing collidable within 4 studs of a spawn.
+
+## Moderate warnings
+
+| # | Issue | Where | Fix / decision |
+| --- | --- | --- | --- |
+| 1 | Cliff ledge caps hovered 0.2–1.2 studs above their chunk (free_top bumps moved the cap up, the chunk did not follow). 7 in the hub, 3 in the quarry. | `cliff_run` caps | Cap now extends 0.6 below the chunk top and overlaps it by 1.5 studs in depth. Hub cliffs change by that much; nothing else in the hub moved. |
+| 2 | Door handles floated 0.2 in front of the wall, off the recessed leaf; shelves 0.05 off the wall; the smithy sign bracket 0.4 off the wall; gate sign boards 0.7 clear of the lintel. | `timber_house`, `smithy`, `gate` | Handles 0.05 into the leaf (they already swing with it in HubAmbience), shelves 0.1 into the wall, bracket into the wall, gate boards tied to the lintel with four small brackets. |
+| 3 | Bench-face lip chunks were centred behind the slab face: 5 were entirely inside the upper slab (invisible) and the rest showed only a jittered sliver. | `bench_face` | Chunks now straddle the face 2.6 studs proud and collide (rock toe). |
+| 4 | Scrap gate leaves stood on the haul road inside the ridge chunks; the Warden sign overlapped a leaf; the WarlordGate waystone base touched road E. | `ScrapGate*`, `WardenSign`, `WarlordWaystone` | Leaves hinged at x ±18.3 and folded flat against the ridge ends (gap 36 studs, boss still visible); sign to (36, 360); waystone to (12, 352), 13 studs from the arrival. |
+| 5 | Sump's south curb was hidden inside the ridge. | `Sump.CurbS` | Sump shortened to z 364. |
+| 6 | Briarwood gate pillars sat inside the south cliff runs (same defect as the hub gates in the last audit). | `PitSouth*` | Runs stop at x ±19.5. |
+| 7 | Head-frame moss plates hung beside the leaning legs; boom stub started outside the apex; broken cart side floated off its tilted bed; side-arch lantern hung beside the beam; ladders stood inside the rock toes; a rock cluster clipped a toe chunk. | `head_frame`, `broken_cart`, `SideArch`, ladders, `MidRocks0` | Positions computed from the parent geometry; lantern hangs on a chain from the beam; ladders' feet 3.6 out with tops on the toe; rocks moved. |
+| 8 | Two rocks in one cluster rolled equal heights (coplanar tops, z-fight). | `rock_cluster` | Heights de-duplicated per cluster. |
+| 9 | Haul road decals stand 0.2 proud of the benches (18 edge steps of 0.15–0.25). | `HaulRoad*` | Accepted: below the character auto-step; same as the previous quarry path. |
+| 10 | Ramp ends meet the benches within 0.07 (ramp bodies are 0.4 longer than their run). | `HaulRamp1/2` | Accepted (< 0.1). Grades 10.3°, both ≤ 15°. Ramp undersides sit inside the lower bench slab. |
+| 11 | Rock clusters sink 0.6–0.64 (tilted rocks), derailed cart wheels dug in 0.5. | `*Rocks*`, `DerailedCart` | Accepted: rocks are meant to sit in the ground; nothing else sinks > 0.6. |
+| 12 | One cross-model collidable overlap: the two mid-bench toe runs meet at the sump corner (30 studs³). | `MidFaceE_00` / `MidFaceSump_04` | Accepted: same as cliff runs meeting at corners. |
+
+## Actionable fixes applied
+
+`tools/map_forge.py` (regenerated `lemonade-map/`, all four checks pass):
+- `floor_at()` resolver; every prop helper, the bandit/quarry helpers and the `IL_*` spawn markers
+  use it (`AUTO_GROUND` is on only while the quarry and markers build, so the hub is unchanged
+  apart from items 1–2 above).
+- Items 1–8 above.
+
+`tools/check_map_project.py`:
+- `check_support()`: floating / buried search promoted to a permanent rule (reports the part path,
+  its bottom, the floor under it and the gap). `vertical_extent`, `bottom_at`, `touches` helpers;
+  `Node.streaming` read from `ModelStreamingMode`.
+
+`tools/audit_map.py` (new): the deeper audit as a re-runnable script:
+`python3 tools/audit_map.py /tmp/lemonade-map.rbxlx IronLowlands`.
+
+`tools/preview_model.py` (new): oblique render of any XZ box of the generated map.
+
+## Recommended next (not applied)
+
+1. Hub PointLights are still 74; the quarry's 17 are within budget. The hub reduction from the
+   previous audit remains open.
+2. Playtest: ramp grades under the camera, the rock toes under the player's feet (collidable,
+   2.6 studs proud), boss visibility from the ramp-2 foot through the 36-stud gap, and whether
+   the 0.2 road lips are felt.
+
+---
+
 # Map audit — Hearthmere + Iron Lowlands (2026-09-15)
 
 Scope: the built `map.project.json` output (`Workspace.LemonadeMap`, 2,455 parts, generated by

@@ -61,15 +61,15 @@
     "Anchored": true,
     "Size": [
      12.1045,
-     2.5,
+     3.05,
      3.8085
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -92.4347,
-       44.5179,
-       -120.4954
+       44.2429,
+       -119.4954
       ],
       "orientation": [
        [
@@ -161,15 +161,15 @@
     "Anchored": true,
     "Size": [
      9.8827,
-     2.5,
+     3.05,
      3.5025
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -78.6927,
-       42.8836,
-       -120.2275
+       42.6086,
+       -119.2275
       ],
       "orientation": [
        [
@@ -311,15 +311,15 @@
     "Anchored": true,
     "Size": [
      10.7128,
-     2.5,
+     3.05,
      3.6185
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -55.7189,
-       46.1266,
-       -117.7184
+       45.8516,
+       -116.7184
       ],
       "orientation": [
        [
@@ -411,15 +411,15 @@
     "Anchored": true,
     "Size": [
      8.9518,
-     2.5,
+     3.05,
      3.418
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -43.4285,
-       38.1002,
-       -115.6737
+       37.8252,
+       -114.6737
       ],
       "orientation": [
        [
@@ -511,15 +511,15 @@
     "Anchored": true,
     "Size": [
      11.5553,
-     2.5,
+     3.05,
      3.3879
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -30.6116,
-       43.8618,
-       -120.4137
+       43.5868,
+       -119.4137
       ],
       "orientation": [
        [
@@ -661,15 +661,15 @@
     "Anchored": true,
     "Size": [
      14.3745,
-     2.5,
+     3.05,
      3.3998
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        28.4841,
-       47.718,
-       -119.8488
+       47.443,
+       -118.8488
       ],
       "orientation": [
        [
@@ -811,15 +811,15 @@
     "Anchored": true,
     "Size": [
      11.7891,
-     2.5,
+     3.65,
      3.9564
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        62.7119,
-       44.7169,
-       -120.8107
+       44.1419,
+       -119.8107
       ],
       "orientation": [
        [
@@ -961,15 +961,15 @@
     "Anchored": true,
     "Size": [
      9.6043,
-     2.5,
+     3.05,
      3.4791
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        93.9973,
-       37.0673,
-       -120.8132
+       36.7923,
+       -119.8132
       ],
       "orientation": [
        [
@@ -1161,14 +1161,14 @@
     "Anchored": true,
     "Size": [
      8.2324,
-     2.5,
+     3.05,
      4.2882
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       120.0972,
-       45.7601,
+       119.0972,
+       45.4851,
        -61.4563
       ],
       "orientation": [
@@ -1261,14 +1261,14 @@
     "Anchored": true,
     "Size": [
      10.7249,
-     2.5,
+     3.05,
      4.3468
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       120.0131,
-       40.0893,
+       119.0131,
+       39.8143,
        -49.608
       ],
       "orientation": [
@@ -1411,14 +1411,14 @@
     "Anchored": true,
     "Size": [
      8.665,
-     2.5,
+     3.35,
      3.5925
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       119.0798,
-       37.8765,
+       118.0798,
+       37.4515,
        -24.9156
       ],
       "orientation": [
@@ -1511,14 +1511,14 @@
     "Anchored": true,
     "Size": [
      14.1074,
-     2.5,
+     4.55,
      3.846
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       116.0139,
-       45.0562,
+       115.0139,
+       44.0312,
        28.3171
       ],
       "orientation": [
@@ -1811,14 +1811,14 @@
     "Anchored": true,
     "Size": [
      1.3905,
-     2.5,
+     3.35,
      4.6809
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       120.2078,
-       42.22,
+       119.2078,
+       41.795,
        99.1309
       ],
       "orientation": [
@@ -1911,15 +1911,15 @@
     "Anchored": true,
     "Size": [
      12.4376,
-     2.5,
+     3.05,
      3.459
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        92.2265,
-       38.5772,
-       120.9974
+       38.3022,
+       119.9974
       ],
       "orientation": [
        [
@@ -2011,15 +2011,15 @@
     "Anchored": true,
     "Size": [
      11.3284,
-     2.5,
+     3.05,
      3.229
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        77.3727,
-       48.9512,
-       119.2688
+       48.6762,
+       118.2688
       ],
       "orientation": [
        [
@@ -2161,15 +2161,15 @@
     "Anchored": true,
     "Size": [
      12.6554,
-     2.5,
+     3.05,
      4.1806
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        50.3549,
-       37.2614,
-       122.3744
+       36.9864,
+       121.3744
       ],
       "orientation": [
        [
@@ -2261,15 +2261,15 @@
     "Anchored": true,
     "Size": [
      9.6721,
-     2.5,
+     3.95,
      4.5199
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        36.4002,
-       39.8984,
-       119.7048
+       39.1734,
+       118.7048
       ],
       "orientation": [
        [
@@ -2411,15 +2411,15 @@
     "Anchored": true,
     "Size": [
      12.0318,
-     2.5,
+     3.05,
      3.1912
     ],
     "CFrame": {
      "CFrame": {
       "position": [
        -27.0199,
-       49.6756,
-       118.8535
+       49.4006,
+       117.8535
       ],
       "orientation": [
        [
@@ -2761,14 +2761,14 @@
     "Anchored": true,
     "Size": [
      10.6804,
-     2.5,
+     3.35,
      4.595
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -119.2081,
-       49.8255,
+       -118.2081,
+       49.4005,
        93.3247
       ],
       "orientation": [
@@ -3011,14 +3011,14 @@
     "Anchored": true,
     "Size": [
      12.5753,
-     2.5,
+     3.05,
      3.8056
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -116.6492,
-       51.606,
+       -115.6492,
+       51.331,
        27.3595
       ],
       "orientation": [
@@ -3111,14 +3111,14 @@
     "Anchored": true,
     "Size": [
      9.9324,
-     2.5,
+     3.05,
      3.2705
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -120.06,
-       51.902,
+       -119.06,
+       51.627,
        -25.7077
       ],
       "orientation": [
@@ -3211,14 +3211,14 @@
     "Anchored": true,
     "Size": [
      13.3509,
-     2.5,
+     3.05,
      3.1285
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -119.0431,
-       52.5261,
+       -118.0431,
+       52.2511,
        -40.2598
       ],
       "orientation": [
@@ -3361,14 +3361,14 @@
     "Anchored": true,
     "Size": [
      9.815,
-     2.5,
+     3.05,
      3.0874
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -116.6507,
-       51.2342,
+       -115.6507,
+       50.9592,
        -67.4548
       ],
       "orientation": [
@@ -3461,14 +3461,14 @@
     "Anchored": true,
     "Size": [
      9.4206,
-     2.5,
+     11.45,
      3.0754
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -119.3296,
-       50.5445,
+       -118.3296,
+       46.0695,
        -79.4771
       ],
       "orientation": [
@@ -3561,14 +3561,14 @@
     "Anchored": true,
     "Size": [
      10.6086,
-     2.5,
+     14.75,
      3.1648
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -115.5777,
-       50.8822,
+       -114.5777,
+       44.7572,
        -91.9953
       ],
       "orientation": [
@@ -5159,15 +5159,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -16.2207,
+         -16.3583,
          16.8699,
-         -35.4691
+         -35.5504
         ],
         "orientation": [
          [
-          0.3818,
-          -0.0401,
-          0.9234
+          0.6198,
+          -0.0651,
+          0.7821
          ],
          [
           0.1045,
@@ -5175,9 +5175,9 @@
           0.0
          ],
          [
-          -0.9183,
-          0.0965,
-          0.3839
+          -0.7778,
+          0.0817,
+          0.6232
          ]
         ]
        }
@@ -5210,15 +5210,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -16.2207,
+         -16.3583,
          16.8699,
-         -35.4691
+         -35.5504
         ],
         "orientation": [
          [
-          0.3818,
-          -0.0401,
-          0.9234
+          0.6198,
+          -0.0651,
+          0.7821
          ],
          [
           0.1045,
@@ -5226,9 +5226,9 @@
           0.0
          ],
          [
-          -0.9183,
-          0.0965,
-          0.3839
+          -0.7778,
+          0.0817,
+          0.6232
          ]
         ]
        }
@@ -5277,15 +5277,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -16.4794,
+         -16.7781,
          23.2796,
-         -34.8471
+         -35.0235
         ],
         "orientation": [
          [
-          0.7116,
-          0.1716,
-          0.6813
+          0.7967,
+          -0.0798,
+          0.5991
          ],
          [
           0.5712,
@@ -5293,9 +5293,9 @@
           -0.7032
          ],
          [
-          -0.4091,
-          0.8896,
-          0.2032
+          -0.1975,
+          0.9024,
+          0.3829
          ]
         ]
        }
@@ -5328,15 +5328,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -18.2433,
+         -18.6867,
          14.8103,
-         -33.8139
+         -33.9811
         ],
         "orientation": [
          [
-          0.0536,
-          -0.0124,
-          0.9985
+          0.6023,
+          -0.139,
+          0.7861
          ],
          [
           0.225,
@@ -5344,9 +5344,9 @@
           0.0
          ],
          [
-          -0.9729,
-          0.2246,
-          0.0551
+          -0.7659,
+          0.1768,
+          0.6181
          ]
         ]
        }
@@ -5379,15 +5379,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -18.2433,
+         -18.6867,
          14.8103,
-         -33.8139
+         -33.9811
         ],
         "orientation": [
          [
-          0.0536,
-          -0.0124,
-          0.9985
+          0.6023,
+          -0.139,
+          0.7861
          ],
          [
           0.225,
@@ -5395,9 +5395,9 @@
           0.0
          ],
          [
-          -0.9729,
-          0.2246,
-          0.0551
+          -0.7659,
+          0.1768,
+          0.6181
          ]
         ]
        }
@@ -5430,15 +5430,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -18.2951,
+         -19.2672,
          18.8783,
-         -32.8761
+         -33.2428
         ],
         "orientation": [
          [
-          0.531,
-          0.4551,
-          0.7148
+          0.7494,
+          -0.1023,
+          0.6542
          ],
          [
           0.6462,
@@ -5446,9 +5446,9 @@
           -0.689
          ],
          [
-          -0.5481,
-          0.8278,
-          -0.1199
+          -0.1441,
+          0.9391,
+          0.312
          ]
         ]
        }
@@ -5481,15 +5481,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -13.4847,
+         -13.6563,
          14.008,
-         -38.0312
+         -38.2399
         ],
         "orientation": [
          [
-          0.8505,
-          0.2279,
-          0.474
+          0.6133,
+          0.1643,
+          0.7726
          ],
          [
           -0.2588,
@@ -5497,9 +5497,9 @@
           0.0
          ],
          [
-          -0.4578,
-          -0.1227,
-          0.8805
+          -0.7462,
+          -0.2,
+          0.6349
          ]
         ]
        }
@@ -5532,15 +5532,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -13.4847,
+         -13.6563,
          14.008,
-         -38.0312
+         -38.2399
         ],
         "orientation": [
          [
-          0.8505,
-          0.2279,
-          0.474
+          0.6133,
+          0.1643,
+          0.7726
          ],
          [
           -0.2588,
@@ -5548,9 +5548,9 @@
           0.0
          ],
          [
-          -0.4578,
-          -0.1227,
-          0.8805
+          -0.7462,
+          -0.2,
+          0.6349
          ]
         ]
        }
@@ -5583,15 +5583,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -12.7463,
+         -13.1238,
          17.1376,
-         -38.4287
+         -38.8877
         ],
         "orientation": [
          [
-          0.9524,
-          -0.2505,
-          0.174
+          0.9021,
+          0.0348,
+          0.4301
          ],
          [
           0.3,
@@ -5599,9 +5599,9 @@
           -0.683
          ],
          [
-          0.0552,
-          0.7027,
-          0.7094
+          -0.3102,
+          0.7452,
+          0.5904
          ]
         ]
        }
@@ -5634,15 +5634,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -15.7524,
+         -16.0143,
          13.0914,
-         -32.8952
+         -33.3601
         ],
         "orientation": [
          [
-          0.5378,
-          -0.1958,
-          0.82
+          0.9377,
+          -0.3413,
+          0.0648
          ],
          [
           0.342,
@@ -5650,9 +5650,9 @@
           0.0
          ],
          [
-          -0.7706,
-          0.2805,
-          0.5723
+          -0.0609,
+          0.0222,
+          0.9979
          ]
         ]
        }
@@ -5685,15 +5685,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -15.7524,
+         -16.0143,
          13.0914,
-         -32.8952
+         -33.3601
         ],
         "orientation": [
          [
-          0.5378,
-          -0.1958,
-          0.82
+          0.9377,
+          -0.3413,
+          0.0648
          ],
          [
           0.342,
@@ -5701,9 +5701,9 @@
           0.0
          ],
          [
-          -0.7706,
-          0.2805,
-          0.5723
+          -0.0609,
+          0.0222,
+          0.9979
          ]
         ]
        }
@@ -5736,15 +5736,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -16.1928,
+         -16.7823,
          15.2058,
-         -32.2641
+         -33.3102
         ],
         "orientation": [
          [
-          0.6924,
-          -0.0682,
-          0.7183
+          0.5248,
+          -0.8013,
+          0.2872
          ],
          [
           0.7117,
@@ -5752,9 +5752,9 @@
           -0.6645
          ],
          [
-          -0.1185,
-          0.9713,
-          0.2064
+          0.467,
+          0.5531,
+          0.6899
          ]
         ]
        }
@@ -11035,14 +11035,14 @@
      "properties": {
       "Anchored": true,
       "Size": [
-       3.2,
+       3.6,
        0.4,
        0.4
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -42.0,
+         -42.3,
          19.6,
          -23.0
         ],
@@ -12516,7 +12516,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         69.65,
+         70.2,
          14.4,
          -41.6
         ],
@@ -16382,7 +16382,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         86.3,
+         86.45,
          15.8,
          -39.2
         ],
@@ -24453,7 +24453,7 @@
         "position": [
          -71.1,
          14.4,
-         -69.65
+         -70.2
         ],
         "orientation": [
          [
@@ -28789,7 +28789,7 @@
         "position": [
          -63.2,
          15.8,
-         -88.3
+         -88.45
         ],
         "orientation": [
          [
@@ -29790,7 +29790,7 @@
         "position": [
          -35.1,
          14.4,
-         -67.65
+         -68.2
         ],
         "orientation": [
          [
@@ -34126,7 +34126,7 @@
         "position": [
          -29.2,
          15.8,
-         -86.3
+         -86.45
         ],
         "orientation": [
          [
@@ -35125,7 +35125,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -63.65,
+         -64.2,
          14.4,
          79.9
         ],
@@ -39461,7 +39461,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -84.3,
+         -84.45,
          15.8,
          86.8
         ],
@@ -40462,7 +40462,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         45.65,
+         46.2,
          14.4,
          86.9
         ],
@@ -44798,7 +44798,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         66.3,
+         66.45,
          15.8,
          90.8
         ],
@@ -89588,14 +89588,14 @@
       "Anchored": true,
       "Size": [
        5.2197,
-       4.6618,
+       5.0118,
        3.7364
       ],
       "CFrame": {
        "CFrame": {
         "position": [
          80.881,
-         11.7309,
+         11.9059,
          95.0657
         ],
         "orientation": [
@@ -91564,6 +91564,206 @@
      ]
     },
     {
+     "name": "SignBracket-1-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -13.2,
+         36.4,
+         95.55
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket-11",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -13.2,
+         36.4,
+         104.45
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket1-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         13.2,
+         36.4,
+         95.55
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket11",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         13.2,
+         36.4,
+         104.45
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
      "name": "Banner-1",
      "className": "Part",
      "properties": {
@@ -92326,6 +92526,206 @@
        ]
       }
      ]
+    },
+    {
+     "name": "SignBracket-1-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -95.55,
+         36.4,
+         -13.2
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          -1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket-11",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -104.45,
+         36.4,
+         -13.2
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          -1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket1-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -95.55,
+         36.4,
+         13.2
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          -1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket11",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -104.45,
+         36.4,
+         13.2
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          -1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
     },
     {
      "name": "Banner-1",
@@ -93643,6 +94043,206 @@
      ]
     },
     {
+     "name": "SignBracket-1-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         95.55,
+         36.4,
+         13.2
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket-11",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         104.45,
+         36.4,
+         13.2
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket1-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         95.55,
+         36.4,
+         -13.2
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket11",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         104.45,
+         36.4,
+         -13.2
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
      "name": "Banner-1",
      "className": "Part",
      "properties": {
@@ -94956,6 +95556,206 @@
        ]
       }
      ]
+    },
+    {
+     "name": "SignBracket-1-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         13.2,
+         40.4,
+         -95.55
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket-11",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         13.2,
+         40.4,
+         -104.45
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket1-1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -13.2,
+         40.4,
+         -95.55
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "SignBracket11",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.5,
+       0.5,
+       1.8
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -13.2,
+         40.4,
+         -104.45
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2824,
+       0.1882,
+       0.1255
+      ],
+      "Material": "Wood",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
     },
     {
      "name": "Banner-1",

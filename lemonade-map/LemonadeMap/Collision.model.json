@@ -1231,14 +1231,14 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     98.0,
+     90.5,
      110.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       -61.0,
+       -64.75,
        55.0,
        473.0
       ],
@@ -1282,14 +1282,14 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     98.0,
+     90.5,
      110.0,
      6.0
     ],
     "CFrame": {
      "CFrame": {
       "position": [
-       61.0,
+       64.75,
        55.0,
        473.0
       ],
