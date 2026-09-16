@@ -6,7 +6,7 @@
 local QuestConfig = {}
 
 -- Quest giver placement (near spawn in the hub)
-QuestConfig.GIVER_POSITION = Vector3.new(-42, 6.3, 12) -- [TUNING] Fivefold Sanctuary hub
+QuestConfig.GIVER_POSITION = Vector3.new(0, 0, 0) -- fallback only; the placed NPC's position is used at runtime
 QuestConfig.GIVER_NAME = "Quest Master"
 QuestConfig.GIVER_COLOR = Color3.fromRGB(200, 180, 60)
 QuestConfig.INTERACT_RANGE = 12 -- [TUNING] studs to interact

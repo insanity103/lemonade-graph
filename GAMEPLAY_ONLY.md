@@ -14,7 +14,7 @@ their temporary spawn positions fit on the plate. Quest Master, merchant, rebirt
 reset characters stand near the center. No stalls, shrines, platforms, or decorative props
 are created. Boss-room gates and their client script are omitted because there are no rooms.
 The cosmetic villagers, leaderboard pillar, campfire, day/night controller, map builders,
-collision decks, map anchors, and MapKit assets are also excluded.
+collision decks and map anchors are also excluded.
 
 ## Connect
 
