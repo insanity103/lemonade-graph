@@ -7,7 +7,7 @@ local BossWeapons = {}
 
 -- Boss tiers ordered by level (1 to 5)
 BossWeapons.Tiers = {
-	Boss_Gorgon = 1,           -- Iron Warlord (Lv 10)
+	Boss_Gorgon = 1,           -- Warden of the Pit (Lv 10)
 	Boss_FrostRevenant = 2,    -- Frost Revenant (Lv 25)
 	Boss_InfernalColossus = 3, -- Infernal Colossus (Lv 45)
 	Boss_VoidWraith = 4,       -- Void Archon (Lv 70)

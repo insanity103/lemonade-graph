@@ -18,17 +18,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import map_forge  # noqa: E402
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("out")
-    ap.add_argument("--box", nargs=4, type=float, required=True, metavar=("X0", "X1", "Z0", "Z1"))
-    ap.add_argument("--yaw", type=float, default=35.0, help="camera turn about Y, degrees")
-    ap.add_argument("--pitch", type=float, default=30.0, help="camera tilt down, degrees")
-    ap.add_argument("--scale", type=float, default=6.0, help="pixels per stud")
-    ap.add_argument("--ymax", type=float, default=80.0, help="ignore parts whose bottom is above this")
-    args = ap.parse_args()
-    from PIL import Image, ImageDraw
-
+def collect(box, ymax=80.0):
+    """Regenerate the map and return the REGISTRY parts whose centre lies in the XZ box."""
     import random
     map_forge.REGISTRY.clear()
     map_forge.USED_CLIFF_TOPS.clear()
@@ -36,12 +27,21 @@ def main():
     map_forge.build_hub(rng)
     map_forge.build_iron_lowlands(rng)
     map_forge.build_markers()
-    x0, x1, z0, z1 = args.box
-    parts = [e for e in map_forge.REGISTRY
-             if x0 <= e["pos"][0] <= x1 and z0 <= e["pos"][2] <= z1 and e["layer"] not in ("marker", "volume", "proxy")
-             and e["transparency"] < 0.9 and e["pos"][1] - e["size"][1] / 2 < args.ymax
-             and not (e["layer"] == "ground" and max(e["size"][0], e["size"][2]) > 1.5 * max(x1 - x0, z1 - z0))]
+    x0, x1, z0, z1 = box
+    return [e for e in map_forge.REGISTRY
+            if x0 <= e["pos"][0] <= x1 and z0 <= e["pos"][2] <= z1 and e["layer"] not in ("marker", "volume", "proxy")
+            and e["transparency"] < 0.9 and e["pos"][1] - e["size"][1] / 2 < ymax
+            and not (e["layer"] == "ground" and max(e["size"][0], e["size"][2]) > 1.5 * max(x1 - x0, z1 - z0))]
 
+
+def render(parts, out, yaw=35.0, pitch=30.0, scale=6.0):
+    """Draw REGISTRY-style part dicts ({size, pos, rot, color, shape}) to `out`."""
+    from PIL import Image, ImageDraw
+
+    class Args:
+        pass
+    args = Args()
+    args.out, args.yaw, args.pitch, args.scale = out, yaw, pitch, scale
     cy, sy = math.cos(math.radians(args.yaw)), math.sin(math.radians(args.yaw))
     cp, sp = math.cos(math.radians(args.pitch)), math.sin(math.radians(args.pitch))
     light = (0.4, 0.8, 0.45)
@@ -151,6 +151,18 @@ def main():
         draw.polygon(pts, fill=col, outline=tuple(int(c * 0.7) for c in col))
     img.save(args.out)
     print(f"[preview_model] {args.out} {w}x{h}, {len(parts)} parts")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("out")
+    ap.add_argument("--box", nargs=4, type=float, required=True, metavar=("X0", "X1", "Z0", "Z1"))
+    ap.add_argument("--yaw", type=float, default=35.0, help="camera turn about Y, degrees")
+    ap.add_argument("--pitch", type=float, default=30.0, help="camera tilt down, degrees")
+    ap.add_argument("--scale", type=float, default=6.0, help="pixels per stud")
+    ap.add_argument("--ymax", type=float, default=80.0, help="ignore parts whose bottom is above this")
+    args = ap.parse_args()
+    render(collect(args.box, args.ymax), args.out, args.yaw, args.pitch, args.scale)
 
 
 if __name__ == "__main__":

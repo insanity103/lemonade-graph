@@ -44,6 +44,13 @@ None after the fixes below. Specifically:
 | 11 | Rock clusters sink 0.6–0.64 (tilted rocks), derailed cart wheels dug in 0.5. | `*Rocks*`, `DerailedCart` | Accepted: rocks are meant to sit in the ground; nothing else sinks > 0.6. |
 | 12 | One cross-model collidable overlap: the two mid-bench toe runs meet at the sump corner (30 studs³). | `MidFaceE_00` / `MidFaceSump_04` | Accepted: same as cliff runs meeting at corners. |
 
+Enemy rigs (`ReplicatedStorage/EnemyOutfits.luau`, applied in `createEnemyRig` after the joints
+and the boss weapon): every accessory is a `WeldConstraint` child of its body part, `Massless`,
+`CanCollide/CanQuery/CanTouch = false`, unanchored. Non-weapon offsets stay within 1.5 studs of
+the part centre (largest: the Warden's hip lantern at 1.46); the pick and sledge heads sit 2.2 /
+2.7 forward of the hand like the existing boss sword weld, which is unchanged. Nameplates still
+parent to `Head`. Stats, ranges and swing timing untouched.
+
 ## Actionable fixes applied
 
 `tools/map_forge.py` (regenerated `lemonade-map/`, all four checks pass):

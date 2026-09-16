@@ -187,6 +187,14 @@ prop dropped on a bench, a ramp or a path lands correctly.
 | Scrap gate | leaves at x ±18.3, z 368..377 | folded flat against the ridge ends; gap 36 studs |
 | Throne | (0, 454) facing north | behind the boss; two rag banners, two banner poles |
 
+Enemy family — the Quarry Bandits (`EnemyCombat.server.luau` display names; archetype keys,
+stats, drops and the `Warlord Greatsword` unchanged): `IronSquire` → **Quarry Cutthroat**
+(hood, mask, leather vest, wrapped forearms, rusty pick), `IronBerserker` → **Pit Brute**
+(cart-plate pauldron, chain belt, chest plate, scars, sledge; the `IL_E1` elite adds a red sash
+and a bone mask), `Boss_Gorgon` → **Warden of the Pit** (scavenged plate, crested helm, cape of
+stitched banners, hip lantern, the existing sword). Looks live in
+`ReplicatedStorage/EnemyOutfits.luau` as welded, massless accessory parts scaled by the archetype.
+
 Region budget: 781 parts (779 Part, 2 WedgePart), 157 collidable, 17 PointLights (budget 20),
 5 Fire, 6 SurfaceGuis, streaming Default. Preview any box of it with
 `python3 tools/preview_model.py out.png --box x0 x1 z0 z1`.
