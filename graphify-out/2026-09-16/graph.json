@@ -1117,148 +1117,28 @@
       "source_location": "L175"
     },
     {
-      "id": "lemonade_game_serverscriptservice_adminsystem_server_addgold",
-      "label": "addGold()",
+      "id": "lemonade_game_serverscriptservice_combatutil_combatutil_applyhitlag",
+      "label": "CombatUtil.applyHitlag()",
       "_callable": true,
       "_origin": "ast",
-      "community": 140,
-      "community_name": "PlayerDataService.MarkDirty",
+      "community": 18,
+      "community_name": "SwordSystem.server.luau",
       "file_type": "code",
-      "norm_label": "addgold()",
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L58"
+      "norm_label": "combatutil.applyhitlag()",
+      "source_file": "lemonade-game/ServerScriptService/CombatUtil.luau",
+      "source_location": "L108"
     },
     {
-      "id": "lemonade_game_serverscriptservice_adminsystem_server_givesword",
-      "label": "giveSword()",
+      "id": "lemonade_game_serverscriptservice_combatutil_combatutil_firehitlagtoclient",
+      "label": "CombatUtil.fireHitlagToClient()",
       "_callable": true,
       "_origin": "ast",
-      "community": 140,
-      "community_name": "PlayerDataService.MarkDirty",
+      "community": 18,
+      "community_name": "SwordSystem.server.luau",
       "file_type": "code",
-      "norm_label": "givesword()",
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L73"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_adminsystem_server_isadmin",
-      "label": "isAdmin()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 140,
-      "community_name": "PlayerDataService.MarkDirty",
-      "file_type": "code",
-      "norm_label": "isadmin()",
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L23"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_adminsystem_server_setlevel",
-      "label": "setLevel()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 140,
-      "community_name": "PlayerDataService.MarkDirty",
-      "file_type": "code",
-      "norm_label": "setlevel()",
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L38"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_playerdataservice_playerdataservice_markdirty",
-      "label": "PlayerDataService.MarkDirty()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 140,
-      "community_name": "PlayerDataService.MarkDirty",
-      "file_type": "code",
-      "norm_label": "playerdataservice.markdirty()",
-      "source_file": "lemonade-game/ServerScriptService/PlayerDataService.luau",
-      "source_location": "L254"
-    },
-    {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_button",
-      "label": "button()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 141,
-      "community_name": "AdminGui.client.luau",
-      "file_type": "code",
-      "norm_label": "button()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L64"
-    },
-    {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_corner",
-      "label": "corner()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 141,
-      "community_name": "AdminGui.client.luau",
-      "file_type": "code",
-      "norm_label": "corner()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L35"
-    },
-    {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_label",
-      "label": "label()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 141,
-      "community_name": "AdminGui.client.luau",
-      "file_type": "code",
-      "norm_label": "label()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L50"
-    },
-    {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_stroke",
-      "label": "stroke()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 141,
-      "community_name": "AdminGui.client.luau",
-      "file_type": "code",
-      "norm_label": "stroke()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L42"
-    },
-    {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_textbox",
-      "label": "textBox()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 141,
-      "community_name": "AdminGui.client.luau",
-      "file_type": "code",
-      "norm_label": "textbox()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L85"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_safehub_safehub_canenemyattack",
-      "label": "SafeHub.canEnemyAttack()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 145,
-      "community_name": "SafeHub.canEnemyAttack",
-      "file_type": "code",
-      "norm_label": "safehub.canenemyattack()",
-      "source_file": "lemonade-game/ServerScriptService/SafeHub.luau",
-      "source_location": "L10"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_safehub_safehub_contains",
-      "label": "SafeHub.contains()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 145,
-      "community_name": "SafeHub.canEnemyAttack",
-      "file_type": "code",
-      "norm_label": "safehub.contains()",
-      "source_file": "lemonade-game/ServerScriptService/SafeHub.luau",
-      "source_location": "L4"
+      "norm_label": "combatutil.firehitlagtoclient()",
+      "source_file": "lemonade-game/ServerScriptService/CombatUtil.luau",
+      "source_location": "L148"
     },
     {
       "id": "lemonade_game_serverscriptservice_swordsystem_server_applydamage",
@@ -1366,7 +1246,7 @@
       "file_type": "code",
       "norm_label": "ensurepart()",
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L64"
+      "source_location": "L63"
     },
     {
       "id": "lemonade_game_serverscriptservice_runtimebootstrap_server_ensureweld",
@@ -1378,7 +1258,7 @@
       "file_type": "code",
       "norm_label": "ensureweld()",
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L95"
+      "source_location": "L94"
     },
     {
       "id": "lemonade_game_serverscriptservice_runtimebootstrap_server_repairplayersword",
@@ -1390,7 +1270,7 @@
       "file_type": "code",
       "norm_label": "repairplayersword()",
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L132"
+      "source_location": "L131"
     },
     {
       "id": "lemonade_game_starterpack_classicsword_mouseicon_client_onchanged",
@@ -1777,42 +1657,6 @@
       "source_location": "L717"
     },
     {
-      "id": "lemonade_game_serverscriptservice_combatutil_combatutil_applyhitlag",
-      "label": "CombatUtil.applyHitlag()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": "EnemyCombat.server.luau",
-      "file_type": "code",
-      "norm_label": "combatutil.applyhitlag()",
-      "source_file": "lemonade-game/ServerScriptService/CombatUtil.luau",
-      "source_location": "L108"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_combatutil_combatutil_haslineofsight",
-      "label": "CombatUtil.hasLineOfSight()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": "EnemyCombat.server.luau",
-      "file_type": "code",
-      "norm_label": "combatutil.haslineofsight()",
-      "source_file": "lemonade-game/ServerScriptService/CombatUtil.luau",
-      "source_location": "L59"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_enemycombat_server_applyenemydamagetoplayer",
-      "label": "applyEnemyDamageToPlayer()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": "EnemyCombat.server.luau",
-      "file_type": "code",
-      "norm_label": "applyenemydamagetoplayer()",
-      "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L830"
-    },
-    {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_attackenemy",
       "label": "attackEnemy()",
       "_callable": true,
@@ -1822,7 +1666,7 @@
       "file_type": "code",
       "norm_label": "attackenemy()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1133"
+      "source_location": "L1080"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_commandmove",
@@ -1834,7 +1678,7 @@
       "file_type": "code",
       "norm_label": "commandmove()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L983"
+      "source_location": "L930"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_createenemyrig",
@@ -1846,7 +1690,7 @@
       "file_type": "code",
       "norm_label": "createenemyrig()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L522"
+      "source_location": "L521"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_createmotor6d",
@@ -1858,7 +1702,7 @@
       "file_type": "code",
       "norm_label": "createmotor6d()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L476"
+      "source_location": "L475"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_findnearestenemy",
@@ -1870,7 +1714,7 @@
       "file_type": "code",
       "norm_label": "findnearestenemy()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1180"
+      "source_location": "L1127"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_findnearestlivingplayer",
@@ -1882,7 +1726,7 @@
       "file_type": "code",
       "norm_label": "findnearestlivingplayer()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L809"
+      "source_location": "L804"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_getalivecharacter",
@@ -1894,19 +1738,7 @@
       "file_type": "code",
       "norm_label": "getalivecharacter()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1200"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_enemycombat_server_getenemydamage",
-      "label": "getEnemyDamage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": "EnemyCombat.server.luau",
-      "file_type": "code",
-      "norm_label": "getenemydamage()",
-      "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L440"
+      "source_location": "L1147"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_getenemymaxhealth",
@@ -1918,7 +1750,7 @@
       "file_type": "code",
       "norm_label": "getenemymaxhealth()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L429"
+      "source_location": "L428"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_getenemyxp",
@@ -1930,7 +1762,7 @@
       "file_type": "code",
       "norm_label": "getenemyxp()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L448"
+      "source_location": "L447"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_getplayerattackdamage",
@@ -1942,7 +1774,7 @@
       "file_type": "code",
       "norm_label": "getplayerattackdamage()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L452"
+      "source_location": "L451"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_getwindup",
@@ -1954,7 +1786,7 @@
       "file_type": "code",
       "norm_label": "getwindup()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L869"
+      "source_location": "L864"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_hasequippedtool",
@@ -1966,7 +1798,7 @@
       "file_type": "code",
       "norm_label": "hasequippedtool()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1213"
+      "source_location": "L1160"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_resolvegroundposition",
@@ -1978,7 +1810,7 @@
       "file_type": "code",
       "norm_label": "resolvegroundposition()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L487"
+      "source_location": "L486"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_spawnenemy",
@@ -1990,7 +1822,7 @@
       "file_type": "code",
       "norm_label": "spawnenemy()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1097"
+      "source_location": "L1044"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_startenemyai",
@@ -2002,7 +1834,7 @@
       "file_type": "code",
       "norm_label": "startenemyai()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L912"
+      "source_location": "L902"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_swingweapon",
@@ -2014,7 +1846,7 @@
       "file_type": "code",
       "norm_label": "swingweapon()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L874"
+      "source_location": "L869"
     },
     {
       "id": "lemonade_game_serverscriptservice_enemycombat_server_tryunarmedattack",
@@ -2026,7 +1858,7 @@
       "file_type": "code",
       "norm_label": "tryunarmedattack()",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1219"
+      "source_location": "L1166"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_runcontroller_client_handlerun",
@@ -4273,42 +4105,6 @@
       "source_location": "L121"
     },
     {
-      "id": "lemonade_game_serverscriptservice_bossswordfactory_fitbossmesh",
-      "label": "fitBossMesh()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "CombatUtil.luau",
-      "file_type": "code",
-      "norm_label": "fitbossmesh()",
-      "source_file": "lemonade-game/ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L20"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_combatutil_combatutil_applyweaponappearance",
-      "label": "CombatUtil.applyWeaponAppearance()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "CombatUtil.luau",
-      "file_type": "code",
-      "norm_label": "combatutil.applyweaponappearance()",
-      "source_file": "lemonade-game/ServerScriptService/CombatUtil.luau",
-      "source_location": "L27"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_combatutil_combatutil_firehitlagtoclient",
-      "label": "CombatUtil.fireHitlagToClient()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "CombatUtil.luau",
-      "file_type": "code",
-      "norm_label": "combatutil.firehitlagtoclient()",
-      "source_file": "lemonade-game/ServerScriptService/CombatUtil.luau",
-      "source_location": "L148"
-    },
-    {
       "id": "lemonade_game_serverscriptservice_combatutil_combatutil_getswordmesh",
       "label": "CombatUtil.getSwordMesh()",
       "_callable": true,
@@ -4319,6 +4115,18 @@
       "norm_label": "combatutil.getswordmesh()",
       "source_file": "lemonade-game/ServerScriptService/CombatUtil.luau",
       "source_location": "L82"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_combatutil_combatutil_haslineofsight",
+      "label": "CombatUtil.hasLineOfSight()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "CombatUtil.luau",
+      "file_type": "code",
+      "norm_label": "combatutil.haslineofsight()",
+      "source_file": "lemonade-game/ServerScriptService/CombatUtil.luau",
+      "source_location": "L59"
     },
     {
       "id": "lemonade_game_serverscriptservice_combatutil_combatutil_isenemy",
@@ -4343,6 +4151,54 @@
       "norm_label": "combatutil.sizeswordmesh()",
       "source_file": "lemonade-game/ServerScriptService/CombatUtil.luau",
       "source_location": "L97"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_enemycombat_server_applyenemydamagetoplayer",
+      "label": "applyEnemyDamageToPlayer()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "CombatUtil.luau",
+      "file_type": "code",
+      "norm_label": "applyenemydamagetoplayer()",
+      "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
+      "source_location": "L825"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_enemycombat_server_getenemydamage",
+      "label": "getEnemyDamage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "CombatUtil.luau",
+      "file_type": "code",
+      "norm_label": "getenemydamage()",
+      "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
+      "source_location": "L439"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_safehub_safehub_canenemyattack",
+      "label": "SafeHub.canEnemyAttack()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "CombatUtil.luau",
+      "file_type": "code",
+      "norm_label": "safehub.canenemyattack()",
+      "source_file": "lemonade-game/ServerScriptService/SafeHub.luau",
+      "source_location": "L10"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_safehub_safehub_contains",
+      "label": "SafeHub.contains()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "CombatUtil.luau",
+      "file_type": "code",
+      "norm_label": "safehub.contains()",
+      "source_file": "lemonade-game/ServerScriptService/SafeHub.luau",
+      "source_location": "L4"
     },
     {
       "id": "lemonade_game_replicatedstorage_config_rebirthconfig_rebirthconfig_geteffectivedropchance",
@@ -5389,18 +5245,6 @@
       "source_location": "L126"
     },
     {
-      "id": "lemonade_game_serverscriptservice_bossswordfactory_bossswordfactory_rebuild",
-      "label": "BossSwordFactory.rebuild()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "TradeSystem.server.luau",
-      "file_type": "code",
-      "norm_label": "bossswordfactory.rebuild()",
-      "source_file": "lemonade-game/ServerScriptService/BossSwordFactory.luau",
-      "source_location": "L199"
-    },
-    {
       "id": "lemonade_game_serverscriptservice_playerdataservice_playerdataservice_getfield",
       "label": "PlayerDataService.GetField()",
       "_callable": true,
@@ -5423,6 +5267,18 @@
       "norm_label": "playerdataservice.getvault()",
       "source_file": "lemonade-game/ServerScriptService/PlayerDataService.luau",
       "source_location": "L234"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_playerdataservice_playerdataservice_markdirty",
+      "label": "PlayerDataService.MarkDirty()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "TradeSystem.server.luau",
+      "file_type": "code",
+      "norm_label": "playerdataservice.markdirty()",
+      "source_file": "lemonade-game/ServerScriptService/PlayerDataService.luau",
+      "source_location": "L254"
     },
     {
       "id": "lemonade_game_serverscriptservice_playerdataservice_playerdataservice_serializetool",
@@ -6349,6 +6205,18 @@
       "source_location": "L41"
     },
     {
+      "id": "lemonade_game_serverscriptservice_bossswordfactory_bossswordfactory_rebuild",
+      "label": "BossSwordFactory.rebuild()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "bossswordfactory.rebuild()",
+      "source_file": "lemonade-game/ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L199"
+    },
+    {
       "id": "lemonade_game_serverscriptservice_bossswordfactory_bossswordfactory_reroll",
       "label": "BossSwordFactory.reroll()",
       "_callable": true,
@@ -6359,6 +6227,30 @@
       "norm_label": "bossswordfactory.reroll()",
       "source_file": "lemonade-game/ServerScriptService/BossSwordFactory.luau",
       "source_location": "L152"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_bossswordfactory_fitbossmesh",
+      "label": "fitBossMesh()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "fitbossmesh()",
+      "source_file": "lemonade-game/ServerScriptService/BossSwordFactory.luau",
+      "source_location": "L20"
+    },
+    {
+      "id": "lemonade_game_serverscriptservice_combatutil_combatutil_applyweaponappearance",
+      "label": "CombatUtil.applyWeaponAppearance()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "BossSwordFactory.build",
+      "file_type": "code",
+      "norm_label": "combatutil.applyweaponappearance()",
+      "source_file": "lemonade-game/ServerScriptService/CombatUtil.luau",
+      "source_location": "L27"
     },
     {
       "id": "tools_preview_model_collect",
@@ -8937,114 +8829,6 @@
       "source_location": "L1"
     },
     {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_8_1_core_parameters",
-      "label": "8.1 Core Parameters",
-      "_origin": "ast",
-      "community": 116,
-      "community_name": "8. PROGRESSION DESIGN TEMPLATE",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "8.1 core parameters",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L354"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_8_2_sea_gate_levels",
-      "label": "8.2 Sea Gate Levels",
-      "_origin": "ast",
-      "community": 116,
-      "community_name": "8. PROGRESSION DESIGN TEMPLATE",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "8.2 sea gate levels",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L369"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_8_3_xp_values_per_quest_template",
-      "label": "8.3 XP Values Per Quest (Template)",
-      "_origin": "ast",
-      "community": 116,
-      "community_name": "8. PROGRESSION DESIGN TEMPLATE",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "8.3 xp values per quest (template)",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L391"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_8_4_progression_gate_checklist",
-      "label": "8.4 Progression Gate Checklist",
-      "_origin": "ast",
-      "community": 116,
-      "community_name": "8. PROGRESSION DESIGN TEMPLATE",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "8.4 progression gate checklist",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L405"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_8_5_endgame_retention_systems",
-      "label": "8.5 Endgame Retention Systems",
-      "_origin": "ast",
-      "community": 116,
-      "community_name": "8. PROGRESSION DESIGN TEMPLATE",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "8.5 endgame retention systems",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L427"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_8_6_stat_system_template",
-      "label": "8.6 Stat System Template",
-      "_origin": "ast",
-      "community": 116,
-      "community_name": "8. PROGRESSION DESIGN TEMPLATE",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "8.6 stat system template",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L465"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_8_7_recommended_timing_per_session",
-      "label": "8.7 Recommended Timing Per Session",
-      "_origin": "ast",
-      "community": 116,
-      "community_name": "8. PROGRESSION DESIGN TEMPLATE",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "8.7 recommended timing per session",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L491"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_8_progression_design_template",
-      "label": "8. PROGRESSION DESIGN TEMPLATE",
-      "_origin": "ast",
-      "community": 116,
-      "community_name": "8. PROGRESSION DESIGN TEMPLATE",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "8. progression design template",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L346"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_for_a_new_roblox_sword_rpg",
-      "label": "For a New Roblox Sword RPG",
-      "_origin": "ast",
-      "community": 116,
-      "community_name": "8. PROGRESSION DESIGN TEMPLATE",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "for a new roblox sword rpg",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L348"
-    },
-    {
       "id": "research_sword_rpg_sword_rpg_anti_exploit_architecture_11_1_remoteevent_setup_pattern",
       "label": "11.1 RemoteEvent Setup Pattern",
       "_origin": "ast",
@@ -10413,6 +10197,30 @@
       "source_location": "L407"
     },
     {
+      "id": "research_sword_rpg_sword_rpg_progression_curves",
+      "label": "sword-rpg-progression-curves.md",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "sword-rpg-progression-curves.md",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_1_level_caps_xp_requirements_by_game",
+      "label": "1. Level Caps & XP Requirements (By Game)",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "1. level caps & xp requirements (by game)",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L24"
+    },
+    {
       "id": "research_sword_rpg_sword_rpg_progression_curves_2_xp_curve_shape_analysis",
       "label": "2. XP Curve Shape Analysis",
       "_origin": "ast",
@@ -10423,6 +10231,30 @@
       "norm_label": "2. xp curve shape analysis",
       "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
       "source_location": "L97"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_3_xp_sources_efficiency",
+      "label": "3. XP Sources & Efficiency",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "3. xp sources & efficiency",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L136"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_4_progression_gates",
+      "label": "4. Progression Gates",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "4. progression gates",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L179"
     },
     {
       "id": "research_sword_rpg_sword_rpg_progression_curves_5_mid_game_end_game_retention",
@@ -10461,6 +10293,102 @@
       "source_location": "L321"
     },
     {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_8_1_core_parameters",
+      "label": "8.1 Core Parameters",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "8.1 core parameters",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L354"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_8_2_sea_gate_levels",
+      "label": "8.2 Sea Gate Levels",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "8.2 sea gate levels",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L369"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_8_3_xp_values_per_quest_template",
+      "label": "8.3 XP Values Per Quest (Template)",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "8.3 xp values per quest (template)",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L391"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_8_4_progression_gate_checklist",
+      "label": "8.4 Progression Gate Checklist",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "8.4 progression gate checklist",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L405"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_8_5_endgame_retention_systems",
+      "label": "8.5 Endgame Retention Systems",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "8.5 endgame retention systems",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L427"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_8_6_stat_system_template",
+      "label": "8.6 Stat System Template",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "8.6 stat system template",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L465"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_8_7_recommended_timing_per_session",
+      "label": "8.7 Recommended Timing Per Session",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "8.7 recommended timing per session",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L491"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_8_progression_design_template",
+      "label": "8. PROGRESSION DESIGN TEMPLATE",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "8. progression design template",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L346"
+    },
+    {
       "id": "research_sword_rpg_sword_rpg_progression_curves_9_sources",
       "label": "9. Sources",
       "_origin": "ast",
@@ -10497,6 +10425,18 @@
       "source_location": "L521"
     },
     {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_blox_fruits_confirmed_xp_formula",
+      "label": "Blox Fruits \u2014 Confirmed XP Formula",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "blox fruits \u2014 confirmed xp formula",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L36"
+    },
+    {
       "id": "research_sword_rpg_sword_rpg_progression_curves_blox_fruits_multiplier_stack",
       "label": "Blox Fruits Multiplier Stack",
       "_origin": "ast",
@@ -10509,6 +10449,42 @@
       "source_location": "L323"
     },
     {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_blox_fruits_sample_quest_xp_values",
+      "label": "Blox Fruits \u2014 Sample Quest XP Values",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "blox fruits \u2014 sample quest xp values",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L149"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_comparison_table",
+      "label": "Comparison Table",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "comparison table",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L26"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_content_unlock_gates",
+      "label": "Content Unlock Gates",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "content unlock gates",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L189"
+    },
+    {
       "id": "research_sword_rpg_sword_rpg_progression_curves_design_insight_why_multipliers_matter",
       "label": "Design Insight: Why Multipliers Matter",
       "_origin": "ast",
@@ -10519,6 +10495,66 @@
       "norm_label": "design insight: why multipliers matter",
       "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
       "source_location": "L337"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_efficiency_tier_list",
+      "label": "Efficiency Tier List",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "efficiency tier list",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L166"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_for_a_new_roblox_sword_rpg",
+      "label": "For a New Roblox Sword RPG",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "for a new roblox sword rpg",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L348"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_grand_piece_online_level_progression",
+      "label": "Grand Piece Online \u2014 Level Progression",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "grand piece online \u2014 level progression",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L79"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_king_legacy_quest_xp_progression",
+      "label": "King Legacy \u2014 Quest XP Progression",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "king legacy \u2014 quest xp progression",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L66"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_primary_xp_sources_all_games",
+      "label": "Primary XP Sources (All Games)",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "primary xp sources (all games)",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L138"
     },
     {
       "id": "research_sword_rpg_sword_rpg_progression_curves_recommended_pacing_derived_from_top_games",
@@ -10555,6 +10591,18 @@
       "norm_label": "retention timeline",
       "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
       "source_location": "L253"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_sea_world_level_gates",
+      "label": "Sea/World Level Gates",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "sea/world level gates",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L181"
     },
     {
       "id": "research_sword_rpg_sword_rpg_progression_curves_sword_rpg_progression_leveling_curves",
@@ -10603,6 +10651,18 @@
       "norm_label": "the \"feel good\" formula",
       "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
       "source_location": "L296"
+    },
+    {
+      "id": "research_sword_rpg_sword_rpg_progression_curves_what_gates_look_like_in_practice",
+      "label": "What Gates Look Like in Practice",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "Sword RPG Progression & Leveling Curves",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "what gates look like in practice",
+      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
+      "source_location": "L205"
     },
     {
       "id": "research_sword_rpg_sword_rpg_progression_curves_what_keeps_endgame_players_engaged",
@@ -11648,195 +11708,6 @@
       "norm_label": "what specific moments make players say \"this game is amazing\"",
       "source_file": "research/sword-rpg/sword-rpg-player-sentiment.md",
       "source_location": "L63"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_adminsystem_server",
-      "label": "AdminSystem.server.luau",
-      "_origin": "ast",
-      "community": 140,
-      "community_name": "PlayerDataService.MarkDirty",
-      "file_type": "code",
-      "norm_label": "adminsystem.server.luau",
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L1"
-    },
-    {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_admingui_client",
-      "label": "AdminGui.client.luau",
-      "_origin": "ast",
-      "community": 141,
-      "community_name": "AdminGui.client.luau",
-      "file_type": "code",
-      "norm_label": "admingui.client.luau",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L1"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_1_level_caps_xp_requirements_by_game",
-      "label": "1. Level Caps & XP Requirements (By Game)",
-      "_origin": "ast",
-      "community": 142,
-      "community_name": "1. Level Caps & XP Requirements (By Game)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "1. level caps & xp requirements (by game)",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L24"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_blox_fruits_confirmed_xp_formula",
-      "label": "Blox Fruits \u2014 Confirmed XP Formula",
-      "_origin": "ast",
-      "community": 142,
-      "community_name": "1. Level Caps & XP Requirements (By Game)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "blox fruits \u2014 confirmed xp formula",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L36"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_comparison_table",
-      "label": "Comparison Table",
-      "_origin": "ast",
-      "community": 142,
-      "community_name": "1. Level Caps & XP Requirements (By Game)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "comparison table",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L26"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_grand_piece_online_level_progression",
-      "label": "Grand Piece Online \u2014 Level Progression",
-      "_origin": "ast",
-      "community": 142,
-      "community_name": "1. Level Caps & XP Requirements (By Game)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "grand piece online \u2014 level progression",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L79"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_king_legacy_quest_xp_progression",
-      "label": "King Legacy \u2014 Quest XP Progression",
-      "_origin": "ast",
-      "community": 142,
-      "community_name": "1. Level Caps & XP Requirements (By Game)",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "king legacy \u2014 quest xp progression",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L66"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_3_xp_sources_efficiency",
-      "label": "3. XP Sources & Efficiency",
-      "_origin": "ast",
-      "community": 143,
-      "community_name": "3. XP Sources & Efficiency",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "3. xp sources & efficiency",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L136"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_blox_fruits_sample_quest_xp_values",
-      "label": "Blox Fruits \u2014 Sample Quest XP Values",
-      "_origin": "ast",
-      "community": 143,
-      "community_name": "3. XP Sources & Efficiency",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "blox fruits \u2014 sample quest xp values",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L149"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_efficiency_tier_list",
-      "label": "Efficiency Tier List",
-      "_origin": "ast",
-      "community": 143,
-      "community_name": "3. XP Sources & Efficiency",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "efficiency tier list",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L166"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_primary_xp_sources_all_games",
-      "label": "Primary XP Sources (All Games)",
-      "_origin": "ast",
-      "community": 143,
-      "community_name": "3. XP Sources & Efficiency",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "primary xp sources (all games)",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L138"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_4_progression_gates",
-      "label": "4. Progression Gates",
-      "_origin": "ast",
-      "community": 144,
-      "community_name": "4. Progression Gates",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "4. progression gates",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L179"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_content_unlock_gates",
-      "label": "Content Unlock Gates",
-      "_origin": "ast",
-      "community": 144,
-      "community_name": "4. Progression Gates",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "content unlock gates",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L189"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_sea_world_level_gates",
-      "label": "Sea/World Level Gates",
-      "_origin": "ast",
-      "community": 144,
-      "community_name": "4. Progression Gates",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "sea/world level gates",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L181"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves_what_gates_look_like_in_practice",
-      "label": "What Gates Look Like in Practice",
-      "_origin": "ast",
-      "community": 144,
-      "community_name": "4. Progression Gates",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "what gates look like in practice",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
-      "source_location": "L205"
-    },
-    {
-      "id": "lemonade_game_serverscriptservice_safehub",
-      "label": "ServerScriptService/SafeHub.luau",
-      "_origin": "ast",
-      "community": 145,
-      "community_name": "SafeHub.canEnemyAttack",
-      "file_type": "code",
-      "norm_label": "serverscriptservice/safehub.luau",
-      "source_file": "lemonade-game/ServerScriptService/SafeHub.luau",
-      "source_location": "L1"
     },
     {
       "id": "skills_roblox_debug_references_error_reference",
@@ -19827,6 +19698,17 @@
       "source_location": "L1"
     },
     {
+      "id": "lemonade_game_serverscriptservice_safehub",
+      "label": "ServerScriptService/SafeHub.luau",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "CombatUtil.luau",
+      "file_type": "code",
+      "norm_label": "serverscriptservice/safehub.luau",
+      "source_file": "lemonade-game/ServerScriptService/SafeHub.luau",
+      "source_location": "L1"
+    },
+    {
       "id": "claude",
       "label": "CLAUDE.md",
       "_origin": "ast",
@@ -26153,18 +26035,6 @@
       "node_kind": "heading",
       "norm_label": "roblox sword rpg player sentiment analysis report",
       "source_file": "research/sword-rpg/sword-rpg-player-sentiment.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "research_sword_rpg_sword_rpg_progression_curves",
-      "label": "sword-rpg-progression-curves.md",
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "sword-rpg-INDEX.md",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "sword-rpg-progression-curves.md",
-      "source_file": "research/sword-rpg/sword-rpg-progression-curves.md",
       "source_location": "L1"
     },
     {
@@ -32964,7 +32834,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L857",
+      "source_location": "L852",
       "weight": 1.0
     },
     {
@@ -32976,7 +32846,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1147",
+      "source_location": "L1094",
       "weight": 1.0
     },
     {
@@ -32988,7 +32858,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L530",
+      "source_location": "L529",
       "weight": 1.0
     },
     {
@@ -33000,7 +32870,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L630",
+      "source_location": "L629",
       "weight": 1.0
     },
     {
@@ -33012,7 +32882,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L677",
+      "source_location": "L672",
       "weight": 1.0
     },
     {
@@ -33024,7 +32894,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L793",
+      "source_location": "L788",
       "weight": 1.0
     },
     {
@@ -33036,7 +32906,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1098",
+      "source_location": "L1045",
       "weight": 1.0
     },
     {
@@ -33048,7 +32918,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1123",
+      "source_location": "L1070",
       "weight": 1.0
     },
     {
@@ -33060,7 +32930,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L875",
+      "source_location": "L870",
       "weight": 1.0
     },
     {
@@ -33072,7 +32942,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1220",
+      "source_location": "L1167",
       "weight": 1.0
     },
     {
@@ -33084,7 +32954,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1221",
+      "source_location": "L1168",
       "weight": 1.0
     },
     {
@@ -33096,7 +32966,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1233",
+      "source_location": "L1180",
       "weight": 1.0
     },
     {
@@ -33108,7 +32978,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1235",
+      "source_location": "L1182",
       "weight": 1.0
     },
     {
@@ -34609,54 +34479,6 @@
       "context": "call",
       "source_file": "lemonade-game/StarterPack/ClassicSword/MouseIcon.client.luau",
       "source_location": "L18",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_button",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_corner",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L75",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_button",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_stroke",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L76",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_textbox",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_corner",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L98",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_textbox",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_stroke",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L99",
       "weight": 1.0
     },
     {
@@ -46497,50 +46319,6 @@
       "weight": 1.0
     },
     {
-      "source": "lemonade_game_serverscriptservice_adminsystem_server",
-      "target": "lemonade_game_serverscriptservice_adminsystem_server_isadmin",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L23",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_serverscriptservice_adminsystem_server",
-      "target": "lemonade_game_serverscriptservice_adminsystem_server_setlevel",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L38",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_serverscriptservice_adminsystem_server",
-      "target": "lemonade_game_serverscriptservice_adminsystem_server_addgold",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L58",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_serverscriptservice_adminsystem_server",
-      "target": "lemonade_game_serverscriptservice_adminsystem_server_givesword",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L73",
-      "weight": 1.0
-    },
-    {
       "source": "lemonade_game_serverscriptservice_bossswordfactory",
       "target": "lemonade_game_serverscriptservice_bossswordfactory_bossswordfactory_reroll",
       "relation": "contains",
@@ -46680,7 +46458,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1097",
+      "source_location": "L1044",
       "weight": 1.0
     },
     {
@@ -46691,7 +46469,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1133",
+      "source_location": "L1080",
       "weight": 1.0
     },
     {
@@ -46702,7 +46480,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1180",
+      "source_location": "L1127",
       "weight": 1.0
     },
     {
@@ -46713,7 +46491,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1200",
+      "source_location": "L1147",
       "weight": 1.0
     },
     {
@@ -46724,7 +46502,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1213",
+      "source_location": "L1160",
       "weight": 1.0
     },
     {
@@ -46735,7 +46513,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1219",
+      "source_location": "L1166",
       "weight": 1.0
     },
     {
@@ -46746,7 +46524,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L429",
+      "source_location": "L428",
       "weight": 1.0
     },
     {
@@ -46757,7 +46535,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L440",
+      "source_location": "L439",
       "weight": 1.0
     },
     {
@@ -46768,7 +46546,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L448",
+      "source_location": "L447",
       "weight": 1.0
     },
     {
@@ -46779,7 +46557,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L452",
+      "source_location": "L451",
       "weight": 1.0
     },
     {
@@ -46790,7 +46568,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L476",
+      "source_location": "L475",
       "weight": 1.0
     },
     {
@@ -46801,7 +46579,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L487",
+      "source_location": "L486",
       "weight": 1.0
     },
     {
@@ -46812,7 +46590,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L522",
+      "source_location": "L521",
       "weight": 1.0
     },
     {
@@ -46823,7 +46601,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L809",
+      "source_location": "L804",
       "weight": 1.0
     },
     {
@@ -46834,7 +46612,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L830",
+      "source_location": "L825",
       "weight": 1.0
     },
     {
@@ -46845,7 +46623,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L869",
+      "source_location": "L864",
       "weight": 1.0
     },
     {
@@ -46856,7 +46634,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L874",
+      "source_location": "L869",
       "weight": 1.0
     },
     {
@@ -46867,7 +46645,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L912",
+      "source_location": "L902",
       "weight": 1.0
     },
     {
@@ -46878,7 +46656,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L983",
+      "source_location": "L930",
       "weight": 1.0
     },
     {
@@ -47747,7 +47525,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L132",
+      "source_location": "L131",
       "weight": 1.0
     },
     {
@@ -47758,7 +47536,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L64",
+      "source_location": "L63",
       "weight": 1.0
     },
     {
@@ -47769,7 +47547,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L95",
+      "source_location": "L94",
       "weight": 1.0
     },
     {
@@ -48309,61 +48087,6 @@
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPack/ClassicSword/SwordClient.client.luau",
       "source_location": "L29",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_admingui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_corner",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L35",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_admingui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_stroke",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L42",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_admingui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_label",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L50",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_admingui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_button",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L64",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_admingui_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_admingui_client_textbox",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau",
-      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -70448,54 +70171,6 @@
       "weight": 1.0
     },
     {
-      "source": "lemonade_game_serverscriptservice_adminsystem_server_givesword",
-      "target": "lemonade_game_serverscriptservice_bossswordfactory_bossswordfactory_build",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "context": "call",
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L84",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_serverscriptservice_adminsystem_server_givesword",
-      "target": "lemonade_game_serverscriptservice_bossswordfactory_bossswordfactory_reroll",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "context": "call",
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L85",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_serverscriptservice_adminsystem_server_givesword",
-      "target": "lemonade_game_serverscriptservice_playerdataservice_playerdataservice_markdirty",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "context": "call",
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L88",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_serverscriptservice_adminsystem_server_setlevel",
-      "target": "lemonade_game_serverscriptservice_playerdataservice_playerdataservice_markdirty",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "context": "call",
-      "source_file": "lemonade-game/ServerScriptService/AdminSystem.server.luau",
-      "source_location": "L55",
-      "weight": 1.0
-    },
-    {
       "source": "lemonade_game_serverscriptservice_bossswordfactory_bossswordfactory_applyroll",
       "target": "lemonade_game_replicatedstorage_config_bossweapons_bossweapons_gettier",
       "relation": "calls",
@@ -70624,7 +70299,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L838",
+      "source_location": "L833",
       "weight": 1.0
     },
     {
@@ -70636,7 +70311,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L844",
+      "source_location": "L839",
       "weight": 1.0
     },
     {
@@ -70648,7 +70323,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1153",
+      "source_location": "L1100",
       "weight": 1.0
     },
     {
@@ -70660,7 +70335,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L644",
+      "source_location": "L639",
       "weight": 1.0
     },
     {
@@ -70672,7 +70347,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L650",
+      "source_location": "L645",
       "weight": 1.0
     },
     {
@@ -70684,7 +70359,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L653",
+      "source_location": "L648",
       "weight": 1.0
     },
     {
@@ -70696,7 +70371,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L668",
+      "source_location": "L663",
       "weight": 1.0
     },
     {
@@ -70708,7 +70383,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/EnemyCombat.server.luau",
-      "source_location": "L1190",
+      "source_location": "L1137",
       "weight": 1.0
     },
     {
@@ -72305,5 +71980,5 @@
       "source_file": "/home/alex-christensen/.codex/skills/roblox-systems/references/sword-rpg-legendary-swords-core.md"
     }
   ],
-  "built_at_commit": "61eff0e7ac9e57f5896fff0bcf6530d79ab448fd"
+  "built_at_commit": "74cf856d8104a0f86607ed4d6a98597afb38be2f"
 }

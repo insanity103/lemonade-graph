@@ -9,6 +9,9 @@
     "ServerScriptService": {
       "$className": "ServerScriptService",
       "$ignoreUnknownInstances": true,
+      "AdminSystem": {
+        "$path": "lemonade-game/ServerScriptService/AdminSystem.server.luau"
+      },
       "BossSwordFactory": {
         "$path": "lemonade-game/ServerScriptService/BossSwordFactory.luau"
       },
@@ -83,6 +86,9 @@
       "StarterPlayerScripts": {
         "$className": "StarterPlayerScripts",
         "$ignoreUnknownInstances": true,
+        "AdminGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau"
+        },
         "CombatController": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau"
         },

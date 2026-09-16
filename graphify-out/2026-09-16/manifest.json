@@ -18,9 +18,9 @@
     "semantic_hash": ""
   },
   "default.project.json": {
-    "mtime": 1789545901.3238027,
-    "seen": 1789551105.429674,
-    "ast_hash": "c1fd3c8d78aa81c20679a1a3376da958",
+    "mtime": 1789537233.0498168,
+    "seen": 1789543389.7673483,
+    "ast_hash": "f3fedd7329fbeb4db93b9586c8f60c2c",
     "semantic_hash": ""
   },
   "dump_scripts.py": {
@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/EnemyCombat.server.luau": {
-    "mtime": 1789545318.1564422,
-    "seen": 1789551105.4306583,
-    "ast_hash": "9c073f6e9db2b4b1539b6edf4dece73b",
+    "mtime": 1789543311.6846023,
+    "seen": 1789543389.7678566,
+    "ast_hash": "e22952b277331d807ce0425d29455b56",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/InventoryService.luau": {
@@ -162,9 +162,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau": {
-    "mtime": 1789545901.3236551,
-    "seen": 1789551105.4309218,
-    "ast_hash": "d22ff2173fd197228e6dd600391737d6",
+    "mtime": 1789537233.0496993,
+    "seen": 1789543389.7680032,
+    "ast_hash": "fb1dec20230938a3c9537aa504a13485",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/SwordDropSystem.server.luau": {
@@ -726,20 +726,20 @@
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Collision.model.json": {
-    "mtime": 1789545949.7458105,
-    "seen": 1789551105.4317126,
+    "mtime": 1789543160.2988818,
+    "seen": 1789543389.7686431,
     "ast_hash": "046afa8baec3b49344d6ae809f78b07f",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Grounds_Hub.model.json": {
-    "mtime": 1789545949.7454343,
-    "seen": 1789551105.4317136,
+    "mtime": 1789543160.2985034,
+    "seen": 1789543389.7686443,
     "ast_hash": "6dd9bd5789175a46f20dd5df8cdd3f13",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Grounds_IronLowlands.model.json": {
-    "mtime": 1789545949.7455957,
-    "seen": 1789551105.4317145,
+    "mtime": 1789543160.2986643,
+    "seen": 1789543389.7686455,
     "ast_hash": "00c86dd2d80c2b6bae139fc12197a3e1",
     "semantic_hash": ""
   },
@@ -750,33 +750,33 @@
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/IronLowlands.model.json": {
-    "mtime": 1789551091.5020125,
-    "seen": 1789551105.4317153,
+    "mtime": 1789543160.319568,
+    "seen": 1789543389.7686467,
     "ast_hash": "94febb548d832d03fbafc9f1322eaac0",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Markers.model.json": {
-    "mtime": 1789545949.7665718,
-    "seen": 1789551105.4317167,
+    "mtime": 1789543160.3199701,
+    "seen": 1789543389.7686477,
     "ast_hash": "fcda75819f530f2f53f9802a4fb131c5",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/init.meta.json": {
-    "mtime": 1789545949.7452993,
-    "seen": 1789551105.4317174,
+    "mtime": 1789543160.298364,
+    "seen": 1789543389.7686486,
     "ast_hash": "9cc465bacbecfd2cb9dc2dbe20f9d9de",
     "semantic_hash": ""
   },
   "map.project.json": {
-    "mtime": 1789545901.3238938,
-    "seen": 1789551105.4317186,
-    "ast_hash": "cbec529a32026cef9c5d9006b228ff81",
+    "mtime": 1789537233.0499227,
+    "seen": 1789543389.76865,
+    "ast_hash": "7d4e97c7409ef57cdbc70c04b823c27e",
     "semantic_hash": ""
   },
   "tools/check_gameplay_project.py": {
-    "mtime": 1789545901.3239756,
-    "seen": 1789551105.4317482,
-    "ast_hash": "16e23e6c1fa039d716c0721acef8f6df",
+    "mtime": 1789537233.05,
+    "seen": 1789543389.768652,
+    "ast_hash": "fac6face3d335c69c6a9723f5659ba90",
     "semantic_hash": ""
   },
   "tools/check_map_project.py": {
@@ -822,8 +822,8 @@
     "semantic_hash": ""
   },
   "docs/map/VALIDATION.md": {
-    "mtime": 1789545951.599634,
-    "seen": 1789551105.4321795,
+    "mtime": 1789543314.0705516,
+    "seen": 1789543389.7688608,
     "ast_hash": "48bbb2c83b6366dbebd858aa28421d98",
     "semantic_hash": ""
   },
@@ -834,8 +834,8 @@
     "semantic_hash": ""
   },
   "docs/map/first_slice_topdown.png": {
-    "mtime": 1789551091.498865,
-    "seen": 1789551105.4338424,
+    "mtime": 1789543160.443305,
+    "seen": 1789543389.7704282,
     "ast_hash": "e6705302e0b53f599d283336badb59f4",
     "semantic_hash": ""
   },
@@ -933,18 +933,6 @@
     "mtime": 1789540217.329906,
     "seen": 1789543389.7688925,
     "ast_hash": "7ad7e4566036ac903cab7ecd1af26a72",
-    "semantic_hash": ""
-  },
-  "lemonade-game/ServerScriptService/AdminSystem.server.luau": {
-    "mtime": 1789545901.3066256,
-    "seen": 1789551105.4305973,
-    "ast_hash": "0402cf2f3ec74920da475cf2de1df89d",
-    "semantic_hash": ""
-  },
-  "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau": {
-    "mtime": 1789545901.3077765,
-    "seen": 1789551105.4311733,
-    "ast_hash": "c43815ef6b02eb89ce6b546b9be90eca",
     "semantic_hash": ""
   }
 }

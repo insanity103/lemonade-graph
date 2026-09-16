@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 local EnemyOutfits = require(ReplicatedStorage:WaitForChild("EnemyOutfits"))
@@ -628,11 +629,15 @@ local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 	-- Joints (Motor6D)
 	createMotor6D("RootJoint", hrp, hrp, torso, CFrame.new(0, 0, 0), CFrame.new(0, 0, 0))
 	createMotor6D("Neck", torso, torso, head, CFrame.new(0, 1 * s, 0), CFrame.new(0, -0.5 * s, 0))
-	createMotor6D("Left Shoulder", torso, torso, leftArm, CFrame.new(-1 * s, 0.5 * s, 0), CFrame.new(0.5 * s, 0.5 * s, 0))
+	local leftShoulder = createMotor6D("Left Shoulder", torso, torso, leftArm, CFrame.new(-1 * s, 0.5 * s, 0), CFrame.new(0.5 * s, 0.5 * s, 0))
 	local rightShoulder = createMotor6D("Right Shoulder", torso, torso, rightArm, CFrame.new(1 * s, 0.5 * s, 0), CFrame.new(-0.5 * s, 0.5 * s, 0))
-	rightShoulder:SetAttribute("BaseC0", rightShoulder.C0)
-	createMotor6D("Left Hip", torso, torso, leftLeg, CFrame.new(-0.5 * s, -1 * s, 0), CFrame.new(0, 1 * s, 0))
-	createMotor6D("Right Hip", torso, torso, rightLeg, CFrame.new(0.5 * s, -1 * s, 0), CFrame.new(0, 1 * s, 0))
+	local leftHip = createMotor6D("Left Hip", torso, torso, leftLeg, CFrame.new(-0.5 * s, -1 * s, 0), CFrame.new(0, 1 * s, 0))
+	local rightHip = createMotor6D("Right Hip", torso, torso, rightLeg, CFrame.new(0.5 * s, -1 * s, 0), CFrame.new(0, 1 * s, 0))
+	-- Every limb joint remembers its rest pose: the walk-cycle animator (startEnemyAI) reads
+	-- these to swing hips and shoulders from, and swingWeapon reads Right Shoulder's.
+	for _, motor in ipairs({ leftShoulder, rightShoulder, leftHip, rightHip }) do
+		motor:SetAttribute("BaseC0", motor.C0)
+	end
 
 	-- Weapon
 	if arch.weapon then
@@ -880,9 +885,9 @@ local function swingWeapon(model, arch)
 	shoulder:SetAttribute("Swinging", true)
 
 	local raise = TweenService:Create(shoulder, TweenInfo.new(windup - CHOP_TIME, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-		{ C0 = base * CFrame.Angles(math.rad(-120), 0, 0) })
+		{ C0 = base * CFrame.Angles(math.rad(-55), 0, 0) })
 	local chop = TweenService:Create(shoulder, TweenInfo.new(CHOP_TIME, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-		{ C0 = base * CFrame.Angles(math.rad(35), 0, 0) })
+		{ C0 = base * CFrame.Angles(math.rad(100), 0, 0) })
 	local recover = TweenService:Create(shoulder, TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 		{ C0 = base })
 
@@ -899,6 +904,11 @@ local function swingWeapon(model, arch)
 	return windup
 end
 
+-- [TUNING] walk-cycle amplitude (radians) and how fast the pose chases the current gait.
+local WALK_LEG_AMP = math.rad(30)
+local WALK_ARM_AMP = math.rad(22)
+local WALK_EASE_RATE = 8
+
 local function startEnemyAI(model, humanoid, hrp, arch, spawnPos, level, onDeath)
 	local state = {
 		mode = "IDLE",
@@ -909,8 +919,51 @@ local function startEnemyAI(model, humanoid, hrp, arch, spawnPos, level, onDeath
 	}
 	activeEnemies[model] = state
 
+	-- Fluid limb animation: every rig walks with a real gait instead of gliding with static
+	-- limbs. Runs at Heartbeat rate (the AI decision loop above ticks far too coarsely,
+	-- AI_TICK_INTERVAL, for a smooth swing) and reads humanoid.MoveDirection each frame, so it
+	-- tracks pathfinding movement exactly rather than guessing from state.mode.
+	local torso = model:FindFirstChild("Torso")
+	local leftHip = torso and torso:FindFirstChild("Left Hip")
+	local rightHip = torso and torso:FindFirstChild("Right Hip")
+	local leftShoulder = torso and torso:FindFirstChild("Left Shoulder")
+	local rightShoulder = torso and torso:FindFirstChild("Right Shoulder")
+	local walkPhase = 0
+	local walkAmp = 0
+	state.animConn = RunService.Heartbeat:Connect(function(dt)
+		if not model.Parent or humanoid.Health <= 0 then
+			state.animConn:Disconnect()
+			return
+		end
+		local moving = humanoid.MoveDirection.Magnitude > 0.05
+		walkAmp = walkAmp + ((moving and 1 or 0) - walkAmp) * math.min(1, dt * WALK_EASE_RATE)
+		if moving then
+			walkPhase = walkPhase + dt * humanoid.WalkSpeed * 1.6
+		end
+		local swing = math.sin(walkPhase) * walkAmp
+		if leftHip then
+			local base = leftHip:GetAttribute("BaseC0")
+			if base then leftHip.C0 = base * CFrame.Angles(WALK_LEG_AMP * swing, 0, 0) end
+		end
+		if rightHip then
+			local base = rightHip:GetAttribute("BaseC0")
+			if base then rightHip.C0 = base * CFrame.Angles(-WALK_LEG_AMP * swing, 0, 0) end
+		end
+		if leftShoulder then
+			local base = leftShoulder:GetAttribute("BaseC0")
+			if base then leftShoulder.C0 = base * CFrame.Angles(-WALK_ARM_AMP * swing, 0, 0) end
+		end
+		if rightShoulder and not rightShoulder:GetAttribute("Swinging") then
+			local base = rightShoulder:GetAttribute("BaseC0")
+			if base then rightShoulder.C0 = base * CFrame.Angles(WALK_ARM_AMP * swing, 0, 0) end
+		end
+	end)
+
 	humanoid.Died:Connect(function()
 		activeEnemies[model] = nil
+		if state.animConn then
+			state.animConn:Disconnect()
+		end
 		-- Play death sound
 		local root = model.PrimaryPart or model:FindFirstChild("HumanoidRootPart")
 		if root then
