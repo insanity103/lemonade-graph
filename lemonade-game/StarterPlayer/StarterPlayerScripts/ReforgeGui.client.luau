@@ -159,6 +159,38 @@ local revealMods = text(reveal, { Position = UDim2.fromOffset(12, 34), Size = UD
 	TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = COLORS.Text })
 local revealRating = text(reveal, { Position = UDim2.fromOffset(12, 84), Size = UDim2.new(1, -24, 0, 24), Font = Enum.Font.GothamBold, TextSize = 15 })
 
+-- Odds disclosure + pity meter (right of the reel, under the reveal) and a skip toggle.
+local oddsLabel = text(stage, { Position = UDim2.fromOffset(14, 84 + CARD_H + 36 + 122), Size = UDim2.new(1, -28, 0, 48), TextSize = 11,
+	TextColor3 = COLORS.Muted, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top, Text = "" })
+local skipBtn = Instance.new("TextButton")
+skipBtn.AnchorPoint = Vector2.new(1, 1)
+skipBtn.Position = UDim2.new(1, -14, 1, -14)
+skipBtn.Size = UDim2.fromOffset(150, 30)
+skipBtn.BackgroundColor3 = COLORS.Button
+skipBtn.Text = "Animation: on"
+skipBtn.TextColor3 = COLORS.Muted
+skipBtn.Font = Enum.Font.GothamMedium
+skipBtn.TextSize = 12
+skipBtn.Parent = stage
+corner(skipBtn, 8)
+local skipAnimation = false
+skipBtn.Activated:Connect(function()
+	skipAnimation = not skipAnimation
+	skipBtn.Text = skipAnimation and "Animation: skipped" or "Animation: on"
+end)
+local oddsInfo = nil
+local locked = {} -- modifier names chosen to survive the reroll (each one raises the price by its tier)
+
+-- Lock row: one small chip per modifier on the selected sword; tap to keep it.
+local lockRow = Instance.new("Frame")
+lockRow.Position = UDim2.fromOffset(14, 84 + CARD_H + 36 + 122 + 50)
+lockRow.Size = UDim2.new(1, -28, 0, 26)
+lockRow.BackgroundTransparency = 1
+lockRow.Parent = stage
+do local l = Instance.new("UIListLayout"); l.FillDirection = Enum.FillDirection.Horizontal; l.Padding = UDim.new(0, 6); l.Parent = lockRow end
+local statsLabel = text(modal, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -60, 0, 42), Size = UDim2.fromOffset(300, 20),
+	TextXAlignment = Enum.TextXAlignment.Right, TextSize = 12, TextColor3 = COLORS.Muted, Text = "" })
+
 local strikeBtn = Instance.new("TextButton")
 strikeBtn.AnchorPoint = Vector2.new(0.5, 1)
 strikeBtn.Position = UDim2.new(0.5, 0, 1, -14)
@@ -196,14 +228,41 @@ local selected = nil
 local spinning = false
 local gold = 0
 
+local function lockList()
+	local names = {}
+	for _, mod in ipairs(SwordValue.modifiersFromPrefixes(selected and selected.prefixes or "")) do
+		if locked[mod.name] then table.insert(names, mod.name) end
+	end
+	return names
+end
+
+local function currentCost()
+	if not selected then return 0 end
+	local names = lockList()
+	if #names > 0 then
+		return SwordValue.rerollCostWithLocks({ Rarity = selected.rarity, Prefixes = selected.prefixes, ExtraSlot = selected.blessed,
+			BossTier = selected.tier }, names)
+	end
+	if oddsInfo and (oddsInfo.freeIn or 1) <= 0 then return 0 end
+	return selected.cost
+end
+
 local function setStrike()
 	if spinning then
 		strikeBtn.Text = "Reforging..."
 		strikeBtn.BackgroundColor3 = COLORS.Button
 		strikeBtn.TextColor3 = COLORS.Muted
 	elseif selected then
-		local afford = gold >= selected.cost
-		strikeBtn.Text = string.format("Strike the anvil  ·  %d gold", selected.cost)
+		local cost = currentCost()
+		local afford = gold >= cost
+		local names = lockList()
+		if cost == 0 then
+			strikeBtn.Text = "Strike the anvil  ·  FREE"
+		elseif #names > 0 then
+			strikeBtn.Text = string.format("Strike, keeping %d  ·  %d gold", #names, cost)
+		else
+			strikeBtn.Text = string.format("Strike the anvil  ·  %d gold", cost)
+		end
 		strikeBtn.BackgroundColor3 = afford and COLORS.Ember or COLORS.Button
 		strikeBtn.TextColor3 = afford and Color3.fromRGB(20, 12, 8) or COLORS.Muted
 	else
@@ -223,8 +282,55 @@ local function describeMods(prefixes: string, blessed: boolean)
 	return #parts > 0 and table.concat(parts, "  ·  ") or "No modifiers"
 end
 
+local function describeOdds(rarity)
+	if not oddsInfo or not oddsInfo.odds or not oddsInfo.odds[rarity] then return "" end
+	local o = oddsInfo.odds[rarity]
+	local parts = {}
+	for tier = 1, #o.tiers do
+		table.insert(parts, string.format("T%d %.1f%%", tier, o.tiers[tier] * 100))
+	end
+	local pity = oddsInfo.pity or 0
+	local pityText = pity >= (oddsInfo.pityAfter or 5)
+		and string.format("Pity ready: next reforge guarantees a T%d+ modifier.", oddsInfo.pityTier or 4)
+		or string.format("Pity %d / %d (then a T%d+ modifier is guaranteed).", pity, oddsInfo.pityAfter or 5, oddsInfo.pityTier or 4)
+	return string.format("%s odds per modifier: %s.  Slots: %d (+1 at %.0f%%, Blessed +1 at %.0f%%).  %s", rarity,
+		table.concat(parts, "  "), o.slots, (o.bonusSlotChance or 0) * 100, (oddsInfo.blessedChance or 0) * 100, pityText)
+end
+
+local function rebuildLockRow()
+	for _, c in ipairs(lockRow:GetChildren()) do
+		if c:IsA("TextButton") or c:IsA("TextLabel") then c:Destroy() end
+	end
+	if not selected then return end
+	local mods = SwordValue.modifiersFromPrefixes(selected.prefixes)
+	if #mods == 0 then return end
+	text(lockRow, { Size = UDim2.fromOffset(52, 26), TextSize = 11, TextColor3 = COLORS.Muted, Text = "Lock:" })
+	local factors = (oddsInfo and oddsInfo.lockTierFactor) or SwordValue.LOCK_TIER_FACTOR
+	for _, mod in ipairs(mods) do
+		local on = locked[mod.name] == true
+		local chip = Instance.new("TextButton")
+		chip.Size = UDim2.fromOffset(math.max(84, #mod.name * 8 + 34), 26)
+		chip.BackgroundColor3 = on and COLORS.Ember or COLORS.Button
+		chip.Text = string.format("%s T%d  +%d%%", mod.name, mod.tier, math.floor((factors[mod.tier] or 0) * 100 + 0.5))
+		chip.TextColor3 = on and Color3.fromRGB(20, 12, 8) or TIER_COLORS[mod.tier]
+		chip.Font = Enum.Font.GothamBold
+		chip.TextSize = 11
+		chip.Parent = lockRow
+		corner(chip, 6)
+		chip.Activated:Connect(function()
+			if spinning then return end
+			locked[mod.name] = (not on) or nil
+			rebuildLockRow()
+			setStrike()
+		end)
+	end
+end
+
 local function selectRow(info)
+	if not selected or selected.toolName ~= info.toolName then locked = {} end
 	selected = info
+	oddsLabel.Text = describeOdds(info.rarity)
+	rebuildLockRow()
 	selectedTitle.Text = info.name
 	selectedTitle.TextColor3 = RARITY_COLORS[info.rarity] or COLORS.Text
 	selectedInfo.Text = string.format("%s  ·  rating %s  ·  %s", info.rarity, SwordValue.short(info.rating), describeMods(info.prefixes, info.blessed))
@@ -237,9 +343,15 @@ local function selectRow(info)
 	setStrike()
 end
 
-local function render(stateRows, goldValue, highlight)
+local function render(stateRows, goldValue, highlight, disclosure)
 	rows = stateRows
 	gold = goldValue
+	if disclosure then
+		oddsInfo = disclosure
+		local freeIn = disclosure.freeIn or 0
+		local freeText = freeIn <= 0 and "Free reforge ready" or string.format("Free reforge in %dh %02dm", math.floor(freeIn / 3600), math.floor(freeIn % 3600 / 60))
+		statsLabel.Text = string.format("%s  ·  best roll %s  ·  %d reforges", freeText, SwordValue.short(disclosure.best or 0), disclosure.count or 0)
+	end
 	goldLabel.Text = "Gold " .. tostring(gold)
 	for _, r in ipairs(list:GetChildren()) do
 		if r:IsA("Frame") then r:Destroy() end
@@ -332,7 +444,7 @@ local function spin(result)
 	local windowW = reelWindow.AbsoluteSize.X
 	local landX = (LAND_INDEX - 1) * (CARD_W + CARD_GAP) + CARD_W / 2 + math.random(-40, 40)
 	strip.Position = UDim2.fromOffset(windowW / 2 - CARD_W / 2, 12)
-	local tween = TweenService:Create(strip, TweenInfo.new(SPIN_TIME, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+	local tween = TweenService:Create(strip, TweenInfo.new(skipAnimation and 0.35 or SPIN_TIME, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
 		{ Position = UDim2.fromOffset(windowW / 2 - landX, 12) })
 	local lastIndex = 0
 	local conn
@@ -354,10 +466,14 @@ local function spin(result)
 	local parts = {}
 	if result.blessed then table.insert(parts, "Blessed slot") end
 	for _, m in ipairs(result.mods) do table.insert(parts, string.format("%s (T%d %s)", m.name, m.tier, m.desc or m.category)) end
-	revealMods.Text = #parts > 0 and table.concat(parts, "  ·  ") or "No modifiers this time."
+	revealMods.Text = (#parts > 0 and table.concat(parts, "  ·  ") or "No modifiers this time.")
+		.. (result.pityApplied and "   (pity floor applied)" or "") .. (result.kept and ("   (kept " .. result.kept .. ")") or "")
+	if result.personalBest then
+		revealName.Text = revealName.Text .. "   NEW PERSONAL BEST"
+	end
 	local delta = result.after - result.before
-	revealRating.Text = string.format("Rating %s  ->  %s   (%s%d)   -%d gold", SwordValue.short(result.before), SwordValue.short(result.after),
-		delta >= 0 and "+" or "", delta, result.cost)
+	revealRating.Text = string.format("Rating %s  ->  %s   (%s%d)   %s", SwordValue.short(result.before), SwordValue.short(result.after),
+		delta >= 0 and "+" or "", delta, result.free and "free" or ("-" .. result.cost .. " gold"))
 	revealRating.TextColor3 = delta > 0 and COLORS.Success or (delta < 0 and COLORS.Error or COLORS.Muted)
 	reveal.BackgroundColor3 = delta > 0 and Color3.fromRGB(18, 40, 26) or (delta < 0 and Color3.fromRGB(44, 18, 18) or COLORS.Dark)
 	TweenService:Create(reveal, TweenInfo.new(1.2), { BackgroundColor3 = COLORS.Dark }):Play()
@@ -367,8 +483,9 @@ end
 
 strikeBtn.Activated:Connect(function()
 	if spinning or not selected then return end
-	if gold < selected.cost then return end
-	REFORGE:FireServer("Reroll", selected.toolName)
+	if gold < currentCost() then return end
+	REFORGE:FireServer("Reroll", selected.toolName, lockList())
+	locked = {}
 end)
 
 local function close()
@@ -383,7 +500,7 @@ UserInputService.InputBegan:Connect(function(input, processed)
 end)
 
 local pendingState = nil
-REFORGE.OnClientEvent:Connect(function(kind, a, b, c)
+REFORGE.OnClientEvent:Connect(function(kind, a, b, c, d)
 	if kind == "Open" then
 		overlay.Visible = true
 		reveal.Visible = false
@@ -393,13 +510,13 @@ REFORGE.OnClientEvent:Connect(function(kind, a, b, c)
 		pendingState = nil
 		task.spawn(function()
 			spin(a)
-			if pendingState then render(pendingState[1], pendingState[2], pendingState[3]) pendingState = nil end
+			if pendingState then render(pendingState[1], pendingState[2], pendingState[3], pendingState[4]) pendingState = nil end
 		end)
 	elseif kind == "State" then
 		if spinning then
-			pendingState = { a, b, c } -- apply after the reel lands so the list does not jump mid-spin
+			pendingState = { a, b, c, d } -- apply after the reel lands so the list does not jump mid-spin
 		else
-			render(a, b, c)
+			render(a, b, c, d)
 		end
 	end
 end)

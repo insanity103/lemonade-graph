@@ -6,6 +6,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
+local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
 local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
 
@@ -15,6 +16,15 @@ local NOTIFY = remotes:WaitForChild("Notify")
 
 local REQUEST_INTERVAL = 0.3
 local SAVE_COOLDOWN = 8
+-- Pity: after this many reforges in a row that did not raise the rating, the next one guarantees
+-- a top modifier at least this tier. Counter persists in the profile (reforgePity).
+local PITY_AFTER = 5 -- [TUNING]
+local PITY_MIN_TOP_TIER = 4 -- [TUNING]
+-- Broadcast a server-wide toast when a reforge lands the top tier.
+local BROADCAST_TIER = 6
+-- One free reforge every three hours keeps players coming back to the anvil.
+local FREE_INTERVAL = 3 * 60 * 60 -- [TUNING] seconds
+-- Locking modifiers: price grows per lock by the locked tier (SwordValue.LOCK_TIER_FACTOR).
 
 local lastRequestAt = {}
 local lastSaveAt = {}
@@ -26,6 +36,7 @@ local function describe(tool, equipped)
 		rarity = tool:GetAttribute("Rarity") or "Common",
 		prefixes = tool:GetAttribute("Prefixes") or "",
 		blessed = tool:GetAttribute("ExtraSlot") == true,
+		tier = tool:GetAttribute("BossTier") or 1,
 		rating = SwordValue.rateTool(tool),
 		cost = SwordValue.rerollCostForTool(tool),
 		equipped = equipped == true,
@@ -51,7 +62,20 @@ local function sendState(player, highlight)
 	end
 	table.sort(rows, function(a, b) return a.rating > b.rating end)
 	local gold = goldOf(player)
-	REFORGE:FireClient(player, "State", rows, gold and gold.Value or 0, highlight)
+	-- Odds disclosure: exact per-tier chances by rarity, so the player sees them before paying.
+	local odds = {}
+	for rarity in pairs(WeaponModifiers.RarityConfig) do
+		odds[rarity] = { tiers = WeaponModifiers.TierOdds(rarity, 0), slots = WeaponModifiers.RarityConfig[rarity].baseSlots,
+			bonusSlotChance = WeaponModifiers.RarityConfig[rarity].bonusSlotChance or 0 }
+	end
+	local pity = PlayerDataService.GetField(player, "reforgePity") or 0
+	local freeAt = PlayerDataService.GetField(player, "reforgeFreeAt") or 0
+	REFORGE:FireClient(player, "State", rows, gold and gold.Value or 0, highlight, {
+		odds = odds, pity = pity, pityAfter = PITY_AFTER, pityTier = PITY_MIN_TOP_TIER,
+		blessedChance = WeaponModifiers.EXTRA_SLOT_CHANCE, lockTierFactor = SwordValue.LOCK_TIER_FACTOR,
+		freeIn = math.max(0, freeAt - os.time()), best = PlayerDataService.GetField(player, "reforgeBest") or 0,
+		count = PlayerDataService.GetField(player, "reforgeCount") or 0,
+	})
 end
 
 local function findRelic(player, toolName)
@@ -66,13 +90,27 @@ local function findRelic(player, toolName)
 	return nil
 end
 
-local function reroll(player, toolName)
+local function reroll(player, toolName, keepNames)
 	local tool = findRelic(player, toolName)
 	if not tool then
 		NOTIFY:FireClient(player, "That sword is not on you.", "error")
 		return
 	end
-	local cost = SwordValue.rerollCostForTool(tool)
+	-- Only modifiers actually on the sword can be locked; ignore anything else the client sent.
+	local onSword = {}
+	for _, mod in ipairs(SwordValue.modifiersFromPrefixes(tool:GetAttribute("Prefixes"))) do
+		onSword[mod.name] = true
+	end
+	local locks = {}
+	for _, name in ipairs(keepNames or {}) do
+		if typeof(name) == "string" and onSword[name] and not table.find(locks, name) then table.insert(locks, name) end
+	end
+	local attrs = { Rarity = tool:GetAttribute("Rarity"), Prefixes = tool:GetAttribute("Prefixes"),
+		ExtraSlot = tool:GetAttribute("ExtraSlot"), BossTier = tool:GetAttribute("BossTier") }
+	local cost = SwordValue.rerollCostWithLocks(attrs, locks)
+	local freeAt = PlayerDataService.GetField(player, "reforgeFreeAt") or 0
+	local useFree = #locks == 0 and os.time() >= freeAt
+	if useFree then cost = 0 end
 	local gold = goldOf(player)
 	if not gold or gold.Value < cost then
 		NOTIFY:FireClient(player, string.format("Reforging %s costs %d gold.", tool.Name, cost), "error")
@@ -80,13 +118,26 @@ local function reroll(player, toolName)
 	end
 	local before = SwordValue.rateTool(tool)
 	local oldName = tool.Name
-	local mods, newName = BossSwordFactory.reroll(tool, player:GetAttribute("RebirthBlessedBonus") or 0)
+	local pity = PlayerDataService.GetField(player, "reforgePity") or 0
+	local floor = if pity >= PITY_AFTER then PITY_MIN_TOP_TIER else nil
+	local mods, newName, _, pityApplied = BossSwordFactory.reroll(tool, player:GetAttribute("RebirthBlessedBonus") or 0, floor, locks)
 	if not mods then
 		NOTIFY:FireClient(player, "That sword cannot be reforged.", "error")
 		return
 	end
 	gold.Value -= cost
+	if useFree then PlayerDataService.SetField(player, "reforgeFreeAt", os.time() + FREE_INTERVAL) end
 	local after = SwordValue.rateTool(tool)
+	PlayerDataService.SetField(player, "reforgePity", if after > before then 0 else pity + 1)
+	PlayerDataService.SetField(player, "reforgeCount", (PlayerDataService.GetField(player, "reforgeCount") or 0) + 1)
+	local best = PlayerDataService.GetField(player, "reforgeBest") or 0
+	local personalBest = after > best
+	if personalBest then PlayerDataService.SetField(player, "reforgeBest", after) end
+	local topTier = 0
+	for _, mod in ipairs(mods) do topTier = math.max(topTier, mod.tier) end
+	if topTier >= BROADCAST_TIER then
+		NOTIFY:FireAllClients(string.format("%s reforged a %s!", player.DisplayName, newName), "success")
+	end
 	local rolled = {}
 	for _, mod in ipairs(mods) do
 		table.insert(rolled, { name = mod.name, category = mod.category, tier = mod.tier, desc = mod.desc })
@@ -95,7 +146,8 @@ local function reroll(player, toolName)
 	REFORGE:FireClient(player, "Result", {
 		toolName = newName, oldName = oldName, rarity = tool:GetAttribute("Rarity") or "Common",
 		mods = rolled, blessed = tool:GetAttribute("ExtraSlot") == true,
-		before = before, after = after, cost = cost,
+		before = before, after = after, cost = cost, pityApplied = pityApplied == true,
+		free = useFree, kept = #locks > 0 and table.concat(locks, ", ") or nil, personalBest = personalBest,
 	})
 	print(string.format("[ReforgeSystem] %s reforged %s -> %s for %d gold", player.Name, oldName, newName, cost))
 	PlayerDataService.MarkDirty(player)
@@ -107,7 +159,7 @@ local function reroll(player, toolName)
 	sendState(player, newName)
 end
 
-REFORGE.OnServerEvent:Connect(function(player, action, arg)
+REFORGE.OnServerEvent:Connect(function(player, action, arg, keep)
 	local now = os.clock()
 	if now - (lastRequestAt[player] or -math.huge) < REQUEST_INTERVAL then return end
 	lastRequestAt[player] = now
@@ -116,7 +168,7 @@ REFORGE.OnServerEvent:Connect(function(player, action, arg)
 		sendState(player)
 		REFORGE:FireClient(player, "Open")
 	elseif action == "Reroll" and typeof(arg) == "string" then
-		reroll(player, arg)
+		reroll(player, arg, if typeof(keep) == "table" then keep else nil)
 	end
 end)
 

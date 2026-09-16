@@ -144,15 +144,54 @@ end
 
 -- Re-roll an existing boss sword's modifiers in place (the Reforge anvil). Rarity, base
 -- damage and look stay; a Blessed sword keeps its extra slot. Returns the new mods and name.
-function BossSwordFactory.reroll(tool, blessedBonus)
+-- minTopTier (optional): the pity floor — if no rolled modifier reaches it, the best one is
+-- raised to it, so a run of bad luck cannot leave the sword worse at the top end.
+-- keepNames (optional): modifier names currently on the sword to lock; each survives the reroll
+-- in place of one rolled slot (a locked category is never rolled twice). The slot count is
+-- whatever the rarity rolled, so locks never add slots.
+function BossSwordFactory.reroll(tool, blessedBonus, minTopTier, keepNames)
 	local tier = tonumber(tool:GetAttribute("BossTier")) or 1
 	local archetypeKey = BossWeapons.ArchetypeByTier[tier]
 	local weaponData = archetypeKey and BossWeapons.Get(archetypeKey)
 	if not weaponData then return nil end
 	local mods, gotExtraSlot = WeaponModifiers.RollModifiers(weaponData.rarity, blessedBonus or 0,
 		tool:GetAttribute("ExtraSlot") == true)
+	if keepNames and #keepNames > 0 then
+		local rolledCount = #mods
+		local kept, keptCategories = {}, {}
+		for _, keepName in ipairs(keepNames) do
+			for category, data in pairs(WeaponModifiers.Categories) do
+				for tierIndex, entry in ipairs(data.Tiers) do
+					if entry.name == keepName and not keptCategories[category] then
+						keptCategories[category] = true
+						table.insert(kept, { category = category, name = entry.name, bonus = entry.bonus, desc = entry.desc, tier = tierIndex })
+					end
+				end
+			end
+		end
+		for i = #mods, 1, -1 do -- drop fresh rolls in locked categories
+			if keptCategories[mods[i].category] then table.remove(mods, i) end
+		end
+		while #mods > math.max(rolledCount, #kept) - #kept do table.remove(mods) end
+		for i = #kept, 1, -1 do table.insert(mods, 1, kept[i]) end
+	end
+	local pityApplied = false
+	if minTopTier and #mods > 0 then
+		local best, bestIndex = 0, 1
+		for i, mod in ipairs(mods) do
+			if mod.tier > best then best, bestIndex = mod.tier, i end
+		end
+		if best < minTopTier then
+			local category = WeaponModifiers.Categories[mods[bestIndex].category]
+			local target = math.min(minTopTier, #category.Tiers)
+			local tierData = category.Tiers[target]
+			mods[bestIndex] = { category = mods[bestIndex].category, name = tierData.name, bonus = tierData.bonus,
+				desc = tierData.desc, tier = target }
+			pityApplied = true
+		end
+	end
 	local fullName = BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExtraSlot)
-	return mods, fullName, gotExtraSlot
+	return mods, fullName, gotExtraSlot, pityApplied
 end
 
 -- Rebuild a previously-saved boss sword from its serialized attribute set (see
