@@ -36,4 +36,16 @@ return {
 		Color3.fromRGB(255, 120, 50),   -- Hit 4: orange
 		Color3.fromRGB(255, 50, 50),    -- Hit 5: red
 	},
+
+	-- Hit-streak banner (HitStreakGui): counts consecutive landed hits for on-screen
+	-- feedback, separate from the 5-hit endlag/damage-mult cycle above. Shares the same
+	-- reset window as the swing combo so the banner drops exactly when the combo would.
+	STREAK_MIN_DISPLAY = 3, -- hits before the banner appears at all
+	STREAK_TIERS = {
+		{ min = 3,  label = "",         color = Color3.fromRGB(255, 255, 255) },
+		{ min = 10, label = "GREAT",    color = Color3.fromRGB(255, 210, 90) },
+		{ min = 20, label = "SAVAGE",   color = Color3.fromRGB(255, 140, 60) },
+		{ min = 35, label = "BRUTAL",   color = Color3.fromRGB(255, 80, 60) },
+		{ min = 50, label = "GODLIKE",  color = Color3.fromRGB(210, 90, 255) },
+	},
 }

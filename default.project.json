@@ -101,6 +101,9 @@
         "GoldNumbers": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/GoldNumbers.client.luau"
         },
+        "HitStreakGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/HitStreakGui.client.luau"
+        },
         "LevelProgressGui": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/LevelProgressGui.client.luau"
         },

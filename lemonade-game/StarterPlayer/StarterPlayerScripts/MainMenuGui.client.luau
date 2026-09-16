@@ -12,11 +12,11 @@ local spendEvent = remotes:WaitForChild("SpendSkillPoint")
 local inventoryAction = remotes:WaitForChild("InventoryAction")
 local toggleAutoSellRemote = remotes:WaitForChild("ToggleAutoSell")
 local rebirthResultRemote = remotes:WaitForChild("RebirthResult")
+local reforgeRemote = remotes:WaitForChild("ReforgeAction")
 
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 
 local ICONS = {
-	Home = "rbxassetid://95064026158349",
 	Inventory = "rbxassetid://118915534669949",
 	Skills = "rbxassetid://134595823778256",
 	Settings = "rbxassetid://119570973950437",
@@ -63,7 +63,7 @@ local SKILL_ATTRIBUTES = {
 }
 
 local NAV_ITEMS = {
-	{ id = "Home", icon = ICONS.Home },
+	{ id = "Reforge", text = "🎰" },
 	{ id = "Inventory", icon = ICONS.Inventory },
 	{ id = "Skills", icon = ICONS.Skills },
 	{ id = "Rebirth", icon = "rbxassetid://80234316052758" },
@@ -144,6 +144,16 @@ local function createIconButton(parent, props)
 	pad.PaddingLeft = UDim.new(0, 10)
 	pad.PaddingRight = UDim.new(0, 10)
 	pad.Parent = button
+	if props.text then
+		local label = Instance.new("TextLabel")
+		label.BackgroundTransparency = 1
+		label.Size = UDim2.fromScale(1, 1)
+		label.Text = props.text
+		label.TextScaled = true
+		label.Font = Enum.Font.SourceSansBold
+		label.ZIndex = button.ZIndex + 1
+		label.Parent = button
+	end
 	return button
 end
 
@@ -272,61 +282,12 @@ bodyLayout.Parent = body
 
 local activeTab = nil
 local panelOpen = false
-local homeStatLabels = {}
 local skillButtons = {}
 
 local function clearBody()
 	for _, child in ipairs(body:GetChildren()) do
 		if not child:IsA("UIListLayout") and not child:IsA("UIPadding") then child:Destroy() end
 	end
-end
-
-local function createStatRow(label, value, order)
-	local row = Instance.new("Frame")
-	row.Size = UDim2.new(1, 0, 0, 44)
-	row.BackgroundColor3 = COLORS.PanelLight
-	row.BackgroundTransparency = 0.15
-	row.BorderSizePixel = 0
-	row.LayoutOrder = order
-	row.ZIndex = 23
-	row.Parent = body
-	addCorner(row, 10)
-	addStroke(row, COLORS.Stroke, 0.4, 1)
-	addPadding(row, 0, 12, 0, 12)
-	createText(row, { text = label, font = Enum.Font.Gotham, size = 15, color = COLORS.Muted, size2 = UDim2.new(0.55, 0, 1, 0), zIndex = 24 })
-	return createText(row, { text = value, font = Enum.Font.GothamBold, size = 16, color = COLORS.Text, xAlign = Enum.TextXAlignment.Right, size2 = UDim2.new(0.45, 0, 1, 0), pos = UDim2.fromScale(0.55, 0), zIndex = 24 })
-end
-
-local function buildHomePanel()
-	clearBody()
-	headerTitle.Text = "SMASH SIMULATOR"
-	local hero = Instance.new("Frame")
-	hero.Size = UDim2.new(1, 0, 0, 96)
-	hero.BackgroundColor3 = COLORS.PanelLight
-	hero.BackgroundTransparency = 0.1
-	hero.BorderSizePixel = 0
-	hero.LayoutOrder = 1
-	hero.ZIndex = 23
-	hero.Parent = body
-	addCorner(hero, 14)
-	addStroke(hero, COLORS.StrokeBright, 0.3, 1)
-
-	createText(hero, { text = "SMASH", font = Enum.Font.GothamBlack, size = 32, color = COLORS.Text, pos = UDim2.fromOffset(16, 12), size2 = UDim2.new(1, -32, 0, 36), zIndex = 24 })
-	createText(hero, { text = "Break enemies. Level up. Get stronger.", font = Enum.Font.Gotham, size = 14, color = COLORS.Muted, pos = UDim2.fromOffset(16, 50), size2 = UDim2.new(1, -32, 0, 36), wrap = true, zIndex = 24 })
-
-	local statsHeader = createText(body, { text = "Your Stats", font = Enum.Font.GothamBold, size = 16, color = COLORS.Text, size2 = UDim2.new(1, 0, 0, 24), zIndex = 23 })
-	statsHeader.LayoutOrder = 2
-	local rows = {
-		{ "Level", "1" },
-		{ "Gold", tostring(player:GetAttribute("Gold") or 0) },
-		{ "Strength", tostring(player:GetAttribute("Strength") or 0) },
-		{ "Skill Points", tostring(player:GetAttribute("SkillPoints") or 0) },
-	}
-	local statLabels = {}
-	for i, row in ipairs(rows) do statLabels[row[1]] = createStatRow(row[1], row[2], 2 + i) end
-	local tip = createText(body, { text = "Start with Iron Lowlands: defeat a few enemies, spend Skill Points, then follow the level gates. Q auto-attacks; P optionally auto-spends skills.", font = Enum.Font.Gotham, size = 13, color = COLORS.Muted, wrap = true, size2 = UDim2.new(1, 0, 0, 48), zIndex = 23 })
-	tip.LayoutOrder = 20
-	return statLabels
 end
 
 -- Helper to find all held & backpack tools
@@ -1181,23 +1142,6 @@ local function refreshSkills()
 	end
 end
 
-local function refreshHomeStats()
-	if activeTab ~= 'Home' then return end
-	for label, textLabel in pairs(homeStatLabels) do
-		if label == 'Level' then
-			local leaderstats = player:FindFirstChild('leaderstats')
-			local lv = leaderstats and leaderstats:FindFirstChild('Level')
-			textLabel.Text = tostring(lv and lv.Value or 1)
-		elseif label == 'Gold' then
-			textLabel.Text = tostring(player:GetAttribute('Gold') or 0)
-		elseif label == 'Strength' then
-			textLabel.Text = tostring(player:GetAttribute('Strength') or 0)
-		elseif label == 'Skill Points' then
-			textLabel.Text = tostring(player:GetAttribute('SkillPoints') or 0)
-		end
-	end
-end
-
 local function openTab(tabId)
 	activeTab = tabId
 	for id, btn in pairs(navButtons) do
@@ -1205,8 +1149,7 @@ local function openTab(tabId)
 		btn.BackgroundColor3 = selected and COLORS.ButtonHover or COLORS.PanelLight
 		btn.BackgroundTransparency = selected and 0.05 or 0.15
 	end
-	if tabId == 'Home' then homeStatLabels = buildHomePanel()
-	elseif tabId == 'Inventory' then buildInventoryPanel()
+	if tabId == 'Inventory' then buildInventoryPanel()
 	elseif tabId == 'Skills' then buildSkillsPanel(); refreshSkills()
 	elseif tabId == 'Rebirth' then buildRebirthPanel()
 	elseif tabId == 'Trade' then buildTradePanel(); tradeRemote:FireServer("Refresh")
@@ -1220,7 +1163,7 @@ local function setMenuOpen(open)
 	overlay.Visible = open
 	contentPanel.Visible = open
 	TweenService:Create(overlay, TweenInfo.new(0.2), { BackgroundTransparency = open and 0.5 or 1 }):Play()
-	if open and not activeTab then openTab('Home') end
+	if open and not activeTab then openTab('Inventory') end
 	if open and activeTab == 'Inventory' then buildInventoryPanel() end
 end
 
@@ -1264,7 +1207,7 @@ task.spawn(function()
 end)
 
 for i, item in ipairs(NAV_ITEMS) do
-	local btn = createIconButton(navRail, { name = item.id, image = item.icon, size = UDim2.fromOffset(52, 52), bg = COLORS.PanelLight })
+	local btn = createIconButton(navRail, { name = item.id, image = item.icon, text = item.text, size = UDim2.fromOffset(52, 52), bg = COLORS.PanelLight })
 	btn.LayoutOrder = i
 	btn.MouseEnter:Connect(function()
 		if activeTab ~= item.id then
@@ -1277,6 +1220,11 @@ for i, item in ipairs(NAV_ITEMS) do
 		end
 	end)
 	btn.Activated:Connect(function()
+		if item.id == "Reforge" then
+			setMenuOpen(false)
+			reforgeRemote:FireServer("Open")
+			return
+		end
 		if panelOpen and activeTab == item.id then setMenuOpen(false)
 		else setMenuOpen(true); openTab(item.id) end
 	end)
@@ -1294,7 +1242,7 @@ end)
 local attrsToWatch = { 'Gold', 'SkillPoints', 'Strength', 'Health', 'Defense', 'ExperienceGain', 'AutoSellLowerSwords', 'Rebirths', 'RebirthRequirement', 'ShowDamageNumbers', 'MusicVolume' }
 for _, attr in ipairs(attrsToWatch) do
 	player:GetAttributeChangedSignal(attr):Connect(function()
-		refreshTopBar(); refreshSkills(); refreshHomeStats()
+		refreshTopBar(); refreshSkills()
 		if attr == 'AutoSellLowerSwords' and activeTab == 'Inventory' and panelOpen then
 			buildInventoryPanel()
 		elseif (attr == 'Rebirths' or attr == 'RebirthRequirement') and activeTab == 'Rebirth' and panelOpen then
@@ -1336,7 +1284,7 @@ bindInventoryRefresh()
 local leaderstats = player:WaitForChild('leaderstats', 10)
 if leaderstats then
 	local levelVal = leaderstats:WaitForChild('Level', 5)
-	if levelVal then levelVal.Changed:Connect(function() refreshTopBar(); refreshHomeStats() end) end
+	if levelVal then levelVal.Changed:Connect(function() refreshTopBar() end) end
 end
 
 refreshTopBar()

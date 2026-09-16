@@ -204,9 +204,9 @@ button(panel, { text = "Give All Swords", pos = UDim2.fromOffset(14, y + 4), siz
 -- Toggle with a keybind too (Studio playtest often has no HUD room to spare).
 UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
-	if input.KeyCode == Enum.KeyCode.F4 then
+	if input.KeyCode == Enum.KeyCode.P then
 		panel.Visible = not panel.Visible
 	end
 end)
 
-print("[AdminGui] Owner admin menu ready (bottom-left, or F4)")
+print("[AdminGui] Owner admin menu ready (bottom-left, or P)")
