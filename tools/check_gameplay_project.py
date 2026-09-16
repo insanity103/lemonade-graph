@@ -15,7 +15,7 @@ services = {name(item): item for item in root.findall("Item")}
 assert not {"Workspace", "Lighting", "ServerStorage"} & services.keys(), services.keys()
 server = {name(item): item for item in services["ServerScriptService"].findall("Item")}
 required = {
-    "RuntimeBootstrap", "WorldLayout", "SafeHub", "GameplayActors", "GameplayServices",
+    "AdminSystem", "RuntimeBootstrap", "WorldLayout", "SafeHub", "GameplayActors", "GameplayServices",
     "EnemyCombat", "SwordSystem", "SwordDropSystem", "BossSwordFactory", "CombatUtil",
     "InventoryService", "InventorySystem", "LevelingSystem", "MerchantSystem", "QuestSystem",
     "RebirthSystem", "PlayerDataService", "PlayerDataStore", "VaultSystem", "TradeSystem", "ReforgeSystem",
@@ -38,7 +38,7 @@ client_scripts = {name(item) for item in services["StarterPlayer"].iter("Item") 
 assert "BossDoorClient" not in client_scripts
 assert {"CombatController", "QuestGui", "MerchantGui", "MainMenuGui", "RunController", "ComboVFX", "Notifications"} <= client_scripts
 assert "OnboardingGui" not in client_scripts
-assert len(client_scripts) == 15, client_scripts
+assert len(client_scripts) == 16, client_scripts
 assert "WorldLayout.BLANK_SLATE = true" not in sources["WorldLayout"]
 assert "BLANK_SLATE = false" in sources["WorldLayout"]
 assert "MapAnchors" not in sources["WorldLayout"]

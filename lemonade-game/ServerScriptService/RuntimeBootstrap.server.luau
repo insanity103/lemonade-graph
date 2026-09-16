@@ -5,6 +5,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterPack = game:GetService("StarterPack")
 
 local REMOTE_NAMES = {
+	"AdminAction", -- dev/bug-testing mod menu; see AdminSystem.server.luau + AdminGui.client.luau
 	"AutoSellNotice",
 	"BossDoorNotice",
 	"ComboUpdate",
