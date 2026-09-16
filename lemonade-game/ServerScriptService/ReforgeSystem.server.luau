@@ -22,8 +22,8 @@ local PITY_AFTER = 5 -- [TUNING]
 local PITY_MIN_TOP_TIER = 4 -- [TUNING]
 -- Broadcast a server-wide toast when a reforge lands the top tier.
 local BROADCAST_TIER = 6
--- One free reforge per day keeps players coming back to the anvil.
-local FREE_INTERVAL = 24 * 60 * 60 -- [TUNING] seconds
+-- One free reforge every three hours keeps players coming back to the anvil.
+local FREE_INTERVAL = 3 * 60 * 60 -- [TUNING] seconds
 -- Locking modifiers: price grows per lock by the locked tier (SwordValue.LOCK_TIER_FACTOR).
 
 local lastRequestAt = {}

@@ -257,7 +257,7 @@ local function setStrike()
 		local afford = gold >= cost
 		local names = lockList()
 		if cost == 0 then
-			strikeBtn.Text = "Strike the anvil  ·  FREE today"
+			strikeBtn.Text = "Strike the anvil  ·  FREE"
 		elseif #names > 0 then
 			strikeBtn.Text = string.format("Strike, keeping %d  ·  %d gold", #names, cost)
 		else
