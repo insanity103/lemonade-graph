@@ -172,6 +172,24 @@ strikeBtn.AutoButtonColor = false
 strikeBtn.Parent = stage
 corner(strikeBtn, 10)
 
+-- On-screen opener: bottom-left, above the level panel, beside the other left-edge HUD.
+local openBtn = Instance.new("TextButton")
+openBtn.Name = "OpenReforge"
+openBtn.AnchorPoint = Vector2.new(0, 1)
+openBtn.Position = UDim2.new(0, 12, 1, -100)
+openBtn.Size = UDim2.fromOffset(158, 38)
+openBtn.BackgroundColor3 = Color3.fromRGB(58, 40, 30)
+openBtn.Text = "Reforge  (reroll)"
+openBtn.TextColor3 = COLORS.Gold
+openBtn.Font = Enum.Font.GothamBold
+openBtn.TextSize = 15
+openBtn.Parent = screenGui
+corner(openBtn, 8)
+do local s = Instance.new("UIStroke"); s.Color = COLORS.Ember; s.Transparency = 0.3; s.Parent = openBtn end
+openBtn.Activated:Connect(function()
+	REFORGE:FireServer("Open")
+end)
+
 -- ── State ────────────────────────────────────────────────────────────────────
 local rows = {}
 local selected = nil

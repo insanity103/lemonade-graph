@@ -122,7 +122,7 @@ round(toast, 8)
 local hubButton = Instance.new("TextButton")
 hubButton.Name = "ReturnToHub"
 hubButton.AnchorPoint = Vector2.new(0, 1)
-hubButton.Position = UDim2.new(0, 12, 1, -150)
+hubButton.Position = UDim2.new(0, 12, 1, -146)
 hubButton.Size = UDim2.fromOffset(158, 38)
 hubButton.BackgroundColor3 = COLORS.button
 hubButton.TextColor3 = COLORS.title

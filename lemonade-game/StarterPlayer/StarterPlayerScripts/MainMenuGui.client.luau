@@ -68,7 +68,6 @@ local NAV_ITEMS = {
 	{ id = "Skills", icon = ICONS.Skills },
 	{ id = "Rebirth", icon = "rbxassetid://80234316052758" },
 	{ id = "Trade", icon = ICONS.Sword },
-	{ id = "Reforge", icon = ICONS.Coin, external = true }, -- opens ReforgeGui instead of a tab
 	{ id = "Settings", icon = ICONS.Settings },
 }
 
@@ -1278,11 +1277,6 @@ for i, item in ipairs(NAV_ITEMS) do
 		end
 	end)
 	btn.Activated:Connect(function()
-		if item.external then
-			if panelOpen then setMenuOpen(false) end
-			remotes:WaitForChild("ReforgeAction"):FireServer("Open")
-			return
-		end
 		if panelOpen and activeTab == item.id then setMenuOpen(false)
 		else setMenuOpen(true); openTab(item.id) end
 	end)

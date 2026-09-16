@@ -148,7 +148,7 @@ waystone splinters from before.
   Both confirm, any change resets confirmations, then swords swap (rebuilt from saved attrs).
   `TradeSystem`, server-authoritative.
 
-- **Reforge** (menu rail button, no world prompt, works anywhere): pay gold to re-roll
+- **Reforge** (bottom-left "Reforge (reroll)" button, no world prompt, works anywhere): pay gold to re-roll
   a relic sword's modifiers. Cost = rarity base (40 / 120 / 400 / 1500 / 6000) x current roll
   quality, so better rolls cost more to gamble. Rarity, base damage and a Blessed slot stay.
   `ReforgeGui` plays a case-opening reel of modifier cards that lands on the server's roll,
