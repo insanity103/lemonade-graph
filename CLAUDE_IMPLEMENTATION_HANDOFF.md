@@ -29,8 +29,8 @@ to preserve while developing the new map separately.
   It retains legacy terrain generation/reset logic and must not reenter the active project.
 - Gameplay services include combat, swords, drops, inventory, XP/gold/levels, skill points,
   quests, merchant, rebirth, respec, saving, movement, audio, effects, and existing UI.
-- The former Workspace/FivefoldSanctuary mesh copies have been removed. Archived art still
-  exists under assets/map_redesign and map kits under ServerStorage; neither is actively synced.
+- The former Workspace/FivefoldSanctuary mesh copies, archived art and map kits have been
+  purged from the repo (2026-09-15); they remain in git history.
 - Build and structural integration checks passed in the prior session. The user reported the
   new place works. Automated Studio playtesting was NOT performed; Rojo connectivity does not
   imply the WEPPY Studio-control plugin is connected.
