@@ -72,6 +72,33 @@ function SwordValue.rateTool(tool: Instance): number
 	})
 end
 
+-- [TUNING] Reforge (reroll) price: a rarity base scaled by how good the current roll is,
+-- so a plain Rare is cheap to gamble on and a near-perfect Legendary costs real gold.
+SwordValue.REROLL_BASE = {
+	Common = 40,
+	Uncommon = 120,
+	Rare = 400,
+	Epic = 1500,
+	Legendary = 6000,
+}
+
+function SwordValue.rerollCost(attrs): number
+	attrs = attrs or {}
+	local rarity = attrs.Rarity or "Common"
+	local base = SwordValue.REROLL_BASE[rarity] or SwordValue.REROLL_BASE.Common
+	local quality = SwordValue.rateAttrs(attrs) / (SwordValue.RARITY_BASE[rarity] or SwordValue.RARITY_BASE.Common)
+	return math.floor(base * quality / 10 + 0.5) * 10
+end
+
+function SwordValue.rerollCostForTool(tool: Instance): number
+	return SwordValue.rerollCost({
+		Rarity = tool:GetAttribute("Rarity"),
+		Prefixes = tool:GetAttribute("Prefixes"),
+		ExtraSlot = tool:GetAttribute("ExtraSlot"),
+		BossTier = tool:GetAttribute("BossTier"),
+	})
+end
+
 -- Short label for HUD use: 1.2K, 34K, 2.1M
 function SwordValue.short(value: number): string
 	if value >= 1e6 then return string.format("%.1fM", value / 1e6) end

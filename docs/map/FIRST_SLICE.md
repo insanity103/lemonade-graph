@@ -148,6 +148,12 @@ waystone splinters from before.
   Both confirm, any change resets confirmations, then swords swap (rebuilt from saved attrs).
   `TradeSystem`, server-authoritative.
 
+- **Reforge** (prompt on the smithy anvil; on the baseplate, the merchant): pay gold to re-roll
+  a relic sword's modifiers. Cost = rarity base (40 / 120 / 400 / 1500 / 6000) x current roll
+  quality, so better rolls cost more to gamble. Rarity, base damage and a Blessed slot stay.
+  `ReforgeGui` plays a case-opening reel of modifier cards that lands on the server's roll,
+  then reveals the new sword and its rating change. `ReforgeSystem`, server-authoritative.
+
 ## Known limitations / next
 
 - `canLeaveCombat` in `MapTravel.server.luau` decides the travel combat restriction (see TODO).

@@ -69,6 +69,9 @@
       "TradeSystem": {
         "$path": "lemonade-game/ServerScriptService/TradeSystem.server.luau"
       },
+      "ReforgeSystem": {
+        "$path": "lemonade-game/ServerScriptService/ReforgeSystem.server.luau"
+      },
       "MapMarkers": {
         "$path": "lemonade-game/Gameplay/MapMarkers.luau"
       },
@@ -124,6 +127,9 @@
         },
         "VaultGui": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/VaultGui.client.luau"
+        },
+        "ReforgeGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGui.client.luau"
         },
         "XPGainUI": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau"

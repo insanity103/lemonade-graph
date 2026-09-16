@@ -94,7 +94,8 @@ local function rollTier(rarityName, peakShift)
 	return WeaponModifiers.TIER_COUNT
 end
 
-function WeaponModifiers.RollModifiers(rarityName, blessedChanceBonus)
+-- forceExtraSlot: a reroll of a Blessed sword keeps its Blessed slot instead of re-rolling it.
+function WeaponModifiers.RollModifiers(rarityName, blessedChanceBonus, forceExtraSlot)
 	local cfg = WeaponModifiers.RarityConfig[rarityName] or WeaponModifiers.RarityConfig.Common
 	local count = cfg.baseSlots
 	if math.random() < (cfg.bonusSlotChance or 0) then
@@ -104,7 +105,7 @@ function WeaponModifiers.RollModifiers(rarityName, blessedChanceBonus)
 
 	local bonus = typeof(blessedChanceBonus) == "number" and blessedChanceBonus or 0
 	local blessedChance = math.clamp(WeaponModifiers.EXTRA_SLOT_CHANCE + bonus, 0, 1)
-	if math.random() < blessedChance then
+	if forceExtraSlot == true or math.random() < blessedChance then
 		count += 1
 		gotExtraSlot = true
 	end
