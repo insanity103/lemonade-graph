@@ -1,6 +1,6 @@
 # Map validation
 
-- 2495 parts: 26 floor, 399 collidable solids, 29 wall proxies, 32 markers/volumes
+- 2795 parts: 26 floor, 434 collidable solids, 29 wall proxies, 32 markers/volumes
 
 ## Walk distance from player spawn
 
@@ -14,7 +14,7 @@
 | NPC Vaultkeeper | 50 | 3.2 s | 1.9 s |
 | Waypoint HubSpawn | 0 | 0.0 s | 0.0 s |
 | Waypoint IronOverlook | 193 | 12.0 s | 7.4 s |
-| Waypoint WarlordGate | 396 | 24.8 s | 15.2 s |
+| Waypoint WarlordGate | 397 | 24.8 s | 15.3 s |
 | IL_S2 (IronSquire L1) | 247 | 15.5 s | 9.5 s |
 | IL_S1 (IronSquire L1) | 252 | 15.8 s | 9.7 s |
 | IL_S3 (IronSquire L2) | 262 | 16.4 s | 10.1 s |
@@ -26,8 +26,8 @@
 | IL_S7 (IronSquire L4) | 407 | 25.4 s | 15.6 s |
 | IL_B2 (IronBerserker L4) | 401 | 25.1 s | 15.4 s |
 | IL_B3 (IronBerserker L5) | 408 | 25.5 s | 15.7 s |
-| IL_S8 (IronSquire L4) | 474 | 29.6 s | 18.2 s |
-| IL_BOSS (Boss_Gorgon L10) | 470 | 29.4 s | 18.1 s |
+| IL_S8 (IronSquire L4) | 476 | 29.7 s | 18.3 s |
+| IL_BOSS (Boss_Gorgon L10) | 471 | 29.4 s | 18.1 s |
 
 ## Encounter spacing (walk to nearest other spawn)
 
@@ -40,9 +40,9 @@
 | IL_S1 | IL_S3 | 29 | 1.8 s |
 | IL_S2 | IL_S3 | 41 | 2.6 s |
 | IL_S3 | IL_S1 | 29 | 1.8 s |
-| IL_S4 | IL_S6 | 43 | 2.7 s |
+| IL_S4 | IL_S6 | 45 | 2.8 s |
 | IL_S5 | IL_B1 | 32 | 2.0 s |
-| IL_S6 | IL_S4 | 43 | 2.7 s |
+| IL_S6 | IL_S4 | 44 | 2.7 s |
 | IL_S7 | IL_B3 | 18 | 1.1 s |
 | IL_S8 | IL_BOSS | 75 | 4.7 s |
 
