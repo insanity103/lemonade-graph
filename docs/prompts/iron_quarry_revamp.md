@@ -125,9 +125,28 @@ helpers; consider promoting them into a `tools/audit_map.py` so they can be re-r
 3. **Props buried in cut faces**: any opaque non-cliff part whose centre lies inside a bench
    face or cliff chunk. Half-set-into-rock is fine only when it reads that way from the play
    side (lip rocks, wall braziers); machinery and camp props must not.
-4. **Floating collidables**: collidable parts whose bottom sits more than 0.6 studs above the
-   floor under their centre with no other solid supporting them. Table tops on legs and
-   lintels on posts are fine; anything a player could stand under and see hanging is not.
+4. **Floating entities (search every visible part, not just collidables)**: for each opaque
+   part in the region (props, rubble, crates, tents, barrels, fences, ladders, banners, rocks,
+   trees, machinery pieces, lanterns, signs, markers' visual companions) find the floor top
+   under its centre and check that its bottom is within 0.4 studs of it, **or** that it is
+   supported: resting on another part whose top is within 0.4 studs of its bottom and whose
+   footprint covers its centre or an edge, attached to a wall/post it intersects (a bracket,
+   a shelf, a sign chain, a bench face), or hanging from a part above it it intersects. Also
+   catch the opposite: parts sunk more than 0.6 studs below the floor (only rocks may sink,
+   and no deeper than 0.6). Every hit is a defect. Fix them at the source in `map_forge.py`,
+   not by hand: add a `ground(part_spec)` helper that resolves the floor height under an
+   (x, z) from the `Grounds_*` slabs, benches and ramps (use `top_at`-style math on the
+   generated floor list, including ramp slopes) and places props at `floor + height / 2`;
+   make every prop helper (`rock_cluster`, `crate_stack`, `barrel`, `tent`, `scaffold`,
+   `hay_bale`, `campfire`, `lamp_post`, `sign`, `stone_stack`, `mine_cart`, `rail_track`,
+   `fence_run`, `tree`, `bush`, `stump`) use it instead of a caller-supplied Y, so a prop
+   placed on a bench, a ramp or the pit floor lands correctly wherever it is put. Spawn
+   markers, waypoints and NPC markers must also sit on the resolved floor (the validator
+   already fails those; keep them passing). Re-run the search after the fix; the list must be
+   empty except for deliberate hangers (dangling hook, sign chains, lanterns on brackets),
+   which must each be attached to something.
+   Promote this search into `tools/check_map_project.py` as a permanent rule (report the
+   part path, its bottom, the floor under it and the gap), so future props cannot float.
 5. **Seams and gaps**: adjacent floors and ramps must meet within 0.05 studs (no grass or
    void strip between bench, ramp and haul road); parallel faces closer than 0.1 studs
    (window glass on walls, plates on posts) must be separated or merged.
@@ -143,6 +162,10 @@ helpers; consider promoting them into a `tools/audit_map.py` so they can be re-r
    part count and PointLights reported against the budget (≤ 20 lights).
 9. **Navmesh and lanes**: the validator's reachability table plus a check that no collidable
    prop sits inside the two main lanes (ramp → haul road → pit) or within 4 studs of a spawn.
+10. **Enemy rigs and accessories**: after the enemy outfits are in, confirm in the source that
+    every accessory is welded to a body part (not anchored), massless, non-collide, and that
+    its offset keeps it inside 1.5 studs of that part so it cannot appear to float beside a
+    walking rig; the boss weapon weld still sits in the right hand.
 
 Write the findings to `docs/map/AUDIT.md` as a new dated section with the same three parts as
 the Hearthmere one: **Critical errors**, **Moderate warnings** (with what was fixed vs
