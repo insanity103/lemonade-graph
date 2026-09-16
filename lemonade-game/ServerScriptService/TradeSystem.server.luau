@@ -183,7 +183,7 @@ local function request(player, targetId)
 		NOTIFY:FireClient(player, target.DisplayName .. " is already trading.", "error")
 		return
 	end
-	if #carriedRelics(player) == 0 then
+	if #carriedRelics(player) == 0 and #vaultedRelics(player) == 0 then
 		NOTIFY:FireClient(player, "You have no relic swords to trade.", "error")
 		return
 	end
