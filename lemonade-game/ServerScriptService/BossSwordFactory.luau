@@ -144,15 +144,32 @@ end
 
 -- Re-roll an existing boss sword's modifiers in place (the Reforge anvil). Rarity, base
 -- damage and look stay; a Blessed sword keeps its extra slot. Returns the new mods and name.
-function BossSwordFactory.reroll(tool, blessedBonus)
+-- minTopTier (optional): the pity floor — if no rolled modifier reaches it, the best one is
+-- raised to it, so a run of bad luck cannot leave the sword worse at the top end.
+function BossSwordFactory.reroll(tool, blessedBonus, minTopTier)
 	local tier = tonumber(tool:GetAttribute("BossTier")) or 1
 	local archetypeKey = BossWeapons.ArchetypeByTier[tier]
 	local weaponData = archetypeKey and BossWeapons.Get(archetypeKey)
 	if not weaponData then return nil end
 	local mods, gotExtraSlot = WeaponModifiers.RollModifiers(weaponData.rarity, blessedBonus or 0,
 		tool:GetAttribute("ExtraSlot") == true)
+	local pityApplied = false
+	if minTopTier and #mods > 0 then
+		local best, bestIndex = 0, 1
+		for i, mod in ipairs(mods) do
+			if mod.tier > best then best, bestIndex = mod.tier, i end
+		end
+		if best < minTopTier then
+			local category = WeaponModifiers.Categories[mods[bestIndex].category]
+			local target = math.min(minTopTier, #category.Tiers)
+			local tierData = category.Tiers[target]
+			mods[bestIndex] = { category = mods[bestIndex].category, name = tierData.name, bonus = tierData.bonus,
+				desc = tierData.desc, tier = target }
+			pityApplied = true
+		end
+	end
 	local fullName = BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExtraSlot)
-	return mods, fullName, gotExtraSlot
+	return mods, fullName, gotExtraSlot, pityApplied
 end
 
 -- Rebuild a previously-saved boss sword from its serialized attribute set (see

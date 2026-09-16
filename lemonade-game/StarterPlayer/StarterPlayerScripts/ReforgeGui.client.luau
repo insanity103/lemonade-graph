@@ -159,6 +159,27 @@ local revealMods = text(reveal, { Position = UDim2.fromOffset(12, 34), Size = UD
 	TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = COLORS.Text })
 local revealRating = text(reveal, { Position = UDim2.fromOffset(12, 84), Size = UDim2.new(1, -24, 0, 24), Font = Enum.Font.GothamBold, TextSize = 15 })
 
+-- Odds disclosure + pity meter (right of the reel, under the reveal) and a skip toggle.
+local oddsLabel = text(stage, { Position = UDim2.fromOffset(14, 84 + CARD_H + 36 + 122), Size = UDim2.new(1, -28, 0, 48), TextSize = 11,
+	TextColor3 = COLORS.Muted, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top, Text = "" })
+local skipBtn = Instance.new("TextButton")
+skipBtn.AnchorPoint = Vector2.new(1, 1)
+skipBtn.Position = UDim2.new(1, -14, 1, -14)
+skipBtn.Size = UDim2.fromOffset(150, 30)
+skipBtn.BackgroundColor3 = COLORS.Button
+skipBtn.Text = "Animation: on"
+skipBtn.TextColor3 = COLORS.Muted
+skipBtn.Font = Enum.Font.GothamMedium
+skipBtn.TextSize = 12
+skipBtn.Parent = stage
+corner(skipBtn, 8)
+local skipAnimation = false
+skipBtn.Activated:Connect(function()
+	skipAnimation = not skipAnimation
+	skipBtn.Text = skipAnimation and "Animation: skipped" or "Animation: on"
+end)
+local oddsInfo = nil
+
 local strikeBtn = Instance.new("TextButton")
 strikeBtn.AnchorPoint = Vector2.new(0.5, 1)
 strikeBtn.Position = UDim2.new(0.5, 0, 1, -14)
@@ -223,8 +244,24 @@ local function describeMods(prefixes: string, blessed: boolean)
 	return #parts > 0 and table.concat(parts, "  ·  ") or "No modifiers"
 end
 
+local function describeOdds(rarity)
+	if not oddsInfo or not oddsInfo.odds or not oddsInfo.odds[rarity] then return "" end
+	local o = oddsInfo.odds[rarity]
+	local parts = {}
+	for tier = 1, #o.tiers do
+		table.insert(parts, string.format("T%d %.1f%%", tier, o.tiers[tier] * 100))
+	end
+	local pity = oddsInfo.pity or 0
+	local pityText = pity >= (oddsInfo.pityAfter or 5)
+		and string.format("Pity ready: next reforge guarantees a T%d+ modifier.", oddsInfo.pityTier or 4)
+		or string.format("Pity %d / %d (then a T%d+ modifier is guaranteed).", pity, oddsInfo.pityAfter or 5, oddsInfo.pityTier or 4)
+	return string.format("%s odds per modifier: %s.  Slots: %d (+1 at %.0f%%, Blessed +1 at %.0f%%).  %s", rarity,
+		table.concat(parts, "  "), o.slots, (o.bonusSlotChance or 0) * 100, (oddsInfo.blessedChance or 0) * 100, pityText)
+end
+
 local function selectRow(info)
 	selected = info
+	oddsLabel.Text = describeOdds(info.rarity)
 	selectedTitle.Text = info.name
 	selectedTitle.TextColor3 = RARITY_COLORS[info.rarity] or COLORS.Text
 	selectedInfo.Text = string.format("%s  ·  rating %s  ·  %s", info.rarity, SwordValue.short(info.rating), describeMods(info.prefixes, info.blessed))
@@ -237,9 +274,10 @@ local function selectRow(info)
 	setStrike()
 end
 
-local function render(stateRows, goldValue, highlight)
+local function render(stateRows, goldValue, highlight, disclosure)
 	rows = stateRows
 	gold = goldValue
+	if disclosure then oddsInfo = disclosure end
 	goldLabel.Text = "Gold " .. tostring(gold)
 	for _, r in ipairs(list:GetChildren()) do
 		if r:IsA("Frame") then r:Destroy() end
@@ -332,7 +370,7 @@ local function spin(result)
 	local windowW = reelWindow.AbsoluteSize.X
 	local landX = (LAND_INDEX - 1) * (CARD_W + CARD_GAP) + CARD_W / 2 + math.random(-40, 40)
 	strip.Position = UDim2.fromOffset(windowW / 2 - CARD_W / 2, 12)
-	local tween = TweenService:Create(strip, TweenInfo.new(SPIN_TIME, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+	local tween = TweenService:Create(strip, TweenInfo.new(skipAnimation and 0.35 or SPIN_TIME, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
 		{ Position = UDim2.fromOffset(windowW / 2 - landX, 12) })
 	local lastIndex = 0
 	local conn
@@ -354,7 +392,8 @@ local function spin(result)
 	local parts = {}
 	if result.blessed then table.insert(parts, "Blessed slot") end
 	for _, m in ipairs(result.mods) do table.insert(parts, string.format("%s (T%d %s)", m.name, m.tier, m.desc or m.category)) end
-	revealMods.Text = #parts > 0 and table.concat(parts, "  ·  ") or "No modifiers this time."
+	revealMods.Text = (#parts > 0 and table.concat(parts, "  ·  ") or "No modifiers this time.")
+		.. (result.pityApplied and "   (pity floor applied)" or "")
 	local delta = result.after - result.before
 	revealRating.Text = string.format("Rating %s  ->  %s   (%s%d)   -%d gold", SwordValue.short(result.before), SwordValue.short(result.after),
 		delta >= 0 and "+" or "", delta, result.cost)
@@ -383,7 +422,7 @@ UserInputService.InputBegan:Connect(function(input, processed)
 end)
 
 local pendingState = nil
-REFORGE.OnClientEvent:Connect(function(kind, a, b, c)
+REFORGE.OnClientEvent:Connect(function(kind, a, b, c, d)
 	if kind == "Open" then
 		overlay.Visible = true
 		reveal.Visible = false
@@ -393,13 +432,13 @@ REFORGE.OnClientEvent:Connect(function(kind, a, b, c)
 		pendingState = nil
 		task.spawn(function()
 			spin(a)
-			if pendingState then render(pendingState[1], pendingState[2], pendingState[3]) pendingState = nil end
+			if pendingState then render(pendingState[1], pendingState[2], pendingState[3], pendingState[4]) pendingState = nil end
 		end)
 	elseif kind == "State" then
 		if spinning then
-			pendingState = { a, b, c } -- apply after the reel lands so the list does not jump mid-spin
+			pendingState = { a, b, c, d } -- apply after the reel lands so the list does not jump mid-spin
 		else
-			render(a, b, c)
+			render(a, b, c, d)
 		end
 	end
 end)

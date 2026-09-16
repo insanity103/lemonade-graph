@@ -153,6 +153,9 @@ waystone splinters from before.
   quality, so better rolls cost more to gamble. Rarity, base damage and a Blessed slot stay.
   `ReforgeGui` plays a case-opening reel of modifier cards that lands on the server's roll,
   then reveals the new sword and its rating change. `ReforgeSystem`, server-authoritative.
+  Compliance/UX: gold only (no Robux, so not a paid random item); exact per-tier odds, slot and
+  Blessed chances are shown before paying; a persisted pity counter guarantees a T4+ modifier
+  after 5 non-improving reforges; animation can be skipped; a T6 result is broadcast server-wide.
 
 ## Known limitations / next
 

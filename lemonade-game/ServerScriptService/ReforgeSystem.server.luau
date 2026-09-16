@@ -6,6 +6,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
+local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
 local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
 
@@ -15,6 +16,12 @@ local NOTIFY = remotes:WaitForChild("Notify")
 
 local REQUEST_INTERVAL = 0.3
 local SAVE_COOLDOWN = 8
+-- Pity: after this many reforges in a row that did not raise the rating, the next one guarantees
+-- a top modifier at least this tier. Counter persists in the profile (reforgePity).
+local PITY_AFTER = 5 -- [TUNING]
+local PITY_MIN_TOP_TIER = 4 -- [TUNING]
+-- Broadcast a server-wide toast when a reforge lands the top tier.
+local BROADCAST_TIER = 6
 
 local lastRequestAt = {}
 local lastSaveAt = {}
@@ -51,7 +58,15 @@ local function sendState(player, highlight)
 	end
 	table.sort(rows, function(a, b) return a.rating > b.rating end)
 	local gold = goldOf(player)
-	REFORGE:FireClient(player, "State", rows, gold and gold.Value or 0, highlight)
+	-- Odds disclosure: exact per-tier chances by rarity, so the player sees them before paying.
+	local odds = {}
+	for rarity in pairs(WeaponModifiers.RarityConfig) do
+		odds[rarity] = { tiers = WeaponModifiers.TierOdds(rarity, 0), slots = WeaponModifiers.RarityConfig[rarity].baseSlots,
+			bonusSlotChance = WeaponModifiers.RarityConfig[rarity].bonusSlotChance or 0 }
+	end
+	local pity = PlayerDataService.GetField(player, "reforgePity") or 0
+	REFORGE:FireClient(player, "State", rows, gold and gold.Value or 0, highlight,
+		{ odds = odds, pity = pity, pityAfter = PITY_AFTER, pityTier = PITY_MIN_TOP_TIER, blessedChance = WeaponModifiers.EXTRA_SLOT_CHANCE })
 end
 
 local function findRelic(player, toolName)
@@ -80,13 +95,21 @@ local function reroll(player, toolName)
 	end
 	local before = SwordValue.rateTool(tool)
 	local oldName = tool.Name
-	local mods, newName = BossSwordFactory.reroll(tool, player:GetAttribute("RebirthBlessedBonus") or 0)
+	local pity = PlayerDataService.GetField(player, "reforgePity") or 0
+	local floor = if pity >= PITY_AFTER then PITY_MIN_TOP_TIER else nil
+	local mods, newName, _, pityApplied = BossSwordFactory.reroll(tool, player:GetAttribute("RebirthBlessedBonus") or 0, floor)
 	if not mods then
 		NOTIFY:FireClient(player, "That sword cannot be reforged.", "error")
 		return
 	end
 	gold.Value -= cost
 	local after = SwordValue.rateTool(tool)
+	PlayerDataService.SetField(player, "reforgePity", if after > before then 0 else pity + 1)
+	local topTier = 0
+	for _, mod in ipairs(mods) do topTier = math.max(topTier, mod.tier) end
+	if topTier >= BROADCAST_TIER then
+		NOTIFY:FireAllClients(string.format("%s reforged a %s!", player.DisplayName, newName), "success")
+	end
 	local rolled = {}
 	for _, mod in ipairs(mods) do
 		table.insert(rolled, { name = mod.name, category = mod.category, tier = mod.tier, desc = mod.desc })
@@ -95,7 +118,7 @@ local function reroll(player, toolName)
 	REFORGE:FireClient(player, "Result", {
 		toolName = newName, oldName = oldName, rarity = tool:GetAttribute("Rarity") or "Common",
 		mods = rolled, blessed = tool:GetAttribute("ExtraSlot") == true,
-		before = before, after = after, cost = cost,
+		before = before, after = after, cost = cost, pityApplied = pityApplied == true,
 	})
 	print(string.format("[ReforgeSystem] %s reforged %s -> %s for %d gold", player.Name, oldName, newName, cost))
 	PlayerDataService.MarkDirty(player)

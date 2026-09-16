@@ -37,6 +37,7 @@ local function defaultData()
 		version = SaveConfig.SCHEMA_VERSION,
 		leaderstats = {}, attributes = {}, inventory = {}, swords = {},
 		vault = {},  -- boss swords stored with the Vaultkeeper (same entry shape as `swords`)
+		reforgePity = 0,  -- consecutive reforges that did not improve the sword (ReforgeSystem)
 		isNew = true,
 	}
 	for name, default in pairs(SaveConfig.LEADERSTATS) do data.leaderstats[name] = default end
@@ -117,6 +118,9 @@ function PlayerDataService.Load(player)
 	end
 	if typeof(record.vault) ~= "table" then
 		record.vault = {}
+	end
+	if typeof(record.reforgePity) ~= "number" then
+		record.reforgePity = 0
 	end
 	if not record.version or record.version < SaveConfig.SCHEMA_VERSION then
 		record.version = SaveConfig.SCHEMA_VERSION
@@ -228,6 +232,20 @@ function PlayerDataService.GetVault(player)
 	local profile = profiles[player]
 	if not profile or not profile.ready then return nil end
 	return profile.data.vault
+end
+
+-- Small persisted counters (reforge pity and the like). nil until the profile is applied.
+function PlayerDataService.GetField(player, key)
+	local profile = profiles[player]
+	if not profile or not profile.ready then return nil end
+	return profile.data[key]
+end
+
+function PlayerDataService.SetField(player, key, value)
+	local profile = profiles[player]
+	if not profile or not profile.ready then return end
+	profile.data[key] = value
+	profile.dirty = true
 end
 
 function PlayerDataService.MarkDirty(player)
