@@ -41,8 +41,8 @@ local OUTFITS = {
 			{ part = "Left Arm", name = "WrapL", size = Vector3.new(1.08, 0.85, 1.08), offset = CFrame.new(0, -0.5, 0), color = RAG, material = "Fabric" },
 			{ part = "Right Arm", name = "WrapR", size = Vector3.new(1.08, 0.85, 1.08), offset = CFrame.new(0, -0.5, 0), color = RAG, material = "Fabric" },
 			-- Pick in the right hand: handle forward from the fist, head across the tip.
-			{ part = "Right Arm", name = "PickHandle", size = Vector3.new(0.25, 0.25, 2.4), offset = CFrame.new(0, -0.95, -0.9), color = LEATHER, material = "Wood" },
-			{ part = "Right Arm", name = "PickHead", size = Vector3.new(1.6, 0.3, 0.3), offset = CFrame.new(0, -0.95, -2.0), color = RUST, material = "CorrodedMetal" },
+			{ part = "Right Arm", name = "PickHandle", size = Vector3.new(0.25, 0.25, 2.4), offset = CFrame.new(0, -0.95, -0.9), color = LEATHER, material = "Wood", tool = true },
+			{ part = "Right Arm", name = "PickHead", size = Vector3.new(1.6, 0.3, 0.3), offset = CFrame.new(0, -0.95, -2.0), color = RUST, material = "CorrodedMetal", tool = true },
 		},
 	},
 	-- Broad, slow: cart-plate pauldron, chain belt, chest plate, scars, a heavy sledge.
@@ -58,8 +58,8 @@ local OUTFITS = {
 			{ part = "Right Arm", name = "ScarR", size = Vector3.new(0.12, 0.55, 0.14), offset = CFrame.new(-0.15, 0.25, -0.52) * deg(0, 0, -18), color = SCAR },
 			{ part = "Head", name = "Brow", size = Vector3.new(1.25, 0.28, 0.3), offset = CFrame.new(0, 0.3, -0.5), color = LEATHER, material = "Fabric" },
 			-- Sledge in the right hand (two-handed weight, one weld): long handle, block head.
-			{ part = "Right Arm", name = "SledgeHandle", size = Vector3.new(0.3, 0.3, 3.0), offset = CFrame.new(0, -0.95, -1.1), color = LEATHER, material = "Wood" },
-			{ part = "Right Arm", name = "SledgeHead", size = Vector3.new(1.5, 0.8, 0.8), offset = CFrame.new(0, -0.95, -2.5), color = IRON_DARK, material = "CorrodedMetal" },
+			{ part = "Right Arm", name = "SledgeHandle", size = Vector3.new(0.3, 0.3, 3.0), offset = CFrame.new(0, -0.95, -1.1), color = LEATHER, material = "Wood", tool = true },
+			{ part = "Right Arm", name = "SledgeHead", size = Vector3.new(1.5, 0.8, 0.8), offset = CFrame.new(0, -0.95, -2.5), color = IRON_DARK, material = "CorrodedMetal", tool = true },
 		},
 	},
 	-- Elite brute: same kit plus a red sash and a bone mask.
@@ -129,7 +129,11 @@ function EnemyOutfits.apply(model: Model, archetypeKey: string, scale: number, r
 		local body = model:FindFirstChild(partName)
 		if body and body:IsA("BasePart") then body.Color = color end
 	end
+	-- A rig that was handed a real sword (EnemyCombat welds it before the outfit goes on)
+	-- doesn't also carry its pick or sledge in that hand.
+	local armed = model:FindFirstChild("Sword") ~= nil
 	for _, spec in ipairs(specsFor(key)) do
+		if spec.tool and armed then continue end
 		local body = model:FindFirstChild(spec.part)
 		if not (body and body:IsA("BasePart")) then continue end
 		local acc = Instance.new("Part")

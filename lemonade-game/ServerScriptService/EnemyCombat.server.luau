@@ -96,6 +96,7 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 1.3,
 		patrolRadius = 12,
 		leashDistance = 35,
+		weapon = true, -- the shared SwordMeshTemplate falchion; no swordColor, its texture stands
 	},
 	IronBerserker = {
 		name = "Pit Brute",
@@ -112,6 +113,7 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 1.8,
 		patrolRadius = 10,
 		leashDistance = 32,
+		weapon = true,
 	},
 
 	-- 2. Frost Revenant Minions (North-West Permafrost Glade, Lv 15-20)
@@ -930,15 +932,21 @@ local function startEnemyAI(model, humanoid, hrp, arch, spawnPos, level, onDeath
 	local rightShoulder = torso and torso:FindFirstChild("Right Shoulder")
 	local walkPhase = 0
 	local walkAmp = 0
+	local lastPos = hrp.Position
 	state.animConn = RunService.Heartbeat:Connect(function(dt)
 		if not model.Parent or humanoid.Health <= 0 then
 			state.animConn:Disconnect()
 			return
 		end
-		local moving = humanoid.MoveDirection.Magnitude > 0.05
+		-- Gate on real displacement, not just MoveDirection: MoveDirection is only trustworthy
+		-- on the machine simulating the rig, while the root's position is true everywhere.
+		local planar = (hrp.Position - lastPos) * Vector3.new(1, 0, 1)
+		lastPos = hrp.Position
+		local speed = dt > 0 and planar.Magnitude / dt or 0
+		local moving = speed > 0.5 or humanoid.MoveDirection.Magnitude > 0.05
 		walkAmp = walkAmp + ((moving and 1 or 0) - walkAmp) * math.min(1, dt * WALK_EASE_RATE)
 		if moving then
-			walkPhase = walkPhase + dt * humanoid.WalkSpeed * 1.6
+			walkPhase = walkPhase + dt * math.max(speed, humanoid.WalkSpeed * 0.5) * 1.6
 		end
 		local swing = math.sin(walkPhase) * walkAmp
 		if leftHip then
