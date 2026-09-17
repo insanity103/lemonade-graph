@@ -14,8 +14,10 @@ local MERCHANT_ACTION = REMOTES:WaitForChild("MerchantAction")
 local DROP_EVENT = REMOTES:WaitForChild("SwordDrop")
 
 local PURCHASE_DISTANCE = 16
+local PURCHASE_INTERVAL = 0.35
 local merchantModel
-
+local lastPurchaseAt = {}
+local purchaseInFlight = {}
 
 -- Built by the shared BossSwordFactory; purchases never roll a Blessed extra slot
 local function makePurchasedSword(archetypeKey)
@@ -49,11 +51,7 @@ local function isNearMerchant(player)
 		and (playerRoot.Position - merchantRoot.Position).Magnitude <= PURCHASE_DISTANCE
 end
 
--- Handle Buy Requests
-MERCHANT_ACTION.OnServerEvent:Connect(function(player, action, swordId)
-	if action ~= "BuySword" or typeof(swordId) ~= "string" then
-		return
-	end
+local function handlePurchase(player, swordId)
 	if player:GetAttribute("DataLoaded") ~= true then
 		MERCHANT_ACTION:FireClient(player, "PurchaseResult", false, "Your data is still loading.")
 		return
@@ -95,18 +93,47 @@ MERCHANT_ACTION.OnServerEvent:Connect(function(player, action, swordId)
 		return
 	end
 
-	-- Deduct gold
-	goldStat.Value -= item.price
+	-- Revalidate mutable state after building. If the builder ever yields, another
+	-- purchase must not be able to spend the same balance or buy from a distance.
+	if not player.Parent or not isNearMerchant(player) or goldStat.Value < item.price then
+		tool:Destroy()
+		MERCHANT_ACTION:FireClient(player, "PurchaseResult", false, "Purchase conditions changed. Please try again.")
+		return
+	end
 
-	-- Purchases never roll Blessed; the builder applies all other randomized mods.
+	goldStat.Value -= item.price
 	tool.Parent = backpack
 
-	-- Notify client with sword drop animation toast & purchase result
 	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods, gotExtraSlot)
 	MERCHANT_ACTION:FireClient(player, "PurchaseResult", true, ("Successfully forged [%s] for %d Gold!"):format(fullName, item.price))
 
 	print(string.format("[MerchantSystem] %s purchased [%s] for %d Gold (0%% Blessed chance, Mods: %d)",
 		player.Name, fullName, item.price, #mods))
+end
+
+-- Handle Buy Requests. Client remotes are untrusted: rate-limit them and serialize
+-- purchases per player so request spam cannot run multiple builds concurrently.
+MERCHANT_ACTION.OnServerEvent:Connect(function(player, action, swordId)
+	if action ~= "BuySword" or typeof(swordId) ~= "string" then return end
+
+	local now = os.clock()
+	if purchaseInFlight[player] or now - (lastPurchaseAt[player] or -math.huge) < PURCHASE_INTERVAL then
+		return
+	end
+	lastPurchaseAt[player] = now
+	purchaseInFlight[player] = true
+
+	local ok, err = pcall(handlePurchase, player, swordId)
+	purchaseInFlight[player] = nil
+	if not ok then
+		warn(string.format("[MerchantSystem] Purchase failed for %s: %s", player.Name, tostring(err)))
+		MERCHANT_ACTION:FireClient(player, "PurchaseResult", false, "The purchase failed. Please try again.")
+	end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+	lastPurchaseAt[player] = nil
+	purchaseInFlight[player] = nil
 end)
 
 print("[MerchantSystem] Server merchant system initialized")
