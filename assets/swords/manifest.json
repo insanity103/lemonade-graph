@@ -2,25 +2,24 @@
   "Boss_Gorgon": {
     "name": "Warlord Greatsword",
     "file": "Boss_Gorgon.glb",
-    "bytes": 129072,
-    "triangles": 3972,
-    "vertices": 3241,
+    "bytes": 208708,
+    "triangles": 6220,
+    "vertices": 3462,
     "meshSize": [
-      0.0591,
-      0.2901,
+      0.075,
+      0.26,
       1.0
     ],
-    "gripFrac": 0.33,
+    "gripFrac": 0.38,
     "guardZ": [
-      0.175,
-      0.244
+      0.195,
+      0.255
     ],
     "handleZ": [
-      0.238,
-      0.422
+      0.255,
+      0.46
     ],
-    "checks": "all passed",
-    "source": "c084e284-ancient_sword.glb"
+    "checks": "all passed"
   },
   "Boss_FrostRevenant": {
     "name": "Frostfang Cleaver",
@@ -109,28 +108,5 @@
       0.46
     ],
     "checks": "all passed"
-  },
-  "ClassicSword": {
-    "file": "ClassicSword.glb",
-    "source": "worn_steel_sword_fuller.glb",
-    "bytes": 160184,
-    "triangles": 5540,
-    "vertices": 3919,
-    "meshSize": [
-      0.0344,
-      0.2312,
-      1.0
-    ],
-    "gripFrac": 0.324,
-    "guardZ": [
-      0.216,
-      0.246
-    ],
-    "handleZ": [
-      0.238,
-      0.41
-    ],
-    "checks": "all passed",
-    "name": "Worn Steel Sword (starter)"
   }
 }

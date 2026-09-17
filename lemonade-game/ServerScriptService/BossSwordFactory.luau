@@ -12,6 +12,10 @@ local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 
 local BossSwordFactory = {}
 
+-- Held length of every boss sword. BossSwordTool.Grip is built for this length and the
+-- shared mesh layout, so swapping in a boss's own mesh needs no Grip change.
+local HELD_SWORD_LENGTH = 4.2
+
 -- Replace the template's Handle with this boss's unique mesh, if one has been imported.
 local function fitBossMesh(tool, archetypeKey)
 	local mesh, isBossSpecific = CombatUtil.getSwordMesh(archetypeKey)
@@ -23,19 +27,12 @@ local function fitBossMesh(tool, archetypeKey)
 	handle.Anchored = false
 	handle.CanCollide = false
 	handle.Massless = true
-	CombatUtil.sizeSwordMesh(handle, CombatUtil.HELD_SWORD_LENGTH)
+	CombatUtil.sizeSwordMesh(handle, HELD_SWORD_LENGTH)
 	local old = tool:FindFirstChild("Handle")
 	if old then
 		old:Destroy()
 	end
 	handle.Parent = tool
-	-- The ClassicSword fallback template carries its blade, guard, pommel and tips as sibling
-	-- parts welded from the old Handle; those welds died with it, so drop the loose parts too.
-	for _, child in ipairs(tool:GetChildren()) do
-		if child:IsA("BasePart") and child ~= handle then
-			child:Destroy()
-		end
-	end
 end
 
 -- opts.blessedBonus  added to WeaponModifiers.EXTRA_SLOT_CHANCE (drops: +5% at rebirth 5+)

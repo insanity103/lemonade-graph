@@ -72,16 +72,12 @@ function CombatUtil.hasLineOfSight(origin, target, ignoredInstances)
 	return Workspace:Raycast(origin, direction, params) == nil
 end
 
--- Sword meshes. Each boss's unique blade lives in ServerStorage/BossSwordMeshes as a
--- MeshPart named after its archetype (Boss_Gorgon, ...); the starter sword's is named
--- ClassicSword. All of them share one layout (length-normalised, grip toward one end, hand
--- SWORD_GRIP_FRAC from centre), so the same Grip and weld maths fit every one; only
--- width/thickness differ, taken from MeshSize. Until a boss's mesh is imported, the shared
--- SwordMeshTemplate stands in.
+-- Boss sword meshes. Each boss's unique blade lives in ServerStorage/BossSwordMeshes as
+-- a MeshPart named after its archetype (Boss_Gorgon, ...). All of them share one layout
+-- (length-normalised, grip toward one end, hand SWORD_GRIP_FRAC from centre), so the same
+-- Grip and weld maths fit every one; only width/thickness differ, taken from MeshSize.
+-- Until a boss's mesh is imported, the shared SwordMeshTemplate stands in.
 CombatUtil.SWORD_MESH_FOLDER = "BossSwordMeshes"
--- Held length of every player sword in studs. ClassicSword.Grip (which boss swords inherit)
--- is built for this length and the shared mesh layout, so no per-sword Grip is needed.
-CombatUtil.HELD_SWORD_LENGTH = 4.2
 
 function CombatUtil.getSwordMesh(archetypeKey)
 	local ServerStorage = game:GetService("ServerStorage")
