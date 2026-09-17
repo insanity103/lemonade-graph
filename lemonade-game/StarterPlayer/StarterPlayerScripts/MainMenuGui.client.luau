@@ -426,15 +426,51 @@ local function buildInventoryPanel()
 				addStroke(goldWrapper, Color3.fromRGB(255, 215, 0), 0.1, 2)
 			end
 
-			-- Title bar with Rarity tint
+			-- Title bar with Rarity tint. Right side holds up to two buttons: EQUIP (any backpack
+			-- sword) and SELL (unequipped boss drops), so the title shrinks to make room.
+			local canEquip = not item.equipped
+			local buttonCount = (canEquip and 1 or 0) + (isSellable and 1 or 0)
+			local titleScale = if buttonCount == 2 then 0.40 elseif buttonCount == 1 then 0.52 else 0.65
 			local title = createText(card, {
 				text = tool.Name,
 				font = Enum.Font.GothamBold,
 				size = 15,
 				color = RARITY_COLOR[rarity] or COLORS.Text,
-				size2 = UDim2.new(isSellable and 0.52 or 0.65, 0, 0, 20),
+				size2 = UDim2.new(titleScale, 0, 0, 20),
 				zIndex = 24
 			})
+
+			-- Equipping is client-side, exactly what the default backpack strip did before it was
+			-- hidden by SwordHotbarGui: the client owns its own character and backpack tools.
+			if canEquip then
+				local equipButton = Instance.new("TextButton")
+				equipButton.Name = "EquipButton"
+				equipButton.Size = UDim2.fromOffset(76, 26)
+				equipButton.Position = UDim2.new(1, isSellable and -(76 + 82) or -76, 0, -1)
+				equipButton.BackgroundColor3 = COLORS.Success
+				equipButton.BorderSizePixel = 0
+				equipButton.Font = Enum.Font.GothamBold
+				equipButton.Text = "EQUIP"
+				equipButton.TextColor3 = Color3.fromRGB(15, 30, 20)
+				equipButton.TextSize = 12
+				equipButton.AutoButtonColor = false
+				equipButton.ZIndex = 25
+				equipButton.Parent = card
+				addCorner(equipButton, 7)
+				addStroke(equipButton, Color3.fromRGB(150, 245, 190), 0.2, 1)
+				equipButton.MouseEnter:Connect(function()
+					equipButton.BackgroundColor3 = Color3.fromRGB(120, 240, 170)
+				end)
+				equipButton.MouseLeave:Connect(function()
+					equipButton.BackgroundColor3 = COLORS.Success
+				end)
+				equipButton.Activated:Connect(function()
+					local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+					if humanoid and tool.Parent then
+						humanoid:EquipTool(tool)
+					end
+				end)
+			end
 
 			if isSellable then
 				local sellButton = Instance.new("TextButton")
@@ -1050,10 +1086,9 @@ local function buildSettingsPanel()
 	-- ═══════════════════════════════════════════════
 	local shortcuts = {
 		{ key = "M", desc = "Open / close menu" },
-		{ key = "Q", desc = "Toggle auto-attack" },
-		{ key = "E", desc = "Manual attack" },
-		{ key = "P", desc = "Toggle auto skill spend" },
-		{ key = "Click", desc = "Manual attack" },
+		{ key = "E", desc = "Attack" },
+		{ key = "Click", desc = "Attack" },
+		{ key = "Esc", desc = "Close the open panel" },
 	}
 
 	local shortcutsHeader = createText(body, {

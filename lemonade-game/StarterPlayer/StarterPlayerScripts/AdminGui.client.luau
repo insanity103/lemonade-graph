@@ -128,7 +128,6 @@ panel.Visible = false
 panel.Parent = screenGui
 corner(panel, 10)
 stroke(panel, COLORS.Accent, 1.5)
-PanelChrome.addCornerOrnaments(panel, COLORS.Accent)
 
 label(panel, { text = "Admin  (dev / bug-testing)", font = Enum.Font.GothamBold, textSize = 15,
 	color = COLORS.Gold, pos = UDim2.fromOffset(14, 12), size = UDim2.new(1, -28, 0, 20) })

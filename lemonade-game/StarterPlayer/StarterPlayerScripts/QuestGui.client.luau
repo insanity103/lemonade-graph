@@ -93,7 +93,6 @@ trackerFrame.ZIndex = 5
 trackerFrame.Parent = screenGui
 addCorner(trackerFrame, 12)
 addStroke(trackerFrame, COLORS.Gold, 0.55, 1.25)
-PanelChrome.addCornerOrnaments(trackerFrame, COLORS.Gold)
 
 local trackerPadding = Instance.new("UIPadding")
 trackerPadding.PaddingTop = UDim.new(0, 10)
@@ -187,7 +186,6 @@ promptFrame.ZIndex = 10
 promptFrame.Parent = screenGui
 addCorner(promptFrame, 10)
 addStroke(promptFrame, COLORS.Accent, 0.2, 1.5)
-PanelChrome.addCornerOrnaments(promptFrame, COLORS.Accent)
 
 local promptKey = Instance.new("Frame")
 promptKey.Size = UDim2.fromOffset(32, 32)

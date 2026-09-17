@@ -1,7 +1,7 @@
 -- ReplicatedStorage/PanelChrome.luau
 -- Shared visual chrome for modal GUI panels (Reforge, Vault, Merchant, Quest, Main Menu):
--- a consistent bordered shell with corner ornaments, a title banner, and a close button, so
--- every panel reads as one system instead of five independently-styled ones. Returns plain
+-- a consistent bordered shell with a title banner and a close button, so every panel reads
+-- as one system instead of five independently-styled ones. Returns plain
 -- Instances -- works from imperative scripts (set .Parent yourself) and from Fusion (drop
 -- PanelChrome.build(...).Frame straight into a [Children] table).
 local PanelChrome = {}
@@ -27,42 +27,9 @@ local function corner(inst, radius)
 end
 PanelChrome.corner = corner
 
--- A small rotated-square "gem" accent, used at each corner of a chromed panel.
-local function ornament(parent, anchorPoint, position, color)
-	local gem = Instance.new("Frame")
-	gem.Name = "CornerOrnament"
-	gem.AnchorPoint = anchorPoint
-	gem.Position = position
-	gem.Size = UDim2.fromOffset(10, 10)
-	gem.Rotation = 45
-	gem.BackgroundColor3 = color
-	gem.BorderSizePixel = 0
-	gem.ZIndex = 25
-	gem.Parent = parent
-	local stroke = Instance.new("UIStroke")
-	stroke.Color = Color3.new(0, 0, 0)
-	stroke.Thickness = 1
-	stroke.Transparency = 0.5
-	stroke.Parent = gem
-	return gem
-end
-
--- Drops a gold "gem" accent into all four corners of any frame -- for HUD widgets that
--- want the chrome language's accent without the full modal (title/close/etc).
-function PanelChrome.addCornerOrnaments(frame, color)
-	for _, spec in ipairs({
-		{ Vector2.new(0, 0), UDim2.fromOffset(10, 10) },
-		{ Vector2.new(1, 0), UDim2.new(1, -10, 0, 10) },
-		{ Vector2.new(0, 1), UDim2.new(0, 10, 1, -10) },
-		{ Vector2.new(1, 1), UDim2.new(1, -10, 1, -10) },
-	}) do
-		ornament(frame, spec[1], spec[2], color)
-	end
-end
-
--- Builds a bordered modal shell: background, corner radius, accent stroke, four corner
--- ornaments, a title banner (title + optional subtitle) with a header divider, and a close
--- button. The frame is returned unparented -- parent it yourself, or hand it to Fusion.
+-- Builds a bordered modal shell: background, corner radius, accent stroke, a title banner
+-- (title + optional subtitle) with a header divider, and a close button. The frame is
+-- returned unparented -- parent it yourself, or hand it to Fusion.
 --
 -- props: { name, title, subtitle, accentColor, size }
 function PanelChrome.build(props)
@@ -82,8 +49,6 @@ function PanelChrome.build(props)
 	stroke.Thickness = 2
 	stroke.Transparency = 0.4
 	stroke.Parent = modal
-
-	PanelChrome.addCornerOrnaments(modal, accent)
 
 	local titleLabel = Instance.new("TextLabel")
 	titleLabel.Name = "Title"
