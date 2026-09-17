@@ -2266,7 +2266,7 @@
       "file_type": "code",
       "norm_label": "bindinventorycontainer()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1298"
+      "source_location": "L1299"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_bindinventoryrefresh",
@@ -2278,7 +2278,7 @@
       "file_type": "code",
       "norm_label": "bindinventoryrefresh()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1307"
+      "source_location": "L1308"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildinventorypanel",
@@ -2434,7 +2434,7 @@
       "file_type": "code",
       "norm_label": "opentab()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1174"
+      "source_location": "L1175"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshinventoryifvisible",
@@ -2446,7 +2446,7 @@
       "file_type": "code",
       "norm_label": "refreshinventoryifvisible()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1292"
+      "source_location": "L1293"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshskills",
@@ -2458,7 +2458,7 @@
       "file_type": "code",
       "norm_label": "refreshskills()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1161"
+      "source_location": "L1162"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_refreshtopbar",
@@ -2470,7 +2470,7 @@
       "file_type": "code",
       "norm_label": "refreshtopbar()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1150"
+      "source_location": "L1151"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_setmenuopen",
@@ -2482,7 +2482,7 @@
       "file_type": "code",
       "norm_label": "setmenuopen()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1192"
+      "source_location": "L1193"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_swordline",
@@ -2506,7 +2506,7 @@
       "file_type": "code",
       "norm_label": "togglemenu()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1202"
+      "source_location": "L1203"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_tradebutton",
@@ -37538,7 +37538,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1309",
+      "source_location": "L1310",
       "weight": 1.0
     },
     {
@@ -37934,7 +37934,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1184",
+      "source_location": "L1185",
       "weight": 1.0
     },
     {
@@ -37946,7 +37946,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1185",
+      "source_location": "L1186",
       "weight": 1.0
     },
     {
@@ -37958,7 +37958,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1185",
+      "source_location": "L1186",
       "weight": 1.0
     },
     {
@@ -37970,7 +37970,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1186",
+      "source_location": "L1187",
       "weight": 1.0
     },
     {
@@ -37982,7 +37982,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1187",
+      "source_location": "L1188",
       "weight": 1.0
     },
     {
@@ -37994,7 +37994,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1188",
+      "source_location": "L1189",
       "weight": 1.0
     },
     {
@@ -38006,7 +38006,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1294",
+      "source_location": "L1295",
       "weight": 1.0
     },
     {
@@ -38018,7 +38018,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1198",
+      "source_location": "L1199",
       "weight": 1.0
     },
     {
@@ -38030,7 +38030,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1199",
+      "source_location": "L1200",
       "weight": 1.0
     },
     {
@@ -38066,7 +38066,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1202",
+      "source_location": "L1203",
       "weight": 1.0
     },
     {
@@ -52739,7 +52739,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1150",
+      "source_location": "L1151",
       "weight": 1.0
     },
     {
@@ -52750,7 +52750,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1161",
+      "source_location": "L1162",
       "weight": 1.0
     },
     {
@@ -52761,7 +52761,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1174",
+      "source_location": "L1175",
       "weight": 1.0
     },
     {
@@ -52772,7 +52772,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1192",
+      "source_location": "L1193",
       "weight": 1.0
     },
     {
@@ -52783,7 +52783,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1202",
+      "source_location": "L1203",
       "weight": 1.0
     },
     {
@@ -52794,7 +52794,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1292",
+      "source_location": "L1293",
       "weight": 1.0
     },
     {
@@ -52805,7 +52805,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1298",
+      "source_location": "L1299",
       "weight": 1.0
     },
     {
@@ -52827,7 +52827,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L1307",
+      "source_location": "L1308",
       "weight": 1.0
     },
     {

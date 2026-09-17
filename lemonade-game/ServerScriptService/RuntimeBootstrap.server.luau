@@ -3,6 +3,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterPack = game:GetService("StarterPack")
+local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 
 local REMOTE_NAMES = {
 	"AdminAction", -- dev/bug-testing mod menu; see AdminSystem.server.luau + AdminGui.client.luau
@@ -82,34 +83,64 @@ local function ensurePart(name, className, size, color, material, shape)
 	return part
 end
 
-local leather = Color3.fromRGB(92, 66, 50)
-local bronze = Color3.fromRGB(170, 124, 60)
-local steel = Color3.fromRGB(185, 192, 200)
-local handle = ensurePart("Handle", "Part", Vector3.new(0.32, 0.32, 1.10), leather, Enum.Material.SmoothPlastic, Enum.PartType.Block)
-local pommel = ensurePart("Pommel", "Part", Vector3.new(0.44, 0.44, 0.44), bronze, Enum.Material.Metal, Enum.PartType.Ball)
-local guard = ensurePart("Guard", "Part", Vector3.new(1.30, 0.26, 0.32), bronze, Enum.Material.Metal, Enum.PartType.Block)
-local blade = ensurePart("Blade", "Part", Vector3.new(0.22, 0.60, 2.60), steel, Enum.Material.Metal, Enum.PartType.Block)
-local tipUpper = ensurePart("TipUpper", "WedgePart", Vector3.new(0.22, 0.30, 0.50), steel, Enum.Material.Metal)
-local tipLower = ensurePart("TipLower", "WedgePart", Vector3.new(0.22, 0.30, 0.50), steel, Enum.Material.Metal)
-
-local function ensureWeld(name, part1, c0)
-	local weld = handle:FindFirstChild(name)
-	if weld and not weld:IsA("Weld") then weld:Destroy(); weld = nil end
-	if not weld then
-		weld = Instance.new("Weld")
-		weld.Name = name
-		weld.Parent = handle
+-- The starter sword's blade is either the imported ClassicSword mesh (one MeshPart, same
+-- layout as the boss meshes, so the Grip above fits it) or, until that's imported, the
+-- part-built sword below. Whichever it is, the Handle is the piece the sounds hang off.
+local BUILT_PART_NAMES = { "Pommel", "Guard", "Blade", "TipUpper", "TipLower" }
+local handle
+local classicMesh, isSpecific = CombatUtil.getSwordMesh("ClassicSword")
+if classicMesh and isSpecific then
+	local old = sword:FindFirstChild("Handle")
+	local keepSounds = {}
+	if old then
+		for _, child in ipairs(old:GetChildren()) do
+			if child:IsA("Sound") then table.insert(keepSounds, child) end
+		end
+		old:Destroy()
 	end
-	weld.Part0 = handle
-	weld.Part1 = part1
-	weld.C0 = c0
-end
+	for _, name in ipairs(BUILT_PART_NAMES) do
+		local part = sword:FindFirstChild(name)
+		if part then part:Destroy() end
+	end
+	handle = classicMesh:Clone()
+	handle.Name = "Handle"
+	handle.Anchored = false
+	handle.CanCollide = false
+	handle.CanTouch = false
+	handle.Massless = true
+	CombatUtil.sizeSwordMesh(handle, CombatUtil.HELD_SWORD_LENGTH)
+	for _, s in ipairs(keepSounds) do s.Parent = handle end
+	handle.Parent = sword
+else
+	local leather = Color3.fromRGB(92, 66, 50)
+	local bronze = Color3.fromRGB(170, 124, 60)
+	local steel = Color3.fromRGB(185, 192, 200)
+	handle = ensurePart("Handle", "Part", Vector3.new(0.32, 0.32, 1.10), leather, Enum.Material.SmoothPlastic, Enum.PartType.Block)
+	local pommel = ensurePart("Pommel", "Part", Vector3.new(0.44, 0.44, 0.44), bronze, Enum.Material.Metal, Enum.PartType.Ball)
+	local guard = ensurePart("Guard", "Part", Vector3.new(1.30, 0.26, 0.32), bronze, Enum.Material.Metal, Enum.PartType.Block)
+	local blade = ensurePart("Blade", "Part", Vector3.new(0.22, 0.60, 2.60), steel, Enum.Material.Metal, Enum.PartType.Block)
+	local tipUpper = ensurePart("TipUpper", "WedgePart", Vector3.new(0.22, 0.30, 0.50), steel, Enum.Material.Metal)
+	local tipLower = ensurePart("TipLower", "WedgePart", Vector3.new(0.22, 0.30, 0.50), steel, Enum.Material.Metal)
 
-ensureWeld("WeldPommel", pommel, CFrame.new(0, 0, 0.66))
-ensureWeld("WeldGuard", guard, CFrame.new(0, 0, -0.66))
-ensureWeld("WeldBlade", blade, CFrame.new(0, 0, -2.09))
-ensureWeld("WeldTipUpper", tipUpper, CFrame.new(0, 0.15, -3.64))
-ensureWeld("WeldTipLower", tipLower, CFrame.new(0, -0.15, -3.64) * CFrame.Angles(0, 0, math.pi))
+	local function ensureWeld(name, part1, c0)
+		local weld = handle:FindFirstChild(name)
+		if weld and not weld:IsA("Weld") then weld:Destroy(); weld = nil end
+		if not weld then
+			weld = Instance.new("Weld")
+			weld.Name = name
+			weld.Parent = handle
+		end
+		weld.Part0 = handle
+		weld.Part1 = part1
+		weld.C0 = c0
+	end
+
+	ensureWeld("WeldPommel", pommel, CFrame.new(0, 0, 0.66))
+	ensureWeld("WeldGuard", guard, CFrame.new(0, 0, -0.66))
+	ensureWeld("WeldBlade", blade, CFrame.new(0, 0, -2.09))
+	ensureWeld("WeldTipUpper", tipUpper, CFrame.new(0, 0.15, -3.64))
+	ensureWeld("WeldTipLower", tipLower, CFrame.new(0, -0.15, -3.64) * CFrame.Angles(0, 0, math.pi))
+end
 
 local sounds = {
 	SwordSlash = { 12222216, 0.7 },
