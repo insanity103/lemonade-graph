@@ -110,6 +110,24 @@ end
 
 -- ── Objective checking ───────────────────────────────────────────────────
 
+-- OBTAIN objectives name the base weapon ("Warlord Greatsword"); a rolled drop's Tool.Name
+-- carries its modifier prefixes ("Sly Warlord Greatsword"), so match the BaseWeaponName
+-- attribute BossSwordFactory stamps on every drop, with the plain name as the fallback.
+local function toolMatchesItem(tool, itemName)
+	return tool:IsA("Tool") and (tool:GetAttribute("BaseWeaponName") == itemName or tool.Name == itemName)
+end
+
+local function playerHasItem(player, itemName)
+	for _, container in ipairs({ player:FindFirstChildOfClass("Backpack"), player.Character }) do
+		if container then
+			for _, tool in ipairs(container:GetChildren()) do
+				if toolMatchesItem(tool, itemName) then return true end
+			end
+		end
+	end
+	return false
+end
+
 local function checkCompletion(player, quest, progress)
 	local obj = quest.objective
 	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" then
@@ -176,24 +194,8 @@ QUEST_ACCEPT.OnServerEvent:Connect(function(player, questId)
 	-- Check OBTAIN immediately in case player already has the item
 	local initialProgress = 0
 	if quest.objective.type == "OBTAIN" then
-		local backpack = player:FindFirstChildOfClass("Backpack")
-		local character = player.Character
-		local itemName = quest.objective.itemName
-		if backpack then
-			for _, tool in ipairs(backpack:GetChildren()) do
-				if tool:IsA("Tool") and tool.Name == itemName then
-					initialProgress = 1
-					break
-				end
-			end
-		end
-		if initialProgress == 0 and character then
-			for _, tool in ipairs(character:GetChildren()) do
-				if tool:IsA("Tool") and tool.Name == itemName then
-					initialProgress = 1
-					break
-				end
-			end
+		if playerHasItem(player, quest.objective.itemName) then
+			initialProgress = 1
 		end
 	elseif quest.objective.type == "LEVEL" then
 		local leaderstats = player:FindFirstChild("leaderstats")
@@ -327,25 +329,7 @@ local function checkObtainQuest(player)
 	local quest = QuestConfig.getQuestById(state.questId)
 	if not quest or quest.objective.type ~= "OBTAIN" then return end
 
-	local itemName = quest.objective.itemName
-	local found = false
-	local backpack = player:FindFirstChildOfClass("Backpack")
-	if backpack then
-		for _, tool in ipairs(backpack:GetChildren()) do
-			if tool:IsA("Tool") and tool.Name == itemName then
-				found = true
-				break
-			end
-		end
-	end
-	if not found and player.Character then
-		for _, tool in ipairs(player.Character:GetChildren()) do
-			if tool:IsA("Tool") and tool.Name == itemName then
-				found = true
-				break
-			end
-		end
-	end
+	local found = playerHasItem(player, quest.objective.itemName)
 
 	if found and state.progress < 1 then
 		state.progress = 1
@@ -358,13 +342,16 @@ Players.PlayerAdded:Connect(function(player)
 	player.CharacterAdded:Connect(function(character)
 		task.defer(function()
 			checkObtainQuest(player)
-			-- Watch for tool additions in backpack
+			-- Watch for tools arriving in the backpack or straight into the character's hands.
 			local backpack = player:FindFirstChildOfClass("Backpack")
 			if backpack then
 				backpack.ChildAdded:Connect(function()
 					task.defer(checkObtainQuest, player)
 				end)
 			end
+			character.ChildAdded:Connect(function(child)
+				if child:IsA("Tool") then task.defer(checkObtainQuest, player) end
+			end)
 		end)
 	end)
 end)

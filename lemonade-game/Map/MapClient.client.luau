@@ -19,6 +19,7 @@ if not (map and markers and travelRemote) then
 end
 
 local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
+local BossWeapons = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("BossWeapons"))
 
 local HUB_WAYPOINT = "HubSpawn"
 local REGION_POLL = 0.4
@@ -441,6 +442,12 @@ local function resolveGuide(root: BasePart, inRegion)
 	end
 	local objective = quest.objective
 	if objective.type == "OBTAIN" then
+		-- A boss's unique drop is earned from that boss; only items nobody drops point at the shop.
+		for archetype, weapon in pairs(BossWeapons.Weapons) do
+			if weapon.name == objective.itemName then
+				return combatTarget({ type = "KILL_BOSS", archetype = archetype }, root, inRegion)
+			end
+		end
 		local pos, model = namedModel("RelicMerchantNPC")
 		return pos, "Relic Blacksmith", model
 	elseif objective.type == "KILL" or objective.type == "KILL_ZONE" or objective.type == "KILL_BOSS" then

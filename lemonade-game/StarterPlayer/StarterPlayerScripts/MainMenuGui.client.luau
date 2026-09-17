@@ -15,6 +15,8 @@ local rebirthResultRemote = remotes:WaitForChild("RebirthResult")
 local reforgeRemote = remotes:WaitForChild("ReforgeAction")
 
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
+local NumberFormat = require(ReplicatedStorage:WaitForChild("NumberFormat"))
+local RebirthConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("RebirthConfig"))
 local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 
 local ICONS = {
@@ -164,7 +166,7 @@ local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
 topBar.AnchorPoint = Vector2.new(1, 1)
 topBar.Position = UDim2.new(1, -12, 0.5, -166)
-topBar.Size = UDim2.fromOffset(64, 88)
+topBar.Size = UDim2.fromOffset(136, 56)
 topBar.BackgroundColor3 = COLORS.Panel
 topBar.BackgroundTransparency = 0.08
 topBar.BorderSizePixel = 0
@@ -183,7 +185,7 @@ addPadding(topBar, 8, 8, 8, 8)
 local function createChip(name, icon)
 	local chip = Instance.new("Frame")
 	chip.Name = name
-	chip.Size = UDim2.new(1, 0, 0, 32)
+	chip.Size = UDim2.new(1, 0, 0, 40)
 	chip.BackgroundColor3 = COLORS.PanelLight
 	chip.BackgroundTransparency = 0.2
 	chip.BorderSizePixel = 0
@@ -191,22 +193,22 @@ local function createChip(name, icon)
 	chip.Parent = topBar
 	addCorner(chip, 8)
 	local iconImg = Instance.new("ImageLabel")
-	iconImg.Size = UDim2.fromOffset(20, 20)
-	iconImg.Position = UDim2.fromOffset(4, 6)
+	iconImg.Size = UDim2.fromOffset(26, 26)
+	iconImg.Position = UDim2.fromOffset(7, 7)
 	iconImg.BackgroundTransparency = 1
 	iconImg.Image = icon
 	iconImg.ScaleType = Enum.ScaleType.Fit
 	iconImg.ZIndex = 7
 	iconImg.Parent = chip
-	local value = createText(chip, { text = "0", font = Enum.Font.GothamBold, size = 15, pos = UDim2.fromOffset(26, 0), size2 = UDim2.new(1, -30, 1, 0), zIndex = 7 })
+	-- Fixed text size: TextScaled shrank long values to nothing; the short-form number fits.
+	local value = createText(chip, { text = "0", font = Enum.Font.GothamBold, size = 22, pos = UDim2.fromOffset(40, 0), size2 = UDim2.new(1, -44, 1, 0), zIndex = 7 })
 	value.Name = "Value"
-	value.TextScaled = true
 	value.TextXAlignment = Enum.TextXAlignment.Left
 	return value
 end
 
+-- Level lives on the bottom-left XP bar; the top-right holds only gold.
 local goldLabel = createChip("GoldChip", ICONS.Coin)
-local levelChipLabel = createChip("LevelChip", ICONS.Trophy)
 
 local navRail = Instance.new("Frame")
 navRail.Name = "NavRail"
@@ -678,6 +680,71 @@ local function buildRebirthPanel()
 		}).LayoutOrder = 3
 	end
 
+	-- Benefits: what every rebirth adds, where your bonuses stand now versus after the next one,
+	-- and the milestone perks. All numbers come from RebirthConfig so this can't drift from the
+	-- server's maths.
+	local function benefitCard(order, height)
+		local card = Instance.new("Frame")
+		card.Size = UDim2.new(1, 0, 0, height)
+		card.BackgroundColor3 = COLORS.PanelLight
+		card.BackgroundTransparency = 0.08
+		card.BorderSizePixel = 0
+		card.LayoutOrder = order
+		card.ZIndex = 23
+		card.Parent = body
+		addCorner(card, 12)
+		addStroke(card, COLORS.Stroke, 0.35, 1)
+		addPadding(card, 8, 12, 8, 12)
+		return card
+	end
+	local function cardLine(card, y, text, props)
+		return createText(card, {
+			text = text, font = props.font or Enum.Font.Gotham, size = props.size or 12,
+			color = props.color or COLORS.Text, pos = UDim2.fromOffset(props.x or 0, y),
+			size2 = UDim2.new(props.w or 1, props.wOffset or 0, 0, 18), xAlign = props.xAlign, zIndex = 24,
+		})
+	end
+
+	local now, next_ = RebirthConfig.GetMultipliers(rebirths), RebirthConfig.GetMultipliers(rebirths + 1)
+	local rows = {
+		{ "XP gain", now.xpMult, next_.xpMult, "x%.2f" },
+		{ "Gold gain", now.goldMult, next_.goldMult, "x%.2f" },
+		{ "Sword damage", now.damageMult, next_.damageMult, "x%.2f" },
+		{ "Base health", now.healthMult, next_.healthMult, "x%.2f" },
+		{ "Bonus skill points", now.bonusSkillPoints, next_.bonusSkillPoints, "+%d" },
+	}
+	local statsCard = benefitCard(4, 34 + #rows * 20 + 24)
+	cardLine(statsCard, 0, "Your bonuses", { font = Enum.Font.GothamBold, size = 14 })
+	cardLine(statsCard, 0, "now", { font = Enum.Font.GothamBold, size = 12, color = COLORS.Muted, x = 0, w = 0.62, xAlign = Enum.TextXAlignment.Right })
+	cardLine(statsCard, 0, "after next", { font = Enum.Font.GothamBold, size = 12, color = COLORS.Success, w = 1, xAlign = Enum.TextXAlignment.Right })
+	for i, row in ipairs(rows) do
+		local y = 24 + (i - 1) * 20
+		cardLine(statsCard, y, row[1], { color = COLORS.Muted })
+		cardLine(statsCard, y, row[4]:format(row[2]), { font = Enum.Font.GothamMedium, w = 0.62, xAlign = Enum.TextXAlignment.Right })
+		cardLine(statsCard, y, row[4]:format(row[3]), { font = Enum.Font.GothamBold, color = COLORS.Success, w = 1, xAlign = Enum.TextXAlignment.Right })
+	end
+	local dropNote = ("Boss drop rates rise every rebirth (Legendary +%d%%, Epic +%.1f%%, Rare +%.1f%%); Blessed +%d%% from rebirth 5."):format(
+		math.round(RebirthConfig.DROP_RATE_BONUS_PER_REBIRTH.Legendary * 100), RebirthConfig.DROP_RATE_BONUS_PER_REBIRTH.Epic * 100,
+		RebirthConfig.DROP_RATE_BONUS_PER_REBIRTH.Rare * 100, math.round(RebirthConfig.REBIRTH_5_BLESSED_BONUS * 100))
+	local note = cardLine(statsCard, 24 + #rows * 20 + 2, dropNote, { size = 11, color = COLORS.Muted })
+	note.TextWrapped = true
+	note.Size = UDim2.new(1, 0, 0, 30)
+
+	local milestoneIds = {}
+	for id in pairs(RebirthConfig.Milestones) do table.insert(milestoneIds, id) end
+	table.sort(milestoneIds)
+	local msCard = benefitCard(5, 26 + #milestoneIds * 34)
+	cardLine(msCard, 0, "Milestone perks", { font = Enum.Font.GothamBold, size = 14 })
+	for i, id in ipairs(milestoneIds) do
+		local ms = RebirthConfig.Milestones[id]
+		local y = 24 + (i - 1) * 34
+		local reached, isNext = rebirths >= id, rebirths + 1 == id
+		local titleColor = reached and COLORS.Success or (isNext and COLORS.Gold or COLORS.Muted)
+		local marker = reached and "✓" or (isNext and "▸" or "•")
+		cardLine(msCard, y, ("%s  Rebirth %d — %s"):format(marker, id, ms.title), { font = Enum.Font.GothamBold, size = 13, color = titleColor })
+		cardLine(msCard, y + 16, ms.desc, { size = 11, color = reached and COLORS.Text or COLORS.Muted, x = 18, wOffset = -18 })
+	end
+
 	local rebirthButton = Instance.new("TextButton")
 	rebirthButton.Size = UDim2.new(1, 0, 0, 48)
 	rebirthButton.BackgroundColor3 = level >= requirement and COLORS.Success or COLORS.Button
@@ -687,7 +754,7 @@ local function buildRebirthPanel()
 	rebirthButton.TextSize = 16
 	rebirthButton.Text = level >= requirement and "REBIRTH NOW" or "LEVEL UP TO REBIRTH"
 	rebirthButton.ZIndex = 24
-	rebirthButton.LayoutOrder = 4
+	rebirthButton.LayoutOrder = 6
 	rebirthButton.Parent = body
 	addCorner(rebirthButton, 10)
 	addStroke(rebirthButton, level >= requirement and Color3.fromRGB(120, 255, 170) or COLORS.StrokeBright, 0.3, 1)
@@ -1148,14 +1215,8 @@ local function buildSettingsPanel()
 end
 
 local function refreshTopBar()
-	goldLabel.Text = tostring(player:GetAttribute('Gold') or 0)
-	local level = 1
-	local leaderstats = player:FindFirstChild('leaderstats')
-	if leaderstats then
-		local lv = leaderstats:FindFirstChild('Level')
-		if lv then level = lv.Value end
-	end
-	levelChipLabel.Text = 'Lv ' .. tostring(level)
+	-- Short form (31.2K) so a big purse never shrinks the TextScaled chip into unreadable digits.
+	goldLabel.Text = NumberFormat.short(player:GetAttribute('Gold') or 0)
 end
 
 local function refreshSkills()
@@ -1314,12 +1375,6 @@ player.CharacterAdded:Connect(function(ch)
 	bindInventoryRefresh()
 end)
 bindInventoryRefresh()
-
-local leaderstats = player:WaitForChild('leaderstats', 10)
-if leaderstats then
-	local levelVal = leaderstats:WaitForChild('Level', 5)
-	if levelVal then levelVal.Changed:Connect(function() refreshTopBar() end) end
-end
 
 refreshTopBar()
 
