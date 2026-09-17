@@ -33,6 +33,7 @@ local function claim(model: Instance, what: string): boolean
 end
 local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
 local NpcOutfits = require(ReplicatedStorage:WaitForChild("NpcOutfits"))
+local PrebuiltNpcRig = require(ReplicatedStorage:WaitForChild("PrebuiltNpcRig"))
 
 -- ── Skill Trainer practice routine ─────────────────────────────────────────
 local TRAINER_NAME = "Skill Trainer"
@@ -52,14 +53,20 @@ local function findDummies(): { Model }
 	return list
 end
 
--- The trainer is a GameplayActors rig: anchored R6-shaped parts pivoted at the HumanoidRootPart.
+-- The trainer is a GameplayActors rig: either the classic anchored R6-shaped parts pivoted at
+-- the HumanoidRootPart, or (see PrebuiltNpcRig) a rigged R15 model -- distinguished by whether
+-- it has a Humanoid. Both shapes come back with a `kind` field pose() branches on.
 local function rigParts(model: Model)
-	local parts = {}
+	local rig = PrebuiltNpcRig.rigInfo(model)
+	if rig then return rig end
+
+	local parts = { kind = "block" }
 	for _, name in ipairs({ "Torso", "Head", "Left Arm", "Right Arm", "Left Leg", "Right Leg" }) do
 		parts[name] = model:FindFirstChild(name)
 		if not parts[name] then return nil end
 	end
 	parts.model = model
+	parts.rightArmRef = parts["Right Arm"]
 	-- outfit pieces: (part, body part, offset) so pose() can carry them without physics
 	parts.accessories = {}
 	for _, acc in ipairs(model:GetChildren()) do
@@ -71,10 +78,33 @@ local function rigParts(model: Model)
 	return parts
 end
 
+-- Starts or stops a prebuilt rig's walk animation. No-op for the block rig (legSwing already
+-- drives its limbs directly in pose()) and for a rig with no walk track loaded.
+local function setWalking(parts, walking: boolean)
+	local track = parts.kind == "rig" and parts.walkTrack
+	if not track then return end
+	if walking then
+		if not track.IsPlaying then track:Play(0.2) end
+	elseif track.IsPlaying then
+		track:Stop(0.2)
+	end
+end
+
 local OFFSETS = { Torso = Vector3.new(0, 0, 0), Head = Vector3.new(0, 1.5, 0) }
 
--- Pose every part from a root CFrame: legs swing about the hips, the right arm about the shoulder.
+-- Pose the rig from a root CFrame: legs swing about the hips, the right arm about the shoulder.
+-- For a prebuilt R15 rig, "legs" is just the walk AnimationTrack (started/stopped by
+-- setWalking around the caller's loop, not here -- legSwing oscillates through zero every
+-- stride, so gating Play/Stop on it directly would stutter); the arm swing still needs manual
+-- joint rotation since the pack ships no swing animation to play.
 local function pose(model: Model, parts, root: CFrame, legSwing: number, armAngle: number, sword: BasePart?)
+	if parts.kind == "rig" then
+		model:PivotTo(root)
+		if parts.rightShoulder and parts.restShoulderC0 then
+			parts.rightShoulder.C0 = parts.restShoulderC0 * CFrame.Angles(armAngle, 0, 0)
+		end
+		return
+	end
 	model.PrimaryPart.CFrame = root
 	parts.Torso.CFrame = root
 	parts.Head.CFrame = root * CFrame.new(OFFSETS.Head)
@@ -158,6 +188,7 @@ end
 local function walk(model: Model, parts, from: CFrame, to: CFrame, sword: BasePart?)
 	local distance = (to.Position - from.Position).Magnitude
 	local duration = math.max(0.35, distance / WALK_SPEED)
+	setWalking(parts, distance > 1)
 	local elapsed = 0
 	while elapsed < duration do
 		elapsed += RunService.Heartbeat:Wait()
@@ -168,6 +199,7 @@ local function walk(model: Model, parts, from: CFrame, to: CFrame, sword: BasePa
 		pose(model, parts, root, swing, swing * 0.5, sword)
 	end
 	pose(model, parts, to, 0, 0, sword)
+	setWalking(parts, false)
 	return to
 end
 
@@ -192,6 +224,7 @@ local function walkPath(model: Model, parts, from: CFrame, destination: Vector3,
 	end
 	local here = from
 	local stride = 0
+	setWalking(parts, true)
 	for _, target in ipairs(points) do
 		local flat = Vector3.new(target.X, here.Position.Y, target.Z)
 		if (flat - here.Position).Magnitude < 0.3 then continue end
@@ -217,6 +250,7 @@ local function walkPath(model: Model, parts, from: CFrame, destination: Vector3,
 		here = CFrame.new(flat) * facing.Rotation
 	end
 	pose(model, parts, here, 0, 0, sword)
+	setWalking(parts, false)
 	return here
 end
 
@@ -255,11 +289,13 @@ local function trainerRoutine()
 		-- The server never moves him, so his respec prompt stays at the post: hide it while away.
 		local prompt = model.PrimaryPart:FindFirstChildOfClass("ProximityPrompt")
 		if prompt then prompt.Enabled = false end
-		-- Draw the sword from his back.
+		-- Draw the sword from his back. The prebuilt swordsman rig already carries its own
+		-- sword welded to its hand (always drawn, no sheathed state) -- only the block rig
+		-- needs this temporary prop.
 		if backSword then backSword.Transparency = 1 end
 		if backGuard then backGuard.Transparency = 1 end
-		local sword = makePracticeSword()
-		sword.Parent = workspace.CurrentCamera
+		local sword = if parts.kind == "block" then makePracticeSword() else nil
+		if sword then sword.Parent = workspace.CurrentCamera end
 		local arrived = walkPath(model, parts, home, standAt, WALK_SPEED, sword)
 		walk(model, parts, arrived, facing, sword)
 
@@ -286,7 +322,7 @@ local function trainerRoutine()
 			task.wait(rng:NextNumber(0.3, 0.7))
 		end
 
-		sword:Destroy()
+		if sword then sword:Destroy() end
 		if backSword then backSword.Transparency = 0 end
 		if backGuard then backGuard.Transparency = 0 end
 		local back = walkPath(model, parts, facing, home.Position, WALK_SPEED, nil)
@@ -329,42 +365,50 @@ do
 end
 
 local function makeVillager(index: number, outfit: string)
-	local model = Instance.new("Model")
-	model.Name = "Villager"
-	local pieces = {
-		{ "HumanoidRootPart", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0), nil },
-		{ "Torso", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0), SKIN },
-		{ "Head", Vector3.new(1.2, 1.2, 1.2), Vector3.new(0, 4.6, 0), SKIN },
-		{ "Left Arm", Vector3.new(1, 2, 1), Vector3.new(-1.5, 3, 0), SKIN },
-		{ "Right Arm", Vector3.new(1, 2, 1), Vector3.new(1.5, 3, 0), SKIN },
-		{ "Left Leg", Vector3.new(1, 2, 1), Vector3.new(-0.5, 1, 0), SKIN },
-		{ "Right Leg", Vector3.new(1, 2, 1), Vector3.new(0.5, 1, 0), SKIN },
-	}
-	for _, spec in ipairs(pieces) do
-		local part = Instance.new("Part")
-		part.Name, part.Size = spec[1], spec[2]
-		part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
-		part.Material = Enum.Material.SmoothPlastic
-		part.Color = spec[4] or SKIN
-		part.TopSurface, part.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
-		if spec[1] == "HumanoidRootPart" then
-			part.Transparency = 1
-			model.PrimaryPart = part
-		elseif spec[1] == "Head" then
-			local mesh = Instance.new("SpecialMesh")
-			mesh.MeshType = Enum.MeshType.Head
-			mesh.Scale = Vector3.new(1.25, 1.25, 1.25)
-			mesh.Parent = part
+	local model = PrebuiltNpcRig.clone(outfit, "Villager", Vector3.zero)
+	if model then
+		model.Parent = workspace.CurrentCamera
+	else
+		model = Instance.new("Model")
+		model.Name = "Villager"
+		local pieces = {
+			{ "HumanoidRootPart", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0), nil },
+			{ "Torso", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0), SKIN },
+			{ "Head", Vector3.new(1.2, 1.2, 1.2), Vector3.new(0, 4.6, 0), SKIN },
+			{ "Left Arm", Vector3.new(1, 2, 1), Vector3.new(-1.5, 3, 0), SKIN },
+			{ "Right Arm", Vector3.new(1, 2, 1), Vector3.new(1.5, 3, 0), SKIN },
+			{ "Left Leg", Vector3.new(1, 2, 1), Vector3.new(-0.5, 1, 0), SKIN },
+			{ "Right Leg", Vector3.new(1, 2, 1), Vector3.new(0.5, 1, 0), SKIN },
+		}
+		for _, spec in ipairs(pieces) do
+			local part = Instance.new("Part")
+			part.Name, part.Size = spec[1], spec[2]
+			part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
+			part.Material = Enum.Material.SmoothPlastic
+			part.Color = spec[4] or SKIN
+			part.TopSurface, part.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+			if spec[1] == "HumanoidRootPart" then
+				part.Transparency = 1
+				model.PrimaryPart = part
+			elseif spec[1] == "Head" then
+				local mesh = Instance.new("SpecialMesh")
+				mesh.MeshType = Enum.MeshType.Head
+				mesh.Scale = Vector3.new(1.25, 1.25, 1.25)
+				mesh.Parent = part
+			end
+			part.Parent = model
 		end
-		part.Parent = model
+		model.Parent = workspace.CurrentCamera
+		NpcOutfits.apply(model, outfit) -- prebuilt rigs already have their look baked in
 	end
+	local head = model:FindFirstChild("Head")
 	local bubble = Instance.new("BillboardGui")
 	bubble.Name = "Chatter"
 	bubble.Size = UDim2.fromOffset(220, 30)
 	bubble.StudsOffsetWorldSpace = Vector3.new(0, 2.4, 0)
 	bubble.MaxDistance = 45
 	bubble.Enabled = false
-	bubble.Parent = model.Head
+	bubble.Parent = head
 	local text = Instance.new("TextLabel")
 	text.BackgroundColor3 = Color3.fromRGB(24, 22, 20)
 	text.BackgroundTransparency = 0.25
@@ -377,8 +421,6 @@ local function makeVillager(index: number, outfit: string)
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 6)
 	corner.Parent = text
-	model.Parent = workspace.CurrentCamera
-	NpcOutfits.apply(model, outfit)
 	return model, text, bubble
 end
 
@@ -604,7 +646,7 @@ local function smithRoutine(forge: Model)
 					if not struck and phase > 0.92 then
 						struck = true
 						spark()
-						AudioManager.PlaySFX("crit_hit", parts["Right Arm"])
+						AudioManager.PlaySFX("crit_hit", parts.rightArmRef)
 					end
 				end
 				pose(model, parts, facing, 0, angle, nil)

@@ -1,0 +1,4247 @@
+<?xml version='1.0' encoding='utf-8'?>
+<roblox version="4">
+  <Item class="Model" referent="MODEL">
+    <Properties>
+      <string name="Name">Swordsman_R15</string>
+      <Ref name="PrimaryPart">P_HumanoidRootPart</Ref>
+    </Properties>
+    <Item class="Part" referent="P_HumanoidRootPart">
+      <Properties>
+        <string name="Name">HumanoidRootPart</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">127</int>
+        <float name="Transparency">1</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4288367162</Color3uint8>
+        <Vector3 name="size">
+          <X>2</X>
+          <Y>2</Y>
+          <Z>1</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>3</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Attachment" referent="A_Root_HumanoidRootPart">
+        <Properties>
+          <string name="Name">RootRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.55</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_LowerTorso">
+      <Properties>
+        <string name="Name">LowerTorso</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4288367162</Color3uint8>
+        <Vector3 name="size">
+          <X>1.8</X>
+          <Y>0.6</Y>
+          <Z>1</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2.45</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_Root">
+        <Properties>
+          <string name="Name">Root</string>
+          <Ref name="Part0">P_HumanoidRootPart</Ref>
+          <Ref name="Part1">P_LowerTorso</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.55</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_Root_LowerTorso">
+        <Properties>
+          <string name="Name">RootRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_Waist_LowerTorso">
+        <Properties>
+          <string name="Name">WaistRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.3</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftHip_LowerTorso">
+        <Properties>
+          <string name="Name">LeftHipRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>-0.5</X>
+            <Y>-0.3</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightHip_LowerTorso">
+        <Properties>
+          <string name="Name">RightHipRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0.5</X>
+            <Y>-0.3</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_UpperTorso">
+      <Properties>
+        <string name="Name">UpperTorso</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4288367162</Color3uint8>
+        <Vector3 name="size">
+          <X>2</X>
+          <Y>1.2</Y>
+          <Z>1</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>3.35</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_Waist">
+        <Properties>
+          <string name="Name">Waist</string>
+          <Ref name="Part0">P_LowerTorso</Ref>
+          <Ref name="Part1">P_UpperTorso</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.3</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>-0.6</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_Waist_UpperTorso">
+        <Properties>
+          <string name="Name">WaistRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.6</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_Neck_UpperTorso">
+        <Properties>
+          <string name="Name">NeckRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.6</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftShoulder_UpperTorso">
+        <Properties>
+          <string name="Name">LeftShoulderRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>-1.48</X>
+            <Y>0.6</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightShoulder_UpperTorso">
+        <Properties>
+          <string name="Name">RightShoulderRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>1.48</X>
+            <Y>0.6</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_BodyFrontAttachment">
+        <Properties>
+          <string name="Name">BodyFrontAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>-0.5</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_BodyBackAttachment">
+        <Properties>
+          <string name="Name">BodyBackAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0.5</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_Head">
+      <Properties>
+        <string name="Name">Head</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4293441681</Color3uint8>
+        <Vector3 name="size">
+          <X>1.5</X>
+          <Y>1.3</Y>
+          <Z>1.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>4.6</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_Neck">
+        <Properties>
+          <string name="Name">Neck</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_Head</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.6</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>-0.65</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_Neck_Head">
+        <Properties>
+          <string name="Name">NeckRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.65</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_HatAttachment">
+        <Properties>
+          <string name="Name">HatAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.65</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_HairAttachment">
+        <Properties>
+          <string name="Name">HairAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.55</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_FaceFrontAttachment">
+        <Properties>
+          <string name="Name">FaceFrontAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>-0.6</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_LeftUpperArm">
+      <Properties>
+        <string name="Name">LeftUpperArm</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4288367162</Color3uint8>
+        <Vector3 name="size">
+          <X>0.9</X>
+          <Y>0.9</Y>
+          <Z>0.9</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-1.48</X>
+          <Y>3.5</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_LeftShoulder">
+        <Properties>
+          <string name="Name">LeftShoulder</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_LeftUpperArm</Ref>
+          <CoordinateFrame name="C0">
+            <X>-1.48</X>
+            <Y>0.6</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.45</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftShoulder_LeftUpperArm">
+        <Properties>
+          <string name="Name">LeftShoulderRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.45</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftElbow_LeftUpperArm">
+        <Properties>
+          <string name="Name">LeftElbowRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.45</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_LeftLowerArm">
+      <Properties>
+        <string name="Name">LeftLowerArm</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4293441681</Color3uint8>
+        <Vector3 name="size">
+          <X>0.86</X>
+          <Y>0.75</Y>
+          <Z>0.86</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-1.48</X>
+          <Y>2.675</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_LeftElbow">
+        <Properties>
+          <string name="Name">LeftElbow</string>
+          <Ref name="Part0">P_LeftUpperArm</Ref>
+          <Ref name="Part1">P_LeftLowerArm</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.45</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.375</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftElbow_LeftLowerArm">
+        <Properties>
+          <string name="Name">LeftElbowRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.375</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftWrist_LeftLowerArm">
+        <Properties>
+          <string name="Name">LeftWristRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.375</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_LeftHand">
+      <Properties>
+        <string name="Name">LeftHand</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4293441681</Color3uint8>
+        <Vector3 name="size">
+          <X>0.86</X>
+          <Y>0.35</Y>
+          <Z>0.86</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-1.48</X>
+          <Y>2.125</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_LeftWrist">
+        <Properties>
+          <string name="Name">LeftWrist</string>
+          <Ref name="Part0">P_LeftLowerArm</Ref>
+          <Ref name="Part1">P_LeftHand</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.375</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.175</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftWrist_LeftHand">
+        <Properties>
+          <string name="Name">LeftWristRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.175</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftGripAttachment">
+        <Properties>
+          <string name="Name">LeftGripAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0</R20>
+            <R21>1</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_LeftUpperLeg">
+      <Properties>
+        <string name="Name">LeftUpperLeg</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4286284426</Color3uint8>
+        <Vector3 name="size">
+          <X>0.96</X>
+          <Y>1</Y>
+          <Z>0.94</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.5</X>
+          <Y>1.65</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_LeftHip">
+        <Properties>
+          <string name="Name">LeftHip</string>
+          <Ref name="Part0">P_LowerTorso</Ref>
+          <Ref name="Part1">P_LeftUpperLeg</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.5</X>
+            <Y>-0.3</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.5</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftHip_LeftUpperLeg">
+        <Properties>
+          <string name="Name">LeftHipRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.5</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftKnee_LeftUpperLeg">
+        <Properties>
+          <string name="Name">LeftKneeRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.5</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_LeftLowerLeg">
+      <Properties>
+        <string name="Name">LeftLowerLeg</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4286284426</Color3uint8>
+        <Vector3 name="size">
+          <X>0.94</X>
+          <Y>0.85</Y>
+          <Z>0.92</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.5</X>
+          <Y>0.725</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_LeftKnee">
+        <Properties>
+          <string name="Name">LeftKnee</string>
+          <Ref name="Part0">P_LeftUpperLeg</Ref>
+          <Ref name="Part1">P_LeftLowerLeg</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.5</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.425</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftKnee_LeftLowerLeg">
+        <Properties>
+          <string name="Name">LeftKneeRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.425</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftAnkle_LeftLowerLeg">
+        <Properties>
+          <string name="Name">LeftAnkleRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.425</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_LeftFoot">
+      <Properties>
+        <string name="Name">LeftFoot</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4282724383</Color3uint8>
+        <Vector3 name="size">
+          <X>0.96</X>
+          <Y>0.3</Y>
+          <Z>1.16</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.5</X>
+          <Y>0.15</Y>
+          <Z>-0.1</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_LeftAnkle">
+        <Properties>
+          <string name="Name">LeftAnkle</string>
+          <Ref name="Part0">P_LeftLowerLeg</Ref>
+          <Ref name="Part1">P_LeftFoot</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.425</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.15</Y>
+            <Z>0.1</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_LeftAnkle_LeftFoot">
+        <Properties>
+          <string name="Name">LeftAnkleRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.15</Y>
+            <Z>0.1</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_RightUpperArm">
+      <Properties>
+        <string name="Name">RightUpperArm</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4288367162</Color3uint8>
+        <Vector3 name="size">
+          <X>0.9</X>
+          <Y>0.9</Y>
+          <Z>0.9</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.48</X>
+          <Y>3.5</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_RightShoulder">
+        <Properties>
+          <string name="Name">RightShoulder</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_RightUpperArm</Ref>
+          <CoordinateFrame name="C0">
+            <X>1.48</X>
+            <Y>0.6</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.45</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightShoulder_RightUpperArm">
+        <Properties>
+          <string name="Name">RightShoulderRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.45</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightElbow_RightUpperArm">
+        <Properties>
+          <string name="Name">RightElbowRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.45</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_RightLowerArm">
+      <Properties>
+        <string name="Name">RightLowerArm</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4293441681</Color3uint8>
+        <Vector3 name="size">
+          <X>0.86</X>
+          <Y>0.75</Y>
+          <Z>0.86</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.48</X>
+          <Y>2.675</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_RightElbow">
+        <Properties>
+          <string name="Name">RightElbow</string>
+          <Ref name="Part0">P_RightUpperArm</Ref>
+          <Ref name="Part1">P_RightLowerArm</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.45</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.375</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightElbow_RightLowerArm">
+        <Properties>
+          <string name="Name">RightElbowRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.375</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightWrist_RightLowerArm">
+        <Properties>
+          <string name="Name">RightWristRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.375</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_RightHand">
+      <Properties>
+        <string name="Name">RightHand</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4293441681</Color3uint8>
+        <Vector3 name="size">
+          <X>0.86</X>
+          <Y>0.35</Y>
+          <Z>0.86</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.48</X>
+          <Y>2.125</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_RightWrist">
+        <Properties>
+          <string name="Name">RightWrist</string>
+          <Ref name="Part0">P_RightLowerArm</Ref>
+          <Ref name="Part1">P_RightHand</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.375</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.175</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightWrist_RightHand">
+        <Properties>
+          <string name="Name">RightWristRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.175</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightGripAttachment">
+        <Properties>
+          <string name="Name">RightGripAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0</R20>
+            <R21>1</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_RightUpperLeg">
+      <Properties>
+        <string name="Name">RightUpperLeg</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4286284426</Color3uint8>
+        <Vector3 name="size">
+          <X>0.96</X>
+          <Y>1</Y>
+          <Z>0.94</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.5</X>
+          <Y>1.65</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_RightHip">
+        <Properties>
+          <string name="Name">RightHip</string>
+          <Ref name="Part0">P_LowerTorso</Ref>
+          <Ref name="Part1">P_RightUpperLeg</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.5</X>
+            <Y>-0.3</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.5</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightHip_RightUpperLeg">
+        <Properties>
+          <string name="Name">RightHipRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.5</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightKnee_RightUpperLeg">
+        <Properties>
+          <string name="Name">RightKneeRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.5</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_RightLowerLeg">
+      <Properties>
+        <string name="Name">RightLowerLeg</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4286284426</Color3uint8>
+        <Vector3 name="size">
+          <X>0.94</X>
+          <Y>0.85</Y>
+          <Z>0.92</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.5</X>
+          <Y>0.725</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_RightKnee">
+        <Properties>
+          <string name="Name">RightKnee</string>
+          <Ref name="Part0">P_RightUpperLeg</Ref>
+          <Ref name="Part1">P_RightLowerLeg</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.5</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.425</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightKnee_RightLowerLeg">
+        <Properties>
+          <string name="Name">RightKneeRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.425</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightAnkle_RightLowerLeg">
+        <Properties>
+          <string name="Name">RightAnkleRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-0.425</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_RightFoot">
+      <Properties>
+        <string name="Name">RightFoot</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">false</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4282724383</Color3uint8>
+        <Vector3 name="size">
+          <X>0.96</X>
+          <Y>0.3</Y>
+          <Z>1.16</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.5</X>
+          <Y>0.15</Y>
+          <Z>-0.1</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Motor6D" referent="J_RightAnkle">
+        <Properties>
+          <string name="Name">RightAnkle</string>
+          <Ref name="Part0">P_RightLowerLeg</Ref>
+          <Ref name="Part1">P_RightFoot</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.425</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0.15</Y>
+            <Z>0.1</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="A_RightAnkle_RightFoot">
+        <Properties>
+          <string name="Name">RightAnkleRigAttachment</string>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0.15</Y>
+            <Z>0.1</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_eye_left">
+      <Properties>
+        <string name="Name">eye_left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">0</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4280557344</Color3uint8>
+        <Vector3 name="size">
+          <X>0.13</X>
+          <Y>0.21</Y>
+          <Z>0.045</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.3</X>
+          <Y>4.69</Y>
+          <Z>-0.607</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_eye_left">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_eye_left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.3</X>
+            <Y>0.09</Y>
+            <Z>-0.607</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_eye_glint_left">
+      <Properties>
+        <string name="Name">eye_glint_left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">0</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4294438624</Color3uint8>
+        <Vector3 name="size">
+          <X>0.032</X>
+          <Y>0.042</Y>
+          <Z>0.012</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.318</X>
+          <Y>4.73</Y>
+          <Z>-0.632</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_eye_glint_left">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_eye_glint_left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.318</X>
+            <Y>0.13</Y>
+            <Z>-0.632</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_brow_left">
+      <Properties>
+        <string name="Name">brow_left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4281542946</Color3uint8>
+        <Vector3 name="size">
+          <X>0.25</X>
+          <Y>0.055</Y>
+          <Z>0.045</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.3</X>
+          <Y>4.93</Y>
+          <Z>-0.613</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_brow_left">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_brow_left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.3</X>
+            <Y>0.33</Y>
+            <Z>-0.613</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_eye_right">
+      <Properties>
+        <string name="Name">eye_right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">0</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4280557344</Color3uint8>
+        <Vector3 name="size">
+          <X>0.13</X>
+          <Y>0.21</Y>
+          <Z>0.045</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.3</X>
+          <Y>4.69</Y>
+          <Z>-0.607</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_eye_right">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_eye_right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.3</X>
+            <Y>0.09</Y>
+            <Z>-0.607</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_eye_glint_right">
+      <Properties>
+        <string name="Name">eye_glint_right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">0</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4294438624</Color3uint8>
+        <Vector3 name="size">
+          <X>0.032</X>
+          <Y>0.042</Y>
+          <Z>0.012</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.282</X>
+          <Y>4.73</Y>
+          <Z>-0.632</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_eye_glint_right">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_eye_glint_right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.282</X>
+            <Y>0.13</Y>
+            <Z>-0.632</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_brow_right">
+      <Properties>
+        <string name="Name">brow_right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4281542946</Color3uint8>
+        <Vector3 name="size">
+          <X>0.25</X>
+          <Y>0.055</Y>
+          <Z>0.045</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.3</X>
+          <Y>4.93</Y>
+          <Z>-0.613</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_brow_right">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_brow_right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.3</X>
+            <Y>0.33</Y>
+            <Z>-0.613</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_smile_00">
+      <Properties>
+        <string name="Name">smile_00</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">2</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4284167723</Color3uint8>
+        <Vector3 name="size">
+          <X>0.067230125</X>
+          <Y>0.042</Y>
+          <Z>0.042</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.20194175</X>
+          <Y>4.3776543</Y>
+          <Z>-0.614</Z>
+          <R00>0.63080657</R00>
+          <R01>0.77594012</R01>
+          <R02>-0</R02>
+          <R10>-0.77594012</R10>
+          <R11>0.63080657</R11>
+          <R12>-0</R12>
+          <R20>-0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_smile_00">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_smile_00</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.20194175</X>
+            <Y>-0.2223457</Y>
+            <Z>-0.614</Z>
+            <R00>0.63080657</R00>
+            <R01>0.77594012</R01>
+            <R02>-0</R02>
+            <R10>-0.77594012</R10>
+            <R11>0.63080657</R11>
+            <R12>-0</R12>
+            <R20>-0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_smile_01">
+      <Properties>
+        <string name="Name">smile_01</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">2</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4284167723</Color3uint8>
+        <Vector3 name="size">
+          <X>0.07404285</X>
+          <Y>0.042</Y>
+          <Z>0.042</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.14912056</X>
+          <Y>4.3323103</Y>
+          <Z>-0.614</Z>
+          <R00>0.85400795</R00>
+          <R01>0.52025996</R01>
+          <R02>-0</R02>
+          <R10>-0.52025996</R10>
+          <R11>0.85400795</R11>
+          <R12>-0</R12>
+          <R20>-0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_smile_01">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_smile_01</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.14912056</X>
+            <Y>-0.26768974</Y>
+            <Z>-0.614</Z>
+            <R00>0.85400795</R00>
+            <R01>0.52025996</R01>
+            <R02>-0</R02>
+            <R10>-0.52025996</R10>
+            <R11>0.85400795</R11>
+            <R12>-0</R12>
+            <R20>-0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_smile_02">
+      <Properties>
+        <string name="Name">smile_02</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">2</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4284167723</Color3uint8>
+        <Vector3 name="size">
+          <X>0.079445591</X>
+          <Y>0.042</Y>
+          <Z>0.042</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.079118155</X>
+          <Y>4.3028304</Y>
+          <Z>-0.614</Z>
+          <R00>0.96634221</R00>
+          <R01>0.25726005</R01>
+          <R02>-0</R02>
+          <R10>-0.25726005</R10>
+          <R11>0.96634221</R11>
+          <R12>-0</R12>
+          <R20>-0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_smile_02">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_smile_02</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.079118155</X>
+            <Y>-0.29716959</Y>
+            <Z>-0.614</Z>
+            <R00>0.96634221</R00>
+            <R01>0.25726005</R01>
+            <R02>-0</R02>
+            <R10>-0.25726005</R10>
+            <R11>0.96634221</R11>
+            <R12>-0</R12>
+            <R20>-0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_smile_03">
+      <Properties>
+        <string name="Name">smile_03</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">2</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4284167723</Color3uint8>
+        <Vector3 name="size">
+          <X>0.081464683</X>
+          <Y>0.042</Y>
+          <Z>0.042</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-4.510281e-17</X>
+          <Y>4.2926113</Y>
+          <Z>-0.614</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>-0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>-0</R12>
+          <R20>-0</R20>
+          <R21>-0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_smile_03">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_smile_03</Ref>
+          <CoordinateFrame name="C0">
+            <X>-4.510281e-17</X>
+            <Y>-0.30738868</Y>
+            <Z>-0.614</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>-0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>-0</R12>
+            <R20>-0</R20>
+            <R21>-0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_smile_04">
+      <Properties>
+        <string name="Name">smile_04</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">2</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4284167723</Color3uint8>
+        <Vector3 name="size">
+          <X>0.079445591</X>
+          <Y>0.042</Y>
+          <Z>0.042</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.079118155</X>
+          <Y>4.3028304</Y>
+          <Z>-0.614</Z>
+          <R00>0.96634221</R00>
+          <R01>-0.25726005</R01>
+          <R02>-0</R02>
+          <R10>0.25726005</R10>
+          <R11>0.96634221</R11>
+          <R12>0</R12>
+          <R20>-0</R20>
+          <R21>-0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_smile_04">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_smile_04</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.079118155</X>
+            <Y>-0.29716959</Y>
+            <Z>-0.614</Z>
+            <R00>0.96634221</R00>
+            <R01>-0.25726005</R01>
+            <R02>-0</R02>
+            <R10>0.25726005</R10>
+            <R11>0.96634221</R11>
+            <R12>0</R12>
+            <R20>-0</R20>
+            <R21>-0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_smile_05">
+      <Properties>
+        <string name="Name">smile_05</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">2</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4284167723</Color3uint8>
+        <Vector3 name="size">
+          <X>0.07404285</X>
+          <Y>0.042</Y>
+          <Z>0.042</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.14912056</X>
+          <Y>4.3323103</Y>
+          <Z>-0.614</Z>
+          <R00>0.85400795</R00>
+          <R01>-0.52025996</R01>
+          <R02>-0</R02>
+          <R10>0.52025996</R10>
+          <R11>0.85400795</R11>
+          <R12>0</R12>
+          <R20>-0</R20>
+          <R21>-0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_smile_05">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_smile_05</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.14912056</X>
+            <Y>-0.26768974</Y>
+            <Z>-0.614</Z>
+            <R00>0.85400795</R00>
+            <R01>-0.52025996</R01>
+            <R02>-0</R02>
+            <R10>0.52025996</R10>
+            <R11>0.85400795</R11>
+            <R12>0</R12>
+            <R20>-0</R20>
+            <R21>-0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_smile_06">
+      <Properties>
+        <string name="Name">smile_06</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">2</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4284167723</Color3uint8>
+        <Vector3 name="size">
+          <X>0.067230125</X>
+          <Y>0.042</Y>
+          <Z>0.042</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.20194175</X>
+          <Y>4.3776543</Y>
+          <Z>-0.614</Z>
+          <R00>0.63080657</R00>
+          <R01>-0.77594012</R01>
+          <R02>-0</R02>
+          <R10>0.77594012</R10>
+          <R11>0.63080657</R11>
+          <R12>0</R12>
+          <R20>-0</R20>
+          <R21>-0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_smile_06">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_smile_06</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.20194175</X>
+            <Y>-0.2223457</Y>
+            <Z>-0.614</Z>
+            <R00>0.63080657</R00>
+            <R01>-0.77594012</R01>
+            <R02>-0</R02>
+            <R10>0.77594012</R10>
+            <R11>0.63080657</R11>
+            <R12>0</R12>
+            <R20>-0</R20>
+            <R21>-0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_belt">
+      <Properties>
+        <string name="Name">belt</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>1.86</X>
+          <Y>0.19</Y>
+          <Z>1.06</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2.45</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_belt">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_LowerTorso</Ref>
+          <Ref name="Part1">P_belt</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_belt_buckle">
+      <Properties>
+        <string name="Name">belt_buckle</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4291404604</Color3uint8>
+        <Vector3 name="size">
+          <X>0.29</X>
+          <Y>0.22</Y>
+          <Z>0.075</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2.45</Y>
+          <Z>-0.553</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_belt_buckle">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_LowerTorso</Ref>
+          <Ref name="Part1">P_belt_buckle</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>-0.553</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_breastplate">
+      <Properties>
+        <string name="Name">breastplate</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4290034369</Color3uint8>
+        <Vector3 name="size">
+          <X>2.06</X>
+          <Y>1.1</Y>
+          <Z>1.09</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>3.35</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_breastplate">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_breastplate</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_plate_ridge">
+      <Properties>
+        <string name="Name">plate_ridge</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4286284426</Color3uint8>
+        <Vector3 name="size">
+          <X>0.12</X>
+          <Y>1</Y>
+          <Z>0.1</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>3.35</Y>
+          <Z>-0.59</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_plate_ridge">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_plate_ridge</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>-0.59</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_pauldron_Left">
+      <Properties>
+        <string name="Name">pauldron_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4290034369</Color3uint8>
+        <Vector3 name="size">
+          <X>1</X>
+          <Y>0.28</Y>
+          <Z>1.04</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-1.48</X>
+          <Y>3.87</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_pauldron_Left">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_LeftUpperArm</Ref>
+          <Ref name="Part1">P_pauldron_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.37</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_pauldron_Right">
+      <Properties>
+        <string name="Name">pauldron_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4290034369</Color3uint8>
+        <Vector3 name="size">
+          <X>1</X>
+          <Y>0.28</Y>
+          <Z>1.04</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.48</X>
+          <Y>3.87</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_pauldron_Right">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_RightUpperArm</Ref>
+          <Ref name="Part1">P_pauldron_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.37</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_helm">
+      <Properties>
+        <string name="Name">helm</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4290034369</Color3uint8>
+        <Vector3 name="size">
+          <X>1.62</X>
+          <Y>0.32</Y>
+          <Z>1.34</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>5.17</Y>
+          <Z>0.01</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_helm">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_helm</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.57</Y>
+            <Z>0.01</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_helm_back">
+      <Properties>
+        <string name="Name">helm_back</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4290034369</Color3uint8>
+        <Vector3 name="size">
+          <X>1.58</X>
+          <Y>0.67</Y>
+          <Z>0.16</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>4.81</Y>
+          <Z>0.61</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_helm_back">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_helm_back</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.21</Y>
+            <Z>0.61</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_helm_cheek_-0.77">
+      <Properties>
+        <string name="Name">helm_cheek_-0.77</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4290034369</Color3uint8>
+        <Vector3 name="size">
+          <X>0.13</X>
+          <Y>0.55</Y>
+          <Z>1.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.77</X>
+          <Y>4.75</Y>
+          <Z>-0.02</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_helm_cheek_-0.77">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_helm_cheek_-0.77</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.77</X>
+            <Y>0.15</Y>
+            <Z>-0.02</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_helm_cheek_0.77">
+      <Properties>
+        <string name="Name">helm_cheek_0.77</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4290034369</Color3uint8>
+        <Vector3 name="size">
+          <X>0.13</X>
+          <Y>0.55</Y>
+          <Z>1.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.77</X>
+          <Y>4.75</Y>
+          <Z>-0.02</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_helm_cheek_0.77">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_helm_cheek_0.77</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.77</X>
+            <Y>0.15</Y>
+            <Z>-0.02</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_helm_brow">
+      <Properties>
+        <string name="Name">helm_brow</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4286284426</Color3uint8>
+        <Vector3 name="size">
+          <X>1.6</X>
+          <Y>0.09</Y>
+          <Z>0.09</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>5.02</Y>
+          <Z>-0.64</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_helm_brow">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_helm_brow</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.42</Y>
+            <Z>-0.64</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_helm_nose">
+      <Properties>
+        <string name="Name">helm_nose</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4286284426</Color3uint8>
+        <Vector3 name="size">
+          <X>0.08</X>
+          <Y>0.39</Y>
+          <Z>0.09</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>4.83</Y>
+          <Z>-0.65</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_helm_nose">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_helm_nose</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.23</Y>
+            <Z>-0.65</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_helm_crest">
+      <Properties>
+        <string name="Name">helm_crest</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4291404604</Color3uint8>
+        <Vector3 name="size">
+          <X>0.16</X>
+          <Y>0.2</Y>
+          <Z>1.18</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>5.42</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_helm_crest">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_Head</Ref>
+          <Ref name="Part1">P_helm_crest</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.82</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_sword_grip">
+      <Properties>
+        <string name="Name">sword_grip</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">2</token>
+        <token name="Material">512</token>
+        <Color3uint8 name="Color3uint8">4282724383</Color3uint8>
+        <Vector3 name="size">
+          <X>0.61</X>
+          <Y>0.2</Y>
+          <Z>0.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.48</X>
+          <Y>2.235</Y>
+          <Z>-0.53</Z>
+          <R00>0</R00>
+          <R01>-1</R01>
+          <R02>-0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>-0</R20>
+          <R21>-0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_sword_grip">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_RightHand</Ref>
+          <Ref name="Part1">P_sword_grip</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0</R20>
+            <R21>1</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_sword_guard">
+      <Properties>
+        <string name="Name">sword_guard</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4291404604</Color3uint8>
+        <Vector3 name="size">
+          <X>0.8</X>
+          <Y>0.12</Y>
+          <Z>0.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.48</X>
+          <Y>2.59</Y>
+          <Z>-0.53</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_sword_guard">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_RightHand</Ref>
+          <Ref name="Part1">P_sword_guard</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.355</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>0</R00>
+            <R01>1</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>-1</R20>
+            <R21>0</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_sword_blade">
+      <Properties>
+        <string name="Name">sword_blade</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4286284426</Color3uint8>
+        <Vector3 name="size">
+          <X>0.23</X>
+          <Y>1.9</Y>
+          <Z>0.09</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.48</X>
+          <Y>3.6</Y>
+          <Z>-0.53</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_sword_blade">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_RightHand</Ref>
+          <Ref name="Part1">P_sword_blade</Ref>
+          <CoordinateFrame name="C0">
+            <X>1.365</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>0</R00>
+            <R01>1</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>-1</R20>
+            <R21>0</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_sword_pommel">
+      <Properties>
+        <string name="Name">sword_pommel</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">0</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4291404604</Color3uint8>
+        <Vector3 name="size">
+          <X>0.25</X>
+          <Y>0.23</Y>
+          <Z>0.25</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.48</X>
+          <Y>1.9</Y>
+          <Z>-0.53</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_sword_pommel">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_RightHand</Ref>
+          <Ref name="Part1">P_sword_pommel</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.335</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>0</R00>
+            <R01>1</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>-1</R20>
+            <R21>0</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_scabbard">
+      <Properties>
+        <string name="Name">scabbard</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">272</token>
+        <Color3uint8 name="Color3uint8">4282724383</Color3uint8>
+        <Vector3 name="size">
+          <X>0.22</X>
+          <Y>1.92</Y>
+          <Z>0.26</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-1.04</X>
+          <Y>1.6</Y>
+          <Z>0.32</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_scabbard">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_LeftUpperLeg</Ref>
+          <Ref name="Part1">P_scabbard</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.54</X>
+            <Y>-0.05</Y>
+            <Z>0.32</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_scabbard_tip">
+      <Properties>
+        <string name="Name">scabbard_tip</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4291404604</Color3uint8>
+        <Vector3 name="size">
+          <X>0.25</X>
+          <Y>0.17</Y>
+          <Z>0.29</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-1.04</X>
+          <Y>0.65</Y>
+          <Z>0.32</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_scabbard_tip">
+        <Properties>
+          <string name="Name">OutfitWeld</string>
+          <Ref name="Part0">P_LeftUpperLeg</Ref>
+          <Ref name="Part1">P_scabbard_tip</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.54</X>
+            <Y>-1</Y>
+            <Z>0.32</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Humanoid" referent="HUMANOID">
+      <Properties>
+        <string name="Name">Humanoid</string>
+        <token name="RigType">1</token>
+        <float name="HipHeight">2</float>
+        <float name="WalkSpeed">12</float>
+        <float name="Health">100</float>
+        <float name="MaxHealth">100</float>
+        <bool name="RequiresNeck">true</bool>
+        <bool name="AutomaticScalingEnabled">false</bool>
+        <string name="DisplayName">Swordsman</string>
+      </Properties>
+      <Item class="Animator" referent="ANIMATOR">
+        <Properties>
+          <string name="Name">Animator</string>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

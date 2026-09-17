@@ -1,6 +1,7 @@
 -- ModuleScript | ServerScriptService.GameplayActors | Plain interaction characters, no scenery.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local NpcOutfits = require(ReplicatedStorage:WaitForChild("NpcOutfits"))
+local PrebuiltNpcRig = require(ReplicatedStorage:WaitForChild("PrebuiltNpcRig"))
 local Actors = {}
 
 local function nameplate(head: BasePart, title: string, subtitle: string?)
@@ -37,7 +38,17 @@ end
 -- options.outfit: an NpcOutfits name (QuestMaster, Blacksmith, Trainer, RebirthKeeper, ...).
 function Actors.create(name: string, position: Vector3, color: Color3, options: {}?): Model
 	options = options or {}
-	local model = Instance.new("Model")
+	local model = options.outfit and PrebuiltNpcRig.clone(options.outfit, name, position)
+	if model then
+		if options.facing then
+			model:PivotTo(CFrame.new(position + Vector3.new(0, 3, 0)) * options.facing.Rotation)
+		end
+		nameplate(model:FindFirstChild("Head"), options.title or name, options.subtitle)
+		model.Parent = workspace
+		return model
+	end
+
+	model = Instance.new("Model")
 	model.Name = name
 	local pieces = {
 		{"HumanoidRootPart", Vector3.new(2, 2, 1), Vector3.new(0, 3, 0)},

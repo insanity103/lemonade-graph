@@ -1,16 +1,16 @@
 # Graph Report - adoring-khayyam-85d49c  (2026-09-16)
 
 ## Corpus Check
-- 157 files · ~476,440 words
+- 225 files · ~497,696 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2670 nodes · 3568 edges · 279 communities (242 shown, 15 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 108 edges (avg confidence: 0.85)
+- 2839 nodes · 3730 edges · 321 communities (246 shown, 16 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 150 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `0564f50d`
+- Built from commit: `31fe67f5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -131,6 +131,7 @@
 - Sword RPG UI/UX Design Template for Roblox
 - BossDoorClient.client.luau
 - README.md
+- change
 - Game Passes & Monetization (5 passes, 825R$ total)
 - 11. Code Patterns Reference
 - 4. Loot & Rewards
@@ -155,7 +156,11 @@
 - MerchantGui.client.luau
 - PlayerDataService.MarkDirty
 - AdminGui.client.luau
+- doCleanup
+- applyInstanceProps.luau
 - CombatUtil.hasLineOfSight
+- PanelChrome.luau
+- scoped
 - Comprehensive Synthesis Document
 - 10. Decision Trees
 - 2. Common Exploits Catalog
@@ -290,12 +295,12 @@
   lemonade-game/ServerScriptService/MerchantSystem.server.luau → lemonade-game/ServerScriptService/BossSwordFactory.luau
 - `BossSwordFactory.rebuild()` --calls--> `BossWeapons.GetByTier()`  [INFERRED]
   lemonade-game/ServerScriptService/BossSwordFactory.luau → lemonade-game/ReplicatedStorage/Config/BossWeapons.luau
+- `describeMods()` --calls--> `SwordValue.modifiersFromPrefixes()`  [INFERRED]
+  lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau → lemonade-game/ReplicatedStorage/Config/SwordValue.luau
 - `buildTradeLobby()` --calls--> `SwordValue.short()`  [INFERRED]
   lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau → lemonade-game/ReplicatedStorage/Config/SwordValue.luau
 - `swordLine()` --calls--> `SwordValue.short()`  [INFERRED]
   lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau → lemonade-game/ReplicatedStorage/Config/SwordValue.luau
-- `sendState()` --calls--> `WeaponModifiers.TierOdds()`  [INFERRED]
-  lemonade-game/ServerScriptService/ReforgeSystem.server.luau → lemonade-game/ReplicatedStorage/Config/WeaponModifiers.luau
 
 ## Import Cycles
 - None detected.
@@ -305,7 +310,7 @@
 - **Prestige-Collection Feedback Loop (Rebirth improves drops → motivates collection → rebirth again)** — ls_core_rebirth_system, ls_core_drop_rate_formula, ls_core_collection_loop [EXTRACTED 0.95]
 - **Social Boss Event Pattern (timed spawns + last-hit reward + communal discovery)** — ls_core_server_events, ls_core_boss_system, ls_core_last_hit_mechanic [EXTRACTED 0.95]
 
-## Communities (279 total, 15 thin omitted)
+## Communities (321 total, 16 thin omitted)
 
 ### Community 0 - "6. Weapon Acquisition Design Template"
 Cohesion: 0.04
@@ -328,8 +333,8 @@ Cohesion: 0.04
 Nodes (47): 1.1 How Many Zones Exist in Major Games?, 1.2 Progression Order, 1.3 Level Requirements Per Zone, 1.4 How Are Zones Connected?, 1.5 Zone Size Comparison, 1. Zone/Island Structure, 2.1 How Does Each Zone Feel Unique?, 2.2 Environmental Storytelling (+39 more)
 
 ### Community 5 - "TradeSystem.server.luau"
-Cohesion: 0.07
-Nodes (63): SwordValue.modifiersFromPrefixes(), SwordValue.rateAttrs(), SwordValue.rateTool(), SwordValue.rerollCost(), SwordValue.rerollCostForTool(), SwordValue.rerollCostWithLocks(), SwordValue.short(), PlayerDataService.GetField() (+55 more)
+Cohesion: 0.05
+Nodes (70): SwordValue.modifiersFromPrefixes(), SwordValue.rateAttrs(), SwordValue.rateTool(), SwordValue.rerollCost(), SwordValue.rerollCostForTool(), SwordValue.rerollCostWithLocks(), SwordValue.short(), PlayerDataService.GetField() (+62 more)
 
 ### Community 6 - "Scripts (15 checks)"
 Cohesion: 0.04
@@ -424,8 +429,8 @@ Cohesion: 0.12
 Nodes (15): 1.1 Workspace Optimization, 1.2 Script Optimization, 1.3 Network Optimization, 1.4 Memory Management, 1. Performance Optimization, 2.1 Server Authority Checklist, 2.2 Input Validation, 2.3 Speed / Teleport Hacks (+7 more)
 
 ### Community 29 - "SwordDropSystem.server.luau"
-Cohesion: 0.15
-Nodes (16): RebirthConfig.GetEffectiveDropChance(), RebirthConfig.GetMultipliers(), RebirthConfig.GetRequiredLevel(), applyRebirthAttributes(), getOrCreateIntValue(), setupPlayer(), bindPlayer(), getEquippedWeaponSlots() (+8 more)
+Cohesion: 0.14
+Nodes (17): RebirthConfig.GetEffectiveDropChance(), RebirthConfig.GetMultipliers(), RebirthConfig.GetRequiredLevel(), CombatUtil.isEnemy(), applyRebirthAttributes(), getOrCreateIntValue(), setupPlayer(), bindPlayer() (+9 more)
 
 ### Community 30 - "WeaponModifiers.RollModifiers"
 Cohesion: 0.83
@@ -759,6 +764,10 @@ Nodes (7): 17. Common UI Complaints & Solutions, 18. Sources, Appendix: Color Pa
 Cohesion: 0.67
 Nodes (5): getLevel(), paint(), repaintAll(), show(), track()
 
+### Community 116 - "change"
+Cohesion: 0.05
+Nodes (28): getTweenDuration(), getTweenRatio(), lerpType(), packType(), class.addVelocity(), class._evaluate(), class.setPosition(), class.setVelocity() (+20 more)
+
 ### Community 117 - "Game Passes & Monetization (5 passes, 825R$ total)"
 Cohesion: 0.40
 Nodes (6): Dual Wield Zombie Arm Effect (still unpatched), Game Passes & Monetization (5 passes, 825R$ total), Dual Wield System (2 swords, 2x damage, gamepass), Devil Armor Gamepass (175R$, regen, speed, 200% gold cap), Dual Weaponary Gamepass (350R$, 2x damage, persistent), Legendary Pack Gamepass (230R$, dragon pet, 2.5x regen, armor)
@@ -847,9 +856,21 @@ Nodes (3): buildShopList(), formatGold(), setShopOpen()
 Cohesion: 0.60
 Nodes (4): button(), corner(), stroke(), textBox()
 
+### Community 142 - "doCleanup"
+Cohesion: 0.20
+Nodes (8): doCleanup(), For(), ForKeys(), SubObject(), ForPairs(), SubObject(), ForValues(), SubObject()
+
+### Community 143 - "applyInstanceProps.luau"
+Cohesion: 0.20
+Nodes (6): applyInstanceProps(), bindProperty(), setProperty(), Hydrate(), New(), xtypeof()
+
 ### Community 145 - "CombatUtil.hasLineOfSight"
 Cohesion: 0.33
 Nodes (6): CombatUtil.hasLineOfSight(), applyEnemyDamageToPlayer(), findNearestEnemy(), getEnemyDamage(), SafeHub.canEnemyAttack(), SafeHub.contains()
+
+### Community 146 - "PanelChrome.luau"
+Cohesion: 0.70
+Nodes (4): corner(), ornament(), PanelChrome.addCornerOrnaments(), PanelChrome.build()
 
 ### Community 150 - "Comprehensive Synthesis Document"
 Cohesion: 0.40
@@ -1217,7 +1238,7 @@ Nodes (12): Combo System Test Plan, Known Limitations, Test 10: Multiplayer, Tes
 
 ### Community 274 - "QuestGui.client.luau"
 Cohesion: 0.12
-Nodes (26): QuestConfig.getQuestById(), CombatUtil.isEnemy(), checkCompletion(), checkObtainQuest(), connectEnemyHumanoid(), incrementProgress(), inspect(), loadQuestState() (+18 more)
+Nodes (25): QuestConfig.getQuestById(), checkCompletion(), checkObtainQuest(), connectEnemyHumanoid(), incrementProgress(), inspect(), loadQuestState(), onEnemyDeath() (+17 more)
 
 ### Community 276 - "MapMarkers.luau"
 Cohesion: 0.16
@@ -1264,8 +1285,8 @@ Cohesion: 0.40
 Nodes (4): Adopted now, Backlog (ranked by value for Lemonade), Episode map, GnomeCode "RPG Tutorial" playlist — takeaways for Lemonade
 
 ### Community 313 - "HubAmbience.client.luau"
-Cohesion: 0.14
-Nodes (14): Actors.create(), nameplate(), claim(), findDummies(), makePracticeSword(), makeVillager(), pose(), rigParts() (+6 more)
+Cohesion: 0.12
+Nodes (17): Actors.create(), nameplate(), claim(), findDummies(), makePracticeSword(), makeVillager(), pose(), rigParts() (+9 more)
 
 ### Community 314 - "12. Inferred Architectural Weaknesses"
 Cohesion: 0.50
@@ -1277,15 +1298,17 @@ Nodes (3): 6.1 Session Locking (Prevent Duplication), 6.2 DataStore Rate Limitin
 
 ## Knowledge Gaps
 - **1508 isolated node(s):** `name`, `file`, `bytes`, `triangles`, `vertices` (+1503 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1705 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1799 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Sword RPG PvP Design Template` connect `Sword RPG PvP Design Template` to `4. Build Tier Lists (Cross-Game)`, `2. Combat Core Mechanics`, `3. Balance Framework`, `10. Recommended Sword RPG PvP Template`, `Detailed Mode Descriptions`, `11. Sources`, `5. Skill vs Stats Analysis`, `6. Ranking & Leaderboard Systems`, `7. PvP Reward Structure`, `8. Anti-Cheat & Fair Play`?**
-  _High betweenness centrality (0.015) - this node is a cross-community bridge._
-- **Why does `Executive Summary` connect `Executive Summary` to `sword-rpg-INDEX.md`?**
+- **Why does `Sword RPG UI/UX Design Template for Roblox` connect `Sword RPG UI/UX Design Template for Roblox` to `5. Quest Tracker`, `8. Level / XP Display`, `15. Visual Polish & Juice`, `12. Skill / Ability System UI`, `10. Inventory UI`, `13. Player Profile / Social`, `14. Mobile Adaptations`, `16. Information Architecture`, `4. Skill Cooldown Indicators`, `6. Minimap / Radar`, `7. Currency Display`, `9. Menu Systems`, `11. Stat Distribution`, `sword-rpg-INDEX.md`, `1. HUD Layout — Recommended Template`, `2. Health & Resource Bars`, `3. Damage Numbers & Combat Feedback`?**
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
+- **Why does `Sword RPG Hidden Gems on Roblox — Deep Mechanics Research` connect `Sword RPG Hidden Gems on Roblox — Deep Mechanics Research` to `6. A Universal Time (AUT)`, `7. Sword Burst Online (SBO)`, `8. Saber Simulator`, `9. Ninja Legends`, `1. Deepwoken`, `Top 10 Hidden-Gem Mechanics Ranking`, `10. Demon Slayer RPG 2`, `2. Rogue Lineage`, `3. Arcane Odyssey`, `4. Type Soul`, `5. Project Slayers`?**
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `Sword RPG Anti-Exploit & Server Architecture — Design Template` connect `Sword RPG Anti-Exploit & Server Architecture — Design Template` to `3. Server-Authoritative Core Patterns`, `9. Community Reporting System`, `The Legendary Swords RPG - Comprehensive Bug Catalog`, `11. Code Patterns Reference`, `1. Architecture Overview`, `2. Common Exploits Catalog`, `10. Decision Trees`, `5. Detection Systems & Thresholds`, `8. Server Performance Architecture`, `6. DataStore Security`?**
   _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **What connects `name`, `file`, `bytes` to the rest of the system?**
   _1508 weakly-connected nodes found - possible documentation gaps or missing edges._
@@ -1295,5 +1318,3 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.0858843537414966 - nodes in this community are weakly interconnected._
 - **Should `Restored Version (ID:129119196465909, 1M+ visits, 90.3% rating)` be split into smaller, more focused modules?**
   _Cohesion score 0.04521276595744681 - nodes in this community are weakly interconnected._
-- **Should `Sword RPG Growth Strategy: Content Updates & Viral Growth Playbook` be split into smaller, more focused modules?**
-  _Cohesion score 0.041666666666666664 - nodes in this community are weakly interconnected._
