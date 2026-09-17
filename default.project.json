@@ -132,7 +132,7 @@
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/VaultGui.client.luau"
         },
         "ReforgeGui": {
-          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGui.client.luau"
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau"
         },
         "XPGainUI": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau"

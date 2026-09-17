@@ -9,6 +9,7 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
+local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
 local QUEST_ACCEPT = remotes:WaitForChild("QuestAccept")
@@ -17,24 +18,14 @@ local QUEST_COMPLETE = remotes:WaitForChild("QuestComplete")
 local QUEST_REWARD = remotes:WaitForChild("QuestReward")
 
 -- ── Colors & constants ───────────────────────────────────────────────────
-
-local COLORS = {
-	Panel = Color3.fromRGB(12, 12, 14),
-	PanelLight = Color3.fromRGB(22, 22, 26),
-	Stroke = Color3.fromRGB(45, 45, 52),
-	StrokeBright = Color3.fromRGB(70, 70, 80),
-	Text = Color3.fromRGB(245, 245, 250),
-	Muted = Color3.fromRGB(150, 150, 165),
-	Gold = Color3.fromRGB(255, 215, 0),
-	Success = Color3.fromRGB(90, 220, 140),
+-- Local overlay: falls through to the shared palette, without mutating it.
+local COLORS = setmetatable({
 	XPGreen = Color3.fromRGB(80, 220, 120),
-	Button = Color3.fromRGB(40, 40, 48),
-	ButtonHover = Color3.fromRGB(55, 55, 65),
 	Accent = Color3.fromRGB(200, 180, 60),
 	QuestBar = Color3.fromRGB(200, 180, 60),
 	QuestBarBg = Color3.fromRGB(30, 30, 36),
 	Complete = Color3.fromRGB(90, 220, 140),
-}
+}, { __index = PanelChrome.COLORS })
 
 local REWARD_COLORS = {
 	GOLD = COLORS.Gold,
@@ -101,7 +92,8 @@ trackerFrame.Visible = false
 trackerFrame.ZIndex = 5
 trackerFrame.Parent = screenGui
 addCorner(trackerFrame, 12)
-addStroke(trackerFrame, COLORS.Stroke, 0.3, 1)
+addStroke(trackerFrame, COLORS.Gold, 0.55, 1.25)
+PanelChrome.addCornerOrnaments(trackerFrame, COLORS.Gold)
 
 local trackerPadding = Instance.new("UIPadding")
 trackerPadding.PaddingTop = UDim.new(0, 10)
@@ -195,6 +187,7 @@ promptFrame.ZIndex = 10
 promptFrame.Parent = screenGui
 addCorner(promptFrame, 10)
 addStroke(promptFrame, COLORS.Accent, 0.2, 1.5)
+PanelChrome.addCornerOrnaments(promptFrame, COLORS.Accent)
 
 local promptKey = Instance.new("Frame")
 promptKey.Size = UDim2.fromOffset(32, 32)
@@ -241,44 +234,37 @@ dialogOverlay.Visible = false
 dialogOverlay.ZIndex = 20
 dialogOverlay.Parent = screenGui
 
-local dialogPanel = Instance.new("Frame")
-dialogPanel.Name = "DialogPanel"
-dialogPanel.AnchorPoint = Vector2.new(0.5, 0.5)
-dialogPanel.Position = UDim2.fromScale(0.5, 0.5)
-dialogPanel.Size = UDim2.fromOffset(380, 280)
-dialogPanel.BackgroundColor3 = COLORS.Panel
+local dialogChrome = PanelChrome.build({
+	name = "DialogPanel",
+	title = QuestConfig.GIVER_NAME,
+	accentColor = COLORS.Accent,
+	size = UDim2.fromOffset(380, 280),
+})
+local dialogPanel = dialogChrome.Frame
 dialogPanel.BackgroundTransparency = 0.04
-dialogPanel.BorderSizePixel = 0
 dialogPanel.Visible = false
 dialogPanel.ZIndex = 21
 dialogPanel.Parent = screenGui
-addCorner(dialogPanel, 16)
-addStroke(dialogPanel, COLORS.StrokeBright, 0.2, 1.5)
+
+local dialogBody = Instance.new("Frame")
+dialogBody.Name = "Body"
+dialogBody.Position = UDim2.fromOffset(0, 52)
+dialogBody.Size = UDim2.new(1, 0, 1, -52)
+dialogBody.BackgroundTransparency = 1
+dialogBody.ZIndex = 22
+dialogBody.Parent = dialogPanel
 
 local dialogPadding = Instance.new("UIPadding")
-dialogPadding.PaddingTop = UDim.new(0, 16)
+dialogPadding.PaddingTop = UDim.new(0, 8)
 dialogPadding.PaddingRight = UDim.new(0, 16)
 dialogPadding.PaddingBottom = UDim.new(0, 16)
 dialogPadding.PaddingLeft = UDim.new(0, 16)
-dialogPadding.Parent = dialogPanel
+dialogPadding.Parent = dialogBody
 
 local dialogLayout = Instance.new("UIListLayout")
 dialogLayout.Padding = UDim.new(0, 10)
 dialogLayout.SortOrder = Enum.SortOrder.LayoutOrder
-dialogLayout.Parent = dialogPanel
-
--- NPC name header
-local npcHeader = Instance.new("TextLabel")
-npcHeader.BackgroundTransparency = 1
-npcHeader.Font = Enum.Font.GothamBold
-npcHeader.TextSize = 18
-npcHeader.TextColor3 = COLORS.Accent
-npcHeader.TextXAlignment = Enum.TextXAlignment.Left
-npcHeader.Text = QuestConfig.GIVER_NAME
-npcHeader.Size = UDim2.new(1, 0, 0, 22)
-npcHeader.LayoutOrder = 1
-npcHeader.ZIndex = 22
-npcHeader.Parent = dialogPanel
+dialogLayout.Parent = dialogBody
 
 -- Dialog message
 local dialogMessage = Instance.new("TextLabel")
@@ -293,7 +279,7 @@ dialogMessage.Size = UDim2.new(1, 0, 0, 0)
 dialogMessage.AutomaticSize = Enum.AutomaticSize.Y
 dialogMessage.LayoutOrder = 2
 dialogMessage.ZIndex = 22
-dialogMessage.Parent = dialogPanel
+dialogMessage.Parent = dialogBody
 
 -- Objective preview
 local objPreview = Instance.new("TextLabel")
@@ -308,7 +294,7 @@ objPreview.Size = UDim2.new(1, 0, 0, 0)
 objPreview.AutomaticSize = Enum.AutomaticSize.Y
 objPreview.LayoutOrder = 3
 objPreview.ZIndex = 22
-objPreview.Parent = dialogPanel
+objPreview.Parent = dialogBody
 
 -- Reward preview
 local rewardPreview = Instance.new("TextLabel")
@@ -321,7 +307,7 @@ rewardPreview.Text = ""
 rewardPreview.Size = UDim2.new(1, 0, 0, 18)
 rewardPreview.LayoutOrder = 4
 rewardPreview.ZIndex = 22
-rewardPreview.Parent = dialogPanel
+rewardPreview.Parent = dialogBody
 
 -- Buttons row
 local buttonRow = Instance.new("Frame")
@@ -329,7 +315,7 @@ buttonRow.BackgroundTransparency = 1
 buttonRow.Size = UDim2.new(1, 0, 0, 40)
 buttonRow.LayoutOrder = 5
 buttonRow.ZIndex = 22
-buttonRow.Parent = dialogPanel
+buttonRow.Parent = dialogBody
 
 local buttonLayout = Instance.new("UIListLayout")
 buttonLayout.FillDirection = Enum.FillDirection.Horizontal
@@ -734,6 +720,7 @@ completeBtn.Activated:Connect(function()
 end)
 
 closeBtn.Activated:Connect(closeDialog)
+dialogChrome.CloseButton.Activated:Connect(closeDialog)
 dialogOverlay.Activated:Connect(closeDialog)
 
 -- ── Input ────────────────────────────────────────────────────────────────

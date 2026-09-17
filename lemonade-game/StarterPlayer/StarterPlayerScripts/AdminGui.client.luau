@@ -21,16 +21,14 @@ end
 local playerGui = player:WaitForChild("PlayerGui")
 local ADMIN = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("AdminAction")
 local BossWeapons = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("BossWeapons"))
+local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 
-local RARITY_COLORS = {
-	Common = Color3.fromRGB(180, 180, 180), Uncommon = Color3.fromRGB(80, 200, 120), Rare = Color3.fromRGB(80, 160, 255),
-	Epic = Color3.fromRGB(180, 80, 240), Legendary = Color3.fromRGB(255, 200, 40),
-}
-local COLORS = {
-	Panel = Color3.fromRGB(18, 18, 22), PanelLight = Color3.fromRGB(26, 26, 32),
-	Stroke = Color3.fromRGB(45, 45, 55), Gold = Color3.fromRGB(255, 215, 60), Text = Color3.fromRGB(245, 245, 250),
-	Muted = Color3.fromRGB(160, 160, 175), Button = Color3.fromRGB(35, 35, 45), Accent = Color3.fromRGB(220, 90, 90),
-}
+local RARITY_COLORS = PanelChrome.RARITY_COLORS
+-- Local overlay: falls through to the shared palette. Accent stays red (not gold) on
+-- purpose -- a visual "this is a dev tool, not part of the game" signal.
+local COLORS = setmetatable({
+	Accent = Color3.fromRGB(220, 90, 90),
+}, { __index = PanelChrome.COLORS })
 
 local function corner(parent, radius)
 	local c = Instance.new("UICorner")
@@ -130,6 +128,7 @@ panel.Visible = false
 panel.Parent = screenGui
 corner(panel, 10)
 stroke(panel, COLORS.Accent, 1.5)
+PanelChrome.addCornerOrnaments(panel, COLORS.Accent)
 
 label(panel, { text = "Admin  (dev / bug-testing)", font = Enum.Font.GothamBold, textSize = 15,
 	color = COLORS.Gold, pos = UDim2.fromOffset(14, 12), size = UDim2.new(1, -28, 0, 20) })
