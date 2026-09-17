@@ -9,30 +9,15 @@ local playerGui = player:WaitForChild("PlayerGui")
 local MerchantConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("MerchantConfig"))
 local REMOTES = ReplicatedStorage:WaitForChild("RemoteEvents")
 local MERCHANT_ACTION = REMOTES:WaitForChild("MerchantAction")
+local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 
-local RARITY_COLORS = {
-	Common = Color3.fromRGB(180, 180, 180),
-	Uncommon = Color3.fromRGB(80, 200, 120),
-	Rare = Color3.fromRGB(80, 160, 255),
-	Epic = Color3.fromRGB(180, 80, 240),
-	Legendary = Color3.fromRGB(255, 200, 40),
-}
-
-local COLORS = {
+local RARITY_COLORS = PanelChrome.RARITY_COLORS
+-- Local overlay: falls through to the shared palette, without mutating it.
+local COLORS = setmetatable({
 	Overlay = Color3.fromRGB(0, 0, 0),
-	Panel = Color3.fromRGB(18, 18, 22),
-	PanelLight = Color3.fromRGB(26, 26, 32),
 	PanelDark = Color3.fromRGB(12, 12, 15),
-	Stroke = Color3.fromRGB(45, 45, 55),
-	StrokeBright = Color3.fromRGB(75, 75, 90),
-	Gold = Color3.fromRGB(255, 215, 60),
-	Text = Color3.fromRGB(245, 245, 250),
-	Muted = Color3.fromRGB(160, 160, 175),
-	Success = Color3.fromRGB(80, 220, 140),
-	Error = Color3.fromRGB(255, 85, 85),
-	Button = Color3.fromRGB(35, 35, 45),
 	ButtonHover = Color3.fromRGB(50, 50, 65),
-}
+}, { __index = PanelChrome.COLORS })
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "MerchantGui"
@@ -51,88 +36,24 @@ overlay.Visible = false
 overlay.ZIndex = 50
 overlay.Parent = screenGui
 
-local modal = Instance.new("Frame")
-modal.Name = "ShopModal"
-modal.AnchorPoint = Vector2.new(0.5, 0.5)
-modal.Position = UDim2.fromScale(0.5, 0.5)
-modal.Size = UDim2.fromOffset(540, 580)
-modal.BackgroundColor3 = COLORS.Panel
+local chrome = PanelChrome.build({
+	name = "ShopModal",
+	title = "★ RELIC BLACKSMITH",
+	subtitle = "Forges boss relic swords with random modifiers (0% Blessed chance)",
+	accentColor = COLORS.Gold,
+	size = UDim2.fromOffset(540, 580),
+})
+local modal = chrome.Frame
 modal.BackgroundTransparency = 0.04
-modal.BorderSizePixel = 0
 modal.Visible = false
 modal.ZIndex = 51
 modal.Parent = screenGui
-
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 14)
-corner.Parent = modal
-
-local stroke = Instance.new("UIStroke")
-stroke.Color = COLORS.StrokeBright
-stroke.Thickness = 1.5
-stroke.Transparency = 0.2
-stroke.Parent = modal
-
--- Header
-local header = Instance.new("Frame")
-header.Name = "Header"
-header.Size = UDim2.new(1, 0, 0, 60)
-header.BackgroundTransparency = 1
-header.ZIndex = 52
-header.Parent = modal
-
-local headerPad = Instance.new("UIPadding")
-headerPad.PaddingLeft = UDim.new(0, 18)
-headerPad.PaddingRight = UDim.new(0, 18)
-headerPad.PaddingTop = UDim.new(0, 12)
-headerPad.PaddingBottom = UDim.new(0, 12)
-headerPad.Parent = header
-
-local title = Instance.new("TextLabel")
-title.Text = "★ RELIC BLACKSMITH"
-title.Font = Enum.Font.GothamBlack
-title.TextSize = 20
-title.TextColor3 = COLORS.Gold
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.Size = UDim2.new(1, -50, 0, 24)
-title.BackgroundTransparency = 1
-title.ZIndex = 53
-title.Parent = header
-
-local subtitle = Instance.new("TextLabel")
-subtitle.Text = "Forges boss relic swords with random modifiers (0% Blessed chance)"
-subtitle.Font = Enum.Font.Gotham
-subtitle.TextSize = 12
-subtitle.TextColor3 = COLORS.Muted
-subtitle.TextXAlignment = Enum.TextXAlignment.Left
-subtitle.Position = UDim2.fromOffset(0, 24)
-subtitle.Size = UDim2.new(1, -50, 0, 18)
-subtitle.BackgroundTransparency = 1
-subtitle.ZIndex = 53
-subtitle.Parent = header
-
-local closeBtn = Instance.new("TextButton")
-closeBtn.Name = "CloseButton"
-closeBtn.AnchorPoint = Vector2.new(1, 0.5)
-closeBtn.Position = UDim2.new(1, 0, 0.5, 0)
-closeBtn.Size = UDim2.fromOffset(36, 36)
-closeBtn.BackgroundColor3 = COLORS.PanelLight
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.Text = "✕"
-closeBtn.TextColor3 = COLORS.Text
-closeBtn.TextSize = 16
-closeBtn.BorderSizePixel = 0
-closeBtn.ZIndex = 53
-closeBtn.Parent = header
-
-local closeCorner = Instance.new("UICorner")
-closeCorner.CornerRadius = UDim.new(0, 8)
-closeCorner.Parent = closeBtn
+local closeBtn = chrome.CloseButton
 
 -- Toast notice for purchase result
 local noticeLabel = Instance.new("TextLabel")
 noticeLabel.Name = "NoticeLabel"
-noticeLabel.Position = UDim2.new(0, 18, 0, 60)
+noticeLabel.Position = UDim2.new(0, 18, 0, 78)
 noticeLabel.Size = UDim2.new(1, -36, 0, 26)
 noticeLabel.BackgroundTransparency = 1
 noticeLabel.Font = Enum.Font.GothamMedium
@@ -146,8 +67,8 @@ noticeLabel.Parent = modal
 -- Scroll list
 local scroll = Instance.new("ScrollingFrame")
 scroll.Name = "ItemList"
-scroll.Position = UDim2.fromOffset(0, 90)
-scroll.Size = UDim2.new(1, 0, 1, -95)
+scroll.Position = UDim2.fromOffset(0, 108)
+scroll.Size = UDim2.new(1, 0, 1, -113)
 scroll.BackgroundTransparency = 1
 scroll.BorderSizePixel = 0
 scroll.ScrollBarThickness = 5

@@ -1,8 +1,10 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
+local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 
 local existing = playerGui:FindFirstChild("LevelProgressGui")
 if existing then
@@ -20,7 +22,7 @@ panel.Name = "ProgressPanel"
 panel.AnchorPoint = Vector2.new(0, 1)
 panel.Position = UDim2.new(0, 12, 1, -24)
 panel.Size = UDim2.fromOffset(320, 68)
-panel.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
+panel.BackgroundColor3 = PanelChrome.COLORS.Panel
 panel.BackgroundTransparency = 0.08
 panel.BorderSizePixel = 0
 panel.ZIndex = 5
@@ -31,10 +33,12 @@ corner.CornerRadius = UDim.new(0, 10)
 corner.Parent = panel
 
 local stroke = Instance.new("UIStroke")
-stroke.Color = Color3.fromRGB(45, 45, 52)
-stroke.Transparency = 0.3
-stroke.Thickness = 1
+stroke.Color = PanelChrome.COLORS.Gold
+stroke.Transparency = 0.55
+stroke.Thickness = 1.25
 stroke.Parent = panel
+
+PanelChrome.addCornerOrnaments(panel, PanelChrome.COLORS.Gold)
 
 local levelLabel = Instance.new("TextLabel")
 levelLabel.Name = "LevelLabel"

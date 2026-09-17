@@ -8,20 +8,13 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local VAULT_ACTION = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("VaultAction")
 local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
+local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 
-local RARITY_COLORS = {
-	Common = Color3.fromRGB(180, 180, 180),
-	Uncommon = Color3.fromRGB(80, 200, 120),
-	Rare = Color3.fromRGB(80, 160, 255),
-	Epic = Color3.fromRGB(180, 80, 240),
-	Legendary = Color3.fromRGB(255, 200, 40),
-}
-local COLORS = {
-	Panel = Color3.fromRGB(18, 18, 22), PanelLight = Color3.fromRGB(26, 26, 32),
-	Stroke = Color3.fromRGB(45, 45, 55), Gold = Color3.fromRGB(255, 215, 60),
-	Text = Color3.fromRGB(245, 245, 250), Muted = Color3.fromRGB(160, 160, 175),
-	Button = Color3.fromRGB(35, 35, 45), Store = Color3.fromRGB(56, 92, 70), Take = Color3.fromRGB(70, 96, 150),
-}
+local RARITY_COLORS = PanelChrome.RARITY_COLORS
+-- Local overlay: falls through to the shared palette, without mutating it.
+local COLORS = setmetatable({
+	Store = Color3.fromRGB(56, 92, 70), Take = Color3.fromRGB(70, 96, 150),
+}, { __index = PanelChrome.COLORS })
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "VaultGui"
@@ -38,15 +31,16 @@ overlay.AutoButtonColor = false
 overlay.Visible = false
 overlay.Parent = screenGui
 
-local modal = Instance.new("Frame")
-modal.AnchorPoint = Vector2.new(0.5, 0.5)
-modal.Position = UDim2.fromScale(0.5, 0.5)
-modal.Size = UDim2.fromOffset(720, 520)
-modal.BackgroundColor3 = COLORS.Panel
-modal.BorderSizePixel = 0
-modal.Parent = overlay
-local corner = Instance.new("UICorner"); corner.CornerRadius = UDim.new(0, 14); corner.Parent = modal
-local stroke = Instance.new("UIStroke"); stroke.Color = COLORS.Stroke; stroke.Thickness = 2; stroke.Parent = modal
+local chrome = PanelChrome.build({
+	name = "Modal",
+	title = "Vaultkeeper",
+	subtitle = "Relic swords stored here survive rebirths and follow you to any server.",
+	accentColor = COLORS.Gold,
+	size = UDim2.fromOffset(720, 520),
+})
+chrome.Frame.Parent = overlay
+local modal = chrome.Frame
+local closeBtn = chrome.CloseButton
 
 local function label(parent, props)
 	local l = Instance.new("TextLabel")
@@ -59,24 +53,8 @@ local function label(parent, props)
 	return l
 end
 
-local title = label(modal, { Position = UDim2.fromOffset(20, 14), Size = UDim2.new(1, -120, 0, 32), Text = "Vaultkeeper",
-	Font = Enum.Font.Fantasy, TextSize = 30, TextColor3 = COLORS.Gold })
-local subtitle = label(modal, { Position = UDim2.fromOffset(20, 46), Size = UDim2.new(1, -120, 0, 20), TextSize = 14,
-	TextColor3 = COLORS.Muted, Text = "Relic swords stored here survive rebirths and follow you to any server." })
 local wealthLabel = label(modal, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -60, 0, 18), Size = UDim2.fromOffset(200, 24),
 	TextXAlignment = Enum.TextXAlignment.Right, TextSize = 16, TextColor3 = COLORS.Gold, Text = "Wealth 0" })
-
-local closeBtn = Instance.new("TextButton")
-closeBtn.AnchorPoint = Vector2.new(1, 0)
-closeBtn.Position = UDim2.new(1, -14, 0, 14)
-closeBtn.Size = UDim2.fromOffset(34, 34)
-closeBtn.BackgroundColor3 = COLORS.Button
-closeBtn.Text = "X"
-closeBtn.TextColor3 = COLORS.Text
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 18
-closeBtn.Parent = modal
-local cc = Instance.new("UICorner"); cc.CornerRadius = UDim.new(0, 8); cc.Parent = closeBtn
 
 local function column(x, heading)
 	local frame = Instance.new("Frame")

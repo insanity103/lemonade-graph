@@ -103,11 +103,19 @@ def check(path: Path) -> list[str]:
     return problems
 
 
+VENDORED_DIR_NAMES = {"Packages"}  # third-party code we don't own or touch; not our style to check
+
+
 def main():
     targets = []
     for arg in sys.argv[1:] or ["lemonade-game"]:
         p = Path(arg)
-        targets += sorted(p.rglob("*.luau")) if p.is_dir() else [p]
+        if p.is_dir():
+            targets += sorted(
+                f for f in p.rglob("*.luau") if not VENDORED_DIR_NAMES & set(f.relative_to(p).parts)
+            )
+        else:
+            targets.append(p)
     problems = [msg for t in targets for msg in check(t)]
     for msg in problems:
         print(msg)

@@ -36,9 +36,9 @@ for script_name, source in sources.items():
 
 client_scripts = {name(item) for item in services["StarterPlayer"].iter("Item") if item.attrib["class"] == "LocalScript"}
 assert "BossDoorClient" not in client_scripts
-assert {"CombatController", "QuestGui", "MerchantGui", "MainMenuGui", "RunController", "ComboVFX", "Notifications"} <= client_scripts
+assert {"CombatController", "QuestGui", "MerchantGui", "MainMenuGui", "RunController", "ComboVFX", "Notifications", "HitStreakGui"} <= client_scripts
 assert "OnboardingGui" not in client_scripts
-assert len(client_scripts) == 16, client_scripts
+assert len(client_scripts) == 17, client_scripts
 assert "WorldLayout.BLANK_SLATE = true" not in sources["WorldLayout"]
 assert "BLANK_SLATE = false" in sources["WorldLayout"]
 assert "MapAnchors" not in sources["WorldLayout"]

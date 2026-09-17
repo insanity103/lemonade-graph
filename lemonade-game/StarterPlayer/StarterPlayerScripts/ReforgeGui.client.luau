@@ -53,7 +53,7 @@ overlay.Parent = screenGui
 local modal = Instance.new("Frame")
 modal.AnchorPoint = Vector2.new(0.5, 0.5)
 modal.Position = UDim2.fromScale(0.5, 0.5)
-modal.Size = UDim2.fromOffset(800, 600)
+modal.Size = UDim2.fromOffset(800, 660)
 modal.BackgroundColor3 = COLORS.Panel
 modal.BorderSizePixel = 0
 modal.Parent = overlay
@@ -93,8 +93,8 @@ corner(closeBtn, 8)
 
 -- Left: sword list. Right: the reel and the reveal.
 local list = Instance.new("ScrollingFrame")
-list.Position = UDim2.fromOffset(20, 76)
-list.Size = UDim2.new(0, 280, 1, -96)
+list.Position = UDim2.fromOffset(20, 96)
+list.Size = UDim2.new(0, 280, 1, -116)
 list.BackgroundColor3 = COLORS.PanelLight
 list.BorderSizePixel = 0
 list.ScrollBarThickness = 6
@@ -108,8 +108,8 @@ do
 end
 
 local stage = Instance.new("Frame")
-stage.Position = UDim2.fromOffset(316, 76)
-stage.Size = UDim2.new(1, -336, 1, -96)
+stage.Position = UDim2.fromOffset(316, 96)
+stage.Size = UDim2.new(1, -336, 1, -116)
 stage.BackgroundColor3 = COLORS.PanelLight
 stage.BorderSizePixel = 0
 stage.Parent = modal
@@ -159,36 +159,103 @@ local revealMods = text(reveal, { Position = UDim2.fromOffset(12, 34), Size = UD
 	TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = COLORS.Text })
 local revealRating = text(reveal, { Position = UDim2.fromOffset(12, 84), Size = UDim2.new(1, -24, 0, 24), Font = Enum.Font.GothamBold, TextSize = 15 })
 
--- Odds disclosure + pity meter (right of the reel, under the reveal) and a skip toggle.
-local oddsLabel = text(stage, { Position = UDim2.fromOffset(14, 84 + CARD_H + 36 + 122), Size = UDim2.new(1, -28, 0, 48), TextSize = 11,
-	TextColor3 = COLORS.Muted, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top, Text = "" })
+local oddsInfo = nil
+local locked = {} -- modifier names chosen to survive the reroll (each one raises the price by its tier)
+
+-- Lock row: one small chip per modifier on the selected sword; tap to keep it.
+local lockRow = Instance.new("Frame")
+lockRow.Position = UDim2.fromOffset(14, 84 + CARD_H + 36 + 118 + 16)
+lockRow.Size = UDim2.new(1, -28, 0, 26)
+lockRow.BackgroundTransparency = 1
+lockRow.Parent = stage
+do local l = Instance.new("UIListLayout"); l.FillDirection = Enum.FillDirection.Horizontal; l.Padding = UDim.new(0, 6); l.Parent = lockRow end
+
+-- Controls row: odds disclosure is opt-in (a popup), not shown by default alongside rolling.
+local controlsRow = Instance.new("Frame")
+controlsRow.Position = UDim2.fromOffset(14, 84 + CARD_H + 36 + 118 + 16 + 26 + 8)
+controlsRow.Size = UDim2.new(1, -28, 0, 30)
+controlsRow.BackgroundTransparency = 1
+controlsRow.Parent = stage
+
+local oddsBtn = Instance.new("TextButton")
+oddsBtn.Size = UDim2.fromOffset(110, 30)
+oddsBtn.BackgroundColor3 = COLORS.Button
+oddsBtn.Text = "Odds  ⓘ"
+oddsBtn.TextColor3 = COLORS.Muted
+oddsBtn.Font = Enum.Font.GothamMedium
+oddsBtn.TextSize = 12
+oddsBtn.Parent = controlsRow
+corner(oddsBtn, 8)
+
+local pityLabel = text(controlsRow, { Position = UDim2.fromOffset(122, 0), Size = UDim2.new(1, -280, 1, 0), TextSize = 12,
+	TextColor3 = COLORS.Gold, TextXAlignment = Enum.TextXAlignment.Center, TextYAlignment = Enum.TextYAlignment.Center,
+	TextWrapped = true, Text = "" })
+
 local skipBtn = Instance.new("TextButton")
-skipBtn.AnchorPoint = Vector2.new(1, 1)
-skipBtn.Position = UDim2.new(1, -14, 1, -14)
+skipBtn.AnchorPoint = Vector2.new(1, 0)
+skipBtn.Position = UDim2.new(1, 0, 0, 0)
 skipBtn.Size = UDim2.fromOffset(150, 30)
 skipBtn.BackgroundColor3 = COLORS.Button
 skipBtn.Text = "Animation: on"
 skipBtn.TextColor3 = COLORS.Muted
 skipBtn.Font = Enum.Font.GothamMedium
 skipBtn.TextSize = 12
-skipBtn.Parent = stage
+skipBtn.Parent = controlsRow
 corner(skipBtn, 8)
 local skipAnimation = false
 skipBtn.Activated:Connect(function()
 	skipAnimation = not skipAnimation
 	skipBtn.Text = skipAnimation and "Animation: skipped" or "Animation: on"
 end)
-local oddsInfo = nil
-local locked = {} -- modifier names chosen to survive the reroll (each one raises the price by its tier)
 
--- Lock row: one small chip per modifier on the selected sword; tap to keep it.
-local lockRow = Instance.new("Frame")
-lockRow.Position = UDim2.fromOffset(14, 84 + CARD_H + 36 + 122 + 50)
-lockRow.Size = UDim2.new(1, -28, 0, 26)
-lockRow.BackgroundTransparency = 1
-lockRow.Parent = stage
-do local l = Instance.new("UIListLayout"); l.FillDirection = Enum.FillDirection.Horizontal; l.Padding = UDim.new(0, 6); l.Parent = lockRow end
-local statsLabel = text(modal, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -60, 0, 42), Size = UDim2.fromOffset(300, 20),
+-- Odds popup: optional detail (per-tier chances, slots, pity), opened by choice instead of
+-- always sitting on screen next to the roll.
+local oddsBackdrop = Instance.new("TextButton")
+oddsBackdrop.Size = UDim2.fromScale(1, 1)
+oddsBackdrop.BackgroundColor3 = Color3.new(0, 0, 0)
+oddsBackdrop.BackgroundTransparency = 0.35
+oddsBackdrop.Text = ""
+oddsBackdrop.AutoButtonColor = false
+oddsBackdrop.Visible = false
+oddsBackdrop.ZIndex = 29
+oddsBackdrop.Parent = modal
+
+local oddsPopup = Instance.new("Frame")
+oddsPopup.AnchorPoint = Vector2.new(0.5, 0.5)
+oddsPopup.Position = UDim2.fromScale(0.5, 0.5)
+oddsPopup.Size = UDim2.fromOffset(420, 170)
+oddsPopup.BackgroundColor3 = COLORS.Dark
+oddsPopup.BorderSizePixel = 0
+oddsPopup.Visible = false
+oddsPopup.ZIndex = 30
+oddsPopup.Parent = modal
+corner(oddsPopup, 12)
+do local s = Instance.new("UIStroke"); s.Color = COLORS.Ember; s.Thickness = 1.5; s.Transparency = 0.3; s.Parent = oddsPopup end
+text(oddsPopup, { Position = UDim2.fromOffset(16, 12), Size = UDim2.new(1, -50, 0, 22), Font = Enum.Font.GothamBold,
+	TextSize = 16, TextColor3 = COLORS.Ember, Text = "Reforge Odds", ZIndex = 31 })
+local oddsPopupClose = Instance.new("TextButton")
+oddsPopupClose.AnchorPoint = Vector2.new(1, 0)
+oddsPopupClose.Position = UDim2.new(1, -10, 0, 10)
+oddsPopupClose.Size = UDim2.fromOffset(28, 28)
+oddsPopupClose.BackgroundColor3 = COLORS.Button
+oddsPopupClose.Text = "X"
+oddsPopupClose.TextColor3 = COLORS.Text
+oddsPopupClose.Font = Enum.Font.GothamBold
+oddsPopupClose.TextSize = 14
+oddsPopupClose.ZIndex = 31
+oddsPopupClose.Parent = oddsPopup
+corner(oddsPopupClose, 7)
+local oddsLabel = text(oddsPopup, { Position = UDim2.fromOffset(16, 44), Size = UDim2.new(1, -32, 1, -56), TextSize = 13,
+	TextColor3 = COLORS.Muted, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 31, Text = "" })
+
+local function setOddsPopupVisible(visible)
+	oddsPopup.Visible = visible
+	oddsBackdrop.Visible = visible
+end
+oddsBtn.Activated:Connect(function() setOddsPopupVisible(not oddsPopup.Visible) end)
+oddsPopupClose.Activated:Connect(function() setOddsPopupVisible(false) end)
+oddsBackdrop.Activated:Connect(function() setOddsPopupVisible(false) end)
+local statsLabel = text(modal, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -60, 0, 68), Size = UDim2.fromOffset(300, 20),
 	TextXAlignment = Enum.TextXAlignment.Right, TextSize = 12, TextColor3 = COLORS.Muted, Text = "" })
 
 local strikeBtn = Instance.new("TextButton")
@@ -204,23 +271,7 @@ strikeBtn.AutoButtonColor = false
 strikeBtn.Parent = stage
 corner(strikeBtn, 10)
 
--- On-screen opener: bottom-left, above the level panel, beside the other left-edge HUD.
-local openBtn = Instance.new("TextButton")
-openBtn.Name = "OpenReforge"
-openBtn.AnchorPoint = Vector2.new(0, 1)
-openBtn.Position = UDim2.new(0, 12, 1, -100)
-openBtn.Size = UDim2.fromOffset(158, 38)
-openBtn.BackgroundColor3 = Color3.fromRGB(58, 40, 30)
-openBtn.Text = "Reforge  (reroll)"
-openBtn.TextColor3 = COLORS.Gold
-openBtn.Font = Enum.Font.GothamBold
-openBtn.TextSize = 15
-openBtn.Parent = screenGui
-corner(openBtn, 8)
-do local s = Instance.new("UIStroke"); s.Color = COLORS.Ember; s.Transparency = 0.3; s.Parent = openBtn end
-openBtn.Activated:Connect(function()
-	REFORGE:FireServer("Open")
-end)
+-- Opened from the right-side nav rail's slot-machine icon (see MainMenuGui.client.luau).
 
 -- ── State ────────────────────────────────────────────────────────────────────
 local rows = {}
@@ -291,10 +342,19 @@ local function describeOdds(rarity)
 	end
 	local pity = oddsInfo.pity or 0
 	local pityText = pity >= (oddsInfo.pityAfter or 5)
-		and string.format("Pity ready: next reforge guarantees a T%d+ modifier.", oddsInfo.pityTier or 4)
-		or string.format("Pity %d / %d (then a T%d+ modifier is guaranteed).", pity, oddsInfo.pityAfter or 5, oddsInfo.pityTier or 4)
-	return string.format("%s odds per modifier: %s.  Slots: %d (+1 at %.0f%%, Blessed +1 at %.0f%%).  %s", rarity,
-		table.concat(parts, "  "), o.slots, (o.bonusSlotChance or 0) * 100, (oddsInfo.blessedChance or 0) * 100, pityText)
+		and string.format("Guaranteed lucky roll ready: next reforge guarantees a T%d+ modifier.", oddsInfo.pityTier or 4)
+		or string.format("Guaranteed lucky roll in %d / %d reforges (then a T%d+ modifier is guaranteed).", pity, oddsInfo.pityAfter or 5, oddsInfo.pityTier or 4)
+	return string.format("%s odds per modifier: %s.  %s", rarity, table.concat(parts, "  "), pityText)
+end
+
+local function pityStatusText()
+	if not oddsInfo then return "" end
+	local pity = oddsInfo.pity or 0
+	local after = oddsInfo.pityAfter or 5
+	if pity >= after then
+		return "Guaranteed lucky roll ready!"
+	end
+	return string.format("Guaranteed lucky roll in %d", after - pity)
 end
 
 local function rebuildLockRow()
@@ -330,6 +390,7 @@ local function selectRow(info)
 	if not selected or selected.toolName ~= info.toolName then locked = {} end
 	selected = info
 	oddsLabel.Text = describeOdds(info.rarity)
+	pityLabel.Text = pityStatusText()
 	rebuildLockRow()
 	selectedTitle.Text = info.name
 	selectedTitle.TextColor3 = RARITY_COLORS[info.rarity] or COLORS.Text
@@ -348,6 +409,7 @@ local function render(stateRows, goldValue, highlight, disclosure)
 	gold = goldValue
 	if disclosure then
 		oddsInfo = disclosure
+		pityLabel.Text = pityStatusText()
 		local freeIn = disclosure.freeIn or 0
 		local freeText = freeIn <= 0 and "Free reforge ready" or string.format("Free reforge in %dh %02dm", math.floor(freeIn / 3600), math.floor(freeIn % 3600 / 60))
 		statsLabel.Text = string.format("%s  ·  best roll %s  ·  %d reforges", freeText, SwordValue.short(disclosure.best or 0), disclosure.count or 0)
@@ -491,12 +553,15 @@ end)
 local function close()
 	if spinning then return end
 	overlay.Visible = false
+	setOddsPopupVisible(false)
 end
 closeBtn.Activated:Connect(close)
 overlay.Activated:Connect(close)
 UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
-	if input.KeyCode == Enum.KeyCode.Escape and overlay.Visible then close() end
+	if input.KeyCode == Enum.KeyCode.Escape and overlay.Visible then
+		if oddsPopup.Visible then setOddsPopupVisible(false) else close() end
+	end
 end)
 
 local pendingState = nil
@@ -505,6 +570,7 @@ REFORGE.OnClientEvent:Connect(function(kind, a, b, c, d)
 		overlay.Visible = true
 		reveal.Visible = false
 		idleHint.Visible = true
+		setOddsPopupVisible(false)
 		for _, card in ipairs(strip:GetChildren()) do card:Destroy() end
 	elseif kind == "Result" then
 		pendingState = nil
