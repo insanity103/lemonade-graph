@@ -1059,10 +1059,16 @@ local FLAVOR = {
 	done = "“You have completed all my tasks. A true legend!”",
 }
 
+-- Shared open/close motion (PanelChrome): the dialog grows in while the backdrop dims.
+local dialogMotion = { frame = dialogPanel, scale = panelScale, dim = dialogOverlay, dimTo = 0.6 }
+
 local function closeDialog()
 	interactionOpen = false
-	dialogOverlay.Visible = false
-	dialogPanel.Visible = false
+	if not dialogPanel.Visible then return end
+	PanelChrome.closeMotion(dialogMotion, function()
+		dialogOverlay.Visible = false
+		dialogPanel.Visible = false
+	end)
 end
 
 local function setButtons(primary)
@@ -1079,9 +1085,6 @@ local function openDialog(quest, mode)
 	interactionOpen = true
 	dialogOverlay.Visible = true
 	dialogPanel.Visible = true
-
-	dialogOverlay.BackgroundTransparency = 1
-	TweenService:Create(dialogOverlay, TweenInfo.new(0.2), { BackgroundTransparency = 0.6 }):Play()
 
 	dialogMessage.Text = FLAVOR[mode] or FLAVOR.accept
 	if quest then
@@ -1118,11 +1121,7 @@ local function openDialog(quest, mode)
 	end
 	relayout()
 
-	-- Pop in.
-	panelScale.Scale = baseScale * 0.86
-	TweenService:Create(panelScale, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-		Scale = baseScale,
-	}):Play()
+	PanelChrome.openMotion(dialogMotion)
 end
 
 -- ── NPC interaction logic ────────────────────────────────────────────────

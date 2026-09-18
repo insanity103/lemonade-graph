@@ -985,13 +985,12 @@ local function toggleSword()
 end
 
 -- ── Hover / tap ──────────────────────────────────────────────────────────────
-local bounceTween
-
-local function setBounce(target: number)
-	if bounceTween then bounceTween:Cancel() end
-	bounceTween = TweenService:Create(bounce, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Scale = target })
-	bounceTween:Play()
-end
+-- Shared press feedback (PanelChrome.pressFeedback) on the slot's bounce scale. Its steps are
+-- called from the handlers below, which also serve touch's tap/hold logic.
+local press = PanelChrome.pressFeedback(slot, {
+	scale = bounce, wire = false,
+	fill = function() return { face } end,
+})
 
 local function showTooltip()
 	if not currentTool then return end
@@ -1002,12 +1001,12 @@ end
 
 slot.MouseEnter:Connect(function()
 	showTooltip()
-	setBounce(1.07)
+	press.hover(true)
 end)
 
 slot.MouseLeave:Connect(function()
 	tooltipRoot.Visible = false
-	setBounce(1)
+	press.cancel()
 end)
 
 -- Phones have no hover and no 1 key: a tap toggles the tooltip, a long press sheathes or draws.
@@ -1027,12 +1026,12 @@ slot.InputBegan:Connect(function(input: InputObject)
 				heldThrough = true
 				tooltipRoot.Visible = false
 				toggleSword()
-				setBounce(1.1) -- a pop, so the hold registers before the finger lifts
+				press.up() -- spring back now, so the hold registers before the finger lifts
 			end
 		end)
 	end
 	if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-		setBounce(0.94)
+		press.down()
 	end
 end)
 slot.InputEnded:Connect(function(input: InputObject)
@@ -1047,7 +1046,7 @@ slot.InputEnded:Connect(function(input: InputObject)
 		end
 	end
 	if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-		setBounce(1)
+		press.up()
 	end
 end)
 

@@ -54,6 +54,43 @@ function GuiShowcase.register(name: string, open: () -> ())
 	end
 end
 
+-- Motion captures: set the target to "Motion:<name>". Once the world has settled, a solid
+-- magenta frame flashes full-screen for a quarter second (a clapperboard: gx.py motion finds it
+-- in the recording and counts time from it), then `play` runs the animation being judged.
+-- Spawning, loading and the camera settling all move the screen too, so without the flash
+-- nothing marks where the animation starts. `prepare`, if given, runs before the flash to put the
+-- element in the state a player would have it in just before the movement (a hovered button), so
+-- that state is already settled when the strip's clock starts.
+local MOTION_SETTLE = 6 -- [TUNING] extra seconds after data loads before the clapperboard
+local CLAPPER = Color3.fromRGB(255, 0, 255)
+
+function GuiShowcase.motion(name: string, play: () -> (), prepare: (() -> ())?)
+	if target() ~= "Motion:" .. name then
+		return
+	end
+	afterDataLoaded(function()
+		task.wait(MOTION_SETTLE)
+		if prepare then
+			prepare()
+			task.wait(0.3)
+		end
+		local gui = Instance.new("ScreenGui")
+		gui.Name = "GuiShowcaseClapper"
+		gui.IgnoreGuiInset = true
+		gui.DisplayOrder = 10000
+		local flash = Instance.new("Frame")
+		flash.Size = UDim2.fromScale(1, 1)
+		flash.BackgroundColor3 = CLAPPER
+		flash.BorderSizePixel = 0
+		flash.Parent = gui
+		gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+		task.wait(0.25)
+		gui:Destroy()
+		task.wait(0.5)
+		play()
+	end)
+end
+
 local function findMarker(markerName: string): BasePart?
 	local map = workspace:WaitForChild("LemonadeMap", 30)
 	local markers = map and map:WaitForChild("Markers", 30)

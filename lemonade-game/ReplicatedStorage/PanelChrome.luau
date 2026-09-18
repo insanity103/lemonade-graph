@@ -267,12 +267,7 @@ function PanelChrome.chunkyButton(parent, props)
 	label.Name = "Label"
 	label.Size = UDim2.new(1, -12, 1, -6)
 	label.Position = UDim2.fromOffset(6, 3)
-	local scale = Instance.new("UIScale")
-	scale.Parent = btn
-	btn.MouseEnter:Connect(function() scale.Scale = 1.04 end)
-	btn.MouseLeave:Connect(function() scale.Scale = 1 end)
-	btn.MouseButton1Down:Connect(function() scale.Scale = 0.95 end)
-	btn.MouseButton1Up:Connect(function() scale.Scale = 1 end)
+	PanelChrome.pressFeedback(btn)
 	return btn, label, grad
 end
 
@@ -693,6 +688,654 @@ function PanelChrome.onViewport(fn: (Vector2) -> ())
 	end
 	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(bind)
 	bind()
+end
+
+-- ═════════════════════════════════════════════════════════════════════════════
+--  Panel open / close motion, shared by every modal window so they all move the same way.
+--
+--  Open: the window grows from 0.88 to a 1.03 peak at 130 ms and settles to 1.0 by 200 ms,
+--  rising 12 px into place and fading up over 120 ms while the backdrop dims in parallel.
+--  Its tiles then land row by row, 22 ms apart, each a 120 ms fade and a 0.92 -> 1.0 grow,
+--  so the whole open is done in about a quarter second. Close is a quick 110 ms shrink-fade.
+--
+--  Every value animates relative to its rest value. If other code writes a property while a
+--  motion runs (a tab switch selecting a rail button, a viewport resize refitting the window),
+--  that write becomes the new rest value, so the motion never undoes it when it finishes.
+-- ═════════════════════════════════════════════════════════════════════════════
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+
+PanelChrome.MOTION = { -- [TUNING] seconds and scale factors
+	OpenFrom = 0.88, Peak = 1.03, PeakAt = 0.13, SettleBy = 0.20,
+	Rise = 12, RiseTime = 0.18, FadeTime = 0.12, DimTime = 0.12,
+	TileDelay = 0.05, TileRowStep = 0.022, TileTime = 0.12, TileFrom = 0.92, TileMaxRows = 6,
+	CloseTime = 0.11, CloseTo = 0.94, CloseDrop = 8,
+}
+
+local TEXT_FADE = { "BackgroundTransparency", "TextTransparency", "TextStrokeTransparency" }
+local IMAGE_FADE = { "BackgroundTransparency", "ImageTransparency" }
+local FADE_PROPS = {
+	Frame = { "BackgroundTransparency" },
+	ScrollingFrame = { "BackgroundTransparency", "ScrollBarImageTransparency" },
+	TextLabel = TEXT_FADE, TextButton = TEXT_FADE, TextBox = TEXT_FADE,
+	ImageLabel = IMAGE_FADE, ImageButton = IMAGE_FADE, ViewportFrame = IMAGE_FADE,
+	UIStroke = { "Transparency" },
+}
+
+local function ease(a: number, style: Enum.EasingStyle, dir: Enum.EasingDirection): number
+	return TweenService:GetValue(math.clamp(a, 0, 1), style, dir)
+end
+local function quadOut(a) return ease(a, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) end
+local function quadIn(a) return ease(a, Enum.EasingStyle.Quad, Enum.EasingDirection.In) end
+
+-- A track drives one property relative to its rest value.
+local function newTrack(inst: Instance, prop: string, rest: any?)
+	return { inst = inst, prop = prop, rest = if rest ~= nil then rest else (inst :: any)[prop], last = nil }
+end
+local function same(a, b)
+	if type(a) == "number" and type(b) == "number" then return math.abs(a - b) < 1e-3 end
+	return a == b
+end
+local function drive(tr, f)
+	local inst = tr.inst :: any
+	local cur = inst[tr.prop]
+	if tr.last ~= nil and not same(cur, tr.last) then tr.rest = cur end -- adopt an outside write
+	local v = f(tr.rest)
+	inst[tr.prop] = v
+	tr.last = v
+end
+local function settle(tr)
+	local inst = tr.inst :: any
+	if tr.last == nil or same(inst[tr.prop], tr.last) then inst[tr.prop] = tr.rest end
+	tr.last = nil
+end
+local function fadeTo(tr, visible: number) -- visible: 0 = invisible, 1 = at rest
+	drive(tr, function(rest) return 1 - (1 - rest) * visible end)
+end
+
+local function collectFades(root: Instance, out, skip)
+	local function add(inst)
+		if skip and skip[inst] then return end
+		local props = FADE_PROPS[inst.ClassName]
+		if not props then return end
+		for _, p in ipairs(props) do
+			if (inst :: any)[p] < 0.999 then table.insert(out, newTrack(inst, p)) end
+		end
+	end
+	add(root)
+	for _, d in ipairs(root:GetDescendants()) do add(d) end
+end
+
+local motions = setmetatable({}, { __mode = "k" }) -- [frame] = running motion
+
+local function stopMotion(frame)
+	local st = motions[frame]
+	if not st then return nil end
+	motions[frame] = nil
+	if st.conn then st.conn:Disconnect() end
+	st.settleAll()
+	return st.kind
+end
+
+local function runMotion(frame, st, duration: number, step: (number) -> ())
+	local t0 = os.clock()
+	step(0)
+	st.conn = RunService.RenderStepped:Connect(function()
+		local t = os.clock() - t0
+		if t < duration then
+			step(t)
+			return
+		end
+		st.conn:Disconnect()
+		st.conn = nil
+		if motions[frame] == st then motions[frame] = nil end
+		step(duration)
+		if st.onDone then st.onDone() end
+		st.settleAll()
+	end)
+end
+
+-- The window's scale over the open, as a factor of its rest scale: a quick grow that
+-- overshoots to Peak, then an ease back to rest.
+local function openScaleAt(t: number): number
+	local M = PanelChrome.MOTION
+	if t < M.PeakAt then
+		return M.OpenFrom + (M.Peak - M.OpenFrom) * quadOut(t / M.PeakAt)
+	elseif t < M.SettleBy then
+		local a = ease((t - M.PeakAt) / (M.SettleBy - M.PeakAt), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+		return M.Peak + (1 - M.Peak) * a
+	end
+	return 1
+end
+
+local function tilesOf(container: Instance): { GuiObject }
+	local list = {}
+	for _, child in ipairs(container:GetChildren()) do
+		if child:IsA("GuiObject") and child.Visible then table.insert(list, child) end
+	end
+	return list
+end
+
+-- opts: {
+--   frame: GuiObject      the window that grows, rises and fades (its whole subtree fades)
+--   scale: UIScale?       the window's UIScale (its current Scale is the rest scale)
+--   dim: GuiObject?       backdrop whose BackgroundTransparency fades from 1 to dimTo
+--   dimTo: number?        the backdrop's rest transparency (default 0.5)
+--   tiles: (() -> {Instance})?   containers whose visible children land row by row
+-- }
+-- Call it after making the window visible. The start pose is set now; the fade and tile
+-- stagger start once the caller's content for this frame has been built.
+function PanelChrome.openMotion(opts)
+	local M = PanelChrome.MOTION
+	local frame = opts.frame
+	stopMotion(frame)
+	local scaleTr = opts.scale and newTrack(opts.scale, "Scale")
+	local posTr = newTrack(frame, "Position")
+	local dimTr = opts.dim and newTrack(opts.dim, "BackgroundTransparency", opts.dimTo or 0.5)
+	local rise = math.floor(M.Rise * math.clamp(scaleTr and scaleTr.rest or 1, 0.6, 1.2) + 0.5)
+	local function pose(t)
+		if scaleTr then drive(scaleTr, function(rest) return rest * openScaleAt(t) end) end
+		drive(posTr, function(rest)
+			local dy = math.floor(rise * (1 - ease(t / M.RiseTime, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out)) + 0.5)
+			return rest + UDim2.fromOffset(0, dy)
+		end)
+		if dimTr then fadeTo(dimTr, quadOut(t / M.DimTime)) end
+	end
+	local st = { kind = "open" }
+	local fades, tiles = {}, {}
+	st.settleAll = function()
+		if scaleTr then settle(scaleTr) end
+		settle(posTr)
+		if dimTr then settle(dimTr) end
+		for _, tr in ipairs(fades) do settle(tr) end
+		for _, tile in ipairs(tiles) do
+			settle(tile.scale)
+			for _, tr in ipairs(tile.fades) do settle(tr) end
+			if tile.made then tile.made:Destroy() end
+		end
+	end
+	motions[frame] = st
+	pose(0)
+
+	task.defer(function()
+		if motions[frame] ~= st then return end
+		-- Tiles, grouped into rows by their on-screen position. Each container counts its own
+		-- rows, so a side rail cascades alongside a grid instead of slowing it down.
+		local skip = {}
+		for _, container in ipairs(opts.tiles and opts.tiles() or {}) do
+			local found = tilesOf(container)
+			table.sort(found, function(a, b)
+				if math.abs(a.AbsolutePosition.Y - b.AbsolutePosition.Y) > 4 then
+					return a.AbsolutePosition.Y < b.AbsolutePosition.Y
+				end
+				return a.AbsolutePosition.X < b.AbsolutePosition.X
+			end)
+			local row, lastY = 0, nil
+			for _, gui in ipairs(found) do
+				local y = gui.AbsolutePosition.Y
+				if lastY and y - lastY > 4 then row += 1 end
+				lastY = y
+				local uiScale = gui:FindFirstChildOfClass("UIScale")
+				local made = nil
+				if not uiScale then
+					made = Instance.new("UIScale")
+					made.Name = "OpenScale"
+					made.Parent = gui
+					uiScale = made
+				end
+				local tile = { scale = newTrack(uiScale, "Scale"), fades = {}, made = made, delay = M.TileDelay + math.min(row, M.TileMaxRows - 1) * M.TileRowStep }
+				collectFades(gui, tile.fades)
+				skip[gui] = true
+				for _, d in ipairs(gui:GetDescendants()) do skip[d] = true end
+				table.insert(tiles, tile)
+			end
+		end
+		collectFades(frame, fades, skip)
+
+		local duration = math.max(M.SettleBy, M.FadeTime, M.DimTime, M.RiseTime)
+		for _, tile in ipairs(tiles) do duration = math.max(duration, tile.delay + M.TileTime) end
+		runMotion(frame, st, duration, function(t)
+			pose(t)
+			local a = quadOut(t / M.FadeTime)
+			for _, tr in ipairs(fades) do fadeTo(tr, a) end
+			for _, tile in ipairs(tiles) do
+				local e = quadOut((t - tile.delay) / M.TileTime)
+				drive(tile.scale, function(rest) return rest * (M.TileFrom + (1 - M.TileFrom) * e) end)
+				for _, tr in ipairs(tile.fades) do fadeTo(tr, e) end
+			end
+		end)
+	end)
+end
+
+-- Same opts as openMotion. Shrinks and fades the window and lifts the dim, then calls onDone
+-- (which hides the window) and puts every property back to rest for the next open.
+-- A second close while one is running is ignored; an open cancels a running close.
+function PanelChrome.closeMotion(opts, onDone: () -> ())
+	local M = PanelChrome.MOTION
+	local frame = opts.frame
+	local running = motions[frame]
+	if running and running.kind == "close" then return end
+	stopMotion(frame)
+	local scaleTr = opts.scale and newTrack(opts.scale, "Scale")
+	local posTr = newTrack(frame, "Position")
+	local dimTr = opts.dim and newTrack(opts.dim, "BackgroundTransparency", opts.dimTo)
+	local fades = {}
+	collectFades(frame, fades)
+	local st = { kind = "close", onDone = onDone }
+	st.settleAll = function()
+		if scaleTr then settle(scaleTr) end
+		settle(posTr)
+		if dimTr then settle(dimTr) end
+		for _, tr in ipairs(fades) do settle(tr) end
+	end
+	motions[frame] = st
+	runMotion(frame, st, M.CloseTime, function(t)
+		local a = t / M.CloseTime
+		local e = quadIn(a)
+		if scaleTr then drive(scaleTr, function(rest) return rest * (1 - (1 - M.CloseTo) * e) end) end
+		drive(posTr, function(rest) return rest + UDim2.fromOffset(0, math.floor(M.CloseDrop * e + 0.5)) end)
+		if dimTr then fadeTo(dimTr, 1 - quadOut(a)) end
+		for _, tr in ipairs(fades) do fadeTo(tr, 1 - a) end
+	end)
+end
+
+-- True while a close motion is playing on this window.
+function PanelChrome.isClosing(frame: GuiObject): boolean
+	local st = motions[frame]
+	return st ~= nil and st.kind == "close"
+end
+
+-- ═════════════════════════════════════════════════════════════════════════════
+--  Button press feedback, shared by every chunky button.
+--
+--  Hover grows the button 5% over 75 ms. Pressing sinks it: it shrinks to 0.92 over 55 ms
+--  (Quad out), drops 2 px and its fill darkens 10%, and it holds there while the button is
+--  held. Releasing springs it back past rest with a Back-out ease to 1.06 by 120 ms, then
+--  settles to 1.0 by 220 ms. A button's icon, if it has one, lags the spring by 30 ms and
+--  overshoots a little further, so the art follows through after the tile.
+--  The button scales about its centre whatever its AnchorPoint. A button placed by a
+--  UIListLayout/UIGridLayout cannot scale without shoving its neighbours, so there the tile
+--  holds its size and its contents sink instead (same drop, same darken).
+-- ═════════════════════════════════════════════════════════════════════════════
+local UserInputService = game:GetService("UserInputService")
+
+PanelChrome.PRESS = { -- [TUNING] seconds, scale factors and pixels
+	HoverScale = 1.05, HoverTime = 0.075,
+	DownScale = 0.90, DownTime = 0.055, Drop = 2, Darken = 0.10,
+	UpPeak = 1.06, UpPeakAt = 0.11, SettleBy = 0.22,
+	MaxStep = 1 / 24, -- a stage never advances more than this per frame, so a hitch cannot skip it
+	IconDown = 0.94, IconPeak = 1.05, IconLag = 0.03,
+}
+
+local BLACK = Color3.new(0, 0, 0)
+local function backOut(a) return ease(a, Enum.EasingStyle.Back, Enum.EasingDirection.Out) end
+local function sineInOut(a) return ease(a, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut) end
+
+local function layoutManaged(inst: Instance): boolean
+	local parent = inst.Parent
+	return parent ~= nil and parent:FindFirstChildWhichIsA("UIGridStyleLayout") ~= nil
+end
+
+local presses = setmetatable({}, { __mode = "k" }) -- [button] = press handle
+local held = {} -- [handle] = true while pressed; any mouse/touch release lets them go
+
+-- Begin a stretch of motion away from rest: capture every rest value the press drives.
+local function openTracks(h)
+	if h.tracks then return end
+	local P = PanelChrome.PRESS
+	local btn = h.button
+	local tr = { fills = {}, drops = {} }
+	h.lite = layoutManaged(btn)
+	local restScale = if h.scale.Scale > 0 then h.scale.Scale else 1
+	tr.restAbs = btn.AbsoluteSize / restScale
+	if not h.lite then tr.pos = newTrack(btn, "Position") end
+	local face = h.face
+	if h.lite then
+		for _, c in ipairs(btn:GetChildren()) do
+			if c:IsA("GuiObject") and c.Name ~= "CountBadge" then table.insert(tr.drops, newTrack(c, "Position")) end
+		end
+	elseif face and face ~= btn then
+		table.insert(tr.drops, newTrack(face, "Position"))
+	end
+	local fills = if h.fill then h.fill() else { face or btn }
+	for _, f in ipairs(fills) do
+		if f and f.Parent and f.BackgroundTransparency < 0.999 then table.insert(tr.fills, newTrack(f, "BackgroundColor3")) end
+	end
+	tr.drop = h.drop or P.Drop
+	h.tracks = tr
+end
+
+local function closeTracks(h)
+	local tr = h.tracks
+	if not tr then return end
+	h.tracks = nil
+	if tr.pos then settle(tr.pos) end
+	for _, t in ipairs(tr.drops) do settle(t) end
+	for _, t in ipairs(tr.fills) do settle(t) end
+	h.scale.Scale = 1
+	if h.iconScale then h.iconScale.Scale = 1 end
+end
+
+-- Writes one pose: s = tile scale, d = drop (0..1), k = darken (0..1), i = icon scale.
+local function pose(h, s, d, k, i)
+	local tr = h.tracks
+	if not tr then return end
+	local dropPx = math.floor(tr.drop * d + 0.5)
+	if h.lite then
+		for _, t in ipairs(tr.drops) do drive(t, function(rest) return rest + UDim2.fromOffset(0, dropPx) end) end
+	else
+		h.scale.Scale = s
+		local btn = h.button
+		local parent = btn.Parent
+		local px, py = 0, 0
+		if parent and parent:IsA("GuiBase2d") then
+			-- UIScale grows a button about its AnchorPoint; shift it so it grows about its centre.
+			local pa = parent.AbsoluteSize
+			local a = btn.AnchorPoint
+			if pa.X > 0 then px = (0.5 - a.X) * tr.restAbs.X * (1 - s) / pa.X end
+			if pa.Y > 0 then py = (0.5 - a.Y) * tr.restAbs.Y * (1 - s) / pa.Y end
+		end
+		local bodyDrop = if #tr.drops > 0 then 0 else dropPx
+		drive(tr.pos, function(rest) return rest + UDim2.new(px, 0, py, bodyDrop) end)
+		for _, t in ipairs(tr.drops) do drive(t, function(rest) return rest + UDim2.fromOffset(0, dropPx) end) end
+	end
+	for _, t in ipairs(tr.fills) do drive(t, function(rest) return rest:Lerp(BLACK, PanelChrome.PRESS.Darken * k) end) end
+	if h.iconScale then h.iconScale.Scale = i end
+	h.s, h.d, h.k, h.i = s, d, k, i
+end
+
+-- Runs step(t) every frame for duration seconds; a new stage replaces the running one.
+local function stage(h, duration: number, step: (number) -> (), atRest: boolean)
+	if h.conn then h.conn:Disconnect(); h.conn = nil end
+	openTracks(h)
+	-- Time advances by each frame's delta, capped at PRESS.MaxStep: when the frame that fires the
+	-- button's action is a slow one (a panel building its contents), the press still plays through
+	-- its dip, spring and settle on the frames after it instead of jumping straight to the end.
+	local t = 0
+	local maxStep = PanelChrome.PRESS.MaxStep
+	step(0)
+	h.conn = RunService.RenderStepped:Connect(function(dt)
+		t += math.min(dt, maxStep)
+		if t < duration then step(t) return end
+		h.conn:Disconnect()
+		h.conn = nil
+		step(duration)
+		if atRest then closeTracks(h) end
+	end)
+end
+
+local function hover(h, on: boolean)
+	if h.pressed then return end
+	local P = PanelChrome.PRESS
+	h.hovered = on
+	local s0, d0, k0, i0 = h.s, h.d, h.k, h.i
+	local target = if on then P.HoverScale else 1
+	if not on and s0 == 1 and d0 == 0 and not h.tracks then return end
+	stage(h, P.HoverTime, function(t)
+		local e = quadOut(t / P.HoverTime)
+		pose(h, s0 + (target - s0) * e, d0 * (1 - e), k0 * (1 - e), i0 + (1 - i0) * e)
+	end, not on)
+end
+
+local function down(h)
+	local P = PanelChrome.PRESS
+	h.pressed = true
+	held[h] = true
+	local s0, d0, k0, i0 = h.s, h.d, h.k, h.i
+	stage(h, P.DownTime, function(t)
+		local e = quadOut(t / P.DownTime)
+		pose(h, s0 + (P.DownScale - s0) * e, d0 + (1 - d0) * e, k0 + (1 - k0) * e, i0 + (P.IconDown - i0) * e)
+	end, false)
+end
+
+local function up(h)
+	if not h.pressed then return end
+	local P = PanelChrome.PRESS
+	h.pressed = false
+	h.hovered = false
+	held[h] = nil
+	local s0, d0, k0, i0 = h.s, h.d, h.k, h.i
+	local total = P.SettleBy + P.IconLag
+	stage(h, total, function(t)
+		local s
+		if t < P.UpPeakAt then
+			s = s0 + (P.UpPeak - s0) * backOut(t / P.UpPeakAt)
+		else
+			s = P.UpPeak + (1 - P.UpPeak) * sineInOut((t - P.UpPeakAt) / (P.SettleBy - P.UpPeakAt))
+		end
+		local r = 1 - quadOut(t / P.UpPeakAt)
+		local ti = t - P.IconLag
+		local i
+		if ti < 0 then
+			i = i0
+		elseif ti < P.UpPeakAt then
+			i = i0 + (P.IconPeak - i0) * backOut(ti / P.UpPeakAt)
+		else
+			i = P.IconPeak + (1 - P.IconPeak) * sineInOut((ti - P.UpPeakAt) / (P.SettleBy - P.UpPeakAt))
+		end
+		pose(h, s, d0 * r, k0 * r, i)
+	end, true)
+end
+
+-- The pointer left while the button was held: ease back to rest with no spring (no click).
+local function cancel(h)
+	if not h.pressed then return hover(h, false) end
+	h.pressed = false
+	held[h] = nil
+	return hover(h, false)
+end
+
+UserInputService.InputEnded:Connect(function(input)
+	local t = input.UserInputType
+	if t ~= Enum.UserInputType.MouseButton1 and t ~= Enum.UserInputType.Touch then return end
+	for h in pairs(held) do up(h) end
+end)
+
+-- Wires hover/press feedback onto a button and returns its handle, whose hover(on), down() and
+-- up() steps can also be called directly (the Studio motion capture plays them as a mouse would).
+-- opts: {
+--   scale: UIScale?     the UIScale to drive (default: the button's "PressScale", made if missing)
+--   face: GuiObject?    the part that sinks and darkens (default: the button itself)
+--   fill: (() -> {GuiObject})?  what darkens, looked up on each press (default: { face })
+--   drop: number?       pixels the face sinks (default PRESS.Drop)
+--   icon: GuiObject?    art that follows through after the tile on release
+--   wire: boolean?      false to call the steps yourself instead of wiring mouse events
+-- }
+function PanelChrome.pressFeedback(button: GuiButton, opts)
+	opts = opts or {}
+	local existing = presses[button]
+	if existing then return existing end
+	local scale = opts.scale or button:FindFirstChild("PressScale")
+	if not scale then
+		scale = Instance.new("UIScale")
+		scale.Name = "PressScale"
+		scale.Parent = button
+	end
+	local h = {
+		button = button, scale = scale, face = opts.face, fill = opts.fill, drop = opts.drop,
+		s = 1, d = 0, k = 0, i = 1, pressed = false, hovered = false,
+	}
+	if opts.icon then
+		local is = Instance.new("UIScale")
+		is.Name = "PressIconScale"
+		is.Parent = opts.icon
+		h.iconScale = is
+	end
+	h.hover = function(on: boolean) hover(h, on) end
+	h.down = function() down(h) end
+	h.up = function() up(h) end
+	h.cancel = function() cancel(h) end
+	if opts.wire ~= false then
+		button.MouseEnter:Connect(function() hover(h, true) end)
+		button.MouseLeave:Connect(function() cancel(h) end)
+		button.MouseButton1Down:Connect(function() down(h) end)
+		button.MouseButton1Up:Connect(function() up(h) end)
+	end
+	button.Destroying:Connect(function()
+		held[h] = nil
+		if h.conn then h.conn:Disconnect(); h.conn = nil end
+	end)
+	presses[button] = h
+	return h
+end
+
+-- The press handle wired onto a button, if any.
+function PanelChrome.pressHandle(button: Instance)
+	return presses[button]
+end
+
+-- ═════════════════════════════════════════════════════════════════════════════
+--  Currency counter motion: a gain never just swaps the text.
+--
+--  The icon and number punch up to 1.15x in 60 ms and flash warm gold, the displayed value
+--  rolls from the old total to the new one with a cubic ease-out (so the tenths of 588.4K
+--  visibly tick up), the punch eases down while it counts and snaps home with a small
+--  back-out overshoot the moment the count lands, and the gold tint fades back to white.
+--  A green "+3,000" pops in beside the number and floats up, so even a gain too small to
+--  move the short-form text is readable. Gains that arrive mid-count keep rolling from the
+--  value on screen and add onto the floating delta. Losses and the first fill snap.
+-- ═════════════════════════════════════════════════════════════════════════════
+PanelChrome.COUNTER = { -- [TUNING] seconds, scale factors, degrees and pixels
+	CountTime = 0.38, Peak = 1.15, RiseTime = 0.06, HoldTo = 1.08, SettleTime = 0.17,
+	FlashFade = 0.2, IconKick = -9,
+	DeltaTime = 0.8, DeltaRise = 40, DeltaFadeFrom = 0.5, DeltaPopPeak = 1.2, DeltaPopTime = 0.12,
+	MaxStep = 1 / 30, -- one frame never advances the motion further than this, so a hitch cannot skip the punch
+}
+local FLASH_GOLD = Color3.fromRGB(255, 222, 70)
+
+local function cubicOut(a) return ease(a, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out) end
+
+-- opts = {
+--   label: TextLabel            the number
+--   scale: UIScale              punches the icon and number together (scale about their left edge)
+--   icon: GuiObject?            gets a small rotation kick in step with the punch
+--   format: (number) -> string  how the number is written (NumberFormat.short)
+--   deltaParent: GuiObject?     where the floating gain lives (outside the punch, so it does not scale)
+--   deltaAt: ((text) -> UDim2)? where the floating gain starts, given the final number text
+--   deltaText: ((number) -> string)?  how the gain is written (default "+" .. format(gain))
+--   deltaZ: number?
+-- }
+-- Returns { set = function(value, animate) }. set with animate false (or a loss) snaps.
+function PanelChrome.counter(opts)
+	local C = PanelChrome.COUNTER
+	local label, scale, icon = opts.label, opts.scale, opts.icon
+	local format = opts.format or function(v) return tostring(math.floor(v)) end
+	local restColor = label.TextColor3
+	local iconRest = if icon then icon.Rotation else 0
+	local shown, target, from = nil, nil, 0
+	local t, s0, conn = 0, 1, nil
+	local delta = nil -- { label, uiScale, stroke, t, total, conn }
+
+	local function stop()
+		if conn then conn:Disconnect(); conn = nil end
+	end
+	local function rest()
+		scale.Scale = 1
+		label.TextColor3 = restColor
+		if icon then icon.Rotation = iconRest end
+	end
+
+	local function scaleAt(x: number): number
+		if x < C.RiseTime then return s0 + (C.Peak - s0) * quadOut(x / C.RiseTime) end
+		if x < C.CountTime then
+			return C.Peak + (C.HoldTo - C.Peak) * sineInOut((x - C.RiseTime) / (C.CountTime - C.RiseTime))
+		end
+		local k = (x - C.CountTime) / C.SettleTime
+		if k < 1 then return C.HoldTo + (1 - C.HoldTo) * backOut(k) end
+		return 1
+	end
+	local function colorAt(x: number): Color3
+		if x < C.RiseTime then return restColor:Lerp(FLASH_GOLD, x / C.RiseTime) end
+		if x < C.CountTime then return FLASH_GOLD end
+		local k = (x - C.CountTime) / C.FlashFade
+		if k < 1 then return FLASH_GOLD:Lerp(restColor, quadIn(k)) end
+		return restColor
+	end
+
+	local function step(dt: number)
+		t += math.min(dt, C.MaxStep)
+		local a = math.clamp(t / C.CountTime, 0, 1)
+		shown = if a >= 1 then target else from + (target - from) * cubicOut(a)
+		label.Text = format(math.floor(shown))
+		local s = scaleAt(t)
+		scale.Scale = s
+		label.TextColor3 = colorAt(t)
+		if icon then icon.Rotation = iconRest + C.IconKick * math.clamp((s - 1) / (C.Peak - 1), -0.3, 1) end
+		if t >= C.CountTime + math.max(C.SettleTime, C.FlashFade) then
+			stop()
+			shown = target
+			label.Text = format(target)
+			rest()
+		end
+	end
+
+	local function deltaStep(dt: number)
+		local d = delta
+		if not d then return end
+		d.t += math.min(dt, C.MaxStep)
+		local k = d.t / C.DeltaTime
+		if k >= 1 then
+			d.conn:Disconnect()
+			d.label:Destroy()
+			delta = nil
+			return
+		end
+		local pop = if d.t < C.DeltaPopTime
+			then 0.4 + (C.DeltaPopPeak - 0.4) * quadOut(d.t / C.DeltaPopTime)
+			else C.DeltaPopPeak + (1 - C.DeltaPopPeak) * quadOut(math.min((d.t - C.DeltaPopTime) / C.DeltaPopTime, 1))
+		d.uiScale.Scale = pop
+		d.label.Position = d.start + UDim2.fromOffset(0, -C.DeltaRise * quadOut(k))
+		local fade = if k > C.DeltaFadeFrom then (k - C.DeltaFadeFrom) / (1 - C.DeltaFadeFrom) else 0
+		d.label.TextTransparency = fade
+		if d.stroke then d.stroke.Transparency = fade end
+	end
+
+	local function showDelta(gain: number)
+		local parent = opts.deltaParent
+		if not parent or gain <= 0 then return end
+		local start = if opts.deltaAt then opts.deltaAt(format(target)) else UDim2.new(1, 8, 0.5, 0)
+		local total = gain + (if delta then delta.total else 0)
+		local text = if opts.deltaText then opts.deltaText(total) else "+" .. format(total)
+		if not delta then
+			local l = PanelChrome.display(parent, {
+				name = "GainDelta", text = text, size = 30, stroke = 3, color = BRIGHT.Green,
+				xAlign = Enum.TextXAlignment.Left, anchor = Vector2.new(0, 0.5),
+				size2 = UDim2.fromOffset(0, 34), zIndex = opts.deltaZ or 12,
+			})
+			l.AutomaticSize = Enum.AutomaticSize.X
+			local us = Instance.new("UIScale")
+			us.Parent = l
+			delta = { label = l, uiScale = us, stroke = l:FindFirstChildOfClass("UIStroke"), total = total, t = 0 }
+			delta.conn = RunService.RenderStepped:Connect(deltaStep)
+		end
+		delta.total = total
+		delta.label.Text = text
+		delta.start = start
+		delta.t = 0
+		deltaStep(0)
+	end
+
+	local counter = {}
+	function counter.set(value: number, animate: boolean?)
+		value = tonumber(value) or 0
+		if shown ~= nil and value == target then return end -- unrelated refresh: let a count finish
+		if shown == nil or not animate or value < (target or 0) then
+			stop()
+			shown, target = value, value
+			label.Text = format(value)
+			rest()
+			return
+		end
+		local gain = value - target
+		from = shown
+		target = value
+		s0 = scale.Scale
+		t = 0
+		showDelta(gain)
+		if not conn then conn = RunService.RenderStepped:Connect(step) end
+		step(0)
+	end
+	return counter
 end
 
 return PanelChrome

@@ -3,6 +3,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local TextService = game:GetService("TextService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -163,10 +165,17 @@ topBarScale.Parent = topBar
 local function createChip(name, icon)
 	local chip = Instance.new("Frame")
 	chip.Name = name
+	-- Anchored left-centre so the gain punch (the Punch UIScale) grows the coin and number
+	-- rightward and evenly up and down, never off the screen edge.
+	chip.AnchorPoint = Vector2.new(0, 0.5)
+	chip.Position = UDim2.fromScale(0, 0.5)
 	chip.Size = UDim2.fromScale(1, 1)
 	chip.BackgroundTransparency = 1
 	chip.ZIndex = 6
 	chip.Parent = topBar
+	local punch = Instance.new("UIScale")
+	punch.Name = "Punch"
+	punch.Parent = chip
 	local iconImg = Instance.new("ImageLabel")
 	iconImg.Name = "Icon"
 	iconImg.AnchorPoint = Vector2.new(0, 0.5)
@@ -183,11 +192,31 @@ local function createChip(name, icon)
 		name = "Value", text = "0", size = 42, stroke = 3.5, zIndex = 7,
 		xAlign = Enum.TextXAlignment.Left, pos = UDim2.fromOffset(66, 0), size2 = UDim2.new(1, -66, 1, 0),
 	})
-	return value
+	return value, iconImg, punch
 end
 
 -- Level lives on the bottom-left XP badge; this readout holds only gold.
-local goldLabel = createChip("GoldChip", ICONS.Coin)
+local goldLabel, goldIcon, goldPunch = createChip("GoldChip", ICONS.Coin)
+
+-- "+3,000" for gains a player can read exactly, short form ("+1.2M") past that.
+local function gainText(gain)
+	if gain >= 1e6 then return "+" .. NumberFormat.short(gain) end
+	local digits = tostring(math.floor(gain))
+	local grouped = digits:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+	return "+" .. grouped
+end
+
+-- Gains roll the number up with a punch and a floating "+N" (PanelChrome.counter). The delta
+-- lives on topBar, outside the punch, and starts just right of the settled number.
+local goldCounter = PanelChrome.counter({
+	label = goldLabel, scale = goldPunch, icon = goldIcon, format = NumberFormat.short,
+	deltaParent = topBar, deltaZ = 12, deltaText = gainText,
+	deltaAt = function(text)
+		local w = TextService:GetTextSize(text, 42, PanelChrome.DISPLAY_FONT, Vector2.new(1e4, 1e4)).X
+		-- Clear of the number at the top of its punch (the chip scales from its left edge).
+		return UDim2.new(0, math.ceil((66 + w) * PanelChrome.COUNTER.Peak) + 8, 0.5, -12)
+	end,
+})
 
 local navRail = Instance.new("Frame")
 navRail.Name = "NavRail"
@@ -217,16 +246,27 @@ end)
 
 -- One chunky side button: gradient tile in the tab's colour, heavy outline, glossy top, the
 -- tab's icon (or glyph) and a stroked label riding the bottom edge.
+-- Each button sits centred in its own fixed-size slot, so the rail's UIListLayout places the slot
+-- and the press can scale the button about its centre without shoving its neighbours.
 local function createNavButton(item, order)
+	local slot = Instance.new("Frame")
+	slot.Name = item.id .. "Slot"
+	slot.Size = UDim2.fromOffset(NAV_TILE, NAV_TILE)
+	slot.BackgroundTransparency = 1
+	slot.LayoutOrder = order
+	slot.ZIndex = 6
+	slot.Parent = navRail
 	local button = Instance.new("ImageButton")
 	button.Name = item.id
-	button.Size = UDim2.fromOffset(NAV_TILE, NAV_TILE)
+	button.AnchorPoint = Vector2.new(0.5, 0.5)
+	button.Position = UDim2.fromScale(0.5, 0.5)
+	button.Size = UDim2.fromScale(1, 1)
 	button.BackgroundColor3 = Color3.new(1, 1, 1)
 	button.Image = ""
 	button.AutoButtonColor = false
 	button.LayoutOrder = order
 	button.ZIndex = 6
-	button.Parent = navRail
+	button.Parent = slot
 	addCorner(button, 20)
 	local outline = PanelChrome.stroke(button, HUD_BRIGHT.Outline, 3.5)
 	outline.Name = "Outline"
@@ -277,13 +317,7 @@ local function createNavButton(item, order)
 	})
 	label.Name = "Label"
 
-	local scale = Instance.new("UIScale")
-	scale.Name = "PressScale"
-	scale.Parent = button
-	button.MouseEnter:Connect(function() scale.Scale = 1.07 end)
-	button.MouseLeave:Connect(function() scale.Scale = 1 end)
-	button.MouseButton1Down:Connect(function() scale.Scale = 0.94 end)
-	button.MouseButton1Up:Connect(function() scale.Scale = 1.07 end)
+	PanelChrome.pressFeedback(button, { icon = button:FindFirstChild("Icon") or button:FindFirstChild("Glyph") })
 	return button
 end
 
@@ -1096,15 +1130,8 @@ local function skillUpgradeButton(parent, w, h, z)
 		anchor = Vector2.new(0.5, 1), pos = UDim2.new(0.5, 0, 1, -2), size2 = UDim2.new(1, -8, 0.32, 0),
 	})
 
-	local scale = Instance.new("UIScale")
-	scale.Parent = btn
-	btn.MouseEnter:Connect(function() scale.Scale = 1.05 end)
-	btn.MouseLeave:Connect(function()
-		scale.Scale = 1
-		face.Position = UDim2.fromOffset(0, 0)
-	end)
-	btn.MouseButton1Down:Connect(function() face.Position = UDim2.fromOffset(0, 5) end)
-	btn.MouseButton1Up:Connect(function() face.Position = UDim2.fromOffset(0, 0) end)
+	-- Shared press feedback; the face sinks onto its lip.
+	PanelChrome.pressFeedback(btn, { face = face, drop = 5 })
 	return { button = btn, lip = lip, grad = grad, cost = cost }
 end
 
@@ -1845,15 +1872,7 @@ local function buildRebirthPanel()
 			pos = UDim2.new(0, textLeft, 0.58, -2), size2 = UDim2.new(1, -(textLeft + 6), 0.36, 0),
 		})
 	end
-	local press = Instance.new("UIScale")
-	press.Parent = rebirthButton
-	rebirthButton.MouseEnter:Connect(function() press.Scale = 1.04 end)
-	rebirthButton.MouseLeave:Connect(function()
-		press.Scale = 1
-		face.Position = UDim2.fromOffset(0, 0)
-	end)
-	rebirthButton.MouseButton1Down:Connect(function() face.Position = UDim2.fromOffset(0, 4) end)
-	rebirthButton.MouseButton1Up:Connect(function() face.Position = UDim2.fromOffset(0, 0) end)
+	PanelChrome.pressFeedback(rebirthButton, { face = face, drop = 4 })
 	rebirthButton.Activated:Connect(function() remotes:WaitForChild("Rebirth"):FireServer() end)
 
 	-- ── Bonus tiles: now -> after the next rebirth ──────────────────────────────
@@ -2198,133 +2217,667 @@ local function buildRebirthPanel()
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
---  TRADE TAB: pick a player from the lobby, then build an offer side by side
+--  TRADE TAB: pick a player from the lobby, then build an offer side by side. PS99-style light
+--  list: chunky outlined header controls, one bright card per player (avatar with a level
+--  badge, a big outlined display name, @username, wealth) and a fat green "Trade!" button. An
+--  empty server gets an illustrated empty state instead of a bare sentence.
 -- ═══════════════════════════════════════════════════════════════════════════
+local SocialService = game:GetService("SocialService")
 local tradeRemote = remotes:WaitForChild("TradeAction")
 local tradeState = { players = {}, incoming = nil, session = nil }
 local TRADE_RARITY = {
-	Common = Color3.fromRGB(180, 180, 180), Uncommon = Color3.fromRGB(80, 200, 120), Rare = Color3.fromRGB(80, 160, 255),
-	Epic = Color3.fromRGB(180, 80, 240), Legendary = Color3.fromRGB(255, 200, 40),
+	Common = Color3.fromRGB(226, 230, 238), Uncommon = Color3.fromRGB(110, 226, 90), Rare = Color3.fromRGB(92, 184, 255),
+	Epic = Color3.fromRGB(200, 120, 255), Legendary = Color3.fromRGB(255, 206, 50),
 }
+local TRADE_NAME = Color3.fromRGB(92, 204, 255)
+local TRADE_GREEN = { top = Color3.fromRGB(150, 246, 88), bottom = Color3.fromRGB(56, 192, 40) }
+local TRADE_BLUE = { top = Color3.fromRGB(120, 214, 255), bottom = Color3.fromRGB(34, 128, 236) }
+local TRADE_RED = { top = Color3.fromRGB(255, 132, 120), bottom = Color3.fromRGB(226, 46, 60) }
+local TRADE_GREY = { top = Color3.fromRGB(226, 230, 240), bottom = Color3.fromRGB(160, 168, 188) }
+local TRADE_GOLD = { top = Color3.fromRGB(255, 244, 150), bottom = Color3.fromRGB(255, 188, 46) }
+local tradeSearch = "" -- the lobby's search text, kept across list refreshes
+-- Studio-only sample rows, set by the "Trade" GuiShowcase opener so a solo play test can show a
+-- filled list. They are drawn only while the real list is empty, and their buttons never fire
+-- the trade remote.
+local tradeSamples = nil
 
-local function tradeCard(order, height)
+-- A fat right-pointing arrow in a square holder (shaft, filled head, chevron rim) for
+-- shapeIcon; TRADE_ARROW_LEFT is its mirror image.
+local TRADE_ARROW_RIGHT = {
+	{ 0.33, 0.5, 0.54, 0.28, 0, false },
+	{ 0.60, 0.5, 0.40, 0.40, 45, false },
+	{ 0.64, 0.34, 0.50, 0.20, 45, false },
+	{ 0.64, 0.66, 0.50, 0.20, -45, false },
+}
+local TRADE_ARROW_LEFT = {}
+for _, p in ipairs(TRADE_ARROW_RIGHT) do
+	table.insert(TRADE_ARROW_LEFT, { 1 - p[1], p[2], p[3], p[4], -p[5], p[6] })
+end
+
+-- The trade emblem: a green arrow heading right over an orange one heading left, each with a
+-- heavy outline and a lit upper face, like PS99's rendered trade icon.
+local function tradeArrowsIcon(parent, size, props)
+	local z = props.zIndex
+	local holder = Instance.new("Frame")
+	holder.Name = props.name or "TradeArrows"
+	holder.BackgroundTransparency = 1
+	holder.AnchorPoint = props.anchor or Vector2.new(0.5, 0.5)
+	holder.Position = props.pos or UDim2.fromScale(0.5, 0.5)
+	holder.Size = UDim2.fromOffset(size, size)
+	holder.Rotation = props.rotation or 0
+	holder.ZIndex = z
+	holder.Parent = parent
+	local pad = math.max(5, math.floor(size / 11))
+	local function arrow(name, pieces, base, light, pos, zz)
+		local h, fill = shapeIcon(holder, pieces, base, {
+			name = name, size = UDim2.fromScale(0.68, 0.68), pos = pos, zIndex = zz, pad = pad,
+		})
+		-- One glossy streak along the top of the shaft (a per-piece gradient would seam).
+		local shine = Instance.new("Frame")
+		shine.Name = "Shine"
+		shine.AnchorPoint = Vector2.new(0.5, 0.5)
+		shine.Position = UDim2.fromScale(pieces[1][1], 0.42)
+		shine.Size = UDim2.fromScale(pieces[1][3] - 0.08, 0.07)
+		shine.BackgroundColor3 = light
+		shine.BorderSizePixel = 0
+		shine.ZIndex = zz + 2
+		shine.Parent = h
+		local sc = Instance.new("UICorner")
+		sc.CornerRadius = UDim.new(0.5, 0)
+		sc.Parent = shine
+		local _ = fill
+		return h
+	end
+	arrow("Left", TRADE_ARROW_LEFT, Color3.fromRGB(255, 150, 30), Color3.fromRGB(255, 214, 90), UDim2.fromScale(0.4, 0.69), z)
+	arrow("Right", TRADE_ARROW_RIGHT, Color3.fromRGB(70, 206, 52), Color3.fromRGB(176, 250, 110), UDim2.fromScale(0.6, 0.31), z + 2)
+	return holder
+end
+
+-- The panel's title emblem while the Trade tab is open (openTab swaps it with the image icon).
+local tradeTitleIcon = tradeArrowsIcon(contentPanel, 84, {
+	name = "TradeTitleIcon", anchor = Vector2.new(0, 0.5), pos = UDim2.fromOffset(-20, -2), rotation = -8, zIndex = 8,
+})
+tradeTitleIcon.Visible = false
+
+-- A chunky PanelChrome button sitting on a soft drop shadow. Returns the button and its label.
+local function tradeChunky(parent, props)
+	local z = props.zIndex or 25
+	local r = props.radius or 16
+	local holder = Instance.new("Frame")
+	holder.Name = (props.name or "Button") .. "Holder"
+	holder.BackgroundTransparency = 1
+	holder.AnchorPoint = props.anchor or Vector2.zero
+	holder.Position = props.pos or UDim2.new()
+	holder.Size = props.size
+	holder.LayoutOrder = props.order or 0
+	holder.ZIndex = z
+	holder.Parent = parent
+	local shadow = Instance.new("Frame")
+	shadow.Name = "DropShadow"
+	shadow.BackgroundColor3 = BRIGHT.Outline
+	shadow.BackgroundTransparency = 0.6
+	shadow.BorderSizePixel = 0
+	shadow.Position = UDim2.fromOffset(0, 6)
+	shadow.Size = UDim2.fromScale(1, 1)
+	shadow.ZIndex = z
+	shadow.Parent = holder
+	addCorner(shadow, r)
+	local btn, label = PanelChrome.chunkyButton(holder, {
+		name = props.name, text = props.text, color = props.colors.top, colorDark = props.colors.bottom,
+		size = UDim2.fromScale(1, 1), textSize = props.textSize or 28, zIndex = z + 1, radius = r, strokeThickness = 3.5,
+	})
+	if props.onClick then btn.Activated:Connect(props.onClick) end
+	return btn, label, holder
+end
+
+-- A bright list card: white-to-row gradient face under a heavy outline.
+local function tradeBrightCard(parent, order, height, colors)
 	local card = Instance.new("Frame")
 	card.Size = UDim2.new(1, 0, 0, height)
-	card.BackgroundColor3 = COLORS.PanelLight
-	card.BackgroundTransparency = 0.1
+	card.BackgroundColor3 = Color3.new(1, 1, 1)
 	card.BorderSizePixel = 0
 	card.LayoutOrder = order
 	card.ZIndex = 23
-	card.Parent = body
-	addCorner(card, 12)
-	addStroke(card, COLORS.Stroke, 0.4, 1)
-	addPadding(card, 8, 12, 8, 12)
+	card.Parent = parent
+	addCorner(card, 20)
+	PanelChrome.gradient(card, colors and colors.top or Color3.fromRGB(255, 255, 255), colors and colors.bottom or BRIGHT.Row)
+	PanelChrome.stroke(card, BRIGHT.Outline, 3.5)
 	return card
 end
 
-local function tradeButton(parent, text, color, pos, size, onClick)
-	local btn = Instance.new("TextButton")
-	btn.Size = size or UDim2.fromOffset(92, 30)
-	btn.Position = pos
-	btn.AnchorPoint = Vector2.new(1, 0.5)
-	btn.BackgroundColor3 = color
-	btn.BorderSizePixel = 0
-	btn.Font = Enum.Font.GothamBold
-	btn.TextSize = 13
-	btn.TextColor3 = COLORS.Text
-	btn.Text = text
-	btn.ZIndex = 24
-	btn.Parent = parent
-	addCorner(btn, 8)
-	btn.Activated:Connect(onClick)
-	return btn
+-- Round avatar bubble with a dark level badge on its lower left. Real players show their
+-- headshot; the Studio samples get a cartoon head drawn from Frames.
+local function tradeAvatar(parent, info, size, z)
+	local bubble = Instance.new("Frame")
+	bubble.Name = "Avatar"
+	bubble.AnchorPoint = Vector2.new(0, 0.5)
+	bubble.Position = UDim2.new(0, 0, 0.5, 0)
+	bubble.Size = UDim2.fromOffset(size, size)
+	bubble.BackgroundColor3 = Color3.new(1, 1, 1)
+	bubble.ZIndex = z
+	bubble.Parent = parent
+	addCorner(bubble, size)
+	PanelChrome.gradient(bubble, Color3.fromRGB(232, 238, 250), Color3.fromRGB(176, 188, 214))
+	PanelChrome.stroke(bubble, BRIGHT.Outline, 3)
+	if info.sample then
+		local look = info.look
+		local shoulders = Instance.new("Frame")
+		shoulders.AnchorPoint = Vector2.new(0.5, 1)
+		shoulders.Position = UDim2.fromScale(0.5, 0.95)
+		shoulders.Size = UDim2.fromScale(0.62, 0.32)
+		shoulders.BackgroundColor3 = look.shirt
+		shoulders.ZIndex = z + 1
+		shoulders.Parent = bubble
+		local sc = Instance.new("UICorner")
+		sc.CornerRadius = UDim.new(0.45, 0)
+		sc.Parent = shoulders
+		PanelChrome.stroke(shoulders, BRIGHT.Outline, 2)
+		local head = Instance.new("Frame")
+		head.AnchorPoint = Vector2.new(0.5, 0.5)
+		head.Position = UDim2.fromScale(0.5, 0.44)
+		head.Size = UDim2.fromScale(0.5, 0.48)
+		head.BackgroundColor3 = look.skin
+		head.ZIndex = z + 2
+		head.Parent = bubble
+		local hc = Instance.new("UICorner")
+		hc.CornerRadius = UDim.new(0.32, 0)
+		hc.Parent = head
+		PanelChrome.stroke(head, BRIGHT.Outline, 2)
+		local hair = Instance.new("Frame")
+		hair.Position = UDim2.fromScale(-0.04, -0.06)
+		hair.Size = UDim2.fromScale(1.08, 0.36)
+		hair.BackgroundColor3 = look.hair
+		hair.ZIndex = z + 3
+		hair.Parent = head
+		local hrc = Instance.new("UICorner")
+		hrc.CornerRadius = UDim.new(0.5, 0)
+		hrc.Parent = hair
+		for _, x in ipairs({ 0.33, 0.67 }) do
+			local eye = Instance.new("Frame")
+			eye.AnchorPoint = Vector2.new(0.5, 0.5)
+			eye.Position = UDim2.fromScale(x, 0.52)
+			eye.Size = UDim2.fromScale(0.13, 0.18)
+			eye.BackgroundColor3 = BRIGHT.Outline
+			eye.ZIndex = z + 3
+			eye.Parent = head
+			addCorner(eye, 10)
+		end
+		local smile = Instance.new("Frame")
+		smile.AnchorPoint = Vector2.new(0.5, 0.5)
+		smile.Position = UDim2.fromScale(0.5, 0.76)
+		smile.Size = UDim2.fromScale(0.36, 0.08)
+		smile.BackgroundColor3 = BRIGHT.Outline
+		smile.ZIndex = z + 3
+		smile.Parent = head
+		addCorner(smile, 6)
+	elseif typeof(info.userId) == "number" and info.userId > 0 then
+		local shot = Instance.new("ImageLabel")
+		shot.Name = "Headshot"
+		shot.BackgroundTransparency = 1
+		shot.AnchorPoint = Vector2.new(0.5, 0.5)
+		shot.Position = UDim2.fromScale(0.5, 0.5)
+		shot.Size = UDim2.fromScale(0.96, 0.96)
+		shot.Image = ("rbxthumb://type=AvatarHeadShot&id=%d&w=150&h=150"):format(info.userId)
+		shot.ZIndex = z + 1
+		shot.Parent = bubble
+		addCorner(shot, size)
+	end
+	if info.level then
+		local d = math.floor(size * 0.44)
+		local badge = Instance.new("Frame")
+		badge.Name = "LevelBadge"
+		badge.AnchorPoint = Vector2.new(0.5, 0.5)
+		badge.Position = UDim2.fromScale(0.1, 0.86)
+		badge.Size = UDim2.fromOffset(d, d)
+		badge.BackgroundColor3 = BRIGHT.Outline
+		badge.ZIndex = z + 5
+		badge.Parent = bubble
+		addCorner(badge, d)
+		PanelChrome.stroke(badge, Color3.new(1, 1, 1), 2)
+		PanelChrome.display(badge, {
+			name = "Level", text = tostring(info.level), size = math.floor(d * 0.62), stroke = 1.5, scaled = true, minSize = 9,
+			size2 = UDim2.new(1, -4, 1, -4), pos = UDim2.fromOffset(2, 2), zIndex = z + 6,
+		})
+	end
+	return bubble
 end
 
-local function swordLine(card, info, y, withButton, buttonText, buttonColor, onClick)
-	createText(card, { text = info.name, font = Enum.Font.GothamBold, size = 13, color = TRADE_RARITY[info.rarity] or COLORS.Text,
-		pos = UDim2.fromOffset(0, y), size2 = UDim2.new(1, -110, 0, 16), zIndex = 24 })
-	createText(card, { text = string.format("%s · %s · rating %s", info.rarity, info.prefixes ~= "" and info.prefixes or "no modifiers",
-		SwordValue.short(info.rating or 0)), font = Enum.Font.Gotham, size = 11, color = COLORS.Muted,
-		pos = UDim2.fromOffset(0, y + 16), size2 = UDim2.new(1, -110, 0, 14), zIndex = 24 })
-	if withButton then
-		tradeButton(card, buttonText, buttonColor, UDim2.new(1, 0, 0, y + 15), UDim2.fromOffset(84, 28), onClick)
+-- A coin and a stroked gold number, laid out left to right (used inside list layouts).
+local function tradeWealthChip(parent, wealth, textSize, z, order)
+	local chip = Instance.new("Frame")
+	chip.Name = "Wealth"
+	chip.BackgroundTransparency = 1
+	chip.Size = UDim2.new(0, 0, 1, 0)
+	chip.AutomaticSize = Enum.AutomaticSize.X
+	chip.LayoutOrder = order or 0
+	chip.ZIndex = z
+	chip.Parent = parent
+	local l = Instance.new("UIListLayout")
+	l.FillDirection = Enum.FillDirection.Horizontal
+	l.VerticalAlignment = Enum.VerticalAlignment.Center
+	l.Padding = UDim.new(0, 4)
+	l.SortOrder = Enum.SortOrder.LayoutOrder
+	l.Parent = chip
+	local coin = Instance.new("ImageLabel")
+	coin.BackgroundTransparency = 1
+	coin.Size = UDim2.fromOffset(textSize + 6, textSize + 6)
+	coin.Image = ICONS.Coin
+	coin.ScaleType = Enum.ScaleType.Fit
+	coin.LayoutOrder = 1
+	coin.ZIndex = z
+	coin.Parent = chip
+	local value = PanelChrome.display(chip, {
+		name = "Value", text = SwordValue.short(wealth or 0), size = textSize, stroke = 2.5, color = BRIGHT.Gold,
+		xAlign = Enum.TextXAlignment.Left, size2 = UDim2.new(0, 0, 1, 0), zIndex = z,
+	})
+	value.AutomaticSize = Enum.AutomaticSize.X
+	value.LayoutOrder = 2
+	return chip
+end
+
+-- One player in the lobby: avatar, outlined name, @username and wealth, and a "Trade!" button
+-- (a grey "Trading..." tag while that player is busy).
+local function tradePlayerRow(info, order, narrow)
+	local rowH = if narrow then 118 else 98
+	local z = 24
+	local row = tradeBrightCard(body, order, rowH)
+	row.Name = "Player_" .. tostring(info.name)
+	addPadding(row, 10, 14, 10, 10)
+	local avatarSize = if narrow then 84 else 76
+	tradeAvatar(row, info, avatarSize, z)
+	local btnW, btnH = if narrow then 124 else 158, if narrow then 66 else 62
+	local textX = avatarSize + 16
+	local textW = UDim2.new(1, -(textX + btnW + 10), 0, 0)
+	local lineY = if narrow then 2 else 4
+	PanelChrome.display(row, {
+		name = "Name", text = info.name or "?", size = if narrow then 28 else 32, stroke = 3, scaled = true, minSize = 14,
+		color = TRADE_NAME, xAlign = Enum.TextXAlignment.Left,
+		pos = UDim2.fromOffset(textX, lineY), size2 = textW + UDim2.fromOffset(0, 38), zIndex = z + 1,
+	})
+	local line2 = Instance.new("Frame")
+	line2.Name = "Details"
+	line2.BackgroundTransparency = 1
+	line2.Position = UDim2.fromOffset(textX, lineY + 40)
+	line2.Size = textW + UDim2.fromOffset(0, 28)
+	line2.ClipsDescendants = true
+	line2.ZIndex = z
+	line2.Parent = row
+	local ll = Instance.new("UIListLayout")
+	ll.FillDirection = if narrow then Enum.FillDirection.Vertical else Enum.FillDirection.Horizontal
+	ll.VerticalAlignment = Enum.VerticalAlignment.Center
+	ll.Padding = UDim.new(0, if narrow then 2 else 14)
+	ll.SortOrder = Enum.SortOrder.LayoutOrder
+	ll.Parent = line2
+	if narrow then line2.Size = textW + UDim2.fromOffset(0, 56) end
+	local user = brightText(line2, {
+		text = "@" .. tostring(info.username or info.name or ""), font = PanelChrome.DISPLAY_FONT, size = 20,
+		color = BRIGHT.Ink, size2 = UDim2.new(0, 0, 0, 26), zIndex = z + 1,
+	})
+	user.AutomaticSize = Enum.AutomaticSize.X
+	user.LayoutOrder = 1
+	local chip = tradeWealthChip(line2, info.wealth, 22, z + 1, 2)
+	chip.Size = UDim2.new(0, 0, 0, 26)
+
+	if info.busy then
+		local tag = Instance.new("Frame")
+		tag.Name = "BusyTag"
+		tag.AnchorPoint = Vector2.new(1, 0.5)
+		tag.Position = UDim2.new(1, 0, 0.5, 0)
+		tag.Size = UDim2.fromOffset(btnW, btnH - 6)
+		tag.BackgroundColor3 = Color3.new(1, 1, 1)
+		tag.ZIndex = z + 1
+		tag.Parent = row
+		addCorner(tag, 16)
+		PanelChrome.gradient(tag, TRADE_GREY.top, TRADE_GREY.bottom)
+		PanelChrome.stroke(tag, BRIGHT.Outline, 3)
+		PanelChrome.display(tag, {
+			name = "Label", text = "Trading...", size = 28, stroke = 2.5, scaled = true, minSize = 12,
+			size2 = UDim2.new(1, -12, 1, -8), pos = UDim2.fromOffset(6, 4), zIndex = z + 2,
+		})
+	else
+		local userId = info.userId
+		local sample = info.sample
+		tradeChunky(row, {
+			name = "TradeButton", text = "Trade!", colors = TRADE_GREEN, textSize = if narrow then 28 else 32,
+			size = UDim2.fromOffset(btnW, btnH), anchor = Vector2.new(1, 0.5), pos = UDim2.new(1, 0, 0.5, -3), zIndex = z + 1,
+			onClick = function()
+				if sample then return end -- showcase sample: never reaches the server
+				tradeRemote:FireServer("Request", userId)
+			end,
+		})
 	end
+	return row
+end
+
+-- Lobby header: "Players" with a count bubble, a chunky search box and a blue Refresh button.
+-- Phones put the search box on its own line.
+local function tradeLobbyHeader(order, narrow, count, onSearch)
+	local z = 24
+	local h = if narrow then 140 else 72
+	local head = Instance.new("Frame")
+	head.Name = "LobbyHeader"
+	head.BackgroundTransparency = 1
+	head.Size = UDim2.new(1, 0, 0, h)
+	head.LayoutOrder = order
+	head.ZIndex = z
+	head.Parent = body
+
+	local titleRow = Instance.new("Frame")
+	titleRow.Name = "TitleRow"
+	titleRow.BackgroundTransparency = 1
+	titleRow.Position = UDim2.fromOffset(4, 0)
+	titleRow.Size = UDim2.new(0, 0, 0, 64)
+	titleRow.AutomaticSize = Enum.AutomaticSize.X
+	titleRow.ZIndex = z
+	titleRow.Parent = head
+	local tl = Instance.new("UIListLayout")
+	tl.FillDirection = Enum.FillDirection.Horizontal
+	tl.VerticalAlignment = Enum.VerticalAlignment.Center
+	tl.Padding = UDim.new(0, 10)
+	tl.SortOrder = Enum.SortOrder.LayoutOrder
+	tl.Parent = titleRow
+	local title = PanelChrome.display(titleRow, {
+		name = "Title", text = "Players", size = if narrow then 32 else 36, stroke = 3.5,
+		xAlign = Enum.TextXAlignment.Left, size2 = UDim2.new(0, 0, 1, 0), zIndex = z + 1,
+	})
+	title.AutomaticSize = Enum.AutomaticSize.X
+	title.LayoutOrder = 1
+	local countBubble = Instance.new("Frame")
+	countBubble.Name = "Count"
+	countBubble.Size = UDim2.fromOffset(46, 42)
+	countBubble.AutomaticSize = Enum.AutomaticSize.X
+	countBubble.BackgroundColor3 = Color3.new(1, 1, 1)
+	countBubble.LayoutOrder = 2
+	countBubble.ZIndex = z + 1
+	countBubble.Parent = titleRow
+	addCorner(countBubble, 14)
+	PanelChrome.gradient(countBubble, TRADE_BLUE.top, TRADE_BLUE.bottom)
+	PanelChrome.stroke(countBubble, BRIGHT.Outline, 3)
+	addPadding(countBubble, 0, 10, 0, 10)
+	local countLabel = PanelChrome.display(countBubble, {
+		name = "Value", text = tostring(count), size = 26, stroke = 2.5, size2 = UDim2.new(0, 26, 1, 0), zIndex = z + 2,
+	})
+	countLabel.AutomaticSize = Enum.AutomaticSize.X
+
+	local refreshW, ctrlH = if narrow then 138 else 150, if narrow then 62 else 58
+	tradeChunky(head, {
+		name = "RefreshButton", text = "Refresh", colors = TRADE_BLUE, textSize = 26,
+		size = UDim2.fromOffset(refreshW, ctrlH), anchor = Vector2.new(1, 0), pos = UDim2.new(1, -2, 0, 2), zIndex = z + 1,
+		onClick = function() tradeRemote:FireServer("Refresh") end,
+	})
+
+	-- Search box: white field, heavy outline, a magnifier drawn from Frames.
+	local search = Instance.new("Frame")
+	search.Name = "Search"
+	search.BackgroundColor3 = Color3.new(1, 1, 1)
+	search.ZIndex = z + 1
+	if narrow then
+		search.Position = UDim2.fromOffset(2, 76)
+		search.Size = UDim2.new(1, -4, 0, 60)
+	else
+		search.AnchorPoint = Vector2.new(1, 0)
+		search.Position = UDim2.new(1, -(refreshW + 16), 0, 2)
+		search.Size = UDim2.fromOffset(206, ctrlH)
+	end
+	search.Parent = head
+	addCorner(search, 18)
+	PanelChrome.gradient(search, Color3.fromRGB(226, 234, 248), Color3.fromRGB(255, 255, 255))
+	PanelChrome.stroke(search, BRIGHT.Outline, 3.5)
+	local glass = Instance.new("Frame")
+	glass.Name = "Magnifier"
+	glass.BackgroundTransparency = 1
+	glass.AnchorPoint = Vector2.new(0, 0.5)
+	glass.Position = UDim2.new(0, 12, 0.5, 0)
+	glass.Size = UDim2.fromOffset(34, 34)
+	glass.ZIndex = z + 2
+	glass.Parent = search
+	local lens = Instance.new("Frame")
+	lens.BackgroundColor3 = Color3.fromRGB(200, 232, 255)
+	lens.Position = UDim2.fromOffset(2, 2)
+	lens.Size = UDim2.fromOffset(21, 21)
+	lens.ZIndex = z + 3
+	lens.Parent = glass
+	addCorner(lens, 21)
+	PanelChrome.stroke(lens, BRIGHT.Ink, 4)
+	local handle = Instance.new("Frame")
+	handle.AnchorPoint = Vector2.new(0.5, 0.5)
+	handle.Position = UDim2.fromOffset(26, 26)
+	handle.Size = UDim2.fromOffset(14, 7)
+	handle.Rotation = 45
+	handle.BackgroundColor3 = BRIGHT.Ink
+	handle.ZIndex = z + 2
+	handle.Parent = glass
+	addCorner(handle, 4)
+	local box = Instance.new("TextBox")
+	box.Name = "SearchBox"
+	box.BackgroundTransparency = 1
+	box.Position = UDim2.fromOffset(54, 0)
+	box.Size = UDim2.new(1, -62, 1, 0)
+	box.Font = PanelChrome.DISPLAY_FONT
+	box.TextSize = 24
+	box.TextColor3 = BRIGHT.Ink
+	box.PlaceholderText = "Search"
+	box.PlaceholderColor3 = BRIGHT.InkMuted
+	box.TextXAlignment = Enum.TextXAlignment.Left
+	box.ClearTextOnFocus = false
+	box.ClipsDescendants = true
+	box.Text = tradeSearch
+	box.ZIndex = z + 2
+	box.Parent = search
+	box:GetPropertyChangedSignal("Text"):Connect(function()
+		tradeSearch = box.Text
+		onSearch()
+	end)
+	return head
+end
+
+-- Empty server: a big trade emblem on a soft halo, a bold headline and an Invite Friends button.
+local function tradeEmptyState(order, narrow)
+	local z = 24
+	local h = if narrow then 424 else 372
+	local card = tradeBrightCard(body, order, h)
+	card.Name = "EmptyState"
+	PanelChrome.stripes(card, { color = Color3.fromRGB(200, 220, 250), alpha = 0.6, bands = 9, rotation = 25, radius = 20, zIndex = 23 })
+	local cy = if narrow then 104 else 98
+	for i, spec in ipairs({ { 178, Color3.fromRGB(206, 232, 255), 0 }, { 140, Color3.fromRGB(236, 246, 255), 0 } }) do
+		local disc = Instance.new("Frame")
+		disc.Name = "Halo" .. i
+		disc.AnchorPoint = Vector2.new(0.5, 0.5)
+		disc.Position = UDim2.new(0.5, 0, 0, cy)
+		disc.Size = UDim2.fromOffset(spec[1], spec[1])
+		disc.BackgroundColor3 = spec[2]
+		disc.BackgroundTransparency = spec[3]
+		disc.ZIndex = z
+		disc.Parent = card
+		addCorner(disc, spec[1])
+		if i == 1 then PanelChrome.stroke(disc, Color3.fromRGB(150, 196, 246), 4) end
+	end
+	tradeArrowsIcon(card, 132, { name = "Emblem", pos = UDim2.new(0.5, 0, 0, cy), rotation = -8, zIndex = z + 1 })
+	-- Little gold sparkles around the emblem.
+	for _, s in ipairs({ { -92, -58, 26 }, { 96, -40, 20 }, { 82, 62, 16 }, { -84, 56, 14 } }) do
+		shapeIcon(card, GEM_PIECES, BRIGHT.Gold, {
+			name = "Sparkle", size = UDim2.fromOffset(s[3], s[3]), pos = UDim2.new(0.5, s[1], 0, cy + s[2]),
+			zIndex = z + 4, pad = 4,
+		})
+	end
+	local ty = cy + 98
+	PanelChrome.display(card, {
+		name = "Headline", text = "No one to trade with yet", size = if narrow then 30 else 38, stroke = 3.5,
+		scaled = true, minSize = 18, pos = UDim2.new(0, 16, 0, ty), size2 = UDim2.new(1, -32, 0, 46), zIndex = z + 2,
+	})
+	local sub = brightText(card, {
+		text = "Trades need another player in this server. Bring a friend!", font = PanelChrome.DISPLAY_FONT,
+		size = 20, color = BRIGHT.Ink, wrap = true, xAlign = Enum.TextXAlignment.Center,
+		pos = UDim2.new(0, 20, 0, ty + 48), size2 = UDim2.new(1, -40, 0, if narrow then 52 else 28), zIndex = z + 2,
+	})
+	sub.Name = "Sub"
+	tradeChunky(card, {
+		name = "InviteButton", text = "Invite Friends", colors = TRADE_GREEN, textSize = 32,
+		size = UDim2.fromOffset(if narrow then 270 else 300, 70), anchor = Vector2.new(0.5, 1),
+		pos = UDim2.new(0.5, 0, 1, -24), zIndex = z + 2,
+		onClick = function()
+			task.spawn(function()
+				local ok, can = pcall(SocialService.CanSendGameInviteAsync, SocialService, player)
+				if ok and can then pcall(SocialService.PromptGameInvite, SocialService, player) end
+			end)
+		end,
+	})
+	return card
+end
+
+-- Someone asked to trade: a gold card with their avatar, and Accept / Decline.
+local function tradeIncomingCard(order, narrow)
+	local z = 24
+	local incoming = tradeState.incoming
+	local card = tradeBrightCard(body, order, if narrow then 178 else 104, TRADE_GOLD)
+	card.Name = "IncomingRequest"
+	addPadding(card, 10, 14, 10, 10)
+	local avatar = tradeAvatar(card, { userId = incoming.userId }, if narrow then 72 else 80, z)
+	if narrow then
+		avatar.AnchorPoint = Vector2.zero
+		avatar.Position = UDim2.fromOffset(0, 0)
+	end
+	local textX = (if narrow then 72 else 80) + 14
+	local textW = if narrow then UDim2.new(1, -textX, 0, 0) else UDim2.new(1, -(textX + 290), 0, 0)
+	PanelChrome.display(card, {
+		name = "Title", text = tostring(incoming.name) .. " wants to trade!", size = if narrow then 26 else 30, stroke = 3,
+		scaled = true, minSize = 14, xAlign = Enum.TextXAlignment.Left,
+		pos = UDim2.fromOffset(textX, if narrow then 0 else 8), size2 = textW + UDim2.fromOffset(0, 40), zIndex = z + 1,
+	})
+	brightText(card, {
+		text = "Accept to open the trade window.", font = PanelChrome.DISPLAY_FONT, size = 19, color = BRIGHT.Ink,
+		pos = UDim2.fromOffset(textX, if narrow then 40 else 48), size2 = textW + UDim2.fromOffset(0, 26), zIndex = z + 1,
+	})
+	local fromId = incoming.userId
+	local bw, bh = if narrow then 0 else 136, if narrow then 62 else 60
+	local accept, decline = {
+		name = "AcceptButton", text = "Accept", colors = TRADE_GREEN, textSize = 28, zIndex = z + 1,
+		onClick = function() tradeRemote:FireServer("Accept", fromId) end,
+	}, {
+		name = "DeclineButton", text = "Decline", colors = TRADE_RED, textSize = 28, zIndex = z + 1,
+		onClick = function() tradeRemote:FireServer("Decline", fromId) end,
+	}
+	if narrow then
+		accept.size, accept.anchor, accept.pos = UDim2.new(0.5, -6, 0, bh), Vector2.new(0, 1), UDim2.new(0, 0, 1, -6)
+		decline.size, decline.anchor, decline.pos = UDim2.new(0.5, -6, 0, bh), Vector2.new(1, 1), UDim2.new(1, 0, 1, -6)
+	else
+		accept.size, accept.anchor, accept.pos = UDim2.fromOffset(bw, bh), Vector2.new(1, 0.5), UDim2.new(1, -(bw + 12), 0.5, -3)
+		decline.size, decline.anchor, decline.pos = UDim2.fromOffset(bw, bh), Vector2.new(1, 0.5), UDim2.new(1, 0, 0.5, -3)
+	end
+	tradeChunky(card, accept)
+	tradeChunky(card, decline)
+	return card
 end
 
 local function buildTradeLobby(order)
+	local narrow = layoutMode == "narrow"
 	if tradeState.incoming then
-		local card = tradeCard(order, 64); order += 1
-		createText(card, { text = tradeState.incoming.name .. " wants to trade with you", font = Enum.Font.GothamBold, size = 14,
-			color = COLORS.Gold, size2 = UDim2.new(1, -200, 0, 24), zIndex = 24 })
-		createText(card, { text = "Accept to open the trade window.", font = Enum.Font.Gotham, size = 11, color = COLORS.Muted,
-			pos = UDim2.fromOffset(0, 24), size2 = UDim2.new(1, -200, 0, 16), zIndex = 24 })
-		local fromId = tradeState.incoming.userId
-		tradeButton(card, "Accept", COLORS.Success, UDim2.new(1, -96, 0.5, 0), UDim2.fromOffset(88, 30), function()
-			tradeRemote:FireServer("Accept", fromId)
-		end)
-		tradeButton(card, "Decline", COLORS.Button, UDim2.new(1, 0, 0.5, 0), UDim2.fromOffset(88, 30), function()
-			tradeRemote:FireServer("Decline", fromId)
-		end)
+		tradeIncomingCard(order, narrow); order += 1
 	end
-	local head = tradeCard(order, 40); order += 1
-	createText(head, { text = "Players in this server", font = Enum.Font.GothamBold, size = 14, color = COLORS.Text,
-		size2 = UDim2.new(1, -100, 1, 0), zIndex = 24 })
-	tradeButton(head, "Refresh", COLORS.Button, UDim2.new(1, 0, 0.5, 0), UDim2.fromOffset(84, 26), function()
-		tradeRemote:FireServer("Refresh")
-	end)
-	if #tradeState.players == 0 then
-		local card = tradeCard(order, 48); order += 1
-		createText(card, { text = "Nobody else is here yet. Trades need another player in the server.", font = Enum.Font.Gotham,
-			size = 12, color = COLORS.Muted, wrap = true, size2 = UDim2.new(1, 0, 1, 0), zIndex = 24 })
-	end
-	for _, info in ipairs(tradeState.players) do
-		local card = tradeCard(order, 56); order += 1
-		createText(card, { text = info.name, font = Enum.Font.GothamBold, size = 14, color = COLORS.Text,
-			size2 = UDim2.new(1, -110, 0, 20), zIndex = 24 })
-		createText(card, { text = string.format("Level %d · Wealth %s%s", info.level, SwordValue.short(info.wealth or 0),
-			info.busy and " · trading" or ""), font = Enum.Font.Gotham, size = 11, color = COLORS.Muted,
-			pos = UDim2.fromOffset(0, 22), size2 = UDim2.new(1, -110, 0, 16), zIndex = 24 })
-		if not info.busy then
-			local userId = info.userId
-			tradeButton(card, "Trade", COLORS.Success, UDim2.new(1, 0, 0.5, 0), UDim2.fromOffset(84, 30), function()
-				tradeRemote:FireServer("Request", userId)
-			end)
+	local list = tradeState.players
+	if #list == 0 and tradeSamples then list = tradeSamples end
+	-- Usernames come from the local Players list; the server payload carries display names.
+	for _, info in ipairs(list) do
+		if not info.username and typeof(info.userId) == "number" then
+			local p = Players:GetPlayerByUserId(info.userId)
+			if p then info.username = p.Name end
 		end
 	end
+	local rows = {}
+	local noMatch
+	local function applySearch()
+		local q = string.lower(tradeSearch or "")
+		local shown = 0
+		for _, r in ipairs(rows) do
+			r.frame.Visible = q == "" or string.find(r.key, q, 1, true) ~= nil
+			if r.frame.Visible then shown += 1 end
+		end
+		if noMatch then noMatch.Visible = #rows > 0 and shown == 0 end
+	end
+	tradeLobbyHeader(order, narrow, #list, applySearch); order += 1
+	if #list == 0 then
+		tradeEmptyState(order, narrow); order += 1
+		return order
+	end
+	for _, info in ipairs(list) do
+		local row = tradePlayerRow(info, order, narrow); order += 1
+		table.insert(rows, { frame = row, key = string.lower(tostring(info.name) .. " " .. tostring(info.username or "")) })
+	end
+	noMatch = tradeBrightCard(body, order, 84); order += 1
+	noMatch.Name = "NoMatch"
+	PanelChrome.display(noMatch, {
+		name = "Text", text = "No players match your search", size = 26, stroke = 3, scaled = true, minSize = 14,
+		pos = UDim2.fromOffset(12, 0), size2 = UDim2.new(1, -24, 1, 0), zIndex = 24,
+	})
+	applySearch()
 	return order
 end
 
+-- ── Trade session (both offers side by side), in the same bright card style ──
+local function tradeCard(order, height)
+	local card = tradeBrightCard(body, order, height)
+	addPadding(card, 10, 14, 10, 14)
+	return card
+end
+
+local function tradeButton(parent, text, colors, pos, size, onClick)
+	local btn = tradeChunky(parent, {
+		name = text .. "Button", text = text, colors = colors, textSize = 24, size = size, pos = pos,
+		anchor = Vector2.new(1, 0.5), zIndex = 25, onClick = onClick,
+	})
+	return btn
+end
+
+local function swordLine(card, info, y, lineH, withButton, buttonText, buttonColors, onClick)
+	local narrow = layoutMode == "narrow"
+	local reserve = if withButton then 130 else 0
+	PanelChrome.display(card, {
+		text = info.name, size = 22, stroke = 2.5, scaled = true, minSize = 12, color = TRADE_RARITY[info.rarity] or Color3.new(1, 1, 1),
+		xAlign = Enum.TextXAlignment.Left, pos = UDim2.fromOffset(0, y), size2 = UDim2.new(1, -reserve, 0, 28), zIndex = 24,
+	})
+	brightText(card, { text = string.format("%s · %s · rating %s", info.rarity, info.prefixes ~= "" and info.prefixes or "no modifiers",
+		SwordValue.short(info.rating or 0)), font = Enum.Font.GothamBold, size = 14, color = BRIGHT.Ink, wrap = narrow,
+		pos = UDim2.fromOffset(0, y + 28), size2 = UDim2.new(1, -reserve, 0, lineH - 32), zIndex = 24,
+		yAlign = Enum.TextYAlignment.Top })
+	if withButton then
+		tradeButton(card, buttonText, buttonColors, UDim2.new(1, 0, 0, y + math.floor(lineH / 2) - 4),
+			UDim2.fromOffset(118, lineH - 12), onClick)
+	end
+end
+
 local function buildTradeSession(order)
+	local narrow = layoutMode == "narrow"
 	local st = tradeState.session
-	local status = tradeCard(order, 60); order += 1
-	createText(status, { text = "Trading with " .. st.partnerName, font = Enum.Font.GothamBold, size = 15, color = COLORS.Gold,
-		size2 = UDim2.new(1, -110, 0, 22), zIndex = 24 })
+	local status = tradeCard(order, 92); order += 1
+	PanelChrome.display(status, { text = "Trading with " .. st.partnerName, size = 28, stroke = 3, scaled = true, minSize = 14,
+		color = BRIGHT.Gold, xAlign = Enum.TextXAlignment.Left, size2 = UDim2.new(1, -140, 0, 38), zIndex = 24 })
 	local mine = st.myConfirmed and "You: confirmed" or "You: not confirmed"
 	local theirs = st.theirConfirmed and (st.partnerName .. ": confirmed") or (st.partnerName .. ": waiting")
-	createText(status, { text = mine .. "  ·  " .. theirs, font = Enum.Font.Gotham, size = 11, color = COLORS.Muted,
-		pos = UDim2.fromOffset(0, 24), size2 = UDim2.new(1, -110, 0, 16), zIndex = 24 })
-	tradeButton(status, "Cancel", COLORS.Error, UDim2.new(1, 0, 0.5, 0), UDim2.fromOffset(84, 30), function()
+	brightText(status, { text = mine .. "  ·  " .. theirs, font = PanelChrome.DISPLAY_FONT, size = 18, color = BRIGHT.Ink,
+		wrap = true, pos = UDim2.fromOffset(0, 40), size2 = UDim2.new(1, -140, 0, 30), zIndex = 24 })
+	tradeButton(status, "Cancel", TRADE_RED, UDim2.new(1, 0, 0.5, -3), UDim2.fromOffset(124, 62), function()
 		tradeRemote:FireServer("Cancel")
 	end)
 
-	local function section(title, rows, emptyText, withButton, buttonText, buttonColor, action)
-		local card = tradeCard(order, 30 + math.max(#rows, 1) * 36 + 6); order += 1
-		createText(card, { text = title, font = Enum.Font.GothamBold, size = 13, color = COLORS.Text,
-			size2 = UDim2.new(1, 0, 0, 20), zIndex = 24 })
+	local lineH = if narrow then 76 else 64
+	local function section(title, rows, emptyText, withButton, buttonText, buttonColors, action)
+		local card = tradeCard(order, 66 + math.max(#rows, 1) * lineH); order += 1
+		PanelChrome.display(card, { text = title, size = 24, stroke = 3, xAlign = Enum.TextXAlignment.Left,
+			size2 = UDim2.new(1, 0, 0, 34), zIndex = 24 })
 		if #rows == 0 then
-			createText(card, { text = emptyText, font = Enum.Font.Gotham, size = 11, color = COLORS.Muted,
-				pos = UDim2.fromOffset(0, 24), size2 = UDim2.new(1, 0, 0, 16), zIndex = 24 })
+			brightText(card, { text = emptyText, font = PanelChrome.DISPLAY_FONT, size = 18, color = BRIGHT.InkMuted, wrap = true,
+				pos = UDim2.fromOffset(0, 44), size2 = UDim2.new(1, 0, 0, lineH - 12), zIndex = 24 })
 		end
 		for i, info in ipairs(rows) do
 			local key = info.key
-			swordLine(card, info, 22 + (i - 1) * 36, withButton, buttonText, buttonColor, function()
+			swordLine(card, info, 42 + (i - 1) * lineH, lineH, withButton, buttonText, buttonColors, function()
 				tradeRemote:FireServer(action, key)
 			end)
 		end
 	end
 	-- Your side shows everything you own (carried and vaulted); theirs shows only their offer.
 	section(string.format("Your offer (%d / %d)", #st.mine, st.maxOffer or 6), st.mine,
-		"Add swords from your inventory or vault below.", true, "Remove", COLORS.Button, "Offer")
+		"Add swords from your inventory or vault below.", true, "Remove", TRADE_GREY, "Offer")
 	section(st.partnerName .. "'s offer", st.theirs, "They have not offered anything yet.", false)
 	local offered = {}
 	for _, info in ipairs(st.mine) do offered[info.key] = true end
@@ -2335,15 +2888,15 @@ local function buildTradeSession(order)
 		end
 		return out
 	end
-	section("Your inventory", unoffered(st.carried), "No relic swords on you.", true, "Add", COLORS.Success, "Offer")
-	section("Your vault", unoffered(st.vaulted), "Nothing stored with the Vaultkeeper.", true, "Add", COLORS.Success, "Offer")
+	section("Your inventory", unoffered(st.carried), "No relic swords on you.", true, "Add", TRADE_GREEN, "Offer")
+	section("Your vault", unoffered(st.vaulted), "Nothing stored with the Vaultkeeper.", true, "Add", TRADE_GREEN, "Offer")
 
-	local confirmCard = tradeCard(order, 52); order += 1
-	createText(confirmCard, { text = st.myConfirmed and "Waiting for " .. st.partnerName .. " to confirm..." or
-		"Check both offers, then confirm.", font = Enum.Font.Gotham, size = 12, color = COLORS.Muted,
-		size2 = UDim2.new(1, -120, 1, 0), zIndex = 24 })
+	local confirmCard = tradeCard(order, 88); order += 1
+	brightText(confirmCard, { text = st.myConfirmed and "Waiting for " .. st.partnerName .. " to confirm..." or
+		"Check both offers, then confirm.", font = PanelChrome.DISPLAY_FONT, size = 20, color = BRIGHT.Ink, wrap = true,
+		size2 = UDim2.new(1, -160, 1, 0), zIndex = 24 })
 	if not st.myConfirmed then
-		tradeButton(confirmCard, "Confirm", COLORS.Success, UDim2.new(1, 0, 0.5, 0), UDim2.fromOffset(100, 34), function()
+		tradeButton(confirmCard, "Confirm", TRADE_GREEN, UDim2.new(1, 0, 0.5, -3), UDim2.fromOffset(148, 62), function()
 			tradeRemote:FireServer("Confirm")
 		end)
 	end
@@ -2352,7 +2905,7 @@ end
 
 local function buildTradePanel()
 	clearBody()
-	headerTitle.Text = "Trade"
+	headerTitle.Text = "Trading!"
 	local order = 1
 	if tradeState.session then
 		buildTradeSession(order)
@@ -2361,108 +2914,340 @@ local function buildTradePanel()
 	end
 end
 
+-- ═══════════════════════════════════════════════════════════════════════════
+--  SETTINGS TAB: PS99-style light rows at game scale. Each setting is one chunky card (a big
+--  icon tile, a stroked display label, and a thick bevelled control); the keyboard shortcuts
+--  are demoted to a small keycap footer. Controls update in place (settingsSync) so dragging
+--  the slider never rebuilds the panel under the player's finger.
+-- ═══════════════════════════════════════════════════════════════════════════
+local SETTINGS_RED = { top = Color3.fromRGB(255, 132, 120), bottom = Color3.fromRGB(234, 58, 66), lip = Color3.fromRGB(150, 24, 40) }
+local SETTINGS_KEY = { top = Color3.fromRGB(255, 255, 255), bottom = Color3.fromRGB(212, 220, 238), lip = Color3.fromRGB(146, 156, 182) }
+local SETTINGS_TRACK = { top = Color3.fromRGB(158, 166, 188), bottom = Color3.fromRGB(208, 214, 230) }
+-- A beamed pair of eighth notes, in fractions of a square holder (see shapeIcon).
+local NOTE_PIECES = {
+	{ 0.32, 0.77, 0.34, 0.25, -20, true },
+	{ 0.76, 0.67, 0.34, 0.25, -20, true },
+	{ 0.445, 0.45, 0.085, 0.62, 0, false },
+	{ 0.885, 0.35, 0.085, 0.62, 0, false },
+	{ 0.665, 0.12, 0.52, 0.14, -13, false },
+}
+local SHORTCUTS = {
+	{ key = "M", desc = "Menu" },
+	{ key = "1", desc = "Sword" }, -- sheathe / draw (SwordHotbarGui)
+	{ key = "E", desc = "Attack" },
+	{ key = "Click", desc = "Attack" },
+	{ key = "Esc", desc = "Close" },
+}
+local settingsSync = nil -- set while the Settings tab is built; refreshes its controls in place
+
+-- A 3D block: a dark lip under an offset glossy face gives it a bevelled bottom edge.
+local function bevelBlock(parent, colors, props)
+	local z = props.zIndex
+	local r = props.radius or 16
+	local block = Instance.new("Frame")
+	block.Name = props.name or "Block"
+	block.BackgroundColor3 = colors.lip
+	block.BorderSizePixel = 0
+	block.AnchorPoint = props.anchor or Vector2.zero
+	block.Position = props.pos or UDim2.new()
+	block.Size = props.size
+	block.ZIndex = z
+	block.Parent = parent
+	addCorner(block, r)
+	PanelChrome.stroke(block, BRIGHT.Outline, props.stroke or 3.5)
+	local face = Instance.new("Frame")
+	face.Name = "Face"
+	face.BackgroundColor3 = Color3.new(1, 1, 1)
+	face.BorderSizePixel = 0
+	face.Size = UDim2.new(1, 0, 1, -(props.lip or 7))
+	face.ZIndex = z + 1
+	face.Parent = block
+	addCorner(face, r)
+	local grad = PanelChrome.gradient(face, colors.top, colors.bottom)
+	local shine = Instance.new("Frame")
+	shine.Name = "Shine"
+	shine.BackgroundColor3 = Color3.new(1, 1, 1)
+	shine.BackgroundTransparency = 0.5
+	shine.BorderSizePixel = 0
+	shine.Position = UDim2.fromOffset(6, 4)
+	shine.Size = UDim2.new(1, -12, 0.34, 0)
+	shine.ZIndex = z + 1
+	shine.Parent = face
+	addCorner(shine, math.max(r - 5, 4))
+	local sg = Instance.new("UIGradient")
+	sg.Rotation = 90
+	sg.Transparency = NumberSequence.new(0.1, 1)
+	sg.Parent = shine
+	return block, face, grad
+end
+
+-- Soft dark shape offset under a control, so it reads as sitting on the card.
+local function dropShadow(parent, radius, z, offset)
+	local shadow = Instance.new("Frame")
+	shadow.Name = "DropShadow"
+	shadow.BackgroundColor3 = BRIGHT.Outline
+	shadow.BackgroundTransparency = 0.62
+	shadow.BorderSizePixel = 0
+	shadow.Position = UDim2.fromOffset(0, offset or 7)
+	shadow.Size = UDim2.fromScale(1, 1)
+	shadow.ZIndex = z
+	shadow.Parent = parent
+	addCorner(shadow, radius)
+	return shadow
+end
+
+-- Recessed groove shading along the top of a track.
+local function grooveShadow(parent, radius, z)
+	local s = Instance.new("Frame")
+	s.Name = "Groove"
+	s.BackgroundColor3 = Color3.fromRGB(40, 46, 70)
+	s.BorderSizePixel = 0
+	s.Size = UDim2.new(1, 0, 0.55, 0)
+	s.ZIndex = z
+	s.Parent = parent
+	addCorner(s, radius)
+	local g = Instance.new("UIGradient")
+	g.Rotation = 90
+	g.Transparency = NumberSequence.new(0.55, 1)
+	g.Parent = s
+end
+
+-- One setting card: gradient face, heavy outline, a big loot-style icon tile, a stroked
+-- display label with a sub line under it, and a control slot (right side, or along the
+-- bottom on phones).
+local function settingsRow(order, spec, narrow)
+	local rowH = narrow and 176 or 140
+	local tileSize = narrow and 72 or 100
+	local controlW = narrow and 0 or 250
+	local z = 24
+	local row = Instance.new("Frame")
+	row.Name = "Setting_" .. spec.name
+	row.Size = UDim2.new(1, 0, 0, rowH)
+	row.BackgroundColor3 = Color3.new(1, 1, 1)
+	row.LayoutOrder = order
+	row.ZIndex = 23
+	row.Parent = body
+	addCorner(row, 22)
+	PanelChrome.gradient(row, Color3.fromRGB(255, 255, 255), BRIGHT.Row)
+	PanelChrome.stroke(row, BRIGHT.Outline, 3.5)
+	addPadding(row, 12, 14, 12, 12)
+
+	local tile = Instance.new("Frame")
+	tile.Name = "IconTile"
+	tile.Size = UDim2.fromOffset(tileSize, tileSize)
+	if not narrow then
+		tile.AnchorPoint = Vector2.new(0, 0.5)
+		tile.Position = UDim2.fromScale(0, 0.5)
+	end
+	tile.ZIndex = z
+	tile.Parent = row
+	addCorner(tile, 18)
+	PanelChrome.lootTile(tile, spec.tile, { radius = 18, zIndex = z, glowY = 0.5 })
+	spec.icon(tile, z + 2)
+
+	local textX = tileSize + 16
+	local textW = if narrow then UDim2.new(1, -textX, 0, 0) else UDim2.new(1, -(textX + controlW + 14), 0, 0)
+	local textY = if narrow then 0 else math.floor((rowH - 24 - 88) / 2)
+	local title = PanelChrome.display(row, {
+		name = "Title", text = spec.title, size = narrow and 32 or 36, stroke = 3.5, scaled = true, minSize = 18,
+		xAlign = Enum.TextXAlignment.Left, pos = UDim2.fromOffset(textX, textY),
+		size2 = textW + UDim2.fromOffset(0, 44), zIndex = z + 1,
+	})
+	local sub = Instance.new("Frame")
+	sub.Name = "Sub"
+	sub.BackgroundTransparency = 1
+	sub.Position = UDim2.fromOffset(textX, textY + 44)
+	sub.Size = textW + UDim2.fromOffset(0, narrow and 30 or 44)
+	sub.ZIndex = z
+	sub.Parent = row
+
+	local control = Instance.new("Frame")
+	control.Name = "Control"
+	control.BackgroundTransparency = 1
+	control.ZIndex = z
+	control.Parent = row
+	if narrow then
+		control.AnchorPoint = Vector2.new(0.5, 1)
+		control.Position = UDim2.new(0.5, 0, 1, 0)
+		control.Size = UDim2.new(1, 0, 0, 76)
+	else
+		control.AnchorPoint = Vector2.new(1, 0.5)
+		control.Position = UDim2.new(1, 0, 0.5, 0)
+		control.Size = UDim2.fromOffset(controlW, 80)
+	end
+	return row, title, sub, control
+end
+
+-- Fat slider: a recessed grey groove, a thick green fill and a big bevelled green knob. The
+-- whole control strip is the hit area, so it stays easy to grab on a phone.
+local function settingsSlider(control, value, z)
+	local KNOB = 60
+	local track = Instance.new("Frame")
+	track.Name = "SliderTrack"
+	track.AnchorPoint = Vector2.new(0, 0.5)
+	track.Position = UDim2.new(0, KNOB / 2, 0.5, 0)
+	track.Size = UDim2.new(1, -KNOB, 0, 38)
+	track.BackgroundColor3 = Color3.new(1, 1, 1)
+	track.BorderSizePixel = 0
+	track.ZIndex = z
+	track.Parent = control
+	addCorner(track, 19)
+	PanelChrome.gradient(track, SETTINGS_TRACK.top, SETTINGS_TRACK.bottom)
+	PanelChrome.stroke(track, BRIGHT.Outline, 3.5)
+	grooveShadow(track, 19, z)
+
+	local fill = Instance.new("Frame")
+	fill.Name = "SliderFill"
+	fill.Size = UDim2.new(value, 0, 1, 0)
+	fill.BackgroundColor3 = Color3.new(1, 1, 1)
+	fill.BorderSizePixel = 0
+	fill.ZIndex = z + 1
+	fill.Parent = track
+	addCorner(fill, 19)
+	PanelChrome.gradient(fill, SKILL_GREEN.top, SKILL_GREEN.bottom)
+	local fillShine = Instance.new("Frame")
+	fillShine.BackgroundColor3 = Color3.new(1, 1, 1)
+	fillShine.BackgroundTransparency = 0.55
+	fillShine.BorderSizePixel = 0
+	fillShine.Position = UDim2.fromOffset(8, 5)
+	fillShine.Size = UDim2.new(1, -16, 0, 7)
+	fillShine.ZIndex = z + 1
+	fillShine.Parent = fill
+	addCorner(fillShine, 4)
+
+	local knobHolder = Instance.new("Frame")
+	knobHolder.Name = "SliderKnob"
+	knobHolder.BackgroundTransparency = 1
+	knobHolder.AnchorPoint = Vector2.new(0.5, 0.5)
+	knobHolder.Position = UDim2.new(value, 0, 0.5, 0)
+	knobHolder.Size = UDim2.fromOffset(KNOB, KNOB)
+	knobHolder.ZIndex = z + 2
+	knobHolder.Parent = track
+	dropShadow(knobHolder, 18, z + 2, 6)
+	local _, knobFace = bevelBlock(knobHolder, SKILL_GREEN, {
+		name = "Knob", size = UDim2.fromScale(1, 1), radius = 18, lip = 9, zIndex = z + 3,
+	})
+	for i = -1, 1 do
+		local grip = Instance.new("Frame")
+		grip.AnchorPoint = Vector2.new(0.5, 0.5)
+		grip.Position = UDim2.new(0.5, i * 11, 0.54, 0)
+		grip.Size = UDim2.new(0, 5, 0.46, 0)
+		grip.BackgroundColor3 = SKILL_GREEN.lip
+		grip.BackgroundTransparency = 0.15
+		grip.BorderSizePixel = 0
+		grip.ZIndex = z + 5
+		grip.Parent = knobFace
+		addCorner(grip, 3)
+	end
+	local knobScale = Instance.new("UIScale")
+	knobScale.Parent = knobHolder
+
+	local hit = Instance.new("TextButton")
+	hit.Name = "SliderHitArea"
+	hit.Text = ""
+	hit.AutoButtonColor = false
+	hit.BackgroundTransparency = 1
+	hit.Size = UDim2.fromScale(1, 1)
+	hit.ZIndex = z + 8
+	hit.Parent = control
+	hit.MouseEnter:Connect(function() knobScale.Scale = 1.08 end)
+	hit.MouseLeave:Connect(function() knobScale.Scale = 1 end)
+
+	local function show(v)
+		fill.Size = UDim2.new(v, 0, 1, 0)
+		knobHolder.Position = UDim2.new(v, 0, 0.5, 0)
+	end
+	return { track = track, hit = hit, knobScale = knobScale, show = show }
+end
+
+-- Big two-state switch: a recessed grey track with a bevelled thumb that slides across,
+-- green "On" on the right, red "Off" on the left, over a drop shadow.
+local function settingsToggle(control, on, z)
+	local btn = Instance.new("TextButton")
+	btn.Name = "Toggle"
+	btn.Text = ""
+	btn.AutoButtonColor = false
+	btn.BackgroundTransparency = 1
+	btn.AnchorPoint = Vector2.new(0.5, 0.5)
+	btn.Position = UDim2.fromScale(0.5, 0.5)
+	btn.Size = UDim2.fromOffset(212, 70)
+	btn.ZIndex = z
+	btn.Parent = control
+	dropShadow(btn, 22, z, 7)
+	local track = Instance.new("Frame")
+	track.Name = "Track"
+	track.BackgroundColor3 = Color3.new(1, 1, 1)
+	track.BorderSizePixel = 0
+	track.Size = UDim2.fromScale(1, 1)
+	track.ZIndex = z + 1
+	track.Parent = btn
+	addCorner(track, 22)
+	PanelChrome.gradient(track, SETTINGS_TRACK.top, SETTINGS_TRACK.bottom)
+	PanelChrome.stroke(track, BRIGHT.Outline, 3.5)
+	grooveShadow(track, 22, z + 1)
+	-- Ghost of the other state, so the empty half still says what a tap will do.
+	local ghost = brightText(track, {
+		text = "", font = PanelChrome.DISPLAY_FONT, size = 24, color = Color3.fromRGB(96, 104, 130),
+		xAlign = Enum.TextXAlignment.Center, size2 = UDim2.new(0.42, 0, 1, 0), zIndex = z + 2,
+	})
+
+	local thumb, face, grad = bevelBlock(track, SKILL_GREEN, {
+		name = "Thumb", anchor = Vector2.new(0.5, 0.5), size = UDim2.new(0.58, 0, 1, 0),
+		radius = 22, lip = 9, zIndex = z + 3,
+	})
+	local label = PanelChrome.display(face, {
+		name = "State", text = "", size = 34, stroke = 3.5, zIndex = z + 6,
+		pos = UDim2.fromOffset(0, 1), size2 = UDim2.fromScale(1, 1),
+	})
+	local scale = Instance.new("UIScale")
+	scale.Parent = btn
+	btn.MouseEnter:Connect(function() scale.Scale = 1.05 end)
+	btn.MouseLeave:Connect(function() scale.Scale = 1 end)
+	btn.MouseButton1Down:Connect(function() scale.Scale = 0.96 end)
+	btn.MouseButton1Up:Connect(function() scale.Scale = 1.05 end)
+
+	local function show(state, animate)
+		local c = if state then SKILL_GREEN else SETTINGS_RED
+		thumb.BackgroundColor3 = c.lip
+		grad.Color = ColorSequence.new(c.top, c.bottom)
+		label.Text = if state then "On" else "Off"
+		ghost.Text = if state then "Off" else "On"
+		ghost.Position = if state then UDim2.fromScale(0.01, 0) else UDim2.fromScale(0.57, 0)
+		local target = UDim2.fromScale(if state then 0.71 else 0.29, 0.5)
+		if animate then
+			TweenService:Create(thumb, TweenInfo.new(0.16, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = target }):Play()
+		else
+			thumb.Position = target
+		end
+	end
+	show(on, false)
+	return { button = btn, show = show }
+end
+
 local function buildSettingsPanel()
 	clearBody()
 	headerTitle.Text = "Settings"
-	local order = 0
+	local narrow = layoutMode == "narrow"
+	local z = 24
 
-	-- ── helper: create a row with label on top, description below ──
-	local function createSettingRow(height, layoutOrder)
-		order += 1
-		local row = Instance.new("Frame")
-		row.Size = UDim2.new(1, 0, 0, height)
-		row.BackgroundColor3 = COLORS.PanelLight
-		row.BackgroundTransparency = 0.08
-		row.BorderSizePixel = 0
-		row.LayoutOrder = layoutOrder
-		row.ZIndex = 23
-		row.Parent = body
-		addCorner(row, 12)
-		addStroke(row, COLORS.Stroke, 0.4, 1)
-		return row
-	end
-
-	-- ═══════════════════════════════════════════════
-	--  2. MUSIC VOLUME SLIDER
-	-- ═══════════════════════════════════════════════
+	-- ── Music volume ──
 	local musicVolume = player:GetAttribute("MusicVolume")
 	if musicVolume == nil then musicVolume = 0.5 end
-	local volRow = createSettingRow(72, 2)
-	addPadding(volRow, 6, 12, 6, 12)
-
-	local volIcon = Instance.new("ImageLabel")
-	volIcon.Size = UDim2.fromOffset(24, 24)
-	volIcon.Position = UDim2.fromOffset(2, 10)
-	volIcon.BackgroundTransparency = 1
-	volIcon.Image = ICONS.Lighting
-	volIcon.ScaleType = Enum.ScaleType.Fit
-	volIcon.ZIndex = 24
-	volIcon.Parent = volRow
-
-	createText(volRow, {
-		text = "Music Volume",
-		font = Enum.Font.GothamBold,
-		size = 14,
-		color = COLORS.Text,
-		pos = UDim2.fromOffset(34, 4),
-		size2 = UDim2.new(1, -50, 0, 18),
-		zIndex = 24
+	local _, _, volSub, volControl = settingsRow(1, {
+		name = "Music", title = "Music Volume", tile = "Epic",
+		icon = function(tile, iz)
+			shapeIcon(tile, NOTE_PIECES, Color3.fromRGB(255, 222, 72), {
+				name = "Note", size = UDim2.fromScale(0.7, 0.7), pos = UDim2.fromScale(0.5, 0.52),
+				rotation = -8, zIndex = iz, pad = 7,
+			})
+		end,
+	}, narrow)
+	local volValueLabel = PanelChrome.display(volSub, {
+		name = "Value", text = tostring(math.round(musicVolume * 100)) .. "%", size = narrow and 28 or 34,
+		stroke = 3.5, color = BRIGHT.Gold, xAlign = Enum.TextXAlignment.Left, zIndex = z + 1,
 	})
-
-	local volValueLabel = createText(volRow, {
-		text = tostring(math.round(musicVolume * 100)) .. "%",
-		font = Enum.Font.GothamBold,
-		size = 14,
-		color = COLORS.Muted,
-		xAlign = Enum.TextXAlignment.Right,
-		pos = UDim2.fromOffset(0, 4),
-		size2 = UDim2.new(1, -12, 0, 18),
-		zIndex = 24
-	})
-
-	-- Slider track
-	local sliderTrack = Instance.new("Frame")
-	sliderTrack.Name = "SliderTrack"
-	sliderTrack.Size = UDim2.new(1, -32, 0, 8)
-	sliderTrack.Position = UDim2.fromOffset(0, 40)
-	sliderTrack.BackgroundColor3 = COLORS.Accent
-	sliderTrack.BorderSizePixel = 0
-	sliderTrack.ZIndex = 24
-	sliderTrack.Parent = volRow
-	addCorner(sliderTrack, 4)
-
-	-- Slider fill
-	local sliderFill = Instance.new("Frame")
-	sliderFill.Name = "SliderFill"
-	sliderFill.Size = UDim2.new(musicVolume, 0, 1, 0)
-	sliderFill.BackgroundColor3 = COLORS.Success
-	sliderFill.BorderSizePixel = 0
-	sliderFill.ZIndex = 25
-	sliderFill.Parent = sliderTrack
-	addCorner(sliderFill, 4)
-
-	-- Slider knob
-	local sliderKnob = Instance.new("Frame")
-	sliderKnob.Name = "SliderKnob"
-	sliderKnob.Size = UDim2.fromOffset(18, 18)
-	sliderKnob.Position = UDim2.new(musicVolume, -9, 0.5, -9)
-	sliderKnob.BackgroundColor3 = COLORS.Text
-	sliderKnob.BorderSizePixel = 0
-	sliderKnob.ZIndex = 26
-	sliderKnob.Parent = sliderTrack
-	addCorner(sliderKnob, 9)
-
-	-- Invisible drag target wider than the track for easier clicking
-	local sliderHitArea = Instance.new("TextButton")
-	sliderHitArea.Name = "SliderHitArea"
-	sliderHitArea.Size = UDim2.new(1, 16, 0, 28)
-	sliderHitArea.Position = UDim2.fromOffset(-8, -10)
-	sliderHitArea.BackgroundTransparency = 1
-	sliderHitArea.Text = ""
-	sliderHitArea.BorderSizePixel = 0
-	sliderHitArea.ZIndex = 27
-	sliderHitArea.Parent = sliderTrack
-	sliderHitArea.AutoButtonColor = false
+	local slider = settingsSlider(volControl, musicVolume, z + 1)
+	local sliderTrack = slider.track
 
 	-- Apply volume to SoundService sounds and persist
 	local function applyVolume(vol)
@@ -2478,12 +3263,11 @@ local function buildSettingsPanel()
 				sound.Volume = base * musicVolume
 			end
 		end
-		sliderFill.Size = UDim2.new(musicVolume, 0, 1, 0)
-		sliderKnob.Position = UDim2.new(musicVolume, -9, 0.5, -9)
+		slider.show(musicVolume)
 		volValueLabel.Text = tostring(math.round(musicVolume * 100)) .. "%"
 	end
 
-	-- Drag handling
+	-- Drag handling (mouse and touch). The input connections die with the slider.
 	local dragging = false
 	local function updateSliderFromMouse(inputX)
 		local absPos = sliderTrack.AbsolutePosition.X
@@ -2493,165 +3277,145 @@ local function buildSettingsPanel()
 		applyVolume(fraction)
 	end
 
-	sliderHitArea.MouseButton1Down:Connect(function(x)
+	slider.hit.MouseButton1Down:Connect(function(x)
 		dragging = true
+		slider.knobScale.Scale = 1.12
 		updateSliderFromMouse(x)
 	end)
-
-	UserInputService.InputChanged:Connect(function(input)
-		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+	local conns = {}
+	table.insert(conns, UserInputService.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 			updateSliderFromMouse(input.Position.X)
 		end
-	end)
-
-	UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+	end))
+	table.insert(conns, UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			if dragging then slider.knobScale.Scale = 1 end
 			dragging = false
 		end
+	end))
+	slider.hit.Destroying:Connect(function()
+		for _, c in ipairs(conns) do c:Disconnect() end
 	end)
 
-	-- ═══════════════════════════════════════════════
-	--  3. SHOW DAMAGE NUMBERS TOGGLE
-	-- ═══════════════════════════════════════════════
+	-- ── Show damage numbers ──
 	local showDmgOn = player:GetAttribute("ShowDamageNumbers")
 	if showDmgOn == nil then showDmgOn = true end
-	local dmgRow = createSettingRow(56, 3)
-	addPadding(dmgRow, 6, 12, 6, 12)
-
-	local dmgIcon = Instance.new("ImageLabel")
-	dmgIcon.Size = UDim2.fromOffset(24, 24)
-	dmgIcon.Position = UDim2.fromOffset(2, 10)
-	dmgIcon.BackgroundTransparency = 1
-	dmgIcon.Image = ICONS.Sword
-	dmgIcon.ScaleType = Enum.ScaleType.Fit
-	dmgIcon.ZIndex = 24
-	dmgIcon.Parent = dmgRow
-
-	createText(dmgRow, {
-		text = "Show Damage Numbers",
-		font = Enum.Font.GothamBold,
-		size = 14,
-		color = COLORS.Text,
-		pos = UDim2.fromOffset(34, 4),
-		size2 = UDim2.new(1, -145, 0, 18),
-		zIndex = 24
+	local _, _, dmgSub, dmgControl = settingsRow(2, {
+		name = "DamageNumbers", title = "Damage Numbers", tile = "Legendary",
+		icon = function(tile, iz)
+			local img = Instance.new("ImageLabel")
+			img.Name = "Icon"
+			img.BackgroundTransparency = 1
+			img.AnchorPoint = Vector2.new(0.5, 0.5)
+			img.Position = UDim2.fromScale(0.44, 0.56)
+			img.Size = UDim2.fromScale(0.82, 0.82)
+			img.Image = ICONS.Sword
+			img.ScaleType = Enum.ScaleType.Fit
+			img.Rotation = -6
+			img.ZIndex = iz
+			img.Parent = tile
+			local hitNum = PanelChrome.display(tile, {
+				name = "HitNumber", text = "-99", size = narrow and 24 or 32, stroke = 3,
+				color = Color3.fromRGB(255, 70, 70), anchor = Vector2.new(1, 0),
+				pos = UDim2.new(1, 8, 0, -6), size2 = UDim2.fromScale(0.8, 0.4), zIndex = iz + 2,
+			})
+			hitNum.Rotation = 10
+		end,
+	}, narrow)
+	local caption = brightText(dmgSub, {
+		text = "Hits pop up over enemies", font = PanelChrome.DISPLAY_FONT, size = narrow and 16 or 19,
+		color = BRIGHT.Ink, size2 = UDim2.fromScale(1, 1), wrap = true, zIndex = z + 1,
 	})
-
-	createText(dmgRow, {
-		text = "Floating combat text above enemies",
-		font = Enum.Font.Gotham,
-		size = 11,
-		color = COLORS.Muted,
-		pos = UDim2.fromOffset(34, 24),
-		size2 = UDim2.new(1, -145, 0, 18),
-		wrap = true,
-		zIndex = 24
-	})
-
-	local dmgToggleBtn = Instance.new("TextButton")
-	dmgToggleBtn.Size = UDim2.fromOffset(100, 32)
-	dmgToggleBtn.Position = UDim2.new(1, -100, 0.5, -16)
-	dmgToggleBtn.BackgroundColor3 = showDmgOn and COLORS.Success or COLORS.Button
-	dmgToggleBtn.BorderSizePixel = 0
-	dmgToggleBtn.Font = Enum.Font.GothamBold
-	dmgToggleBtn.TextColor3 = showDmgOn and Color3.fromRGB(15, 20, 15) or COLORS.Text
-	dmgToggleBtn.TextSize = 13
-	dmgToggleBtn.Text = showDmgOn and "ON (ACTIVE)" or "OFF"
-	dmgToggleBtn.ZIndex = 24
-	dmgToggleBtn.Parent = dmgRow
-	dmgToggleBtn.AutoButtonColor = false
-	addCorner(dmgToggleBtn, 8)
-	addStroke(dmgToggleBtn, showDmgOn and Color3.fromRGB(120, 255, 170) or COLORS.StrokeBright, 0.3, 1)
-
-	dmgToggleBtn.MouseEnter:Connect(function()
-		dmgToggleBtn.BackgroundColor3 = showDmgOn and Color3.fromRGB(100, 230, 155) or COLORS.ButtonHover
-	end)
-	dmgToggleBtn.MouseLeave:Connect(function()
-		dmgToggleBtn.BackgroundColor3 = showDmgOn and COLORS.Success or COLORS.Button
-	end)
-
-	local function updateDmgToggleVisual(on)
-		dmgToggleBtn.Text = on and "ON (ACTIVE)" or "OFF"
-		dmgToggleBtn.TextColor3 = on and Color3.fromRGB(15, 20, 15) or COLORS.Text
-		dmgToggleBtn.BackgroundColor3 = on and COLORS.Success or COLORS.Button
-		addStroke(dmgToggleBtn, on and Color3.fromRGB(120, 255, 170) or COLORS.StrokeBright, 0.3, 1)
-	end
+	caption.TextYAlignment = Enum.TextYAlignment.Top
+	local toggle = settingsToggle(dmgControl, showDmgOn, z + 1)
+	local dmgToggleBtn = toggle.button
 
 	dmgToggleBtn.Activated:Connect(function()
 		showDmgOn = not showDmgOn
 		player:SetAttribute("ShowDamageNumbers", showDmgOn)
-		updateDmgToggleVisual(showDmgOn)
+		toggle.show(showDmgOn, true)
 	end)
 
-	-- ═══════════════════════════════════════════════
-	--  4. KEYBOARD SHORTCUTS REFERENCE
-	-- ═══════════════════════════════════════════════
-	local shortcuts = {
-		{ key = "M", desc = "Open / close menu" },
-		{ key = "E", desc = "Attack" },
-		{ key = "Click", desc = "Attack" },
-		{ key = "Esc", desc = "Close the open panel" },
-	}
+	-- Attribute changes from elsewhere refresh the controls without rebuilding the panel.
+	settingsSync = function()
+		local v = player:GetAttribute("MusicVolume")
+		if v ~= nil and not dragging then
+			musicVolume = v
+			slider.show(v)
+			volValueLabel.Text = tostring(math.round(v * 100)) .. "%"
+		end
+		local d = player:GetAttribute("ShowDamageNumbers")
+		if d == nil then d = true end
+		if d ~= showDmgOn then
+			showDmgOn = d
+			toggle.show(d, true)
+		end
+	end
 
-	local shortcutsHeader = createText(body, {
-		text = "Keyboard Shortcuts",
-		font = Enum.Font.GothamBold,
-		size = 16,
-		color = COLORS.Text,
-		size2 = UDim2.new(1, 0, 0, 24),
-		zIndex = 23,
+	-- ── Keyboard shortcuts: a small keycap footer ──
+	local footer = Instance.new("Frame")
+	footer.Name = "Shortcuts"
+	-- Header 36 + padding 20, then keycap rows: one row of all keys on desktop, two per row on phones.
+	local keyRows = if narrow then math.ceil(#SHORTCUTS / 2) else 1
+	local keyRowH = if narrow then 62 else 90
+	footer.Size = UDim2.new(1, 0, 0, 56 + keyRows * keyRowH + (keyRows - 1) * 8)
+	footer.BackgroundColor3 = Color3.fromRGB(222, 230, 244)
+	footer.BorderSizePixel = 0
+	footer.LayoutOrder = 3
+	footer.ZIndex = 23
+	footer.Parent = body
+	addCorner(footer, 20)
+	PanelChrome.stroke(footer, BRIGHT.RowStroke, 3)
+	addPadding(footer, 8, 14, 12, 14)
+	local head = PanelChrome.display(footer, {
+		name = "Header", text = "Controls", size = 24, stroke = 3, xAlign = Enum.TextXAlignment.Left,
+		size2 = UDim2.new(1, 0, 0, 30), zIndex = z,
 	})
-	shortcutsHeader.LayoutOrder = 4
-
-	for i, sc in ipairs(shortcuts) do
-		local scRow = Instance.new("Frame")
-		scRow.Size = UDim2.new(1, 0, 0, 32)
-		scRow.BackgroundColor3 = COLORS.PanelLight
-		scRow.BackgroundTransparency = 0.15
-		scRow.BorderSizePixel = 0
-		scRow.LayoutOrder = 4 + i
-		scRow.ZIndex = 23
-		scRow.Parent = body
-		addCorner(scRow, 8)
-		addPadding(scRow, 0, 10, 0, 10)
-
-		local keyBadge = Instance.new("Frame")
-		keyBadge.Size = UDim2.fromOffset(52, 22)
-		keyBadge.Position = UDim2.fromOffset(0, 5)
-		keyBadge.BackgroundColor3 = COLORS.Accent
-		keyBadge.BorderSizePixel = 0
-		keyBadge.ZIndex = 24
-		keyBadge.Parent = scRow
-		addCorner(keyBadge, 6)
-		addStroke(keyBadge, COLORS.StrokeBright, 0.3, 1)
-
-		local keyLabel = Instance.new("TextLabel")
-		keyLabel.BackgroundTransparency = 1
-		keyLabel.Size = UDim2.fromScale(1, 1)
-		keyLabel.Font = Enum.Font.GothamBold
-		keyLabel.TextSize = 13
-		keyLabel.TextColor3 = COLORS.Text
-		keyLabel.TextXAlignment = Enum.TextXAlignment.Center
-		keyLabel.TextYAlignment = Enum.TextYAlignment.Center
-		keyLabel.Text = sc.key
-		keyLabel.ZIndex = 25
-		keyLabel.Parent = keyBadge
-
-		createText(scRow, {
-			text = sc.desc,
-			font = Enum.Font.Gotham,
-			size = 13,
-			color = COLORS.Muted,
-			pos = UDim2.fromOffset(62, 0),
-			size2 = UDim2.new(1, -62, 1, 0),
-			zIndex = 24,
+	head.Name = "Header"
+	local grid = Instance.new("Frame")
+	grid.Name = "Keys"
+	grid.BackgroundTransparency = 1
+	grid.Position = UDim2.fromOffset(0, 36)
+	grid.Size = UDim2.new(1, 0, 1, -36)
+	grid.ZIndex = z
+	grid.Parent = footer
+	local gl = Instance.new("UIGridLayout")
+	gl.CellPadding = UDim2.fromOffset(10, 8)
+	gl.CellSize = if narrow then UDim2.new(0.5, -5, 0, 62) else UDim2.new(1 / #SHORTCUTS, -8, 0, 90)
+	gl.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	gl.SortOrder = Enum.SortOrder.LayoutOrder
+	gl.Parent = grid
+	for i, sc in ipairs(SHORTCUTS) do
+		local cell = Instance.new("Frame")
+		cell.Name = "Key_" .. sc.key
+		cell.BackgroundTransparency = 1
+		cell.LayoutOrder = i
+		cell.ZIndex = z
+		cell.Parent = grid
+		local capW = if #sc.key > 1 then 86 else 62
+		local _, capFace = bevelBlock(cell, SETTINGS_KEY, {
+			name = "Keycap", size = UDim2.fromOffset(capW, 58), radius = 14, lip = 8, stroke = 3, zIndex = z + 1,
+			anchor = if narrow then Vector2.new(0, 0.5) else Vector2.new(0.5, 0),
+			pos = if narrow then UDim2.fromScale(0, 0.5) else UDim2.fromScale(0.5, 0),
+		})
+		PanelChrome.display(capFace, {
+			name = "Key", text = sc.key, size = #sc.key > 1 and 24 or 30, stroke = 3, zIndex = z + 4,
+		})
+		brightText(cell, {
+			text = sc.desc, font = PanelChrome.DISPLAY_FONT, size = 19, color = BRIGHT.Ink,
+			xAlign = if narrow then Enum.TextXAlignment.Left else Enum.TextXAlignment.Center,
+			pos = if narrow then UDim2.fromOffset(capW + 10, 0) else UDim2.fromOffset(0, 62),
+			size2 = if narrow then UDim2.new(1, -(capW + 10), 1, 0) else UDim2.new(1, 0, 0, 26),
+			zIndex = z + 1,
 		})
 	end
 end
 
 local function refreshTopBar()
 	-- Short form (31.2K) so a big purse never shrinks the TextScaled chip into unreadable digits.
-	goldLabel.Text = NumberFormat.short(player:GetAttribute('Gold') or 0)
+	-- Once the save has loaded, a rise in gold is a gain and animates; the first fill snaps.
+	goldCounter.set(player:GetAttribute('Gold') or 0, player:GetAttribute("DataLoaded") == true)
 end
 
 local function refreshSkills()
@@ -2697,13 +3461,15 @@ local function openTab(tabId)
 	for _, item in ipairs(NAV_ITEMS) do
 		if item.id == tabId and item.icon then headerIcon.Image = item.icon end
 	end
+	headerIcon.Visible = tabId ~= 'Trade'
+	tradeTitleIcon.Visible = tabId == 'Trade'
 	for id, btn in pairs(railButtons) do
 		local selected = id == tabId
 		btn.BackgroundTransparency = selected and 0 or 1
 		local stroke = btn:FindFirstChildOfClass("UIStroke")
 		if stroke then stroke.Transparency = selected and 0 or 1 end
 	end
-	setWellTheme(tabId == 'Inventory' or tabId == 'Skills' or tabId == 'Rebirth')
+	setWellTheme(tabId == 'Inventory' or tabId == 'Skills' or tabId == 'Rebirth' or tabId == 'Trade' or tabId == 'Settings')
 	if tabId ~= 'Inventory' then inventorySelection = nil end
 	if tabId == 'Inventory' then buildInventoryPanel()
 	elseif tabId == 'Skills' then buildSkillsPanel(); refreshSkills()
@@ -2713,22 +3479,68 @@ local function openTab(tabId)
 end
 
 
-local function setMenuOpen(open)
+-- contentReady: the caller has just built the active tab's contents (openMenuOn), so opening
+-- does not build the Inventory grid a second time.
+local function setMenuOpen(open, contentReady: boolean?)
 	if panelOpen == open then return end
 	panelOpen = open
 	refreshNavSelection()
-	overlay.Visible = open
-	contentPanel.Visible = open
-	TweenService:Create(overlay, TweenInfo.new(0.2), { BackgroundTransparency = open and 0.5 or 1 }):Play()
-	if not open then
+	if open then
+		overlay.Visible = true
+		contentPanel.Visible = true
+	else
 		inventorySelection = nil
 		closeInventoryDetail()
 	end
-	if open and not activeTab then openTab('Inventory') end
-	if open and activeTab == 'Inventory' then buildInventoryPanel() end
+	if open and not activeTab then openTab('Inventory')
+	elseif open and not contentReady and activeTab == 'Inventory' then buildInventoryPanel() end
+	-- Shared open/close motion (PanelChrome): the panel grows in with a small overshoot while
+	-- the backdrop dims, then the tiles (or a tab's rows) and the tab rail's icons cascade in
+	-- from the top down.
+	local motion = {
+		frame = contentPanel, scale = panelScale, dim = overlay, dimTo = 0.5,
+		tiles = function()
+			local grid = body:FindFirstChild("ItemGrid")
+			return { grid or body, panelRail }
+		end,
+	}
+	if open then
+		PanelChrome.openMotion(motion)
+	else
+		PanelChrome.closeMotion(motion, function()
+			overlay.Visible = false
+			contentPanel.Visible = false
+		end)
+	end
 end
 
 local function toggleMenu() setMenuOpen(not panelOpen) end
+
+-- Opens the menu on one tab, building that tab's contents once before the panel's open motion
+-- starts (opening and then switching tab used to build the Inventory grid two or three times in
+-- the same frame, a long hitch that froze the pressed button and the panel's entrance).
+local function openMenuOn(tabId)
+	if panelOpen then openTab(tabId) return end
+	openTab(tabId)
+	setMenuOpen(true, true)
+end
+
+-- Runs fn once the released button's spring is on screen and nearly at its overshoot. Building
+-- a tab (the Inventory's 3D sword renders above all) holds up one frame for ~150 ms; built in
+-- the click's own frame, that hitch froze the button fully pressed, so the release never read
+-- as a click. After this lead the hitch lands near the spring's peak and the settle follows it.
+local RELEASE_LEAD = 0.7 -- [TUNING] fraction of PanelChrome.PRESS.UpPeakAt
+local function afterReleaseShows(fn)
+	task.spawn(function()
+		local lead = PanelChrome.PRESS.UpPeakAt * RELEASE_LEAD
+		local waited, frames = 0, 0
+		while waited < lead or frames < 2 do
+			waited += RunService.RenderStepped:Wait()
+			frames += 1
+		end
+		fn()
+	end)
+end
 
 -- In-panel tab rail: one icon tab per menu tab, selected state set by openTab, with red
 -- count badges (swords carried, unspent skill points).
@@ -2800,6 +3612,8 @@ onLayoutModeChanged = function()
 	if panelOpen and activeTab == "Inventory" then buildInventoryPanel() end
 	if panelOpen and activeTab == "Skills" then buildSkillsPanel(); refreshSkills() end
 	if panelOpen and activeTab == "Rebirth" then buildRebirthPanel() end
+	if panelOpen and activeTab == "Settings" then buildSettingsPanel() end
+	if panelOpen and activeTab == "Trade" then buildTradePanel() end
 end
 applyPanelLayout()
 
@@ -2822,12 +3636,40 @@ GuiShowcase.register("Inventory", function()
 		buildInventoryPanel()
 	end
 end)
-for _, tab in ipairs({ "Skills", "Rebirth", "Trade", "Settings" }) do
+for _, tab in ipairs({ "Skills", "Rebirth", "Settings" }) do
 	GuiShowcase.register(tab, function()
 		setMenuOpen(true)
 		openTab(tab)
 	end)
 end
+-- A solo play test has nobody to list, so the Trade showcase seeds made-up sample rows. They
+-- live only on this client (GuiShowcase runs in Studio only), are drawn only while the real
+-- list is empty, and their buttons never fire the trade remote.
+GuiShowcase.register("Trade", function()
+	local function sample(name, username, level, wealth, busy, skin, hair, shirt)
+		return {
+			sample = true, name = name, username = username, level = level, wealth = wealth, busy = busy,
+			look = { skin = skin, hair = hair, shirt = shirt },
+		}
+	end
+	tradeSamples = {
+		sample("SirSlicesALot", "sirslices_07", 42, 186400, false,
+			Color3.fromRGB(255, 214, 92), Color3.fromRGB(86, 58, 40), Color3.fromRGB(64, 150, 255)),
+		sample("NovaBlade", "novablade", 27, 64200, false,
+			Color3.fromRGB(240, 190, 150), Color3.fromRGB(250, 214, 90), Color3.fromRGB(236, 64, 90)),
+		sample("MangoKnight", "mangoknight22", 18, 21800, true,
+			Color3.fromRGB(196, 140, 100), Color3.fromRGB(30, 30, 40), Color3.fromRGB(90, 200, 90)),
+		sample("PixelPaladin", "pixel_paladin", 9, 5400, false,
+			Color3.fromRGB(255, 214, 92), Color3.fromRGB(170, 90, 230), Color3.fromRGB(255, 160, 40)),
+	}
+	setMenuOpen(true)
+	openTab("Trade")
+end)
+-- The genuine empty lobby a solo player sees, with no sample rows.
+GuiShowcase.register("TradeEmpty", function()
+	setMenuOpen(true)
+	openTab("Trade")
+end)
 
 -- Trade tab events (after setMenuOpen so an incoming request can open the menu).
 tradeRemote.OnClientEvent:Connect(function(kind, a, b)
@@ -2874,8 +3716,10 @@ for i, item in ipairs(NAV_ITEMS) do
 			reforgeRemote:FireServer("Open")
 			return
 		end
-		if panelOpen and activeTab == item.id then setMenuOpen(false)
-		else setMenuOpen(true); openTab(item.id) end
+		afterReleaseShows(function()
+			if panelOpen and activeTab == item.id then setMenuOpen(false)
+			else openMenuOn(item.id) end
+		end)
 	end)
 	navButtons[item.id] = btn
 end
@@ -2884,6 +3728,45 @@ refreshRailBadges()
 
 closeBtn.Activated:Connect(function() setMenuOpen(false) end)
 overlay.Activated:Connect(function() setMenuOpen(false) end)
+
+-- Studio-only motion capture hook (see GuiShowcase.motion): opens the Inventory panel exactly
+-- as pressing the Items hotbar button does.
+GuiShowcase.motion("PanelOpen", function()
+	if panelOpen and activeTab == "Inventory" then return end
+	openMenuOn("Inventory")
+end)
+
+-- Studio-only motion capture hook: replays a mouse press on the Items button. Scripts cannot fire
+-- a GuiButton's input events, so this steps the button's own hover/down/up states in the order a
+-- mouse fires them, then opens the Inventory as the button's Activated handler does. The pointer
+-- is already resting on the button (hover settled before the clapperboard), so the strip opens on
+-- the press itself.
+local function itemsPress()
+	return navButtons.Inventory and PanelChrome.pressHandle(navButtons.Inventory)
+end
+GuiShowcase.motion("ButtonPress", function()
+	local press = itemsPress()
+	if not press then return end
+	press.down() -- MouseButton1Down
+	task.wait(0.12)
+	press.up() -- MouseButton1Up, then Activated
+	afterReleaseShows(function()
+		if not (panelOpen and activeTab == "Inventory") then
+			openMenuOn("Inventory")
+		end
+	end)
+end, function()
+	local press = itemsPress()
+	if press then press.hover(true) end -- MouseEnter
+end)
+
+-- Studio-only motion capture hook: a gold gain through the real path. Setting Gold on the local
+-- player is client-only (it never replicates, and the next server update overwrites it), and it
+-- fires the same attribute watcher a real gain does.
+GuiShowcase.motion("CounterTick", function()
+	local player = Players.LocalPlayer
+	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + 3000)
+end)
 
 UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
@@ -2900,7 +3783,7 @@ for _, attr in ipairs(attrsToWatch) do
 		elseif (attr == 'Rebirths' or attr == 'RebirthRequirement') and activeTab == 'Rebirth' and panelOpen then
 			buildRebirthPanel()
 		elseif (attr == 'ShowDamageNumbers' or attr == 'MusicVolume') and activeTab == 'Settings' and panelOpen then
-			buildSettingsPanel()
+			if settingsSync then settingsSync() else buildSettingsPanel() end
 		end
 	end)
 end

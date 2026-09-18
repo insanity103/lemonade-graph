@@ -633,19 +633,28 @@ PanelChrome.onViewport(applyLayout)
 
 local isOpen = false
 
+-- Shared open/close motion (PanelChrome): the window grows in while the backdrop dims, then
+-- the relic cards land row by row.
+local motion = {
+	frame = window, scale = panelScale, dim = overlay, dimTo = 0.5,
+	tiles = function() return { scroll } end,
+}
+
 local function setShopOpen(open)
 	isOpen = open
-	overlay.Visible = open
-	window.Visible = open
-	modal.Visible = open
 	if open then
+		overlay.Visible = true
+		window.Visible = true
+		modal.Visible = true
 		buildShopList()
-		TweenService:Create(overlay, TweenInfo.new(0.2), { BackgroundTransparency = 0.5 }):Play()
-		panelScale.Scale = baseScale * 0.9
-		TweenService:Create(panelScale, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = baseScale }):Play()
+		PanelChrome.openMotion(motion)
 	else
-		TweenService:Create(overlay, TweenInfo.new(0.2), { BackgroundTransparency = 1 }):Play()
 		noticeLabel.Visible = false
+		PanelChrome.closeMotion(motion, function()
+			overlay.Visible = false
+			window.Visible = false
+			modal.Visible = false
+		end)
 	end
 end
 
