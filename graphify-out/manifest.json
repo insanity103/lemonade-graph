@@ -102,15 +102,15 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/BossSwordFactory.luau": {
-    "mtime": 1789669951.3824885,
-    "seen": 1789672171.3562846,
-    "ast_hash": "d1b14f0403a834d28dd52ee0359a2125",
+    "mtime": 1789677716.8827362,
+    "seen": 1789706953.4294186,
+    "ast_hash": "a834d6bdcc95fbc8a96bd193418a9ef3",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/CombatUtil.luau": {
-    "mtime": 1789669951.3824885,
-    "seen": 1789672171.3562868,
-    "ast_hash": "de4d0ea00ce2668555d79c120527c76e",
+    "mtime": 1789676444.9042315,
+    "seen": 1789706953.4294205,
+    "ast_hash": "a51ef5a530dd228e965a8ab4bfc10d5f",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/EnemyCombat.server.luau": {
@@ -726,20 +726,20 @@
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Collision.model.json": {
-    "mtime": 1789672036.712997,
-    "seen": 1789672171.3574576,
-    "ast_hash": "359dc812e9f786e35613915d05514855",
+    "mtime": 1789703714.4179296,
+    "seen": 1789706953.4306831,
+    "ast_hash": "c0684e6b31486d51427f788c2cdacac1",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Grounds_Hub.model.json": {
-    "mtime": 1789672036.7124953,
-    "seen": 1789672171.3574593,
+    "mtime": 1789703714.4173145,
+    "seen": 1789706953.430686,
     "ast_hash": "6dd9bd5789175a46f20dd5df8cdd3f13",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Grounds_IronLowlands.model.json": {
-    "mtime": 1789672036.7127147,
-    "seen": 1789672171.357461,
+    "mtime": 1789703714.4175534,
+    "seen": 1789706953.430687,
     "ast_hash": "00c86dd2d80c2b6bae139fc12197a3e1",
     "semantic_hash": ""
   },
@@ -750,20 +750,20 @@
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/IronLowlands.model.json": {
-    "mtime": 1789672036.7356856,
-    "seen": 1789672171.3574626,
-    "ast_hash": "192f36fd7461b948f52e3131d0916f34",
+    "mtime": 1789703714.4405103,
+    "seen": 1789706953.4306886,
+    "ast_hash": "799cf4b1117fae0ff15f02594e1d60b6",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Markers.model.json": {
-    "mtime": 1789672036.7361956,
-    "seen": 1789672171.3574638,
-    "ast_hash": "fcda75819f530f2f53f9802a4fb131c5",
+    "mtime": 1789703714.467138,
+    "seen": 1789706953.4306896,
+    "ast_hash": "61f61ebfe9fd05c192a576f773e9eea2",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/init.meta.json": {
-    "mtime": 1789672036.7123594,
-    "seen": 1789672171.357465,
+    "mtime": 1789703714.4171247,
+    "seen": 1789706953.4306908,
     "ast_hash": "9cc465bacbecfd2cb9dc2dbe20f9d9de",
     "semantic_hash": ""
   },
@@ -780,9 +780,9 @@
     "semantic_hash": ""
   },
   "tools/check_map_project.py": {
-    "mtime": 1789585002.3055675,
-    "seen": 1789587045.2461867,
-    "ast_hash": "4e7a40d4bffea0b6d2962e4c3b4f4a5e",
+    "mtime": 1789693500.364412,
+    "seen": 1789706953.4308019,
+    "ast_hash": "b1de33fd5fd827ce34e6377712871ce4",
     "semantic_hash": ""
   },
   "tools/luau_balance_check.py": {
@@ -792,9 +792,9 @@
     "semantic_hash": ""
   },
   "tools/map_forge.py": {
-    "mtime": 1789672030.526383,
-    "seen": 1789672171.3575838,
-    "ast_hash": "866fd24bfc19407a832ddfb6b4d30805",
+    "mtime": 1789703707.1968203,
+    "seen": 1789706953.430831,
+    "ast_hash": "7f8d232c2e17f2f9238372170eac27f0",
     "semantic_hash": ""
   },
   "CLAUDE_IMPLEMENTATION_HANDOFF.md": {
@@ -834,9 +834,9 @@
     "semantic_hash": ""
   },
   "docs/map/first_slice_topdown.png": {
-    "mtime": 1789672036.8824742,
-    "seen": 1789672171.360074,
-    "ast_hash": "8972102895af4fe34f111dfec0481230",
+    "mtime": 1789703714.6619334,
+    "seen": 1789706953.4329062,
+    "ast_hash": "5a4abb4a05e5d4eacc9f18b42c4639fa",
     "semantic_hash": ""
   },
   "legacy/BossRoomGate.server.luau": {
@@ -1371,6 +1371,18 @@
     "mtime": 1789674171.216228,
     "seen": 1789674220.264987,
     "ast_hash": "c2dd37534f93b5a08a300959a6a2e8a4",
+    "semantic_hash": ""
+  },
+  "lemonade-map/LemonadeMap/Grounds_Briarwood.model.json": {
+    "mtime": 1789703714.417685,
+    "seen": 1789706953.430685,
+    "ast_hash": "9b9cc4e701afd3476ee784c67f9ebc1a",
+    "semantic_hash": ""
+  },
+  ".claude/skills/gauntlet-loop/SKILL.md": {
+    "mtime": 1789706042.2378192,
+    "seen": 1789706953.4308872,
+    "ast_hash": "03231e167c2850050222eefa47f187b1",
     "semantic_hash": ""
   }
 }

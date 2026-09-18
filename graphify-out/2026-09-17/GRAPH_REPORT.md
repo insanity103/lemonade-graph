@@ -1,7 +1,7 @@
 # Graph Report - adoring-khayyam-85d49c  (2026-09-17)
 
 ## Corpus Check
-- 227 files · ~513,439 words
+- 227 files · ~513,455 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
