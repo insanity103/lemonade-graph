@@ -1,0 +1,507 @@
+{
+ "className": "Model",
+ "children": [
+  {
+   "name": "BriarFloorN",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     264.0,
+     2.0,
+     167.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       8.0,
+       1.0,
+       555.5
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.3137,
+     0.4941,
+     0.2196
+    ],
+    "Material": "Grass",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "BriarFloorS",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     264.0,
+     2.0,
+     271.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       8.0,
+       1.0,
+       806.5
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.3137,
+     0.4941,
+     0.2196
+    ],
+    "Material": "Grass",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "BriarFloorW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     190.0,
+     2.0,
+     32.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -29.0,
+       1.0,
+       655.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.3137,
+     0.4941,
+     0.2196
+    ],
+    "Material": "Grass",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "BriarFloorE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     42.0,
+     2.0,
+     32.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       119.0,
+       1.0,
+       655.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.3137,
+     0.4941,
+     0.2196
+    ],
+    "Material": "Grass",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "PoolBed",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     1.0,
+     47.0,
+     47.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       82.0,
+       0.5,
+       655.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5333,
+     0.4392,
+     0.302
+    ],
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true,
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "GraveTerrace0",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     36.0,
+     2.4,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -70.0,
+       1.2,
+       731.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.3608,
+     0.502,
+     0.2353
+    ],
+    "Material": "Grass",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GraveTerrace1",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     36.0,
+     2.8,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -70.0,
+       1.4,
+       737.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.3608,
+     0.502,
+     0.2353
+    ],
+    "Material": "Grass",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GraveTerrace2",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     36.0,
+     3.2,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -70.0,
+       1.6,
+       743.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.3608,
+     0.502,
+     0.2353
+    ],
+    "Material": "Grass",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GraveTerrace3",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     36.0,
+     3.6,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -70.0,
+       1.8,
+       749.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.3608,
+     0.502,
+     0.2353
+    ],
+    "Material": "Grass",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GroveFloor",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.5,
+     72.0,
+     72.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       2.0,
+       868.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5333,
+     0.4392,
+     0.302
+    ],
+    "Material": "Ground",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true,
+    "Shape": "Cylinder"
+   }
+  }
+ ]
+}

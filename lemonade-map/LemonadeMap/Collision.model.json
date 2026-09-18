@@ -1581,6 +1581,924 @@
     "CastShadow": false,
     "Transparency": 1.0
    }
+  },
+  {
+   "name": "BriarCliff00_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     68.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -19.0,
+       55.0,
+       506.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff01_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     46.8188,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -39.0252,
+       55.0,
+       545.1806
+      ],
+      "orientation": [
+       [
+        -0.9398,
+        0.0,
+        -0.3417
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.3417,
+        0.0,
+        -0.9398
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff02_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     59.4643,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -82.2198,
+       55.0,
+       575.982
+      ],
+      "orientation": [
+       [
+        -0.6727,
+        0.0,
+        -0.7399
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.7399,
+        0.0,
+        -0.6727
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff03_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     43.8634,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -111.7358,
+       55.0,
+       618.7689
+      ],
+      "orientation": [
+       [
+        -0.4104,
+        0.0,
+        -0.9119
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9119,
+        0.0,
+        -0.4104
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff04_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     260.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -121.0,
+       55.0,
+       770.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff05_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     70.4557,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -90.7032,
+       55.0,
+       922.4696
+      ],
+      "orientation": [
+       [
+        0.8232,
+        0.0,
+        -0.5677
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.5677,
+        0.0,
+        0.8232
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff06_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     120.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       55.0,
+       943.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff07_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     70.4557,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       90.7032,
+       55.0,
+       922.4696
+      ],
+      "orientation": [
+       [
+        0.8232,
+        0.0,
+        0.5677
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.5677,
+        0.0,
+        0.8232
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff08_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     180.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       121.0,
+       55.0,
+       810.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff09_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     59.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       121.0,
+       55.0,
+       690.5
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff10_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     16.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       126.0,
+       55.0,
+       664.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff11_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     12.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       137.0,
+       55.0,
+       655.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff12_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     16.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       126.0,
+       55.0,
+       646.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff13_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     49.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       121.0,
+       55.0,
+       624.5
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff14_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     43.8634,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       111.7358,
+       55.0,
+       578.7689
+      ],
+      "orientation": [
+       [
+        -0.4104,
+        0.0,
+        0.9119
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9119,
+        0.0,
+        -0.4104
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff15_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     42.72,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       81.0534,
+       55.0,
+       549.691
+      ],
+      "orientation": [
+       [
+        -0.9363,
+        0.0,
+        0.3511
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.3511,
+        0.0,
+        -0.9363
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff16_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     44.2832,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       38.3387,
+       55.0,
+       539.5192
+      ],
+      "orientation": [
+       [
+        -0.9936,
+        0.0,
+        0.1129
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.1129,
+        0.0,
+        -0.9936
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BriarCliff17_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     68.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       19.0,
+       55.0,
+       506.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
   }
  ]
 }

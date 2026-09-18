@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the Lemonade map as Rojo JSON models: Hearthmere hub + Iron Lowlands slice.
+"""Generate the Lemonade map as Rojo JSON models: Hearthmere hub, Iron Lowlands, Briarwood.
 
     python3 tools/map_forge.py            # writes lemonade-map/LemonadeMap/ + docs/map/*.png
 
@@ -211,15 +211,31 @@ def ramp(name, x0, x1, z0, z1, y_at_z0, y_at_z1, color, material, thickness=1.6)
     return part(name, (x1 - x0, thickness, length + 0.4), centre, color, material, r, layer="ground")
 
 
-USED_CLIFF_TOPS: set[int] = set()
+USED_CLIFF_TOPS: set[int] = set()  # heights reserved map-wide (walkable floors, positionless callers)
+LOCAL_CLIFF_TOPS: list[tuple[float, float, float]] = []  # (top, x, z) of every placed cliff chunk top
 
 
-def free_top(top: float) -> float:
-    """Nudge a cliff top until no other cliff top sits within 0.1 studs of it."""
-    while any(round(top * 10) + d in USED_CLIFF_TOPS for d in (-1, 0, 1)):
-        top += 0.3
-    USED_CLIFF_TOPS.add(round(top * 10))
-    return top
+def free_top(top: float, x: float | None = None, z: float | None = None, reach: float = 36.0) -> float:
+    """Nudge a cliff top, alternately down and up by 0.3, until it is clear of every reserved
+    height and of every cliff top placed within `reach` studs. Coplanar tops only z-fight where
+    chunks overlap, so the check is local: a map-wide rule ran out of free heights once the
+    third region's 500 chunks arrived and ratcheted its walls 20+ studs above the others."""
+    def taken(t):
+        key = round(t * 10)
+        if any(key + d in USED_CLIFF_TOPS for d in (-1, 0, 1)):
+            return True
+        return any(abs(ot - t) < 0.15 and (x is None or math.hypot(ox - x, oz - z) < reach)
+                   for ot, ox, oz in LOCAL_CLIFF_TOPS)
+
+    cand, k = top, 0
+    while taken(cand):
+        k += 1
+        cand = top + 0.3 * ((k + 1) // 2) * (-1 if k % 2 else 1)
+    if x is None:
+        USED_CLIFF_TOPS.add(round(cand * 10))
+    else:
+        LOCAL_CLIFF_TOPS.append((cand, x, z))
+    return cand
 
 
 # When True, prop helpers ignore the caller's Y and rest on the floor generated under (x, z):
@@ -283,11 +299,11 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
         h = height * rng.uniform(*h_jitter)
         if abs(h - last_h) < 0.6:  # equal neighbouring tops would z-fight where the chunks overlap
             h += 1.5
-        h = free_top(base_y + h - 1) - base_y + 1
-        last_h = h
         d = depth * rng.uniform(0.9, 1.3)
         cx = ax + dx * (s + length / 2) - nx * (d / 2 - protrude)
         cz = az + dz * (s + length / 2) - nz * (d / 2 - protrude)
+        h = free_top(base_y + h - 1, cx, cz) - base_y + 1
+        last_h = h
         jitter = rng.uniform(-4, 4)
         col = color if i % 3 else dark
         out.append(part(f"{name}_{i:02d}", (length + 1.2, h, d), (cx, base_y + h / 2 - 1, cz), col,
@@ -297,7 +313,7 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
             ld = rng.uniform(3, 5)
             lx = ax + dx * (s + length / 2) - nx * (d + ld / 2 - 1.5)
             lz = az + dz * (s + length / 2) - nz * (d + ld / 2 - 1.5)
-            cap_top = free_top(base_y + h + 1.45)
+            cap_top = free_top(base_y + h + 1.45, lx, lz)
             cap_bottom = base_y + h - 1.6  # 0.6 below the chunk top, so the ledge always sits on it
             out.append(part(f"{name}_{i:02d}_cap", (length * 0.8, cap_top - cap_bottom, ld), (lx, (cap_top + cap_bottom) / 2, lz),
                             dark, material, rot_y(yaw + jitter * 0.5), collide=False, layer="cliff"))
@@ -1281,8 +1297,9 @@ def chest(name, x, y, z, yaw, open_lid=False, rng=None):
     """Iron-banded wooden chest; an open one shows sword hilts standing in it."""
     r = rot_y(yaw)
     kids = [part("Body", (3.4, 1.8, 2.2), (x, y + 0.9, z), (110, 72, 42), "WoodPlanks", r),
-            part("BandL", (0.25, 1.9, 2.3), (x + apply(r, (-1.0, 0, 0))[0], y + 0.9, z + apply(r, (-1.0, 0, 0))[2]), IRON, "Metal", r, collide=False),
-            part("BandR", (0.25, 1.9, 2.3), (x + apply(r, (1.0, 0, 0))[0], y + 0.9, z + apply(r, (1.0, 0, 0))[2]), IRON, "Metal", r, collide=False),
+            # Bands stop 0.1 short of the body's top so the two faces never sit coplanar.
+            part("BandL", (0.25, 1.6, 2.3), (x + apply(r, (-1.0, 0, 0))[0], y + 0.9, z + apply(r, (-1.0, 0, 0))[2]), IRON, "Metal", r, collide=False),
+            part("BandR", (0.25, 1.6, 2.3), (x + apply(r, (1.0, 0, 0))[0], y + 0.9, z + apply(r, (1.0, 0, 0))[2]), IRON, "Metal", r, collide=False),
             part("Lock", (0.5, 0.6, 0.2), (x + apply(r, (0, 0, -1.15))[0], y + 1.1, z + apply(r, (0, 0, -1.15))[2]), GOLD, "Metal", r, collide=False)]
     if open_lid:
         back = apply(r, (0, 0, 1.0))
@@ -1606,6 +1623,8 @@ WAYPOINTS = [
     ("HubSpawn", "Hearthmere", "Hub", (0, HUB_Y, -40), 180.0, 1),
     ("IronOverlook", "Quarry Overlook", "IronLowlands", (18, HUB_Y, 152), 180.0, 2),
     ("WarlordGate", "Warlord's Gate", "IronLowlands", (0, QUARRY_Y, 358), 180.0, 3),
+    ("BriarGate", "Briarwood Gate", "Briarwood", (0, QUARRY_Y, 500), 180.0, 4),
+    ("GroveEdge", "Grove's Edge", "Briarwood", (10, QUARRY_Y, 782), 180.0, 5),
 ]
 
 
@@ -1620,18 +1639,22 @@ def build_markers():
     safe = model("SafeZones", [
         volume("Hub", -100, 100, 0, 90, -100, 100, attrs={"Region": "Hub"}),
         volume("IronOverlook", -40, 40, 0, 90, 100, 168, attrs={"Region": "IronLowlands"}),
+        volume("BriarGate", -20, 20, 0, 90, 472, 528, attrs={"Region": "Briarwood"}),
     ], cls="Folder")
     regions = model("Regions", [
         volume("Hub", -100, 100, 0, 120, -100, 100,
                attrs={"DisplayName": "Hearthmere", "Subtitle": "Safe haven", "Order": 0}),
         volume("IronLowlands", -170, 112, 0, 120, 100, 472,
                attrs={"DisplayName": "Iron Lowlands", "Subtitle": "Recommended Lv 1 - 10", "Order": 1}),
+        volume("Briarwood", -140, 140, 0, 120, 472, 942,
+               attrs={"DisplayName": "Briarwood", "Subtitle": "Recommended Lv 9 - 14", "Order": 2}),
     ], cls="Folder")
     spawns = []
-    for sid, arch, level, role, (x, z), leash in ENEMY_SPAWNS:
-        spawns.append(marker(sid, (x, floor_at(x, z, QUARRY_Y), z), 0, attrs={
-            "Archetype": arch, "Level": level, "Role": role, "Zone": "IronLowlands",
-            "Region": "IronLowlands", "LeashRadius": leash}))
+    for zone, table in (("IronLowlands", ENEMY_SPAWNS), ("Briarwood", BRIAR_SPAWNS)):
+        for sid, arch, level, role, (x, z), leash in table:
+            spawns.append(marker(sid, (x, floor_at(x, z, QUARRY_Y), z), 0, attrs={
+                "Archetype": arch, "Level": level, "Role": role, "Zone": zone,
+                "Region": zone, "LeashRadius": leash}))
     enemy = model("EnemySpawns", spawns, cls="Folder")
     wps = []
     for wid, display, region, pos, yaw, order in WAYPOINTS:
@@ -1651,7 +1674,7 @@ def build_markers():
         marker("InfernalCaldera", (100, HUB_Y, 0), 0, attrs={"DisplayName": "Infernal Caldera", "Region": "InfernalCaldera", "Sealed": True, "RequiredLevel": 34}),
         marker("CelestialSummit", (0, HUB_Y, -100), 0, attrs={"DisplayName": "Celestial Summit", "Region": "CelestialSummit", "Sealed": True, "RequiredLevel": 80}),
         marker("VoidRift", (68, HUB_Y, -72), 0, attrs={"DisplayName": "Void Rift", "Region": "VoidRift", "Sealed": True, "RequiredLevel": 55}),
-        marker("Briarwood", (0, QUARRY_Y, 470), 0, attrs={"DisplayName": "Briarwood", "Region": "Briarwood", "Sealed": True, "RequiredLevel": 9}),
+        marker("Briarwood", (0, QUARRY_Y, 470), 0, attrs={"DisplayName": "Briarwood", "Region": "Briarwood", "Sealed": False, "RequiredLevel": 9}),
     ], cls="Folder")
     # A Persistent model is sent to every client on join and never streamed out, so client UI
     # (region banner, travel menu, quest guide) can read markers anywhere on the map.
@@ -1679,7 +1702,7 @@ def build_hub(rng):
     proxies = []
 
     # Perimeter cliffs with 24-stud gate openings at each side's midpoint.
-    wall_h = 32
+    wall_h = 38  # crest ≈ Y48, level with the quarry's (Y2 + 46) and Briarwood's walls
     g = 19.5  # gate half-width 12 + pillar 7 + clearance: the wall meets the pillar's outer face
     segments = [
         ((-100, -100), (-g, -100), -1), ((g, -100), (100, -100), -1),   # north (play area to +Z)
@@ -2556,12 +2579,618 @@ def build_iron_lowlands(rng):
     visual.append(sign("WardenSign", 36, 0, 360, yaw_facing(0, -1), 12, 5, "Warden's Pit",
                        "Warden of the Pit  |  Lv 10  |  Boss", board=(70, 36, 36)))
     visual.append(waystone("WarlordWaystone", "WarlordGate", 12, 0, 352))
-    visual.append(gate("GateBriarwood", 0, PIT_Y, 470, 0, 24, 22, "Briarwood", "Lv 9+  |  Coming soon", sealed=True,
+    visual.append(gate("GateBriarwood", 0, PIT_Y, 470, 0, 24, 22, "Briarwood", "Lv 9+  |  The wooded vale", sealed=False,
                        accent=(90, 120, 60), region="Briarwood", required_level=9,
-                       back_title="Briarwood"))
-    for k, (x, z) in enumerate(((-7, 486), (7, 495), (-2, 506))):
-        visual.append(tree(f"BriarVistaTree{k}", x, PIT_Y, z, rng, scale=1.4))
-    visual.append(box("BriarVistaFloor", -14, 14, 0, PIT_Y, 472, 514, GRASS_DARK, "Grass", layer="vista"))
+                       back_title="Iron Lowlands", back_subtitle="Warden's Pit"))
+    return ground, visual, proxies
+
+
+# ── Briarwood: the wooded vale south of the Warden's Pit ─────────────────────
+# Built to the Codex concept set (~/briarwood-concepts): angular leaning trees with block
+# canopies, faceted moss boulders, packed-earth trails, broken settlement masonry, two
+# waterfalls, the Mirror Pool, Hollow Rest graveyard, a ruined chapel arch and the Warden's
+# Grove ringed by living trees. One floor level (the pit's), so the gate needs no ramp.
+BRIAR_Y = PIT_Y
+BRIAR_X = (-118, 118)          # cliff line; the floor slab runs a little past it
+BRIAR_Z = (472, 940)
+GROTTO = (118, 134, 649, 661)  # pocket behind the Mirror Pool waterfall: x0 x1 z0 z1
+POOL = (82, 655, 15.5)         # Mirror Pool centre and water radius
+POOL_HOLE = (66, 98, 639, 671) # gap in the grass floor the pool bed fills
+GROVE = (0, 868, 36)           # Warden's Grove arena centre and radius
+EARTH = (136, 112, 77)
+SAND = (180, 154, 112)
+POOL_WATER = (84, 125, 120)
+FALL_WATER = (183, 211, 207)
+BRIAR_ROCK = (106, 103, 99)
+BRIAR_ROCK_DARK = (86, 84, 80)
+BRIAR_IRON = (56, 61, 53)
+BRIAR_GLOW = (168, 202, 176)
+BRIAR_CANOPY = [(70, 138, 52), (60, 112, 48), (86, 138, 58)]
+
+
+def beam_rot(a, b):
+    """Rotation whose local +Y runs from point a to point b (a tilted post, limb or root)."""
+    dx, dy, dz = b[0] - a[0], b[1] - a[1], b[2] - a[2]
+    theta = math.degrees(math.atan2(math.hypot(dx, dz), dy))
+    phi = 180 - math.degrees(math.atan2(dz, dx))
+    return mul(rot_y(phi), rot_z(theta))
+
+
+def beam(name, a, b, width, color, material="Wood", depth=None, **kw):
+    """Box from a to b, `width` across; local Y along the beam."""
+    length = math.dist(a, b)
+    centre = tuple((a[i] + b[i]) / 2 for i in range(3))
+    return part(name, (width, length, depth or width), centre, color, material, beam_rot(a, b), **kw)
+
+
+class Tops:
+    """Nudges horizontal top faces apart inside one prop so its own blocks never z-fight."""
+
+    def __init__(self):
+        self.used = set()
+
+    def __call__(self, top, step=0.12):
+        while any(round(top * 20) + d in self.used for d in (-1, 0, 1)):
+            top += step
+        self.used.add(round(top * 20))
+        return top
+
+
+def briar_tree(name, x, y, z, rng, scale=1.0, roots=True):
+    """Codex's Briarwood tree: a leaning angular trunk, three crooked limbs each carrying a
+    block of canopy, a crown block, and four angular roots. Canopy bottoms sit 8+ studs up,
+    so a tree must stay 20+ studs from spawns and arrivals (camera clearance rule)."""
+    y = floor_at(x, z, y)
+    s = scale
+    h = rng.uniform(8, 11) * s
+    lean = rng.uniform(0, math.tau)
+    lx, lz = x + math.cos(lean) * 0.4 * s, z + math.sin(lean) * 0.4 * s
+    tops = Tops()
+    kids = [part("Bole", (2.0 * s, h * 0.5, 2.0 * s), (x, y + h * 0.25, z), TRUNK, "Wood", rot_y(rng.uniform(0, 90)),
+                 layer="tree"),
+            part("Trunk", (1.4 * s, h * 0.62, 1.4 * s), (lx, y + h * 0.69, lz), TRUNK, "Wood", rot_y(rng.uniform(0, 90)),
+                 layer="tree")]
+    tops(y + h * 0.5)
+    tops(y + h)
+    for k in range(3):
+        a = k * 2.094 + rng.uniform(0, 0.5)
+        tip = (lx + math.cos(a) * 2.4 * s, y + h * 0.9, lz + math.sin(a) * 2.4 * s)
+        kids.append(beam(f"Limb{k}", (lx, y + h * 0.55, lz), tip, 0.36 * s, TRUNK, collide=False, layer="tree"))
+        ch = 2.6 * s
+        top = tops(y + h * 0.9 + 1.0 * s + ch / 2 + k * 0.35 * s)
+        kids.append(part(f"Canopy{k}", (5 * s, ch, 4.5 * s), (tip[0], top - ch / 2, tip[2]), BRIAR_CANOPY[k], "Grass",
+                         rot_y(math.degrees(a) * 0.3), collide=False, layer="canopy"))
+    ch = 2.2 * s
+    top = tops(y + h + 1.0 * s + ch / 2)
+    kids.append(part("Crown", (4.6 * s, ch, 4.2 * s), (lx, top - ch / 2, lz), BRIAR_CANOPY[1], "Grass", rot_y(12),
+                     collide=False, layer="canopy"))
+    if roots:
+        for k in range(4):
+            a = k * math.pi / 2 + 0.3 + lean
+            kids.append(beam(f"Root{k}", (x, y + 1.2 * s, z), (x + math.cos(a) * 3 * s, y + 0.15, z + math.sin(a) * 3 * s),
+                             0.5 * s, TRUNK, collide=False, query=False, layer="tree"))
+    return model(name, kids)
+
+
+def moss_boulder(name, x, y, z, rng, s=1.0, collide=True):
+    """Faceted boulder with a moss cap."""
+    y = floor_at(x, z, y)
+    w, h, d = rng.uniform(2.2, 3.2) * s, rng.uniform(1.4, 2.0) * s, rng.uniform(1.8, 2.6) * s
+    yaw = rng.uniform(0, 90)
+    r = mul(rot_y(yaw), rot_z(rng.uniform(-8, 8)))
+    return model(name, [
+        part("Rock", (w, h, d), (x, y + h / 2 - 0.15, z), BRIAR_ROCK, "Slate", r, collide=collide, layer="rock"),
+        part("Moss", (w * 0.9, 0.3, d * 0.9), (x, y + h - 0.2, z), MOSS, "Grass", rot_y(yaw), collide=False, query=False,
+             layer="rock"),
+    ])
+
+
+def undergrowth(name, cx, cz, rx, rz, n, rng, keep_out):
+    """Block undergrowth: small moss/leaf cubes scattered over an ellipse, off trails and spawns."""
+    kids, tops = [], Tops()
+    tries = 0
+    while len(kids) < n and tries < n * 12:
+        tries += 1
+        x, z = cx + rng.uniform(-rx, rx), cz + rng.uniform(-rz, rz)
+        if ((x - cx) / rx) ** 2 + ((z - cz) / rz) ** 2 > 1 or not clear_of(x, z, keep_out):
+            continue
+        w, h, d = rng.uniform(0.8, 2.2), rng.uniform(0.5, 1.3), rng.uniform(0.8, 2.2)
+        y = floor_at(x, z, BRIAR_Y)
+        top = tops(y + h, 0.06)
+        kids.append(part(f"Growth{len(kids)}", (w, top - y, d), (x, (top + y) / 2, z),
+                         rng.choice([MOSS, BRIAR_CANOPY[1], GRASS, GRASS_DARK]), "Grass", rot_y(rng.uniform(0, 90)),
+                         collide=False, query=False, shadow=False, layer="prop"))
+    return model(name, kids)
+
+
+def clear_of(x, z, keep_out):
+    """keep_out entries: (x, z, r) circles or ('trail', points, half_width)."""
+    for k in keep_out:
+        if k[0] == "trail":
+            _, pts, hw = k
+            for i in range(len(pts) - 1):
+                if seg_dist(x, z, pts[i], pts[i + 1]) < hw:
+                    return False
+        elif math.hypot(x - k[0], z - k[1]) < k[2]:
+            return False
+    return True
+
+
+def seg_dist(x, z, a, b):
+    ax, az = a
+    bx, bz = b
+    dx, dz = bx - ax, bz - az
+    t = max(0.0, min(1.0, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz)))
+    return math.hypot(x - (ax + dx * t), z - (az + dz * t))
+
+
+TRAIL_STEPS = (0.10, 0.16, 0.22)
+
+
+def earth_trail(name, pts, width, y=None, color=EARTH, phase=0):
+    """Packed-earth trail: one flat box per leg, legs cycling through three heights so their
+    overlapping joints never share a top face. `phase` picks the first leg's height so a trail
+    that branches off another never lands on the leg it joins."""
+    kids = []
+    for i in range(len(pts) - 1):
+        (ax, az), (bx, bz) = pts[i], pts[i + 1]
+        length = math.hypot(bx - ax, bz - az) + width * 0.9
+        yaw = math.degrees(math.atan2(-(bz - az), bx - ax))
+        fy = floor_at((ax + bx) / 2, (az + bz) / 2, y if y is not None else BRIAR_Y)
+        t = TRAIL_STEPS[(phase + i) % 3]
+        kids.append(part(f"Leg{i}", (length, t, width), ((ax + bx) / 2, fy + t / 2, (az + bz) / 2), color, "Ground",
+                         rot_y(yaw), collide=False, query=False, shadow=False, layer="decal"))
+    return model(name, kids)
+
+
+def ruin_wall(name, x, z, yaw, n, rows, rng, block=(2.9, 1.8, 1.6)):
+    """Broken settlement masonry: staggered courses of blocks with gaps where the wall has
+    fallen, moss mounded along its foot. A block is only laid where the course below holds it."""
+    y = floor_at(x, z, BRIAR_Y)
+    r = rot_y(yaw)
+    right, fwd = apply(r, (1, 0, 0)), apply(r, (0, 0, -1))
+    bw, bh, bd = block
+    present = [[True] * (n + 1) for _ in range(rows)]
+    kids = []
+    for row in range(rows):
+        for i in range(n):
+            s = i * (bw + 0.1) + (row % 2) * bw * 0.5
+            # Odd courses are staggered half a block right: block i sits on i and i+1 below;
+            # an even course's block i sits on the staggered i-1 and i.
+            below = ((present[row - 1][i], present[row - 1][min(i + 1, n)]) if row % 2 else
+                     (present[row - 1][max(i - 1, 0)] if i else False, present[row - 1][i])) if row else (True, True)
+            if rng.random() < 0.18 + row * 0.12 or not any(below):
+                present[row][i] = False
+                continue
+            px, pz = x + right[0] * s + fwd[0] * rng.uniform(-0.1, 0.1), z + right[2] * s + fwd[2] * rng.uniform(-0.1, 0.1)
+            kids.append(part(f"Block{row}_{i}", (bw, bh, bd), (px, y + bh / 2 + row * bh, pz), STONE, "Cobblestone",
+                             mul(r, rot_y(rng.uniform(-3, 3))), layer="prop"))
+        present[row][n] = False
+    for i in range(0, n, 2):
+        s = i * (bw + 0.1) + bw * 0.4
+        side = 1 if i % 4 == 0 else -1
+        mx, mz = x + right[0] * s + fwd[0] * side * (bd * 0.5 + 0.6), z + right[2] * s + fwd[2] * side * (bd * 0.5 + 0.6)
+        kids.append(part(f"Moss{i}", (3.0, 0.7 + (i % 3) * 0.06, 2.2), (mx, y + (0.7 + (i % 3) * 0.06) / 2, mz), MOSS, "Grass",
+                         mul(r, rot_y(15)), collide=False, query=False, layer="prop"))
+    return model(name, kids)
+
+
+def briar_fall(name, x, z, yaw, height, width, rng, lip_bottom=None):
+    """Waterfall off a rock face: three stepped rock columns behind a planar sheet with darker
+    stripes, foam at the foot. The face is at (x, z); water flows along the look direction."""
+    y = floor_at(x, z, BRIAR_Y)
+    r = rot_y(yaw)
+    right, fwd = apply(r, (1, 0, 0)), apply(r, (0, 0, -1))
+    tops = Tops()
+    kids = []
+    lip_bottom = lip_bottom if lip_bottom is not None else y + height - 0.6
+    for k in (-1, 1):  # rock shoulders either side of the sheet; the face behind it is the cliff itself
+        cw = width * 0.45 + 1.4
+        top = tops(lip_bottom + 0.6 + rng.uniform(0, 1.2))
+        cx = x + right[0] * k * (width / 2 + cw / 2 - 0.4) - fwd[0] * 1.0
+        cz = z + right[2] * k * (width / 2 + cw / 2 - 0.4) - fwd[2] * 1.0
+        kids.append(part(f"Step{k}", (cw, top - y + 1, 4.6), (cx, (top + y - 1) / 2, cz), BRIAR_ROCK if k > 0 else BRIAR_ROCK_DARK,
+                         "Slate", r, collide=False, layer="cliff"))
+        kids.append(part(f"StepMoss{k}", (cw + 0.2, 0.36, 4.8), (cx, top + 0.18, cz), MOSS, "Grass", r, collide=False,
+                         query=False, layer="cliff"))
+    for k in range(2):
+        kids.append(part(f"WaterSheet{k}", (width - k * 0.8, height, 0.4), (x + fwd[0] * (0.3 + k * 0.5), y + height / 2 + 0.4,
+                                                                          z + fwd[2] * (0.3 + k * 0.5)),
+                         FALL_WATER, "Glass", r, collide=False, query=False, shadow=False, transparency=0.35 + k * 0.15))
+    for k in range(3):
+        off = (k - 1) * width * 0.3
+        kids.append(part(f"Stripe{k}", (width * 0.12, height - 1, 0.1), (x + right[0] * off + fwd[0] * 0.75, y + height / 2,
+                                                                       z + right[2] * off + fwd[2] * 0.75),
+                         POOL_WATER, "Glass", r, collide=False, query=False, shadow=False, transparency=0.3))
+    kids.append(part("Foam", (width + 2, 0.5, 2.4), (x + fwd[0] * 1.6, y + 0.25, z + fwd[2] * 1.6), FALL_WATER, "SmoothPlastic",
+                     r, collide=False, query=False, shadow=False, transparency=0.25, layer="decal"))
+    kids.append(part("Mist", (0.5, 0.5, 0.5), (x + fwd[0] * 1.6, y + 1.2, z + fwd[2] * 1.6), (255, 255, 255), "SmoothPlastic",
+                     transparency=1, collide=False, query=False, shadow=False, children=[smoke(5.0, 0.16, 1.0, (235, 240, 245))]))
+    kids.append(part("Lip", (width + 3, 3.2, 5.5), (x - fwd[0] * 1.2, lip_bottom + 1.6, z - fwd[2] * 1.2), BRIAR_ROCK_DARK,
+                     "Slate", mul(r, rot_y(4)), collide=False, layer="cliff"))
+    return model(name, kids, attrs={"Waterfall": True})
+
+
+def hanging_sign(name, x, z, yaw, title, subtitle=""):
+    """Single post with an arm; the board hangs from two straps under the arm."""
+    y = floor_at(x, z, BRIAR_Y)
+    r = rot_y(yaw)
+    right = apply(r, (1, 0, 0))
+
+    def at(lx):
+        return x + right[0] * lx, z + right[2] * lx
+
+    px, pz = at(0)
+    ax, az = at(2.6)
+    kids = [part("Post", (0.7, 11, 0.7), (px, y + 5.5, pz), BEAM, "Wood", r),
+            part("Arm", (5.6, 0.5, 0.5), (ax, y + 10.6, az), BEAM, "Wood", r, collide=False)]
+    for k, lx in enumerate((1.4, 4.4)):
+        sx, sz = at(lx)
+        kids.append(part(f"Strap{k}", (0.25, 1.0, 0.25), (sx, y + 9.85, sz), BRIAR_IRON, "Metal", r, collide=False, query=False))
+    bx, bz = at(2.9)
+    kids.append(part("Board", (4.6, 1.9, 0.45), (bx, y + 8.4, bz), (110, 76, 46), "WoodPlanks", r, collide=False,
+                     children=[label_gui("Front", title, subtitle, (236, 220, 170), px=60),
+                               label_gui("Back", title, subtitle, (236, 220, 170), px=60)]))
+    return model(name, kids)
+
+
+def headstone(name, x, z, rng, y=None):
+    y = floor_at(x, z, y if y is not None else BRIAR_Y)
+    h = rng.uniform(2.6, 3.6)
+    return part(name, (1.8, h, 0.7), (x, y + h / 2 - 0.15, z), STONE if rng.random() < 0.7 else STONE_DARK, "Slate",
+                mul(rot_y(rng.uniform(-8, 8)), rot_z(rng.uniform(-5, 5))), layer="prop")
+
+
+def iron_fence(name, a, b, rng, gaps=()):
+    """Broken iron picket fence from a to b; `gaps` are (s0, s1) distances left open."""
+    ax, az = a
+    bx, bz = b
+    seg = math.hypot(bx - ax, bz - az)
+    dx, dz = (bx - ax) / seg, (bz - az) / seg
+    yaw = math.degrees(math.atan2(-dz, dx))
+    kids = []
+    runs, run = [], []  # consecutive pickets; each rail spans one run so its ends sit inside pickets
+    s = 0.0
+    k = 0
+    while s <= seg + 1e-6:
+        if any(g0 <= s <= g1 for g0, g1 in gaps):
+            if run:
+                runs.append(run)
+                run = []
+        else:
+            h = rng.uniform(2.4, 3.6)
+            px, pz = ax + dx * s, az + dz * s
+            kids.append(part(f"Picket{k}", (0.22, h, 0.22), (px, floor_at(px, pz, BRIAR_Y) + h / 2, pz), BRIAR_IRON, "Metal",
+                             rot_y(yaw), collide=False))
+            run.append(s)
+        s += 2.0
+        k += 1
+    if run:
+        runs.append(run)
+    for i, run in enumerate(runs):
+        if len(run) < 2:
+            continue
+        s0, s1 = run[0], run[-1]
+        mid = (s0 + s1) / 2
+        px, pz = ax + dx * mid, az + dz * mid
+        kids.append(part(f"Rail{i}", (s1 - s0, 0.16, 0.16), (px, floor_at(px, pz, BRIAR_Y) + 2.0, pz), BRIAR_IRON, "Metal",
+                         rot_y(yaw), collide=False, query=False))
+    return model(name, kids)
+
+
+def stone_arch(name, cx, cz, yaw, span=10.0, pier_h=8.4, depth=2.6, wedges=7):
+    """Ruined chapel doorway: two piers of stacked blocks and a segmental arch of straight-edged
+    wedge blocks. Local X spans the opening; the path runs through along local Z."""
+    y = floor_at(cx, cz, BRIAR_Y)
+    r = rot_y(yaw)
+    right = apply(r, (1, 0, 0))
+    kids = []
+    courses = max(1, round(pier_h / 2.1))
+    ch = pier_h / courses
+    for side in (-1, 1):
+        for i in range(courses):
+            px, pz = cx + right[0] * side * (span / 2 + 1.25), cz + right[2] * side * (span / 2 + 1.25)
+            kids.append(part(f"Pier{side}_{i}", (2.5, ch, depth), (px, y + ch / 2 + i * ch, pz), STONE if i % 2 else STONE_DARK,
+                             "Cobblestone", mul(r, rot_y(2 * (-1) ** i))))
+    r_in, r_out = span / 2, span / 2 + 2.3
+    r_mid = (r_in + r_out) / 2
+    chord = 2 * r_mid * math.sin(math.pi / (2 * wedges)) + 0.25
+    for i in range(wedges):
+        am = (i + 0.5) * math.pi / wedges
+        wx, wz = cx + right[0] * math.cos(am) * r_mid, cz + right[2] * math.cos(am) * r_mid
+        kids.append(part(f"Wedge{i}", (chord, r_out - r_in, depth), (wx, y + pier_h + math.sin(am) * r_mid, wz),
+                         STONE if i % 2 else (140, 136, 128), "Cobblestone", mul(r, rot_z(math.degrees(am) + 90)), collide=False))
+    return model(name, kids)
+
+
+def lily_pads(name, cx, cz, radius, water_top, n, rng):
+    kids, placed = [], []
+    tries = 0
+    while len(placed) < n and tries < n * 20:
+        tries += 1
+        a, d = rng.uniform(0, math.tau), rng.uniform(0.15, 0.85) * radius
+        rr = rng.uniform(0.9, 1.6)
+        x, z = cx + math.cos(a) * d, cz + math.sin(a) * d
+        if any(math.hypot(x - px, z - pz) < rr + pr + 0.4 for px, pz, pr in placed):
+            continue
+        placed.append((x, z, rr))
+        kids += disc(f"Pad{len(placed)}", x, z, rr, water_top + 0.1, 0.1, rng.choice([MOSS, BRIAR_CANOPY[2]]), "Grass",
+                     collide=False, layer="decal")
+    return model(name, kids)
+
+
+def reeds(name, x, z, rng, n=6):
+    y = floor_at(x, z, BRIAR_Y)
+    kids = []
+    for k in range(n):
+        h = rng.uniform(1.6, 3.2)
+        ox, oz = rng.uniform(-0.8, 0.8), rng.uniform(-0.8, 0.8)
+        kids.append(part(f"Reed{k}", (0.18, h, 0.18), (x + ox, y + h / 2, z + oz), rng.choice([MOSS, BRIAR_CANOPY[0]]), "Grass",
+                         mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-6, 6))), collide=False, query=False, shadow=False))
+    return model(name, kids)
+
+
+BRIAR_TRAILS = {
+    # Packed-earth routes (x, z). Entrance → Bramble Hollow fork; east to the Mirror Pool; west
+    # through Thornbreak to Hollow Rest, on to the chapel and the Warden's Grove. Three more
+    # routes make the vale a network rather than a corridor: the Old Road straight down the
+    # middle, the Sunken Path along the pool's west shore to the chapel, and the Rootwalk, an
+    # outer loop from the graveyard round behind the grove to the pool.
+    "Entrance": [(0, 474), (0, 520), (-2, 545), (2, 562)],
+    "EastFork": [(2, 562), (24, 586), (48, 612), (64, 628)],
+    "WestFork": [(2, 562), (-24, 590), (-48, 620), (-64, 648)],
+    "Thornbreak": [(-64, 648), (-78, 680), (-72, 712)],
+    "Graveyard": [(-72, 712), (-96, 724), (-104, 760), (-80, 770), (-48, 776)],
+    "Chapel": [(-48, 776), (-18, 790), (0, 792), (0, 810), (0, 832)],
+    "Grove": [(0, 832), (0, 852)],
+    "OldRoad": [(24, 586), (16, 640), (10, 690), (-6, 736), (-30, 784)],
+    "SunkenPath": [(64, 628), (58, 652), (62, 684), (80, 708), (88, 736), (80, 764), (58, 788), (30, 796), (6, 792)],
+    "Rootwalk": [(-104, 760), (-102, 806), (-96, 852), (-64, 892), (-30, 924), (30, 924), (64, 892), (96, 852),
+                 (100, 806), (92, 770), (88, 736)],
+}
+# Each trail's first leg height must differ from the leg(s) it joins; where a trail ends on
+# another, its last leg must differ too (see earth_trail).
+BRIAR_TRAIL_PHASE = {"Entrance": 0, "EastFork": 0, "WestFork": 1, "Thornbreak": 1, "Graveyard": 0, "Chapel": 1, "Grove": 2,
+                     "OldRoad": 2, "SunkenPath": 1, "Rootwalk": 0}
+
+BRIAR_SPAWNS = [
+    # id, archetype, level, role, (x, z), leash. Difficulty climbs with depth (+Z): Lv 9 at the
+    # Hollow, Lv 14 on the Rootwalk behind the grove. Slots sit 20+ studs from every tree (camera
+    # clearance), clear of walls and boulders, 40+ from both waystone arrivals, 20+ from the
+    # gate safe zone. [TUNING]
+    # Bramble Hollow (z 570-630)
+    ("BW_T1", "ThornStalker", 9, "minion", (-14, 576), 20),
+    ("BW_T2", "ThornStalker", 9, "minion", (24, 602), 20),
+    ("BW_T3", "ThornStalker", 10, "minion", (-4, 622), 20),
+    ("BW_T4", "ThornStalker", 10, "minion", (66, 626), 18),
+    # Old Road (z 640-710)
+    ("BW_M1", "ThornStalker", 10, "minion", (18, 646), 20),
+    ("BW_M2", "BriarBrute", 11, "minion", (14, 684), 20),
+    ("BW_M3", "ThornStalker", 11, "minion", (0, 708), 20),
+    # Thornbreak (z 640-690)
+    ("BW_T5", "ThornStalker", 10, "minion", (-94, 646), 20),
+    ("BW_B1", "BriarBrute", 11, "minion", (-70, 664), 20),
+    ("BW_T6", "ThornStalker", 11, "minion", (-50, 686), 20),
+    # Hollow Rest and the Sunken Path (z 715-765)
+    ("BW_B2", "BriarBrute", 12, "minion", (-96, 716), 20),
+    ("BW_B3", "BriarBrute", 12, "minion", (-46, 720), 20),
+    ("BW_P1", "ThornStalker", 12, "minion", (84, 722), 20),
+    ("BW_P2", "BriarBrute", 12, "minion", (78, 758), 20),
+    # Chapel approaches (z 770-800)
+    ("BW_C1", "ThornStalker", 13, "minion", (-34, 770), 20),
+    ("BW_C2", "BriarBrute", 13, "minion", (50, 796), 20),
+    # The grotto behind the Mirror Pool's waterfall
+    ("BW_E1", "BriarBrute", 13, "elite", (127, 655), 12),
+    # Rootwalk: the deep loop round the grove (z 825-930)
+    ("BW_W1", "ThornStalker", 13, "minion", (-98, 828), 20),
+    ("BW_W2", "BriarBrute", 14, "elite", (-84, 876), 22),
+    ("BW_K1", "ThornStalker", 14, "minion", (-40, 926), 20),
+    ("BW_K2", "ThornStalker", 14, "minion", (40, 924), 20),
+    ("BW_X1", "ThornStalker", 13, "minion", (98, 828), 20),
+    ("BW_X2", "BriarBrute", 14, "elite", (84, 876), 22),
+    ("BW_BOSS", "RootWarden", 14, "boss", (0, 872), 50),
+]
+BRIAR_ARRIVALS = {"BriarGate": (0, 500), "GroveEdge": (10, 782)}  # 12+ studs from their waystone tips
+
+
+def build_briarwood(rng):
+    global AUTO_GROUND
+    AUTO_GROUND = True
+    Y = BRIAR_Y
+    x0, x1 = BRIAR_X[0] - 6, GROTTO[1] + 6
+    z0, z1 = BRIAR_Z
+    hx0, hx1, hz0, hz1 = POOL_HOLE
+    ground = [
+        slab("BriarFloorN", x0, x1, z0, hz0, Y, GRASS_DARK, "Grass"),
+        slab("BriarFloorS", x0, x1, hz1, z1 + 2, Y, GRASS_DARK, "Grass"),
+        slab("BriarFloorW", x0, hx0, hz0, hz1, Y, GRASS_DARK, "Grass"),
+        slab("BriarFloorE", hx1, x1, hz0, hz1, Y, GRASS_DARK, "Grass"),
+    ]
+    ground += disc("PoolBed", POOL[0], POOL[1], 23.5, Y - 1.0, 1.0, EARTH, "Ground")
+    for row in range(4):  # Hollow Rest: four shallow mossy terraces climbing away from the fence
+        ground.append(slab(f"GraveTerrace{row}", -88, -52, 728 + row * 6, 734 + row * 6, Y + 0.4 * (row + 1), MOSS, "Grass"))
+    ground += disc("GroveFloor", GROVE[0], GROVE[1], GROVE[2], Y + 0.25, 0.5, EARTH, "Ground")
+    visual, proxies = [], []
+
+    # Perimeter: grey rock walls; the play area is always on the left of each run.
+    outline = [(-16, 472), (-16, 540), (-60, 556), (-100, 600), (BRIAR_X[0], 640), (BRIAR_X[0], 900), (-60, 940),
+               (60, 940), (BRIAR_X[1], 900), (BRIAR_X[1], 720), (BRIAR_X[1], GROTTO[3]), (GROTTO[1], GROTTO[3]),
+               (GROTTO[1], GROTTO[2]), (BRIAR_X[1], GROTTO[2]), (BRIAR_X[1], 600), (100, 560), (60, 545), (16, 540), (16, 472)]
+    for i in range(len(outline) - 1):
+        # Same base and height as the pit's perimeter (PitWest/PitEast: Y2 + 46), so the crest runs
+        # level through the gate instead of stepping down into the vale.
+        chunks, proxy = cliff_run(f"BriarCliff{i:02d}", outline[i], outline[i + 1], 1, Y, 46, BRIAR_ROCK, BRIAR_ROCK_DARK, rng,
+                                  depth=14, material="Slate", chunk=(8, 14))
+        visual += chunks
+        proxies.append(proxy)
+
+    # Trails first: everything else keeps off them.
+    for key, pts in BRIAR_TRAILS.items():
+        visual.append(earth_trail(f"Trail{key}", pts, 5.0 if key in ("Entrance", "Grove") else 4.2, phase=BRIAR_TRAIL_PHASE[key]))
+    keep = [("trail", pts, 4.6) for pts in BRIAR_TRAILS.values()]
+    keep += [(x, z, 21) for _, _, _, _, (x, z), _ in BRIAR_SPAWNS]
+    keep += [(x, z, 17) for (x, z) in BRIAR_ARRIVALS.values()]
+    keep += [(POOL[0], POOL[1], 26), (GROVE[0], GROVE[1], GROVE[2] + 6), (-70, 742, 26), (0, 800, 18)]
+    keep_trees = keep + [(0, 500, 22), (-70, 664, 16), (0, 590, 14)]
+
+    def inside_outline(x, z, margin):
+        if not (x0 + margin < x < BRIAR_X[1] - margin and z0 + margin < z < z1 - margin):
+            return False
+        for i in range(len(outline) - 1):
+            if seg_dist(x, z, outline[i], outline[i + 1]) < margin:
+                return False
+        if x > 16 + margin and z < 545 + margin:  # the corridor funnels: nothing beyond its walls
+            return False
+        if x < -16 - margin and z < 545 + margin:
+            return False
+        return True
+
+    # Forest: leaning trees scattered over the vale, denser away from the clearings.
+    placed = []
+    tries = 0
+    while len(placed) < 150 and tries < 8000:
+        tries += 1
+        x, z = rng.uniform(x0, BRIAR_X[1]), rng.uniform(z0 + 8, z1 - 8)
+        if not inside_outline(x, z, 7) or not clear_of(x, z, keep_trees):
+            continue
+        if any(math.hypot(x - px, z - pz) < 11 for px, pz in placed):
+            continue
+        placed.append((x, z))
+        visual.append(briar_tree(f"Tree{len(placed):03d}", x, Y, z, rng, scale=rng.uniform(0.85, 1.25)))
+    # The corridor's vista pair and the fork's knot of gnarled trees (Codex shots 1 and 2).
+    for k, (x, z, s) in enumerate(((-9, 548, 1.4), (10, 552, 1.45), (-4, 596, 1.1), (2, 598, 0.9), (-2, 602, 0.85))):
+        visual.append(briar_tree(f"FeatureTree{k}", x, Y, z, rng, scale=s))
+
+    # Entrance road: sign, waystone, quarry-stone transition, the first two vista trees.
+    visual.append(hanging_sign("BriarwoodSign", -8, 486, yaw_facing(-1, 0), "Briarwood", "Lv 9+"))
+    visual.append(waystone("BriarGateWaystone", "BriarGate", 13, 0, 500, glow=BRIAR_GLOW))
+    for k, (x, z, s) in enumerate(((-13, 478, 1.0), (13, 482, 0.8), (-12, 496, 0.7), (14, 512, 0.9))):
+        visual.append(part(f"QuarryStone{k}", (5 * s, 2.2 * s, 4 * s), (x, Y + 1.1 * s - 0.1, z), SAND, "Sandstone",
+                           rot_y(rng.uniform(0, 90)), collide=False, layer="rock"))
+
+    # Bramble Hollow: the road forks around gnarled trees between broken walls.
+    visual.append(ruin_wall("HollowWallW", -34, 570, 20, 5, 2, rng))
+    visual.append(ruin_wall("HollowWallE", 36, 614, -80, 5, 1, rng))
+    visual.append(ruin_wall("HollowWallS", -36, 608, -10, 5, 2, rng))
+    visual.append(fingerpost("HollowPost", 8, Y, 566, [("Mirror Pool", yaw_facing(1, 1), 8.6), ("Hollow Rest", yaw_facing(-1, 1), 7.2),
+                                                        ("Iron Lowlands", yaw_facing(0, -1), 5.8)]))
+    for k, (x, z) in enumerate(((-24, 584), (30, 578), (-30, 626), (34, 618))):
+        visual.append(moss_boulder(f"HollowBoulder{k}", x, 0, z, rng, s=rng.uniform(0.9, 1.4)))
+    for k, (x, z) in enumerate(((-36, 592), (38, 600))):
+        visual.append(stump(f"HollowStump{k}", x, Y, z, rng))
+
+    # Mirror Pool oasis: still water in a sunken basin ringed with moss boulders and reeds, fed by
+    # the big waterfall off the east wall, a chest half-buried on the near shore. Behind the sheet,
+    # the grotto: a pocket in the cliff with the vale's elite and its cache.
+    px, pz, pr = POOL
+    visual.append(model("MirrorPool", disc("Water", px, pz, pr, Y - 0.3, 0.5, POOL_WATER, "Glass", collide=False, layer="decal")
+                        + [part("Glow", (0.5, 0.5, 0.5), (px, Y - 0.2, pz), (255, 255, 255), transparency=1, collide=False,
+                                query=False, shadow=False, children=[light(24, 0.5, (140, 200, 190))])]))
+    visual.append(lily_pads("LilyPads", px, pz, pr, Y - 0.3, 12, rng))
+    for k in range(17):
+        a = k * math.tau / 17
+        if 2.8 < a < 3.9 or a < 0.35 or a > 6.0:  # open to the Sunken Path on the west shore and at the waterfall's foot
+            continue
+        visual.append(moss_boulder(f"PoolRock{k:02d}", px + math.cos(a) * 18.2, 0, pz + math.sin(a) * 17.4, rng,
+                                   s=rng.uniform(0.9, 1.7)))
+    for k, (x, z) in enumerate(((70, 640), (98, 636), (100, 676), (72, 682), (52, 646))):
+        visual.append(reeds(f"PoolReeds{k}", x, z, rng))
+    visual.append(model("BuriedChest", [chest("Chest", 52, Y - 0.55, 672, yaw_facing(1, -0.3), rng=rng),
+                                        part("Mound", (5.2, 0.6, 3.8), (52, Y + 0.3, 672), EARTH, "Ground", rot_y(-14),
+                                             collide=False, query=False, layer="decal")]))
+    visual.append(briar_fall("MirrorFall", BRIAR_X[1] + 0.6, pz, yaw_facing(-1, 0), 27, 11, rng, lip_bottom=Y + 29))
+    visual.append(model("Grotto", [
+        chest("Cache", 130, Y, 652, yaw_facing(-1, 0), open_lid=True, rng=rng),
+        part("CacheLantern", (0.9, 1.2, 0.9), (131, Y + 5.4, 659), LANTERN, "Neon", collide=False, query=False, shadow=False,
+             transparency=0.2, children=[light(16, 0.9)]),
+        part("LanternHook", (0.3, 3.0, 0.3), (131, Y + 7.5, 659), BRIAR_IRON, "Metal", collide=False, query=False),
+        part("GrottoRoof", (GROTTO[1] - GROTTO[0] + 8, 6, GROTTO[3] - GROTTO[2] + 4), ((GROTTO[0] + GROTTO[1]) / 2 + 2, Y + 34,
+                                                                                    (GROTTO[2] + GROTTO[3]) / 2),
+             BRIAR_ROCK_DARK, "Slate", collide=False, layer="cliff"),
+    ]))
+    visual.append(moss_boulder("GrottoRock", 121, 0, 651, rng, s=0.8))
+
+    # Thornbreak: a rougher second clearing, stumps and boulders, the brute's ground.
+    for k, (x, z) in enumerate(((-96, 668), (-46, 656), (-84, 700), (-56, 704))):
+        visual.append(moss_boulder(f"ThornRock{k}", x, 0, z, rng, s=rng.uniform(1.0, 1.6)))
+    for k, (x, z) in enumerate(((-100, 688), (-40, 668))):
+        visual.append(stump(f"ThornStump{k}", x, Y, z, rng))
+    visual.append(ruin_wall("ThornWall", -104, 660, 70, 4, 1, rng))
+
+    # Old Road camp and the Rootwalk's deep camps: rougher ground, stumps and boulders.
+    for k, (x, z, s) in enumerate(((28, 702, 1.2), (-10, 664, 1.0), (-110, 848, 1.3), (110, 846, 1.3), (-2, 934, 0.8),
+                                   (-62, 908, 1.0), (62, 908, 1.0))):
+        visual.append(moss_boulder(f"CampRock{k}", x, 0, z, rng, s=s))
+    for k, (x, z) in enumerate(((26, 724), (-108, 800), (108, 800))):
+        visual.append(stump(f"CampStump{k}", x, Y, z, rng))
+
+    # Hollow Rest: headstones on the terraces, a broken picket fence along the front, the old
+    # boundary wall behind, and the small cascade dropping off the west wall into a stream.
+    for row in range(4):
+        for col in range(5):
+            visual.append(headstone(f"Headstone{row}{col}", -82 + col * 6 + rng.uniform(-0.3, 0.3), 731 + row * 6, rng))
+    visual.append(iron_fence("GraveFence", (-92, 724.5), (-48, 724.5), rng, gaps=((6, 10), (24, 30))))
+    visual.append(ruin_wall("GraveWall", -92, 758, 0, 12, 2, rng))
+    visual.append(hanging_sign("GraveSign", -36, 740, yaw_facing(-1, 0), "Hollow Rest", "Rest quietly"))
+    visual.append(briar_fall("GraveFall", BRIAR_X[0] - 0.6, 744, yaw_facing(1, 0), 13, 6, rng))
+    visual.append(model("GraveStream", [
+        part("StreamA", (16, 0.16, 5), (-108, Y + 0.08, 745), POOL_WATER, "Glass", rot_y(-8), collide=False, query=False,
+             transparency=0.3, layer="decal"),
+        part("StreamB", (14, 0.22, 4.4), (-95, Y + 0.11, 751), POOL_WATER, "Glass", rot_y(-30), collide=False, query=False,
+             transparency=0.3, layer="decal"),
+        part("StreamC", (12, 0.16, 3.6), (-86, Y + 0.08, 759), POOL_WATER, "Glass", rot_y(-55), collide=False, query=False,
+             transparency=0.3, layer="decal"),
+    ]))
+    for k, (x, z) in enumerate(((-106, 736), (-100, 756), (-92, 764))):
+        visual.append(moss_boulder(f"StreamRock{k}", x, 0, z, rng, s=0.8, collide=False))
+
+    # Ruined chapel: broken walls, the intact arch the trail passes through, roots wrenching the
+    # masonry apart, and the vale's second waystone at the grove's edge.
+    visual.append(stone_arch("ChapelArch", 0, 800, 0))
+    visual.append(ruin_wall("ChapelWallW", -20, 800, 0, 4, 4, rng))
+    visual.append(ruin_wall("ChapelWallE", 8, 800, 0, 3, 3, rng))
+    visual.append(ruin_wall("ChapelSideW", -20, 802, -90, 6, 3, rng))
+    visual.append(ruin_wall("ChapelSideE", 15, 802, -90, 5, 2, rng))
+    tops = Tops()
+    for k in range(18):
+        x = rng.choice([-1, 1]) * rng.uniform(9, 26) + (0 if k % 2 else rng.uniform(-4, 4))
+        z = rng.uniform(786, 824)
+        if not clear_of(x, z, keep):
+            continue
+        h = tops(rng.uniform(1.2, 1.8), 0.08)
+        visual.append(part(f"FallenBlock{k}", (rng.uniform(2.0, 2.8), h, rng.uniform(1.6, 2.2)), (x, Y + h / 2 - 0.1, z), STONE,
+                           "Cobblestone", rot_y(rng.uniform(0, 90)), collide=False, layer="prop"))
+    for k, (x, z, s) in enumerate(((-30, 812, 1.25), (30, 818, 1.4))):
+        visual.append(briar_tree(f"ChapelTree{k}", x, Y, z, rng, scale=s))
+    visual.append(model("WrenchingRoots", [
+        beam("RootW0", (-30, Y + 2.0, 812), (-20, Y + 6.5, 803), 1.0, TRUNK, collide=False),
+        beam("RootW1", (-20, Y + 6.5, 803), (-14, Y + 5.2, 800), 0.7, TRUNK, collide=False),
+        beam("RootE0", (30, Y + 2.4, 818), (17, Y + 4.4, 804), 1.0, TRUNK, collide=False),
+        beam("RootE1", (17, Y + 4.4, 804), (13, Y + 3.0, 801), 0.6, TRUNK, collide=False),
+    ]))
+    # Vines drape down the wall face to the floor, so they stand whether or not the course above survived.
+    visual.append(model("ChapelVines", [beam(f"Vine{k}", (x, Y + 4.8, 800.7), (x + 0.4, Y + 0.3, 800.95), 0.22, MOSS, "Grass",
+                                             collide=False, query=False) for k, x in enumerate((-17, -12, 10, 14))]))
+    visual.append(waystone("GroveWaystone", "GroveEdge", 23, 0, 780, glow=BRIAR_GLOW))
+    visual.append(sign("GroveSign", -14, 0, 826, yaw_facing(0, -1), 12, 5, "Warden's Grove",
+                       "Rootbound Warden  |  Lv 14  |  Keeper of the Grove", board=(52, 60, 36)))
+
+    # Warden's Grove: an open ring of living wood. Giant trees with root buttresses reaching
+    # toward the arena; nothing stands inside it but the Warden.
+    gx, gz, gr = GROVE
+    for i in range(11):
+        a = i * math.tau / 11
+        tx, tz = gx + math.cos(a) * (gr + 8), gz + math.sin(a) * (gr + 8)
+        if tz - gz < -0.7 * (gr + 8):  # the opening toward the chapel
+            continue
+        visual.append(briar_tree(f"GroveTree{i:02d}", tx, Y, tz, rng, scale=rng.uniform(1.6, 2.1)))
+        visual.append(beam(f"GroveRoot{i:02d}", (tx, Y + 2.0, tz), (gx + (tx - gx) * 0.72, Y + 0.18, gz + (tz - gz) * 0.72), 1.1,
+                           TRUNK, collide=False, query=False, layer="tree"))
+
+    # Undergrowth over the whole vale, thinned on the trails and clearings.
+    for k, (cx, cz, rx, rz, n) in enumerate(((-40, 600, 70, 50, 60), (60, 600, 50, 40, 40), (-70, 690, 45, 30, 40),
+                                             (40, 700, 70, 60, 60), (-60, 790, 50, 40, 40), (0, 860, 90, 60, 50))):
+        visual.append(undergrowth(f"Undergrowth{k}", cx, cz, rx, rz, n, rng, keep + [(gx, gz, gr + 2)]))
     return ground, visual, proxies
 
 
@@ -2575,8 +3204,10 @@ def main():
     rng = random.Random(20260915)
     REGISTRY.clear()
     USED_CLIFF_TOPS.clear()
+    LOCAL_CLIFF_TOPS.clear()
     hub_ground, hub_visual, hub_proxies = build_hub(rng)
     il_ground, il_visual, il_proxies = build_iron_lowlands(rng)
+    bw_ground, bw_visual, bw_proxies = build_briarwood(rng)
     markers = build_markers()
     global AUTO_GROUND
     AUTO_GROUND = False
@@ -2590,11 +3221,13 @@ def main():
     }, indent=1) + "\n")
     write_model(OUT / "Grounds_Hub.model.json", model("Grounds_Hub", hub_ground))
     write_model(OUT / "Grounds_IronLowlands.model.json", model("Grounds_IronLowlands", il_ground))
-    write_model(OUT / "Collision.model.json", model("Collision", hub_proxies + il_proxies))
+    write_model(OUT / "Grounds_Briarwood.model.json", model("Grounds_Briarwood", bw_ground))
+    write_model(OUT / "Collision.model.json", model("Collision", hub_proxies + il_proxies + bw_proxies))
     hub_model = model("Hub", hub_visual, attrs={"Region": "Hub"})
     hub_model["properties"] = {"ModelStreamingMode": "Atomic"}  # arrives complete, so HubAmbience finds everything
     write_model(OUT / "Hub.model.json", hub_model)
     write_model(OUT / "IronLowlands.model.json", model("IronLowlands", il_visual, attrs={"Region": "IronLowlands"}))
+    write_model(OUT / "Briarwood.model.json", model("Briarwood", bw_visual, attrs={"Region": "Briarwood"}))
     write_model(OUT / "Markers.model.json", markers)
 
     counts = {}
@@ -2611,7 +3244,7 @@ def main():
 def render_topdown(path: Path):
     from PIL import Image, ImageDraw, ImageFont
 
-    x_min, x_max, z_min, z_max = -190, 150, -160, 510
+    x_min, x_max, z_min, z_max = -190, 150, -160, 950
     scale = 2.2
     pad = 60
     w = int((x_max - x_min) * scale) + pad * 2
@@ -2657,18 +3290,20 @@ def render_topdown(path: Path):
         draw.text((6, px(x_min, z)[1] - 7), f"z{z}", fill=(200, 200, 200), font=font)
 
     # Safe zones, spawns, NPCs, waypoints.
-    for (x0, x1, z0, z1, name) in ((-100, 100, -100, 100, "SAFE: Hub"), (-40, 40, 100, 168, "SAFE: Overlook")):
+    for (x0, x1, z0, z1, name) in ((-100, 100, -100, 100, "SAFE: Hub"), (-40, 40, 100, 168, "SAFE: Overlook"),
+                                   (-20, 20, 472, 528, "SAFE: Briar Gate")):
         draw.rectangle([px(x0, z0), px(x1, z1)], outline=(80, 255, 140, 220), width=2)
         draw.text((px(x0, z0)[0] + 4, px(x0, z0)[1] + 4), name, fill=(120, 255, 170), font=font)
-    arch_color = {"IronSquire": (255, 210, 90), "IronBerserker": (255, 130, 60), "Boss_Gorgon": (255, 60, 60)}
-    for sid, arch, level, role, (x, z), leash in ENEMY_SPAWNS:
+    arch_color = {"IronSquire": (255, 210, 90), "IronBerserker": (255, 130, 60), "Boss_Gorgon": (255, 60, 60),
+                  "ThornStalker": (170, 230, 90), "BriarBrute": (110, 170, 60), "RootWarden": (255, 60, 60)}
+    for sid, arch, level, role, (x, z), leash in ENEMY_SPAWNS + BRIAR_SPAWNS:
         cx, cz = px(x, z)
         rr = leash * scale
         draw.ellipse([cx - rr, cz - rr, cx + rr, cz + rr], outline=(*arch_color[arch], 90))
         dot = 9 if role == "boss" else 6
         draw.ellipse([cx - dot, cz - dot, cx + dot, cz + dot], fill=arch_color[arch], outline=(0, 0, 0))
-        draw.text((cx + 9, cz - 7), f"{arch.replace('Iron', '').replace('Boss_', '')} L{level}", fill=(255, 255, 255),
-                  font=font)
+        draw.text((cx + 9, cz - 7), f"{arch.replace('Iron', '').replace('Boss_', '').replace('Root', 'Root ')} L{level}",
+                  fill=(255, 255, 255), font=font)
     for name, (x, z) in (("Quest Master", (15, 50)), ("Merchant", (-63, -24.6)), ("Skill Trainer", (58, -12)),
                          ("Rebirth", (64, 22)), ("Vaultkeeper", (30, -84)), ("Travel board", (-16, -40))):
         cx, cz = px(x, z)
@@ -2687,7 +3322,8 @@ def render_topdown(path: Path):
 
     dim((-100, -100), (100, -100), "Hub 200 × 200", -22)
     dim((-110, 472), (110, 472), "Quarry 220 × 304: rim Y10 / mid Y6 / pit Y2", 26)
-    draw.text((pad, h - pad + 18), "Hearthmere + Iron Lowlands — map_forge top-down (1 grid = 50 studs, +Z down)",
+    dim((-118, 940), (118, 940), "Briarwood 236 × 468 at Y2", 26)
+    draw.text((pad, h - pad + 18), "Hearthmere + Iron Lowlands + Briarwood — map_forge top-down (1 grid = 50 studs, +Z down)",
               fill=(230, 230, 230), font=font_b)
     path.parent.mkdir(parents=True, exist_ok=True)
     img.save(path)

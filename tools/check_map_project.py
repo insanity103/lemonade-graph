@@ -563,7 +563,7 @@ def check_coplanar_tops(parts):
 
 def navigate(grounds, solids, spawn_location, spawns, waypoints, lemap, markers):
     """2-stud grid: walkable where a floor exists and no solid occupies body height above it."""
-    x0, x1, z0, z1 = -176, 120, -104, 520
+    x0, x1, z0, z1 = -176, 150, -104, 960
     nx, nz = int((x1 - x0) / CELL), int((z1 - z0) / CELL)
     height = [[None] * nz for _ in range(nx)]
     for g in grounds:
