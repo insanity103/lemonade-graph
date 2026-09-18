@@ -1,16 +1,16 @@
-# Graph Report - adoring-khayyam-85d49c  (2026-09-17)
+# Graph Report - adoring-khayyam-85d49c  (2026-09-18)
 
 ## Corpus Check
-- 241 files · ~756,616 words
+- 241 files · ~795,777 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3078 nodes · 4265 edges · 345 communities (269 shown, 17 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 176 edges (avg confidence: 0.85)
+- 3200 nodes · 4606 edges · 344 communities (269 shown, 17 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 282 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `26f6504c`
+- Built from commit: `788ea51a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -20,7 +20,7 @@
 - Restored Version (ID:129119196465909, 1M+ visits, 90.3% rating)
 - Sword RPG Growth Strategy: Content Updates & Viral Growth Playbook
 - Sword RPG World Design Reference
-- ReforgeGui.client.luau
+- TradeSystem.server.luau
 - Scripts (15 checks)
 - BossSwordFactory.build
 - Economy & Currency Systems in Roblox Sword RPG Games
@@ -33,7 +33,7 @@
 - Roblox API Errors
 - Roblox UI/UX Design & Implementation
 - Map audit — Hearthmere + Iron Lowlands (2026-09-15)
-- reroll
+- PanelChrome.stroke
 - The Legendary Swords RPG - Comprehensive Bug Catalog
 - MainMenuGui.client.luau
 - Lemonade Graph — Complete Roblox Game Design Knowledge Base
@@ -45,7 +45,7 @@
 - The 10 Non-Negotiable Rules
 - 1. Performance Optimization
 - whisper.py
-- TradeSystem.server.luau
+- SwordHotbarGui.client.luau
 - Boss List by Area (Restored Version)
 - AnimationController.luau
 - LevelingSystem.server.luau
@@ -73,7 +73,7 @@
 - NPC AI System
 - Tycoon System
 - HubLeaderboard.server.luau
-- PlayerDataService.GetVault
+- SwordSystem.server.luau
 - Boss & PvE Design Reference — Sword RPG (Roblox)
 - sword-rpg-INDEX.md
 - 3. Community Discussions
@@ -102,7 +102,7 @@
 - Roblox Luau Scripting
 - Prompt: revamp the Iron Lowlands into an abandoned bandit quarry
 - CombatController.client.luau
-- ReforgeGuiFusion.client.luau
+- SwordDropSystem.server.luau
 - 2. Boss Encounter Design
 - 8. Boss Design Template (Recommended)
 - Sword RPG Hidden Gems on Roblox — Deep Mechanics Research
@@ -154,11 +154,11 @@
 - Roblox Game Systems
 - build_world_semantic.py
 - MerchantGui.client.luau
-- SwordHotbarGui.client.luau
+- applyRebirthAttributes
 - AdminGui.client.luau
 - doCleanup
 - applyInstanceProps.luau
-- SwordValue.short
+- EnemyOutfits.luau
 - frames.py
 - blender_forge_enemy_sword.py
 - scoped
@@ -257,12 +257,13 @@
 - part
 - Gamepass Interaction Bugs (arm effects, walkspeed resets)
 - Gold Economy (Single Currency PvE)
+- SwordDropToast.client.luau
 - Comprehensive Bug Catalog (50 bugs across 11 categories)
 - Forging System (Floating Fortress forge, undocumented)
 - PvP System (separate damage values, minimal focus)
 - Wiki Status (dedicated wiki HTTP 410 Gone, no wiki docs)
 - Combo System Test Plan
-- QuestGui.client.luau
+- PanelChrome.luau
 - MapMarkers.luau
 - check_map_project.py
 - Handoff: Legendary Swords inspired map and gameplay
@@ -286,21 +287,20 @@
 - watch.py
 - /watch
 - download.py
-- SwordSystem.server.luau
-- 8. PROGRESSION DESIGN TEMPLATE
-- EnemyOutfits.luau
-- GuiShowcase.luau
-- transcribe.py
-- PlayerDataService.MarkDirty
-- CombatUtil.luau
-- applyEnemyDamageToPlayer
-- 1. Level Caps & XP Requirements (By Game)
+- CombatUtil.hasLineOfSight
 - WeaponModifiers.TierOdds
+- PlayerDataService.MarkDirty
+- GuiShowcase.luau
 - MerchantSystem.server.luau
+- QuestGui.client.luau
+- VaultGui.client.luau
+- 8. PROGRESSION DESIGN TEMPLATE
+- 1. Level Caps & XP Requirements (By Game)
 - 3. XP Sources & Efficiency
 - 4. Progression Gates
 - build-skill.sh
 - studio_capture.sh
+- ReforgeGuiFusion.client.luau
 
 ## God Nodes (most connected - your core abstractions)
 1. `part()` - 81 edges
@@ -308,23 +308,23 @@
 3. `rot_y()` - 70 edges
 4. `floor_at()` - 52 edges
 5. `build_iron_lowlands()` - 49 edges
-6. `build_hub()` - 39 edges
-7. `rot_z()` - 38 edges
-8. `mul()` - 36 edges
-9. `Executive Summary` - 35 edges
-10. `apply()` - 33 edges
+6. `PanelChrome.stroke()` - 39 edges
+7. `build_hub()` - 39 edges
+8. `rot_z()` - 38 edges
+9. `mul()` - 36 edges
+10. `Executive Summary` - 35 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `describeMods()` --calls--> `SwordValue.modifiersFromPrefixes()`  [INFERRED]
+- `goldText()` --calls--> `SwordValue.short()`  [INFERRED]
   lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau → lemonade-game/ReplicatedStorage/Config/SwordValue.luau
+- `createChip()` --calls--> `PanelChrome.display()`  [INFERRED]
+  lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau → lemonade-game/ReplicatedStorage/PanelChrome.luau
+- `settingsRow()` --calls--> `PanelChrome.display()`  [INFERRED]
+  lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau → lemonade-game/ReplicatedStorage/PanelChrome.luau
+- `shadowedButton()` --calls--> `PanelChrome.chunkyButton()`  [INFERRED]
+  lemonade-game/StarterPlayer/StarterPlayerScripts/QuestGui.client.luau → lemonade-game/ReplicatedStorage/PanelChrome.luau
 - `makePurchasedSword()` --calls--> `BossSwordFactory.build()`  [INFERRED]
   lemonade-game/ServerScriptService/MerchantSystem.server.luau → lemonade-game/ServerScriptService/BossSwordFactory.luau
-- `PanelChrome.renderTool()` --calls--> `pose()`  [INFERRED]
-  lemonade-game/ReplicatedStorage/PanelChrome.luau → lemonade-game/Map/HubAmbience.client.luau
-- `BossSwordFactory.rebuild()` --calls--> `BossWeapons.GetByTier()`  [INFERRED]
-  lemonade-game/ServerScriptService/BossSwordFactory.luau → lemonade-game/ReplicatedStorage/Config/BossWeapons.luau
-- `buildRebirthPanel()` --calls--> `RebirthConfig.GetMultipliers()`  [INFERRED]
-  lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau → lemonade-game/ReplicatedStorage/Config/RebirthConfig.luau
 
 ## Import Cycles
 - None detected.
@@ -334,7 +334,7 @@
 - **Prestige-Collection Feedback Loop (Rebirth improves drops → motivates collection → rebirth again)** — ls_core_rebirth_system, ls_core_drop_rate_formula, ls_core_collection_loop [EXTRACTED 0.95]
 - **Social Boss Event Pattern (timed spawns + last-hit reward + communal discovery)** — ls_core_server_events, ls_core_boss_system, ls_core_last_hit_mechanic [EXTRACTED 0.95]
 
-## Communities (345 total, 17 thin omitted)
+## Communities (344 total, 17 thin omitted)
 
 ### Community 0 - "6. Weapon Acquisition Design Template"
 Cohesion: 0.04
@@ -356,17 +356,17 @@ Nodes (47): 1. Update Cadence & Content Types, 2. Blox Fruits Full Update Timeli
 Cohesion: 0.04
 Nodes (47): 1.1 How Many Zones Exist in Major Games?, 1.2 Progression Order, 1.3 Level Requirements Per Zone, 1.4 How Are Zones Connected?, 1.5 Zone Size Comparison, 1. Zone/Island Structure, 2.1 How Does Each Zone Feel Unique?, 2.2 Environmental Storytelling (+39 more)
 
-### Community 5 - "ReforgeGui.client.luau"
-Cohesion: 0.29
-Nodes (16): close(), corner(), currentCost(), describeMods(), describeOdds(), lockList(), makeCard(), pityStatusText() (+8 more)
+### Community 5 - "TradeSystem.server.luau"
+Cohesion: 0.08
+Nodes (58): SwordValue.modifiersFromPrefixes(), SwordValue.rateAttrs(), SwordValue.rateTool(), SwordValue.rerollCost(), SwordValue.rerollCostForTool(), SwordValue.rerollCostWithLocks(), SwordValue.short(), PlayerDataService.GetField() (+50 more)
 
 ### Community 6 - "Scripts (15 checks)"
 Cohesion: 0.04
 Nodes (44): M-10: No Duplicate ReplicatedStorage Assets, M-1: No Growing Tables Without Cleanup, M-2: Destroyed Instances Disconnected, M-3: Instance Pooling for Frequent Create/Destroy, M-4: No Circular References Preventing GC, M-5: Module Cache Not Stale, M-6: No Event Listeners on Temporary UI, M-7: Cleanup on Player Leave (+36 more)
 
 ### Community 7 - "BossSwordFactory.build"
-Cohesion: 0.32
-Nodes (10): BossWeapons.Get(), BossWeapons.GetByTier(), BossWeapons.GetTier(), giveSword(), BossSwordFactory.applyRoll(), BossSwordFactory.build(), BossSwordFactory.rebuild(), BossSwordFactory.reroll() (+2 more)
+Cohesion: 0.23
+Nodes (13): BossWeapons.Get(), BossWeapons.GetByTier(), BossWeapons.GetTier(), giveSword(), BossSwordFactory.applyRoll(), BossSwordFactory.build(), BossSwordFactory.rebuild(), BossSwordFactory.reroll() (+5 more)
 
 ### Community 8 - "Economy & Currency Systems in Roblox Sword RPG Games"
 Cohesion: 0.05
@@ -401,24 +401,24 @@ Cohesion: 0.06
 Nodes (34): `'attempt to call a nil value'`, `'attempt to index nil with X'`, `'attempt to perform arithmetic (add/sub/mul/div) on nil'`, `'BadgeService: AwardBadge failed'`, `'Cannot load the AnimationData'`, `'Cannot resume non-suspended coroutine'`, `'Code exceeded allowed execution time'`, `'DataStore: 403: Cannot write to DataStore'` (+26 more)
 
 ### Community 16 - "Roblox UI/UX Design & Implementation"
-Cohesion: 0.06
-Nodes (32): Accessibility, Animation, Avoid edge UI, Basic UI tween, Color contrast, Common easing styles for UI, Constraints, ContextActionService (bind game actions to UI buttons) (+24 more)
+Cohesion: 0.07
+Nodes (27): Accessibility, Animation, Avoid edge UI, Basic UI tween, Color contrast, Common easing styles for UI, Constraints, ContextActionService (bind game actions to UI buttons) (+19 more)
 
 ### Community 17 - "Map audit — Hearthmere + Iron Lowlands (2026-09-15)"
 Cohesion: 0.15
 Nodes (12): Actionable fixes applied, Actionable fixes applied, Critical errors, Critical errors, Layout and performance, Map audit — Hearthmere + Iron Lowlands (2026-09-15), Map audit — Iron Lowlands bandit quarry (2026-09-16), Moderate warnings (+4 more)
 
-### Community 18 - "reroll"
-Cohesion: 0.29
-Nodes (13): SwordValue.modifiersFromPrefixes(), SwordValue.rateAttrs(), SwordValue.rateTool(), SwordValue.rerollCost(), SwordValue.rerollCostForTool(), SwordValue.rerollCostWithLocks(), PlayerDataService.GetField(), PlayerDataService.SetField() (+5 more)
+### Community 18 - "PanelChrome.stroke"
+Cohesion: 0.16
+Nodes (31): corner(), PanelChrome.build(), PanelChrome.buildBright(), PanelChrome.checkBadge(), PanelChrome.chunkyButton(), PanelChrome.countBadge(), PanelChrome.display(), PanelChrome.gradient() (+23 more)
 
 ### Community 19 - "The Legendary Swords RPG - Comprehensive Bug Catalog"
 Cohesion: 0.12
 Nodes (15): 10. Server / Performance Bugs, 11. Exploit / Security Vulnerabilities, 1. Data / Persistence Bugs, 2. Combat Bugs, 3. Economy / Shop Bugs, 4. Progression Bugs, 5. Weapon / Item Bugs, 6. Gamepass Bugs (+7 more)
 
 ### Community 20 - "MainMenuGui.client.luau"
-Cohesion: 0.08
-Nodes (56): NumberFormat.short(), corner(), PanelChrome.build(), PanelChrome.buildBright(), PanelChrome.checkBadge(), PanelChrome.chunkyButton(), PanelChrome.countBadge(), PanelChrome.dashedOutline() (+48 more)
+Cohesion: 0.11
+Nodes (29): addCorner(), addPadding(), bevelBlock(), brightText(), buildBonusRow(), buildRebirthPanel(), buildSkillRow(), buildSkillsPanel() (+21 more)
 
 ### Community 21 - "Lemonade Graph — Complete Roblox Game Design Knowledge Base"
 Cohesion: 0.08
@@ -426,7 +426,7 @@ Nodes (23): Core Analysis (Start Here), Detailed File Inventory, Files, Game Sys
 
 ### Community 22 - "EnemyCombat.server.luau"
 Cohesion: 0.18
-Nodes (15): CombatUtil.applyHitlag(), attackEnemy(), createEnemyRig(), createMotor6D(), getAliveCharacter(), getEnemyMaxHealth(), getEnemyXP(), getPlayerAttackDamage() (+7 more)
+Nodes (16): CombatUtil.applyHitlag(), attackEnemy(), createEnemyRig(), createMotor6D(), findNearestEnemy(), getAliveCharacter(), getEnemyMaxHealth(), getEnemyXP() (+8 more)
 
 ### Community 23 - "Roblox UI Animation — TweenService Reference"
 Cohesion: 0.10
@@ -456,9 +456,9 @@ Nodes (15): 1.1 Workspace Optimization, 1.2 Script Optimization, 1.3 Network Opt
 Cohesion: 0.12
 Nodes (28): audio_duration(), _build_multipart(), extract_audio(), load_api_key(), plan_chunks(), _post_whisper(), Path, Extract mono 16kHz 64kbps mp3 — ~480 kB/min, fits any Whisper limit. (+20 more)
 
-### Community 30 - "TradeSystem.server.luau"
-Cohesion: 0.25
-Nodes (17): accept(), cancel(), carriedRelics(), confirm(), decline(), describeEntry(), describeTool(), endSession() (+9 more)
+### Community 30 - "SwordHotbarGui.client.luau"
+Cohesion: 0.13
+Nodes (14): PanelChrome.dashedOutline(), PanelChrome.emptyWell(), buildEmptySlot(), addGlint(), buildFace(), faceLayer(), fillFor(), inkLabel() (+6 more)
 
 ### Community 31 - "Boss List by Area (Restored Version)"
 Cohesion: 0.13
@@ -564,9 +564,9 @@ Nodes (11): Aggro (Threat Table), Attack, Chase, Full Working Example: NPC with 
 Cohesion: 0.18
 Nodes (11): Auto-Save, Building System, Cash Leaderstat, Collector, Conveyor, Dropper, Full Working Example: Dropper + Collector + Cash with Rebirth (< 100 lines), Plot System (+3 more)
 
-### Community 58 - "PlayerDataService.GetVault"
-Cohesion: 0.35
-Nodes (11): PlayerDataService.GetVault(), PlayerDataService.SerializeTool(), complete(), computeWealth(), deposit(), describe(), findCarriedTool(), refreshWealth() (+3 more)
+### Community 58 - "SwordSystem.server.luau"
+Cohesion: 0.33
+Nodes (8): CombatUtil.fireHitlagToClient(), applyDamage(), applyKnockback(), calculateDamage(), performComboSwing(), performSwingWithCombo(), setupCharacter(), setupTool()
 
 ### Community 59 - "Boss & PvE Design Reference — Sword RPG (Roblox)"
 Cohesion: 0.20
@@ -680,9 +680,9 @@ Nodes (5): Audit the result (same method as the Hearthmere audit), Deliverables,
 Cohesion: 0.83
 Nodes (3): fireAttack(), getEquippedTool(), handleAttack()
 
-### Community 87 - "ReforgeGuiFusion.client.luau"
-Cohesion: 0.22
-Nodes (7): close(), describeMods(), makeCard(), plainText(), randomFillerCard(), setOddsPopupVisible(), spin()
+### Community 87 - "SwordDropSystem.server.luau"
+Cohesion: 0.27
+Nodes (10): bindPlayer(), getEquippedWeaponSlots(), getWeaponSlots(), giveSword(), hook(), makeBossSword(), watchCharacter(), currentTier() (+2 more)
 
 ### Community 88 - "2. Boss Encounter Design"
 Cohesion: 0.29
@@ -877,12 +877,12 @@ Cohesion: 0.33
 Nodes (6): Anti-Exploit Checklist, Constraints, Output Format, Roblox Game Systems, System Design Process, System References
 
 ### Community 139 - "MerchantGui.client.luau"
-Cohesion: 0.60
-Nodes (3): buildShopList(), formatGold(), setShopOpen()
+Cohesion: 0.30
+Nodes (9): buildCard(), buildShopList(), buildSwordTool(), coinIcon(), currentGold(), formatGold(), part(), refreshPrices() (+1 more)
 
-### Community 140 - "SwordHotbarGui.client.luau"
-Cohesion: 0.44
-Nodes (8): applyTool(), clearPreview(), fillTooltip(), findEquipped(), renderPreview(), tooltipDivider(), tooltipLine(), watchCharacter()
+### Community 140 - "applyRebirthAttributes"
+Cohesion: 0.36
+Nodes (6): RebirthConfig.GetEffectiveDropChance(), RebirthConfig.GetMultipliers(), RebirthConfig.GetRequiredLevel(), applyRebirthAttributes(), getOrCreateIntValue(), setupPlayer()
 
 ### Community 141 - "AdminGui.client.luau"
 Cohesion: 0.60
@@ -896,13 +896,13 @@ Nodes (8): doCleanup(), For(), ForKeys(), SubObject(), ForPairs(), SubObject(), 
 Cohesion: 0.20
 Nodes (6): applyInstanceProps(), bindProperty(), setProperty(), Hydrate(), New(), xtypeof()
 
-### Community 145 - "SwordValue.short"
-Cohesion: 0.46
-Nodes (6): SwordValue.short(), clear(), column(), label(), render(), row()
+### Community 145 - "EnemyOutfits.luau"
+Cohesion: 0.38
+Nodes (3): EnemyOutfits.apply(), scaledOffset(), specsFor()
 
 ### Community 146 - "frames.py"
-Cohesion: 0.16
-Nodes (25): _dedupe_by_deltas(), dedupe_perceptual(), _even_indices(), _even_sample(), extract(), extract_at_timestamps(), extract_keyframes(), extract_scene_candidates() (+17 more)
+Cohesion: 0.13
+Nodes (30): auto_fps(), auto_fps_focus(), _clamp_fps(), _dedupe_by_deltas(), dedupe_perceptual(), _even_indices(), _even_sample(), extract() (+22 more)
 
 ### Community 147 - "blender_forge_enemy_sword.py"
 Cohesion: 0.50
@@ -1280,13 +1280,17 @@ Nodes (4): Connect, Gameplay on an existing baseplate, Local validation, Verify 
 Cohesion: 0.12
 Nodes (27): barrel(), bench(), bunting(), bush(), campfire(), chest(), cook_fire(), haul_ramp() (+19 more)
 
+### Community 266 - "SwordDropToast.client.luau"
+Cohesion: 0.22
+Nodes (14): pill(), add(), backOut(), cubicOut(), ease(), fitFor(), quadIn(), quadOut() (+6 more)
+
 ### Community 271 - "Combo System Test Plan"
 Cohesion: 0.15
 Nodes (12): Combo System Test Plan, Known Limitations, Test 10: Multiplayer, Test 1: Basic 5-Hit Combo, Test 2: Combo Reset, Test 3: Endlag Enforcement, Test 4: Hitlag Feel, Test 5: Combo Damage Scaling (+4 more)
 
-### Community 274 - "QuestGui.client.luau"
-Cohesion: 0.06
-Nodes (44): QuestConfig.getQuestById(), RebirthConfig.GetEffectiveDropChance(), RebirthConfig.GetMultipliers(), RebirthConfig.GetRequiredLevel(), CombatUtil.isEnemy(), checkCompletion(), checkObtainQuest(), connectEnemyHumanoid() (+36 more)
+### Community 274 - "PanelChrome.luau"
+Cohesion: 0.14
+Nodes (30): backOut(), cancel(), closeTracks(), collectFades(), down(), drive(), ease(), fadeTo() (+22 more)
 
 ### Community 276 - "MapMarkers.luau"
 Cohesion: 0.16
@@ -1333,8 +1337,8 @@ Cohesion: 0.40
 Nodes (4): Adopted now, Backlog (ranked by value for Lemonade), Episode map, GnomeCode "RPG Tutorial" playlist — takeaways for Lemonade
 
 ### Community 313 - "HubAmbience.client.luau"
-Cohesion: 0.12
-Nodes (17): Actors.create(), nameplate(), claim(), findDummies(), makePracticeSword(), makeVillager(), pose(), rigParts() (+9 more)
+Cohesion: 0.08
+Nodes (24): Actors.create(), nameplate(), claim(), findDummies(), makePracticeSword(), makeVillager(), pose(), rigParts() (+16 more)
 
 ### Community 314 - "12. Inferred Architectural Weaknesses"
 Cohesion: 0.50
@@ -1353,12 +1357,12 @@ Cohesion: 0.22
 Nodes (8): Flow, Gauntlet Loop, Length and voice, Portability, Prompt template, The bar is the whole trick, Two filled examples, What breaks a gauntlet loop
 
 ### Community 326 - "setup.py"
-Cohesion: 0.15
-Nodes (25): _brew_pkg(), _check_binaries(), _check_file_permissions(), cmd_check(), cmd_install(), cmd_json(), _have_api_key(), _install_hint_linux() (+17 more)
+Cohesion: 0.12
+Nodes (29): get_config(), Path, Shared /watch configuration helpers., read_env_file(), _brew_pkg(), _check_binaries(), _check_file_permissions(), cmd_check() (+21 more)
 
 ### Community 327 - "watch.py"
-Cohesion: 0.14
-Nodes (22): frame_cap(), get_config(), Path, Shared /watch configuration helpers., read_env_file(), auto_fps(), auto_fps_focus(), _clamp_fps() (+14 more)
+Cohesion: 0.17
+Nodes (18): frame_cap(), format_time(), merge_frames(), parse_time(), parse_timestamps(), Parse a comma-separated list of times (SS, MM:SS, HH:MM:SS) into a sorted, de-…, Combine two frame lists into one chronological list and reindex 0..n-1.…, Parse SS, MM:SS, or HH:MM:SS (with optional .ms) into seconds. (+10 more)
 
 ### Community 328 - "/watch"
 Cohesion: 0.14
@@ -1368,41 +1372,33 @@ Nodes (13): Detail and frames, Failure modes and handling, Focusing on a section
 Cohesion: 0.38
 Nodes (11): download(), download_url(), fetch_captions(), is_url(), _pick_subtitle(), _pick_video(), Path, Download a video via yt-dlp, or resolve a local file path. Also fetches… (+3 more)
 
-### Community 330 - "SwordSystem.server.luau"
-Cohesion: 0.33
-Nodes (8): CombatUtil.fireHitlagToClient(), applyDamage(), applyKnockback(), calculateDamage(), performComboSwing(), performSwingWithCombo(), setupCharacter(), setupTool()
+### Community 330 - "CombatUtil.hasLineOfSight"
+Cohesion: 0.40
+Nodes (5): CombatUtil.hasLineOfSight(), applyEnemyDamageToPlayer(), getEnemyDamage(), SafeHub.canEnemyAttack(), SafeHub.contains()
 
-### Community 331 - "8. PROGRESSION DESIGN TEMPLATE"
+### Community 331 - "WeaponModifiers.TierOdds"
+Cohesion: 0.83
+Nodes (3): rollTier(), WeaponModifiers.RollModifiers(), WeaponModifiers.TierOdds()
+
+### Community 333 - "GuiShowcase.luau"
+Cohesion: 0.46
+Nodes (7): afterDataLoaded(), findMarker(), findPrompt(), GuiShowcase.motion(), GuiShowcase.register(), pressNpcPrompt(), target()
+
+### Community 336 - "QuestGui.client.luau"
+Cohesion: 0.09
+Nodes (39): QuestConfig.getQuestById(), checkCompletion(), checkObtainQuest(), connectEnemyHumanoid(), incrementProgress(), inspect(), loadQuestState(), onEnemyDeath() (+31 more)
+
+### Community 337 - "VaultGui.client.luau"
+Cohesion: 0.15
+Nodes (18): applyLayout(), applySelection(), buildStandInSword(), buildTile(), close(), hideTip(), part(), rarityFlair() (+10 more)
+
+### Community 338 - "8. PROGRESSION DESIGN TEMPLATE"
 Cohesion: 0.22
 Nodes (9): 8.1 Core Parameters, 8.2 Sea Gate Levels, 8.3 XP Values Per Quest (Template), 8.4 Progression Gate Checklist, 8.5 Endgame Retention Systems, 8.6 Stat System Template, 8.7 Recommended Timing Per Session, 8. PROGRESSION DESIGN TEMPLATE (+1 more)
 
-### Community 332 - "EnemyOutfits.luau"
-Cohesion: 0.38
-Nodes (3): EnemyOutfits.apply(), scaledOffset(), specsFor()
-
-### Community 333 - "GuiShowcase.luau"
-Cohesion: 0.48
-Nodes (6): afterDataLoaded(), findMarker(), findPrompt(), GuiShowcase.register(), pressNpcPrompt(), target()
-
-### Community 334 - "transcribe.py"
-Cohesion: 0.47
-Nodes (5): _dedupe(), parse_vtt(), Parse a WebVTT subtitle file into a clean, timestamped transcript. YouTube…, Collapse rolling duplicates common in YouTube auto-subs., _to_seconds()
-
-### Community 336 - "CombatUtil.luau"
-Cohesion: 0.40
-Nodes (4): CombatUtil.getSwordMesh(), CombatUtil.hasLineOfSight(), CombatUtil.sizeSwordMesh(), findNearestEnemy()
-
-### Community 337 - "applyEnemyDamageToPlayer"
-Cohesion: 0.50
-Nodes (4): applyEnemyDamageToPlayer(), getEnemyDamage(), SafeHub.canEnemyAttack(), SafeHub.contains()
-
-### Community 338 - "1. Level Caps & XP Requirements (By Game)"
+### Community 339 - "1. Level Caps & XP Requirements (By Game)"
 Cohesion: 0.40
 Nodes (5): 1. Level Caps & XP Requirements (By Game), Blox Fruits — Confirmed XP Formula, Comparison Table, Grand Piece Online — Level Progression, King Legacy — Quest XP Progression
-
-### Community 339 - "WeaponModifiers.TierOdds"
-Cohesion: 0.83
-Nodes (3): rollTier(), WeaponModifiers.RollModifiers(), WeaponModifiers.TierOdds()
 
 ### Community 341 - "3. XP Sources & Efficiency"
 Cohesion: 0.50
@@ -1412,25 +1408,29 @@ Nodes (4): 3. XP Sources & Efficiency, Blox Fruits — Sample Quest XP Values, E
 Cohesion: 0.50
 Nodes (4): 4. Progression Gates, Content Unlock Gates, Sea/World Level Gates, What Gates Look Like in Practice
 
+### Community 347 - "ReforgeGuiFusion.client.luau"
+Cohesion: 0.11
+Nodes (20): PanelChrome.renderTool(), buildStandInSword(), close(), currentCost(), goldText(), image(), lockList(), makeCard() (+12 more)
+
 ## Knowledge Gaps
-- **1528 isolated node(s):** `build-skill.sh script`, `name`, `file`, `bytes`, `triangles` (+1523 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1889 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **1525 isolated node(s):** `build-skill.sh script`, `name`, `file`, `bytes`, `triangles` (+1520 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1906 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Sword RPG Anti-Exploit & Server Architecture — Design Template` connect `Sword RPG Anti-Exploit & Server Architecture — Design Template` to `3. Server-Authoritative Core Patterns`, `9. Community Reporting System`, `The Legendary Swords RPG - Comprehensive Bug Catalog`, `11. Code Patterns Reference`, `1. Architecture Overview`, `2. Common Exploits Catalog`, `10. Decision Trees`, `5. Detection Systems & Thresholds`, `8. Server Performance Architecture`, `6. DataStore Security`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Why does `Sword RPG Hidden Gems on Roblox — Deep Mechanics Research` connect `Sword RPG Hidden Gems on Roblox — Deep Mechanics Research` to `6. A Universal Time (AUT)`, `7. Sword Burst Online (SBO)`, `8. Saber Simulator`, `9. Ninja Legends`, `1. Deepwoken`, `Top 10 Hidden-Gem Mechanics Ranking`, `10. Demon Slayer RPG 2`, `2. Rogue Lineage`, `3. Arcane Odyssey`, `4. Type Soul`, `5. Project Slayers`?**
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `Sword RPG UI/UX Design Template for Roblox` connect `Sword RPG UI/UX Design Template for Roblox` to `5. Quest Tracker`, `8. Level / XP Display`, `15. Visual Polish & Juice`, `12. Skill / Ability System UI`, `10. Inventory UI`, `13. Player Profile / Social`, `14. Mobile Adaptations`, `16. Information Architecture`, `4. Skill Cooldown Indicators`, `6. Minimap / Radar`, `7. Currency Display`, `9. Menu Systems`, `11. Stat Distribution`, `sword-rpg-INDEX.md`, `1. HUD Layout — Recommended Template`, `2. Health & Resource Bars`, `3. Damage Numbers & Combat Feedback`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
+- **Why does `Sword RPG Onboarding & FTUE Design Template` connect `Sword RPG Onboarding & FTUE Design Template` to `Onboarding Best Practices`, `Onboarding Design Template: Minute-by-Minute Flow`, `Source URLs`, `Common Drop-Off Points`, `First 30 Minutes Analysis`, `First 5 Minutes Analysis`, `Text Flowcharts`, `Timing Tables`, `Retention Hooks in First Session`, `First Session (1-2 Hours) Analysis`?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **What connects `build-skill.sh script`, `name`, `file` to the rest of the system?**
-  _1528 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1525 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `6. Weapon Acquisition Design Template` be split into smaller, more focused modules?**
   _Cohesion score 0.04081632653061224 - nodes in this community are weakly interconnected._
 - **Should `sword_forge.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0858843537414966 - nodes in this community are weakly interconnected._
 - **Should `Restored Version (ID:129119196465909, 1M+ visits, 90.3% rating)` be split into smaller, more focused modules?**
   _Cohesion score 0.04521276595744681 - nodes in this community are weakly interconnected._
-- **Should `Sword RPG Growth Strategy: Content Updates & Viral Growth Playbook` be split into smaller, more focused modules?**
-  _Cohesion score 0.041666666666666664 - nodes in this community are weakly interconnected._
-- **Should `Sword RPG World Design Reference` be split into smaller, more focused modules?**
-  _Cohesion score 0.041666666666666664 - nodes in this community are weakly interconnected._

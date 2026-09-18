@@ -228,9 +228,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/LevelProgressGui.client.luau": {
-    "mtime": 1789613322.2405586,
-    "seen": 1789672171.3570623,
-    "ast_hash": "da668d812abfda4a88655137af35b92b",
+    "mtime": 1789712449.2587245,
+    "seen": 1789712563.1532397,
+    "ast_hash": "bd56e0f9992554337242d6e1982eb399",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/LevelUpBurst.client.luau": {
@@ -240,15 +240,15 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau": {
-    "mtime": 1789673386.372866,
-    "seen": 1789674220.2644181,
-    "ast_hash": "58a35b3863f20daa20104cf33b382ade",
+    "mtime": 1789765718.9036987,
+    "seen": 1789765890.6468382,
+    "ast_hash": "a476c9b68a39a540861b402555896b7c",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/MerchantGui.client.luau": {
-    "mtime": 1789601849.7780092,
-    "seen": 1789612100.7355864,
-    "ast_hash": "50b49b016cee354880c64567ec85d12c",
+    "mtime": 1789762033.8610396,
+    "seen": 1789762497.579294,
+    "ast_hash": "8a7ee8b6d31a161a723044306ebc54ac",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/RunController.client.luau": {
@@ -258,9 +258,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau": {
-    "mtime": 1789585002.3007944,
-    "seen": 1789587045.2461727,
-    "ast_hash": "abcd4cfddc68360005e150966f7ca971",
+    "mtime": 1789765134.8358,
+    "seen": 1789765219.1297653,
+    "ast_hash": "3d6a6a65a8bad746e9d4d0dd78edba6e",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau": {
@@ -660,9 +660,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/QuestGui.client.luau": {
-    "mtime": 1789612341.5819438,
-    "seen": 1789672171.3571653,
-    "ast_hash": "2f33b9a34810a041c9fb8d636f7baa6f",
+    "mtime": 1789762050.191105,
+    "seen": 1789762497.5793266,
+    "ast_hash": "9848b88a465eba27617ee3286b7722b8",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/SafeHub.luau": {
@@ -702,9 +702,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/Map/MapClient.client.luau": {
-    "mtime": 1789672816.032669,
-    "seen": 1789672843.2197824,
-    "ast_hash": "f0672967ca9ddc6448c74316d5e3de71",
+    "mtime": 1789712661.5488214,
+    "seen": 1789713548.866357,
+    "ast_hash": "c3ec028336c55a18130af9984d92dc8c",
     "semantic_hash": ""
   },
   "lemonade-game/Map/MapTravel.server.luau": {
@@ -894,15 +894,15 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGui.client.luau": {
-    "mtime": 1789589526.4894125,
-    "seen": 1789590401.9598787,
+    "mtime": 1789723517.8786716,
+    "seen": 1789762497.5793278,
     "ast_hash": "6d0e06a1dc33fb68ba5af5d4fa45794d",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/VaultGui.client.luau": {
-    "mtime": 1789601095.8933458,
-    "seen": 1789612100.735744,
-    "ast_hash": "f0eba2848955820c28539c59a23ffdc6",
+    "mtime": 1789762058.3810437,
+    "seen": 1789762497.5794232,
+    "ast_hash": "ba46d5523b48b9142fcffbe6dd23daf3",
     "semantic_hash": ""
   },
   "tools/audit_map.py": {
@@ -942,9 +942,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/AdminGui.client.luau": {
-    "mtime": 1789612350.309074,
-    "seen": 1789672171.356882,
-    "ast_hash": "46c9f99cca4667e831cdcf7393958e13",
+    "mtime": 1789712449.2584682,
+    "seen": 1789712563.1530385,
+    "ast_hash": "e21fd17459d041e74706b7e833597490",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/HitStreakGui.client.luau": {
@@ -1344,15 +1344,15 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau": {
-    "mtime": 1789598688.560635,
-    "seen": 1789612100.7356505,
-    "ast_hash": "c66cf48abd42c4ac2e6fafbafeb034d6",
+    "mtime": 1789762067.2817104,
+    "seen": 1789762497.5793293,
+    "ast_hash": "1f3b09149303cc9ec9a15db538bfd768",
     "semantic_hash": ""
   },
   "lemonade-game/ReplicatedStorage/PanelChrome.luau": {
-    "mtime": 1789612324.244685,
-    "seen": 1789672171.3562036,
-    "ast_hash": "6d56705cf1f7794ec0f76045ba1e6794",
+    "mtime": 1789765630.8850636,
+    "seen": 1789765890.6458802,
+    "ast_hash": "a1d7927d116871ddcf553d79fa652f94",
     "semantic_hash": ""
   },
   "lemonade-game/ReplicatedStorage/PrebuiltNpcRig.luau": {
@@ -1362,9 +1362,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordHotbarGui.client.luau": {
-    "mtime": 1789616881.6668355,
-    "seen": 1789672171.3573189,
-    "ast_hash": "9d3804267f910edeee3ff8257251e991",
+    "mtime": 1789763161.1966643,
+    "seen": 1789763347.8058088,
+    "ast_hash": "e0534ef10ad9d8ce9e4459cb7c0a3c26",
     "semantic_hash": ""
   },
   "tools/blender_forge_enemy_sword.py": {
@@ -1383,6 +1383,72 @@
     "mtime": 1789706042.2378192,
     "seen": 1789706953.4308872,
     "ast_hash": "03231e167c2850050222eefa47f187b1",
+    "semantic_hash": ""
+  },
+  ".claude/skills/watch/scripts/build-skill.sh": {
+    "mtime": 1789707200.7009199,
+    "seen": 1789711185.8517606,
+    "ast_hash": "9c1c323cd2046c186ded70214b0cdccc",
+    "semantic_hash": ""
+  },
+  ".claude/skills/watch/scripts/config.py": {
+    "mtime": 1789707200.7009704,
+    "seen": 1789711185.8517635,
+    "ast_hash": "0a2f0b185f4ca327bbd27255d3d994ff",
+    "semantic_hash": ""
+  },
+  ".claude/skills/watch/scripts/download.py": {
+    "mtime": 1789707200.7010064,
+    "seen": 1789711185.851765,
+    "ast_hash": "f6562afb96b9ecd60c01e9093e8ff422",
+    "semantic_hash": ""
+  },
+  ".claude/skills/watch/scripts/frames.py": {
+    "mtime": 1789707200.7010648,
+    "seen": 1789711185.851766,
+    "ast_hash": "b3c79b06c0f0c58ad744b96876746b02",
+    "semantic_hash": ""
+  },
+  ".claude/skills/watch/scripts/setup.py": {
+    "mtime": 1789707200.7011237,
+    "seen": 1789711185.851767,
+    "ast_hash": "a51372b3c3e2e0d311603c822b513f03",
+    "semantic_hash": ""
+  },
+  ".claude/skills/watch/scripts/transcribe.py": {
+    "mtime": 1789707200.70117,
+    "seen": 1789711185.851768,
+    "ast_hash": "af84cface79f0567b483177f5eb14292",
+    "semantic_hash": ""
+  },
+  ".claude/skills/watch/scripts/watch.py": {
+    "mtime": 1789707200.7012124,
+    "seen": 1789711185.851769,
+    "ast_hash": "97f83a88ae695fcfc6d65db928e7f905",
+    "semantic_hash": ""
+  },
+  ".claude/skills/watch/scripts/whisper.py": {
+    "mtime": 1789707200.7012649,
+    "seen": 1789711185.85177,
+    "ast_hash": "fc795b85073091bb412e2b7258165666",
+    "semantic_hash": ""
+  },
+  "lemonade-game/ReplicatedStorage/GuiShowcase.luau": {
+    "mtime": 1789763982.7394123,
+    "seen": 1789765219.126015,
+    "ast_hash": "27f5381fb534863ea0612ac74ee3285f",
+    "semantic_hash": ""
+  },
+  "tools/studio_capture.sh": {
+    "mtime": 1789708316.8595982,
+    "seen": 1789711185.8568988,
+    "ast_hash": "956adac681cc372c9611d17bfd8b1fc5",
+    "semantic_hash": ""
+  },
+  ".claude/skills/watch/SKILL.md": {
+    "mtime": 1789707200.7008421,
+    "seen": 1789711185.8569593,
+    "ast_hash": "ce6f8748db283ce7a8fc6414f07f8826",
     "semantic_hash": ""
   }
 }
