@@ -20,6 +20,7 @@ end
 
 local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
 local BossWeapons = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("BossWeapons"))
+local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 
 local HUB_WAYPOINT = "HubSpawn"
 local REGION_POLL = 0.4
@@ -123,8 +124,12 @@ round(toast, 8)
 local hubButton = Instance.new("TextButton")
 hubButton.Name = "ReturnToHub"
 hubButton.AnchorPoint = Vector2.new(0, 1)
-hubButton.Position = UDim2.new(0, 12, 1, -146)
 hubButton.Size = UDim2.fromOffset(158, 38)
+-- Stacks on top of the HUD's bottom-left cluster (vitals + gold readout), which scales with the
+-- screen, so the two never overlap however that cluster is sized.
+PanelChrome.onViewport(function(viewport)
+	hubButton.Position = UDim2.new(0, PanelChrome.HUD.Margin, 1, -math.floor(PanelChrome.hudStackTop(viewport) + 8))
+end)
 hubButton.BackgroundColor3 = COLORS.button
 hubButton.TextColor3 = COLORS.title
 hubButton.Font = Enum.Font.GothamBold

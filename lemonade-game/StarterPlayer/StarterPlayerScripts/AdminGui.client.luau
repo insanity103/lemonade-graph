@@ -107,8 +107,10 @@ screenGui.Parent = playerGui
 
 local toggleBtn = Instance.new("TextButton")
 toggleBtn.Name = "Toggle"
-toggleBtn.AnchorPoint = Vector2.new(0, 1)
-toggleBtn.Position = UDim2.new(0, 12, 1, -12)
+-- Top-left, under Roblox's own top bar: the bottom-left corner belongs to the player HUD
+-- (gold readout, health and XP), which this dev button used to cover.
+toggleBtn.AnchorPoint = Vector2.new(0, 0)
+toggleBtn.Position = UDim2.new(0, 12, 0, 66)
 toggleBtn.Size = UDim2.fromOffset(44, 44)
 toggleBtn.BackgroundColor3 = COLORS.Panel
 toggleBtn.Font = Enum.Font.GothamBold
@@ -120,8 +122,8 @@ corner(toggleBtn, 22)
 stroke(toggleBtn, COLORS.Accent, 1.5)
 
 local panel = Instance.new("Frame")
-panel.AnchorPoint = Vector2.new(0, 1)
-panel.Position = UDim2.new(0, 12, 1, -66)
+panel.AnchorPoint = Vector2.new(0, 0)
+panel.Position = UDim2.new(0, 12, 0, 118)
 panel.Size = UDim2.fromOffset(300, 452)
 panel.BackgroundColor3 = COLORS.Panel
 panel.Visible = false
