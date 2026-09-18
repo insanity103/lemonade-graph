@@ -78,6 +78,12 @@ end
 -- Grip and weld maths fit every one; only width/thickness differ, taken from MeshSize.
 -- Until a boss's mesh is imported, the shared SwordMeshTemplate stands in.
 CombatUtil.SWORD_MESH_FOLDER = "BossSwordMeshes"
+-- Fraction of the mesh's full length, from its centre toward the pommel (+Z in the mesh's own
+-- space), where the hand actually sits. Every compliant mesh shares this exactly (sword_forge.py
+-- builds to it, tools/convert_sword_glb.py checks a rig against it), so both a mesh welded onto
+-- an enemy's hand and a mesh handed to the player as a Tool need to offset the grip by the same
+-- amount off the mesh's own centre.
+CombatUtil.SWORD_GRIP_FRAC = 0.38
 
 function CombatUtil.getSwordMesh(archetypeKey)
 	local ServerStorage = game:GetService("ServerStorage")

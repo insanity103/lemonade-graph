@@ -12,8 +12,7 @@ local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 
 local BossSwordFactory = {}
 
--- Held length of every boss sword. BossSwordTool.Grip is built for this length and the
--- shared mesh layout, so swapping in a boss's own mesh needs no Grip change.
+-- Held length of every boss sword.
 local HELD_SWORD_LENGTH = 4.2
 
 -- Replace the template's Handle with this boss's unique mesh, if one has been imported.
@@ -33,6 +32,18 @@ local function fitBossMesh(tool, archetypeKey)
 		old:Destroy()
 	end
 	handle.Parent = tool
+	-- Tool.Grip was set up for the block ClassicSword Handle, whose local origin already IS
+	-- the grip -- the blade/guard/pommel were welded out FROM it. A boss mesh is the whole
+	-- sword centred on the blade, so without this the player's hand lands on the middle of the
+	-- blade instead of the grip. Slide the grip point back toward the pommel by the same
+	-- fraction EnemyCombat uses to place a mesh in an enemy's hand.
+	-- Idempotent (guarded by the attribute below): reroll() re-runs this on every sword so one
+	-- forged before this fix self-heals, and doing that must not shift an already-fixed Grip
+	-- a second time.
+	if not tool:GetAttribute("MeshGripFixed") then
+		tool.Grip = tool.Grip * CFrame.new(0, 0, -CombatUtil.SWORD_GRIP_FRAC * HELD_SWORD_LENGTH)
+		tool:SetAttribute("MeshGripFixed", true)
+	end
 end
 
 -- opts.blessedBonus  added to WeaponModifiers.EXTRA_SLOT_CHANCE (drops: +5% at rebirth 5+)
@@ -154,6 +165,11 @@ function BossSwordFactory.reroll(tool, blessedBonus, minTopTier, keepNames)
 	local archetypeKey = BossWeapons.ArchetypeByTier[tier]
 	local weaponData = archetypeKey and BossWeapons.Get(archetypeKey)
 	if not weaponData then return nil end
+	-- Self-heal: a sword forged before the Grip fix in fitBossMesh still has the hand centred
+	-- on the blade. Re-fitting is idempotent, so this is a no-op on a sword that's already fixed.
+	if archetypeKey then
+		fitBossMesh(tool, archetypeKey)
+	end
 	local mods, gotExtraSlot = WeaponModifiers.RollModifiers(weaponData.rarity, blessedBonus or 0,
 		tool:GetAttribute("ExtraSlot") == true)
 	if keepNames and #keepNames > 0 then
