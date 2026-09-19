@@ -22442,11 +22442,11 @@
    }
   },
   {
-   "name": "CitadelHill",
+   "name": "SunspireHill",
    "className": "Model",
    "children": [
     {
-     "name": "CitadelHill",
+     "name": "SunspireHill",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -22497,7 +22497,7 @@
      }
     },
     {
-     "name": "CitadelHillEndE",
+     "name": "SunspireHillEndE",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -22548,7 +22548,7 @@
      }
     },
     {
-     "name": "CitadelHillEndW",
+     "name": "SunspireHillEndW",
      "className": "Part",
      "properties": {
       "Anchored": true,
@@ -25358,3264 +25358,7 @@
    }
   },
   {
-   "name": "Curtain",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     121.1845,
-     12.1185,
-     8.2916
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       156.0709,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon0",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -57.4032,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon1",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -47.836,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon2",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -38.2688,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon3",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -28.7016,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon4",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -19.1344,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon5",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -9.5672,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon6",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon7",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       9.5672,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon8",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       19.1344,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon9",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       28.7016,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon10",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       38.2688,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon11",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       47.836,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Merlon12",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     4.4647,
-     2.5513,
-     8.9294
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       57.4032,
-       163.4058,
-       429.8109
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Keep",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     38.2688,
-     28.0638,
-     22.3235
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       164.0436,
-       442.5672
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "KeepRoofE",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     24.2369,
-     12.7563,
-     21.0478
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -10.5239,
-       184.4536,
-       442.5672
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "KeepRoofW",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     24.2369,
-     12.7563,
-     21.0478
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       10.5239,
-       184.4536,
-       442.5672
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Tower0",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     47.836,
-     11.4806,
-     11.4806
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.0,
-       173.9297,
-       436.8269
-      ],
-      "orientation": [
-       [
-        0.0,
-        -1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "Spire0E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     14.0319,
-     22.3235,
-     7.0159
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -3.508,
-       209.0094,
-       436.8269
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Spire0W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     14.0319,
-     22.3235,
-     7.0159
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       3.508,
-       209.0094,
-       436.8269
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Tower1",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     35.7175,
-     8.2916,
-     8.2916
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -24.8747,
-       167.8705,
-       439.3781
-      ],
-      "orientation": [
-       [
-        0.0,
-        -1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "Spire1E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     14.6697,
-     5.4214
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -27.5854,
-       193.0641,
-       439.3781
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Spire1W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     14.6697,
-     5.4214
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -22.164,
-       193.0641,
-       439.3781
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Tower2",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     35.7175,
-     8.2916,
-     8.2916
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       24.8747,
-       167.8705,
-       439.3781
-      ],
-      "orientation": [
-       [
-        0.0,
-        -1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "Spire2E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     14.6697,
-     5.4214
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       22.164,
-       193.0641,
-       439.3781
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Spire2W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     14.6697,
-     5.4214
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       27.5854,
-       193.0641,
-       439.3781
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Tower3",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     22.3235,
-     9.5672,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -60.5923,
-       161.1734,
-       429.8109
-      ],
-      "orientation": [
-       [
-        0.0,
-        -1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "Spire3E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.1185,
-     12.1185,
-     6.0592
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -63.6219,
-       178.3944,
-       429.8109
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Spire3W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.1185,
-     12.1185,
-     6.0592
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -57.5626,
-       178.3944,
-       429.8109
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Tower4",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     22.3235,
-     9.5672,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       60.5923,
-       161.1734,
-       429.8109
-      ],
-      "orientation": [
-       [
-        0.0,
-        -1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "Spire4E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.1185,
-     12.1185,
-     6.0592
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       57.5626,
-       178.3944,
-       429.8109
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Spire4W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     12.1185,
-     12.1185,
-     6.0592
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       63.6219,
-       178.3944,
-       429.8109
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Tower5",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     29.3394,
-     7.0159,
-     7.0159
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -41.4579,
-       164.6814,
-       448.9453
-      ],
-      "orientation": [
-       [
-        0.0,
-        -1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "Spire5E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     9.5672,
-     11.4806,
-     4.7836
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -43.8497,
-       185.0914,
-       448.9453
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Spire5W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     9.5672,
-     11.4806,
-     4.7836
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -39.0661,
-       185.0914,
-       448.9453
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Tower6",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     29.3394,
-     7.0159,
-     7.0159
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       41.4579,
-       164.6814,
-       448.9453
-      ],
-      "orientation": [
-       [
-        0.0,
-        -1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "Spire6E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     9.5672,
-     11.4806,
-     4.7836
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       39.0661,
-       185.0914,
-       448.9453
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Spire6W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     9.5672,
-     11.4806,
-     4.7836
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       43.8497,
-       185.0914,
-       448.9453
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "House0",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     11.9832,
-     7.5948,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -25.0452,
-       149.372,
-       409.7238
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof0E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     4.5569,
-     6.9483
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -28.5194,
-       155.4478,
-       409.7238
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof0W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     4.5569,
-     6.9483
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -21.5711,
-       155.4478,
-       409.7238
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "House1",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     11.9326,
-     6.7949,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       78.8815,
-       149.8842,
-       411.8754
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof1E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     4.077,
-     6.923
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       75.42,
-       155.3201,
-       411.8754
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof1W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     4.077,
-     6.923
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       82.3431,
-       155.3201,
-       411.8754
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "House2",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     14.7036,
-     7.6589,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       40.2259,
-       149.2723,
-       410.0617
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof2E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     4.5953,
-     8.3085
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       36.0717,
-       155.3995,
-       410.0617
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof2W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     4.5953,
-     8.3085
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       44.3802,
-       155.3995,
-       410.0617
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "House3",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     16.4962,
-     7.4561,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       49.4366,
-       151.0661,
-       410.1071
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof3E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     4.4737,
-     9.2048
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       44.8342,
-       157.0309,
-       410.1071
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof3W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     4.4737,
-     9.2048
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       54.039,
-       157.0309,
-       410.1071
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "House4",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     16.4464,
-     6.5862,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -25.6407,
-       149.5485,
-       411.6287
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof4E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     3.9517,
-     9.1799
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -30.2307,
-       154.8175,
-       411.6287
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof4W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     3.9517,
-     9.1799
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -21.0508,
-       154.8175,
-       411.6287
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "House5",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     16.2314,
-     8.4542,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       79.7946,
-       151.2875,
-       411.3367
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof5E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     5.0725,
-     9.0724
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       75.2584,
-       158.0508,
-       411.3367
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof5W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     5.0725,
-     9.0724
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       84.3308,
-       158.0508,
-       411.3367
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "House6",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     14.5733,
-     6.1572,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -66.8895,
-       149.7892,
-       411.2056
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof6E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     3.6943,
-     8.2434
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -71.0112,
-       154.715,
-       411.2056
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof6W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     3.6943,
-     8.2434
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -62.7678,
-       154.715,
-       411.2056
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "House7",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     16.8742,
-     5.8313,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -43.5056,
-       150.8865,
-       408.3002
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof7E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     3.4988,
-     9.3938
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -48.2025,
-       155.5515,
-       408.3002
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof7W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     3.4988,
-     9.3938
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -38.8087,
-       155.5515,
-       408.3002
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "House8",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     13.4645,
-     6.0249,
-     9.5672
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -29.3806,
-       150.6062,
-       410.8104
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8471,
-     0.8471,
-     0.8314
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof8E",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     3.6149,
-     7.689
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -33.2251,
-       155.4261,
-       410.8104
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "HouseRoof8W",
-   "className": "WedgePart",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     10.8428,
-     3.6149,
-     7.689
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -25.5362,
-       155.4261,
-       410.8104
-      ],
-      "orientation": [
-       [
-        0.0,
-        0.0,
-        -1.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.8,
-     0.7098,
-     0.6471
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": false,
-    "CanTouch": false,
-    "CastShadow": false
-   }
-  },
-  {
-   "name": "Side080E",
+   "name": "Side015E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -28665,7 +25408,7 @@
    }
   },
   {
-   "name": "Side080W",
+   "name": "Side015W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -28715,7 +25458,7 @@
    }
   },
   {
-   "name": "SideSnow080E",
+   "name": "SideSnow015E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -28765,7 +25508,7 @@
    }
   },
   {
-   "name": "SideSnow080W",
+   "name": "SideSnow015W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -28815,7 +25558,7 @@
    }
   },
   {
-   "name": "Side084E",
+   "name": "Side019E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -28865,7 +25608,7 @@
    }
   },
   {
-   "name": "Side084W",
+   "name": "Side019W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -28915,7 +25658,7 @@
    }
   },
   {
-   "name": "SideSnow084E",
+   "name": "SideSnow019E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -28965,7 +25708,7 @@
    }
   },
   {
-   "name": "SideSnow084W",
+   "name": "SideSnow019W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29015,7 +25758,7 @@
    }
   },
   {
-   "name": "Side088E",
+   "name": "Side023E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29065,7 +25808,7 @@
    }
   },
   {
-   "name": "Side088W",
+   "name": "Side023W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29115,7 +25858,7 @@
    }
   },
   {
-   "name": "Side090E",
+   "name": "Side025E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29165,7 +25908,7 @@
    }
   },
   {
-   "name": "Side090W",
+   "name": "Side025W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29215,7 +25958,7 @@
    }
   },
   {
-   "name": "Side092E",
+   "name": "Side027E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29265,7 +26008,7 @@
    }
   },
   {
-   "name": "Side092W",
+   "name": "Side027W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29315,7 +26058,7 @@
    }
   },
   {
-   "name": "Side094E",
+   "name": "Side029E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29365,7 +26108,7 @@
    }
   },
   {
-   "name": "Side094W",
+   "name": "Side029W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29415,7 +26158,7 @@
    }
   },
   {
-   "name": "Side096E",
+   "name": "Side031E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29465,7 +26208,7 @@
    }
   },
   {
-   "name": "Side096W",
+   "name": "Side031W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29515,7 +26258,7 @@
    }
   },
   {
-   "name": "SideSnow096E",
+   "name": "SideSnow031E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29565,7 +26308,7 @@
    }
   },
   {
-   "name": "SideSnow096W",
+   "name": "SideSnow031W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29615,7 +26358,7 @@
    }
   },
   {
-   "name": "Side100E",
+   "name": "Side035E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29665,7 +26408,7 @@
    }
   },
   {
-   "name": "Side100W",
+   "name": "Side035W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29715,7 +26458,7 @@
    }
   },
   {
-   "name": "Side102E",
+   "name": "Side037E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29765,7 +26508,7 @@
    }
   },
   {
-   "name": "Side102W",
+   "name": "Side037W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29815,7 +26558,7 @@
    }
   },
   {
-   "name": "Side104E",
+   "name": "Side039E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29865,7 +26608,7 @@
    }
   },
   {
-   "name": "Side104W",
+   "name": "Side039W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29915,7 +26658,7 @@
    }
   },
   {
-   "name": "SideSnow104E",
+   "name": "SideSnow039E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -29965,7 +26708,7 @@
    }
   },
   {
-   "name": "SideSnow104W",
+   "name": "SideSnow039W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30015,7 +26758,7 @@
    }
   },
   {
-   "name": "Side108E",
+   "name": "Side043E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30065,7 +26808,7 @@
    }
   },
   {
-   "name": "Side108W",
+   "name": "Side043W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30115,7 +26858,7 @@
    }
   },
   {
-   "name": "Side110E",
+   "name": "Side045E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30165,7 +26908,7 @@
    }
   },
   {
-   "name": "Side110W",
+   "name": "Side045W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30215,7 +26958,7 @@
    }
   },
   {
-   "name": "SideSnow110E",
+   "name": "SideSnow045E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30265,7 +27008,7 @@
    }
   },
   {
-   "name": "SideSnow110W",
+   "name": "SideSnow045W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30315,7 +27058,7 @@
    }
   },
   {
-   "name": "Side114E",
+   "name": "Side049E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30365,7 +27108,7 @@
    }
   },
   {
-   "name": "Side114W",
+   "name": "Side049W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30415,7 +27158,7 @@
    }
   },
   {
-   "name": "SideSnow114E",
+   "name": "SideSnow049E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30465,7 +27208,7 @@
    }
   },
   {
-   "name": "SideSnow114W",
+   "name": "SideSnow049W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30515,7 +27258,7 @@
    }
   },
   {
-   "name": "Side118E",
+   "name": "Side053E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30565,7 +27308,7 @@
    }
   },
   {
-   "name": "Side118W",
+   "name": "Side053W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30615,7 +27358,7 @@
    }
   },
   {
-   "name": "Side120E",
+   "name": "Side055E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30665,7 +27408,7 @@
    }
   },
   {
-   "name": "Side120W",
+   "name": "Side055W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30715,7 +27458,7 @@
    }
   },
   {
-   "name": "SideSnow120E",
+   "name": "SideSnow055E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30765,7 +27508,7 @@
    }
   },
   {
-   "name": "SideSnow120W",
+   "name": "SideSnow055W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30815,7 +27558,7 @@
    }
   },
   {
-   "name": "Side124E",
+   "name": "Side059E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30865,7 +27608,7 @@
    }
   },
   {
-   "name": "Side124W",
+   "name": "Side059W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30915,7 +27658,7 @@
    }
   },
   {
-   "name": "SideSnow124E",
+   "name": "SideSnow059E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -30965,7 +27708,7 @@
    }
   },
   {
-   "name": "SideSnow124W",
+   "name": "SideSnow059W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31015,7 +27758,7 @@
    }
   },
   {
-   "name": "Side128E",
+   "name": "Side063E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31065,7 +27808,7 @@
    }
   },
   {
-   "name": "Side128W",
+   "name": "Side063W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31115,7 +27858,7 @@
    }
   },
   {
-   "name": "Side130E",
+   "name": "Side065E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31165,7 +27908,7 @@
    }
   },
   {
-   "name": "Side130W",
+   "name": "Side065W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31215,7 +27958,7 @@
    }
   },
   {
-   "name": "Side132E",
+   "name": "Side067E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31265,7 +28008,7 @@
    }
   },
   {
-   "name": "Side132W",
+   "name": "Side067W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31315,7 +28058,7 @@
    }
   },
   {
-   "name": "Side134E",
+   "name": "Side069E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31365,7 +28108,7 @@
    }
   },
   {
-   "name": "Side134W",
+   "name": "Side069W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31415,7 +28158,7 @@
    }
   },
   {
-   "name": "SideSnow134E",
+   "name": "SideSnow069E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31465,7 +28208,7 @@
    }
   },
   {
-   "name": "SideSnow134W",
+   "name": "SideSnow069W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31515,7 +28258,7 @@
    }
   },
   {
-   "name": "Side138E",
+   "name": "Side073E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31565,7 +28308,7 @@
    }
   },
   {
-   "name": "Side138W",
+   "name": "Side073W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31615,7 +28358,7 @@
    }
   },
   {
-   "name": "SideSnow138E",
+   "name": "SideSnow073E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31665,7 +28408,7 @@
    }
   },
   {
-   "name": "SideSnow138W",
+   "name": "SideSnow073W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31715,7 +28458,7 @@
    }
   },
   {
-   "name": "Side142E",
+   "name": "Side077E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31765,7 +28508,7 @@
    }
   },
   {
-   "name": "Side142W",
+   "name": "Side077W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31815,7 +28558,7 @@
    }
   },
   {
-   "name": "Side144E",
+   "name": "Side079E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31865,7 +28608,7 @@
    }
   },
   {
-   "name": "Side144W",
+   "name": "Side079W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31915,7 +28658,7 @@
    }
   },
   {
-   "name": "Side146E",
+   "name": "Side081E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -31965,7 +28708,7 @@
    }
   },
   {
-   "name": "Side146W",
+   "name": "Side081W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32015,7 +28758,7 @@
    }
   },
   {
-   "name": "SideSnow146E",
+   "name": "SideSnow081E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32065,7 +28808,7 @@
    }
   },
   {
-   "name": "SideSnow146W",
+   "name": "SideSnow081W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32115,7 +28858,7 @@
    }
   },
   {
-   "name": "Side150E",
+   "name": "Side085E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32165,7 +28908,7 @@
    }
   },
   {
-   "name": "Side150W",
+   "name": "Side085W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32215,7 +28958,7 @@
    }
   },
   {
-   "name": "SideSnow150E",
+   "name": "SideSnow085E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32265,7 +29008,7 @@
    }
   },
   {
-   "name": "SideSnow150W",
+   "name": "SideSnow085W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32315,7 +29058,7 @@
    }
   },
   {
-   "name": "Side154E",
+   "name": "Side089E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32365,7 +29108,7 @@
    }
   },
   {
-   "name": "Side154W",
+   "name": "Side089W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32415,7 +29158,7 @@
    }
   },
   {
-   "name": "SideSnow154E",
+   "name": "SideSnow089E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32465,7 +29208,7 @@
    }
   },
   {
-   "name": "SideSnow154W",
+   "name": "SideSnow089W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32515,7 +29258,7 @@
    }
   },
   {
-   "name": "Side158E",
+   "name": "Side093E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32565,7 +29308,7 @@
    }
   },
   {
-   "name": "Side158W",
+   "name": "Side093W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32615,7 +29358,7 @@
    }
   },
   {
-   "name": "Side160E",
+   "name": "Side095E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32665,7 +29408,7 @@
    }
   },
   {
-   "name": "Side160W",
+   "name": "Side095W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32715,7 +29458,7 @@
    }
   },
   {
-   "name": "SideSnow160E",
+   "name": "SideSnow095E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32765,7 +29508,7 @@
    }
   },
   {
-   "name": "SideSnow160W",
+   "name": "SideSnow095W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32815,7 +29558,7 @@
    }
   },
   {
-   "name": "Side164E",
+   "name": "Side099E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32865,7 +29608,7 @@
    }
   },
   {
-   "name": "Side164W",
+   "name": "Side099W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32915,7 +29658,7 @@
    }
   },
   {
-   "name": "SideSnow164E",
+   "name": "SideSnow099E",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,
@@ -32965,7 +29708,7 @@
    }
   },
   {
-   "name": "SideSnow164W",
+   "name": "SideSnow099W",
    "className": "WedgePart",
    "properties": {
     "Anchored": true,

@@ -30,6 +30,12 @@ local EnemyAnimator = {}
 local ENEMY_TAG = "Enemy" -- CombatUtil.ENEMY_TAG (CombatUtil is server-side)
 local ATTACK_ATTRIBUTE = "EnemyAttack"
 local ANIMATE_RANGE = 220 -- [TUNING] studs from the camera; farther rigs are left at rest
+-- Off-screen rigs with nothing playing hold their pose and catch the skipped time up when they come
+-- back into view. "In view" is generous: the view cone widened by a margin and the rig's size (its
+-- shadow included), and every rig close to the camera counts, so nothing visible ever freezes.
+local VIEW_MARGIN = math.rad(12) -- [TUNING] radians added around the camera's view cone
+local VIEW_NEAR = 30 -- [TUNING] studs; rigs this close always animate (their shadows can reach into view)
+local VIEW_RADIUS = 8 -- [TUNING] rig studs (times the rig's scale) a rig and its shadow may reach
 
 local rad = math.rad
 local clamp = math.clamp
@@ -2222,10 +2228,27 @@ local function deathStep(state, dt: number)
 	stepSword(state, math.min(dt, HIT_MAX_STEP), t)
 end
 
+local viewLook, viewHalf = Vector3.zAxis, math.pi
+local function inView(offset: Vector3, distance: number, radius: number): boolean
+	if distance < VIEW_NEAR + radius then
+		return true
+	end
+	local angle = math.acos(clamp(offset:Dot(viewLook) / distance, -1, 1))
+	return angle <= viewHalf + math.asin(math.min(1, radius / distance))
+end
+
 local function step(dt: number)
 	local camera = workspace.CurrentCamera
 	local eye = camera and camera.CFrame.Position or Vector3.zero
 	local now = os.clock()
+	if camera then
+		local size = camera.ViewportSize
+		local aspect = if size.Y > 0 then size.X / size.Y else 16 / 9
+		viewLook = camera.CFrame.LookVector
+		viewHalf = math.atan(math.tan(rad(camera.FieldOfView) / 2) * math.sqrt(1 + aspect * aspect)) + VIEW_MARGIN
+	else
+		viewHalf = math.pi
+	end
 	for model, state in pairs(rigs) do
 		if not model.Parent then
 			continue
@@ -2247,6 +2270,15 @@ local function step(dt: number)
 			end
 			continue
 		end
+
+		-- Off screen with no hit, notice or swing playing: hold the pose, bank the time.
+		if not (state.hitT or state.noticeT or state.attackStart)
+			and not inView(hrp.Position - eye, distance, VIEW_RADIUS * state.scale) then
+			state.heldDt = (state.heldDt or 0) + dt
+			continue
+		end
+		local dt = dt + (state.heldDt or 0)
+		state.heldDt = nil
 
 		-- The reaction runs on its own clock, capped at one 30 fps frame per rendered frame: a
 		-- hitch at the moment of impact (effects spawning, the damage number) then delays the

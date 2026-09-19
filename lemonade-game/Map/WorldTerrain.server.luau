@@ -615,7 +615,7 @@ do
 		-- deep over the bench's slab.
 		local POOLS = {
 			{ 76, 112, 332, 364, 94, 348, 19, 17, 4 },
-			{ 68, 92, 266, 302, 80, 284, 11.5, 17.5, 8 },
+			{ 62, 84, 266, 302, 73, 284, 10.5, 17.5, 8 }, -- the town spring, west of the street
 		}
 		local ARENA = { 0, 424, 34 }
 		local TRAIL = {

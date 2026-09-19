@@ -27,7 +27,7 @@ local VIEWS = {
 	-- the Quest stall and houses on the left, the campfire lawn on the right, and the path running
 	-- out through the Iron Lowlands gate toward the far country, like Arcane Odyssey's harbour frame.
 	-- The lens tilts about 5.5 degrees up, so over the level walls a band of the three far ranges and the
-	-- Sunspire citadel (LemonadeMap.Horizon) shows, with open sky and cumulus above them.
+	-- Sunspire's wooded hill (LemonadeMap.Horizon) show, with open sky and cumulus above them.
 	WorldDay = {
 		clock = 15.3,
 		stand = { at = Vector3.new(1, 13.4, 36), face = Vector3.new(2, 13.4, 140) },
@@ -59,15 +59,16 @@ local VIEWS = {
 		fov = 50,
 	},
 	-- The Iron Lowlands desert oasis at WorldDay's light, framed like Alex's reference frame: a lens
-	-- a few studs above the rim's sand on the tent camp's west side, looking east-south-east across
-	-- the camp's fire, tents and table to the adobe street, whose sunlit west fronts face the lens,
-	-- the town spring's palms on the right, and the striped rock towers and mesas rising out of the
-	-- dunes behind, stepping back into the haze. The afternoon sun sits behind the lens, so every
-	-- face toward it is lit and the shadows fall away from it.
+	-- at a player's eye height on the rim's sand at the tent camp's open west side, looking east
+	-- between the two flanking tents, across the fire and table to the adobe street, whose sunlit
+	-- west fronts face the lens, the town spring's palms and water on the right, and the striped rock
+	-- towers rising out of the dunes behind. The player stands by the fire in front of the houses, so
+	-- the doors (about 1.5 times the player's height) and storeys read at their true scale. The
+	-- afternoon sun sits behind the lens, so every face toward it is lit.
 	WorldOasis = {
 		clock = 15.3,
-		stand = { at = Vector3.new(40, 13.4, 188), face = Vector3.new(30, 13.4, 180) },
-		camera = { at = Vector3.new(50, 16.4, 194), look = Vector3.new(128, 22, 262) },
+		stand = { at = Vector3.new(75, 13.6, 213), face = Vector3.new(34, 13.6, 204) },
+		camera = { at = Vector3.new(32, 16.5, 203), look = Vector3.new(110, 22, 224) },
 		fov = 52,
 		hideEnemies = true, -- the bandits wandering the rim would stand in front of the lens
 	},

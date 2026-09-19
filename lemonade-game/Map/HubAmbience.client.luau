@@ -773,7 +773,7 @@ for _, model in ipairs(map:GetDescendants()) do
 	if model:IsA("Model") and model:GetAttribute("Waterfall") == true then
 		for _, sheet in ipairs(model:GetChildren()) do
 			if sheet:IsA("BasePart") and string.match(sheet.Name, "^WaterSheet") then
-				table.insert(sheets, { part = sheet, base = sheet.Transparency, phase = #sheets * 2.1 })
+				table.insert(sheets, { part = sheet, base = sheet.Transparency, phase = #sheets * 2.1, at = sheet.Position })
 			end
 		end
 	end
@@ -808,9 +808,30 @@ end
 local HOLO_SPIN = math.rad(28) -- per second
 local SHARD_ORBIT = math.rad(14)
 local clock = 0
+-- Every region has its own waystones and falls, and the walls hide each region from the others, so
+-- anything farther than this from the camera is not drawn moving and is skipped for that frame.
+local FAR = 400 -- [TUNING] studs
+local hubCentre = Vector3.new(0, floorY, 0) -- the butterflies and birds never leave the village
+local NONE = {}
+-- One BulkMoveTo per frame instead of a CFrame write per part: the same parts reach the same
+-- places, at a fraction of the cost.
+local moveParts: { BasePart } = {}
+local moveCFrames: { CFrame } = {}
+local moveCount = 0
+local function move(part: BasePart, cf: CFrame)
+	moveCount += 1
+	moveParts[moveCount] = part
+	moveCFrames[moveCount] = cf
+end
 RunService.Heartbeat:Connect(function(dt)
 	clock += dt
-	for _, f in ipairs(flutters) do
+	local camera = workspace.CurrentCamera
+	local eye = if camera then camera.CFrame.Position else hubCentre
+	local villageInView = (eye - hubCentre).Magnitude <= FAR + HUB_ROAM
+	table.clear(moveParts)
+	table.clear(moveCFrames)
+	moveCount = 0
+	for _, f in ipairs(if villageInView then flutters else NONE) do
 		local toTarget = f.target - f.pos
 		if toTarget.Magnitude < 1.2 then
 			if f.linger > 0 then
@@ -830,21 +851,26 @@ RunService.Heartbeat:Connect(function(dt)
 		end
 		local look = toTarget.Magnitude > 0.5 and toTarget.Unit or Vector3.new(1, 0, 0)
 		local frame = CFrame.lookAt(f.pos, f.pos + Vector3.new(look.X, 0, look.Z))
-		f.body.CFrame = frame
+		move(f.body, frame)
 		local flap = math.sin(clock * 24 + f.phase) * 1.1
 		for _, w in ipairs(f.wings) do
-			w.part.CFrame = frame * CFrame.Angles(0, 0, flap * w.side) * CFrame.new(w.side * 0.36, 0, 0)
+			move(w.part, frame * CFrame.Angles(0, 0, flap * w.side) * CFrame.new(w.side * 0.36, 0, 0))
 		end
 	end
-	for _, b in ipairs(birds) do
+	for _, b in ipairs(if villageInView then birds else NONE) do
 		local a = clock * 0.25 + b.phase
 		local pos = Vector3.new(math.cos(a) * b.radius, b.height + math.sin(clock * 0.7 + b.phase) * 2, math.sin(a) * b.radius)
-		b.part.CFrame = CFrame.new(pos) * CFrame.Angles(0, -a - math.pi / 2, 0) * CFrame.Angles(0, 0, math.sin(clock * 9 + b.phase) * 0.5)
+		move(b.part, CFrame.new(pos) * CFrame.Angles(0, -a - math.pi / 2, 0) * CFrame.Angles(0, 0, math.sin(clock * 9 + b.phase) * 0.5))
 	end
 	for _, w in ipairs(sheets) do
-		w.part.Transparency = w.base + math.sin(clock * 3.1 + w.phase) * 0.08
+		if (w.at - eye).Magnitude <= FAR then
+			w.part.Transparency = w.base + math.sin(clock * 3.1 + w.phase) * 0.08
+		end
 	end
 	for _, s in ipairs(spinners) do
+		if (s.centre - eye).Magnitude > FAR then
+			continue
+		end
 		if s.kind == "hologram" then
 			local bob = math.sin(clock * 1.3) * 0.35
 			local spin = CFrame.Angles(0, clock * HOLO_SPIN, 0)
@@ -855,15 +881,18 @@ RunService.Heartbeat:Connect(function(dt)
 				local travel = (clock * 2.2 + tonumber(ringName) * 3) % 9 - 4.5
 				offset = Vector3.new(0, travel, 0)
 			end
-			s.part.CFrame = CFrame.new(s.centre + Vector3.new(0, bob, 0)) * spin * CFrame.new(offset) * s.rotation
+			move(s.part, CFrame.new(s.centre + Vector3.new(0, bob, 0)) * spin * CFrame.new(offset) * s.rotation)
 			-- flicker: mostly steady, occasional brief dips
 			local flicker = math.max(0, math.sin(clock * 17 + s.phase) - 0.92) * 6
 			s.part.Transparency = math.clamp(s.baseTransparency + flicker, 0, 1)
 		else
 			local orbit = CFrame.Angles(0, clock * SHARD_ORBIT + s.phase, 0)
 			local bob = math.sin(clock * 0.9 + s.phase) * 0.5
-			s.part.CFrame = CFrame.new(s.centre + Vector3.new(0, bob, 0)) * orbit * CFrame.new(s.offset)
-				* s.rotation * CFrame.Angles(0, clock * 0.8, 0)
+			move(s.part, CFrame.new(s.centre + Vector3.new(0, bob, 0)) * orbit * CFrame.new(s.offset)
+				* s.rotation * CFrame.Angles(0, clock * 0.8, 0))
 		end
+	end
+	if moveCount > 0 then
+		workspace:BulkMoveTo(moveParts, moveCFrames, Enum.BulkMoveMode.FireCFrameChanged)
 	end
 end)

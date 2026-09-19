@@ -1,5 +1,5 @@
 -- LocalScript | StarterPlayerScripts.WorldHorizon | Map project.
--- Carries LemonadeMap.Horizon (the far mountain ranges and the Sunspire citadel) along with the
+-- Carries LemonadeMap.Horizon (the far mountain ranges and the Sunspire's wooded hill) along with the
 -- camera, like a 3D skybox. map_forge.py builds the Horizon in "sky space": every far layer is
 -- shrunk toward the model's SkyEye point until it stands 400-650 studs out, inside the distance
 -- parts still render on lower graphics settings, while covering exactly the part of the sky it
@@ -10,7 +10,7 @@
 local RunService = game:GetService("RunService")
 
 local MOVE_EPSILON = 0.25 -- [TUNING] studs the camera must move before the ranges follow
--- The south country (its ranges, the Sunspire's wooded hill and foothills, the citadel) is framed for
+-- The south country (its ranges, the Sunspire's wooded hill and foothills) is framed for
 -- the town's view through the Iron Lowlands gate. Seen from inside the Lowlands it would hang over
 -- the desert basin in front of the basin's own mesas, so it fades out as the camera walks south
 -- through the pass, and back in past the Briarwood gate. The east, west and north rings stay.
@@ -29,11 +29,9 @@ local eye = Vector3.new(
 )
 
 local parts: { BasePart } = {}
-local home: { CFrame } = {}
 for _, d in ipairs(horizon:GetDescendants()) do
 	if d:IsA("BasePart") then
 		table.insert(parts, d)
-		table.insert(home, d.CFrame)
 	end
 end
 
@@ -46,7 +44,7 @@ for _, child in ipairs(horizon:GetChildren()) do
 			end
 		end
 	elseif child:IsA("BasePart") and not string.match(child.Name, "^Side") then
-		table.insert(near, child) -- the citadel's walls, towers and roofs
+		table.insert(near, child)
 	end
 end
 local function desertFade(z: number): number
@@ -165,7 +163,27 @@ RunService:BindToRenderStep("DesertAir", Enum.RenderPriority.Camera.Value + 3, f
 	end
 end)
 
-local moved: { CFrame } = table.create(#parts)
+-- The Horizon moves as one rigid body. Carrying its ~650 parts one by one (a BulkMoveTo of every
+-- part, every frame the camera moved) cost this client about 3.5 ms a frame while walking; so on
+-- this client each part is welded, exactly where it stands, to one invisible anchored root at
+-- SkyEye, and only the root moves. The engine carries the welded parts to the same places in the
+-- same frame. The root and the welds exist on this client alone; the server's copy is untouched.
+local skyRoot = Instance.new("Part")
+skyRoot.Name = "SkyRoot"
+skyRoot.Anchored = true
+skyRoot.CanCollide, skyRoot.CanQuery, skyRoot.CanTouch, skyRoot.CastShadow = false, false, false, false
+skyRoot.Transparency = 1
+skyRoot.Size = Vector3.new(0.2, 0.2, 0.2)
+skyRoot.CFrame = CFrame.new(eye)
+skyRoot.Parent = horizon
+for _, p in ipairs(parts) do
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0 = skyRoot
+	weld.Part1 = p
+	weld.Parent = skyRoot
+	p.Anchored = false -- held by the anchored root, so the assembly stays anchored and never simulates
+end
+
 local last: Vector3? = nil
 local lastFade = 0
 
@@ -186,9 +204,5 @@ RunService:BindToRenderStep("WorldHorizon", Enum.RenderPriority.Camera.Value + 2
 			p.LocalTransparencyModifier = fade
 		end
 	end
-	local offset = at - eye
-	for i, cf in ipairs(home) do
-		moved[i] = cf + offset
-	end
-	workspace:BulkMoveTo(parts, moved, Enum.BulkMoveMode.FireCFrameChanged)
+	skyRoot.CFrame = CFrame.new(at) -- SkyEye moved by the camera's offset from it; the parts follow
 end)

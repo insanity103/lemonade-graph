@@ -2338,14 +2338,6 @@ HORIZON_SNOW_SHADE = (176, 196, 232)
 # The south country is sculpted in build_south_country; the colours above are the north, east and
 # west ranges'.
 HORIZON_EYE = (0.0, 20.0, 13.0)  # the town's main path, south of the Sword Monument
-# The Sunspire: a hilltop citadel on a wooded hill in front of the great range, straight down the gate axis
-# so the town frames it over the Iron Lowlands arch. Cream walls and warm gold roofs, already lifted
-# toward the haze.
-CITADEL_Z = 1330
-# Softened into the haze a little under the near ridge's share. The hill under it is pre-hazed
-# only lightly: at sky-shell distance the Atmosphere already washes it most of the way to the sky.
-CITADEL_WALL = haze((238, 222, 190), 0.5)
-CITADEL_ROOF = haze((214, 150, 90), 0.52)
 # Sky space. Past about 510-575 studs this game's parts drop out of view in play (thin facets
 # first: the sculpted ranges' triangles vanished piecemeal at 516-630 studs), so the far country cannot stand where it would really
 # be. Each group of Horizon parts is designed at its true distance and then shrunk toward
@@ -2353,8 +2345,8 @@ CITADEL_ROOF = haze((214, 150, 90), 0.52)
 # exactly the pixels it covered, so from the eye the view is unchanged. On the client,
 # WorldHorizon.client.luau carries the whole model along with the camera (translation only), which
 # is how anything infinitely far behaves, so the ranges read as distant from anywhere in the map.
-# Layers keep their order: the citadel in front, each range behind the last.
-SKY_SHELL = {"citadel": 420, "Ridge": 525, "Range": 542, "FarRange": 556, "ring": 530}
+# Layers keep their order: the Sunspire's hill in front, each range behind the last.
+SKY_SHELL = {"hill": 420, "Ridge": 525, "Range": 542, "FarRange": 556, "ring": 530}
 SKY_DROP = 110  # every layer's foot sinks this far below the eye in sky space, out of sight
 
 
@@ -2415,45 +2407,6 @@ def _gable(name, x, y, z, width, height, depth, color):
                         "SmoothPlastic", r, cls="WedgePart", collide=False, query=False, shadow=False,
                         layer="horizon"))
     return out
-
-
-def build_citadel():
-    """The Sunspire citadel, a few dozen parts, standing on the sculpted hill (build_south_country)."""
-    kids = []
-    ex, ey, ez = HORIZON_EYE
-    dist = CITADEL_Z - ez
-    top = _summit(dist, 17.2)  # the hill's crown sits just under the hub wall's crest line
-    k = _sky_k("citadel", dist)
-    z = CITADEL_Z + 20
-    up = rot_z(90)
-    # Curtain wall and gatehouse.
-    kids.append(part("Curtain", (380, 38, 26), (0, top + 19, z - 30), CITADEL_WALL, "SmoothPlastic",
-                     collide=False, query=False, shadow=False, layer="horizon"))
-    for i, x in enumerate(range(-180, 181, 30)):
-        kids.append(part(f"Merlon{i}", (14, 8, 28), (x, top + 42, z - 30), CITADEL_WALL, "SmoothPlastic",
-                         collide=False, query=False, shadow=False, layer="horizon"))
-    # The keep, its hall roof, and the tall central spire.
-    kids.append(part("Keep", (120, 88, 70), (0, top + 44, z + 10), CITADEL_WALL, "SmoothPlastic",
-                     collide=False, query=False, shadow=False, layer="horizon"))
-    kids += _gable("KeepRoof", 0, top + 88, z + 10, 132, 40, 76, CITADEL_ROOF)
-    towers = [(0, z - 8, 36, 150, 70), (-78, z, 26, 112, 46), (78, z, 26, 112, 46), (-190, z - 30, 30, 70, 38),
-              (190, z - 30, 30, 70, 38), (-130, z + 30, 22, 92, 36), (130, z + 30, 22, 92, 36)]
-    for i, (x, tz, d, h, rh) in enumerate(towers):
-        kids.append(part(f"Tower{i}", (h, d, d), (x, top + h / 2, tz), CITADEL_WALL, "SmoothPlastic", up,
-                         shape="Cylinder", collide=False, query=False, shadow=False, layer="horizon"))
-        kids += _gable(f"Spire{i}", x, top + h, tz, d + 8, rh, d + 8, CITADEL_ROOF)
-    # A town spilling down the mesa's front below the walls.
-    rng = random.Random(1330)
-    for i in range(9):
-        x = rng.uniform(-260, 260)
-        w, h = rng.uniform(34, 56), rng.uniform(18, 30)
-        y = top - rng.uniform(0, 10)
-        hz = CITADEL_Z - 72 + rng.uniform(-6, 6)
-        kids.append(part(f"House{i}", (w, h, 30), (x, y + h / 2 - 6, hz), CITADEL_WALL, "SmoothPlastic",
-                         collide=False, query=False, shadow=False, layer="horizon"))
-        kids += _gable(f"HouseRoof{i}", x, y + h - 6, hz, w + 6, h * 0.6, 34, CITADEL_ROOF)
-    return _to_sky(kids, k)
-
 
 
 # ── The south country, sculpted ──────────────────────────────────────────────
@@ -2658,17 +2611,17 @@ def build_south_country():
                           (ex + math.sin(b) * d, ey + hc, ez + math.cos(b) * d), col, "Grass",
                           shape="Ball", collide=False, query=False, shadow=False, layer="horizon"))
     kids.append(model("Foothills", hills))
-    # The Sunspire's hill: a broad green dome whose crown carries the citadel (the old mesa's top,
-    # Y176 in sky space) and whose brow rolls down toward the town through the Iron Lowlands gate,
+    # The Sunspire's hill: a broad green dome (its crown the old mesa's top, Y176 in sky space)
+    # whose brow rolls down toward the town through the Iron Lowlands gate,
     # with dark tree clumps along it, all softened a third of the way into the haze.
     hill = []
-    ks = SKY_SHELL["citadel"] / 505.0  # the hill was designed round the citadel at 505 studs
+    ks = SKY_SHELL["hill"] / 505.0  # the hill was designed at 505 studs
     top_y, radius, zc = ey + (177.0 - ey) * ks, 200.0 * ks, ez + (535.0 - ez) * ks
-    hill.append(part("CitadelHill", (270 * ks, radius * 2, radius * 2), (0, top_y - radius, zc), haze(SOUTH_HILL, 0.22),
+    hill.append(part("SunspireHill", (270 * ks, radius * 2, radius * 2), (0, top_y - radius, zc), haze(SOUTH_HILL, 0.22),
                      "Grass", collide=False, query=False, shadow=False, layer="horizon", shape="Cylinder"))
     for side in (-1, 1):  # round shoulders over the dome's flat ends
         r2 = radius * 0.62
-        hill.append(part(f"CitadelHillEnd{'EW'[side > 0]}", (r2 * 2, r2 * 2, r2 * 2),
+        hill.append(part(f"SunspireHillEnd{'EW'[side > 0]}", (r2 * 2, r2 * 2, r2 * 2),
                          (side * 130 * ks, top_y - 16 * ks - r2, zc + 10 * ks), haze(SOUTH_FOREST, 0.32), "Grass",
                          shape="Ball", collide=False, query=False, shadow=False, layer="horizon"))
     for i in range(24):  # woods down the face the Iron Lowlands gate frames (32-56 deg round the dome)
@@ -2688,7 +2641,7 @@ def build_south_country():
         hill.append(part(f"HillTrees{i}", (d, d, d), (x, y + d * 0.1, zc + dz),
                          haze(SOUTH_FOREST if i % 4 else SOUTH_HILL, 0.24), "Grass",
                          shape="Ball", collide=False, query=False, shadow=False, layer="horizon"))
-    kids.append(model("CitadelHill", hill))
+    kids.append(model("SunspireHill", hill))
     for m in kids:  # nested models stream on their own unless they are Persistent too
         m["properties"] = {"ModelStreamingMode": "Persistent"}
     return kids
@@ -2698,8 +2651,8 @@ def build_horizon():
     """Far country past the baseplate on every side, so every view that opens over a wall ends on a
     layered skyline instead of empty sky. South, where the town looks out through the Iron Lowlands
     gate, it is the sculpted south country (build_south_country): wooded foothills, the great range
-    and a hazier far range, faceted and coloured by material, sun and air, with the Sunspire citadel
-    on its hill in front; their summits are set by the angle they show above the level hub walls
+    and a hazier far range, faceted and coloured by material, sun and air, with the Sunspire's wooded
+    hill in front; their summits are set by the angle they show above the level hub walls
     from the main path, so each layer shows a band of its own over the crest and a band of sky stays
     open above. Everything stands within about 505 studs of the eye, since parts further out drop
     out of view in play. North, east and west keep a single range of diamond peaks (a big block turned about the
@@ -2708,7 +2661,6 @@ def build_horizon():
     regions' layout."""
     rng = random.Random(20260918)
     kids = build_south_country()
-    kids += build_citadel()
     ex, ey, ez = HORIZON_EYE
     # North, east and west: one range each, built like the south ranges (two-tone ridges, hazed
     # about as far as the middle southern range), turned to face the town.
@@ -3250,6 +3202,47 @@ def raised(node, dy, start):
     for e in REGISTRY[start:]:
         e["pos"] = (e["pos"][0], e["pos"][1] + dy, e["pos"][2])
     return node
+
+
+def scaled(node, s, anchor, start, drift=None):
+    """Grow a just-built model by `s` about `anchor` (its foot on the ground): every part's size and
+    its offset from the anchor, point-light ranges and fire with them, and its REGISTRY entries (those
+    from index `start` on), so the preview, floor_at and the validator see the model as written.
+    Rotations are untouched (a uniform scale keeps every contact a contact), and no part is added.
+    A SandDrift attribute grows by `drift` (default `s`), so WorldTerrain banks the sand higher."""
+    ax, ay, az = anchor
+
+    def walk(n):
+        p = n.get("properties", {})
+        cf = p.get("CFrame")
+        if cf and "Size" in p:
+            pos = cf["CFrame"]["position"]
+            for i, a in enumerate((ax, ay, az)):
+                pos[i] = _r(a + (pos[i] - a) * s)
+            p["Size"] = [_r(v * s) for v in p["Size"]]
+        elif n.get("className") == "PointLight":
+            p["Range"] = _r(min(60, p["Range"] * s))
+        elif n.get("className") == "Fire":
+            p["Size"] = _r(min(30, p["Size"] * s))
+            p["Heat"] = _r(min(25, p["Heat"] * s))
+        for c in n.get("children", ()):
+            walk(c)
+    walk(node)
+    attrs = node.get("attributes")
+    if attrs and "SandDrift" in attrs:
+        attrs["SandDrift"] = _r(attrs["SandDrift"] * (s if drift is None else drift))
+    for e in REGISTRY[start:]:
+        e["pos"] = tuple(a + (v - a) * s for v, a in zip(e["pos"], (ax, ay, az)))
+        e["size"] = tuple(v * s for v in e["size"])
+    return node
+
+
+def grown(s, x, z, build, drift=None):
+    """Build a desert prop with `build()` (standing on the floor at (x, z)) and grow it by `s`
+    about that foot (see scaled)."""
+    start = len(REGISTRY)
+    node = build()
+    return scaled(node, s, (x, floor_at(x, z, 0.0), z), start, drift)
 
 
 def quarry_fall(name, x, z, top, bottom, width=6.0):
@@ -3994,9 +3987,13 @@ def palm(name, x, z, rng, height=17.0, lean=(1.0, 0.0), y=None):
     for k in range(5):
         th = math.radians(tilt0 * (k + 1) / 5 + 4 * k)
         q = (p[0] + math.sin(th) * lx * seg, p[1] + math.cos(th) * seg, p[2] + math.sin(th) * lz * seg)
-        mid = tuple((p[i] + q[i]) / 2 for i in range(3))
+        # every segment above the first runs a little way back down inside the thicker one below
+        # it, so the joint holds however big the palm is grown (hidden under the ring)
+        back = seg * 0.3 if k else 0.0
+        u = tuple((q[i] - p[i]) / seg for i in range(3))
+        mid = tuple((p[i] + q[i]) / 2 - u[i] * back / 2 for i in range(3))
         rad = 1.5 - k * 0.12
-        kids.append(part(f"Trunk{k}", (seg + 0.35, rad, rad), mid, PALM_TRUNK if k % 2 == 0 else (144, 102, 64), "Wood",
+        kids.append(part(f"Trunk{k}", (seg + 0.35 + back, rad, rad), mid, PALM_TRUNK if k % 2 == 0 else (144, 102, 64), "Wood",
                          mul(beam_rot(p, q), rot_z(90)), shape="Cylinder", collide=(k == 0)))
         if k < 4:  # the knobbly ring where each year's growth meets the next
             kids.append(part(f"Ring{k}", (rad + 0.25, rad + 0.25, rad + 0.25), q, PALM_RING, "Wood", shape="Ball",
@@ -4018,8 +4015,8 @@ def palm(name, x, z, rng, height=17.0, lean=(1.0, 0.0), y=None):
         d2 = apply(r2, (0, 0, 1))
         l2 = rng.uniform(3.8, 4.8)
         # the tip tapers to a point: a wedge laid flat, its thin edge running out along the frond
-        kids.append(part(f"Frond{k}b", (0.2, 1.5, l2), (e1[0] + d2[0] * (l2 / 2 - 0.2), e1[1] + d2[1] * (l2 / 2 - 0.2),
-                                                         e1[2] + d2[2] * (l2 / 2 - 0.2)),
+        kids.append(part(f"Frond{k}b", (0.2, 1.5, l2), (e1[0] + d2[0] * (l2 / 2 - 0.45), e1[1] + d2[1] * (l2 / 2 - 0.45),
+                                                         e1[2] + d2[2] * (l2 / 2 - 0.45)),
                          c, "Grass", mul(r2, ((0, 1, 0), (1, 0, 0), (0, 0, -1))), cls="WedgePart", collide=False,
                          query=False, shadow=False))
     for k in range(2):
@@ -4083,85 +4080,107 @@ def desert_dressing():
     out = []
     W, E, S_, N = (-1, 0), (1, 0), (0, 1), (0, -1)
 
+    # Everything is built at the old prop sizes and grown to the player's scale (H, a character's
+    # height, is about 5.5 studs): doors about 1.5H, one-storey houses about 3H to the parapet,
+    # two-storey ones about 5H, tents 1.5H at the ridge, stall canopies 1.6H over waist-high counters,
+    # palms 5-7H, saguaros 2-4H. Furniture a player uses (the table, chairs, bench, crates, pots)
+    # grows only a little. Scaling adds no parts.
+    S_HOUSE1, S_HOUSE2 = 1.55, 1.4  # one storey / two storeys (the same storey height either way)
+    S_TENT, S_STALL, S_PALM, S_FIRE = 1.8, 1.1, 1.9, 1.3
+    S_TABLE, S_BENCH, S_CRATE, S_POT, S_LANTERN = 1.1, 1.15, 1.3, 1.3, 1.35
+    S_RUBBLE_HOUSE, S_RUBBLE_CAMP, S_REEDS = 1.45, 1.3, 1.25
+    S_SAGUARO, S_SAGUARO_H, S_BARREL = 1.5, 1.27, 1.4  # saguaros: 1.9x taller, 1.5x thicker
+
     # The settlement: a street of houses along the basin's east side, rim to mid bench, and a quieter
-    # pair on the rim's west side; two more by the Warden's pit.
+    # pair on the rim's west side; two more by the Warden's pit. Each house backs onto the basin's
+    # wall (x 110) with a stud or two of sand between: its centre is set from its grown depth.
     houses = [
-        ("HouseRimNE", 101, 182, 12, 10, 8.5, W, None, None, AWNINGS[2]),
-        ("HouseRimE", 100, 218, 14, 11, 10.0, W, (8, 7, 6.5), AWNINGS[0], None),
-        ("HouseRimW", -94, 186, 14, 12, 10.0, E, (8, 7, 6.0), AWNINGS[1], AWNINGS[3]),
-        ("HouseRimSW", -99, 216, 12, 10, 8.5, E, None, AWNINGS[3], None),
-        ("HouseMidE", 97, 254, 16, 12, 10.5, W, (9, 7, 6.5), AWNINGS[0], AWNINGS[1]),
-        ("HouseMidE2", 99, 280, 13, 11, 9.0, W, None, AWNINGS[2], None),
-        ("HousePitE", 97, 428, 16, 12, 10.5, W, (8, 7, 6.5), AWNINGS[1], AWNINGS[2]),
-        ("HousePitE2", 100, 454, 12, 10, 8.5, W, None, None, AWNINGS[0]),
+        ("HouseRimNE", 100.0, 182, 12, 10, 8.5, W, None, None, AWNINGS[2]),
+        ("HouseRimE", 100.0, 216, 14, 11, 10.0, W, (8, 7, 6.5), AWNINGS[0], None),
+        ("HouseRimW", -99.5, 186, 14, 12, 10.0, E, (8, 7, 6.0), AWNINGS[1], AWNINGS[3]),
+        ("HouseRimSW", -100.0, 219, 12, 10, 8.5, E, None, AWNINGS[3], None),
+        ("HouseMidE", 99.5, 252, 16, 12, 10.5, W, (9, 7, 6.5), AWNINGS[0], AWNINGS[1]),
+        ("HouseMidE2", 99.5, 283, 13, 11, 9.0, W, None, AWNINGS[2], None),
+        ("HousePitE", 99.5, 423, 16, 12, 10.5, W, (8, 7, 6.5), AWNINGS[1], AWNINGS[2]),
+        ("HousePitE2", 100.0, 453, 12, 10, 8.5, W, None, None, AWNINGS[0]),
     ]
     for k, (nm, x, z, w, d, h, face, upper, awning, shutters) in enumerate(houses):
-        out.append(adobe_house(nm, x, z, w, d, h, face, lr, wall=ADOBE_WALLS[k % 4], awning=awning, upper=upper,
-                               shutters=shutters))
+        s = S_HOUSE2 if upper else S_HOUSE1
+        out.append(grown(s, x, z, lambda: adobe_house(nm, x, z, w, d, h, face, lr, wall=ADOBE_WALLS[k % 4],
+                                                       awning=awning, upper=upper, shutters=shutters)))
         # pots, crates and rubble at the foot of the front wall
-        fx = x + face[0] * (d / 2 + 1.6)
-        out.append(clay_pot(f"{nm}Pot", fx, z + lr.uniform(-w / 2 + 1.5, -1.5), lr, lr.uniform(0.8, 1.1)))
-        out.append(rubble(f"{nm}Rubble", x + face[0] * (d / 2 + 2.5), z + lr.uniform(-3, 3), lr, n=7, spread=4.5))
-    out.append(lemon_crate("LemonCrateRim", 91.5, 211.5, 70, lr))
-    out.append(lemon_crate("LemonCrateMid", 88.5, 264, 100, lr))
-    out.append(clay_pot("PotMidA", 95, 291, lr, 1.2))
-    out.append(clay_pot("PotMidB", 97, 293.5, lr, 0.8))
+        D, Wd = d * s, w * s
+        fx = x + face[0] * (D / 2 + 2.2)
+        pz = z + lr.uniform(-Wd / 2 + 2.0, -2.0)
+        out.append(grown(S_POT, fx, pz, lambda: clay_pot(f"{nm}Pot", fx, pz, lr, lr.uniform(0.8, 1.1))))
+        rx, rz = x + face[0] * (D / 2 + 3.6), z + lr.uniform(-3, 3)
+        out.append(grown(S_RUBBLE_HOUSE, rx, rz, lambda: rubble(f"{nm}Rubble", rx, rz, lr, n=7, spread=4.5)))
+    out.append(grown(S_CRATE, 95, 199, lambda: lemon_crate("LemonCrateRim", 95, 199, 70, lr)))  # the rim's alley
+    out.append(grown(S_CRATE, 94, 268, lambda: lemon_crate("LemonCrateMid", 94, 268, 100, lr)))  # the mid alley
+    out.append(grown(S_POT, 90.5, 298, lambda: clay_pot("PotMidA", 90.5, 298, lr, 1.2)))
+    out.append(grown(S_POT, 88, 301, lambda: clay_pot("PotMidB", 88, 301, lr, 0.8)))
 
-    # Market stalls on the rim and the mid bench, where the street runs.
-    out.append(desert_stall("StallRim", 57, 226, W, lr, AWNINGS[1]))
-    out.append(desert_stall("StallMid", 86, 312, W, lr, AWNINGS[0]))
-    out.append(rubble("StallRimRubble", 52, 222, lr, n=6, spread=4, shadow=True))
+    # Market stalls: one on the rim by the trail down from the overlook, one on the mid bench.
+    out.append(grown(S_STALL, 30, 180, lambda: desert_stall("StallRim", 30, 180, W, lr, AWNINGS[1])))
+    out.append(grown(S_STALL, 70, 317, lambda: desert_stall("StallMid", 70, 317, W, lr, AWNINGS[0])))
+    out.append(grown(S_RUBBLE_CAMP, 38, 186, lambda: rubble("StallRimRubble", 38, 186, lr, n=6, spread=4, shadow=True)))
 
-    # The camp on the rim: A-frame tents round a fire, a table and chairs, a log bench, lanterns.
-    fx, fz = 78, 206
-    out.append(desert_fire("CampFire", fx, fz, lr))
-    out.append(a_tent("CampTentE", 89.5, 201, 70, TENT_CLOTH[0], stripe=AWNINGS[0]))
-    out.append(a_tent("CampTentW", 67.5, 211.5, -22, TENT_CLOTH[2], stripe=AWNINGS[3]))
-    out.append(a_tent("CampTentS", 85, 227.5, 24, TENT_CLOTH[1], stripe=AWNINGS[1]))
-    out.append(camp_table("CampTable", 82.5, 214, 18, lr))
-    out.append(log_bench("CampBench", 76, 197.5, -18))
-    out.append(rubble("CampRubbleA", 69, 197, lr, n=9, spread=4.5, shadow=True))
-    out.append(rubble("CampRubbleC", 94.5, 222, lr, n=7, spread=3.5))
-    out.append(rubble("CampRubbleB", 88, 212, lr, n=6, spread=3.5, shadow=True))
-    out.append(lantern_post("CampLantern", 93.5, 207.5, yaw_facing(-1, 0.2), lr))
-    out.append(clay_pot("CampPot", 94, 206, lr, 1.0))
-    out.append(lemon_crate("CampCrate", 63, 217, 20, lr))
+    # The camp on the rim, west of the street: A-frame tents round a fire, a table and chairs, a log
+    # bench, lanterns.
+    fx, fz = 67, 207
+    out.append(grown(S_FIRE, fx, fz, lambda: desert_fire("CampFire", fx, fz, lr)))
+    # Two tents flank the camp's open west side, their ridges splayed out from the fire so their
+    # A-frame ends face the path in; the third stands back by the street.
+    for nm, x, z, yaw, cloth, stripe in (("CampTentE", 78, 222.5, 100, TENT_CLOTH[0], AWNINGS[0]),
+                                         ("CampTentW", 54, 194, 110, TENT_CLOTH[2], AWNINGS[3]),
+                                         ("CampTentS", 54, 221, 70, TENT_CLOTH[1], AWNINGS[1])):
+        out.append(grown(S_TENT, x, z, lambda: a_tent(nm, x, z, yaw, cloth, stripe=stripe), drift=1.35))
+    out.append(grown(S_TABLE, 78.5, 207.5, lambda: camp_table("CampTable", 78.5, 207.5, 14, lr)))
+    out.append(grown(S_BENCH, 68, 198, lambda: log_bench("CampBench", 68, 198, -18)))
+    out.append(grown(S_RUBBLE_CAMP, 46, 206, lambda: rubble("CampRubbleA", 46, 206, lr, n=9, spread=4.5, shadow=True)))
+    out.append(grown(S_RUBBLE_CAMP, 66, 218, lambda: rubble("CampRubbleC", 66, 218, lr, n=7, spread=3.5)))
+    out.append(grown(S_RUBBLE_CAMP, 87, 204.5, lambda: rubble("CampRubbleB", 87, 204.5, lr, n=6, spread=3.5, shadow=True)))
+    out.append(grown(S_LANTERN, 89, 202, lambda: lantern_post("CampLantern", 89, 202, yaw_facing(-1, 0.2), lr)))
+    out.append(grown(S_POT, 86, 200, lambda: clay_pot("CampPot", 86, 200, lr, 1.0)))
+    out.append(grown(S_CRATE, 66, 226.5, lambda: lemon_crate("CampCrate", 66, 226.5, 20, lr)))
 
     # The oasis: palms round the pool and along the fence on the mid bench above it, reeds in the
     # shallows' edge, a fence along the drop.
     palms = [(70.5, 338, 18, (1, 0.3)), (68.5, 356, 16, (1, -0.2)), (84, 322, 19, (0.3, 1)), (102, 320, 15, (-0.4, 1)),
-             (60, 342, 14, (1, 0.6)), (106, 300, 17, (-0.6, 0.8))]
+             (62, 342, 20, (1, 0.6)), (103, 302, 17, (-0.6, 0.8))]
     for k, (x, z, h, lean) in enumerate(palms):
-        out.append(palm(f"OasisPalm{k}", x, z, lr, height=h, lean=lean))
+        out.append(grown(S_PALM, x, z, lambda: palm(f"OasisPalm{k}", x, z, lr, height=h, lean=lean)))
     for k, (x, z) in enumerate(((78.5, 337), (78.5, 358), (85, 334.5), (104, 362), (79, 348), (92, 362.5))):
-        out.append(oasis_reeds(f"OasisReeds{k}", x, z, lr, n=7))
-    # The town's spring pool on the mid bench, between the camp and the street: palms round a raised
-    # spring (terrain water a stud or two deep over the bench), reeds in its shallows.
-    for k, (x, z, h, lean) in enumerate(((66, 270, 17, (0.4, -1)), (93, 266, 19, (-0.3, -1)), (64.5, 296, 15, (1, 0.2)),
-                                          (91.5, 303, 16, (-0.6, 0.6)))):
-        out.append(palm(f"TownPalm{k}", x, z, lr, height=h, lean=lean))
-    for k, (x, z) in enumerate(((72, 272), (87, 297), (71.5, 294), (88, 271))):
-        out.append(oasis_reeds(f"TownReeds{k}", x, z, lr, n=6))
+        out.append(grown(S_REEDS, x, z, lambda: oasis_reeds(f"OasisReeds{k}", x, z, lr, n=7)))
+    # The town's spring pool on the mid bench, between the camp and the street (WorldTerrain's second
+    # POOLS entry, x 62-84): palms round a raised spring, reeds in its shallows.
+    for k, (x, z, h, lean, sp) in enumerate(((68, 257, 21, (0.6, -1), 1.5), (84, 262, 17, (-0.5, -1), S_PALM),
+                                              (60, 301, 15, (1, 0.2), S_PALM), (85, 306, 16, (-0.6, 0.6), S_PALM))):
+        out.append(grown(sp, x, z, lambda: palm(f"TownPalm{k}", x, z, lr, height=h, lean=lean)))
+    for k, (x, z) in enumerate(((66, 272), (80, 297), (65.5, 294), (80, 271))):
+        out.append(grown(S_REEDS, x, z, lambda: oasis_reeds(f"TownReeds{k}", x, z, lr, n=6)))
     out.append(fence_run("OasisFence", (78, 327.5), (108, 327.5), None, height=3.0))
-    out.append(rubble("OasisRubble", 64, 334, lr, n=6, spread=4))
+    out.append(grown(S_RUBBLE_CAMP, 64, 334, lambda: rubble("OasisRubble", 64, 334, lr, n=6, spread=4)))
     out.append(quarry_fall("SpringFall", 111.5, 348.0, 14.5, WATER_TOP_Y, width=5.0))
 
-    # Cacti scattered over the sand, clear of the trail and the spawns.
-    cacti = [(58, 176, 9), (-66, 174, 8), (-104, 244, 10), (104, 238, 7), (-82, 318, 9), (-102, 398, 11),
-             (-72, 452, 8), (58, 460, 9), (-30, 176, 6), (48, 316, 0), (-100, 344, 7), (30, 452, 0)]
+    # Cacti scattered over the sand, clear of the trail, the spawns and the houses.
+    cacti = [(58, 176, 9), (-66, 174, 8), (-104, 244, 10), (62, 242, 7), (-82, 318, 9), (-102, 398, 11),
+             (-72, 452, 8), (58, 460, 9), (-30, 176, 6), (54, 322, 0), (-100, 344, 7), (30, 452, 0)]
     for k, (x, z, h) in enumerate(cacti):
         if h:
-            out.append(saguaro(f"Saguaro{k}", x, z, h, lr, arms=1 + (k % 2)))
+            out.append(grown(S_SAGUARO, x, z, lambda: saguaro(f"Saguaro{k}", x, z, h * S_SAGUARO_H, lr, arms=1 + (k % 2))))
         else:
-            out.append(barrel_cactus(f"BarrelCactus{k}", x, z, lr))
-    for k, (x, z) in enumerate(((64, 170), (-60, 180), (-90, 322), (-106, 400), (80, 468), (-40, 466), (108, 236))):
-        out.append(barrel_cactus(f"BarrelCactusB{k}", x, z, lr))
+            out.append(grown(S_BARREL, x, z, lambda: barrel_cactus(f"BarrelCactus{k}", x, z, lr)))
+    for k, (x, z) in enumerate(((64, 170), (-60, 180), (-90, 322), (-93, 403), (80, 468), (-40, 466), (108, 236))):
+        out.append(grown(S_BARREL, x, z, lambda: barrel_cactus(f"BarrelCactusB{k}", x, z, lr)))
 
     # A camp of the bandits' own in the pit's west, and the path into their hideout.
-    out.append(a_tent("BanditTentA", -90, 420, 30, TENT_CLOTH[1], stripe=AWNINGS[0]))
-    out.append(a_tent("BanditTentB", -86, 444, -20, TENT_CLOTH[0], stripe=AWNINGS[3]))
-    out.append(desert_fire("BanditFire", -76, 432, lr))
-    out.append(rubble("BanditRubble", -78, 432, lr, n=8, spread=5))
+    out.append(grown(S_TENT, -92, 418, lambda: a_tent("BanditTentA", -92, 418, 30, TENT_CLOTH[1], stripe=AWNINGS[0]),
+                     drift=1.35))
+    out.append(grown(S_TENT, -88, 446, lambda: a_tent("BanditTentB", -88, 446, -20, TENT_CLOTH[0], stripe=AWNINGS[3]),
+                     drift=1.35))
+    out.append(grown(S_FIRE, -76, 432, lambda: desert_fire("BanditFire", -76, 432, lr)))
+    out.append(grown(S_RUBBLE_CAMP, -78, 432, lambda: rubble("BanditRubble", -78, 432, lr, n=8, spread=5)))
     out.append(skull_sign("TurnBackSign", 38, 258, yaw_facing(0, -1), "TURN BACK", "Dune Bandits"))
     # (the loose heaps out on the open sand are terrain now: WorldTerrain's SAND_ROCKS)
     return out
@@ -5441,9 +5460,21 @@ def build_briarwood(rng):
 
 
 # ── Output ────────────────────────────────────────────────────────────────────
+WRITTEN: set[str] = set()
+
+
+def write_text(path: Path, text: str):
+    """Rewrite a file only when its contents change. A connected Rojo session sees a deleted and
+    recreated file as a new instance and leaves the old one in Studio, so the map is never wiped
+    and regenerated wholesale: unchanged files are left alone and changed ones updated in place."""
+    WRITTEN.add(path.name)
+    if not path.exists() or path.read_text() != text:
+        path.write_text(text)
+
+
 def write_model(path: Path, node: dict):
     root = {k: v for k, v in node.items() if k != "name"}
-    path.write_text(json.dumps(root, indent=1) + "\n")
+    write_text(path, json.dumps(root, indent=1) + "\n")
 
 
 def main():
@@ -5458,10 +5489,9 @@ def main():
     global AUTO_GROUND
     AUTO_GROUND = False
 
-    if OUT.exists():
-        shutil.rmtree(OUT)
-    OUT.mkdir(parents=True)
-    (OUT / "init.meta.json").write_text(json.dumps({
+    OUT.mkdir(parents=True, exist_ok=True)
+    WRITTEN.clear()
+    write_text(OUT / "init.meta.json", json.dumps({
         "className": "Folder",
         "attributes": {"MapVersion": MAP_VERSION, "MapName": "Lemonade Hearthmere Slice"},
     }, indent=1) + "\n")
@@ -5476,6 +5506,9 @@ def main():
     write_model(OUT / "Briarwood.model.json", model("Briarwood", bw_visual, attrs={"Region": "Briarwood"}))
     write_model(OUT / "Markers.model.json", markers)
     write_model(OUT / "Horizon.model.json", build_horizon())
+    for stale in OUT.iterdir():  # a model this build no longer makes
+        if stale.name not in WRITTEN:
+            stale.unlink()
 
     counts = {}
     for entry in REGISTRY:

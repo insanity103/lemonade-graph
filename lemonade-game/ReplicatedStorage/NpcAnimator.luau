@@ -47,6 +47,12 @@ local BUSY_ATTRIBUTE = "AmbienceBusy" -- set by HubAmbience while a routine walk
 local CUE_ATTRIBUTE = "NpcIdleCue" -- Studio showcase only: server time to play a glance + gesture
 local FRESH_ATTRIBUTE = "NpcReactFresh" -- Studio showcase only: forget earlier greetings (cooldown)
 local ANIMATE_RANGE = 140 -- [TUNING] studs from the camera; farther NPCs stop being posed
+-- An NPC out of view holds its pose and catches the skipped time up when it comes back. "In view"
+-- is generous (the view cone plus a margin and the NPC's reach, its shadow included, and anyone
+-- close to the camera), so nothing on screen ever freezes.
+local VIEW_MARGIN = math.rad(12) -- [TUNING] radians added around the camera's view cone
+local VIEW_NEAR = 30 -- [TUNING] studs; NPCs this close always animate
+local VIEW_RADIUS = 8 -- [TUNING] studs an NPC and its shadow may reach
 local NOTICE_RANGE = 14 -- [TUNING] studs; a player walking this close is noticed and greeted
 local LEAVE_RANGE = 18 -- [TUNING] studs; beyond this (or behind) the NPC lets them go
 local NOTICE_ARC = 115 -- [TUNING] degrees either side of the NPC's facing it notices within
@@ -1404,6 +1410,13 @@ local function frame(dt: number)
 	local camera = workspace.CurrentCamera
 	local eye = camera and camera.CFrame.Position
 	local now = os.clock()
+	local look, half = Vector3.zAxis, math.pi
+	if camera then
+		local size = camera.ViewportSize
+		local aspect = if size.Y > 0 then size.X / size.Y else 16 / 9
+		look = camera.CFrame.LookVector
+		half = math.atan(math.tan(math.rad(camera.FieldOfView) / 2) * math.sqrt(1 + aspect * aspect)) + VIEW_MARGIN
+	end
 	if now >= nextRetry then
 		nextRetry = now + RETRY_EVERY
 		for model in pairs(pending) do
@@ -1430,6 +1443,7 @@ local function frame(dt: number)
 				s.active = false
 				resetRig(s.rig) -- hand the joints back (HubAmbience's walk track takes over)
 			end
+			s.heldDt = nil
 		else
 			if not s.active then
 				s.active = true
@@ -1438,7 +1452,16 @@ local function frame(dt: number)
 				s.nextGlance = math.max(s.nextGlance, now + 1)
 				s.nextGesture = math.max(s.nextGesture, now + 2)
 			end
-			local ok, err = pcall(step, s, now, dt)
+			local offset = root.Position - eye
+			local distance = offset.Magnitude
+			local seen = distance < VIEW_NEAR + VIEW_RADIUS
+				or math.acos(math.clamp(offset:Dot(look) / distance, -1, 1)) <= half + math.asin(math.min(1, VIEW_RADIUS / distance))
+			if not seen then
+				s.heldDt = (s.heldDt or 0) + dt
+				continue
+			end
+			local ok, err = pcall(step, s, now, dt + (s.heldDt or 0))
+			s.heldDt = nil
 			if not ok then
 				warn("[NpcAnimator] " .. model.Name .. ": " .. tostring(err))
 				untrack(model)
