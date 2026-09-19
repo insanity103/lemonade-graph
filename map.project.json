@@ -75,6 +75,9 @@
       "ReforgeSystem": {
         "$path": "lemonade-game/ServerScriptService/ReforgeSystem.server.luau"
       },
+      "SwordGalleryStage": {
+        "$path": "lemonade-game/ServerScriptService/SwordGalleryStage.server.luau"
+      },
       "MapMarkers": {
         "$path": "lemonade-game/Gameplay/MapMarkers.luau"
       },

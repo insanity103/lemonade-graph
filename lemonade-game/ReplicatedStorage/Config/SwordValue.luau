@@ -16,10 +16,13 @@ SwordValue.RARITY_BASE = {
 	Legendary = 400,
 }
 
--- [TUNING] Each modifier adds this fraction of the base, by its tier (1..6). A four-slot
--- Legendary with all tier-6 rolls is worth (1 + 4 * 1.8) = 8.2x the base.
-SwordValue.TIER_WEIGHT = { 0.15, 0.30, 0.50, 0.80, 1.20, 1.80 }
+-- [TUNING] Each modifier adds this fraction of the base, by its rung (1..10). A four-slot
+-- Legendary with all Radiant (6) rolls is worth (1 + 4 * 1.8) = 8.2x the base; a single
+-- Lemonade (10) roll alone is worth 8x the base.
+SwordValue.TIER_WEIGHT = { 0.15, 0.30, 0.50, 0.80, 1.20, 1.80, 2.60, 3.60, 5.00, 7.00 }
 SwordValue.BLESSED_BONUS = 0.25 -- extra slot rolled: +25% on top
+-- A mutation (Iced / Sugared / Sour) multiplies every modifier's bonus, so it adds this much.
+SwordValue.VARIANT_BONUS = { Iced = 0.30, Sugared = 0.70, Sour = 1.50 }
 SwordValue.BOSS_TIER_STEP = 0.10 -- later bosses' relics carry a little more prestige per tier
 
 -- name -> { category, tier } for every modifier prefix
@@ -55,6 +58,9 @@ function SwordValue.rateAttrs(attrs): number
 	if attrs.ExtraSlot == true then
 		multiplier += SwordValue.BLESSED_BONUS
 	end
+	if typeof(attrs.Variant) == "string" then
+		multiplier += SwordValue.VARIANT_BONUS[attrs.Variant] or 0
+	end
 	local bossTier = tonumber(attrs.BossTier) or 1
 	multiplier *= 1 + SwordValue.BOSS_TIER_STEP * (bossTier - 1)
 	return math.floor(base * multiplier + 0.5)
@@ -69,6 +75,7 @@ function SwordValue.rateTool(tool: Instance): number
 		Prefixes = tool:GetAttribute("Prefixes"),
 		ExtraSlot = tool:GetAttribute("ExtraSlot"),
 		BossTier = tool:GetAttribute("BossTier"),
+		Variant = tool:GetAttribute("Variant"),
 	})
 end
 
@@ -81,18 +88,22 @@ SwordValue.REROLL_BASE = {
 	Epic = 1500,
 	Legendary = 6000,
 }
+-- The quality factor stops here, so a long-tail roll never makes its own sword unstrikable:
+-- a Legendary strike is 6,000-18,000 gold (12-36 kills of a level-100 enemy at 5 gold a level).
+SwordValue.REROLL_QUALITY_CAP = 3 -- [TUNING]
 
 function SwordValue.rerollCost(attrs): number
 	attrs = attrs or {}
 	local rarity = attrs.Rarity or "Common"
 	local base = SwordValue.REROLL_BASE[rarity] or SwordValue.REROLL_BASE.Common
 	local quality = SwordValue.rateAttrs(attrs) / (SwordValue.RARITY_BASE[rarity] or SwordValue.RARITY_BASE.Common)
+	quality = math.min(quality, SwordValue.REROLL_QUALITY_CAP)
 	return math.floor(base * quality / 10 + 0.5) * 10
 end
 
 -- [TUNING] Locking a modifier through a reforge adds this fraction of the base price per lock,
--- by the locked modifier's tier: keeping a T6 costs far more than keeping a T1.
-SwordValue.LOCK_TIER_FACTOR = { 0.5, 0.8, 1.2, 1.8, 2.6, 3.6 }
+-- by the locked modifier's rung: keeping a Radiant costs far more than keeping a Fresh.
+SwordValue.LOCK_TIER_FACTOR = { 0.5, 0.8, 1.2, 1.8, 2.6, 3.6, 5.0, 7.0, 10.0, 14.0 }
 
 -- Full reforge price for a sword with the named modifiers locked.
 function SwordValue.rerollCostWithLocks(attrs, lockNames): number
@@ -119,6 +130,7 @@ function SwordValue.rerollCostForTool(tool: Instance): number
 		Prefixes = tool:GetAttribute("Prefixes"),
 		ExtraSlot = tool:GetAttribute("ExtraSlot"),
 		BossTier = tool:GetAttribute("BossTier"),
+		Variant = tool:GetAttribute("Variant"),
 	})
 end
 

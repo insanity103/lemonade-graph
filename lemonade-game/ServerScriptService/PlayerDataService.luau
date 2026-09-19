@@ -41,6 +41,7 @@ local function defaultData()
 		reforgeFreeAt = 0,  -- os.time() when the next free daily reforge unlocks
 		reforgeBest = 0,  -- best rating ever produced by a reforge
 		reforgeCount = 0,  -- lifetime reforges
+		reforgeTailPity = 0,  -- strikes since the last Sunburst-or-better roll (ReforgeSystem long-tail pity)
 		isNew = true,
 	}
 	for name, default in pairs(SaveConfig.LEADERSTATS) do data.leaderstats[name] = default end
@@ -122,7 +123,7 @@ function PlayerDataService.Load(player)
 	if typeof(record.vault) ~= "table" then
 		record.vault = {}
 	end
-	for _, key in ipairs({ "reforgePity", "reforgeFreeAt", "reforgeBest", "reforgeCount" }) do
+	for _, key in ipairs({ "reforgePity", "reforgeFreeAt", "reforgeBest", "reforgeCount", "reforgeTailPity" }) do
 		if typeof(record[key]) ~= "number" then record[key] = 0 end
 	end
 	if not record.version or record.version < SaveConfig.SCHEMA_VERSION then
@@ -221,7 +222,10 @@ local function serializeSwords(player)
 	for _, container in ipairs({ player:FindFirstChildOfClass("Backpack"), player.Character }) do
 		if container then
 			for _, tool in ipairs(container:GetChildren()) do
-				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true then
+				-- GuiShowcaseOnly: a loaner relic a Studio-only capture stage put in the backpack
+				-- (ReforgeSystem); it must never reach the profile.
+				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true
+					and tool:GetAttribute("GuiShowcaseOnly") ~= true then
 					out[#out + 1] = PlayerDataService.SerializeTool(tool, tool == equippedTool)
 				end
 			end

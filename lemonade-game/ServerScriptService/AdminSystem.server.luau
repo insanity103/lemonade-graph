@@ -67,11 +67,12 @@ local function addGold(player, amount)
 	NOTIFY:FireClient(player, string.format("[Admin] %+d Gold (now %d).", delta, gold.Value), "success")
 end
 
--- Builds a fully-rolled copy of a boss's unique sword through the same factory every real
+-- Builds a fully-rolled copy of a boss's Legendary showpiece through the same factory every real
 -- drop and purchase uses, then forces the best possible outcome (Blessed, every modifier
 -- floored to the top tier) so the tool is a legitimate BossDrop, just always the best roll.
-local function giveSword(player, archetypeKey)
-	local weaponData = BossWeapons.Weapons[archetypeKey]
+-- swordName (optional) picks another sword of that boss's pool instead (dropped at Epic).
+local function giveSword(player, archetypeKey, swordName)
+	local weaponData = BossWeapons.Pools[archetypeKey]
 	if not weaponData then
 		NOTIFY:FireClient(player, "Unknown weapon.", "error")
 		return
@@ -81,7 +82,9 @@ local function giveSword(player, archetypeKey)
 		NOTIFY:FireClient(player, "No backpack to put it in yet.", "error")
 		return
 	end
-	local tool = BossSwordFactory.build(archetypeKey, { blessedBonus = 1.0 })
+	local def = swordName and BossWeapons.FindSword(swordName, archetypeKey)
+	local tool = BossSwordFactory.build(archetypeKey, { blessedBonus = 1.0, sword = def and def.name or nil,
+		rarity = (def and def ~= BossWeapons.Pools[archetypeKey].legendary) and "Epic" or "Legendary" })
 	local _, fullName = BossSwordFactory.reroll(tool, 1.0, WeaponModifiers.TIER_COUNT, {})
 	tool.Parent = container
 	NOTIFY:FireClient(player, string.format("[Admin] Gave %s.", fullName or tool.Name), "success")
@@ -103,9 +106,10 @@ ADMIN.OnServerEvent:Connect(function(player, action, arg)
 	elseif action == "AddGold" and typeof(arg) == "number" then
 		addGold(player, arg)
 	elseif action == "GiveSword" and typeof(arg) == "string" then
-		giveSword(player, arg)
+		local archetypeKey, swordName = string.match(arg, "^([^:]+):(.+)$")
+		giveSword(player, archetypeKey or arg, swordName)
 	elseif action == "GiveAllSwords" then
-		for archetypeKey in pairs(BossWeapons.Weapons) do
+		for archetypeKey in pairs(BossWeapons.Pools) do
 			giveSword(player, archetypeKey)
 		end
 	end

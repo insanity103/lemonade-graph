@@ -670,7 +670,9 @@ def check_projects():
                      # The world look (lighting and day cycle, sculpted terrain, far horizon) lives with the map.
                      ("ServerScriptService", "WorldLook"), ("ServerScriptService", "WorldTerrain"),
                      ("StarterPlayer", "StarterPlayerScripts", "WorldShowcase"),
-                     ("StarterPlayer", "StarterPlayerScripts", "WorldHorizon")}
+                     ("StarterPlayer", "StarterPlayerScripts", "WorldHorizon"),
+                     # Studio-only capture stage for the sword roster (inert outside Studio).
+                     ("ServerScriptService", "SwordGalleryStage")}
 
     def walk(d, m, path=()):
         for key, value in d.items():

@@ -26,6 +26,7 @@ SaveConfig.ATTRIBUTES = {
 	Defense = 0,
 	ExperienceGain = 0,
 	AutoSellLowerSwords = false,
+	ForgeLuckCharges = 0,      -- Lucky Charges from boss kills; a paid Reforge strike spends one (ReforgeSystem)
 	CompletedQuests = '',      -- comma-separated quest IDs (e.g., 'q1_first_blood,q2_prove_yourself')
 	ActiveQuestId = '',        -- current quest ID or '' if none
 	QuestProgress = 0,         -- progress toward current objective
@@ -38,6 +39,7 @@ SaveConfig.VAULT_CAPACITY = 12       -- [TUNING] boss swords the Vaultkeeper hol
 SaveConfig.SWORD_ATTRS = {
 	"DamageMult", "BonusDamagePct", "CritChance", "RangeBonus", "KnockbackBonus",
 	"ExtraSlot", "Prefixes", "BossTier", "Rarity", "BaseWeaponName", "WeaponAppearanceMaterial",
+	"PoolBase", -- the pool's listed base at the sword's rarity (DamageMult is the +-5% roll of it)
 }
 
 return SaveConfig

@@ -17,9 +17,10 @@ local PURCHASE_DISTANCE = 16
 local merchantModel
 
 
--- Built by the shared BossSwordFactory; purchases never roll a Blessed extra slot
-local function makePurchasedSword(archetypeKey)
-	return BossSwordFactory.build(archetypeKey, { allowBlessed = false })
+-- Built by the shared BossSwordFactory; a purchase is the listed sword at the listed rarity and
+-- base (no stat jitter) and never rolls a Blessed extra slot. Modifiers still roll.
+local function makePurchasedSword(item)
+	return BossSwordFactory.build(item.id, { allowBlessed = false, sword = item.sword, rarity = item.rarity, jitter = false })
 end
 
 -- ==============================================================================
@@ -88,7 +89,7 @@ MERCHANT_ACTION.OnServerEvent:Connect(function(player, action, swordId)
 
 	-- Build before debiting currency so an invalid template or configuration can
 	-- never consume Gold without delivering a sword.
-	local built, tool, mods, fullName, gotExtraSlot, weaponData = pcall(makePurchasedSword, swordId)
+	local built, tool, mods, fullName, gotExtraSlot, weaponData = pcall(makePurchasedSword, item)
 	if not built or not tool then
 		warn(string.format("[MerchantSystem] Could not build %s for %s: %s", swordId, player.Name, tostring(tool)))
 		MERCHANT_ACTION:FireClient(player, "PurchaseResult", false, "That weapon is temporarily unavailable.")
@@ -102,7 +103,8 @@ MERCHANT_ACTION.OnServerEvent:Connect(function(player, action, swordId)
 	tool.Parent = backpack
 
 	-- Notify client with sword drop animation toast & purchase result
-	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods, gotExtraSlot)
+	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods, gotExtraSlot,
+		{ pool = "Relic Blacksmith", baseName = weaponData.name, listedBase = weaponData.listedBase })
 	MERCHANT_ACTION:FireClient(player, "PurchaseResult", true, ("Successfully forged [%s] for %d Gold!"):format(fullName, item.price))
 
 	print(string.format("[MerchantSystem] %s purchased [%s] for %d Gold (0%% Blessed chance, Mods: %d)",

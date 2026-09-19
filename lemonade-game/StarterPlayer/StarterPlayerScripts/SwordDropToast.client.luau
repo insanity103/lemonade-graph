@@ -240,8 +240,13 @@ end
 
 local current -- the reveal on screen, if any: { exit = function(fast) }
 
-local function revealDrop(rarityName, mult, fullName, mods, gotExtraSlot)
+-- extras (sixth argument, from the server): pool = the boss whose pool it came from, baseName,
+-- listedBase = the pool's listed base at this rarity (mult is the +-5% roll of it), rarityOdds =
+-- the real chance of this rarity variant, legendary = the pool's showpiece.
+local POOL_ROW = 22 -- the pool / rarity-variant line under the damage line
+local function revealDrop(rarityName, mult, fullName, mods, gotExtraSlot, extras)
 	mods = mods or {}
+	extras = typeof(extras) == "table" and extras or {}
 	local R = REVEAL
 	local tier = REVEAL_TIER[rarityName] or REVEAL_TIER.Common
 	local rt = PanelChrome.RARITY_TILE[rarityName] or PanelChrome.RARITY_TILE.Common
@@ -250,7 +255,7 @@ local function revealDrop(rarityName, mult, fullName, mods, gotExtraSlot)
 	screenFlash.BackgroundTransparency = 1
 
 	local W, T, P = R.Width, R.Tile, R.Pad
-	local H = math.max(T + 2 * P + 8, 128 + #mods * R.ModRow + P)
+	local H = math.max(T + 2 * P + 8, 128 + POOL_ROW + #mods * R.ModRow + P)
 	local colX = P + T + 18
 	local colW = W - colX - P
 
@@ -378,11 +383,43 @@ local function revealDrop(rarityName, mult, fullName, mods, gotExtraSlot)
 		xAlign = Enum.TextXAlignment.Left, pos = UDim2.fromOffset(colX, 102), size2 = UDim2.fromOffset(colW, 28), zIndex = 5,
 	})
 	table.insert(stats, multLabel)
+	-- Which pool and which rarity variant: "Frost Revenant pool  ·  RARE variant, 1 in 8  ·  listed x2.27"
+	do
+		local bits = {}
+		if extras.pool then table.insert(bits, tostring(extras.pool) .. " pool") end
+		if extras.legendary then
+			table.insert(bits, "boss Legendary")
+		elseif rarityName then
+			table.insert(bits, string.upper(tostring(rarityName)) .. " variant")
+		end
+		if typeof(extras.rarityOdds) == "number" and extras.rarityOdds > 0 then
+			table.insert(bits, "1 in " .. tostring(math.floor(1 / extras.rarityOdds + 0.5)))
+		end
+		if typeof(extras.listedBase) == "number" and typeof(mult) == "number" and math.abs(extras.listedBase - mult) > 0.004 then
+			table.insert(bits, ("listed x%.2f, rolled %+d%%"):format(extras.listedBase, math.floor((mult / extras.listedBase - 1) * 100 + 0.5)))
+		end
+		if #bits > 0 then
+			local poolLabel = Instance.new("TextLabel")
+			poolLabel.Name = "Pool"
+			poolLabel.BackgroundTransparency = 1
+			poolLabel.Position = UDim2.fromOffset(colX + 2, 128)
+			poolLabel.Size = UDim2.fromOffset(colW - 2, POOL_ROW - 2)
+			poolLabel.Font = Enum.Font.GothamBold
+			poolLabel.TextSize = 15
+			poolLabel.TextXAlignment = Enum.TextXAlignment.Left
+			poolLabel.TextTruncate = Enum.TextTruncate.AtEnd
+			poolLabel.TextColor3 = Color3.fromRGB(96, 84, 60)
+			poolLabel.Text = table.concat(bits, "  ·  ")
+			poolLabel.ZIndex = 5
+			poolLabel.Parent = card
+			table.insert(stats, poolLabel)
+		end
+	end
 	for i, mod in ipairs(mods) do
 		local l = Instance.new("TextLabel")
 		l.Name = "Mod" .. i
 		l.BackgroundTransparency = 1
-		l.Position = UDim2.fromOffset(colX + 2, 132 + (i - 1) * R.ModRow)
+		l.Position = UDim2.fromOffset(colX + 2, 132 + POOL_ROW + (i - 1) * R.ModRow)
 		l.Size = UDim2.fromOffset(colW - 2, R.ModRow - 2)
 		l.Font = Enum.Font.GothamBold
 		l.TextSize = 18
@@ -390,7 +427,9 @@ local function revealDrop(rarityName, mult, fullName, mods, gotExtraSlot)
 		l.TextTruncate = Enum.TextTruncate.AtEnd
 		l.RichText = true
 		l.TextColor3 = BRIGHT.Ink
-		l.Text = string.format('<font color="#2EA434">+ %s</font>  %s', tostring(mod.name), tostring(mod.desc or ""))
+		-- Each modifier prints the true 1-in-N of the rung it landed (from the server's roll).
+		local odds = mod.oneInText and string.format('  <font color="#8A6A1A">%s</font>', tostring(mod.oneInText)) or ""
+		l.Text = string.format('<font color="#2EA434">+ %s</font>  %s%s', tostring(mod.name), tostring(mod.desc or ""), odds)
 		l.ZIndex = 5
 		l.Parent = card
 		table.insert(stats, l)

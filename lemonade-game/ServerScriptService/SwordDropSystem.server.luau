@@ -23,30 +23,25 @@ local DEATH_SWORD_LOSS_CHANCE = 0.02
 -- Boss tiers and weapon stats live in ReplicatedStorage/Config/BossWeapons
 local BOSS_TIERS = BossWeapons.Tiers
 
--- Gold value awarded when auto-selling a sword from each boss tier
+-- Gold value awarded when auto-selling a sword from each boss tier, scaled by the rarity it
+-- dropped at (RARITY_SELL_MULT) [TUNING]
 local BOSS_SELL_VALUES = {
-	[1] = 50,    -- Warlord Greatsword (Uncommon)
-	[2] = 150,   -- Frostfang Cleaver (Rare)
-	[3] = 450,   -- Inferno Edge (Epic)
-	[4] = 1200,  -- Voidrend Blade (Epic)
-	[5] = 3000,  -- Astral Eclipse (Legendary)
+	[1] = 50,    -- Warden of the Pit pool
+	[2] = 150,   -- Frost Revenant pool
+	[3] = 450,   -- Infernal Colossus pool
+	[4] = 1200,  -- Void Archon pool
+	[5] = 3000,  -- Celestial Titan pool
 }
+local RARITY_SELL_MULT = { Common = 0.5, Uncommon = 1, Rare = 2, Epic = 4, Legendary = 8 }
 
--- Standardized Base Rarity Drop Chances across all bosses:
--- Legendary: 5%, Epic: 10%, Rare: 40%, Uncommon: 60%, Common: 80%
-local BASE_RARITY_DROP_CHANCES = {
-	Legendary = 0.05,
-	Epic      = 0.10,
-	Rare      = 0.40,
-	Uncommon  = 0.60,
-	Common    = 0.80,
-}
+-- Chance a boss drops anything at all per kill (BossWeapons.DropChance, unchanged from the
+-- single-sword roster); rebirths add RebirthConfig's per-class bonus. What drops is then rolled
+-- inside BossSwordFactory.build: rarity, which sword of the boss's pool, base stat jitter.
+local DEFAULT_DROP = { chance = 0.80, rebirthClass = "Common" }
 
 local PITY_THRESHOLD_BASE = 50 -- [TUNING] guaranteed drop after this many failures
 local PITY_PER_REBIRTH = 5    -- [TUNING] threshold increases with rebirth count
 local playerPityCount = {} -- [player] = consecutive failed rare drops
-
-local BOSS_WEAPONS = BossWeapons.Weapons
 
 local function getWeaponSlots(tool)
 	if not tool then return 0 end
@@ -66,8 +61,18 @@ local function getEquippedWeaponSlots(player)
 end
 
 -- Built by the shared BossSwordFactory (MerchantSystem uses the same builder)
-local function makeBossSword(archetypeKey, blessedBonus)
-	return BossSwordFactory.build(archetypeKey, { blessedBonus = blessedBonus })
+-- A drop rolls its long tail at the killer's live luck (kill streak + rebirths; Lucky Charges
+-- are spent at the anvil, not here). Same 1-in-N ladder as the Reforge, see WeaponModifiers.
+local function killerLuck(player)
+	local streak = tonumber(player:GetAttribute("KillStreak")) or 0
+	local at = tonumber(player:GetAttribute("KillStreakAt")) or -math.huge
+	if os.clock() - at > WeaponModifiers.Luck.STREAK_WINDOW then streak = 0 end
+	local luck = WeaponModifiers.LuckFrom(streak, false, tonumber(player:GetAttribute("Rebirths")) or 0)
+	return luck
+end
+
+local function makeBossSword(archetypeKey, blessedBonus, luck)
+	return BossSwordFactory.build(archetypeKey, { blessedBonus = blessedBonus, luck = luck })
 end
 
 local function giveSword(player, archetypeKey, blessedBonus)
@@ -79,7 +84,8 @@ local function giveSword(player, archetypeKey, blessedBonus)
 		return false
 	end
 
-	local tool, mods, fullName, gotExtraSlot, weaponData = makeBossSword(archetypeKey, blessedBonus)
+	local luck = killerLuck(player)
+	local tool, mods, fullName, gotExtraSlot, weaponData = makeBossSword(archetypeKey, blessedBonus, luck)
 	local droppedTier = BOSS_TIERS[archetypeKey] or 1
 	local droppedSlots = #mods + (gotExtraSlot and 1 or 0)
 	local autoSellEnabled = player:GetAttribute("AutoSellLowerSwords") == true
@@ -87,7 +93,7 @@ local function giveSword(player, archetypeKey, blessedBonus)
 
 	-- Auto-sell only drops with fewer modifier slots than the equipped weapon.
 	if autoSellEnabled and equippedSlots > droppedSlots then
-		local baseValue = BOSS_SELL_VALUES[droppedTier] or 50
+		local baseValue = math.floor((BOSS_SELL_VALUES[droppedTier] or 50) * (RARITY_SELL_MULT[weaponData.rarity] or 1))
 		if gotExtraSlot then
 			baseValue = math.floor(baseValue * 1.5)
 		end
@@ -120,9 +126,20 @@ local function giveSword(player, archetypeKey, blessedBonus)
 	tool.Parent = container
 	
 	-- Pass modifiers summary to client toast
-	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods, gotExtraSlot)
-	print(string.format("[SwordDropSystem] %s obtained [%s] (Mult: x%.2f, Rarity: %s, Mods: %d%s)",
-		player.Name, fullName, weaponData.baseMult, weaponData.rarity, #mods, gotExtraSlot and " [BLESSED!]" or ""))
+	-- Each mod carries its true 1-in-N (oneInText) for the loot card; the whole-roll extras ride
+	-- in a sixth argument so older clients keep working.
+	for _, mod in ipairs(mods) do
+		mod.oneInText = WeaponModifiers.OneInText(mod.p or 0)
+		mod.rung = WeaponModifiers.Rungs[mod.tier] and WeaponModifiers.Rungs[mod.tier].name or nil
+	end
+	-- The sixth argument tells the loot card which pool the sword came from, which rarity variant it
+	-- landed as (with the real odds of that rarity) and the base it rolled against the listed one.
+	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods, gotExtraSlot,
+		{ variant = tool:GetAttribute("Variant"), luck = luck, pool = weaponData.bossName, baseName = weaponData.name,
+			listedBase = weaponData.listedBase, rarityOdds = weaponData.rarityOdds, legendary = weaponData.isLegendary })
+	print(string.format("[SwordDropSystem] %s obtained [%s] (%s pool, %s, Mult: x%.2f of listed x%.2f, Mods: %d%s)",
+		player.Name, fullName, tostring(weaponData.bossName), weaponData.rarity, weaponData.baseMult,
+		weaponData.listedBase or weaponData.baseMult, #mods, gotExtraSlot and " [BLESSED!]" or ""))
 	return true
 end
 
@@ -217,9 +234,9 @@ local function hook(model)
 
 		local rebirths = killer:GetAttribute("Rebirths") or 0
 		local archKey = model:GetAttribute("Archetype") or "Boss_Gorgon"
-		local weaponData = BOSS_WEAPONS[archKey]
-		local rarity = weaponData and weaponData.rarity or "Common"
-		local baseDropRate = BASE_RARITY_DROP_CHANCES[rarity] or 0.80
+		local dropCfg = BossWeapons.DropChance[archKey] or DEFAULT_DROP
+		local rarity = dropCfg.rebirthClass
+		local baseDropRate = dropCfg.chance
 		
 		-- Scale drop chance with rebirths
 		local effectiveDropRate = RebirthConfig.GetEffectiveDropChance(baseDropRate, rarity, rebirths)

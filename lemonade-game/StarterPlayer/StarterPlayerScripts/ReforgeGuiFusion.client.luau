@@ -45,10 +45,14 @@ local WHITE = Color3.new(1, 1, 1)
 local COIN_ICON = "rbxassetid://84697600263846" -- the HUD's gold coin
 local TROPHY_ICON = "rbxassetid://77830885604568" -- the Inventory's rating trophy
 
-local TIER_COLORS = {
-	Color3.fromRGB(170, 170, 176), Color3.fromRGB(90, 200, 120), Color3.fromRGB(80, 150, 255),
-	Color3.fromRGB(190, 90, 240), Color3.fromRGB(255, 200, 40), Color3.fromRGB(255, 80, 80),
-}
+-- One colour per rung of the ladder, from the config so the popup, reel and reveal agree.
+local TIER_COLORS = {}
+for tier, rung in ipairs(WeaponModifiers.Rungs) do TIER_COLORS[tier] = rung.color end
+local function rungName(tier: number?): string
+	local rung = tier and WeaponModifiers.Rungs[tier]
+	return rung and rung.name or "?"
+end
+local POPUP_W, POPUP_H = 780, 560
 local RARITIES = { "All", "Legendary", "Epic", "Rare", "Uncommon", "Common" }
 
 -- [TUNING] design-space sizes; the whole window is scaled with one UIScale.
@@ -129,7 +133,7 @@ local costC = scope:Computed(function(use)
 	local names = use(lockNamesC)
 	if #names > 0 then
 		return SwordValue.rerollCostWithLocks({ Rarity = info.rarity, Prefixes = info.prefixes, ExtraSlot = info.blessed,
-			BossTier = info.tier }, names)
+			BossTier = info.tier, Variant = info.variant }, names)
 	end
 	local odds = use(oddsInfoValue)
 	if odds and (odds.freeIn or 1) <= 0 then return 0 end
@@ -165,7 +169,9 @@ end)
 local function baseName(name: string?): string
 	local words = {}
 	for word in string.gmatch(name or "", "%S+") do
-		if word ~= "Blessed" and not SwordValue.TIER_BY_NAME[word] then table.insert(words, word) end
+		if word ~= "Blessed" and not SwordValue.TIER_BY_NAME[word] and not WeaponModifiers.VariantByName[word] then
+			table.insert(words, word)
+		end
 	end
 	return #words > 0 and table.concat(words, " ") or (name or "Relic Sword")
 end
@@ -197,22 +203,56 @@ local pityShortC = scope:Computed(function(use)
 	return string.format("%d LEFT", after - pity)
 end)
 
+-- Luck line for the popup and the hero: "LUCK 1.4x  ·  streak 20 (+0.4)  ·  charge (+1.0)  ·  rebirth (+0.0)".
+local function luckSummary(odds): string
+	local luck = odds and odds.luck
+	if not luck then return "LUCK 1.0x" end
+	local parts = { string.format("LUCK %.1fx", luck.total or 1) }
+	table.insert(parts, string.format("streak %d (+%.1f)", luck.streak or 0, luck.streakBonus or 0))
+	table.insert(parts, string.format("%d charge%s (%s)", luck.charges or 0, (luck.charges or 0) == 1 and "" or "s",
+		(luck.charges or 0) > 0 and string.format("+%.1f next paid strike", luck.chargeBonus or 0) or "boss kills bank one"))
+	table.insert(parts, string.format("rebirth +%.1f", luck.rebirthBonus or 0))
+	return table.concat(parts, "  ·  ")
+end
+local luckLineC = scope:Computed(function(use) return luckSummary(use(oddsInfoValue)) end)
+
 local oddsPopupTextC = scope:Computed(function(use)
 	local info = use(selectedC)
 	local odds = use(oddsInfoValue)
 	if not info or not odds or not odds.odds or not odds.odds[info.rarity] then
-		return "Pick a sword to see the exact chance of each modifier tier for its rarity."
+		return "Pick a sword to see the exact 1-in-N of every rung for its rarity."
 	end
 	local o = odds.odds[info.rarity]
-	local parts = {}
-	for tier = 1, #o.tiers do
-		table.insert(parts, string.format("T%d %.1f%%", tier, o.tiers[tier] * 100))
+	local lines = {}
+	local slots = o.slots or 1
+	local ladder = o.ladder
+	local top = ladder and ladder[odds.tierCount or 10]
+	local bc = odds.broadcastTier or 8
+	local bcRow = ladder and ladder[bc]
+	table.insert(lines, string.format("%s rolls %d slot%s a strike. Odds above are per slot; luck multiplies the long tail (T7+) only.",
+		info.rarity, slots, slots == 1 and "" or "s"))
+	if bcRow then
+		table.insert(lines, string.format("Whole-strike chance of a %s or better: %s. A %s+ strike is announced to the whole server.",
+			rungName(bc), bcRow.atLeastOneInText or "?", rungName(bc)))
+	end
+	if top then
+		table.insert(lines, string.format("%s (T%d) lands %s per slot: %s per strike on this sword.", top.name, odds.tierCount or 10,
+			top.oneInText or "?", top.atLeastOneInText or "?"))
 	end
 	local pity, after = odds.pity or 0, odds.pityAfter or 5
-	local pityText = pity >= after
-		and string.format("Guaranteed lucky roll ready: next reforge guarantees a T%d+ modifier.", odds.pityTier or 4)
-		or string.format("Guaranteed lucky roll in %d / %d reforges (then a T%d+ modifier is guaranteed).", pity, after, odds.pityTier or 4)
-	return string.format("%s odds per modifier: %s.  %s", info.rarity, table.concat(parts, "  "), pityText)
+	local tailPity, tailAfter = odds.tailPity or 0, odds.tailPityAfter or 250
+	table.insert(lines, string.format("Pity: %s. Long-tail pity: %d / %d strikes without a %s+ (then one is guaranteed).",
+		pity >= after and string.format("lucky roll READY (a T%d+ is guaranteed next strike)", odds.pityTier or 4)
+			or string.format("lucky roll in %d / %d (then a T%d+ is guaranteed)", pity, after, odds.pityTier or 4),
+		tailPity, tailAfter, rungName(odds.tailPityTier or 7)))
+	local vparts = {}
+	for _, v in ipairs(odds.variants or {}) do
+		table.insert(vparts, string.format("%s 1 in %d (x%.1f)", v.name, v.oneIn, v.mult))
+	end
+	if #vparts > 0 then
+		table.insert(lines, "Mutations (true odds, every roll): " .. table.concat(vparts, ", ") .. ". Blessed 1 in 33: an extra slot at double tail luck.")
+	end
+	return table.concat(lines, "\n")
 end)
 
 local freeReadyC = scope:Computed(function(use)
@@ -267,6 +307,7 @@ local reforgeMotion -- shared open/close motion (PanelChrome), set once the wind
 local function close()
 	if peek(spinningValue) then return end
 	setOddsPopupVisible(false)
+	REFORGE:FireServer("Close")
 	if not peek(overlayVisible) or not reforgeMotion then
 		overlayVisible:set(false)
 		return
@@ -468,15 +509,17 @@ end
 
 local function seq(top, bottom) return ColorSequence.new(top, bottom) end
 
--- One tier tile for the odds preview: the tier number big over its colour, the chance under it.
+-- One rung tile for the odds preview: the rung number and name over its colour, the true
+-- 1-in-N per slot under it (the ladder the server sent, at the luck the next strike uses).
 local function tierTile(tier: number, sizeProp)
 	local top, bottom, rim = tierColors(tier)
 	local pctC = scope:Computed(function(use)
 		local info, odds = use(selectedC), use(oddsInfoValue)
 		local o = info and odds and odds.odds and odds.odds[info.rarity]
-		if not (o and o.tiers[tier]) then return "?" end
-		local p = o.tiers[tier] * 100
-		return p >= 10 and string.format("%d%%", math.floor(p + 0.5)) or string.format("%.1f%%", p)
+		if not o then return "?" end
+		if o.ladder and o.ladder[tier] then return o.ladder[tier].oneInText or "?" end
+		if not o.tiers[tier] then return "?" end
+		return WeaponModifiers.OneInText(o.tiers[tier])
 	end)
 	local tile = scope:New "Frame" {
 		Name = "Tier" .. tier, LayoutOrder = tier, Size = sizeProp, BackgroundColor3 = WHITE, ZIndex = 7,
@@ -499,8 +542,9 @@ local function tierTile(tier: number, sizeProp)
 	shine.ZIndex = 7
 	shine.Parent = tile
 	corner(shine, 9)
-	PanelChrome.display(tile, { text = "T" .. tier, size = 34, stroke = 3, pos = UDim2.fromScale(0, 0.06), size2 = UDim2.fromScale(1, 0.5), scaled = true, minSize = 14, zIndex = 8 })
-	local pct = PanelChrome.display(tile, { text = "", size = 20, stroke = 2.5, pos = UDim2.fromScale(0.04, 0.56), size2 = UDim2.fromScale(0.92, 0.34), scaled = true, minSize = 10, zIndex = 8 })
+	PanelChrome.display(tile, { text = "T" .. tier, size = 30, stroke = 3, pos = UDim2.fromScale(0, 0.04), size2 = UDim2.fromScale(1, 0.36), scaled = true, minSize = 12, zIndex = 8 })
+	PanelChrome.display(tile, { text = string.upper(rungName(tier)), size = 17, stroke = 2, pos = UDim2.fromScale(0.03, 0.4), size2 = UDim2.fromScale(0.94, 0.24), scaled = true, minSize = 9, zIndex = 8 })
+	local pct = PanelChrome.display(tile, { text = "", size = 19, stroke = 2.5, pos = UDim2.fromScale(0.03, 0.66), size2 = UDim2.fromScale(0.94, 0.28), scaled = true, minSize = 9, zIndex = 8 })
 	scope:Hydrate(pct) { Text = pctC }
 	return tile
 end
@@ -1388,21 +1432,33 @@ local window = scope:New "Frame" {
 
 local popup = scope:New "Frame" {
 	Name = "OddsPopup", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
-	Size = UDim2.fromOffset(500, 380), BackgroundColor3 = WHITE, ZIndex = 30, Visible = oddsPopupVisible, Active = true,
+	Size = UDim2.fromOffset(POPUP_W, POPUP_H), BackgroundColor3 = WHITE, ZIndex = 30, Visible = oddsPopupVisible, Active = true,
 	[Children] = {
 		popupScale,
 		scope:New "UICorner" { CornerRadius = UDim.new(0, 22) },
 		scope:New "UIGradient" { Rotation = 90, Color = seq(BRIGHT.Panel, BRIGHT.PanelBottom) },
 		scope:New "UIStroke" { Color = BRIGHT.Outline, Thickness = 4.5 },
 		scope:New "Frame" {
-			Name = "Tiers", BackgroundTransparency = 1, Position = UDim2.fromOffset(20, 44), Size = UDim2.new(1, -40, 0, 104), ZIndex = 31,
+			Name = "Tiers", BackgroundTransparency = 1, Position = UDim2.fromOffset(20, 48), Size = UDim2.new(1, -40, 0, 216), ZIndex = 31,
 			[Children] = {
-				scope:New "UIListLayout" { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder },
+				scope:New "UIGridLayout" {
+					CellSize = UDim2.fromOffset(math.floor((POPUP_W - 40 - 4 * 8) / 5), 104), CellPadding = UDim2.fromOffset(8, 8),
+					SortOrder = Enum.SortOrder.LayoutOrder, FillDirectionMaxCells = 5,
+				},
 			},
 		},
 		scope:New "TextLabel" {
-			Name = "Body", BackgroundTransparency = 1, Position = UDim2.fromOffset(22, 164), Size = UDim2.new(1, -44, 1, -226),
-			TextSize = 17, TextColor3 = BRIGHT.Ink, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top,
+			Name = "LuckLine", BackgroundTransparency = 1, Position = UDim2.fromOffset(22, 270), Size = UDim2.new(1, -44, 0, 30),
+			TextScaled = true, TextColor3 = Color3.fromRGB(150, 86, 6), TextXAlignment = Enum.TextXAlignment.Left,
+			Font = DISPLAY, ZIndex = 31, Text = luckLineC,
+			[Children] = {
+				scope:New "UITextSizeConstraint" { MaxTextSize = 22, MinTextSize = 12 },
+				scope:New "UIStroke" { Color = BRIGHT.Outline, Thickness = 1.5 },
+			},
+		},
+		scope:New "TextLabel" {
+			Name = "Body", BackgroundTransparency = 1, Position = UDim2.fromOffset(22, 304), Size = UDim2.new(1, -44, 1, -366),
+			TextSize = 16, TextColor3 = BRIGHT.Ink, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top,
 			TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, ZIndex = 31, Text = oddsPopupTextC,
 		},
 		scope:New "TextLabel" {
@@ -1414,11 +1470,11 @@ local popup = scope:New "Frame" {
 	},
 }
 for tier = 1, WeaponModifiers.TIER_COUNT do
-	tierTile(tier, UDim2.new(1 / WeaponModifiers.TIER_COUNT, -7, 1, 0)).Parent = popup:FindFirstChild("Tiers")
+	tierTile(tier, UDim2.fromOffset(100, 100)).Parent = popup:FindFirstChild("Tiers")
 end
 do
 	local popupTitle = PanelChrome.display(popup, {
-		name = "Title", text = "Reforge Odds", size = 38, stroke = 3.5, xAlign = Enum.TextXAlignment.Left,
+		name = "Title", text = "Reforge Odds: 1 in N per slot", size = 38, stroke = 3.5, xAlign = Enum.TextXAlignment.Left,
 		anchor = Vector2.new(0, 0.5), pos = UDim2.fromOffset(22, -2), size2 = UDim2.new(0.7, 0, 0, 48), zIndex = 32,
 	})
 	local popupClose = PanelChrome.chunkyButton(popup, {
@@ -1481,7 +1537,9 @@ end
 scope:Observer(layout):onBind(function()
 	local s = peek(layout).s
 	panelScale.Scale = s
-	popupScale.Scale = math.min(s * 1.1, 1)
+	local camera = workspace.CurrentCamera
+	local vp = camera and camera.ViewportSize or Vector2.new(POPUP_W, POPUP_H)
+	popupScale.Scale = math.min(s * 1.1, 1, (vp.X - 16) / POPUP_W, (vp.Y - 16) / POPUP_H)
 end)
 PanelChrome.onViewport(applyLayout)
 
@@ -1556,8 +1614,12 @@ local function spin(result)
 			local names = {}
 			for _, m in ipairs(result.mods) do table.insert(names, m.name) end
 			if result.blessed then table.insert(names, 1, "Blessed") end
+			if result.variant then table.insert(names, 1, tostring(result.variant)) end
 			local t = RARITY_TILE[result.rarity]
-			makeCard(i, #names > 0 and table.concat(names, "\n") or "Plain", result.rarity, t and t.bottom or TIER_COLORS[1], true)
+			local topTier = result.topTier or 0
+			local colour = topTier >= (WeaponModifiers.BODY_TIERS + 1) and TIER_COLORS[topTier] or (t and t.bottom or TIER_COLORS[1])
+			local sub = topTier > 0 and (result.topOneInText or result.rarity) or result.rarity
+			makeCard(i, #names > 0 and table.concat(names, "\n") or "Plain", sub, colour, true)
 		else
 			randomFillerCard(i, result.rarity)
 		end
@@ -1582,10 +1644,23 @@ local function spin(result)
 	AudioManager.PlaySFX(result.after >= result.before and "quest_complete" or "enemy_hit", screenGui)
 
 	reveal.Visible = true
-	revealName.Text = result.personalBest and "NEW PERSONAL BEST!" or string.upper(result.rarity or "")
-	revealName.TextColor3 = result.personalBest and Color3.fromRGB(255, 226, 110) or ((RARITY_TILE[result.rarity] or RARITY_TILE.Common).top)
+	-- The band is stamped with the best rung that landed and its true 1-in-N per slot.
+	local topTier = result.topTier or 0
+	if topTier > 0 then
+		revealName.Text = string.format("%s  ·  %s", string.upper(result.topRung or rungName(topTier)),
+			string.upper(result.topOneInText or ""))
+		revealName.TextColor3 = (TIER_COLORS[topTier] or TIER_COLORS[1]):Lerp(WHITE, 0.35)
+	else
+		revealName.Text = string.upper(result.rarity or "")
+		revealName.TextColor3 = (RARITY_TILE[result.rarity] or RARITY_TILE.Common).top
+	end
 	local notes = {}
+	if result.personalBest then table.insert(notes, "NEW PERSONAL BEST") end
+	if result.broadcast then table.insert(notes, "SERVER-WIDE!") end
+	if result.variant then table.insert(notes, string.upper(tostring(result.variant)) .. " mutation") end
 	if result.blessed then table.insert(notes, "Blessed slot") end
+	if result.luck and (result.luck.total or 1) > 1.001 then table.insert(notes, string.format("luck %.1fx", result.luck.total)) end
+	if result.strikeOneInText and topTier > 0 then table.insert(notes, result.strikeOneInText .. " per strike") end
 	if result.pityApplied then table.insert(notes, "pity floor applied") end
 	if result.kept then table.insert(notes, "kept " .. tostring(result.kept)) end
 	if #result.mods == 0 then table.insert(notes, "no modifiers this time") end
@@ -1665,6 +1740,21 @@ GuiShowcase.register("Reforge", function()
 	if peek(overlayVisible) and rows[1] and not peek(selectedToolName) then
 		selectTool(rows[1].toolName)
 	end
+end)
+-- Studio-only capture of the odds disclosure: the panel with row 1 selected and the Odds popup up.
+GuiShowcase.register("ReforgeOdds", function()
+	REFORGE:FireServer("Open")
+	local deadline = os.clock() + 20
+	while not (peek(overlayVisible) and #peek(rowsValue) > 0) and os.clock() < deadline do
+		task.wait(0.25)
+	end
+	task.wait(0.6)
+	local rows = peek(rowsValue)
+	if peek(overlayVisible) and rows[1] and not peek(selectedToolName) then
+		selectTool(rows[1].toolName)
+	end
+	task.wait(0.4)
+	setOddsPopupVisible(true)
 end)
 
 print("[ReforgeGuiFusion] Fusion-based Reforge panel enabled")

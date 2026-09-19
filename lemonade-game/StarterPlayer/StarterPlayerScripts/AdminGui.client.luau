@@ -174,7 +174,8 @@ end
 label(panel, { text = "Give sword (best roll)", font = Enum.Font.GothamBold, pos = UDim2.fromOffset(14, 200), size = UDim2.new(1, -28, 0, 16) })
 
 local swordList = {}
-for archetypeKey, weaponData in pairs(BossWeapons.Weapons) do
+for archetypeKey in pairs(BossWeapons.Pools) do
+	local weaponData = BossWeapons.GetLegendary(archetypeKey)
 	table.insert(swordList, { key = archetypeKey, name = weaponData.name, rarity = weaponData.rarity, tier = BossWeapons.GetTier(archetypeKey) })
 end
 table.sort(swordList, function(a, b) return a.tier < b.tier end)
