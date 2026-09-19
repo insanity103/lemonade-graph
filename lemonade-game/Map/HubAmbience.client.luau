@@ -286,9 +286,12 @@ local function trainerRoutine()
 		local standAt = Vector3.new(target.X, home.Position.Y, target.Z) + away * STAND_OFF
 		local facing = CFrame.lookAt(standAt, Vector3.new(target.X, standAt.Y, target.Z))
 
+		if model:GetAttribute("ShowcaseHold") then continue end -- a Studio showcase is filming him
 		-- The server never moves him, so his respec prompt stays at the post: hide it while away.
 		local prompt = model.PrimaryPart:FindFirstChildOfClass("ProximityPrompt")
 		if prompt then prompt.Enabled = false end
+		-- NpcAnimator's standing idle lets go of his joints while he is away from his post.
+		model:SetAttribute("AmbienceBusy", true)
 		-- Draw the sword from his back. The prebuilt swordsman rig already carries its own
 		-- sword welded to its hand (always drawn, no sheathed state) -- only the block rig
 		-- needs this temporary prop.
@@ -327,6 +330,7 @@ local function trainerRoutine()
 		if backGuard then backGuard.Transparency = 0 end
 		local back = walkPath(model, parts, facing, home.Position, WALK_SPEED, nil)
 		walk(model, parts, back, home, nil)
+		model:SetAttribute("AmbienceBusy", nil)
 		if prompt then prompt.Enabled = true end
 	end
 end
@@ -603,6 +607,10 @@ local function smithRoutine(forge: Model)
 			if triggered == prompt then wanted = true end
 		end)
 	end
+	-- A Studio showcase filming him at the counter calls him back the same way a customer does.
+	model:GetAttributeChangedSignal("ShowcaseHold"):Connect(function()
+		if model:GetAttribute("ShowcaseHold") then wanted = true end
+	end)
 	local rng = Random.new()
 	local function spark()
 		for _ = 1, 5 do
@@ -628,7 +636,9 @@ local function smithRoutine(forge: Model)
 	print("[HubAmbience] Relic Blacksmith forge routine running")
 	while model.Parent do
 		task.wait(rng:NextNumber(10, 20))
-		if wanted then wanted = false continue end
+		if wanted or model:GetAttribute("ShowcaseHold") then wanted = false continue end
+		-- NpcAnimator's standing idle lets go of his joints while he is away from his counter.
+		model:SetAttribute("AmbienceBusy", true)
 		local arrived = walkPath(model, parts, home, stand, WALK_SPEED, nil)
 		local facing = CFrame.lookAt(stand, Vector3.new(anvilPos.X, stand.Y, anvilPos.Z))
 		walk(model, parts, arrived, facing, nil)
@@ -658,6 +668,7 @@ local function smithRoutine(forge: Model)
 		task.wait(0.6)
 		local back = walkPath(model, parts, facing, home.Position, WALK_SPEED * (wanted and 1.4 or 1), nil)
 		walk(model, parts, back, home, nil)
+		model:SetAttribute("AmbienceBusy", nil)
 		wanted = false
 	end
 end

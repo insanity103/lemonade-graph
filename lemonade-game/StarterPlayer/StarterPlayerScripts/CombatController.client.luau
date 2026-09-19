@@ -8,6 +8,11 @@ local ACTION_NAME = "Attack"
 
 local attackRemote = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("EnemyAttack")
 
+-- Enemy bodies (walk cycle, weapon swings) are posed on this client from replicated state.
+require(ReplicatedStorage:WaitForChild("EnemyAnimator")).start()
+-- The town's service NPCs (merchant, quest giver...) stand at their posts with a living idle.
+require(ReplicatedStorage:WaitForChild("NpcAnimator")).start()
+
 local playerGui = player:WaitForChild("PlayerGui")
 
 local function getEquippedTool()
