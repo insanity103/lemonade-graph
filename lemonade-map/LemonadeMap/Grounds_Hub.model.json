@@ -200,6 +200,9 @@
     "CanQuery": true,
     "CanTouch": false,
     "CastShadow": true
+   },
+   "attributes": {
+    "TerrainPaving": true
    }
   },
   {
@@ -444,6 +447,356 @@
      0.3608
     ],
     "Material": "Cobblestone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GutterW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.8,
+     0.67,
+     54.5
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -8.4,
+       9.935,
+       -68.25
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.3608,
+     0.3373,
+     0.3137
+    ],
+    "Material": "Slate",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "CurbW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.8,
+     1.02,
+     54.9
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -9.2,
+       10.11,
+       -68.05
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.8,
+     0.7451,
+     0.6431
+    ],
+    "Material": "Limestone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "WalkW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     4.4,
+     0.9,
+     54.5
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -11.8,
+       10.05,
+       -68.25
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6902,
+     0.6353,
+     0.549
+    ],
+    "Material": "Slate",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GutterE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.8,
+     0.67,
+     54.5
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       8.4,
+       9.935,
+       -68.25
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.3608,
+     0.3373,
+     0.3137
+    ],
+    "Material": "Slate",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "CurbE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.8,
+     1.02,
+     54.9
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       9.2,
+       10.11,
+       -68.05
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.8,
+     0.7451,
+     0.6431
+    ],
+    "Material": "Limestone",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "WalkE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     4.4,
+     0.9,
+     54.5
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       11.8,
+       10.05,
+       -68.25
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6902,
+     0.6353,
+     0.549
+    ],
+    "Material": "Slate",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "WalkForecourt",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     3.0,
+     0.9,
+     10.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -15.5,
+       10.05,
+       -89.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.6902,
+     0.6353,
+     0.549
+    ],
+    "Material": "Slate",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,

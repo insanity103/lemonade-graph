@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import math
 import random
+import re
 import shutil
 import zlib
 from pathlib import Path
@@ -69,7 +70,7 @@ RUST = (150, 82, 44)
 IRON_DARK = (58, 56, 54)
 MOSS = (92, 128, 60)
 MUD = (104, 80, 54)
-SUMP_WATER = (84, 66, 44)
+SUMP_WATER = (72, 118, 112)  # the sump, cleared by the waterfall that feeds it
 SPLINTER = (58, 40, 26)
 
 IDENTITY = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
@@ -277,11 +278,14 @@ def floor_at(x, z, default=None):
 
 
 def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, chunk=(10, 18),
-              material="Sandstone", h_jitter=(0.82, 1.18), caps=True, proxy=True, protrude=0.0, solid=False):
+              material="Sandstone", h_jitter=(0.82, 1.18), caps=True, proxy=True, protrude=0.0, solid=False,
+              taper=None):
     """Visual cliff chunks along segment a→b whose inner faces sit on the segment line.
 
     `inward` is +1 when the play area lies to the left of a→b (looking down from +Y), else -1.
     Returns (visual_children, proxy_part). Visual chunks never collide; the proxy does.
+    `taper(x, z)`, when given, scales each chunk's height at its centre (it draws nothing from
+    `rng`, so a taper never shifts the rest of the map's seeded layout).
     """
     ax, az = a
     bx, bz = b
@@ -302,6 +306,8 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
         d = depth * rng.uniform(0.9, 1.3)
         cx = ax + dx * (s + length / 2) - nx * (d / 2 - protrude)
         cz = az + dz * (s + length / 2) - nz * (d / 2 - protrude)
+        if taper:
+            h *= taper(cx, cz)
         h = free_top(base_y + h - 1, cx, cz) - base_y + 1
         last_h = h
         jitter = rng.uniform(-4, 4)
@@ -328,18 +334,78 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
     return out, proxy
 
 
+# Hub tree palette: bark, and three leaf tones from the cool blue-green underside to the warm
+# yellow-green crown the sun catches.
+BARK = (88, 62, 44)
+BARK_DARK = (70, 50, 38)
+LEAF_SHADE = (44, 92, 62)
+LEAF_MID = (72, 132, 50)
+LEAF_SUN = (122, 168, 58)
+# Horizontal direction toward the afternoon sun (WorldLook: latitude -10, mid afternoon), so the
+# leaf masses on that side take the warm tone.
+SUN_XZ = (-0.68, -0.73)
+
+
 def tree(name, x, y, z, rng, scale=1.0):
+    """Hearthmere broadleaf: a tapered bark trunk with a flared, rooted foot, two limbs, and a
+    crown of eight overlapping leaf masses (a big core, a ring of offset lobes, two crown lobes),
+    darker blue-green beneath and warmer on the sun side, so the silhouette breaks up and the
+    gaps between lobes dapple the lawn. The shared `rng` is drawn exactly as the old two-cube
+    tree drew it (five draws); the extra detail comes from a per-tree seed, so every other part
+    of the map generates unchanged. A child named Canopy stays (HubAmbience's butterflies)."""
     y = floor_at(x, z, y)
     s = scale * rng.uniform(0.85, 1.15)
     trunk_h = 11 * s
-    leaves = rng.choice(LEAVES)
-    kids = [part("Trunk", (2.2 * s, trunk_h, 2.2 * s), (x, y + trunk_h / 2, z), TRUNK, "Wood",
-                 rot_y(rng.uniform(0, 90)), layer="tree")]
+    rng.choice(LEAVES)
+    trunk_yaw = rng.uniform(0, 90)
     yaw = rng.uniform(0, 90)
-    kids.append(part("Canopy", (11 * s, 8 * s, 11 * s), (x, y + trunk_h + 2 * s, z), leaves, "Grass",
-                     rot_y(yaw), collide=False, layer="canopy"))
-    kids.append(part("CanopyTop", (7.5 * s, 5 * s, 7.5 * s), (x, y + trunk_h + 7.5 * s, z),
-                     rng.choice(LEAVES), "Grass", rot_y(yaw + 45), collide=False, layer="canopy"))
+    rng.choice(LEAVES)
+    local = random.Random(zlib.crc32(name.encode()))
+    up = rot_z(90)  # Cylinder parts run along X; this stands them up
+    kids = [
+        part("Bole", (trunk_h * 0.5, 2.7 * s, 2.7 * s), (x, y + trunk_h * 0.25, z), BARK_DARK, "Wood",
+             mul(rot_y(trunk_yaw), up), shape="Cylinder", layer="tree"),
+        part("Trunk", (trunk_h * 0.62, 2.0 * s, 2.0 * s), (x, y + trunk_h * 0.69, z), BARK, "Wood",
+             mul(rot_y(trunk_yaw + 40), up), shape="Cylinder", layer="tree"),
+        part("RootFlare", (1.0 * s, 3.8 * s, 3.8 * s), (x, y + 0.5 * s, z), BARK_DARK, "Wood", up,
+             shape="Cylinder", collide=False, shadow=False, layer="tree"),
+    ]
+    for k in range(4):
+        a = math.radians(trunk_yaw) + k * math.pi / 2 + local.uniform(-0.35, 0.35)
+        reach = local.uniform(2.6, 3.4) * s
+        kids.append(beam(f"Root{k}", (x + math.cos(a) * 0.6 * s, y + 1.9 * s, z + math.sin(a) * 0.6 * s),
+                         (x + math.cos(a) * reach, y + 0.1, z + math.sin(a) * reach), 0.75 * s, BARK_DARK,
+                         depth=0.9 * s, collide=False, query=False, shadow=False, layer="tree"))
+    top = y + trunk_h
+    for k in range(2):
+        a = math.radians(yaw) + k * math.pi + local.uniform(-0.4, 0.4)
+        kids.append(beam(f"Limb{k}", (x, top - 2.6 * s, z), (x + math.cos(a) * 3.2 * s, top + 1.2 * s, z + math.sin(a) * 3.2 * s),
+                         0.7 * s, BARK, collide=False, query=False, shadow=False, layer="tree"))
+
+    def tone(dx, dy, dz):
+        """Leaf tone for a lobe offset: underside cool, sun side and crown warm."""
+        h = math.hypot(dx, dz) or 1.0
+        facing = (dx * SUN_XZ[0] + dz * SUN_XZ[1]) / h
+        lift = dy / (2.5 * s) + facing * 0.8
+        return LEAF_SUN if lift > 0.6 else LEAF_SHADE if lift < -0.35 else LEAF_MID
+
+    lobes = [("Canopy", 0.0, 2.2 * s, 0.0, 9.0 * s, LEAF_MID)]
+    ring = local.randint(5, 6)
+    for k in range(ring):
+        a = math.radians(yaw) + k * math.tau / ring + local.uniform(-0.3, 0.3)
+        r = local.uniform(3.4, 4.4) * s
+        d = local.uniform(5.2, 7.0) * s
+        dy = local.uniform(-0.6, 2.4) * s
+        dx, dz = math.cos(a) * r, math.sin(a) * r
+        dy = max(dy, d / 2 - 2.4 * s)  # lobe bottoms stay 8.6+ studs up (camera clearance)
+        lobes.append((f"Leaves{k}", dx, dy, dz, d, tone(dx, dy, dz)))
+    for k in range(2):
+        a = math.radians(yaw) + math.pi / 3 + k * math.pi + local.uniform(-0.4, 0.4)
+        dx, dz = math.cos(a) * 1.8 * s, math.sin(a) * 1.8 * s
+        lobes.append((f"Crown{k}", dx, local.uniform(5.2, 6.2) * s, dz, local.uniform(5.4, 6.4) * s, LEAF_SUN))
+    for lname, dx, dy, dz, d, color in lobes:
+        kids.append(part(lname, (d, d, d), (x + dx, top + dy, z + dz), color, "LeafyGrass",
+                         rot_y(local.uniform(0, 360)), shape="Ball", collide=False, query=False, layer="canopy"))
     return model(name, kids)
 
 
@@ -601,7 +667,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
                          "Cobblestone", collide=False))
         kids.append(part("ChimneyCap", (3.0, 0.6, 3.0), (chx, ch_top + 0.3, chz), STONE, "Slate", collide=False))
         kids.append(part("ChimneyFlue", (1.2, 0.3, 1.2), (chx, ch_top + 0.6, chz), (30, 28, 26), "Slate",
-                         collide=False, query=False, children=[smoke(3.5, 0.3, 2.5)]))
+                         collide=False, query=False, children=[smoke(2.2, 0.16, 2.5)]))
     if door and not open_front:
         # A furnished room so an opened door shows a home, not an empty box.
         fl = y + 0.8
@@ -894,11 +960,24 @@ def bush(name, x, y, z, rng, scale=1.0):
 
 
 def flower_bed(name, x, y, z, width, depth, yaw, rng):
-    """Soil box with a stone edge and a scatter of blooms. Tagged FlowerBed for butterflies."""
+    """Soil box with a stone edge, a low mound of leaves and a scatter of blooms on it. Tagged
+    FlowerBed for butterflies.
+
+    The leaves are two soft LeafyGrass mounds rather than a stem and a leaf per flower (a bed used
+    to cost up to 61 parts); the blooms sit on the foliage, so the bed reads fuller for a third of
+    the parts. `rng` is drawn exactly as the stem-and-leaf beds drew it, so nothing else in the
+    seeded map moves.
+    """
     r = rot_y(yaw)
+    common = dict(collide=False, query=False, shadow=False)
     kids = [part("Soil", (width, 0.7, depth), (x, y + 0.35, z), (74, 52, 36), "Ground", r, collide=False),
             part("Edge", (width + 0.8, 0.5, depth + 0.8), (x, y + 0.22, z), STONE_DARK, "Cobblestone", r, collide=False)]
-    # Daisies (petal disc + centre) and tulips (tall cupped bloom), each on a stem with a leaf.
+    for k, (share, lift, tone) in enumerate(((1.0, 0.0, (70, 124, 48)), (0.62, 0.28, (96, 150, 58)))):
+        off = apply(r, ((k - 0.5) * 0.3 * width * (1 - share), 0, 0))
+        if k == 1:  # the raised inner mound's footprint, in bed space: only blooms over it stand the 0.28 higher
+            mound_u, mound_hw, mound_hd = 0.5 * 0.3 * width * (1 - share), (width * share - 0.2) / 2, depth * 0.35
+        kids.append(part(f"Foliage{k}", (width * share - 0.2, 1.0 + lift, depth * (0.9 if k == 0 else 0.7)),
+                         (x + off[0], y + 0.75 + lift / 2, z + off[2]), tone, "LeafyGrass", r, **common))
     n = max(6, int(width * depth / 1.6))
     cols, rows = max(1, round(width / 1.1)), max(1, round(depth / 1.1))
     for k in range(n):
@@ -908,18 +987,22 @@ def flower_bed(name, x, y, z, width, depth, yaw, rng):
         fx, fz = x + w[0], z + w[2]
         h = rng.uniform(0.8, 1.4)
         color = rng.choice(FLOWER_COLORS)
-        common = dict(collide=False, query=False, shadow=False)
-        kids.append(part(f"Stem{k}", (0.14, h, 0.14), (fx, y + 0.7 + h / 2, fz), (70, 120, 50), "Grass", **common))
-        kids.append(part(f"Leaf{k}", (0.7, 0.08, 0.3), (fx + 0.3, y + 0.7 + h * 0.45, fz), (86, 138, 58), "Grass",
-                         mul(rot_y(rng.uniform(0, 180)), rot_z(20)), **common))
+        rng.uniform(0, 180)  # the old per-flower leaf's turn, still drawn to keep the seeded sequence
+        # Blooms stand just proud of the foliage mound, a little taller where the stem was taller.
+        on_mound = abs(lx) < width * 0.31 and abs(lx - mound_u) <= mound_hw and abs(lz) <= mound_hd
+        by = y + 1.2 + (0.28 if on_mound else 0.0) + (h - 0.8) * 0.5
         if k % 3 == 2:  # tulip
-            kids.append(part(f"Bloom{k}", (0.5, 0.75, 0.5), (fx, y + 0.7 + h + 0.3, fz), color, "SmoothPlastic",
+            kids.append(part(f"Bloom{k}", (0.55, 0.8, 0.55), (fx, by + 0.3, fz), color, "SmoothPlastic",
                              shape="Ball", **common))
         else:  # daisy: flat petal disc tilted slightly toward the sun, dark centre on top
             tilt = mul(rot_y(rng.uniform(0, 360)), rot_x(rng.uniform(8, 22)))
-            kids.append(part(f"Petals{k}", (0.08, 0.95, 0.95), (fx, y + 0.7 + h, fz), color, "SmoothPlastic",
+            if k % 3 == 1 and n > 8:  # big beds keep every other daisy's disc only (the centre alone reads at range)
+                kids.append(part(f"Centre{k}", (0.42, 0.3, 0.42), (fx, by + 0.12, fz), color,
+                                 "SmoothPlastic", tilt, shape="Ball", **common))
+                continue
+            kids.append(part(f"Petals{k}", (0.08, 0.95, 0.95), (fx, by, fz), color, "SmoothPlastic",
                              mul(tilt, rot_z(90)), shape="Cylinder", **common))
-            kids.append(part(f"Centre{k}", (0.32, 0.22, 0.32), (fx, y + 0.7 + h + 0.08, fz), (255, 214, 80),
+            kids.append(part(f"Centre{k}", (0.32, 0.22, 0.32), (fx, by + 0.08, fz), (255, 214, 80),
                              "SmoothPlastic", tilt, shape="Ball", **common))
     return model(name, kids, attrs={"FlowerBed": True, "BedX": x, "BedY": y + 2.0, "BedZ": z})
 
@@ -1062,7 +1145,7 @@ def forge_set(name, x, y, z, rng):
         part("ForgeHood", (4.0, 0.6, 3.0), (x, y + 7.2, z - 0.4), IRON, "Metal", collide=False),
         part("ForgeStack", (1.8, 5.5, 1.8), (x, y + 10.2, z - 0.9), STONE_DARK, "Cobblestone", collide=False),
         part("ForgeFlue", (1.0, 0.3, 1.0), (x, y + 13.1, z - 0.9), (30, 28, 26), "Slate", collide=False, query=False,
-             children=[smoke(4.0, 0.4, 3.5, (120, 116, 112))]),
+             children=[smoke(4.0, 0.22, 3.5, (226, 214, 202))]),  # pale, so it never reads as soot against the sky
         part("HoodPostL", (0.4, 3.6, 0.4), (x - 1.8, y + 5.2, z - 1.6), IRON, "Metal", collide=False),
         part("HoodPostR", (0.4, 3.6, 0.4), (x + 1.8, y + 5.2, z - 1.6), IRON, "Metal", collide=False),
         part("Bellows", (2.0, 0.8, 1.4), (x + 2.9, y + 3.0, z), (110, 72, 42), "Wood", rot_y(20), collide=False),
@@ -1220,7 +1303,7 @@ def smithy(name, x0, x1, z0, z1, y, rng):
              "Cobblestone", collide=False),
         part("StackCap", (4.0, 0.7, 4.0), (hx, top + rise + 5.35, hz - 0.6), STONE_WALL, "Slate", collide=False),
         part("StackFlue", (1.6, 0.3, 1.6), (hx, top + rise + 5.8, hz - 0.6), (30, 28, 26), "Slate", collide=False, query=False,
-             children=[smoke(5.0, 0.45, 4.0, (110, 106, 102))]),
+             children=[smoke(5.0, 0.24, 4.0, (226, 214, 202))]),  # pale, so it never reads as soot against the sky
         part("Bellows", (2.6, 1.0, 1.8), (hx - 4.6, y + 2.8, hz + 0.4), (110, 72, 42), "Wood", rot_y(-20), collide=False),
         part("BellowsHandle", (0.3, 0.3, 2.4), (hx - 5.8, y + 3.4, hz + 1.2), BEAM, "Wood", rot_y(-20), collide=False),
     ]
@@ -1684,6 +1767,273 @@ def build_markers():
     return markers
 
 
+# ── Hearthmere High Street kit ────────────────────────────────────────────────
+# The north road from the plaza to the Ascension Gate is the town's street: shopfronts and houses
+# line both sides on a flagstone walk, behind a raised curb and a dark gutter course. The kit is lean
+# on purpose (a closed plaster body, a front dressed with doors, framed windows, shutters, flower
+# boxes, awnings and hanging signs, a real roof), since every face but the street front is seen
+# only from afar. Palette: sun-bleached whitewash and lemon, peach and cream plaster under
+# terracotta, teal, berry and orange roofs, with bright shutters: warm and friendly, Lemonade's own.
+TOWN_PLINTH = (146, 134, 118)
+TOWN_TRIM = (86, 58, 38)
+TOWN_GLASS = (64, 92, 116)
+TOWN_CURB = (204, 190, 164)
+TOWN_GUTTER = (92, 86, 80)
+TOWN_WALK = (176, 162, 140)
+WHITEWASH = (246, 240, 226)
+LEMON_WASH = (250, 226, 148)
+PEACH_WASH = (244, 200, 162)
+CREAM_WASH = (238, 222, 188)
+TERRACOTTA = (204, 98, 58)
+ROOF_TEAL = (48, 132, 142)
+ROOF_BERRY = (170, 62, 76)
+ROOF_ORANGE = (226, 136, 56)
+AWNING_CREAM = (252, 246, 230)
+
+
+def town_house(name, fx, fz, out, width, depth, y, rng, storeys=2, roof="eaves", wall=WHITEWASH,
+               roof_color=TERRACOTTA, roof_material="ClayRoofTiles", shutter=(60, 150, 160), awning=None,
+               sign_text=None, door_color=(122, 76, 44), chimney=True, smoky=False, pitch=34.0,
+               storey_h=(8.6, 7.2), shop=False, flowers=True):
+    """A street-fronted town building. (fx, fz) is the middle of the front wall's face; `out` is the
+    outward normal of that front ((±1, 0) or (0, ±1)); the body runs `depth` studs inward and
+    `width` along the street. roof='eaves' puts the ridge along the street, 'gable' turns the gable
+    to it. Two-storey buildings jetty their upper floor 0.9 over the walk on a timber beam.
+    """
+    R = rot_y(yaw_facing(*out))
+
+    def at(u, h, d):
+        v = apply(R, (u, 0, d))
+        return (fx + v[0], y + h, fz + v[2])
+
+    def P(pname, size, u, h, d, color, material, turn=None, **kw):
+        return part(pname, size, at(u, h, d), color, material, mul(R, turn) if turn else R, **kw)
+
+    W, D = width, depth
+    s1 = storey_h[0]
+    s2 = storey_h[1] if storeys > 1 else 0.0
+    base = 1.3  # plinth top: the walk is at +0.5, so the doorstep climbs 0.8
+    top = base + s1 + s2
+    d0 = -0.9 if storeys > 1 else 0.0  # front face of the top storey
+    kids = [
+        P("Plinth", (W + 0.6, 1.7, D + 0.6), 0, 0.45, D / 2, TOWN_PLINTH, "Cobblestone"),
+        P("Ground", (W, s1, D), 0, base + s1 / 2, D / 2, wall, "Plaster"),
+    ]
+    if storeys > 1:
+        kids.append(P("Upper", (W, s2, D - d0), 0, base + s1 + s2 / 2, (D + d0) / 2, wall, "Plaster"))
+        kids.append(P("JettyBeam", (W + 0.4, 0.8, 1.3), 0, base + s1 - 0.1, -0.45, TOWN_TRIM, "Wood", collide=False))
+    # Timber corner posts on the ground storey, and a head beam under the eaves.
+    for side in (-1, 1):
+        kids.append(P(f"Corner{side}", (0.8, s1, 0.8), side * (W / 2 - 0.25), base + s1 / 2, -0.15, TOWN_TRIM, "Wood",
+                      collide=False))
+    # Its top sits 0.08 under the wall's (flush, the two tops z-fought where the beam bites the wall).
+    kids.append(P("HeadBeam", (W + 0.3, 0.7, 0.5), 0, top - 0.43, d0 - 0.1, TOWN_TRIM, "Wood", collide=False))
+
+    def window(tag, u, hc, face, w=2.6, h=3.0, shutters=True, box=False):
+        kids.append(P(f"Frame{tag}", (w + 0.7, h + 0.7, 0.3), u, hc, face - 0.1, TOWN_TRIM, "Wood", collide=False))
+        kids.append(P(f"Glass{tag}", (w, h, 0.2), u, hc, face - 0.2, TOWN_GLASS, "Glass", collide=False, query=False,
+                      extra={"Reflectance": 0.18}))
+        kids.append(P(f"Mullion{tag}", (0.22, h, 0.24), u, hc, face - 0.24, TOWN_TRIM, "Wood", collide=False,
+                      query=False, shadow=False))
+        if shutters:
+            for sgn in (-1, 1):
+                kids.append(P(f"Shutter{tag}{sgn}", (w / 2 - 0.1, h + 0.5, 0.2), u + sgn * (w / 2 + w / 4 + 0.35),
+                              hc, face - 0.12, shutter, "WoodPlanks", collide=False, query=False, shadow=False))
+        if box:
+            by = hc - h / 2 - 0.75
+            kids.append(P(f"FlowerBox{tag}", (w + 0.6, 0.7, 0.9), u, by, face - 0.45, TOWN_TRIM, "WoodPlanks",
+                          collide=False))
+            kids.append(P(f"Leaves{tag}", (w + 0.4, 0.7, 0.8), u, by + 0.6, face - 0.5, (84, 142, 56), "LeafyGrass",
+                          collide=False, query=False, shadow=False))
+            for k in range(3):
+                kids.append(P(f"Bloom{tag}{k}", (0.65, 0.65, 0.65), u + (k - 1) * (w / 3), by + 1.05, face - 0.55,
+                              rng.choice(FLOWER_COLORS), "SmoothPlastic", shape="Ball", collide=False, query=False,
+                              shadow=False))
+
+    # Ground storey: the door off-centre, a shop window or a house window beside it.
+    door_u = -W / 2 + 3.0 if W >= 10 else 0.0
+    kids.append(P("DoorFrame", (4.0, 7.4, 0.3), door_u, base + 3.7, -0.1, TOWN_TRIM, "Wood", collide=False))
+    kids.append(P("Door", (3.0, 6.8, 0.3), door_u, base + 3.4, -0.2, door_color, "WoodPlanks", collide=False))
+    kids.append(P("Step", (4.4, 0.8, 1.4), door_u, 0.9, -0.7, TOWN_PLINTH, "Slate"))
+    rest = W / 2 - (door_u + 2.0)  # frontage left of the door, beside it
+    if W >= 10:
+        wu = door_u + 2.0 + rest / 2
+        if shop:
+            window("Shop", wu, base + 3.4, 0.0, w=min(rest - 2.2, 6.0), h=3.8, shutters=False, box=False)
+        else:
+            window("G", wu, base + 3.8, 0.0, shutters=False, box=flowers)
+    if awning and W >= 10:
+        # Striped awning over the shop window and door, sloping out over the walk.
+        aw = W - 1.0
+        drop = math.radians(22)
+        reach = 3.0
+        strips = max(3, round(aw / 1.7))
+        ah = base + s1 - 0.9
+        for k in range(strips):
+            su = -aw / 2 + aw * (k + 0.5) / strips
+            kids.append(P(f"Awning{k}", (aw / strips, 0.22, reach), su, ah - math.sin(drop) * reach / 2,
+                          -math.cos(drop) * reach / 2, awning if k % 2 == 0 else AWNING_CREAM, "Fabric",
+                          rot_x(-22), collide=False, query=False, layer="roof"))
+        kids.append(P("Valance", (aw, 0.7, 0.14), 0, ah - math.sin(drop) * reach - 0.3, -math.cos(drop) * reach - 0.02,
+                      awning, "Fabric", collide=False, query=False, shadow=False, layer="roof"))
+    # Upper storey (or the attic of a single storey): two shuttered windows, flower boxes below.
+    if storeys > 1:
+        hc = base + s1 + s2 * 0.5
+        slots = [-(W / 2 - 3.1), W / 2 - 3.1] if W >= 11.6 else [0.0]
+        for k, u in enumerate(slots):
+            window(f"U{k}", u, hc, d0, box=flowers and k == len(slots) - 1)
+    if sign_text:
+        # Upstairs it hangs over the awning; on a single storey it hangs just past the front's
+        # corner, below the eaves, clear of the awning.
+        su = W / 2 - 1.4 if storeys > 1 else W / 2 + 0.2
+        sh = base + s1 + 0.9 if storeys > 1 else base + s1 - 3.1
+        sd = d0 if storeys > 1 else 0.0
+        kids.append(P("SignArm", (0.3, 0.3, 3.2), su, sh + 1.15, sd - 1.6, (40, 38, 36), "Metal", collide=False))
+        kids.append(P("SignBoard", (0.3, 2.0, 2.6), su, sh, sd - 1.9, TOWN_TRIM, "WoodPlanks", collide=False,
+                      children=[label_gui("Left", sign_text, "", (255, 232, 170), px=60),
+                                label_gui("Right", sign_text, "", (255, 232, 170), px=60)]))
+    # Roof.
+    ov = 1.2
+    span_d = D - d0
+    dc = (D + d0) / 2
+    tp = math.tan(math.radians(pitch))
+    if roof == "eaves":
+        half = span_d / 2 + ov
+        rise = tp * span_d / 2
+        slope_len = half / math.cos(math.radians(pitch))
+        for sgn in (-1, 1):
+            kids.append(P(f"Roof{sgn}", (W + 1.6, 0.9, slope_len), 0, top + tp * (span_d / 4 - ov / 2), dc + sgn * half / 2,
+                          roof_color, roof_material, rot_x(pitch * sgn), collide=False, layer="roof"))
+        for gu in (-W / 2 + 0.5, W / 2 - 0.5):
+            for sgn, yaw in ((-1, 0), (1, 180)):
+                kids.append(P(f"Gable{sgn}", (1, rise, span_d / 2), gu, top + rise / 2, dc + sgn * span_d / 4, wall,
+                              "Plaster", rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
+        kids.append(P("Ridge", (W + 1.8, 0.6, 1.1), 0, top + rise + 0.45, dc, TOWN_TRIM, "Wood", collide=False,
+                      layer="roof"))
+    else:
+        half = W / 2 + ov
+        rise = tp * W / 2
+        slope_len = half / math.cos(math.radians(pitch))
+        for sgn in (-1, 1):
+            kids.append(P(f"Roof{sgn}", (slope_len, 0.9, span_d + 1.6), sgn * half / 2, top + tp * (W / 4 - ov / 2),
+                          dc - 0.4, roof_color, roof_material, rot_z(-pitch * sgn), collide=False, layer="roof"))
+        for gd in (d0 + 0.5, D - 0.5):
+            for sgn, yaw in ((-1, 90), (1, -90)):
+                kids.append(P(f"Gable{sgn}", (1, rise, W / 2), sgn * W / 4, top + rise / 2, gd, wall, "Plaster",
+                              rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
+        # A diamond attic window in the street gable.
+        ah = top + rise * 0.38
+        kids.append(P("AtticFrame", (2.0, 2.0, 0.3), 0, ah, d0 - 0.1, TOWN_TRIM, "Wood", rot_z(45), collide=False))
+        kids.append(P("AtticGlass", (1.4, 1.4, 0.2), 0, ah, d0 - 0.2, TOWN_GLASS, "Glass", rot_z(45), collide=False,
+                      query=False, extra={"Reflectance": 0.18}))
+        kids.append(P("Ridge", (1.1, 0.6, span_d + 1.8), 0, top + rise + 0.45, dc - 0.4, TOWN_TRIM, "Wood",
+                      collide=False, layer="roof"))
+    if chimney:
+        cu, cd = (W * 0.28, D * 0.62) if roof == "eaves" else (W * 0.22, D * 0.75)
+        ch_top = top + rise + 2.2
+        kids.append(P("Chimney", (2.0, ch_top - top + 1.0, 2.0), cu, (top - 1.0 + ch_top) / 2, cd, (178, 96, 70),
+                      "Brick", collide=False))
+        kids.append(P("ChimneyCap", (2.6, 0.5, 2.6), cu, ch_top + 0.25, cd, TOWN_PLINTH, "Slate", collide=False,
+                      children=[smoke(2.6, 0.2, 3.0, (236, 228, 218))] if smoky else None))
+    return model(name, kids)
+
+
+def street_stall(name, x, z, out, rng, canopy=(246, 196, 52), length=7.0, goods=((236, 204, 60), (232, 96, 70))):
+    """A market stall on the walk: four posts, a striped awning sloping toward the customers, a
+    plank counter along the front, and two crates of produce on it. `out` faces the customers."""
+    R = rot_y(yaw_facing(*out))
+
+    def P(pname, size, u, h, d, color, material, turn=None, **kw):
+        v = apply(R, (u, 0, d))
+        return part(pname, size, (x + v[0], HUB_Y + h, z + v[2]), color, material, mul(R, turn) if turn else R, **kw)
+
+    L, Dp = length, 4.2
+    kids = []
+    for su in (-1, 1):
+        for sd, hh in ((-1, 7.4), (1, 8.4)):
+            kids.append(P("Post", (0.6, hh, 0.6), su * (L / 2 - 0.3), hh / 2, sd * (Dp / 2 - 0.3), TOWN_TRIM, "Wood"))
+    strips = 4
+    for k in range(strips):
+        su = -L / 2 - 0.4 + (L + 0.8) * (k + 0.5) / strips
+        kids.append(P(f"Canopy{k}", ((L + 0.8) / strips, 0.2, Dp + 1.8), su, 8.0, -0.1,
+                      canopy if k % 2 == 0 else AWNING_CREAM, "Fabric", rot_x(-16), collide=False, query=False,
+                      layer="roof"))
+    kids.append(P("Valance", (L + 0.8, 0.6, 0.12), 0, 6.9, -Dp / 2 - 1.05, canopy, "Fabric", collide=False,
+                  query=False, shadow=False, layer="roof"))
+    kids.append(P("Counter", (L - 0.4, 0.35, 1.8), 0, 3.2, -Dp / 2 + 1.1, (170, 122, 76), "WoodPlanks"))
+    kids.append(P("CounterFront", (L - 0.6, 3.0, 0.3), 0, 1.5, -Dp / 2 + 0.3, (122, 80, 48), "WoodPlanks"))
+    for k, color in enumerate(goods):
+        cu = (k - 0.5) * (L * 0.45)
+        kids.append(P(f"Crate{k}", (2.4, 0.9, 1.5), cu, 3.8, -Dp / 2 + 1.1, (140, 96, 58), "WoodPlanks", collide=False,
+                      shadow=False))
+        kids.append(P(f"Heap{k}", (2.1, 0.8, 1.2), cu, 4.35, -Dp / 2 + 1.1, color, "SmoothPlastic",
+                      rot_y(rng.uniform(-6, 6)), shape="Ball", collide=False, query=False, shadow=False))
+    kids.append(P("Sack", (1.8, 1.6, 1.6), L / 2 - 1.4, 0.8, Dp / 2 - 1.2, (198, 176, 128), "Fabric", rot_y(rng.uniform(-20, 20)),
+                  collide=False, shadow=False))
+    return model(name, kids)
+
+
+def street_lamp(name, x, y, z, yaw=0.0):
+    """High Street lamp: a slim post on a stone footing, an iron arm, and a small lantern (hood,
+    warm glass, base plate) hanging from it. `yaw` turns the arm (its look vector) over the road."""
+    fwd = apply(rot_y(yaw), (0, 0, -1))
+    r = rot_y(yaw)
+    lx, lz = x + fwd[0] * 2.2, z + fwd[2] * 2.2
+    iron = (46, 42, 40)
+    return model(name, [
+        part("Footing", (1.3, 0.8, 1.3), (x, y + 0.4, z), TOWN_PLINTH, "Cobblestone", r),
+        part("Post", (0.6, 9.6, 0.6), (x, y + 5.2, z), TOWN_TRIM, "Wood", r),
+        part("Arm", (0.3, 0.3, 2.8), (x + fwd[0] * 1.2, y + 9.7, z + fwd[2] * 1.2), iron, "Metal", r, collide=False),
+        part("Hood", (1.2, 0.4, 1.2), (lx, y + 9.25, lz), iron, "Metal", mul(r, rot_y(45)), collide=False, shadow=False),
+        part("Glow", (0.7, 1.0, 0.7), (lx, y + 8.55, lz), (255, 206, 138), "Neon", r, collide=False, query=False,
+             shadow=False, transparency=0.35, children=[light(18, 1.0)]),
+        part("Plate", (0.95, 0.2, 0.95), (lx, y + 7.95, lz), iron, "Metal", r, collide=False, query=False, shadow=False),
+    ])
+
+
+def planter(name, x, z, rng, w=2.6):
+    """A stone planter box with a leafy mound and blooms, for building corners."""
+    y = HUB_Y + 0.5
+    kids = [part("Box", (w, 1.4, w), (x, y + 0.7, z), TOWN_PLINTH, "Cobblestone", collide=True),
+            part("Leaves", (w * 0.95, w * 0.75, w * 0.95), (x, y + 1.6, z), (78, 136, 52), "LeafyGrass", shape="Ball",
+                 collide=False, query=False, shadow=False)]
+    for k in range(2):
+        a = rng.uniform(0, math.tau)
+        kids.append(part(f"Bloom{k}", (0.6, 0.6, 0.6), (x + math.cos(a) * w * 0.3, y + 2.1 + k * 0.2, z + math.sin(a) * w * 0.3),
+                         rng.choice(FLOWER_COLORS), "SmoothPlastic", shape="Ball", collide=False, query=False,
+                         shadow=False))
+    return model(name, kids)
+
+
+def street_bunting(name, a, b, heights, rng, pennants=10, sag=1.4):
+    """A pennant line strung across the street between two fronts (no poles); `heights` gives the
+    cord's height at a and at b."""
+    ax, az = a
+    bx, bz = b
+    ya, yb = heights
+    seg = math.hypot(bx - ax, bz - az)
+    dx, dz = (bx - ax) / seg, (bz - az) / seg
+    yaw = math.degrees(math.atan2(-dz, dx))
+
+    def cord_y(t):  # two straight runs down to the sag at the middle
+        return ya + (yb - ya) * t - sag * (2 * t if t <= 0.5 else 2 * (1 - t))
+
+    kids = []
+    for half in (0, 1):
+        t0, t1 = half * 0.5, half * 0.5 + 0.5
+        p0 = (ax + dx * seg * t0, cord_y(t0), az + dz * seg * t0)
+        p1 = (ax + dx * seg * t1, cord_y(t1), az + dz * seg * t1)
+        kids.append(beam(f"Cord{half}", p0, p1, 0.12, (70, 56, 44), "Fabric", collide=False, query=False, shadow=False))
+    for k in range(pennants):
+        t = (k + 0.5) / pennants
+        cx_, cz_ = ax + dx * seg * t, az + dz * seg * t
+        kids.append(part(f"Pennant{k}", (1.3, 1.5, 0.08), (cx_, cord_y(t) - 0.8, cz_),
+                         [(246, 200, 50), (232, 88, 80), (72, 164, 176), (250, 244, 230), (240, 140, 60)][k % 5],
+                         "Fabric", mul(rot_y(yaw), rot_x(180)), cls="WedgePart", collide=False, query=False,
+                         shadow=False, layer="roof"))
+    return model(name, kids, attrs={"Bunting": True})
+
+
 # ── Hub: Hearthmere ───────────────────────────────────────────────────────────
 def build_hub(rng):
     ground = [slab("HubFloor", -104, 104, -104, 104, HUB_Y, GRASS, "Grass")]
@@ -1691,7 +2041,11 @@ def build_hub(rng):
     ground += disc("Plaza", 0, 0, 27, road + 0.1, 0.7, PATH, "Cobblestone")
     ground += [
         box("RoadSouth", -8, 8, road - 0.6, road, 25, 104, PATH, "Cobblestone", layer="ground"),
-        box("RoadNorth", -8, 8, road - 0.6, road, -104, -25, PATH, "Cobblestone", layer="ground"),
+        # The High Street's surface is painted in voxel Terrain by WorldTerrain.server.luau (cobbles
+        # worn to earth down the cart line, grass and soil creeping in at the gutters); this slab
+        # keeps its collision and is hidden at runtime.
+        box("RoadNorth", -8, 8, road - 0.6, road, -104, -25, PATH, "Cobblestone", layer="ground",
+            attrs={"TerrainPaving": True}),
         box("RoadWest", -104, -25, road - 0.6, road, -8, 8, PATH, "Cobblestone", layer="ground"),
         box("RoadEast", 25, 104, road - 0.6, road, -8, 8, PATH, "Cobblestone", layer="ground"),
         box("ShopYard", -84, -40, road - 0.6, road, -18, -8, PATH_EDGE, "Cobblestone", layer="ground"),
@@ -1710,14 +2064,17 @@ def build_hub(rng):
         ((100, 100), (g, 100), -1), ((-g, 100), (-100, 100), -1),       # south
         ((-100, 100), (-100, g), -1), ((-100, -g), (-100, -100), -1),   # west
     ]
+    # The canyon walls themselves are sculpted voxel Terrain (lemonade-game/Map/WorldTerrain.server.luau:
+    # broken crags, stepped ledges, crevices and overhangs painted in horizontal strata, scree at the
+    # foot), so no visible wall parts are made here. cliff_run still lays out each run (and draws
+    # from `rng` exactly as before, so nothing else in the map moves) for its invisible proxy, which
+    # reaches PROXY_TOP and keeps holding players in wherever the rock's crest dips.
     for i, (a, b, inward) in enumerate(segments):
-        chunks, proxy = cliff_run(f"HubCliff{i}", a, b, inward, HUB_Y, wall_h, HUB_ROCK, HUB_ROCK_DARK, rng,
-                                  depth=16, material="Rock")
-        visual += chunks
+        _, proxy = cliff_run(f"HubCliff{i}", a, b, inward, HUB_Y, wall_h, HUB_ROCK, HUB_ROCK_DARK, rng,
+                             depth=16, material="Rock")
         proxies.append(proxy)
-    for cx, cz in ((-100, -100), (100, -100), (100, 100), (-100, 100)):
-        visual.append(part("CornerBastion", (18, wall_h + 8, 18), (cx, HUB_Y + (wall_h + 8) / 2 - 1, cz),
-                           HUB_ROCK_DARK, "Rock", rot_y(45), layer="cliff"))
+    REGISTRY[:] = [e for e in REGISTRY if not (e["layer"] == "cliff" and (
+        re.match(r"^HubCliff\d+_\d+(_cap)?$", e["name"]) or e["name"] == "CornerBastion"))]
 
     # Monument: a sword in a stepped stone plinth, orientation landmark at the plaza centre.
     mon = []
@@ -1793,7 +2150,7 @@ def build_hub(rng):
     visual.append(barrel("BarrelSE", 70, HUB_Y, 92, rng))
     visual.append(storage_shack("VaultShack", 22, 40, -94, -78, HUB_Y, rng))
     visual.append(woodpile("WoodpileNW", -58, HUB_Y, -84, 0, rng))
-    visual.append(crate_stack("CratesNW", -22, HUB_Y, -76, rng))
+    visual.append(crate_stack("CratesNW", 16, HUB_Y, -79.5, rng))  # in the Vault lane, clear of the High Street
     visual.append(barrel("BarrelNW1", -52, HUB_Y, -66, rng))
     visual.append(barrel("BarrelNW2", -49.2, HUB_Y, -65, rng))
     visual.append(hand_cart("CartSW", -58, HUB_Y, 74, yaw_facing(0, -1)))
@@ -1885,16 +2242,524 @@ def build_hub(rng):
     visual.append(model("VoidRiftPortal", vr, attrs={"Region": "VoidRift", "Sealed": True, "RequiredLevel": 55}))
 
     # Trees in the green quarters, lamp posts along roads.
-    tree_spots = [(-88, -54), (-70, -58), (-30, -54), (-20, -80), (-14, -62),
+    # (Three spots moved off the High Street's frontage: (-30, -54), (-20, -80), (-14, -62).)
+    tree_spots = [(-88, -54), (-70, -58), (-36, -58), (-34, -96), (36, -48),
                   (48, -62), (86, -64), (24, -28), (-28, 24),
                   (-70, 30), (-34, 66), (-18, 86), (-88, 46), (36, 86),
                   (40, 70), (86, 16), (30, 26), (-88, 12), (-40, 90)]
     for k, (x, z) in enumerate(tree_spots):
         visual.append(tree(f"Tree{k:02d}", x, HUB_Y, z, rng))
-    lamps = [(-11, -70), (11, 78), (-90, 11), (78, 11)]  # one per road; more crowded the plaza
-    for k, (x, z) in enumerate(lamps):
+    lamps = [(11, 78), (-90, 11), (78, 11)]  # one per road (the High Street has its own); more crowded the plaza
+    for k, (x, z) in enumerate(lamps, start=1):
         visual.append(lamp_post(f"Lamp{k}", x, HUB_Y, z, yaw_facing(-x, 0) if abs(x) < 20 else yaw_facing(0, -z)))
+    high_street(ground, visual)
     return ground, visual, proxies
+
+
+def high_street(ground, visual):
+    """Hearthmere's High Street: the north road from the plaza to the Ascension Gate, lined with
+    shopfronts and houses. Draws only from its own seeded Random, so the shared map rng (and every
+    region generated after the hub) is untouched."""
+    trng = random.Random(20260919)
+    walk_top = HUB_Y + 0.5
+    z_end, z_gate = -41.0, -95.5
+    for side in (-1, 1):
+        sx = side
+        # Gutter course (dark, flush with the cobbles), a raised pale curb, then the flagstone walk.
+        ground.append(box(f"Gutter{'W' if side < 0 else 'E'}", *sorted((sx * 8.0, sx * 8.8)), HUB_Y - 0.4, HUB_Y + 0.27,
+                          z_gate, z_end, TOWN_GUTTER, "Slate", layer="ground"))
+        ground.append(box(f"Curb{'W' if side < 0 else 'E'}", *sorted((sx * 8.8, sx * 9.6)), HUB_Y - 0.4, HUB_Y + 0.62,
+                          z_gate, z_end + 0.4, TOWN_CURB, "Limestone", layer="ground"))
+        ground.append(box(f"Walk{'W' if side < 0 else 'E'}", *sorted((sx * 9.6, sx * 14.0)), HUB_Y - 0.4, walk_top,
+                          z_gate, z_end, TOWN_WALK, "Slate", layer="ground"))
+    ground.append(box("WalkForecourt", -17.0, -14.0, HUB_Y - 0.4, walk_top, -94.0, -84.0, TOWN_WALK, "Slate",
+                      layer="ground"))
+
+    # East row (fronts face west, lit by the afternoon sun): bakery, a tall gabled house, the tailor.
+    visual.append(town_house("Bakery", 14, -48, (-1, 0), 12, 12, HUB_Y, trng, wall=LEMON_WASH, roof_color=TERRACOTTA,
+                             shutter=(54, 150, 164), awning=(226, 82, 70), sign_text="Bakery", shop=True, smoky=True))
+    visual.append(town_house("GableHouseE", 14, -64, (-1, 0), 12, 11, HUB_Y, trng, roof="gable", wall=WHITEWASH,
+                             roof_color=ROOF_TEAL, roof_material="RoofShingles", shutter=(240, 186, 56),
+                             door_color=(54, 120, 132), storey_h=(8.6, 7.6), pitch=42.0))
+    visual.append(town_house("Tailor", 14, -87.5, (-1, 0), 11, 6.6, HUB_Y, trng, storeys=1, wall=PEACH_WASH,
+                             roof_color=ROOF_BERRY, roof_material="RoofShingles", awning=(48, 150, 160),
+                             sign_text="Tailor", shop=True, storey_h=(9.6, 0.0), pitch=40.0, chimney=False))
+    # West row: the Lemon Press cafe, a gabled house, a little lemon-washed cottage. It is kept to a
+    # single storey: the mid-afternoon sun comes from the west, and taller fronts here would shade
+    # the whole street; low ones throw their eaves' and gables' shadows only across its near half.
+    visual.append(town_house("LemonPress", -14, -55.5, (1, 0), 12, 11, HUB_Y, trng, storeys=1, wall=CREAM_WASH,
+                             roof_color=ROOF_ORANGE, shutter=(90, 150, 60), awning=(246, 196, 52),
+                             sign_text="Lemon Press", shop=True, storey_h=(9.8, 0.0), pitch=30.0, smoky=True))
+    visual.append(town_house("GableHouseW", -14, -71.5, (1, 0), 13, 10, HUB_Y, trng, storeys=1, roof="gable",
+                             wall=PEACH_WASH, roof_color=TERRACOTTA, shutter=(80, 140, 210), door_color=(150, 60, 56),
+                             storey_h=(9.4, 0.0), pitch=40.0))
+    visual.append(town_house("Cottage", -17, -89, (1, 0), 10, 6, HUB_Y, trng, storeys=1, roof="gable", wall=LEMON_WASH,
+                             roof_color=ROOF_TEAL, roof_material="RoofShingles", shutter=(232, 96, 80),
+                             storey_h=(9.0, 0.0), pitch=45.0, chimney=False))
+
+    # Stalls where people stop: one at the plaza end, one in the cottage's forecourt by the gate.
+    visual.append(street_stall("FruitStall", 12.3, -36.5, (-1, 0), trng))
+    visual.append(street_stall("FlowerStall", -13.2, -89, (1, 0), trng, canopy=(232, 88, 80),
+                               goods=((244, 150, 190), (250, 226, 120))))
+    visual.append(fingerpost("StreetSign", 10.6, HUB_Y, -30.5, [("Ascension Gate", yaw_facing(0, -1), 9.6),
+                                                              ("Sword Shop", yaw_facing(-1, 0), 8.0)]))
+    # Lamps every eight studs or so, alternating sides of the walk.
+    for k, (x, z) in enumerate(((10.9, -47), (-10.9, -55), (10.9, -62), (-10.9, -70), (10.9, -78), (-10.9, -81),
+                                (10.9, -92))):
+        visual.append(street_lamp(f"StreetLamp{k}", x, walk_top, z, yaw_facing(-x, 0)))
+    # Barrels and crates against the walls and in the alley mouths; planters at the corners.
+    for k, (x, z) in enumerate(((12.4, -71.6), (15.6, -71.8), (15.8, -56.0), (18.5, -56.3), (-15.8, -63.2),
+                                (12.2, -94.0), (12.5, -91.3))):
+        visual.append(barrel(f"StreetBarrel{k}", x, walk_top if abs(x) < 14 else HUB_Y, z, trng))
+    visual.append(crate_stack("StreetCrates", -20, HUB_Y, -81.5, trng))
+    for k, (x, z) in enumerate(((-12.2, -48.8), (12.2, -43.0), (12.2, -83.6))):
+        visual.append(planter(f"Planter{k}", x, z, trng))
+    # Pennant lines strung between the upper floors, zig-zagging down the street.
+    visual.append(street_bunting("StreetBunting0", (-13.8, -53.0), (13.1, -49.0), (HUB_Y + 10.6, HUB_Y + 15.6), trng))
+    visual.append(street_bunting("StreetBunting1", (13.1, -61.0), (-13.8, -68.0), (HUB_Y + 15.8, HUB_Y + 10.2), trng))
+
+
+# ── Horizon: far mountain ranges ─────────────────────────────────────────────
+# Aerial perspective, staged: every far layer is its own base colour pulled toward HAZE (the pale
+# blue the sky shows just over the walls) by how far away it stands, and split into a warm sunlit
+# half and a cool blue shaded half, so each range reads as lit form seen through air rather than a
+# flat cut-out. The Atmosphere adds its share on top.
+HAZE = (194, 210, 234)
+
+
+def haze(color, f):
+    return tuple(round(c + (h - c) * f) for c, h in zip(color, HAZE))
+
+
+HORIZON_SUN = (156, 130, 108)    # warm sunlit rock, muted: even the near ridge stands behind a mile of air
+HORIZON_SHADE = (58, 74, 122)   # cool shaded rock, lit only by the blue sky
+HORIZON_SNOW = (255, 250, 240)
+HORIZON_SNOW_SHADE = (176, 196, 232)
+# The south country is sculpted in build_south_country; the colours above are the north, east and
+# west ranges'.
+HORIZON_EYE = (0.0, 20.0, 13.0)  # the town's main path, south of the Sword Monument
+# The Sunspire: a hilltop citadel on a wooded hill in front of the great range, straight down the gate axis
+# so the town frames it over the Iron Lowlands arch. Cream walls and warm gold roofs, already lifted
+# toward the haze.
+CITADEL_Z = 1330
+# Softened into the haze a little under the near ridge's share. The hill under it is pre-hazed
+# only lightly: at sky-shell distance the Atmosphere already washes it most of the way to the sky.
+CITADEL_WALL = haze((238, 222, 190), 0.5)
+CITADEL_ROOF = haze((214, 150, 90), 0.52)
+# Sky space. Past about 510-575 studs this game's parts drop out of view in play (thin facets
+# first: the sculpted ranges' triangles vanished piecemeal at 516-630 studs), so the far country cannot stand where it would really
+# be. Each group of Horizon parts is designed at its true distance and then shrunk toward
+# HORIZON_EYE until it sits SKY_SHELL studs out: a uniform scale about the eye maps every part onto
+# exactly the pixels it covered, so from the eye the view is unchanged. On the client,
+# WorldHorizon.client.luau carries the whole model along with the camera (translation only), which
+# is how anything infinitely far behaves, so the ranges read as distant from anywhere in the map.
+# Layers keep their order: the citadel in front, each range behind the last.
+SKY_SHELL = {"citadel": 420, "Ridge": 525, "Range": 542, "FarRange": 556, "ring": 530}
+SKY_DROP = 110  # every layer's foot sinks this far below the eye in sky space, out of sight
+
+
+def _sky_k(group, dist):
+    return SKY_SHELL[group] / dist
+
+
+def _to_sky(parts, k):
+    """Scale Horizon parts by k about HORIZON_EYE (positions and sizes), keeping rotations."""
+    ex, ey, ez = HORIZON_EYE
+    for node in parts:
+        props = node["properties"]
+        cf = props["CFrame"]["CFrame"]
+        x, y, z = cf["position"]
+        cf["position"] = [_r(ex + (x - ex) * k), _r(ey + (y - ey) * k), _r(ez + (z - ez) * k)]
+        props["Size"] = [_r(v * k) for v in props["Size"]]
+        for entry in reversed(REGISTRY):
+            if entry["layer"] == "horizon" and entry["name"] == node["name"]:
+                entry["pos"] = tuple(cf["position"])
+                entry["size"] = tuple(props["Size"])
+                break
+    return parts
+
+
+def _summit(dist, elev):
+    """Summit height that stands `elev` degrees above the horizontal from HORIZON_EYE."""
+    return HORIZON_EYE[1] + dist * math.tan(math.radians(elev))
+
+
+def _peak(name, sx, sz, h, left, right, depth, color, lean, material="SmoothPlastic", base=-20.0, shade=None):
+    """A mountain peak as two back-to-back wedges whose tall ends meet at the summit (sx, h, sz):
+    the one reaching toward -x spans `left` studs, the one toward +x `right`, so each peak gets its
+    own slopes. Each half turns `lean` degrees about its own summit edge, the -x half toward the
+    afternoon sun and the +x half away from it, so every peak splits into a warm sunlit face and a
+    cool shaded one; `shade`, when given, is the +x half's own colour, so the split is baked in
+    as well as lit."""
+    out = []
+    height = h - base
+    for side, reach in ((-1, left), (1, right)):
+        col = shade if (shade and side > 0) else color
+        # A wedge's tall end is at its local +Z; point that at the summit, the slope running out.
+        r = mul(rot_y(90 if side < 0 else -90), rot_y(-lean * side))
+        tip = apply(r, (0, height / 2, reach / 2))
+        centre = (sx - tip[0], h - tip[1], sz - tip[2])
+        out.append(part(f"{name}{'W' if side > 0 else 'E'}", (depth, height, reach), centre, col, material, r,
+                        cls="WedgePart", collide=False, query=False, shadow=False, layer="horizon"))
+    return out
+
+
+def _gable(name, x, y, z, width, height, depth, color):
+    """A pitched roof whose triangular end faces the town: two wedges meeting at a ridge at y + height."""
+    out = []
+    for side in (-1, 1):
+        r = rot_y(90 if side < 0 else -90)
+        tip = apply(r, (0, height / 2, width / 4))
+        centre = (x - tip[0], y + height - tip[1], z - tip[2])
+        out.append(part(f"{name}{'W' if side > 0 else 'E'}", (depth, height, width / 2), centre, color,
+                        "SmoothPlastic", r, cls="WedgePart", collide=False, query=False, shadow=False,
+                        layer="horizon"))
+    return out
+
+
+def build_citadel():
+    """The Sunspire citadel, a few dozen parts, standing on the sculpted hill (build_south_country)."""
+    kids = []
+    ex, ey, ez = HORIZON_EYE
+    dist = CITADEL_Z - ez
+    top = _summit(dist, 17.2)  # the hill's crown sits just under the hub wall's crest line
+    k = _sky_k("citadel", dist)
+    z = CITADEL_Z + 20
+    up = rot_z(90)
+    # Curtain wall and gatehouse.
+    kids.append(part("Curtain", (380, 38, 26), (0, top + 19, z - 30), CITADEL_WALL, "SmoothPlastic",
+                     collide=False, query=False, shadow=False, layer="horizon"))
+    for i, x in enumerate(range(-180, 181, 30)):
+        kids.append(part(f"Merlon{i}", (14, 8, 28), (x, top + 42, z - 30), CITADEL_WALL, "SmoothPlastic",
+                         collide=False, query=False, shadow=False, layer="horizon"))
+    # The keep, its hall roof, and the tall central spire.
+    kids.append(part("Keep", (120, 88, 70), (0, top + 44, z + 10), CITADEL_WALL, "SmoothPlastic",
+                     collide=False, query=False, shadow=False, layer="horizon"))
+    kids += _gable("KeepRoof", 0, top + 88, z + 10, 132, 40, 76, CITADEL_ROOF)
+    towers = [(0, z - 8, 36, 150, 70), (-78, z, 26, 112, 46), (78, z, 26, 112, 46), (-190, z - 30, 30, 70, 38),
+              (190, z - 30, 30, 70, 38), (-130, z + 30, 22, 92, 36), (130, z + 30, 22, 92, 36)]
+    for i, (x, tz, d, h, rh) in enumerate(towers):
+        kids.append(part(f"Tower{i}", (h, d, d), (x, top + h / 2, tz), CITADEL_WALL, "SmoothPlastic", up,
+                         shape="Cylinder", collide=False, query=False, shadow=False, layer="horizon"))
+        kids += _gable(f"Spire{i}", x, top + h, tz, d + 8, rh, d + 8, CITADEL_ROOF)
+    # A town spilling down the mesa's front below the walls.
+    rng = random.Random(1330)
+    for i in range(9):
+        x = rng.uniform(-260, 260)
+        w, h = rng.uniform(34, 56), rng.uniform(18, 30)
+        y = top - rng.uniform(0, 10)
+        hz = CITADEL_Z - 72 + rng.uniform(-6, 6)
+        kids.append(part(f"House{i}", (w, h, 30), (x, y + h / 2 - 6, hz), CITADEL_WALL, "SmoothPlastic",
+                         collide=False, query=False, shadow=False, layer="horizon"))
+        kids += _gable(f"HouseRoof{i}", x, y + h - 6, hz, w + 6, h * 0.6, 34, CITADEL_ROOF)
+    return _to_sky(kids, k)
+
+
+
+# ── The south country, sculpted ──────────────────────────────────────────────
+# What the town sees over its south wall, built straight in sky space as faceted rock: every
+# mountain is a fan of triangles (each triangle two thin WedgeParts) round its summit, and every
+# facet takes its own colour from what it is (snow, bare rock, wooded lower slope), from which way
+# it faces (warm where it turns to the afternoon sun, cool blue where only the sky lights it) and
+# from how far off and how low it stands (pulled toward the horizon haze), so the ranges read as
+# lit, weathered stone seen through miles of air. The hierarchy is deliberate: one dominant peak
+# left of the gate, a second to the right, lower shoulders between, a pale far range standing in
+# the gaps and behind the Sunspire, and round green foothills in front that tuck every foot away.
+#
+# Heights are given as the elevation the point shows at on screen from HORIZON_EYE looking down
+# the gate axis (a rectilinear lens stretches elevations off-axis by 1/cos(bearing)), so the
+# composition holds across the whole frame. Bearings: 0 is +Z (down the gate), +90 is +X.
+SOUTH_SUN = (-0.68 * 0.82, 0.57, -0.73 * 0.82)  # toward the afternoon sun (SUN_XZ, ~35 deg up)
+SOUTH_SHADE = (0.46, 0.55, 0.86)   # facets turned from the sun: blue sky light only
+SOUTH_ROCK = (204, 156, 106)       # warm sunlit sandstone-granite, the Lemonade range's own colour
+SOUTH_ROCK_DEEP = (136, 102, 84)   # the darker bands and gullies
+SOUTH_FOREST = (72, 112, 62)
+SOUTH_SNOW = (255, 251, 243)
+SOUTH_HILL = (100, 150, 54)
+# (name, bearing, summit elevation, reach toward -bearing, reach toward +bearing, ring points,
+#  snow?) -- the great range, 565 studs out.
+SOUTH_RANGE = [
+    ("Crown", 25, 27.2, 17, 15, 9, True),       # the dominant peak
+    ("Warden", -37, 24.9, 13, 16, 7, True),     # the second
+    ("CrownShoulder", 45, 21.9, 10, 10, 5, False),
+    ("GateShoulder", -15, 21.4, 9, 9, 5, False),
+    ("Saddle", 7, 20.4, 7, 8, 4, False),
+    ("WardenShoulder", -56, 21.2, 10, 10, 5, False),
+    ("EastSpur", 62, 19.8, 10, 10, 4, False),
+]
+# The far range, 630 studs out and deep in the haze: a broad pale massif behind the Sunspire and
+# peaks standing in the gaps of the great range.
+SOUTH_FAR = [
+    ("FarMassif", -3, 23.4, 16, 16, 6, True),
+    ("FarEast", 38, 23.9, 11, 12, 5, True),
+    ("FarWest", -25, 22.8, 11, 11, 5, True),
+    ("FarWestEnd", -50, 22.2, 12, 12, 5, False),
+    ("FarNotch", 13, 21.9, 9, 9, 4, False),
+    ("FarEastEnd", 60, 21.0, 11, 11, 4, False),
+]
+# Round wooded foothills in front of the range's feet, 530 studs out: (bearing, top elevation,
+# radius in studs).
+SOUTH_FOOTHILLS = [(-54, 18.9, 80), (-41, 19.4, 64), (-28, 18.7, 72), (-18, 19.1, 52),
+                   (18, 19.2, 56), (29, 18.8, 72), (41, 19.5, 64), (54, 19.0, 80)]
+
+
+def _sky_pt(bearing, elev, r):
+    """Sky-space point at `bearing` degrees, showing `elev` degrees up on screen, `r` studs out."""
+    ex, ey, ez = HORIZON_EYE
+    b = math.radians(bearing)
+    dz = math.cos(b) * r
+    return (ex + math.sin(b) * r, ey + math.tan(math.radians(elev)) * dz, ez + dz)
+
+
+def _v_sub(a, b):
+    return (a[0] - b[0], a[1] - b[1], a[2] - b[2])
+
+
+def _v_cross(a, b):
+    return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
+
+
+def _v_dot(a, b):
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+
+
+def _v_unit(a):
+    m = math.sqrt(_v_dot(a, a)) or 1.0
+    return (a[0] / m, a[1] / m, a[2] / m)
+
+
+def _smooth(e0, e1, x):
+    t = min(1.0, max(0.0, (x - e0) / (e1 - e0)))
+    return t * t * (3 - 2 * t)
+
+
+def facet(name, a, b, c, color, material="Rock", thickness=0.3):
+    """A triangle as two thin WedgeParts (the classic two-wedge split along the longest edge)."""
+    ab, ac, bc = _v_sub(b, a), _v_sub(c, a), _v_sub(c, b)
+    abd, acd, bcd = _v_dot(ab, ab), _v_dot(ac, ac), _v_dot(bc, bc)
+    if abd > acd and abd > bcd:
+        a, c = c, a
+    elif acd > bcd and acd > abd:
+        a, b = b, a
+    ab, ac, bc = _v_sub(b, a), _v_sub(c, a), _v_sub(c, b)
+    right = _v_unit(_v_cross(ac, ab))
+    up = _v_unit(_v_cross(bc, right))
+    back = _v_unit(bc)
+    height = abs(_v_dot(ab, up))
+    out = []
+    for k, (other, sgn) in enumerate(((b, 1), (c, -1))):
+        edge = _v_sub(other, a)
+        depth = abs(_v_dot(edge, back))
+        if height < 0.05 or depth < 0.05:
+            continue
+        rx, bk = tuple(v * sgn for v in right), tuple(v * sgn for v in back)
+        rot = [[rx[0], up[0], bk[0]], [rx[1], up[1], bk[1]], [rx[2], up[2], bk[2]]]
+        mid = tuple((a[i] + other[i]) / 2 for i in range(3))
+        out.append(part(f"{name}{'ab'[k]}", (thickness, height, depth), mid, color, material, rot,
+                        cls="WedgePart", collide=False, query=False, shadow=False, layer="horizon"))
+    return out
+
+
+def _facet_colour(kind, a, b, c, haze_share, rng):
+    """Colour for one facet: what it is, how it faces the sun, and how much air it stands behind."""
+    ex, ey, ez = HORIZON_EYE
+    n = _v_unit(_v_cross(_v_sub(b, a), _v_sub(c, a)))
+    cen = tuple((a[i] + b[i] + c[i]) / 3 for i in range(3))
+    if _v_dot(n, _v_sub(HORIZON_EYE, cen)) < 0:
+        n = tuple(-v for v in n)
+    lit = _smooth(-0.05, 0.75, _v_dot(n, _v_unit(SOUTH_SUN)))
+    elev = math.degrees(math.atan2(cen[1] - ey, cen[2] - ez))  # screen elevation of the facet
+    jit = rng.uniform(0.93, 1.06)
+    if kind == "snow":
+        base = SOUTH_SNOW
+        jit = 1.0
+    elif kind == "forest":
+        base = SOUTH_FOREST
+    elif kind == "deep":
+        base = SOUTH_ROCK_DEEP
+    else:
+        base = SOUTH_ROCK
+    col = [base[i] * jit * (SOUTH_SHADE[i] + (1 - SOUTH_SHADE[i]) * lit) for i in range(3)]
+    # aerial perspective: the layer's share, and more toward the feet where the air is thickest
+    f = haze_share + (1 - haze_share) * 0.36 * (1 - _smooth(16.5, 26.0, elev))
+    return tuple(max(0, min(255, round(col[i] + (HAZE[i] - col[i]) * f))) for i in range(3))
+
+
+def _mountain(name, bearing, top, reach_lo, reach_hi, k, snowy, r, haze_share, rng, foot=15.0, lower=True,
+              spur=(14, 26)):
+    """One faceted mountain: summit, a ring of k ridge points (outer ones on the silhouette, inner
+    ones pushed forward as spurs), a foot ring hidden behind the walls, and a snow cap split off
+    each summit facet at a ragged snow line."""
+    apex = _sky_pt(bearing + rng.uniform(-0.6, 0.6), top, r)
+    ring, feet = [], []
+    for i in range(k):
+        t = -1 + 2 * i / (k - 1)
+        reach = reach_lo if t < 0 else reach_hi
+        b = bearing + t * reach * rng.uniform(0.9, 1.05)
+        drop = (top - foot) * (0.34 + 0.46 * abs(t) ** 0.85) + rng.uniform(-0.8, 0.8)
+        depth = r - (1 - abs(t)) * rng.uniform(*spur)  # spurs reach toward the town
+        ring.append(_sky_pt(b, top - drop, depth))
+    for i in range(k):
+        t = -1 + 2 * i / (k - 1)
+        reach = reach_lo if t < 0 else reach_hi
+        b = bearing + t * reach * 1.3
+        feet.append(_sky_pt(b, foot, r - (1 - abs(t)) * 26 - 12))
+    out = []
+    for i in range(k - 1):
+        a, b = ring[i], ring[i + 1]
+        if snowy:
+            fa, fb = rng.uniform(0.38, 0.72), rng.uniform(0.38, 0.72)
+            sa = tuple(apex[j] + (a[j] - apex[j]) * fa for j in range(3))
+            sb = tuple(apex[j] + (b[j] - apex[j]) * fb for j in range(3))
+            out += facet(f"{name}Snow{i}", apex, sa, sb, _facet_colour("snow", apex, sa, sb, haze_share * 0.45, rng),
+                         "Snow")
+            kind = "rock" if i % 2 else "deep"
+            out += facet(f"{name}Face{i}a", sa, sb, b, _facet_colour(kind, sa, sb, b, haze_share, rng))
+            out += facet(f"{name}Face{i}b", sa, b, a, _facet_colour("rock", sa, b, a, haze_share, rng))
+        else:
+            kind = "rock" if i % 2 else "deep"
+            out += facet(f"{name}Face{i}", apex, a, b, _facet_colour(kind, apex, a, b, haze_share, rng))
+        if lower:
+            fa, fb = feet[i], feet[i + 1]
+            ea = math.degrees(math.atan2(a[1] - HORIZON_EYE[1], a[2] - HORIZON_EYE[2]))
+            kind = "forest" if ea < 19.6 else "rock"
+            out += facet(f"{name}Slope{i}a", a, b, fb, _facet_colour(kind, a, b, fb, haze_share, rng),
+                         "Grass" if kind == "forest" else "Rock")
+            out += facet(f"{name}Slope{i}b", a, fb, fa, _facet_colour("forest", a, fb, fa, haze_share, rng), "Grass")
+    return out
+
+
+def build_south_country():
+    """The sculpted south: foothills, the great range, the far range and the Sunspire's hill."""
+    rng = random.Random(5650)
+    kids = []
+    for spec in SOUTH_FAR:
+        name, bearing, top, lo, hi, k, snowy = spec
+        kids.append(model(f"Far{name}", _mountain(name, bearing, top, lo, hi, k, snowy, 504, 0.5, rng,
+                                                   foot=17.0, spur=(3, 7))))
+    for spec in SOUTH_RANGE:
+        name, bearing, top, lo, hi, k, snowy = spec
+        kids.append(model(f"Range{name}", _mountain(name, bearing, top, lo, hi, k, snowy, 492, 0.24, rng, spur=(10, 30))))
+    # Foothills: rounded wooded domes, each a sphere sunk until the tangent from the eye over its
+    # crown shows at the given elevation; the engine shades each from sunlit crown to shaded flank.
+    hills = []
+    ex, ey, ez = HORIZON_EYE
+    for i, (bearing, top, radius) in enumerate(SOUTH_FOOTHILLS):
+        b = math.radians(bearing)
+        want = math.degrees(math.atan(math.tan(math.radians(top)) * math.cos(b)))
+        d = 455.0
+        hc = d * math.tan(math.radians(want)) - radius
+        for _ in range(40):
+            dist = math.hypot(d, hc)
+            seen = math.degrees(math.atan2(hc, d) + math.asin(min(1.0, radius / dist)))
+            hc -= (seen - want) * dist * math.pi / 180
+        col = haze(SOUTH_FOREST if i % 2 else SOUTH_HILL, 0.26)
+        hills.append(part(f"Foothill{i}", (radius * 2, radius * 2, radius * 2),
+                          (ex + math.sin(b) * d, ey + hc, ez + math.cos(b) * d), col, "Grass",
+                          shape="Ball", collide=False, query=False, shadow=False, layer="horizon"))
+    kids.append(model("Foothills", hills))
+    # The Sunspire's hill: a broad green dome whose crown carries the citadel (the old mesa's top,
+    # Y176 in sky space) and whose brow rolls down toward the town through the Iron Lowlands gate,
+    # with dark tree clumps along it, all softened a third of the way into the haze.
+    hill = []
+    ks = SKY_SHELL["citadel"] / 505.0  # the hill was designed round the citadel at 505 studs
+    top_y, radius, zc = ey + (177.0 - ey) * ks, 200.0 * ks, ez + (535.0 - ez) * ks
+    hill.append(part("CitadelHill", (270 * ks, radius * 2, radius * 2), (0, top_y - radius, zc), haze(SOUTH_HILL, 0.22),
+                     "Grass", collide=False, query=False, shadow=False, layer="horizon", shape="Cylinder"))
+    for side in (-1, 1):  # round shoulders over the dome's flat ends
+        r2 = radius * 0.62
+        hill.append(part(f"CitadelHillEnd{'EW'[side > 0]}", (r2 * 2, r2 * 2, r2 * 2),
+                         (side * 130 * ks, top_y - 16 * ks - r2, zc + 10 * ks), haze(SOUTH_FOREST, 0.32), "Grass",
+                         shape="Ball", collide=False, query=False, shadow=False, layer="horizon"))
+    for i in range(24):  # woods down the face the Iron Lowlands gate frames (32-56 deg round the dome)
+        phi = math.radians((32, 40, 48, 56)[i % 4] + rng.uniform(-3, 3))
+        x = (-72 + (i // 4) * 29 + rng.uniform(-9, 9)) * ks
+        d = rng.uniform(22, 30) * ks
+        hill.append(part(f"HillWood{i}", (d, d, d),
+                         (x, top_y - radius * (1 - math.cos(phi)) + d * 0.05, zc - radius * math.sin(phi)),
+                         haze((86, 132, 58) if i % 3 else SOUTH_HILL, 0.2), "Grass",
+                         shape="Ball", collide=False, query=False, shadow=False, layer="horizon"))
+    for i in range(30):  # tree clumps down the brow in ragged rows, thinning toward the town
+        row = i % 3
+        x = (-126 + (i // 3) * 28 + rng.uniform(-9, 9)) * ks
+        dz = (rng.uniform(-50, -40), rng.uniform(-72, -60), rng.uniform(-94, -84))[row] * ks
+        y = top_y - radius + math.sqrt(radius * radius - dz * dz)
+        d = rng.uniform(9, 15) * ks
+        hill.append(part(f"HillTrees{i}", (d, d, d), (x, y + d * 0.1, zc + dz),
+                         haze(SOUTH_FOREST if i % 4 else SOUTH_HILL, 0.24), "Grass",
+                         shape="Ball", collide=False, query=False, shadow=False, layer="horizon"))
+    kids.append(model("CitadelHill", hill))
+    for m in kids:  # nested models stream on their own unless they are Persistent too
+        m["properties"] = {"ModelStreamingMode": "Persistent"}
+    return kids
+
+
+def build_horizon():
+    """Far country past the baseplate on every side, so every view that opens over a wall ends on a
+    layered skyline instead of empty sky. South, where the town looks out through the Iron Lowlands
+    gate, it is the sculpted south country (build_south_country): wooded foothills, the great range
+    and a hazier far range, faceted and coloured by material, sun and air, with the Sunspire citadel
+    on its hill in front; their summits are set by the angle they show above the level hub walls
+    from the main path, so each layer shows a band of its own over the crest and a band of sky stays
+    open above. Everything stands within about 505 studs of the eye, since parts further out drop
+    out of view in play. North, east and west keep a single range of diamond peaks (a big block turned about the
+    view axis, its top vertex the summit, snow capped when tall). No collision, queries or shadows;
+    the model is Persistent so none of it streams out. Seeded on its own, so it does not disturb the
+    regions' layout."""
+    rng = random.Random(20260918)
+    kids = build_south_country()
+    kids += build_citadel()
+    ex, ey, ez = HORIZON_EYE
+    # North, east and west: one range each, built like the south ranges (two-tone ridges, hazed
+    # about as far as the middle southern range), turned to face the town.
+    sides = [
+        ((0, -1), 1150, 1300, 9, (110, 220), 180),   # north
+        ((1, 0), 1150, 1400, 10, (100, 200), 90),    # east
+        ((-1, 0), 1150, 1400, 10, (100, 200), -90),  # west
+    ]
+    f = 0.44
+    for (ox, oz), out, half, n, (h0, h1), yaw in sides:
+        along = (oz, ox) if ox == 0 else (0, 1)
+        centre_z = 520 if ox != 0 else 0  # east/west ranges run alongside the whole map
+        turn = rot_y(yaw)
+        # which of a peak's halves (local -x or +x) ends up on the sun's side once turned
+        lx = apply(turn, (-1, 0, 0))
+        sun_first = lx[0] * SUN_XZ[0] + lx[2] * SUN_XZ[1] > 0
+        sun, shade = haze(HORIZON_SUN, f), haze(HORIZON_SHADE, f)
+        if not sun_first:
+            sun, shade = shade, sun
+        for k in range(n):
+            t = (k + rng.uniform(0.2, 0.8)) / n * 2 - 1
+            d = out + rng.uniform(-80, 140)
+            px = ox * d + along[0] * t * half
+            pz = oz * d + along[1] * t * half + centre_z
+            h = rng.uniform(h0, h1)
+            left, right = h * rng.uniform(1.4, 2.2), h * rng.uniform(1.4, 2.2)
+            depth = rng.uniform(160, 240)
+            lean = rng.uniform(16, 26)
+            dist = math.hypot(px - ex, pz - ez)
+            ks = _sky_k("ring", dist)
+            base = ey - SKY_DROP / ks
+            stretch = (h - base) / (h + 20)
+            group = _peak(f"Side{len(kids):03d}", 0, 0, h, left * stretch, right * stretch, depth, sun, lean,
+                          base=base, shade=shade)
+            if h > (h0 + h1) / 2:
+                c = 0.22
+                snow_sun, snow_shade = haze(HORIZON_SNOW, f * 0.8), haze(HORIZON_SNOW_SHADE, f * 0.8)
+                if not sun_first:
+                    snow_sun, snow_shade = snow_shade, snow_sun
+                group += _peak(f"SideSnow{len(kids):03d}", 0, 0, h + 1, left * c, right * c, depth + 6, snow_sun,
+                               lean, base=h - (h + 20) * c, shade=snow_shade)
+            for node in group:  # turn to face the town, then stand at (px, pz)
+                cf = node["properties"]["CFrame"]["CFrame"]
+                x, y, z = cf["position"]
+                q = apply(turn, (x, y, z))
+                cf["position"] = [_r(q[0] + px), _r(q[1]), _r(q[2] + pz)]
+                cf["orientation"] = [[_r(v) for v in row] for row in mul(turn, cf["orientation"])]
+            kids += _to_sky(group, ks)
+    horizon = model("Horizon", kids, attrs={"Region": "Horizon", "SkyEyeX": ex, "SkyEyeY": ey, "SkyEyeZ": ez})
+    horizon["properties"] = {"ModelStreamingMode": "Persistent"}
+    return horizon
 
 
 # ── Iron Lowlands: pass → overlook → yard → pits → Warlord's Pit ─────────────
@@ -2362,7 +3227,215 @@ def manacles(name, x, y, z, yaw):
     return model(name, kids)
 
 
-def build_iron_lowlands(rng):
+
+def snap_to_terrain(node, base_y, sink=0.3):
+    """Tag a model for WorldTerrain to set down on the terrain rock under its pivot (bench-top
+    shrubs, trees and blocks: the benches are sculpted at runtime, so their heights are not known
+    here). base_y is the height the model was built standing on."""
+    node.setdefault("attributes", {}).update({"SnapToTerrain": True, "SnapBaseY": base_y, "SnapSink": sink})
+    return node
+
+
+def raised(node, dy, start):
+    """Lift a just-built model by dy studs: every part under it and its REGISTRY entries (those from
+    index `start` on), so the preview and floor_at see the same heights as the file."""
+    def walk(n):
+        cf = n.get("properties", {}).get("CFrame")
+        if cf:
+            pos = cf["CFrame"]["position"]
+            pos[1] = _r(pos[1] + dy)
+        for c in n.get("children", ()):
+            walk(c)
+    walk(node)
+    for e in REGISTRY[start:]:
+        e["pos"] = (e["pos"][0], e["pos"][1] + dy, e["pos"][2])
+    return node
+
+
+def quarry_fall(name, x, z, top, bottom, width=6.0):
+    """The sump's waterfall: a stream running out of the notch in the east wall's second bench and
+    three falling sheets down the plain face below it into the sump, foam and mist at the foot.
+    Tagged Waterfall, so HubAmbience shimmers the sheets."""
+    height = top - bottom
+    kids = []
+    # A white core, a blue-green veil either side of it and a loose outer spray, each a little proud
+    # of the one behind and ragged at the edges, so the fall reads as tumbling water, not a pane.
+    sheets = ((0.0, width, (178, 216, 232), 0.35), (-0.45, width * 0.72, (236, 247, 252), 0.08),
+              (-0.9, width * 0.4, (255, 255, 255), 0.02), (-0.7, width * 0.18, (150, 200, 222), 0.25))
+    for k, (dx, w, color, tr) in enumerate(sheets):
+        kids.append(part(f"WaterSheet{k}", (0.35, height + 0.6, w), (x - 0.5 + dx, bottom + height / 2 + 0.2,
+                                                                    z + (0.6 if k == 3 else 0.0)),
+                         color, "Glass" if k != 2 else "SmoothPlastic", collide=False, query=False, shadow=False,
+                         transparency=tr, layer="decal"))
+    for k, off in enumerate((-0.42, -0.2, 0.18, 0.38)):  # runnels: streaks of darker, faster water
+        kids.append(part(f"Runnel{k}", (0.12, height - 2.0 - k * 1.5, width * 0.07), (x - 1.45, bottom + height / 2 + k * 0.75,
+                                                                                   z + off * width),
+                         (104, 160, 182), "Glass", collide=False, query=False, shadow=False, transparency=0.3,
+                         layer="decal"))
+    kids.append(part("Stream", (15, 0.5, width - 1.2), (x + 7.2, top + 0.15, z), (120, 180, 206), "Glass", collide=False,
+                     query=False, shadow=False, transparency=0.25, layer="decal"))
+    # The foam crests 0.1 above the sheets' tops (level with them, the two z-fought).
+    kids.append(part("LipFoam", (1.2, 0.8, width - 0.6), (x - 0.2, top + 0.2, z), (232, 244, 248), "SmoothPlastic",
+                     collide=False, query=False, shadow=False, transparency=0.3, layer="decal"))
+    kids.append(part("Foam", (0.14, 9.0, 9.0), (x - 4.0, bottom + 0.08, z), (236, 246, 250), "SmoothPlastic", rot_z(90),
+                     shape="Cylinder", collide=False, query=False, shadow=False, transparency=0.3, layer="decal"))
+    kids.append(part("Mist", (0.5, 0.5, 0.5), (x - 3.0, bottom + 1.2, z), (255, 255, 255), "SmoothPlastic", transparency=1,
+                     collide=False, query=False, shadow=False, children=[smoke(5.0, 0.12, 1.4, (236, 242, 246))]))
+    return model(name, kids, attrs={"Waterfall": True})
+
+
+def quarry_derrick(name, x, z, yaw, rng, height=24.0):
+    """A timber guy-derrick: a mast on a cross-footed sill, a boom slung out over the pit, guy ropes
+    to stakes, a hand winch, and a cut block hanging on the fall rope. Nothing collides."""
+    y = floor_at(x, z, PIT_Y)
+    r = rot_y(yaw)
+    fwd, right = apply(r, (0, 0, -1)), apply(r, (1, 0, 0))
+
+    def at(f, s, h):
+        return (x + fwd[0] * f + right[0] * s, y + h, z + fwd[2] * f + right[2] * s)
+
+    kids = [
+        part("SillA", (9, 0.9, 1.1), at(0, 0, 0.45), BEAM, "Wood", r, collide=False),
+        part("SillB", (1.1, 1.0, 9), at(0, 0, 0.5), BEAM, "Wood", r, collide=False),  # proud of SillA: no shared top
+        beam("Mast", at(0, 0, 0.9), at(0, 0, height), 1.3, TIMBER, collide=False),
+        part("MastCap", (1.8, 0.8, 1.8), at(0, 0, height + 0.2), RUST, "CorrodedMetal", r, collide=False),
+    ]
+    tip = at(15, 0, height - 3)
+    kids.append(beam("Boom", at(0.8, 0, 3.5), tip, 0.9, TIMBER, collide=False))
+    kids.append(beam("Topping", at(0, 0, height - 0.4), tip, 0.18, (70, 60, 48), "Fabric", collide=False, shadow=False))
+    for k, (f, s) in enumerate(((-9, -8), (-9, 8), (7, -12))):
+        stake = at(f, s, 0)
+        # A stake driven into whatever floor it lands on (Stake2 is up on the mid bench, not the pit floor).
+        stake = (stake[0], floor_at(stake[0], stake[2], y), stake[2])
+        kids.append(beam(f"Guy{k}", at(0, 0, height - 0.6), stake, 0.16, (70, 60, 48), "Fabric", collide=False, shadow=False))
+        kids.append(part(f"Stake{k}", (0.5, 1.6, 0.5), (stake[0], stake[1] + 0.5, stake[2]), SPLINTER, "Wood", rot_x(12),
+                         collide=False))
+    for sgn in (-1, 1):
+        kids.append(beam(f"Brace{sgn}", at(0, sgn * 3.6, 0.9), at(0, 0, 7), 0.5, BEAM, collide=False))
+    kids.append(part("Winch", (0.9, 1.8, 1.8), at(-1.6, 0, 2.4), (88, 64, 44), "Wood", mul(r, rot_z(0)), shape="Cylinder",
+                     collide=False))
+    kids.append(part("WinchCrank", (0.3, 0.3, 1.6), at(-1.6, 1.2, 2.9), IRON_DARK, "CorrodedMetal", r, collide=False))
+    drop = 9.0
+    kids.append(part("Fall", (0.2, drop, 0.2), (tip[0], tip[1] - drop / 2, tip[2]), (70, 60, 48), "Fabric", collide=False,
+                     shadow=False))
+    kids.append(part("Hook", (0.5, 1.0, 0.5), (tip[0], tip[1] - drop - 0.3, tip[2]), IRON_DARK, "CorrodedMetal",
+                     collide=False))
+    for k, sgn in enumerate((-1, 1)):
+        kids.append(beam(f"Sling{k}", (tip[0], tip[1] - drop - 0.6, tip[2]),
+                         (tip[0] + right[0] * sgn * 1.6, tip[1] - drop - 2.4, tip[2] + right[2] * sgn * 1.6), 0.14,
+                         (70, 60, 48), "Fabric", collide=False, shadow=False))
+    kids.append(part("Block", (4.6, 3.0, 3.6), (tip[0], tip[1] - drop - 3.9, tip[2]), (214, 190, 146), "Limestone",
+                     mul(r, rot_y(rng.uniform(-8, 8))), collide=False))
+    return model(name, kids)
+
+
+def wall_scaffold(name, x, z, yaw, height, rng, width=10.0, depth=4.0, base_y=None):
+    """Timber working scaffold stood against a quarry face: four posts, two plank decks, X-braces
+    on the open side, and a ladder up the front. `yaw` faces it out from the rock."""
+    y = floor_at(x, z, base_y if base_y is not None else PIT_Y)
+    r = rot_y(yaw)
+    fwd, right = apply(r, (0, 0, -1)), apply(r, (1, 0, 0))
+
+    def at(f, s, h):
+        return (x + fwd[0] * f + right[0] * s, y + h, z + fwd[2] * f + right[2] * s)
+
+    kids = []
+    for sx in (-1, 1):
+        for fz in (0, 1):
+            kids.append(beam(f"Post{sx}{fz}", at(fz * depth, sx * width / 2, 0), at(fz * depth, sx * width / 2, height),
+                             0.8, BEAM, collide=False))
+    for k, h in enumerate((height * 0.5, height - 0.3)):
+        kids.append(part(f"Deck{k}", (width + 1.2, 0.4, depth + 1.0), at(depth / 2, 0, h), TIMBER, "WoodPlanks",
+                         mul(r, rot_z(rng.uniform(-1.5, 1.5))), collide=False))
+    kids.append(beam("BraceA", at(depth, -width / 2, 0.6), at(depth, width / 2, height * 0.5 - 0.3), 0.45, SPLINTER,
+                     collide=False))
+    kids.append(beam("BraceB", at(depth, width / 2, height * 0.5 + 0.3), at(depth, -width / 2, height - 0.6), 0.45, SPLINTER,
+                     collide=False))
+    kids.append(part("Rail", (width, 0.3, 0.3), at(depth + 0.2, 0, height + 1.1), SPLINTER, "Wood", r, collide=False))
+    for k in range(int(height / 1.3)):
+        kids.append(part(f"Rung{k}", (2.2, 0.28, 0.28), at(depth + 1.1, -width / 2 + 2.2, 0.8 + k * 1.3), TIMBER, "Wood", r,
+                         collide=False))
+    for sgn in (-1, 1):
+        kids.append(beam(f"LadderRail{sgn}", at(depth + 1.1, -width / 2 + 2.2 + sgn * 1.1, 0),
+                         at(depth + 1.1, -width / 2 + 2.2 + sgn * 1.1, height + 0.6), 0.32, SPLINTER, collide=False))
+    kids.append(part("Bucket", (1.4, 1.6, 1.6), at(depth / 2 + 1, 2, height * 0.5 + 0.9), (96, 70, 48), "Wood",
+                     mul(r, rot_z(90)), shape="Cylinder", collide=False, shadow=False))
+    return model(name, kids)
+
+
+def cut_blocks(name, x, z, rng, y=None, count=5, color=(214, 190, 146), spread=5.0):
+    """Sawn limestone blocks from the last cut, stacked two high and a few set down loose."""
+    y0 = floor_at(x, z, PIT_Y) if y is None else y
+    kids = []
+    for k in range(count):
+        w, h, d = rng.uniform(3.4, 5.0), rng.uniform(2.2, 3.0), rng.uniform(2.6, 3.6)
+        if k < 2:
+            px, pz, py = x + (k - 0.5) * (w + 0.3), z, y0 + h / 2
+        elif k == 2:
+            px, pz, py = x + rng.uniform(-0.6, 0.6), z + rng.uniform(-0.4, 0.4), y0 + 2.6 + h / 2
+        else:
+            a = rng.uniform(0, math.tau)
+            px, pz, py = x + math.cos(a) * spread, z + math.sin(a) * spread, y0 + h / 2 - 0.1
+        tone = tuple(max(0, min(255, int(c + rng.uniform(-10, 8)))) for c in color)
+        kids.append(part(f"Block{k}", (w, h, d), (px, py, pz), tone, "Limestone", rot_y(rng.uniform(-12, 12)),
+                         collide=False, shadow=k < 3, layer="rock"))
+    return model(name, kids)
+
+
+def quarry_dressing():
+    """Set dressing for the sculpted quarry: the waterfall into the sump, a derrick and a rail spur
+    with a loaded cart on the pit floor, a working scaffold against the mid bench's east face, sawn
+    blocks, and shrubs and trees on the bench tops (snapped to the terrain at runtime). A private
+    seed, so the shared layout `rng` (and every region after this one) is untouched."""
+    lr = random.Random(0x51A7E)
+    out = [quarry_fall("SumpFall", 110.0, 347.0, 34.0, PIT_Y - 0.35, width=7.0)]
+    out.append(quarry_derrick("PitDerrick", 62, 337, yaw_facing(1, -0.15), lr))
+    out.append(rail_run("PitSpurRails", (18, 350), (70, 350)))
+    # The cart stands at the spur's west end: IL_B2 (an IronBerserker) spawns on the rails at x=44.
+    out.append(mine_cart("PitSpurCart", 26, 0, 350, 90))
+    out.append(cut_blocks("PitBlocksA", 70, 334, lr, count=4, spread=4.0))
+    out.append(cut_blocks("PitBlocksB", 84, 390, lr, count=4))
+    out.append(cut_blocks("PitBlocksC", -70, 440, lr, count=6))
+    out.append(cut_blocks("MidBlocks", 98, 290, lr, count=4))
+    out.append(wall_scaffold("EastScaffold", 104.5, 312, yaw_facing(-1, 0), 13.0, lr, base_y=MID_Y))
+    out.append(wall_scaffold("WestScaffold", -104.5, 420, yaw_facing(1, 0), 17.0, lr))
+    # Shrubs and trees on the bench tops, set down on the rock by WorldTerrain. The last figure is
+    # roughly the rock top WorldTerrain sculpts under each one (its bench tier profile, sampled at
+    # the model's pivot): each is built standing that high and tagged with it as SnapBaseY, so the
+    # runtime snap lands it exactly where it always did, while the file on its own already shows it
+    # on its bench (built at y=0, the ones over the pit's slab lay buried in it). Rounded to 0.5.
+    greens = [
+        ("tree", 118, 326, 0.8, 16.0), ("tree", 126, 362, 0.9, 27.5), ("tree", 122, 300, 0.75, 29.5),
+        ("tree", 128, 331, 1.0, 31.5), ("tree", -120, 400, 0.85, 18.5), ("tree", 60, 480, 0.9, 17.5),
+        ("tree", -60, 480, 0.8, 24.0), ("tree", -118, 200, 0.8, 15.5),
+        ("bush", 116, 356, 1.2, 36.0), ("bush", 124, 332, 1.0, 30.0), ("bush", 115, 314, 1.1, 17.0),
+        ("bush", 128, 312, 0.9, 28.0), ("bush", 116, 372, 1.0, 17.0), ("bush", 132, 350, 1.2, 45.0),
+        ("bush", 118, 404, 1.0, 16.5), ("bush", 124, 430, 1.1, 31.5), ("bush", -116, 380, 1.0, 17.0),
+        ("bush", -124, 440, 1.2, 30.0), ("bush", 30, 478, 1.0, 16.5), ("bush", -40, 478, 1.1, 16.5),
+        # on the rock rib across the pit
+        ("tree", 84, 375, 0.85, 18.5), ("bush", 72, 374, 1.1, 19.0), ("bush", 96, 376, 1.0, 19.5),
+        ("tree", -70, 375, 0.8, 21.0),
+    ]
+    for k, (kind, x, z, sc, bench) in enumerate(greens):
+        start = len(REGISTRY)
+        if kind == "tree":
+            node = tree(f"LedgeTree{k}", x, 0.0, z, lr, scale=sc)
+        else:
+            node = bush(f"LedgeBush{k}", x, 0.0, z, lr, scale=sc)
+        out.append(snap_to_terrain(raised(node, bench, start), bench, sink=0.6 if kind == "tree" else 0.4))
+    for k, (x, z, bench) in enumerate(((121, 346, 32.0), (117, 390, 16.5), (-118, 360, 18.5))):
+        start = len(REGISTRY)
+        node = cut_blocks(f"LedgeBlocks{k}", x, z, lr, y=0.0, count=3, spread=3.5)
+        out.append(snap_to_terrain(raised(node, bench, start), bench, sink=0.3))
+    return out
+
+
+def quarry_layout(rng):
+    """The Iron Lowlands' floors, walls and gameplay layout, as the old bandit quarry laid them out.
+    build_iron_lowlands keeps its floors, proxies and gameplay pieces (waystones, the Briarwood gate,
+    the Warden's arena) and dresses the rest as the desert oasis. It still runs whole, so it draws
+    from the shared `rng` and reserves cliff tops exactly as before and Briarwood, built after it,
+    comes out unchanged."""
     global AUTO_GROUND
     AUTO_GROUND = True
     T = HUB_Y
@@ -2413,11 +3486,15 @@ def build_iron_lowlands(rng):
         rail_run("RailF", (0, 367), (0, 385.5)),
     ]))
 
+    # The quarry's walls are sculpted voxel Terrain (lemonade-game/Map/WorldTerrain.server.luau: stepped
+    # benches with chipped lips, drill channels and crevices, tilted strata, crags on a broken crest,
+    # talus fans at the foot), so no visible wall parts are made here. cliff_run still lays out each
+    # run (and draws from `rng` exactly as before, so nothing else in the map moves) for its invisible
+    # proxy, which reaches PROXY_TOP and keeps holding players in wherever the crest dips.
     def cliffs(name, pts, inward, base, height, depth=16):
         for i in range(len(pts) - 1):
-            chunks, proxy = cliff_run(f"{name}{i}", pts[i], pts[i + 1], inward, base, height, QUARRY_CLIFF,
-                                      QUARRY_CLIFF_DARK, rng, depth=depth)
-            visual.extend(chunks)
+            _, proxy = cliff_run(f"{name}{i}", pts[i], pts[i + 1], inward, base, height, QUARRY_CLIFF,
+                                 QUARRY_CLIFF_DARK, rng, depth=depth)
             proxies.append(proxy)
 
     # Pass and overlook walls, then the quarry perimeter with its base stepping down per bench.
@@ -2432,42 +3509,39 @@ def build_iron_lowlands(rng):
     # side of the lantern arch, and a rock lintel above its beam, leaving only the arch as the way in.
     cliffs("PassageMouthN", [(-110, PASSAGE[2]), (-110, PASSAGE[2] + 12)], 1, MID_Y, 44)
     cliffs("PassageMouthS", [(-110, PASSAGE[3] - 12), (-110, PASSAGE[3])], 1, MID_Y, 44)
-    lintel_bottom, lintel_top = MID_Y + 13.4, MID_Y + 44
-    visual.append(part("PassageMouthLintel", (14, lintel_top - lintel_bottom, PASSAGE[3] - PASSAGE[2] - 22),
-                       (-117, (lintel_top + lintel_bottom) / 2, (PASSAGE[2] + PASSAGE[3]) / 2), QUARRY_CLIFF_DARK,
-                       "Sandstone", collide=False, layer="cliff"))
+    # (The rock lintel over the lantern arch is terrain too, its underside at MID_Y + 13.4.)
     cliffs("PitWest", [(-110, PIT_Z[0]), (-110, 470)], 1, PIT_Y, 46)
     cliffs("PitSouth", [(-110, 470), (-19.5, 470)], 1, PIT_Y, 46)  # stop at the gate pillars' outer faces
     cliffs("PitSouthE", [(19.5, 470), (110, 470)], 1, PIT_Y, 46)
     cliffs("PitEast", [(110, 470), (110, PIT_Z[0])], 1, PIT_Y, 46)
     # Bench faces: rock lips along each drop, broken by the haul ramps.
-    visual += bench_face("RimFaceW", (RAMP1[0], MID_Z[0]), (-112, MID_Z[0]), 1, MID_Y, RIM_Y - MID_Y, rng)
-    visual += bench_face("RimFaceE", (112, MID_Z[0]), (RAMP1[1], MID_Z[0]), 1, MID_Y, RIM_Y - MID_Y, rng)
-    visual += bench_face("MidFaceW", (RAMP2[0], PIT_Z[0]), (-112, PIT_Z[0]), 1, PIT_Y, MID_Y - PIT_Y, rng)
-    visual += bench_face("MidFaceE", (SUMP[0], PIT_Z[0]), (RAMP2[1], PIT_Z[0]), 1, PIT_Y, MID_Y - PIT_Y, rng)
-    visual += bench_face("MidFaceSump", (112, PIT_Z[0]), (SUMP[0], PIT_Z[0]), 1, PIT_Y - 1.2, MID_Y - PIT_Y + 1.2, rng)
-    # Drill-hole row on the west rim face: the last blast line the crews cut before leaving.
-    for k, x in enumerate(range(-100, -44, 3)):
-        visual.append(part(f"DrillHole{k}", (0.9, 0.7, 0.7), (x, RIM_Y - 1.3, MID_Z[0] + 0.25), (40, 34, 30), "Slate",
-                           rot_y(90), shape="Cylinder", collide=False, query=False, shadow=False))
+    # Bench faces: the drops between benches are terrain too (a broken rock lip with rubble at its
+    # foot, in WorldTerrain); the layout calls stay for their `rng` draws.
+    bench_face("RimFaceW", (RAMP1[0], MID_Z[0]), (-112, MID_Z[0]), 1, MID_Y, RIM_Y - MID_Y, rng)
+    bench_face("RimFaceE", (112, MID_Z[0]), (RAMP1[1], MID_Z[0]), 1, MID_Y, RIM_Y - MID_Y, rng)
+    bench_face("MidFaceW", (RAMP2[0], PIT_Z[0]), (-112, PIT_Z[0]), 1, PIT_Y, MID_Y - PIT_Y, rng)
+    bench_face("MidFaceE", (SUMP[0], PIT_Z[0]), (RAMP2[1], PIT_Z[0]), 1, PIT_Y, MID_Y - PIT_Y, rng)
+    bench_face("MidFaceSump", (112, PIT_Z[0]), (SUMP[0], PIT_Z[0]), 1, PIT_Y - 1.2, MID_Y - PIT_Y + 1.2, rng)
 
     # Drainage sump: still brown water in the lowest corner, stone curb on the pit side.
     visual.append(model("Sump", [
         box("Water", SUMP[0] + 0.6, SUMP[1] - 0.6, PIT_Y - 1.2, PIT_Y - 0.35, SUMP[2] + 0.6, SUMP[3] - 0.6, SUMP_WATER,
-            "Glass", transparency=0.35, collide=False, query=False, layer="decal"),
+            "Glass", transparency=0.3, collide=False, query=False, layer="decal"),
         box("CurbW", SUMP[0] - 1.2, SUMP[0] + 0.2, PIT_Y, PIT_Y + 0.8, SUMP[2], SUMP[3] + 1.2, STONE_DARK, "Cobblestone"),
         box("CurbS", SUMP[0] + 0.2, SUMP[1], PIT_Y, PIT_Y + 0.8, SUMP[3], SUMP[3] + 1.2, STONE_DARK, "Cobblestone"),
         box("MudStainA", SUMP[0] - 30, SUMP[0], PIT_Y, PIT_Y + 0.12, 344, 358, MUD, "Mud", collide=False, layer="decal"),
         box("MudStainB", SUMP[0] - 16, SUMP[0], PIT_Y, PIT_Y + 0.12, 358, 366, MUD, "Mud", collide=False, layer="decal"),
     ]))
 
-    # Ridge across the pit with a 40-stud gap so the boss is visible before aggro.
+    # Ridge across the pit with a 40-stud gap so the boss is visible before aggro. The rock rib itself
+    # is terrain (WorldTerrain); the layout below still draws from `rng` as before, and its parts are
+    # dropped, leaving the proxies.
     for side, (x0, x1) in ((-1, (-110, -20)), (1, (20, 110))):
         for k, xs in enumerate(range(int(x0), int(x1), 15)):
             xe = min(xs + 15, x1)
             h = free_top(PIT_Y + rng.uniform(16, 24) - 1) - PIT_Y + 1
-            visual.append(part(f"Ridge{side}_{k}", (xe - xs + 2, h, 16), ((xs + xe) / 2, PIT_Y + h / 2 - 1, 375),
-                               QUARRY_CLIFF_DARK, "Sandstone", rot_y(rng.uniform(-5, 5)), collide=False, layer="cliff"))
+            part(f"Ridge{side}_{k}", (xe - xs + 2, h, 16), ((xs + xe) / 2, PIT_Y + h / 2 - 1, 375),
+                 QUARRY_CLIFF_DARK, "Sandstone", rot_y(rng.uniform(-5, 5)), collide=False, layer="cliff")
         proxies.append(box(f"RidgeProxy{side}", x0, x1, PIT_Y - 1, PIT_Y + 26, 368, 382, (255, 0, 255), transparency=1,
                            query=False, shadow=False, layer="proxy"))
 
@@ -2531,8 +3605,10 @@ def build_iron_lowlands(rng):
     visual.append(bedroll("HideoutBedroll", -150, 312, 80, color=(96, 84, 70)))
     visual.append(crate_stack("HideoutCrates", -134, 0, 284, rng))
     visual.append(rag_banner("HideoutBanner", -118, 276, 90))
-    visual.append(bench_lines("EastBenchLines", 110, PIT_Z[0] + 4, 468, PIT_Y, rng))
-    visual.append(bench_lines("WestBenchLines", -110, PIT_Z[0] + 30, 468, PIT_Y, rng, inward=1))
+    # The old plank "ledges" on the pit walls are gone (the terrain walls have real benches); the
+    # calls stay for their `rng` draws.
+    bench_lines("EastBenchLines", 110, PIT_Z[0] + 4, 468, PIT_Y, rng)
+    bench_lines("WestBenchLines", -110, PIT_Z[0] + 30, 468, PIT_Y, rng, inward=1)
 
     # Back-door passage: lantern arch, hidden elite, a supply cache (decorative for now).
     visual.append(model("SideArch", [
@@ -2582,6 +3658,569 @@ def build_iron_lowlands(rng):
     visual.append(gate("GateBriarwood", 0, PIT_Y, 470, 0, 24, 22, "Briarwood", "Lv 9+  |  The wooded vale", sealed=False,
                        accent=(90, 120, 60), region="Briarwood", required_level=9,
                        back_title="Iron Lowlands", back_subtitle="Warden's Pit"))
+    visual += quarry_dressing()
+    REGISTRY[:] = [e for e in REGISTRY if not (e["layer"] == "cliff" and (
+        re.match(r"^(PassWest|PassEast|RimNorthW|RimEast|MidWest|MidEast|PassageMouth[NS]|PitWest|PitSouth|PitSouthE|PitEast)"
+                 r"\d+_\d+(_cap)?$", e["name"]) or re.match(r"^Ledge\d+_\d+$", e["name"])
+        or re.match(r"^(Rim|Mid)Face(W|E|Sump)_\d+(_cap)?$", e["name"])
+        or re.match(r"^Ridge-?1_\d+$", e["name"])))]
+    return ground, visual, proxies
+
+
+# ── Iron Lowlands: the desert oasis ──────────────────────────────────────────
+# The basin itself (sand, dunes, scarps, striped mesas and rock towers, the oasis pool under its
+# overhang, the hideout arch) is voxel Terrain built by lemonade-game/Map/WorldTerrain.server.luau on
+# the quarry's floors. What stands on the sand is here: a small adobe settlement (sun-baked plaster
+# houses with dark window frames, vigas, parapets and striped awnings), the bandits' tent camp round
+# its fire, market stalls, palms and reeds at the oasis, cacti, fences, clay pots, lemon crates and
+# the scattered rubble that seats everything in the sand. One warm palette throughout: sand,
+# sandstone and terracotta, with Lemonade's bright awnings and greens as accents.
+ADOBE_WALLS = [(232, 184, 126), (222, 168, 112), (238, 198, 144), (226, 174, 118)]
+ADOBE_PLINTH = (186, 128, 84)
+ADOBE_TRIM = (208, 150, 98)
+ADOBE_BRICK = (196, 118, 78)
+FRAME_DARK = (86, 52, 32)
+PANE_DARK = (44, 32, 30)
+VIGA = (124, 80, 46)
+AWNINGS = [(226, 72, 58), (244, 160, 60), (250, 204, 60), (238, 128, 58)]  # all warm: no cool accents in the sand
+AWNING_CREAM = (250, 240, 216)
+POT_CLAY = [(204, 108, 66), (190, 96, 58), (214, 128, 80)]
+CACTUS = [(86, 150, 72), (74, 136, 64), (98, 160, 78)]
+PALM_TRUNK = (156, 112, 70)
+PALM_RING = (118, 84, 52)
+PALM_LEAF = [(118, 150, 70), (102, 136, 62), (136, 160, 84)]  # dusty olive and sage, not lawn green
+RUBBLE = [(214, 156, 102), (196, 124, 80), (226, 178, 118), (182, 110, 72)]
+TENT_CLOTH = [(234, 198, 146), (226, 150, 96), (218, 180, 128)]
+LEMON = (252, 220, 60)
+
+
+def local_frame(x, y, z, yaw):
+    """Rotation and a local→world point mapper for a model standing at (x, y, z) facing `yaw`."""
+    r = rot_y(yaw)
+
+    def at(lx, ly, lz):
+        d = apply(r, (lx, 0, lz))
+        return (x + d[0], y + ly, z + d[2])
+    return r, at
+
+
+def rubble(name, x, z, rng, n=8, spread=4.0, y=None, drift=0.9, shadow=False):
+    """A heap of fallen sandstone and adobe brick: a few big blocks bedded in the sand with one or
+    two more tumbled on top, and a scatter of chips round it. Tagged SandDrift, so WorldTerrain
+    heaps sand into the pile and it rises out of a little mound instead of lying on the ground: the
+    big blocks are bedded well down, the chips half sunk. `shadow` lets the big blocks cast
+    their contact shadow (for the heaps in the foreground of the camp)."""
+    y = floor_at(x, z, y)
+    kids = []
+    big = max(3, n // 2)
+    tops = []
+    for k in range(big):
+        a = k / big * math.tau + rng.uniform(-0.4, 0.4)
+        d = spread * 0.22 * rng.uniform(0.3, 1.0)
+        sx, sy, sz = rng.uniform(1.4, 2.3), rng.uniform(0.9, 1.4), rng.uniform(1.1, 1.8)
+        cx, cz = x + math.cos(a) * d, z + math.sin(a) * d
+        kids.append(part(f"Block{k}", (sx, sy, sz), (cx, y + sy * 0.2, cz), rng.choice(RUBBLE),
+                         rng.choice(("Sandstone", "Brick", "Sandstone")),
+                         mul(rot_y(rng.uniform(0, 180)), rot_x(rng.uniform(-10, 10))), collide=False, query=False,
+                         shadow=shadow))
+        tops.append((cx, y + sy * 0.7, cz))
+    for k in range(min(2, big - 1)):  # tumbled onto the blocks below, sunk into them a little
+        bx, by, bz = tops[k]
+        sx, sy, sz = rng.uniform(1.0, 1.6), rng.uniform(0.7, 1.0), rng.uniform(0.9, 1.3)
+        kids.append(part(f"Top{k}", (sx, sy, sz), ((bx + x) / 2, by + sy * 0.15, (bz + z) / 2), rng.choice(RUBBLE),
+                         "Sandstone", mul(rot_y(rng.uniform(0, 180)), rot_z(rng.uniform(-18, 18))), collide=False,
+                         query=False, shadow=False))
+    for k in range(n - big):
+        a, d = rng.uniform(0, math.tau), spread * rng.uniform(0.45, 1.0)
+        sx, sy, sz = rng.uniform(0.5, 1.2), rng.uniform(0.35, 0.7), rng.uniform(0.45, 1.0)
+        kids.append(part(f"Bit{k}", (sx, sy, sz), (x + math.cos(a) * d, y + sy * 0.25, z + math.sin(a) * d),
+                         rng.choice(RUBBLE), rng.choice(("Sandstone", "Brick", "Sandstone")),
+                         mul(rot_y(rng.uniform(0, 180)), rot_x(rng.uniform(-14, 14))), collide=False, query=False,
+                         shadow=False, layer="decal"))
+    return model(name, kids, attrs={"SandDrift": drift} if drift else None)
+
+
+def clay_pot(name, x, z, rng, scale=1.0, y=None):
+    y = floor_at(x, z, y) - 0.25 * scale  # set down in the sand, not on it
+    s = scale
+    c = rng.choice(POT_CLAY)
+    return model(name, attrs={"SandDrift": 0.55}, children=[
+        part("Belly", (1.9 * s, 1.9 * s, 1.9 * s), (x, y + 0.85 * s, z), c, "Brick", shape="Ball", collide=False),
+        part("Neck", (0.8 * s, 1.1 * s, 1.1 * s), (x, y + 1.95 * s, z), c, "Brick", rot_z(90), shape="Cylinder",
+             collide=False),
+        part("Lip", (0.2 * s, 1.4 * s, 1.4 * s), (x, y + 2.45 * s, z), ADOBE_BRICK, "Brick", rot_z(90), shape="Cylinder",
+             collide=False),
+    ])
+
+
+def lemon_crate(name, x, z, yaw, rng, y=None):
+    """Lemonade's own touch: a crate of lemons."""
+    y = floor_at(x, z, y) - 0.2  # its foot sunk in the sand (WorldTerrain drifts round it)
+    r, at = local_frame(x, y, z, yaw)
+    kids = [part("Crate", (2.6, 1.5, 2.2), at(0, 0.75, 0), TIMBER, "WoodPlanks", r)]
+    for k in range(5):
+        kids.append(part(f"Lemon{k}", (0.8, 0.7, 0.7), at(-0.8 + (k % 3) * 0.8, 1.6 + (k // 3) * 0.3, -0.4 + (k % 2) * 0.8),
+                         LEMON, "SmoothPlastic", mul(r, rot_y(rng.uniform(0, 90))), shape="Ball", collide=False,
+                         query=False, shadow=False))
+    return model(name, kids, attrs={"SandDrift": 0.45})
+
+
+def adobe_window(kids, at, r, lx, ly, face_z, shutters=None):
+    """A dark pane in a timber frame with a cross bar, a plaster sill and a beam lintel."""
+    kids.append(part("Pane", (2.0, 2.4, 0.3), at(lx, ly, face_z - 0.1), PANE_DARK, "SmoothPlastic", r, collide=False))
+    kids.append(part("FrameV", (0.32, 2.7, 0.3), at(lx, ly, face_z - 0.22), FRAME_DARK, "Wood", r, collide=False))
+    kids.append(part("FrameH", (2.3, 0.32, 0.3), at(lx, ly + 0.15, face_z - 0.22), FRAME_DARK, "Wood", r, collide=False))
+    kids.append(part("Sill", (2.9, 0.4, 0.8), at(lx, ly - 1.45, face_z - 0.3), ADOBE_TRIM, "Plaster", r, collide=False))
+    kids.append(part("Lintel", (3.1, 0.55, 0.7), at(lx, ly + 1.5, face_z - 0.25), VIGA, "Wood", r, collide=False))
+    if shutters:
+        for side in (-1, 1):
+            kids.append(part(f"Shutter{side}", (0.95, 2.5, 0.2), at(lx + side * 1.55, ly, face_z - 0.12), shutters,
+                             "WoodPlanks", r, collide=False))
+
+
+def adobe_box(kids, at, r, rng, w, d, h, y0, wall, vigas=True, lz0=0.0, lx0=0.0):
+    """One storey: a plaster body on a sandstone plinth, a roof lip, parapets front and back and
+    the ends of the roof beams (vigas) poking out of the front. Returns the roof top height."""
+    kids.append(part("Body", (w, h, d), at(lx0, y0 + h / 2, lz0), wall, "Plaster", r))
+    kids.append(part("Coping", (w + 0.7, 0.7, d + 0.7), at(lx0, y0 + h + 0.35, lz0), ADOBE_TRIM, "Plaster", r))
+    top = y0 + h + 0.7
+    for k, sz in enumerate((-1, 1)):
+        kids.append(part(f"Parapet{k}", (w + 0.7, 1.3, 0.8), at(lx0, top + 0.65, lz0 + sz * (d + 0.7 - 0.8) / 2),
+                         wall, "Plaster", r))
+    for k, sx in enumerate((-1, 1)):
+        kids.append(part(f"ParapetEnd{k}", (0.8, 1.0, d + 0.7 - 1.6), at(lx0 + sx * (w + 0.7 - 0.8) / 2, top + 0.5, lz0),
+                         wall, "Plaster", r))
+    if vigas:
+        n = max(2, int(w / 3.4))
+        for k in range(n):
+            lx = lx0 - w / 2 + w * (k + 0.5) / n
+            kids.append(part(f"Viga{k}", (2.4, 0.6, 0.6), at(lx, y0 + h - 1.0, lz0 - d / 2 - 0.7), VIGA, "Wood",
+                             mul(r, rot_y(90)), shape="Cylinder", collide=False))
+    return top
+
+
+def adobe_house(name, x, z, w, d, h, face, rng, wall=None, awning=None, upper=None, windows=2, shutters=None,
+                drift=2.8):
+    """A sun-baked adobe house: plaster walls on a sandstone plinth, dark framed windows, a timber
+    door under a striped awning, vigas, parapets, patches of bare brick where the plaster has
+    flaked, and optionally a smaller upper storey set back on the roof.
+    Tagged SandDrift: WorldTerrain piles sand against its walls. The front faces `face`."""
+    y = floor_at(x, z, None)
+    wall = wall or rng.choice(ADOBE_WALLS)
+    r, at = local_frame(x, y - 0.3, z, yaw_facing(*face))
+    kids = [part("Plinth", (w + 0.5, 1.5, d + 0.5), at(0, 0.75, 0), ADOBE_PLINTH, "Sandstone", r)]
+    roof = adobe_box(kids, at, r, rng, w, d, h, 0.0, wall)
+    fz = -d / 2
+    door_x = rng.choice((-1, 1)) * (w / 2 - 3.2) if w > 11 else 0.0
+    kids.append(part("Door", (3.2, 5.6, 0.35), at(door_x, 2.8, fz - 0.1), (112, 70, 42), "WoodPlanks", r, collide=False))
+    kids.append(part("DoorLintel", (4.6, 0.7, 0.9), at(door_x, 5.95, fz - 0.3), VIGA, "Wood", r, collide=False))
+    slots = [lx for lx in (-w / 2 + 2.6, 0.0, w / 2 - 2.6) if abs(lx - door_x) > 3.6][:windows]
+    for lx in slots:
+        adobe_window(kids, at, r, lx, 3.9 if h < 9.5 else 3.6, fz, shutters)
+    aw = 5.2
+    if h >= 9.5:  # a second row, clear of the door's awning
+        for lx in [lx for lx in slots if not awning or abs(lx - door_x) > aw / 2 + 2.3]:
+            adobe_window(kids, at, r, lx, h - 3.0, fz, shutters)
+    if awning:
+        for k in range(4):
+            kids.append(part(f"Awning{k}", (aw / 4, 0.18, 3.2), at(door_x - aw / 2 + aw * (k + 0.5) / 4, 7.2, fz - 1.5),
+                             awning if k % 2 == 0 else AWNING_CREAM, "Fabric", mul(r, rot_x(-16)), collide=False,
+                             layer="roof"))
+        for side in (-1, 1):
+            kids.append(part(f"AwningPole{side}", (0.3, 6.9, 0.3), at(door_x + side * (aw / 2 - 0.2), 3.45, fz - 2.9),
+                             VIGA, "Wood", r, collide=False))
+    # plaster flaked off the corners and the wall foot, bare adobe brick beneath
+    for k in range(2):
+        px = rng.choice((-1, 1)) * (w / 2 - rng.uniform(0.9, 1.6))
+        py = rng.uniform(2.2, h - 2.2)
+        kids.append(part(f"Brick{k}", (rng.uniform(1.4, 2.4), rng.uniform(0.9, 1.6), 0.12), at(px, py, fz - 0.06),
+                         ADOBE_BRICK, "Brick", r, collide=False, query=False, shadow=False))
+    if upper:
+        uw, ud, uh = upper
+        lz = d / 2 - ud / 2 - 0.4
+        lx = rng.choice((-1, 1)) * (w - uw) / 2 * 0.6
+        adobe_box(kids, at, r, rng, uw, ud, uh, roof, wall, lz0=lz, lx0=lx)
+        adobe_window(kids, at, r, lx, roof + uh * 0.55, lz - ud / 2, shutters)
+    return model(name, kids, attrs={"SandDrift": drift})
+
+
+def a_tent(name, x, z, yaw, cloth, length=7.4, half=3.2, height=4.6, drift=1.4, stripe=None, rng=None):
+    """An A-frame tent of sun-faded canvas over a ridge pole, crossed poles jutting past the ridge at
+    both ends. `yaw` turns the ridge; its ends face along it. Each side is cut the way cloth hangs:
+    it falls steep from the ridge to a knee where it sags in, a dyed band (`stripe`, the awnings'
+    terracotta) runs along the knee, and below it the skirt flares out to the ground in two
+    panels at slightly different angles, so the hem ripples in folds instead of one straight edge.
+    Tagged SandDrift: WorldTerrain heaps sand along the hem, which is sunk into it."""
+    y = floor_at(x, z, None) - 0.15
+    r, at = local_frame(x, y, z, yaw)
+    stripe = stripe or AWNINGS[3]
+    faded = tuple(min(255, round(c * 0.9 + 18)) for c in cloth)  # the sunward canvas, bleached paler
+    kids = []
+    knee_y = height * 0.42
+    for sgn in (-1, 1):
+        top = (0.0, height)
+        knee = (sgn * half * 0.5, knee_y)  # inside the straight ridge-to-foot line: the sag
+        cloth_s = faded if sgn > 0 else cloth
+        dusty = tuple(round(c * 0.84 + d) for c, d in zip(cloth_s, (6, 2, -4)))  # the hem, stained by the sand
+        # upper sheet: ridge to knee
+        ln = math.hypot(knee[0] - top[0], knee[1] - top[1])
+        ang = math.degrees(math.atan2(top[1] - knee[1], abs(knee[0])))
+        rz = rot_z(ang if sgn < 0 else -ang)
+        # two sheets meeting in a shallow crease halfway along, where the cloth sags between the poles
+        for k, lz in enumerate((-length / 4, length / 4)):
+            kids.append(part(f"Canvas{sgn}_{k}", (ln + 0.2, 0.22, length / 2 + 0.05),
+                             at(knee[0] / 2 * (1.04 if k else 1.0), (top[1] + knee[1]) / 2, lz), cloth_s, "Fabric",
+                             mul(mul(r, rz), rot_x((-1 if k else 1) * sgn * 4.0)), collide=False, layer="roof"))
+        # the dyed band along the knee, standing just proud of the sheet
+        kids.append(part(f"Band{sgn}", (1.1, 0.4, length + 0.05), at(knee[0] * 0.93, knee[1] + 0.35, 0), stripe,
+                         "Fabric", mul(r, rz), collide=False, query=False, shadow=False, layer="roof"))
+        # the skirt: two panels, each flaring out to its own foot, the hem sunk into the sand
+        for k, (lz, flare, foot_y) in enumerate(((-length / 4, 1.12, -0.35), (length / 4, 1.0, -0.2))):
+            foot = (sgn * half * flare, foot_y)
+            ln2 = math.hypot(foot[0] - knee[0], foot[1] - knee[1])
+            ang2 = math.degrees(math.atan2(knee[1] - foot[1], abs(foot[0] - knee[0])))
+            rz2 = mul(rot_z(ang2 if sgn < 0 else -ang2), rot_x((1 if k else -1) * 1.5))
+            kids.append(part(f"Skirt{sgn}_{k}", (ln2 + 0.25, 0.22, length / 2 + 0.06),
+                             at((knee[0] + foot[0]) / 2, (knee[1] + foot[1]) / 2, lz), dusty, "Fabric", mul(r, rz2),
+                             collide=False, layer="roof"))
+        # the crossed poles, along the straight ridge-to-foot line
+        slant = math.hypot(half, height)
+        pang = math.degrees(math.atan2(height, half))
+        prz = rot_z(pang if sgn < 0 else -pang)
+        ux, uy = (half / slant) * (-sgn), height / slant
+        for k, lz in enumerate((-length / 2 - 0.1, length / 2 + 0.1)):
+            kids.append(part(f"Pole{sgn}_{k}", (slant + 1.6, 0.35, 0.35),
+                             at(sgn * half / 2 + ux * 0.8, height / 2 + uy * 0.8, lz), VIGA, "Wood", mul(r, prz),
+                             collide=False))
+    kids.append(part("Ridge", (length + 0.8, 0.4, 0.4), at(0, height, 0), VIGA, "Wood", mul(r, rot_y(90)),
+                     shape="Cylinder", collide=False))
+    return model(name, kids, attrs={"SandDrift": drift})
+
+
+def desert_fire(name, x, z, rng):
+    """The camp fire: a ring of sandstone, crossed logs, a bed of embers, flame and warm light."""
+    y = floor_at(x, z, None)
+    kids = []
+    for k in range(8):
+        a = k / 8 * math.tau + rng.uniform(-0.15, 0.15)
+        kids.append(part(f"Stone{k}", (1.3, 0.8, 1.0), (x + math.cos(a) * 2.3, y + 0.3, z + math.sin(a) * 2.3),
+                         rng.choice(RUBBLE), "Sandstone", mul(rot_y(math.degrees(-a)), rot_x(rng.uniform(-8, 8))),
+                         collide=False))
+    for k in range(3):
+        kids.append(part(f"Log{k}", (0.8, 0.8, 3.8), (x, y + 0.5, z), TRUNK, "Wood", mul(rot_y(k * 60 + 10), rot_x(16)),
+                         collide=False))
+    kids.append(part("Embers", (1.4, 0.35, 1.4), (x, y + 0.35, z), EMBER, "Neon", collide=False, query=False,
+                     shadow=False, children=[fire(5, 8), light(24, 1.7, (255, 170, 96))]))
+    return model(name, kids)
+
+
+def camp_table(name, x, z, yaw, rng, chairs=2):
+    y = floor_at(x, z, None)
+    r, at = local_frame(x, y - 0.1, z, yaw)
+    kids = [part("Top", (4.6, 0.35, 2.8), at(0, 2.75, 0), (132, 84, 50), "WoodPlanks", r)]
+    for k, (sx, sz) in enumerate(((-1, -1), (1, -1), (-1, 1), (1, 1))):
+        kids.append(part(f"Leg{k}", (0.35, 2.6, 0.35), at(sx * 1.9, 1.3, sz * 1.05), VIGA, "Wood", r))
+    kids.append(part("Mug0", (0.7, 0.55, 0.55), at(-0.9, 3.28, 0.3), (226, 214, 190), "SmoothPlastic", mul(r, rot_z(90)),
+                     shape="Cylinder", collide=False, query=False, shadow=False))
+    kids.append(part("Jug", (1.2, 0.9, 0.9), at(1.1, 3.5, -0.2), POT_CLAY[0], "Brick", mul(r, rot_z(90)), shape="Cylinder",
+                     collide=False, query=False, shadow=False))
+    for c in range(chairs):
+        side = -1 if c % 2 == 0 else 1
+        cr = mul(r, rot_y(180 if side < 0 else 0))
+        cx, cy, cz = at(-side * 0.6, 0.0, side * 2.6)
+
+        def cp(lx, ly, lz, cx=cx, cy=cy, cz=cz, cr=cr):
+            d = apply(cr, (lx, 0, lz))
+            return (cx + d[0], cy + ly, cz + d[2])
+        kids.append(part(f"Seat{c}", (1.8, 0.3, 1.7), cp(0, 1.6, 0), (140, 88, 52), "WoodPlanks", cr))
+        kids.append(part(f"Back{c}", (1.8, 2.1, 0.3), cp(0, 2.6, 0.85), (140, 88, 52), "WoodPlanks", cr))
+        for k, sx in enumerate((-0.75, 0.75)):
+            kids.append(part(f"Side{c}_{k}", (0.3, 1.45, 1.5), cp(sx, 0.72, 0), VIGA, "Wood", cr))
+    return model(name, kids, attrs={"SandDrift": 0.35})
+
+
+def log_bench(name, x, z, yaw, length=8.0):
+    y = floor_at(x, z, None) - 0.2  # the log half-settled into the sand
+    r, at = local_frame(x, y, z, yaw)
+    return model(name, [
+        part("Log", (length, 1.7, 1.7), at(0, 0.7, 0), (136, 88, 52), "Wood", r, shape="Cylinder"),
+        part("Seat", (length - 0.6, 0.3, 1.2), at(0, 1.5, 0), (158, 104, 62), "WoodPlanks", r, collide=False),
+    ], attrs={"SandDrift": 0.45})
+
+
+def saguaro(name, x, z, h, rng, arms=2):
+    """A saguaro: a ribbed trunk with rounded top and one or two upturned arms."""
+    y = floor_at(x, z, None) - 0.3
+    c = rng.choice(CACTUS)
+    yaw = rng.uniform(0, 180)
+    r, at = local_frame(x, y, z, yaw)
+    kids = [part("Trunk", (h, 1.9, 1.9), at(0, h / 2, 0), c, "Grass", rot_z(90), shape="Cylinder"),
+            part("Crown", (1.9, 1.9, 1.9), at(0, h, 0), c, "Grass", shape="Ball", collide=False)]
+    for k in range(arms):
+        side = 1 if k == 0 else -1
+        ay = h * rng.uniform(0.35, 0.55)
+        up = h * rng.uniform(0.22, 0.34)
+        kids.append(part(f"ArmOut{k}", (2.2, 1.35, 1.35), at(side * 1.4, ay, 0), c, "Grass", r, shape="Cylinder",
+                         collide=False))
+        kids.append(part(f"ArmUp{k}", (up, 1.35, 1.35), at(side * 2.35, ay + up / 2, 0), c, "Grass", rot_z(90),
+                         shape="Cylinder", collide=False))
+        kids.append(part(f"ArmTip{k}", (1.35, 1.35, 1.35), at(side * 2.35, ay + up, 0), c, "Grass", shape="Ball",
+                         collide=False))
+    return model(name, kids)
+
+
+def barrel_cactus(name, x, z, rng):
+    y = floor_at(x, z, None)
+    c = rng.choice(CACTUS)
+    s = rng.uniform(1.6, 2.4)
+    return model(name, [
+        part("Body", (s, s * 0.9, s), (x, y + s * 0.35, z), c, "Grass", shape="Ball", collide=False),
+        part("Flower", (0.6, 0.45, 0.6), (x, y + s * 0.78, z), rng.choice(((240, 90, 110), (252, 204, 60))), "SmoothPlastic",
+             shape="Ball", collide=False, query=False, shadow=False),
+    ])
+
+
+def palm(name, x, z, rng, height=17.0, lean=(1.0, 0.0), y=None):
+    """A date palm: a ringed trunk curving away from `lean`'s opposite, a crown of arching fronds,
+    a few dates. Nothing but the trunk collides."""
+    y = floor_at(x, z, y) - 0.4
+    lx, lz = lean
+    n = math.hypot(lx, lz)
+    lx, lz = lx / n, lz / n
+    seg = height / 5
+    tilt0 = rng.uniform(12, 20)
+    p = (x, y, z)
+    kids = []
+    for k in range(5):
+        th = math.radians(tilt0 * (k + 1) / 5 + 4 * k)
+        q = (p[0] + math.sin(th) * lx * seg, p[1] + math.cos(th) * seg, p[2] + math.sin(th) * lz * seg)
+        mid = tuple((p[i] + q[i]) / 2 for i in range(3))
+        rad = 1.5 - k * 0.12
+        kids.append(part(f"Trunk{k}", (seg + 0.35, rad, rad), mid, PALM_TRUNK if k % 2 == 0 else (144, 102, 64), "Wood",
+                         mul(beam_rot(p, q), rot_z(90)), shape="Cylinder", collide=(k == 0)))
+        if k < 4:  # the knobbly ring where each year's growth meets the next
+            kids.append(part(f"Ring{k}", (rad + 0.25, rad + 0.25, rad + 0.25), q, PALM_RING, "Wood", shape="Ball",
+                             collide=False, query=False))
+        p = q
+    kids.append(part("Heart", (1.6, 1.4, 1.6), (p[0], p[1] + 0.2, p[2]), PALM_RING, "Wood", shape="Ball", collide=False))
+    fronds = rng.randint(7, 8)
+    for k in range(fronds):
+        a = k / fronds * 360 + rng.uniform(-12, 12)
+        droop = rng.uniform(8, 22)
+        c = rng.choice(PALM_LEAF)
+        r1 = mul(rot_y(a), rot_x(droop - 30))
+        d1 = apply(r1, (0, 0, 1))
+        l1 = rng.uniform(4.2, 5.2)
+        c1 = (p[0] + d1[0] * l1 / 2, p[1] + 0.3 + d1[1] * l1 / 2, p[2] + d1[2] * l1 / 2)
+        kids.append(part(f"Frond{k}a", (2.0, 0.22, l1), c1, c, "Grass", r1, collide=False, query=False))
+        e1 = (p[0] + d1[0] * l1, p[1] + 0.3 + d1[1] * l1, p[2] + d1[2] * l1)
+        r2 = mul(rot_y(a), rot_x(droop + 26))
+        d2 = apply(r2, (0, 0, 1))
+        l2 = rng.uniform(3.8, 4.8)
+        # the tip tapers to a point: a wedge laid flat, its thin edge running out along the frond
+        kids.append(part(f"Frond{k}b", (0.2, 1.5, l2), (e1[0] + d2[0] * (l2 / 2 - 0.2), e1[1] + d2[1] * (l2 / 2 - 0.2),
+                                                         e1[2] + d2[2] * (l2 / 2 - 0.2)),
+                         c, "Grass", mul(r2, ((0, 1, 0), (1, 0, 0), (0, 0, -1))), cls="WedgePart", collide=False,
+                         query=False, shadow=False))
+    for k in range(2):
+        a = rng.uniform(0, math.tau)
+        kids.append(part(f"Dates{k}", (0.8, 0.9, 0.8), (p[0] + math.cos(a) * 0.9, p[1] - 0.6, p[2] + math.sin(a) * 0.9),
+                         (196, 120, 48), "SmoothPlastic", shape="Ball", collide=False, query=False, shadow=False))
+    return model(name, kids)
+
+
+def oasis_reeds(name, x, z, rng, n=7):
+    """Reeds standing in the pool's shallows: rooted on its bed, tall enough to clear the water."""
+    y = floor_at(x, z, None)
+    kids = []
+    for k in range(n):
+        h = rng.uniform(4.4, 6.6)
+        ox, oz = rng.uniform(-1.1, 1.1), rng.uniform(-1.1, 1.1)
+        kids.append(part(f"Reed{k}", (0.22, h, 0.22), (x + ox, y + h / 2, z + oz), rng.choice((MOSS, (120, 160, 64), (150, 170, 80))),
+                         "Grass", mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-7, 7))), collide=False, query=False,
+                         shadow=False))
+        if k % 3 == 0:
+            kids.append(part(f"Head{k}", (0.42, 1.1, 0.42), (x + ox, y + h - 0.4, z + oz), (120, 76, 44), "Fabric",
+                             collide=False, query=False, shadow=False))
+    return model(name, kids)
+
+
+def desert_stall(name, x, z, face, rng, canopy):
+    """A market stall: timber posts, a striped canopy, a counter of lemons, oranges and dates."""
+    y = floor_at(x, z, None)
+    r, at = local_frame(x, y, z, yaw_facing(*face))
+    kids = []
+    for k, (sx, sz) in enumerate(((-1, -1), (1, -1), (-1, 1), (1, 1))):
+        h = 7.5 if sz < 0 else 8.25
+        kids.append(part(f"Post{k}", (0.5, h, 0.5), at(sx * 3.6, h / 2, sz * 2.4), VIGA, "Wood", r))
+    for k in range(5):
+        kids.append(part(f"Canopy{k}", (7.8 / 5, 0.18, 6.2), at(-3.9 + 7.8 * (k + 0.5) / 5, 8.0, 0),
+                         canopy if k % 2 == 0 else AWNING_CREAM, "Fabric", mul(r, rot_x(-7)), collide=False, layer="roof"))
+    kids.append(part("Counter", (7.0, 2.6, 1.6), at(0, 1.3, -1.6), (150, 98, 58), "WoodPlanks", r))
+    for k, color in enumerate((LEMON, (240, 148, 52), (150, 76, 44))):
+        bx = -2.3 + k * 2.3
+        kids.append(part(f"Basket{k}", (1.9, 0.7, 1.3), at(bx, 2.95, -1.6), (178, 132, 80), "Fabric", r, collide=False))
+        for j in range(3):
+            kids.append(part(f"Fruit{k}{j}", (0.75, 0.7, 0.7), at(bx - 0.5 + j * 0.5, 3.45 + (j % 2) * 0.15, -1.6 + (j % 2) * 0.2),
+                             color, "SmoothPlastic", r, shape="Ball", collide=False, query=False, shadow=False))
+    return model(name, kids, attrs={"SandDrift": 1.3})
+
+
+def lantern_post(name, x, z, yaw, rng):
+    y = floor_at(x, z, None)
+    r, at = local_frame(x, y, z, yaw)
+    return model(name, [
+        part("Pole", (0.5, 8.4, 0.5), at(0, 4.2, 0), VIGA, "Wood", r),
+        part("Arm", (0.35, 0.35, 2.2), at(0, 8.0, -0.9), VIGA, "Wood", r, collide=False),
+        part("Lantern", (0.9, 1.3, 0.9), at(0, 7.0, -1.7), (255, 208, 132), "Neon", r, collide=False, query=False,
+             shadow=False, children=[light(18, 1.1, LANTERN)]),
+    ])
+
+
+def desert_dressing():
+    """Everything that stands on the desert's sand. A private seed, so the shared `rng` is untouched."""
+    lr = random.Random(0xDE5E7)
+    out = []
+    W, E, S_, N = (-1, 0), (1, 0), (0, 1), (0, -1)
+
+    # The settlement: a street of houses along the basin's east side, rim to mid bench, and a quieter
+    # pair on the rim's west side; two more by the Warden's pit.
+    houses = [
+        ("HouseRimNE", 101, 182, 12, 10, 8.5, W, None, None, AWNINGS[2]),
+        ("HouseRimE", 100, 218, 14, 11, 10.0, W, (8, 7, 6.5), AWNINGS[0], None),
+        ("HouseRimW", -94, 186, 14, 12, 10.0, E, (8, 7, 6.0), AWNINGS[1], AWNINGS[3]),
+        ("HouseRimSW", -99, 216, 12, 10, 8.5, E, None, AWNINGS[3], None),
+        ("HouseMidE", 97, 254, 16, 12, 10.5, W, (9, 7, 6.5), AWNINGS[0], AWNINGS[1]),
+        ("HouseMidE2", 99, 280, 13, 11, 9.0, W, None, AWNINGS[2], None),
+        ("HousePitE", 97, 428, 16, 12, 10.5, W, (8, 7, 6.5), AWNINGS[1], AWNINGS[2]),
+        ("HousePitE2", 100, 454, 12, 10, 8.5, W, None, None, AWNINGS[0]),
+    ]
+    for k, (nm, x, z, w, d, h, face, upper, awning, shutters) in enumerate(houses):
+        out.append(adobe_house(nm, x, z, w, d, h, face, lr, wall=ADOBE_WALLS[k % 4], awning=awning, upper=upper,
+                               shutters=shutters))
+        # pots, crates and rubble at the foot of the front wall
+        fx = x + face[0] * (d / 2 + 1.6)
+        out.append(clay_pot(f"{nm}Pot", fx, z + lr.uniform(-w / 2 + 1.5, -1.5), lr, lr.uniform(0.8, 1.1)))
+        out.append(rubble(f"{nm}Rubble", x + face[0] * (d / 2 + 2.5), z + lr.uniform(-3, 3), lr, n=7, spread=4.5))
+    out.append(lemon_crate("LemonCrateRim", 91.5, 211.5, 70, lr))
+    out.append(lemon_crate("LemonCrateMid", 88.5, 264, 100, lr))
+    out.append(clay_pot("PotMidA", 95, 291, lr, 1.2))
+    out.append(clay_pot("PotMidB", 97, 293.5, lr, 0.8))
+
+    # Market stalls on the rim and the mid bench, where the street runs.
+    out.append(desert_stall("StallRim", 57, 226, W, lr, AWNINGS[1]))
+    out.append(desert_stall("StallMid", 86, 312, W, lr, AWNINGS[0]))
+    out.append(rubble("StallRimRubble", 52, 222, lr, n=6, spread=4, shadow=True))
+
+    # The camp on the rim: A-frame tents round a fire, a table and chairs, a log bench, lanterns.
+    fx, fz = 78, 206
+    out.append(desert_fire("CampFire", fx, fz, lr))
+    out.append(a_tent("CampTentE", 89.5, 201, 70, TENT_CLOTH[0], stripe=AWNINGS[0]))
+    out.append(a_tent("CampTentW", 67.5, 211.5, -22, TENT_CLOTH[2], stripe=AWNINGS[3]))
+    out.append(a_tent("CampTentS", 85, 227.5, 24, TENT_CLOTH[1], stripe=AWNINGS[1]))
+    out.append(camp_table("CampTable", 82.5, 214, 18, lr))
+    out.append(log_bench("CampBench", 76, 197.5, -18))
+    out.append(rubble("CampRubbleA", 69, 197, lr, n=9, spread=4.5, shadow=True))
+    out.append(rubble("CampRubbleC", 94.5, 222, lr, n=7, spread=3.5))
+    out.append(rubble("CampRubbleB", 88, 212, lr, n=6, spread=3.5, shadow=True))
+    out.append(lantern_post("CampLantern", 93.5, 207.5, yaw_facing(-1, 0.2), lr))
+    out.append(clay_pot("CampPot", 94, 206, lr, 1.0))
+    out.append(lemon_crate("CampCrate", 63, 217, 20, lr))
+
+    # The oasis: palms round the pool and along the fence on the mid bench above it, reeds in the
+    # shallows' edge, a fence along the drop.
+    palms = [(70.5, 338, 18, (1, 0.3)), (68.5, 356, 16, (1, -0.2)), (84, 322, 19, (0.3, 1)), (102, 320, 15, (-0.4, 1)),
+             (60, 342, 14, (1, 0.6)), (106, 300, 17, (-0.6, 0.8))]
+    for k, (x, z, h, lean) in enumerate(palms):
+        out.append(palm(f"OasisPalm{k}", x, z, lr, height=h, lean=lean))
+    for k, (x, z) in enumerate(((78.5, 337), (78.5, 358), (85, 334.5), (104, 362), (79, 348), (92, 362.5))):
+        out.append(oasis_reeds(f"OasisReeds{k}", x, z, lr, n=7))
+    # The town's spring pool on the mid bench, between the camp and the street: palms round a raised
+    # spring (terrain water a stud or two deep over the bench), reeds in its shallows.
+    for k, (x, z, h, lean) in enumerate(((66, 270, 17, (0.4, -1)), (93, 266, 19, (-0.3, -1)), (64.5, 296, 15, (1, 0.2)),
+                                          (91.5, 303, 16, (-0.6, 0.6)))):
+        out.append(palm(f"TownPalm{k}", x, z, lr, height=h, lean=lean))
+    for k, (x, z) in enumerate(((72, 272), (87, 297), (71.5, 294), (88, 271))):
+        out.append(oasis_reeds(f"TownReeds{k}", x, z, lr, n=6))
+    out.append(fence_run("OasisFence", (78, 327.5), (108, 327.5), None, height=3.0))
+    out.append(rubble("OasisRubble", 64, 334, lr, n=6, spread=4))
+    out.append(quarry_fall("SpringFall", 111.5, 348.0, 14.5, WATER_TOP_Y, width=5.0))
+
+    # Cacti scattered over the sand, clear of the trail and the spawns.
+    cacti = [(58, 176, 9), (-66, 174, 8), (-104, 244, 10), (104, 238, 7), (-82, 318, 9), (-102, 398, 11),
+             (-72, 452, 8), (58, 460, 9), (-30, 176, 6), (48, 316, 0), (-100, 344, 7), (30, 452, 0)]
+    for k, (x, z, h) in enumerate(cacti):
+        if h:
+            out.append(saguaro(f"Saguaro{k}", x, z, h, lr, arms=1 + (k % 2)))
+        else:
+            out.append(barrel_cactus(f"BarrelCactus{k}", x, z, lr))
+    for k, (x, z) in enumerate(((64, 170), (-60, 180), (-90, 322), (-106, 400), (80, 468), (-40, 466), (108, 236))):
+        out.append(barrel_cactus(f"BarrelCactusB{k}", x, z, lr))
+
+    # A camp of the bandits' own in the pit's west, and the path into their hideout.
+    out.append(a_tent("BanditTentA", -90, 420, 30, TENT_CLOTH[1], stripe=AWNINGS[0]))
+    out.append(a_tent("BanditTentB", -86, 444, -20, TENT_CLOTH[0], stripe=AWNINGS[3]))
+    out.append(desert_fire("BanditFire", -76, 432, lr))
+    out.append(rubble("BanditRubble", -78, 432, lr, n=8, spread=5))
+    out.append(skull_sign("TurnBackSign", 38, 258, yaw_facing(0, -1), "TURN BACK", "Dune Bandits"))
+    # (the loose heaps out on the open sand are terrain now: WorldTerrain's SAND_ROCKS)
+    return out
+
+
+# The legacy quarry pieces the desert keeps: gameplay (waystones, the Briarwood gate), the Warden's
+# arena, the ridge gap's gate leaves, and the bandits' hideout in the passage.
+QUARRY_KEEP = re.compile(r"^(OverlookWaystone|WarlordWaystone|GateBriarwood|WardenSign|ScrapGate[WE]|WardenThrone|"
+                         r"ThroneBanner\d|WarlordBanner\d|PitBrazier\d|Manacles\d+|StandingStone\d+|SupplyCache|"
+                         r"HideoutTent[AB]|HideoutBedroll|HideoutCrates|HideoutBanner|Barricade[AB])$")
+WATER_TOP_Y = 4.0  # the oasis pool's terrain water surface (WorldTerrain fills whole voxels, Y0-4)
+
+
+def _register_tree(node):
+    """Put a kept node's parts back in REGISTRY (for the preview and the part count)."""
+    props = node.get("properties", {})
+    if "Size" in props and "CFrame" in props:
+        cf = props["CFrame"]["CFrame"]
+        REGISTRY.append({"name": node["name"], "size": tuple(props["Size"]), "pos": tuple(cf["position"]),
+                         "rot": cf["orientation"], "color": tuple(round(c * 255) for c in props["Color"]),
+                         "shape": props.get("Shape"), "collide": props.get("CanCollide", True),
+                         "transparency": props.get("Transparency", 0), "layer": "prop",
+                         "cls": node["className"]})
+    for c in node.get("children", ()):
+        _register_tree(c)
+
+
+def build_iron_lowlands(rng):
+    mark = len(REGISTRY)
+    ground, legacy, proxies = quarry_layout(rng)
+    # Drop the quarry's own dressing (its parts and their REGISTRY entries); keep the floors,
+    # proxies and the pieces QUARRY_KEEP names.
+    REGISTRY[mark:] = [e for e in REGISTRY[mark:] if e["layer"] in ("ground", "proxy")]
+    visual = [n for n in legacy if QUARRY_KEEP.match(n["name"])]
+    def resurface(node, pattern, color, material="Sandstone"):
+        for c in node.get("children", ()):
+            if re.match(pattern, c["name"]):
+                c["properties"]["Material"] = material
+                c["properties"]["Color"] = [_r(v / 255) for v in color]
+    for n in visual:
+        if n["name"].startswith("StandingStone"):  # the arena's ring, re-cut in the basin's sandstone
+            n["properties"]["Material"] = "Sandstone"
+            n["properties"]["Color"] = [_r(c / 255) for c in (206, 152, 102)]
+        elif n["name"] == "GateBriarwood":  # the gate's grey pillars, rebuilt in sandstone
+            resurface(n, r"^Pillar-?1$", (214, 164, 110))
+            resurface(n, r"^PillarCap", (186, 128, 84))
+        elif n["name"].startswith("PitBrazier"):
+            resurface(n, r"^Base$", (190, 132, 88))
+        elif n["name"].startswith("Barricade"):  # sun-bleached timber, not the quarry's tarred planks
+            resurface(n, r"^(Planks|Stake\d+)$", (164, 110, 66), "WoodPlanks")
+            resurface(n, r"^Wheel\d+$", (140, 92, 54), "Wood")
+        _register_tree(n)
+    for g in ground:
+        if g["name"] == "SumpBed":  # the oasis pool's floor, seen through the water
+            g["properties"]["Material"] = "Sand"
+            g["properties"]["Color"] = [_r(c / 255) for c in (196, 160, 104)]
+    global AUTO_GROUND
+    AUTO_GROUND = True
+    visual += desert_dressing()
     return ground, visual, proxies
 
 
@@ -2930,6 +4569,581 @@ def reeds(name, x, z, rng, n=6):
     return model(name, kids)
 
 
+# ── Briarwood woodland ────────────────────────────────────────────────────────
+# The vale's trees are four species in three height tiers, all built from rounded leaf masses (a
+# Part carrying a Sphere SpecialMesh is a textured ellipsoid, so a lobe can be wide and flat or
+# tall and narrow) on round, tapering trunks whose feet WorldTerrain buries in soft root mounds:
+#   * sun oaks, 30-46 studs: a leaning two-piece trunk, three roots, two limbs, and an umbrella
+#     crown of seven overlapping lobes (cool beneath, warm where the sun catches it) 28-40 across,
+#     so neighbouring crowns meet over the trails;
+#   * firs, 36-54 studs: a straight red-brown bole under five scalloped tiers and a spire, the
+#     lowest tier well above head height;
+#   * lemon birches, 14-22 studs: pale slim trunks with small lime-to-golden crowns, the understory;
+#   * young firs, 7-11 studs: the sapling layer.
+# Under them: bush clusters (some lemon-yellow), fern clumps, and fallen mossy logs. The ground,
+# paths, leaf litter, moss, root mounds and rocks are Terrain (WorldTerrain reads the ForestPlan
+# this module writes), so nothing here is a floor or a rock.
+OAK_BARK = (92, 66, 50)
+OAK_BARK_DARK = (88, 63, 48)
+FIR_BARK = (100, 66, 50)
+BIRCH_BARK = (138, 116, 92)  # a lighter, warmer bark than the oaks', not a pale stick
+OAK_SHADE = (50, 112, 62)
+OAK_MID = (84, 150, 52)
+OAK_SUN = (140, 186, 58)
+FIR_TONES = [(38, 104, 74), (48, 120, 76), (66, 138, 72), (84, 152, 70)]  # bottom tier to spire
+BIRCH_TONES = [(84, 148, 54), (100, 158, 56), (72, 134, 58), (116, 168, 58)]  # the canopy's greens
+THICKET_TONES = [(48, 116, 70), (60, 128, 64), (74, 138, 60), (56, 120, 58)]
+SHRUB_TONES = [(66, 132, 58), (84, 146, 56), (56, 118, 60), (98, 154, 58)]
+LEMON_BUSH = [(232, 206, 70), (220, 196, 64), (242, 218, 96)]
+FERN_TONES = [(98, 168, 62), (80, 150, 58), (120, 180, 66)]
+LOG_BARK = (104, 80, 56)
+
+
+def ellipsoid(name, size, pos, color, material="LeafyGrass", rot=None, **kw):
+    """A textured ellipsoid (Part + Sphere SpecialMesh). Always give it a small tilt: a level
+    box's top face would read to the validator as a flat top that could z-fight."""
+    kw.setdefault("collide", False)
+    kw.setdefault("query", False)
+    kw.setdefault("layer", "canopy")
+    return part(name, size, pos, color, material, rot, children=[inst("Mesh", "SpecialMesh", {"MeshType": "Sphere"})], **kw)
+
+
+def cyl(name, a, b, diam, color, material="Wood", **kw):
+    """Round log from a to b."""
+    length = math.dist(a, b)
+    centre = tuple((a[i] + b[i]) / 2 for i in range(3))
+    kw.setdefault("layer", "tree")
+    return part(name, (length, diam, diam), centre, color, material, mul(beam_rot(a, b), rot_z(90)), shape="Cylinder", **kw)
+
+
+def tilt(rng, lo=3.0, hi=9.0):
+    return mul(rot_y(rng.uniform(0, 360)), mul(rot_x(rng.uniform(lo, hi) * rng.choice((-1, 1))), rot_z(rng.uniform(-hi, hi))))
+
+
+def jitter(c, rng, amt=7):
+    """A colour nudged a few points in value and hue, so no two leaf masses match exactly."""
+    v, g = rng.uniform(-amt, amt), rng.uniform(-amt * 0.5, amt * 0.5)
+    return tuple(max(0, min(255, round(c[i] + v + (g if i == 1 else 0)))) for i in range(3))
+
+
+def leaf_tone(dx, dy, dz, span):
+    """Underside cool, sun side and crown warm (SUN_XZ points at the afternoon sun)."""
+    h = math.hypot(dx, dz) or 1.0
+    facing = (dx * SUN_XZ[0] + dz * SUN_XZ[1]) / h
+    lift = dy / span + facing * 0.7
+    return OAK_SUN if lift > 0.45 else OAK_SHADE if lift < -0.35 else OAK_MID
+
+
+def _roots(kids, x, y, z, r0, n, rng, reach=3.4, color=OAK_BARK_DARK):
+    a0 = rng.uniform(0, math.tau)
+    for k in range(n):
+        a = a0 + k * math.tau / n + rng.uniform(-0.4, 0.4)
+        rr = rng.uniform(0.8, 1.2) * reach * r0
+        kids.append(cyl(f"Root{k}", (x + math.cos(a) * r0 * 0.3, y + r0 * 1.5, z + math.sin(a) * r0 * 0.3),
+                        (x + math.cos(a) * rr, y - 0.5, z + math.sin(a) * rr), r0 * 0.75, color,
+                        collide=False, query=False, shadow=False))
+
+
+# ── Round-1 layout keeper ─────────────────────────────────────────────────────
+# The vale's layout (every tree, bush and fern position) falls out of one shared random stream, so
+# reshaping a species would reshuffle the whole wood. Each reshaped species therefore first draws
+# exactly what its round-1 shape drew (the functions below, kept only for their draws; the parts
+# they make are thrown away) and then builds its new shape from its own seeded stream. Tuning a
+# shape never moves a tree.
+_R1_FIVE = [(150, 198, 70), (174, 206, 66), (126, 182, 62), (140, 192, 66), (216, 204, 80)]  # round 1's birch tones
+
+
+def _draws_briar_fir(name, x, z, rng, s=1.0, y=None):
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    H = rng.uniform(40, 54) * s
+    r0 = rng.uniform(0.95, 1.25) * min(s, 1.3)
+    kids = [cyl("Bole", (x, y - 1.5, z), (x, y + H * 0.75, z), 2 * r0, FIR_BARK)]
+    _roots(kids, x, y, z, r0, 3, rng, reach=3.0, color=FIR_BARK)
+    # Seven whorls of branches, each overlapping the one below: wide and drooping low down,
+    # narrowing to a spire, every one pushed a little off the bole and tipped, so the crown reads
+    # as one scalloped cone rather than a stack of plates.
+    n = 7
+    cy = y + H * 0.34
+    for i in range(n):
+        t = i / (n - 1)
+        w = H * (0.44 - 0.34 * t) * rng.uniform(0.82, 1.15)
+        h = w * rng.uniform(0.42, 0.5)
+        oa, od = rng.uniform(0, math.tau), rng.uniform(0.03, 0.08) * w
+        kids.append(ellipsoid(f"Tier{i}", (w, h, w * rng.uniform(0.84, 0.96)), (x + math.cos(oa) * od, cy, z + math.sin(oa) * od),
+                              FIR_TONES[min(3, (i * 4) // n + (i % 2))], rot=tilt(rng, 4, 11)))
+        cy += h * rng.uniform(0.55, 0.66)
+    kids.append(ellipsoid("Spire", (H * 0.06, H * 0.16, H * 0.06), (x, cy + H * 0.04, z), FIR_TONES[3], rot=tilt(rng, 1, 4)))
+    return model(name, kids, attrs={"Species": "Fir"})
+
+
+def _draws_briar_birch(name, x, z, rng, s=1.0, y=None):
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    H = rng.uniform(14, 21) * s
+    d = rng.uniform(0.85, 1.15)
+    la, lean = rng.uniform(0, math.tau), rng.uniform(0.6, 2.0)
+    top = (x + math.cos(la) * lean, y + H * 0.78, z + math.sin(la) * lean)
+    fa = la + rng.uniform(1.6, 2.6)
+    fork = (top[0] + math.cos(fa) * 2.2, y + H * 0.9, top[2] + math.sin(fa) * 2.2)
+    kids = [cyl("Trunk", (x, y - 1.0, z), top, d, BIRCH_BARK, "Wood"),
+            cyl("Fork", (x + (top[0] - x) * 0.55, y + H * 0.45, z + (top[2] - z) * 0.55), fork, d * 0.55, BIRCH_BARK, "Wood",
+                collide=False, query=False, shadow=False)]
+    tone = rng.choice(_R1_FIVE)
+    for k, (px, pz, w) in enumerate(((top[0], top[2], 0.44), (fork[0], fork[2], 0.34), (top[0] + math.cos(la) * 2, top[2] + math.sin(la) * 2, 0.3))):
+        w *= H
+        kids.append(ellipsoid(f"Leaves{k}", (w, w * rng.uniform(0.8, 1.0), w * rng.uniform(0.8, 1.0)),
+                              (px, y + H * (0.88 + 0.06 * k), pz), tone if k != 2 else rng.choice(_R1_FIVE), rot=tilt(rng)))
+    return model(name, kids, attrs={"Species": "Birch"})
+
+
+def _draws_young_fir(name, x, z, rng, s=1.0, y=None):
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    H = rng.uniform(7, 11) * s
+    kids = [cyl("Stem", (x, y - 0.8, z), (x, y + H * 0.8, z), 0.5 * s, FIR_BARK, collide=False, query=False, shadow=False)]
+    for i in range(3):
+        w = H * (0.66 - 0.19 * i) * rng.uniform(0.9, 1.1)
+        oa, od = rng.uniform(0, math.tau), rng.uniform(0.05, 0.12) * w
+        kids.append(ellipsoid(f"Tier{i}", (w, w * rng.uniform(0.4, 0.5), w * 0.9), (x + math.cos(oa) * od, y + H * (0.32 + 0.26 * i), z + math.sin(oa) * od),
+                              FIR_TONES[i + 1], rot=tilt(rng, 6, 14), layer="prop", shadow=i == 0))
+    return model(name, kids, attrs={"Species": "YoungFir"})
+
+
+def _draws_sapling(name, x, z, rng, s=1.0, y=None):
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    H = rng.uniform(6.5, 10) * s
+    la, lean = rng.uniform(0, math.tau), rng.uniform(0.4, 1.4)
+    top = (x + math.cos(la) * lean, y + H * 0.8, z + math.sin(la) * lean)
+    kids = [cyl("Stem", (x, y - 0.8, z), top, 0.45 * s, OAK_BARK, collide=False, query=False, shadow=False)]
+    tone = rng.choice(_R1_FIVE[:4] + [OAK_MID])
+    for k in range(3):
+        w = rng.uniform(0.46, 0.62) * H
+        a = rng.uniform(0, math.tau)
+        kids.append(ellipsoid(f"Leaves{k}", (w, w * rng.uniform(0.7, 0.9), w * 0.9),
+                              (top[0] + math.cos(a) * w * 0.32, y + H * (0.52 + 0.16 * k), top[2] + math.sin(a) * w * 0.32),
+                              tone, rot=tilt(rng), layer="prop", shadow=k == 0))
+    return model(name, kids, attrs={"Species": "Sapling"})
+
+
+def _draws_bush_clump(name, x, z, rng, s=1.0, lemon=False, y=None):
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    tones = LEMON_BUSH if lemon else SHRUB_TONES
+    kids = []
+    for k in range(rng.randint(2, 3)):
+        w = rng.uniform(3.0, 5.2) * s
+        h = w * rng.uniform(0.55, 0.75)
+        ox, oz = rng.uniform(-1.4, 1.4) * s, rng.uniform(-1.4, 1.4) * s
+        kids.append(ellipsoid(f"Leaf{k}", (w, h, w * rng.uniform(0.8, 1.0)), (x + ox, y + h * 0.3, z + oz),
+                              tones[k % len(tones)] if k else rng.choice(tones), rot=tilt(rng), shadow=False, layer="prop"))
+    return model(name, kids)
+
+
+def _keeps_layout(draws):
+    def wrap(build):
+        def planted(name, x, z, rng, *a, **kw):
+            mark = len(REGISTRY)
+            draws(name, x, z, rng, *a, **kw)
+            del REGISTRY[mark:]
+            return build(name, x, z, random.Random(f"{name}:{x:.2f}:{z:.2f}"), *a, **kw)
+        planted.__name__ = build.__name__
+        return planted
+    return wrap
+
+
+def briar_oak(name, x, z, rng, s=1.0, y=None, roots=3):
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    H = rng.uniform(36, 48) * s
+    C = rng.uniform(30, 38) * s  # crown scale: tall trunks, crowns no wider than before
+    r0 = rng.uniform(1.3, 1.7) * min(s, 1.3)
+    la, lean = rng.uniform(0, math.tau), rng.uniform(0.8, 2.6) * s
+    top = (x + math.cos(la) * lean, y + H * 0.8, z + math.sin(la) * lean)
+    kids = [cyl("Bole", (x, y - 1.5, z), top, 1.85 * r0, OAK_BARK)]
+    _roots(kids, x, y, z, r0, roots, rng)
+    cx, cy, cz = top[0], top[1] + C * 0.08, top[2]
+    span = C * 0.12
+    lobes = [("Canopy", 0.0, 0.0, 0.0, C * 0.42, C * 0.25)]
+    ring = rng.randint(5, 6)
+    a0 = rng.uniform(0, math.tau)
+    for k in range(ring):
+        a = a0 + k * math.tau / ring + rng.uniform(-0.3, 0.3)
+        r = rng.uniform(0.2, 0.28) * C
+        w = rng.uniform(0.26, 0.34) * C
+        lobes.append((f"Leaves{k}", math.cos(a) * r, rng.uniform(-0.07, 0.05) * C, math.sin(a) * r, w, w * rng.uniform(0.56, 0.7)))
+    a = rng.uniform(0, math.tau)
+    lobes.append(("Crown", math.cos(a) * 0.06 * C, C * 0.13, math.sin(a) * 0.06 * C, C * 0.26, C * 0.18))
+    for k in range(2):  # limbs from the trunk out to two ring lobes
+        _, dx, dy, dz, _, _ = lobes[1 + k * (ring // 2)]
+        kids.append(cyl(f"Limb{k}", (top[0], top[1] - C * 0.14, top[2]), (cx + dx * 0.7, cy + dy - 1, cz + dz * 0.7), r0 * 0.6,
+                        OAK_BARK, collide=False, query=False, shadow=False))
+    for lname, dx, dy, dz, w, h in lobes:
+        kids.append(ellipsoid(lname, (w, h, w * rng.uniform(0.85, 1.0)), (cx + dx, cy + dy, cz + dz), leaf_tone(dx, dy, dz, span),
+                              rot=tilt(rng)))
+    return model(name, kids, attrs={"Species": "Oak"})
+
+
+@_keeps_layout(_draws_briar_fir)
+def briar_fir(name, x, z, rng, s=1.0, y=None):
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    H = rng.uniform(40, 54) * s
+    r0 = rng.uniform(0.95, 1.25) * min(s, 1.3)
+    kids = [cyl("Bole", (x, y - 1.5, z), (x, y + H * 0.75, z), 2 * r0, FIR_BARK)]
+    _roots(kids, x, y, z, r0, 3, rng, reach=3.0, color=FIR_BARK)
+    # Seven whorls of branches, each overlapping the one below: wide and drooping low down,
+    # narrowing to a spire, every one pushed a little off the bole and tipped, so the crown reads
+    # as one scalloped cone rather than a stack of plates.
+    # Five deep, rounded masses, each sunk more than half into the one below and pushed off the
+    # bole by turns round a spiral, shaded in a smooth gradient: the outline is one tapering,
+    # lumpy cone, with no flat disc or colour band at a tier to read as topiary.
+    n = 5
+    cy = y + H * 0.4
+    oa = rng.uniform(0, math.tau)
+    for i in range(n):
+        t = i / (n - 1)
+        w = H * (0.46 - 0.3 * t) * rng.uniform(0.88, 1.1)
+        h = w * rng.uniform(0.8, 0.95)
+        oa += 2.4 + rng.uniform(-0.4, 0.4)
+        od = rng.uniform(0.05, 0.11) * w
+        f = t * (len(FIR_TONES) - 1)
+        lo = FIR_TONES[int(f)]
+        hi = FIR_TONES[min(len(FIR_TONES) - 1, int(f) + 1)]
+        tone = tuple(round(lo[c] + (hi[c] - lo[c]) * (f - int(f))) for c in range(3))
+        kids.append(ellipsoid(f"Tier{i}", (w, h, w * rng.uniform(0.8, 0.95)), (x + math.cos(oa) * od, cy, z + math.sin(oa) * od),
+                              jitter(tone, rng, 5), rot=tilt(rng, 5, 12)))
+        cy += h * rng.uniform(0.38, 0.44)
+    kids.append(ellipsoid("Spire", (H * 0.06, H * 0.16, H * 0.06), (x, cy + H * 0.04, z), FIR_TONES[3], rot=tilt(rng, 1, 4)))
+    return model(name, kids, attrs={"Species": "Fir"})
+
+
+@_keeps_layout(_draws_briar_birch)
+def briar_birch(name, x, z, rng, s=1.0, y=None):
+    """The understory broadleaf: a real leaning trunk (not a pale stick) that forks and rises into an
+    irregular crown of three offset leaf masses in the canopy's own greens, hung low enough on the
+    trunk that the wood runs up into the leaves instead of stopping under a ball."""
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    H = rng.uniform(14, 21) * s
+    d = rng.uniform(1.3, 1.7)
+    la, lean = rng.uniform(0, math.tau), rng.uniform(0.6, 2.0)
+    top = (x + math.cos(la) * lean, y + H * 0.66, z + math.sin(la) * lean)
+    fa = la + rng.uniform(1.6, 2.6)
+    fork = (top[0] + math.cos(fa) * H * 0.2, y + H * 0.74, top[2] + math.sin(fa) * H * 0.2)
+    kids = [cyl("Trunk", (x, y - 1.2, z), top, d, BIRCH_BARK, "Wood"),
+            cyl("Fork", (x + (top[0] - x) * 0.5, y + H * 0.36, z + (top[2] - z) * 0.5), fork, d * 0.6, BIRCH_BARK, "Wood",
+                collide=False, query=False, shadow=False)]
+    oa = fa + math.pi + rng.uniform(-0.6, 0.6)
+    crown = ((top[0], top[2], 0.56, 0.78, 0.44), (fork[0], fork[2], 0.44, 0.8, 0.5),
+             (top[0] + math.cos(oa) * H * 0.2, top[2] + math.sin(oa) * H * 0.2, 0.4, 0.7, 0.55))
+    span = H * 0.3
+    for k, (px, pz, w, fy, hr) in enumerate(crown):
+        w *= H
+        dx, dz = px - top[0], pz - top[2]
+        kids.append(ellipsoid(f"Leaves{k}", (w, w * hr * rng.uniform(0.9, 1.1), w * rng.uniform(0.75, 0.95)),
+                              (px, y + H * fy, pz), jitter(leaf_tone(dx, H * (fy - 0.75), dz, span), rng), rot=tilt(rng, 4, 12)))
+    return model(name, kids, attrs={"Species": "Birch"})
+
+
+@_keeps_layout(_draws_young_fir)
+def young_fir(name, x, z, rng, s=1.0, y=None):
+    """Undergrowth thicket (the sapling layer's evergreen share): three loose, uneven leaf masses of
+    different heights pushed off one another and sunk into the ground, never stacked on a stem."""
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    H = rng.uniform(5.5, 8.5) * s
+    a0 = rng.uniform(0, math.tau)
+    kids = []
+    for k, (w, h, off, da, sink) in enumerate(((0.8, 0.95, 0.0, 0.0, 0.34), (0.72, 0.6, 0.5, 0.0, 0.28),
+                                                 (0.56, 0.48, 0.55, rng.uniform(1.8, 2.8), 0.24))):
+        w *= H * rng.uniform(0.85, 1.15)
+        h *= H * rng.uniform(0.85, 1.15)
+        a = a0 + da
+        kids.append(ellipsoid(f"Leaf{k}", (w, h, w * rng.uniform(0.6, 0.9)),
+                              (x + math.cos(a) * off * H * 0.6, y + h * sink, z + math.sin(a) * off * H * 0.6),
+                              jitter(rng.choice(THICKET_TONES), rng), "Grass", rot=tilt(rng, 6, 18), layer="prop", shadow=k == 0))
+    return model(name, kids, attrs={"Species": "Thicket"})
+
+
+@_keeps_layout(_draws_sapling)
+def sapling(name, x, z, rng, s=1.0, y=None):
+    """A young broadleaf: a thin leaning stem and two or three small leaf masses."""
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    H = rng.uniform(6.5, 10) * s
+    la, lean = rng.uniform(0, math.tau), rng.uniform(0.4, 1.4)
+    top = (x + math.cos(la) * lean, y + H * 0.62, z + math.sin(la) * lean)
+    kids = [cyl("Stem", (x, y - 0.8, z), top, 0.55 * s, OAK_BARK, collide=False, query=False, shadow=False)]
+    tone = rng.choice(BIRCH_TONES)
+    a0 = rng.uniform(0, math.tau)
+    for k in range(3):  # a loose, lopsided spray round the stem's head, not balls stacked on it
+        w = rng.uniform(0.5, 0.66) * H * (1.0 if k == 0 else 0.8)
+        a = a0 + k * rng.uniform(1.8, 2.6)
+        off = 0.0 if k == 0 else rng.uniform(0.4, 0.55) * w
+        kids.append(ellipsoid(f"Leaves{k}", (w, w * rng.uniform(0.55, 0.75), w * rng.uniform(0.7, 0.9)),
+                              (top[0] + math.cos(a) * off, y + H * (0.7 - 0.1 * k + rng.uniform(-0.04, 0.04)), top[2] + math.sin(a) * off),
+                              jitter(tone, rng), rot=tilt(rng), layer="prop", shadow=k == 0))
+    return model(name, kids, attrs={"Species": "Sapling"})
+
+
+@_keeps_layout(_draws_bush_clump)
+def bush_clump(name, x, z, rng, s=1.0, lemon=False, y=None):
+    """Loose undergrowth: two or three uneven leaf masses (one taller, the others spread low and
+    pushed off it) sunk well into the ground, in the ground's own Grass texture so they read as
+    growth, not as mossy stones."""
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    tones = LEMON_BUSH if lemon else SHRUB_TONES
+    kids = []
+    a0 = rng.uniform(0, math.tau)
+    for k in range(rng.randint(2, 3)):
+        w = rng.uniform(3.4, 5.4) * s * (1.0 if k == 0 else rng.uniform(0.6, 0.85))
+        h = w * (rng.uniform(0.8, 1.05) if k == 0 else rng.uniform(0.45, 0.65))
+        a = a0 + k * rng.uniform(1.8, 2.6)
+        off = 0.0 if k == 0 else rng.uniform(1.6, 2.6) * s
+        kids.append(ellipsoid(f"Leaf{k}", (w, h, w * rng.uniform(0.6, 0.9)), (x + math.cos(a) * off, y + h * 0.2, z + math.sin(a) * off),
+                              jitter(tones[k % len(tones)] if k else rng.choice(tones), rng), "Grass", rot=tilt(rng, 6, 16),
+                              shadow=False, layer="prop"))
+    return model(name, kids)
+
+
+def fern_clump(name, x, z, rng, s=1.0, y=None):
+    """Five fronds arching out of one crown."""
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    kids = []
+    a0 = rng.uniform(0, math.tau)
+    tone = rng.choice(FERN_TONES)
+    for k in range(5):
+        a = a0 + k * math.tau / 5 + rng.uniform(-0.3, 0.3)
+        L = rng.uniform(3.4, 4.6) * s
+        p = math.radians(rng.uniform(28, 46))
+        d = (math.cos(a) * math.cos(p), math.sin(p), math.sin(a) * math.cos(p))
+        base = (x + d[0] * 0.3, y + 0.1, z + d[2] * 0.3)
+        tip = tuple(base[i] + d[i] * L for i in range(3))
+        centre = tuple((base[i] + tip[i]) / 2 for i in range(3))
+        kids.append(part(f"Frond{k}", (0.22 * s, L, 1.3 * s), centre, tone if k % 2 else FERN_TONES[(k // 2) % 3], "Grass",
+                         beam_rot(base, tip), collide=False, query=False, shadow=False, layer="prop",
+                         children=[inst("Mesh", "SpecialMesh", {"MeshType": "Sphere"})]))
+    return model(name, kids)
+
+
+def mossy_log(name, x, z, yaw, length, rng, y=None):
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    d = rng.uniform(1.6, 2.2)
+    dx, dz = math.cos(math.radians(yaw)) * length / 2, math.sin(math.radians(yaw)) * length / 2
+    a, b = (x - dx, y + d * 0.32, z - dz), (x + dx, y + d * 0.32 + rng.uniform(-0.2, 0.3), z + dz)
+    return model(name, [
+        cyl("Log", a, b, d, LOG_BARK, collide=False, shadow=False),
+        ellipsoid("Moss", (length * 0.6, d * 0.5, d * 0.9), (x, y + d * 0.72, z), OAK_SHADE, "LeafyGrass",
+                  mul(rot_y(-yaw), rot_x(4)), shadow=False, layer="prop"),
+    ])
+
+
+BOULDER_GREYS = [(124, 122, 116), (112, 110, 106), (136, 132, 124)]
+
+
+def boulder(name, x, z, r, rng, collide=True, y=None):
+    """A grey boulder half sunk in the ground, tipped, with a smaller stone leaning on it when it
+    is big enough. WorldTerrain heaps leaf cover round its foot (the plan's rock entry)."""
+    y = floor_at(x, z, BRIAR_Y) if y is None else y
+    w, h, d = 2 * r * rng.uniform(0.95, 1.2), r * rng.uniform(1.1, 1.4), 2 * r * rng.uniform(0.75, 0.95)
+    rot = mul(rot_y(rng.uniform(0, 180)), mul(rot_x(rng.uniform(6, 14) * rng.choice((-1, 1))), rot_z(rng.uniform(-12, 12))))
+    kids = [part("Rock", (w, h, d), (x, y + h * 0.04, z), rng.choice(BOULDER_GREYS), "Slate", rot, collide=collide, layer="rock")]
+    if r > 2.6:
+        a = rng.uniform(0, math.tau)
+        s2 = rng.uniform(0.45, 0.6)
+        rot2 = mul(rot_y(rng.uniform(0, 180)), mul(rot_x(rng.uniform(10, 22)), rot_z(rng.uniform(-15, 15))))
+        kids.append(part("Stone", (w * s2, h * s2, d * s2), (x + math.cos(a) * r * 0.95, y + h * s2 * 0.05, z + math.sin(a) * r * 0.95),
+                         rng.choice(BOULDER_GREYS), "Slate", rot2, collide=False, shadow=False, layer="rock"))
+    return model(name, kids)
+
+
+def clearance_ok(mark, points):
+    """The validator's camera-clearance rule, applied while planting: nothing opaque with its
+    bottom 8-28 studs above a spawn (12 studs round it) or an arrival (8 studs)."""
+    for e in REGISTRY[mark:]:
+        if e["transparency"] >= 0.9 and not e["collide"]:
+            continue
+        ext = [sum(abs(e["rot"][i][j]) * e["size"][j] / 2 for j in range(3)) for i in range(3)]
+        x0, x1 = e["pos"][0] - ext[0], e["pos"][0] + ext[0]
+        z0, z1 = e["pos"][2] - ext[2], e["pos"][2] + ext[2]
+        bottom, top = e["pos"][1] - ext[1], e["pos"][1] + ext[1]
+        for px, pz, fy, radius in points:
+            dx = max(x0 - px, 0, px - x1)
+            dz = max(z0 - pz, 0, pz - z1)
+            if math.hypot(dx, dz) <= radius and fy + 8 < bottom < fy + 28 and top > fy + 8:
+                return False
+    return True
+
+
+def trail_dist(x, z, trails):
+    best = 1e9
+    for pts, hw in trails:
+        for i in range(len(pts) - 1):
+            best = min(best, seg_dist(x, z, pts[i], pts[i + 1]) - hw)
+    return best
+
+
+def plant_woodland(rng, inside, trails, spawns, arrivals, clear, x_rng, z_rng):
+    """Plant the vale: clumped canopy trees (oak and fir in patches), birches and young firs in the
+    gaps, and bushes, ferns and logs gathered round trunks and along the trail verges. Returns the
+    visual models and the plan entries WorldTerrain needs (trunk feet and rocks)."""
+    visual, feet, rocks = [], [], []
+    y = BRIAR_Y
+    guard = [(sx, sz, y, 12) for sx, sz in spawns] + [(ax, az, y, 8) for ax, az in arrivals]
+
+    def near_spawn(x, z, r):
+        return any(math.hypot(x - sx, z - sz) < r for sx, sz in spawns) or any(math.hypot(x - ax, z - az) < r for ax, az in arrivals)
+
+    # Clumps: each has a centre, a reach and a leaning toward firs or oaks, so species gather.
+    clumps = []
+    for _ in range(34):
+        cx, cz = rng.uniform(*x_rng), rng.uniform(*z_rng)
+        clumps.append((cx, cz, rng.uniform(16, 30), rng.random()))
+
+    def clump_at(x, z):
+        best, share = 0.0, 0.5
+        for cx, cz, r, fir in clumps:
+            w = math.exp(-((x - cx) ** 2 + (z - cz) ** 2) / (r * r))
+            if w > best:
+                best, share = w, fir
+        return best, share
+
+    tall = []  # (x, z, radius)
+    tries = 0
+    while len(tall) < 118 and tries < 30000:
+        tries += 1
+        x, z = rng.uniform(*x_rng), rng.uniform(*z_rng)
+        dens, fir_share = clump_at(x, z)
+        td = trail_dist(x, z, trails)
+        verge = 1.0 if 2.5 < td < 9 else 0.0  # line the trails, so crowns meet over them
+        if rng.random() > 0.18 + 0.75 * dens + 0.45 * verge:
+            continue
+        if not inside(x, z, 5) or not clear_of(x, z, clear):
+            continue
+        fir = rng.random() < 0.2 + 0.7 * fir_share
+        if td < (7.0 if fir else 2.6):
+            continue
+        if near_spawn(x, z, 21 if fir else 9):
+            continue
+        gap = 8.5 if fir else 10.5
+        if any(math.hypot(x - px, z - pz) < max(gap, pr + 4) for px, pz, pr in tall):
+            continue
+        mark = len(REGISTRY)
+        name = f"{'Fir' if fir else 'Oak'}{len(tall):03d}"
+        placed = None
+        for s in ((1.0, 1.15, 1.3) if not fir else (1.0,)):
+            node = (briar_fir if fir else briar_oak)(name, x, z, rng, s=s * rng.uniform(0.9, 1.12))
+            if clearance_ok(mark, guard):
+                placed = node
+                break
+            del REGISTRY[mark:]
+        if not placed:
+            continue
+        visual.append(placed)
+        tall.append((x, z, 3.0 if fir else 5.0))
+        r0 = placed["children"][0]["properties"]["Size"][1] / 2
+        feet.append([_r(x), _r(z), _r(r0), 2 if fir else 1])
+
+    mid = []
+    tries = 0
+    while len(mid) < 128 and tries < 20000:
+        tries += 1
+        x, z = rng.uniform(*x_rng), rng.uniform(*z_rng)
+        dens, fir_share = clump_at(x, z)
+        if rng.random() > 0.3 + 0.7 * dens:
+            continue
+        if not inside(x, z, 4) or not clear_of(x, z, clear) or trail_dist(x, z, trails) < 3.2 or near_spawn(x, z, 21):
+            continue
+        if any(math.hypot(x - px, z - pz) < 5.5 for px, pz, _ in tall) or any(math.hypot(x - px, z - pz) < 6 for px, pz in mid):
+            continue
+        mark = len(REGISTRY)
+        young = rng.random() < 0.3 + 0.4 * fir_share
+        maker = (young_fir if rng.random() < 0.25 + 0.6 * fir_share else sapling) if young else briar_birch
+        node = maker(f"{'Young' if young else 'Birch'}{len(mid):03d}", x, z, rng)
+        if not clearance_ok(mark, guard):
+            del REGISTRY[mark:]
+            continue
+        visual.append(node)
+        mid.append((x, z))
+        if not young:
+            feet.append([_r(x), _r(z), 0.5, 3])
+
+    # Ground layer: bushes and ferns gathered at trunk feet and along the verges.
+    anchors = [(px, pz, 3.5, 7.0) for px, pz, _ in tall] + [(px, pz, 2.0, 5.0) for px, pz in mid]
+    low = []
+
+    def free_low(x, z, r):
+        if not inside(x, z, 3) or not clear_of(x, z, clear) or trail_dist(x, z, trails) < 1.2 or near_spawn(x, z, 6):
+            return False
+        if any(math.hypot(x - px, z - pz) < 2.6 for px, pz, _ in tall):
+            return False
+        return not any(math.hypot(x - px, z - pz) < r + pr for px, pz, pr in low)
+
+    tries = 0
+    n_bush = n_fern = 0
+    hummocks = []  # [x, z, radius]: moss hummocks WorldTerrain raises (free), in place of some bushes
+    while (n_bush < 110 or n_fern < 75) and tries < 30000:
+        tries += 1
+        roll = rng.random()
+        if roll < 0.56:
+            ax, az, r_in, r_out = rng.choice(anchors)
+            a, d = rng.uniform(0, math.tau), r_in + (r_out - r_in) * rng.random() ** 0.7
+            x, z = ax + math.cos(a) * d, az + math.sin(a) * d
+        elif roll < 0.76:  # the open wood between the trunks, thinning away from them, so the
+            # undergrowth carries through the middle ground instead of stopping at the trees
+            ax, az, r_in, r_out = rng.choice(anchors)
+            a, d = rng.uniform(0, math.tau), r_out + rng.expovariate(1 / 7.0)
+            x, z = ax + math.cos(a) * d, az + math.sin(a) * d
+        else:  # a verge: pick a trail point and step off it
+            pts, hw = rng.choice(trails)
+            i = rng.randrange(len(pts) - 1)
+            t = rng.random()
+            px = pts[i][0] + (pts[i + 1][0] - pts[i][0]) * t
+            pz = pts[i][1] + (pts[i + 1][1] - pts[i][1]) * t
+            a = rng.uniform(0, math.tau)
+            d = hw + rng.uniform(1.6, 4.5)
+            x, z = px + math.cos(a) * d, pz + math.sin(a) * d
+        fern = n_fern < 75 and (n_bush >= 110 or rng.random() < 0.42)
+        r = 2.6 if fern else 3.0
+        if not free_low(x, z, r):
+            continue
+        low.append((x, z, r))
+        if fern:
+            visual.append(fern_clump(f"Fern{n_fern:03d}", x, z, rng, s=rng.uniform(0.8, 1.2)))
+            n_fern += 1
+        else:
+            s_b, lemon = rng.uniform(0.75, 1.25), rng.random() < 0.1
+            if not lemon and n_bush % 5 in (1, 3):  # two in five: a mossy hummock of the ground itself
+                hummocks.append([_r(x), _r(z), _r(3.4 + 1.6 * s_b)])
+            else:
+                visual.append(bush_clump(f"Bush{n_bush:03d}", x, z, rng, s=s_b, lemon=lemon))
+            n_bush += 1
+
+    # Fallen logs in the deeper wood, and boulders among the trunks.
+    n_log, tries = 0, 0
+    while n_log < 10 and tries < 4000:
+        tries += 1
+        x, z = rng.uniform(*x_rng), rng.uniform(*z_rng)
+        L = rng.uniform(8, 13)
+        if not inside(x, z, L / 2 + 3) or not clear_of(x, z, clear) or trail_dist(x, z, trails) < L / 2 + 1.5 or near_spawn(x, z, 14):
+            continue
+        if any(math.hypot(x - px, z - pz) < L / 2 + 3 for px, pz, _ in tall):
+            continue
+        visual.append(mossy_log(f"FallenLog{n_log:02d}", x, z, rng.uniform(0, 180), L, rng))
+        low.append((x, z, L / 2))
+        n_log += 1
+    n_rock, tries = 0, 0
+    while n_rock < 30 and tries < 6000:
+        tries += 1
+        if rng.random() < 0.6:
+            ax, az, _ = rng.choice(tall)
+            a = rng.uniform(0, math.tau)
+            x, z = ax + math.cos(a) * rng.uniform(4.5, 9), az + math.sin(a) * rng.uniform(4.5, 9)
+        else:
+            x, z = rng.uniform(*x_rng), rng.uniform(*z_rng)
+        r = rng.uniform(1.8, 3.6)
+        if not inside(x, z, r + 2) or not clear_of(x, z, clear) or trail_dist(x, z, trails) < r + 1.5 or near_spawn(x, z, r + 9):
+            continue
+        if any(math.hypot(x - px, z - pz) < r + 2.5 for px, pz, _ in tall) or any(math.hypot(x - px, z - pz) < r + pr for px, pz, pr in low):
+            continue
+        rocks.append([_r(x), _r(z), _r(r), 1])
+        low.append((x, z, r))
+        n_rock += 1
+    return visual, feet, rocks, hummocks
+
+
 BRIAR_TRAILS = {
     # Packed-earth routes (x, z). Entrance → Bramble Hollow fork; east to the Mirror Pool; west
     # through Thornbreak to Hollow Rest, on to the chapel and the Warden's Grove. Three more
@@ -3000,6 +5214,8 @@ def build_briarwood(rng):
     x0, x1 = BRIAR_X[0] - 6, GROTTO[1] + 6
     z0, z1 = BRIAR_Z
     hx0, hx1, hz0, hz1 = POOL_HOLE
+    # The floors stay as collision (and enemy ground raycasts); WorldTerrain lays the visible
+    # ground over them and hides them.
     ground = [
         slab("BriarFloorN", x0, x1, z0, hz0, Y, GRASS_DARK, "Grass"),
         slab("BriarFloorS", x0, x1, hz1, z1 + 2, Y, GRASS_DARK, "Grass"),
@@ -3011,27 +5227,28 @@ def build_briarwood(rng):
         ground.append(slab(f"GraveTerrace{row}", -88, -52, 728 + row * 6, 734 + row * 6, Y + 0.4 * (row + 1), MOSS, "Grass"))
     ground += disc("GroveFloor", GROVE[0], GROVE[1], GROVE[2], Y + 0.25, 0.5, EARTH, "Ground")
     visual, proxies = [], []
+    rocks = []  # [x, z, radius, collide]: boulders, planted last (WorldTerrain beds each in leaf cover)
 
-    # Perimeter: grey rock walls; the play area is always on the left of each run.
+    def terrain_rock(x, z, s, collide=True):  # a boulder, placed after the planting
+        rocks.append([_r(x), _r(z), _r(1.5 * s), 1 if collide else 0])
+
+    # Perimeter: the rock walls are Terrain now (WorldTerrain sculpts wooded slopes and scarps
+    # behind this line); map_forge keeps only their invisible proxies. The play area is on the
+    # left of each run.
     outline = [(-16, 472), (-16, 540), (-60, 556), (-100, 600), (BRIAR_X[0], 640), (BRIAR_X[0], 900), (-60, 940),
                (60, 940), (BRIAR_X[1], 900), (BRIAR_X[1], 720), (BRIAR_X[1], GROTTO[3]), (GROTTO[1], GROTTO[3]),
                (GROTTO[1], GROTTO[2]), (BRIAR_X[1], GROTTO[2]), (BRIAR_X[1], 600), (100, 560), (60, 545), (16, 540), (16, 472)]
     for i in range(len(outline) - 1):
-        # Same base and height as the pit's perimeter (PitWest/PitEast: Y2 + 46), so the crest runs
-        # level through the gate instead of stepping down into the vale.
-        chunks, proxy = cliff_run(f"BriarCliff{i:02d}", outline[i], outline[i + 1], 1, Y, 46, BRIAR_ROCK, BRIAR_ROCK_DARK, rng,
-                                  depth=14, material="Slate", chunk=(8, 14))
-        visual += chunks
+        mark = len(REGISTRY)
+        _, proxy = cliff_run(f"BriarCliff{i:02d}", outline[i], outline[i + 1], 1, Y, 46, BRIAR_ROCK, BRIAR_ROCK_DARK, rng,
+                             depth=14, material="Slate", chunk=(8, 14))
+        REGISTRY[mark:] = [e for e in REGISTRY[mark:] if e["layer"] == "proxy"]
         proxies.append(proxy)
 
-    # Trails first: everything else keeps off them.
-    for key, pts in BRIAR_TRAILS.items():
-        visual.append(earth_trail(f"Trail{key}", pts, 5.0 if key in ("Entrance", "Grove") else 4.2, phase=BRIAR_TRAIL_PHASE[key]))
     keep = [("trail", pts, 4.6) for pts in BRIAR_TRAILS.values()]
     keep += [(x, z, 21) for _, _, _, _, (x, z), _ in BRIAR_SPAWNS]
     keep += [(x, z, 17) for (x, z) in BRIAR_ARRIVALS.values()]
     keep += [(POOL[0], POOL[1], 26), (GROVE[0], GROVE[1], GROVE[2] + 6), (-70, 742, 26), (0, 800, 18)]
-    keep_trees = keep + [(0, 500, 22), (-70, 664, 16), (0, 590, 14)]
 
     def inside_outline(x, z, margin):
         if not (x0 + margin < x < BRIAR_X[1] - margin and z0 + margin < z < z1 - margin):
@@ -3045,23 +5262,8 @@ def build_briarwood(rng):
             return False
         return True
 
-    # Forest: leaning trees scattered over the vale, denser away from the clearings.
-    placed = []
-    tries = 0
-    while len(placed) < 150 and tries < 8000:
-        tries += 1
-        x, z = rng.uniform(x0, BRIAR_X[1]), rng.uniform(z0 + 8, z1 - 8)
-        if not inside_outline(x, z, 7) or not clear_of(x, z, keep_trees):
-            continue
-        if any(math.hypot(x - px, z - pz) < 11 for px, pz in placed):
-            continue
-        placed.append((x, z))
-        visual.append(briar_tree(f"Tree{len(placed):03d}", x, Y, z, rng, scale=rng.uniform(0.85, 1.25)))
-    # The corridor's vista pair and the fork's knot of gnarled trees (Codex shots 1 and 2).
-    for k, (x, z, s) in enumerate(((-9, 548, 1.4), (10, 552, 1.45), (-4, 596, 1.1), (2, 598, 0.9), (-2, 602, 0.85))):
-        visual.append(briar_tree(f"FeatureTree{k}", x, Y, z, rng, scale=s))
-
-    # Entrance road: sign, waystone, quarry-stone transition, the first two vista trees.
+    props_mark = len(REGISTRY)
+    # Entrance road: sign, waystone, quarry-stone transition.
     visual.append(hanging_sign("BriarwoodSign", -8, 486, yaw_facing(-1, 0), "Briarwood", "Lv 9+"))
     visual.append(waystone("BriarGateWaystone", "BriarGate", 13, 0, 500, glow=BRIAR_GLOW))
     for k, (x, z, s) in enumerate(((-13, 478, 1.0), (13, 482, 0.8), (-12, 496, 0.7), (14, 512, 0.9))):
@@ -3074,12 +5276,12 @@ def build_briarwood(rng):
     visual.append(ruin_wall("HollowWallS", -36, 608, -10, 5, 2, rng))
     visual.append(fingerpost("HollowPost", 8, Y, 566, [("Mirror Pool", yaw_facing(1, 1), 8.6), ("Hollow Rest", yaw_facing(-1, 1), 7.2),
                                                         ("Iron Lowlands", yaw_facing(0, -1), 5.8)]))
-    for k, (x, z) in enumerate(((-24, 584), (30, 578), (-30, 626), (34, 618))):
-        visual.append(moss_boulder(f"HollowBoulder{k}", x, 0, z, rng, s=rng.uniform(0.9, 1.4)))
+    for x, z in ((-24, 584), (30, 578), (-30, 626), (34, 618)):
+        terrain_rock(x, z, rng.uniform(0.9, 1.4))
     for k, (x, z) in enumerate(((-36, 592), (38, 600))):
         visual.append(stump(f"HollowStump{k}", x, Y, z, rng))
 
-    # Mirror Pool oasis: still water in a sunken basin ringed with moss boulders and reeds, fed by
+    # Mirror Pool oasis: still water in a sunken basin ringed with mossy boulders and reeds, fed by
     # the big waterfall off the east wall, a chest half-buried on the near shore. Behind the sheet,
     # the grotto: a pocket in the cliff with the vale's elite and its cache.
     px, pz, pr = POOL
@@ -3091,8 +5293,7 @@ def build_briarwood(rng):
         a = k * math.tau / 17
         if 2.8 < a < 3.9 or a < 0.35 or a > 6.0:  # open to the Sunken Path on the west shore and at the waterfall's foot
             continue
-        visual.append(moss_boulder(f"PoolRock{k:02d}", px + math.cos(a) * 18.2, 0, pz + math.sin(a) * 17.4, rng,
-                                   s=rng.uniform(0.9, 1.7)))
+        terrain_rock(px + math.cos(a) * 18.2, pz + math.sin(a) * 17.4, rng.uniform(0.9, 1.7))
     for k, (x, z) in enumerate(((70, 640), (98, 636), (100, 676), (72, 682), (52, 646))):
         visual.append(reeds(f"PoolReeds{k}", x, z, rng))
     visual.append(model("BuriedChest", [chest("Chest", 52, Y - 0.55, 672, yaw_facing(1, -0.3), rng=rng),
@@ -3108,19 +5309,19 @@ def build_briarwood(rng):
                                                                                     (GROTTO[2] + GROTTO[3]) / 2),
              BRIAR_ROCK_DARK, "Slate", collide=False, layer="cliff"),
     ]))
-    visual.append(moss_boulder("GrottoRock", 121, 0, 651, rng, s=0.8))
+    terrain_rock(121, 651, 0.8)
 
     # Thornbreak: a rougher second clearing, stumps and boulders, the brute's ground.
-    for k, (x, z) in enumerate(((-96, 668), (-46, 656), (-84, 700), (-56, 704))):
-        visual.append(moss_boulder(f"ThornRock{k}", x, 0, z, rng, s=rng.uniform(1.0, 1.6)))
+    for x, z in ((-96, 668), (-46, 656), (-84, 700), (-56, 704)):
+        terrain_rock(x, z, rng.uniform(1.0, 1.6))
     for k, (x, z) in enumerate(((-100, 688), (-40, 668))):
         visual.append(stump(f"ThornStump{k}", x, Y, z, rng))
     visual.append(ruin_wall("ThornWall", -104, 660, 70, 4, 1, rng))
 
     # Old Road camp and the Rootwalk's deep camps: rougher ground, stumps and boulders.
-    for k, (x, z, s) in enumerate(((28, 702, 1.2), (-10, 664, 1.0), (-110, 848, 1.3), (110, 846, 1.3), (-2, 934, 0.8),
-                                   (-62, 908, 1.0), (62, 908, 1.0))):
-        visual.append(moss_boulder(f"CampRock{k}", x, 0, z, rng, s=s))
+    for x, z, s in ((28, 702, 1.2), (-10, 664, 1.0), (-110, 848, 1.3), (110, 846, 1.3), (-2, 934, 0.8),
+                    (-62, 908, 1.0), (62, 908, 1.0)):
+        terrain_rock(x, z, s)
     for k, (x, z) in enumerate(((26, 724), (-108, 800), (108, 800))):
         visual.append(stump(f"CampStump{k}", x, Y, z, rng))
 
@@ -3141,8 +5342,8 @@ def build_briarwood(rng):
         part("StreamC", (12, 0.16, 3.6), (-86, Y + 0.08, 759), POOL_WATER, "Glass", rot_y(-55), collide=False, query=False,
              transparency=0.3, layer="decal"),
     ]))
-    for k, (x, z) in enumerate(((-106, 736), (-100, 756), (-92, 764))):
-        visual.append(moss_boulder(f"StreamRock{k}", x, 0, z, rng, s=0.8, collide=False))
+    for x, z in ((-106, 736), (-100, 756), (-92, 764)):
+        terrain_rock(x, z, 0.8, collide=False)
 
     # Ruined chapel: broken walls, the intact arch the trail passes through, roots wrenching the
     # masonry apart, and the vale's second waystone at the grove's edge.
@@ -3160,13 +5361,11 @@ def build_briarwood(rng):
         h = tops(rng.uniform(1.2, 1.8), 0.08)
         visual.append(part(f"FallenBlock{k}", (rng.uniform(2.0, 2.8), h, rng.uniform(1.6, 2.2)), (x, Y + h / 2 - 0.1, z), STONE,
                            "Cobblestone", rot_y(rng.uniform(0, 90)), collide=False, layer="prop"))
-    for k, (x, z, s) in enumerate(((-30, 812, 1.25), (30, 818, 1.4))):
-        visual.append(briar_tree(f"ChapelTree{k}", x, Y, z, rng, scale=s))
     visual.append(model("WrenchingRoots", [
-        beam("RootW0", (-30, Y + 2.0, 812), (-20, Y + 6.5, 803), 1.0, TRUNK, collide=False),
-        beam("RootW1", (-20, Y + 6.5, 803), (-14, Y + 5.2, 800), 0.7, TRUNK, collide=False),
-        beam("RootE0", (30, Y + 2.4, 818), (17, Y + 4.4, 804), 1.0, TRUNK, collide=False),
-        beam("RootE1", (17, Y + 4.4, 804), (13, Y + 3.0, 801), 0.6, TRUNK, collide=False),
+        beam("RootW0", (-30, Y + 2.0, 812), (-20, Y + 6.5, 803), 1.0, OAK_BARK_DARK, collide=False),
+        beam("RootW1", (-20, Y + 6.5, 803), (-14, Y + 5.2, 800), 0.7, OAK_BARK_DARK, collide=False),
+        beam("RootE0", (30, Y + 2.4, 818), (17, Y + 4.4, 804), 1.0, OAK_BARK_DARK, collide=False),
+        beam("RootE1", (17, Y + 4.4, 804), (13, Y + 3.0, 801), 0.6, OAK_BARK_DARK, collide=False),
     ]))
     # Vines drape down the wall face to the floor, so they stand whether or not the course above survived.
     visual.append(model("ChapelVines", [beam(f"Vine{k}", (x, Y + 4.8, 800.7), (x + 0.4, Y + 0.3, 800.95), 0.22, MOSS, "Grass",
@@ -3175,22 +5374,69 @@ def build_briarwood(rng):
     visual.append(sign("GroveSign", -14, 0, 826, yaw_facing(0, -1), 12, 5, "Warden's Grove",
                        "Rootbound Warden  |  Lv 14  |  Keeper of the Grove", board=(52, 60, 36)))
 
-    # Warden's Grove: an open ring of living wood. Giant trees with root buttresses reaching
-    # toward the arena; nothing stands inside it but the Warden.
+    # Everything built so far keeps the planting off it: one circle per prop part.
+    clear = [(POOL[0], POOL[1], 24), (GROVE[0], GROVE[1], GROVE[2] + 4), (-70, 742, 24), (0, 800, 14), (0, 500, 14)]
+    for e in REGISTRY[props_mark:]:
+        if e["layer"] in ("proxy", "ground") or e["transparency"] >= 0.9:
+            continue
+        ext = max(abs(e["rot"][i][j]) * e["size"][j] / 2 for i in (0, 2) for j in range(3))
+        clear.append((e["pos"][0], e["pos"][2], min(ext, 12) + 2.5))
+    clear += [(x, z, 1.5 * 1.5 * 1.0 + 2) for x, z, r, _ in rocks]
+    spawns = [(x, z) for _, _, _, _, (x, z), _ in BRIAR_SPAWNS]
+    arrivals = list(BRIAR_ARRIVALS.values())
+    guard = [(sx, sz, Y, 12) for sx, sz in spawns] + [(ax, az, Y, 8) for ax, az in arrivals]
+    feet = []
+
+    def landmark(name, x, z, kinds, s):
+        """A hand-placed tree: the first species/scale that keeps the camera clearance."""
+        for kind, sc in kinds:
+            mark = len(REGISTRY)
+            node = kind(name, x, z, rng, s=sc * s)
+            if clearance_ok(mark, guard):
+                visual.append(node)
+                r0 = node["children"][0]["properties"]["Size"][1] / 2
+                feet.append([_r(x), _r(z), _r(r0), {"Oak": 1, "Fir": 2, "Birch": 3}.get(node["attributes"]["Species"], 3)])
+                return
+            del REGISTRY[mark:]
+
+    big = [(briar_oak, 1.0), (briar_oak, 1.2), (briar_oak, 1.4), (briar_birch, 1.0)]
+    # The corridor's vista pair and the fork's knot of trees.
+    for k, (x, z, s) in enumerate(((-9, 548, 1.1), (10, 552, 1.15), (-4, 596, 1.0), (4, 600, 0.9))):
+        landmark(f"FeatureTree{k}", x, z, big if k != 1 else [(briar_fir, 1.0)] + big, s)
+    for k, (x, z, s) in enumerate(((-30, 812, 1.2), (30, 818, 1.3))):
+        landmark(f"ChapelTree{k}", x, z, big, s)
+    # Warden's Grove: an open ring of giant oaks and firs round the arena, roots reaching toward it;
+    # nothing stands inside it but the Warden.
     gx, gz, gr = GROVE
     for i in range(11):
         a = i * math.tau / 11
         tx, tz = gx + math.cos(a) * (gr + 8), gz + math.sin(a) * (gr + 8)
         if tz - gz < -0.7 * (gr + 8):  # the opening toward the chapel
             continue
-        visual.append(briar_tree(f"GroveTree{i:02d}", tx, Y, tz, rng, scale=rng.uniform(1.6, 2.1)))
-        visual.append(beam(f"GroveRoot{i:02d}", (tx, Y + 2.0, tz), (gx + (tx - gx) * 0.72, Y + 0.18, gz + (tz - gz) * 0.72), 1.1,
-                           TRUNK, collide=False, query=False, layer="tree"))
+        landmark(f"GroveTree{i:02d}", tx, tz, [(briar_fir, 1.1)] + big if i % 3 == 1 else big, rng.uniform(1.25, 1.45))
+    clear += [(f[0], f[1], 9) for f in feet]
 
-    # Undergrowth over the whole vale, thinned on the trails and clearings.
-    for k, (cx, cz, rx, rz, n) in enumerate(((-40, 600, 70, 50, 60), (60, 600, 50, 40, 40), (-70, 690, 45, 30, 40),
-                                             (40, 700, 70, 60, 60), (-60, 790, 50, 40, 40), (0, 860, 90, 60, 50))):
-        visual.append(undergrowth(f"Undergrowth{k}", cx, cz, rx, rz, n, rng, keep + [(gx, gz, gr + 2)]))
+    trails = [(pts, (5.0 if key in ("Entrance", "Grove") else 4.2) / 2) for key, pts in BRIAR_TRAILS.items()]
+    woods, more_feet, more_rocks, hummocks = plant_woodland(rng, inside_outline, trails, spawns, arrivals, clear,
+                                                  (x0, BRIAR_X[1]), (548, z1 - 6))
+    visual += woods
+    feet += more_feet
+    rocks += more_rocks
+
+    brng = random.Random(9151)
+    for k, (x, z, r, collide) in enumerate(rocks):
+        visual.append(boulder(f"Boulder{k:03d}", x, z, max(r, 1.4), brng, collide=bool(collide)))
+
+    # The plan WorldTerrain builds the ground from: the wall line, the trails, every trunk's foot
+    # (root mound and leaf litter), every rock, and the places the ground must stay flat.
+    plan = {
+        "y": Y, "outline": outline,
+        "trails": [[pts, w] for pts, w in ((pts, 5.0 if key in ("Entrance", "Grove") else 4.2) for key, pts in BRIAR_TRAILS.items())],
+        "feet": feet, "rocks": rocks, "hummocks": hummocks, "pool": list(POOL), "grove": list(GROVE), "grotto": list(GROTTO),
+        "falls": [[BRIAR_X[1] + 0.6, pz, Y + 29 + 3.2, 11], [BRIAR_X[0] - 0.6, 744, Y + 12.4 + 3.2, 6]],
+        "spawns": [[x, z] for x, z in spawns], "arrivals": [[x, z] for x, z in arrivals],
+    }
+    visual.append(inst("ForestPlan", "StringValue", {"Value": json.dumps(plan, separators=(",", ":"))}))
     return ground, visual, proxies
 
 
@@ -3229,6 +5475,7 @@ def main():
     write_model(OUT / "IronLowlands.model.json", model("IronLowlands", il_visual, attrs={"Region": "IronLowlands"}))
     write_model(OUT / "Briarwood.model.json", model("Briarwood", bw_visual, attrs={"Region": "Briarwood"}))
     write_model(OUT / "Markers.model.json", markers)
+    write_model(OUT / "Horizon.model.json", build_horizon())
 
     counts = {}
     for entry in REGISTRY:

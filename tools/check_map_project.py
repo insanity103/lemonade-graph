@@ -666,7 +666,11 @@ def check_projects():
     mapped = json.loads((ROOT / "map.project.json").read_text())["tree"]
     allowed_extra = {("Workspace",), ("ServerScriptService", "MapMarkers"), ("ServerScriptService", "MapTravel"),
                      ("StarterPlayer", "StarterPlayerScripts", "MapClient"),
-                     ("StarterPlayer", "StarterPlayerScripts", "HubAmbience")}
+                     ("StarterPlayer", "StarterPlayerScripts", "HubAmbience"),
+                     # The world look (lighting and day cycle, sculpted terrain, far horizon) lives with the map.
+                     ("ServerScriptService", "WorldLook"), ("ServerScriptService", "WorldTerrain"),
+                     ("StarterPlayer", "StarterPlayerScripts", "WorldShowcase"),
+                     ("StarterPlayer", "StarterPlayerScripts", "WorldHorizon")}
 
     def walk(d, m, path=()):
         for key, value in d.items():

@@ -388,11 +388,11 @@
      }
     },
     "Color": [
-     0.4078,
-     0.3137,
-     0.2118
+     0.7686,
+     0.6275,
+     0.4078
     ],
-    "Material": "Mud",
+    "Material": "Sand",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
