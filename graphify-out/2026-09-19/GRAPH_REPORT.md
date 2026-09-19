@@ -1,11 +1,11 @@
 # Graph Report - adoring-khayyam-85d49c  (2026-09-19)
 
 ## Corpus Check
-- 248 files · ~994,571 words
+- 248 files · ~994,285 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3463 nodes · 5326 edges · 354 communities (276 shown, 20 thin omitted)
+- 3463 nodes · 5325 edges · 357 communities (279 shown, 20 thin omitted)
 - Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 294 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
@@ -33,8 +33,9 @@
 - Roblox API Errors
 - Roblox UI/UX Design & Implementation
 - Map audit — Hearthmere + Iron Lowlands (2026-09-15)
-- MainMenuGui.client.luau
+- PanelChrome.stroke
 - The Legendary Swords RPG - Comprehensive Bug Catalog
+- Layout Objects
 - Lemonade Graph — Complete Roblox Game Design Knowledge Base
 - EnemyCombat.server.luau
 - Roblox UI Animation — TweenService Reference
@@ -307,9 +308,11 @@
 - ReforgeGuiFusion.client.luau
 - briar_tree
 - WorldTerrain.server.luau
-- PanelChrome.stroke
+- PanelChrome.chunkyButton
 - MerchantSystem.server.luau
 - SafeHub.canEnemyAttack
+- BossDoorClient.client.luau
+- NumberFormat.short
 - WeaponModifiers.TierOdds
 
 ## God Nodes (most connected - your core abstractions)
@@ -320,7 +323,7 @@
 5. `mul()` - 57 edges
 6. `rot_z()` - 54 edges
 7. `quarry_layout()` - 51 edges
-8. `rot_x()` - 41 edges
+8. `rot_x()` - 40 edges
 9. `apply()` - 40 edges
 10. `build_hub()` - 40 edges
 
@@ -331,10 +334,10 @@
   lemonade-game/ReplicatedStorage/EnemyAnimator.luau → lemonade-game/ReplicatedStorage/NpcAnimator.luau
 - `EnemyAnimator.sampleNotice()` --calls--> `curve()`  [INFERRED]
   lemonade-game/ReplicatedStorage/EnemyAnimator.luau → lemonade-game/ReplicatedStorage/NpcAnimator.luau
-- `createChip()` --calls--> `PanelChrome.display()`  [INFERRED]
-  lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau → lemonade-game/ReplicatedStorage/PanelChrome.luau
-- `settingsRow()` --calls--> `PanelChrome.display()`  [INFERRED]
-  lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau → lemonade-game/ReplicatedStorage/PanelChrome.luau
+- `shadowedButton()` --calls--> `PanelChrome.chunkyButton()`  [INFERRED]
+  lemonade-game/StarterPlayer/StarterPlayerScripts/QuestGui.client.luau → lemonade-game/ReplicatedStorage/PanelChrome.luau
+- `makePurchasedSword()` --calls--> `BossSwordFactory.build()`  [INFERRED]
+  lemonade-game/ServerScriptService/MerchantSystem.server.luau → lemonade-game/ServerScriptService/BossSwordFactory.luau
 
 ## Import Cycles
 - None detected.
@@ -344,7 +347,7 @@
 - **Prestige-Collection Feedback Loop (Rebirth improves drops → motivates collection → rebirth again)** — ls_core_rebirth_system, ls_core_drop_rate_formula, ls_core_collection_loop [EXTRACTED 0.95]
 - **Social Boss Event Pattern (timed spawns + last-hit reward + communal discovery)** — ls_core_server_events, ls_core_boss_system, ls_core_last_hit_mechanic [EXTRACTED 0.95]
 
-## Communities (354 total, 20 thin omitted)
+## Communities (357 total, 20 thin omitted)
 
 ### Community 0 - "6. Weapon Acquisition Design Template"
 Cohesion: 0.04
@@ -375,8 +378,8 @@ Cohesion: 0.04
 Nodes (44): M-10: No Duplicate ReplicatedStorage Assets, M-1: No Growing Tables Without Cleanup, M-2: Destroyed Instances Disconnected, M-3: Instance Pooling for Frequent Create/Destroy, M-4: No Circular References Preventing GC, M-5: Module Cache Not Stale, M-6: No Event Listeners on Temporary UI, M-7: Cleanup on Player Leave (+36 more)
 
 ### Community 7 - "SwordDropToast.client.luau"
-Cohesion: 0.17
-Nodes (18): getLevel(), paint(), repaintAll(), show(), track(), pill(), backOut(), cubicOut() (+10 more)
+Cohesion: 0.22
+Nodes (14): pill(), add(), backOut(), cubicOut(), ease(), fitFor(), quadIn(), quadOut() (+6 more)
 
 ### Community 8 - "Economy & Currency Systems in Roblox Sword RPG Games"
 Cohesion: 0.05
@@ -418,13 +421,17 @@ Nodes (27): Accessibility, Animation, Avoid edge UI, Basic UI tween, Color contr
 Cohesion: 0.15
 Nodes (12): Actionable fixes applied, Actionable fixes applied, Critical errors, Critical errors, Layout and performance, Map audit — Hearthmere + Iron Lowlands (2026-09-15), Map audit — Iron Lowlands bandit quarry (2026-09-16), Moderate warnings (+4 more)
 
-### Community 18 - "MainMenuGui.client.luau"
-Cohesion: 0.09
-Nodes (33): NumberFormat.short(), addCorner(), addPadding(), bevelBlock(), brightText(), buildBonusRow(), buildRebirthPanel(), buildSkillsPanel() (+25 more)
+### Community 18 - "PanelChrome.stroke"
+Cohesion: 0.11
+Nodes (44): PanelChrome.buildBright(), PanelChrome.checkBadge(), PanelChrome.display(), PanelChrome.gradient(), PanelChrome.lootTile(), PanelChrome.rarityTile(), PanelChrome.stroke(), makeBar() (+36 more)
 
 ### Community 19 - "The Legendary Swords RPG - Comprehensive Bug Catalog"
 Cohesion: 0.12
 Nodes (15): 10. Server / Performance Bugs, 11. Exploit / Security Vulnerabilities, 1. Data / Persistence Bugs, 2. Combat Bugs, 3. Economy / Shop Bugs, 4. Progression Bugs, 5. Weapon / Item Bugs, 6. Gamepass Bugs (+7 more)
+
+### Community 20 - "Layout Objects"
+Cohesion: 0.40
+Nodes (5): Layout Objects, UIGridLayout, UIListLayout, UIPageLayout, UIScale
 
 ### Community 21 - "Lemonade Graph — Complete Roblox Game Design Knowledge Base"
 Cohesion: 0.08
@@ -463,8 +470,8 @@ Cohesion: 0.12
 Nodes (28): audio_duration(), _build_multipart(), extract_audio(), load_api_key(), plan_chunks(), _post_whisper(), Path, Extract mono 16kHz 64kbps mp3 — ~480 kB/min, fits any Whisper limit. (+20 more)
 
 ### Community 30 - "SwordHotbarGui.client.luau"
-Cohesion: 0.17
-Nodes (10): addGlint(), buildFace(), faceLayer(), fillFor(), inkLabel(), renderPreview(), rollFor(), sectionHeading() (+2 more)
+Cohesion: 0.16
+Nodes (11): addGlint(), buildFace(), faceLayer(), fillFor(), inkLabel(), modifierRow(), renderPreview(), rollFor() (+3 more)
 
 ### Community 31 - "Boss List by Area (Restored Version)"
 Cohesion: 0.13
@@ -1292,7 +1299,7 @@ Nodes (12): Combo System Test Plan, Known Limitations, Test 10: Multiplayer, Tes
 
 ### Community 274 - "PanelChrome.luau"
 Cohesion: 0.13
-Nodes (32): backOut(), cancel(), closeTracks(), collectFades(), cubicOut(), down(), drive(), ease() (+24 more)
+Nodes (31): backOut(), cancel(), closeTracks(), collectFades(), cubicOut(), down(), drive(), ease() (+23 more)
 
 ### Community 276 - "MapMarkers.luau"
 Cohesion: 0.16
@@ -1403,8 +1410,8 @@ Cohesion: 0.08
 Nodes (41): QuestConfig.getQuestById(), CombatUtil.isEnemy(), checkCompletion(), checkObtainQuest(), connectEnemyHumanoid(), incrementProgress(), inspect(), loadQuestState() (+33 more)
 
 ### Community 337 - "VaultGui.client.luau"
-Cohesion: 0.14
-Nodes (19): add(), applyLayout(), applySelection(), buildStandInSword(), buildTile(), close(), hideTip(), part() (+11 more)
+Cohesion: 0.15
+Nodes (18): applyLayout(), applySelection(), buildStandInSword(), buildTile(), close(), hideTip(), part(), rarityFlair() (+10 more)
 
 ### Community 338 - "EnemyOutfits.luau"
 Cohesion: 0.38
@@ -1431,8 +1438,8 @@ Cohesion: 0.09
 Nodes (53): briar_birch(), briar_fir(), briar_oak(), bush_clump(), clear_of(), clearance_ok(), cyl(), _draws_briar_birch() (+45 more)
 
 ### Community 347 - "ReforgeGuiFusion.client.luau"
-Cohesion: 0.10
-Nodes (21): PanelChrome.renderTool(), buildStandInSword(), chunky(), close(), currentCost(), goldText(), image(), lockList() (+13 more)
+Cohesion: 0.11
+Nodes (20): PanelChrome.renderTool(), buildStandInSword(), close(), currentCost(), goldText(), image(), lockList(), makeCard() (+12 more)
 
 ### Community 348 - "briar_tree"
 Cohesion: 0.33
@@ -1442,9 +1449,17 @@ Nodes (4): briar_tree(), Nudges horizontal top faces apart inside one prop so it
 Cohesion: 0.11
 Nodes (11): at(), bump(), clamp01(), crestAt(), cutBack(), mesaAt(), segDist(), smooth() (+3 more)
 
-### Community 350 - "PanelChrome.stroke"
-Cohesion: 0.17
-Nodes (31): corner(), PanelChrome.buildBright(), PanelChrome.checkBadge(), PanelChrome.chunkyButton(), PanelChrome.countBadge(), PanelChrome.dashedOutline(), PanelChrome.display(), PanelChrome.emptyWell() (+23 more)
+### Community 350 - "PanelChrome.chunkyButton"
+Cohesion: 0.18
+Nodes (13): corner(), PanelChrome.build(), PanelChrome.chunkyButton(), PanelChrome.countBadge(), PanelChrome.dashedOutline(), PanelChrome.emptyWell(), PanelChrome.insetTray(), PanelChrome.stripes() (+5 more)
+
+### Community 353 - "BossDoorClient.client.luau"
+Cohesion: 0.67
+Nodes (5): getLevel(), paint(), repaintAll(), show(), track()
+
+### Community 354 - "NumberFormat.short"
+Cohesion: 0.50
+Nodes (3): NumberFormat.short(), gainText(), skillEffectText()
 
 ### Community 356 - "WeaponModifiers.TierOdds"
 Cohesion: 0.83

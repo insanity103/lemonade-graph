@@ -726,20 +726,20 @@
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Collision.model.json": {
-    "mtime": 1789839548.4322405,
-    "seen": 1789839741.54853,
+    "mtime": 1789838657.5523534,
+    "seen": 1789838767.0622983,
     "ast_hash": "c0684e6b31486d51427f788c2cdacac1",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Grounds_Hub.model.json": {
-    "mtime": 1789839548.4315832,
-    "seen": 1789839741.5485334,
+    "mtime": 1789838657.551629,
+    "seen": 1789838767.0623007,
     "ast_hash": "4e16b7e22394cccd5de3675b5df0cfc5",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Grounds_IronLowlands.model.json": {
-    "mtime": 1789839548.4317608,
-    "seen": 1789839741.5485346,
+    "mtime": 1789838657.5518231,
+    "seen": 1789838767.0623016,
     "ast_hash": "de690d3fb0da72dca31e632aaae9aa33",
     "semantic_hash": ""
   },
@@ -756,14 +756,14 @@
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Markers.model.json": {
-    "mtime": 1789839548.4928637,
-    "seen": 1789839741.548537,
+    "mtime": 1789838657.6125903,
+    "seen": 1789838767.0623038,
     "ast_hash": "61f61ebfe9fd05c192a576f773e9eea2",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/init.meta.json": {
-    "mtime": 1789839548.4313905,
-    "seen": 1789839741.5485382,
+    "mtime": 1789838657.5514262,
+    "seen": 1789838767.062305,
     "ast_hash": "9cc465bacbecfd2cb9dc2dbe20f9d9de",
     "semantic_hash": ""
   },
@@ -792,9 +792,9 @@
     "semantic_hash": ""
   },
   "tools/map_forge.py": {
-    "mtime": 1789839547.543739,
-    "seen": 1789839741.548699,
-    "ast_hash": "b51fb3e8882b568a1d3b58fd67667a74",
+    "mtime": 1789838641.5138826,
+    "seen": 1789838767.062465,
+    "ast_hash": "8269fce6c701ced9475d3be6685cadca",
     "semantic_hash": ""
   },
   "CLAUDE_IMPLEMENTATION_HANDOFF.md": {
@@ -834,9 +834,9 @@
     "semantic_hash": ""
   },
   "docs/map/first_slice_topdown.png": {
-    "mtime": 1789839548.7437563,
-    "seen": 1789839741.5508995,
-    "ast_hash": "a6fd953e98350a91b5607e00e4a02f18",
+    "mtime": 1789838657.851114,
+    "seen": 1789838767.0646353,
+    "ast_hash": "f34920e0987e46327d78466865b15d92",
     "semantic_hash": ""
   },
   "legacy/BossRoomGate.server.luau": {
@@ -1374,8 +1374,8 @@
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Grounds_Briarwood.model.json": {
-    "mtime": 1789839548.431885,
-    "seen": 1789839741.5485322,
+    "mtime": 1789838657.5519524,
+    "seen": 1789838767.0622995,
     "ast_hash": "9b9cc4e701afd3476ee784c67f9ebc1a",
     "semantic_hash": ""
   },
@@ -1476,14 +1476,14 @@
     "semantic_hash": ""
   },
   "lemonade-game/Map/WorldTerrain.server.luau": {
-    "mtime": 1789839277.6587763,
-    "seen": 1789839741.5437374,
-    "ast_hash": "ada38dc78749131bdc793e0cad86215c",
+    "mtime": 1789838641.5320053,
+    "seen": 1789838767.0577855,
+    "ast_hash": "678b269321550f956a97ef39611f8ff3",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Horizon.model.json": {
-    "mtime": 1789839548.5112395,
-    "seen": 1789839741.5485356,
+    "mtime": 1789838657.630069,
+    "seen": 1789838767.0623028,
     "ast_hash": "0961eae49959395e5cef1c57e9bca9c4",
     "semantic_hash": ""
   },

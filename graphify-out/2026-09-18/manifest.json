@@ -204,9 +204,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/CombatController.client.luau": {
-    "mtime": 1789768904.5703292,
-    "seen": 1789769085.8572478,
-    "ast_hash": "9e7cd9c9f0693eed357b6dc1f3e010dc",
+    "mtime": 1789778478.4892986,
+    "seen": 1789783075.2340033,
+    "ast_hash": "b33bac4697405eafeb16364a6a6c9e0f",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/ComboVFX.client.luau": {
@@ -672,9 +672,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/Gameplay/GameplayActors.luau": {
-    "mtime": 1789607233.7601414,
-    "seen": 1789612100.7313907,
-    "ast_hash": "8a59194eac7e87434c4004e18fd7dd8c",
+    "mtime": 1789782976.0458863,
+    "seen": 1789783075.2295527,
+    "ast_hash": "03176029d171a64002fbf0a06e996e50",
     "semantic_hash": ""
   },
   "lemonade-game/Gameplay/GameplayServices.server.luau": {
@@ -726,20 +726,20 @@
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Collision.model.json": {
-    "mtime": 1789703714.4179296,
-    "seen": 1789706953.4306831,
+    "mtime": 1789800345.113148,
+    "seen": 1789800890.0232913,
     "ast_hash": "c0684e6b31486d51427f788c2cdacac1",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Grounds_Hub.model.json": {
-    "mtime": 1789703714.4173145,
-    "seen": 1789706953.430686,
-    "ast_hash": "6dd9bd5789175a46f20dd5df8cdd3f13",
+    "mtime": 1789800345.1124008,
+    "seen": 1789800890.0232937,
+    "ast_hash": "4e16b7e22394cccd5de3675b5df0cfc5",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Grounds_IronLowlands.model.json": {
-    "mtime": 1789703714.4175534,
-    "seen": 1789706953.430687,
+    "mtime": 1789800345.1126015,
+    "seen": 1789800890.023295,
     "ast_hash": "00c86dd2d80c2b6bae139fc12197a3e1",
     "semantic_hash": ""
   },
@@ -750,27 +750,27 @@
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/IronLowlands.model.json": {
-    "mtime": 1789703714.4405103,
-    "seen": 1789706953.4306886,
+    "mtime": 1789800345.1384773,
+    "seen": 1789800890.0232973,
     "ast_hash": "799cf4b1117fae0ff15f02594e1d60b6",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Markers.model.json": {
-    "mtime": 1789703714.467138,
-    "seen": 1789706953.4306896,
+    "mtime": 1789800345.1656613,
+    "seen": 1789800890.0232985,
     "ast_hash": "61f61ebfe9fd05c192a576f773e9eea2",
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/init.meta.json": {
-    "mtime": 1789703714.4171247,
-    "seen": 1789706953.4306908,
+    "mtime": 1789800345.112192,
+    "seen": 1789800890.0232997,
     "ast_hash": "9cc465bacbecfd2cb9dc2dbe20f9d9de",
     "semantic_hash": ""
   },
   "map.project.json": {
-    "mtime": 1789768900.4439194,
-    "seen": 1789769085.8580406,
-    "ast_hash": "d58dd0acc90ef06f50e7516c94a94bd7",
+    "mtime": 1789792377.6150594,
+    "seen": 1789792663.156753,
+    "ast_hash": "31f8b57c17920414d9174e9f49ce5613",
     "semantic_hash": ""
   },
   "tools/check_gameplay_project.py": {
@@ -792,9 +792,9 @@
     "semantic_hash": ""
   },
   "tools/map_forge.py": {
-    "mtime": 1789703707.1968203,
-    "seen": 1789706953.430831,
-    "ast_hash": "7f8d232c2e17f2f9238372170eac27f0",
+    "mtime": 1789800344.6574702,
+    "seen": 1789800890.0234714,
+    "ast_hash": "ea0726e58d1fec495812c7f1030e1895",
     "semantic_hash": ""
   },
   "CLAUDE_IMPLEMENTATION_HANDOFF.md": {
@@ -834,9 +834,9 @@
     "semantic_hash": ""
   },
   "docs/map/first_slice_topdown.png": {
-    "mtime": 1789703714.6619334,
-    "seen": 1789706953.4329062,
-    "ast_hash": "5a4abb4a05e5d4eacc9f18b42c4639fa",
+    "mtime": 1789800345.400481,
+    "seen": 1789800890.0256512,
+    "ast_hash": "76de01f55a7b99f297195816307e1985",
     "semantic_hash": ""
   },
   "legacy/BossRoomGate.server.luau": {
@@ -852,9 +852,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/Map/HubAmbience.client.luau": {
-    "mtime": 1789607341.9767382,
-    "seen": 1789612100.7315152,
-    "ast_hash": "0e1d5e4c0ed261b59098a43a40461799",
+    "mtime": 1789778465.259161,
+    "seen": 1789783075.22968,
+    "ast_hash": "5717eca67eb96c360262392acdc5b721",
     "semantic_hash": ""
   },
   "lemonade-game/ReplicatedStorage/Config/SwordValue.luau": {
@@ -1374,8 +1374,8 @@
     "semantic_hash": ""
   },
   "lemonade-map/LemonadeMap/Grounds_Briarwood.model.json": {
-    "mtime": 1789703714.417685,
-    "seen": 1789706953.430685,
+    "mtime": 1789800345.1127732,
+    "seen": 1789800890.0232928,
     "ast_hash": "9b9cc4e701afd3476ee784c67f9ebc1a",
     "semantic_hash": ""
   },
@@ -1455,6 +1455,42 @@
     "mtime": 1789776163.0726538,
     "seen": 1789776231.4589043,
     "ast_hash": "58b5af03053575af184e08d52b9c419e",
+    "semantic_hash": ""
+  },
+  "lemonade-game/ReplicatedStorage/NpcAnimator.luau": {
+    "mtime": 1789782775.8621178,
+    "seen": 1789783075.2303534,
+    "ast_hash": "221f5d5ec6703ad79abf8f903dc5e3b6",
+    "semantic_hash": ""
+  },
+  "lemonade-game/Map/WorldShowcase.client.luau": {
+    "mtime": 1789800698.0308993,
+    "seen": 1789800890.018281,
+    "ast_hash": "7bc642defb7a03f830a2695d54d97cf5",
+    "semantic_hash": ""
+  },
+  "lemonade-game/Map/WorldLook.server.luau": {
+    "mtime": 1789800198.0070064,
+    "seen": 1789800890.018279,
+    "ast_hash": "57d6263240c3ec8dea966f41cd5be9a0",
+    "semantic_hash": ""
+  },
+  "lemonade-game/Map/WorldTerrain.server.luau": {
+    "mtime": 1789800248.056441,
+    "seen": 1789800890.0182822,
+    "ast_hash": "4bc7c23faf32bd7b1d4750e2299bafcd",
+    "semantic_hash": ""
+  },
+  "lemonade-map/LemonadeMap/Horizon.model.json": {
+    "mtime": 1789800345.1841657,
+    "seen": 1789800890.0232964,
+    "ast_hash": "0961eae49959395e5cef1c57e9bca9c4",
+    "semantic_hash": ""
+  },
+  "lemonade-game/Map/WorldHorizon.client.luau": {
+    "mtime": 1789794704.3290303,
+    "seen": 1789795808.9245965,
+    "ast_hash": "92e92cc7bfa1ee8fa70be4f48342b896",
     "semantic_hash": ""
   }
 }
