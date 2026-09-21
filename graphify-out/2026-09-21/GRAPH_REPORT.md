@@ -1,16 +1,16 @@
-# Graph Report - adoring-khayyam-85d49c  (2026-09-21)
+# Graph Report - adoring-khayyam-85d49c  (2026-09-20)
 
 ## Corpus Check
-- 258 files · ~1,055,245 words
+- 258 files · ~1,054,901 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3637 nodes · 5688 edges · 357 communities (282 shown, 19 thin omitted)
+- 3635 nodes · 5683 edges · 357 communities (282 shown, 19 thin omitted)
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 374 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b6ad5121`
+- Built from commit: `9b5af89f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -380,8 +380,8 @@ Cohesion: 0.04
 Nodes (44): M-10: No Duplicate ReplicatedStorage Assets, M-1: No Growing Tables Without Cleanup, M-2: Destroyed Instances Disconnected, M-3: Instance Pooling for Frequent Create/Destroy, M-4: No Circular References Preventing GC, M-5: Module Cache Not Stale, M-6: No Event Listeners on Temporary UI, M-7: Cleanup on Player Leave (+36 more)
 
 ### Community 7 - "SwordDropToast.client.luau"
-Cohesion: 0.36
-Nodes (8): comma(), hidePrompt(), revealDrop(), setTint(), shockRing(), showPrompt(), sparkBurst(), tickGap()
+Cohesion: 0.39
+Nodes (7): comma(), hidePrompt(), revealDrop(), setTint(), shockRing(), showPrompt(), sparkBurst()
 
 ### Community 8 - "Economy & Currency Systems in Roblox Sword RPG Games"
 Cohesion: 0.05
@@ -425,7 +425,7 @@ Nodes (12): Actionable fixes applied, Actionable fixes applied, Critical errors,
 
 ### Community 18 - "MainMenuGui.client.luau"
 Cohesion: 0.12
-Nodes (23): addCorner(), addPadding(), bevelBlock(), brightText(), buildBonusRow(), buildEmptySlot(), buildSkillRow(), buildSkillsPanel() (+15 more)
+Nodes (22): addCorner(), addPadding(), bevelBlock(), brightText(), buildBonusRow(), buildSkillRow(), buildSkillsPanel(), chevron() (+14 more)
 
 ### Community 19 - "The Legendary Swords RPG - Comprehensive Bug Catalog"
 Cohesion: 0.12
@@ -472,8 +472,8 @@ Cohesion: 0.12
 Nodes (28): audio_duration(), _build_multipart(), extract_audio(), load_api_key(), plan_chunks(), _post_whisper(), Path, Extract mono 16kHz 64kbps mp3 — ~480 kB/min, fits any Whisper limit. (+20 more)
 
 ### Community 30 - "SwordHotbarGui.client.luau"
-Cohesion: 0.17
-Nodes (10): addGlint(), buildFace(), faceLayer(), fillFor(), inkLabel(), renderPreview(), rollFor(), sectionHeading() (+2 more)
+Cohesion: 0.13
+Nodes (14): PanelChrome.dashedOutline(), PanelChrome.emptyWell(), buildEmptySlot(), addGlint(), buildFace(), faceLayer(), fillFor(), inkLabel() (+6 more)
 
 ### Community 31 - "Boss List by Area (Restored Version)"
 Cohesion: 0.13
@@ -1296,8 +1296,8 @@ Cohesion: 0.40
 Nodes (4): Connect, Gameplay on an existing baseplate, Local validation, Verify in Studio
 
 ### Community 247 - "PanelChrome.stroke"
-Cohesion: 0.14
-Nodes (36): corner(), PanelChrome.buildBright(), PanelChrome.checkBadge(), PanelChrome.chunkyButton(), PanelChrome.countBadge(), PanelChrome.dashedOutline(), PanelChrome.display(), PanelChrome.emptyWell() (+28 more)
+Cohesion: 0.15
+Nodes (33): corner(), PanelChrome.buildBright(), PanelChrome.checkBadge(), PanelChrome.chunkyButton(), PanelChrome.countBadge(), PanelChrome.display(), PanelChrome.gradient(), PanelChrome.insetTray() (+25 more)
 
 ### Community 251 - "BossSwordFactory.luau"
 Cohesion: 0.16
@@ -1308,8 +1308,8 @@ Cohesion: 0.15
 Nodes (12): Combo System Test Plan, Known Limitations, Test 10: Multiplayer, Test 1: Basic 5-Hit Combo, Test 2: Combo Reset, Test 3: Endlag Enforcement, Test 4: Hitlag Feel, Test 5: Combo Damage Scaling (+4 more)
 
 ### Community 274 - "PanelChrome.luau"
-Cohesion: 0.12
-Nodes (33): backOut(), cancel(), closeTracks(), collectFades(), cubicOut(), down(), drive(), ease() (+25 more)
+Cohesion: 0.13
+Nodes (32): backOut(), cancel(), closeTracks(), collectFades(), cubicOut(), down(), drive(), ease() (+24 more)
 
 ### Community 276 - "MapMarkers.luau"
 Cohesion: 0.16
@@ -1449,7 +1449,7 @@ Nodes (16): WeaponModifiers.LuckFrom(), PlayerDataService.IsReady(), PlayerDataS
 
 ### Community 347 - "ReforgeGuiFusion.client.luau"
 Cohesion: 0.10
-Nodes (20): applyState(), buildStandInSword(), close(), currentCost(), goldText(), image(), lockList(), part() (+12 more)
+Nodes (19): PanelChrome.renderTool(), applyState(), buildStandInSword(), close(), currentCost(), goldText(), image(), lockList() (+11 more)
 
 ### Community 348 - "model"
 Cohesion: 0.16
@@ -1481,7 +1481,7 @@ Nodes (3): currentTier(), refresh(), scheduleHide()
 
 ## Knowledge Gaps
 - **1544 isolated node(s):** `build-skill.sh script`, `name`, `file`, `bytes`, `triangles` (+1539 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2022 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2023 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **19 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions

@@ -3302,18 +3302,6 @@
       "source_location": "L1596"
     },
     {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildemptyslot",
-      "label": "buildEmptySlot()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "MainMenuGui.client.luau",
-      "file_type": "code",
-      "norm_label": "buildemptyslot()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
-      "source_location": "L881"
-    },
-    {
       "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildskillrow",
       "label": "buildSkillRow()",
       "_callable": true,
@@ -5234,18 +5222,6 @@
       "source_location": "L186"
     },
     {
-      "id": "lemonade_game_replicatedstorage_panelchrome_panelchrome_dashedoutline",
-      "label": "PanelChrome.dashedOutline()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 247,
-      "community_name": "PanelChrome.stroke",
-      "file_type": "code",
-      "norm_label": "panelchrome.dashedoutline()",
-      "source_file": "lemonade-game/ReplicatedStorage/PanelChrome.luau",
-      "source_location": "L446"
-    },
-    {
       "id": "lemonade_game_replicatedstorage_panelchrome_panelchrome_display",
       "label": "PanelChrome.display()",
       "_callable": true,
@@ -5256,18 +5232,6 @@
       "norm_label": "panelchrome.display()",
       "source_file": "lemonade-game/ReplicatedStorage/PanelChrome.luau",
       "source_location": "L159"
-    },
-    {
-      "id": "lemonade_game_replicatedstorage_panelchrome_panelchrome_emptywell",
-      "label": "PanelChrome.emptyWell()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 247,
-      "community_name": "PanelChrome.stroke",
-      "file_type": "code",
-      "norm_label": "panelchrome.emptywell()",
-      "source_file": "lemonade-game/ReplicatedStorage/PanelChrome.luau",
-      "source_location": "L341"
     },
     {
       "id": "lemonade_game_replicatedstorage_panelchrome_panelchrome_gradient",
@@ -5498,18 +5462,6 @@
       "source_location": "L488"
     },
     {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_renderhero",
-      "label": "renderHero()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 247,
-      "community_name": "PanelChrome.stroke",
-      "file_type": "code",
-      "norm_label": "renderhero()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L1104"
-    },
-    {
       "id": "lemonade_game_starterplayer_starterplayerscripts_sworddroptoast_client_promptbutton",
       "label": "promptButton()",
       "_callable": true,
@@ -5520,6 +5472,18 @@
       "norm_label": "promptbutton()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau",
       "source_location": "L720"
+    },
+    {
+      "id": "lemonade_game_starterplayer_starterplayerscripts_sworddroptoast_client_tickgap",
+      "label": "tickGap()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 247,
+      "community_name": "PanelChrome.stroke",
+      "file_type": "code",
+      "norm_label": "tickgap()",
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau",
+      "source_location": "L114"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_swordhotbargui_client_modifierrow",
@@ -5556,18 +5520,6 @@
       "norm_label": "buildbuyslottile()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/VaultGui.client.luau",
       "source_location": "L992"
-    },
-    {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_vaultgui_client_buildemptywell",
-      "label": "buildEmptyWell()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 247,
-      "community_name": "PanelChrome.stroke",
-      "file_type": "code",
-      "norm_label": "buildemptywell()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/VaultGui.client.luau",
-      "source_location": "L1051"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_vaultgui_client_gemicon",
@@ -6468,18 +6420,6 @@
       "norm_label": "panelchrome.presshandle()",
       "source_file": "lemonade-game/ReplicatedStorage/PanelChrome.luau",
       "source_location": "L1183"
-    },
-    {
-      "id": "lemonade_game_replicatedstorage_panelchrome_panelchrome_rendertool",
-      "label": "PanelChrome.renderTool()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 274,
-      "community_name": "PanelChrome.luau",
-      "file_type": "code",
-      "norm_label": "panelchrome.rendertool()",
-      "source_file": "lemonade-game/ReplicatedStorage/PanelChrome.luau",
-      "source_location": "L508"
     },
     {
       "id": "lemonade_game_replicatedstorage_panelchrome_pose",
@@ -7538,6 +7478,42 @@
       "source_location": "L13"
     },
     {
+      "id": "lemonade_game_replicatedstorage_panelchrome_panelchrome_dashedoutline",
+      "label": "PanelChrome.dashedOutline()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 30,
+      "community_name": "SwordHotbarGui.client.luau",
+      "file_type": "code",
+      "norm_label": "panelchrome.dashedoutline()",
+      "source_file": "lemonade-game/ReplicatedStorage/PanelChrome.luau",
+      "source_location": "L446"
+    },
+    {
+      "id": "lemonade_game_replicatedstorage_panelchrome_panelchrome_emptywell",
+      "label": "PanelChrome.emptyWell()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 30,
+      "community_name": "SwordHotbarGui.client.luau",
+      "file_type": "code",
+      "norm_label": "panelchrome.emptywell()",
+      "source_file": "lemonade-game/ReplicatedStorage/PanelChrome.luau",
+      "source_location": "L341"
+    },
+    {
+      "id": "lemonade_game_starterplayer_starterplayerscripts_mainmenugui_client_buildemptyslot",
+      "label": "buildEmptySlot()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 30,
+      "community_name": "SwordHotbarGui.client.luau",
+      "file_type": "code",
+      "norm_label": "buildemptyslot()",
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/MainMenuGui.client.luau",
+      "source_location": "L881"
+    },
+    {
       "id": "lemonade_game_starterplayer_starterplayerscripts_swordhotbargui_client_addglint",
       "label": "addGlint()",
       "_callable": true,
@@ -7728,6 +7704,18 @@
       "norm_label": "syncshadow()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordHotbarGui.client.luau",
       "source_location": "L495"
+    },
+    {
+      "id": "lemonade_game_starterplayer_starterplayerscripts_vaultgui_client_buildemptywell",
+      "label": "buildEmptyWell()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 30,
+      "community_name": "SwordHotbarGui.client.luau",
+      "file_type": "code",
+      "norm_label": "buildemptywell()",
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/VaultGui.client.luau",
+      "source_location": "L1051"
     },
     {
       "id": "lemonade_game_map_mapclient_client_closemenu",
@@ -12710,6 +12698,18 @@
       "source_location": "L309"
     },
     {
+      "id": "lemonade_game_replicatedstorage_panelchrome_panelchrome_rendertool",
+      "label": "PanelChrome.renderTool()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 347,
+      "community_name": "ReforgeGuiFusion.client.luau",
+      "file_type": "code",
+      "norm_label": "panelchrome.rendertool()",
+      "source_file": "lemonade-game/ReplicatedStorage/PanelChrome.luau",
+      "source_location": "L508"
+    },
+    {
       "id": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_applylayout",
       "label": "applyLayout()",
       "_callable": true,
@@ -12731,7 +12731,7 @@
       "file_type": "code",
       "norm_label": "applystate()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3390"
+      "source_location": "L3357"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_basename",
@@ -12851,7 +12851,7 @@
       "file_type": "code",
       "norm_label": "mean()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3818"
+      "source_location": "L3779"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_part",
@@ -12887,7 +12887,7 @@
       "file_type": "code",
       "norm_label": "playresult()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3412"
+      "source_location": "L3379"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_renderanvil",
@@ -12902,6 +12902,18 @@
       "source_location": "L409"
     },
     {
+      "id": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_renderhero",
+      "label": "renderHero()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 347,
+      "community_name": "ReforgeGuiFusion.client.luau",
+      "file_type": "code",
+      "norm_label": "renderhero()",
+      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
+      "source_location": "L1104"
+    },
+    {
       "id": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_rendersword",
       "label": "renderSword()",
       "_callable": true,
@@ -12912,30 +12924,6 @@
       "norm_label": "rendersword()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
       "source_location": "L475"
-    },
-    {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_revealmotionplay",
-      "label": "revealMotionPlay()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 347,
-      "community_name": "ReforgeGuiFusion.client.luau",
-      "file_type": "code",
-      "norm_label": "revealmotionplay()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3607"
-    },
-    {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_revealmotionprepare",
-      "label": "revealMotionPrepare()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 347,
-      "community_name": "ReforgeGuiFusion.client.luau",
-      "file_type": "code",
-      "norm_label": "revealmotionprepare()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3634"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_ringsize",
@@ -14808,18 +14796,6 @@
       "norm_label": "sparkburst()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau",
       "source_location": "L569"
-    },
-    {
-      "id": "lemonade_game_starterplayer_starterplayerscripts_sworddroptoast_client_tickgap",
-      "label": "tickGap()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "SwordDropToast.client.luau",
-      "file_type": "code",
-      "norm_label": "tickgap()",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau",
-      "source_location": "L114"
     },
     {
       "id": "tools_preview_model_collect",
@@ -52904,7 +52880,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3438",
+      "source_location": "L3405",
       "weight": 1.0
     },
     {
@@ -52953,42 +52929,6 @@
       "context": "call",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
       "source_location": "L482",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_revealmotionplay",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_playresult",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3616",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_revealmotionprepare",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_selecttool",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3652",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_revealmotionprepare",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_strike",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3656",
       "weight": 1.0
     },
     {
@@ -78900,7 +78840,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3390",
+      "source_location": "L3357",
       "weight": 1.0
     },
     {
@@ -78911,7 +78851,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3412",
+      "source_location": "L3379",
       "weight": 1.0
     },
     {
@@ -78949,28 +78889,6 @@
     },
     {
       "source": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_revealmotionplay",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3607",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client",
-      "target": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_revealmotionprepare",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3634",
-      "weight": 1.0
-    },
-    {
-      "source": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client",
       "target": "lemonade_game_starterplayer_starterplayerscripts_reforgeguifusion_client_l",
       "relation": "contains",
       "_origin": "ast",
@@ -78999,7 +78917,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau",
-      "source_location": "L3818",
+      "source_location": "L3779",
       "weight": 1.0
     },
     {
@@ -108300,5 +108218,5 @@
       "source_file": "/home/alex-christensen/.codex/skills/roblox-systems/references/sword-rpg-legendary-swords-core.md"
     }
   ],
-  "built_at_commit": "b6ad51216263ffe8d4d7fa6981fc658a7e57da78"
+  "built_at_commit": "9b5af89f28c16acafbddaffc228335cb9e07d4e1"
 }
