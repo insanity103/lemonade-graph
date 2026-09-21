@@ -2399,11 +2399,17 @@ local RUNGS = WeaponModifiers.TIER_COUNT
 local SWORD_POSE = { yawDeg = 16, tiltDeg = 62, margin = 1.02 }
 local DARK = Color3.fromRGB(12, 7, 26)
 
--- The tick before the i-th rung: a quadratic ramp, so the ladder blurs past at first and ends
--- on single readable beats.
+-- The tick before the i-th rung. The ladder blurs past at a flat clip and only lengthens for
+-- the last few beats, so the eye can feel it slowing into the result rather than a metronome
+-- that simply stops. [TUNING] the last five gaps before the near miss/landing.
+local TAIL_GAPS = { 0.066, 0.066, 0.090, 0.140, 0.220 }
 local function tickGap(i: number, n: number): number
-	local k = (i - 1) / math.max(n - 1, 1)
-	return 0.045 + 0.26 * k * k
+	local fromEnd = n - i -- 0 on the last tick before the near miss/landing
+	local tailLen = #TAIL_GAPS
+	if fromEnd < tailLen then
+		return TAIL_GAPS[tailLen - fromEnd]
+	end
+	return TAIL_GAPS[1]
 end
 
 local gui = Instance.new("ScreenGui")
@@ -2760,7 +2766,11 @@ end
 -- Paint the whole stage in one rung's colour: the card, its glow, the rays, the band and the
 -- rung lit on the ladder. This is the only thing a tick does.
 local litTier = nil
-local function setTint(tier: number, pop: number?)
+-- `punch` marks the one tick that locks the result: instead of the same small boop every other
+-- tick gets, it grows past life-size on an ease-out-back over the first 60 ms and settles back to
+-- 1.0 by 120 ms, with a brighter flare on the glow discs and card synced to that same 60 ms beat --
+-- so the frame that locks reads as its own event, not just "the ladder happened to stop".
+local function setTint(tier: number, pop: number?, punch: boolean?)
 	local c = TIER_COLORS[tier] or TIER_COLORS[1]
 	cardGrad.Color = ColorSequence.new(c:Lerp(WHITE, 0.34), c:Lerp(DARK, 0.28))
 	cardStroke.Color = BRIGHT.Outline
@@ -2779,7 +2789,21 @@ local function setTint(tier: number, pop: number?)
 		pips[tier].stroke.Thickness = 6
 		pipNames[tier].TextTransparency = 0
 	end
-	if pop then
+	if punch then
+		cardScale.Scale = 1
+		local grow = TweenService:Create(cardScale, TweenInfo.new(0.06, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1.12 })
+		grow.Completed:Once(function()
+			TweenService:Create(cardScale, TweenInfo.new(0.06, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		end)
+		grow:Play()
+		cardFlash.BackgroundTransparency = 0.45
+		TweenService:Create(cardFlash, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { BackgroundTransparency = 1 }):Play()
+		for _, g in ipairs(glows) do
+			g.frame.BackgroundTransparency = math.max(g.rest - 0.55, 0)
+			TweenService:Create(g.frame, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { BackgroundTransparency = g.rest }):Play()
+		end
+		sparkBurst(12, c, 220)
+	elseif pop then
 		cardScale.Scale = pop
 		TweenService:Create(cardScale, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 	end
@@ -2945,7 +2969,15 @@ local function play(result, onReady)
 	for i, rung in ipairs(ladder) do
 		if playToken ~= token then return end
 		local gap = fast and 0.07 or tickGap(i, ticks)
-		setTint(rung, 1.07)
+		-- As the beats lengthen toward the landing, the glow swells with them: tension the eye
+		-- can feel building, not just a slower metronome.
+		local tension = (not fast) and math.clamp((gap - TAIL_GAPS[1]) / (TAIL_GAPS[#TAIL_GAPS] - TAIL_GAPS[1]), 0, 1) or 0
+		setTint(rung, 1.07 + 0.1 * tension)
+		if tension > 0 then
+			for _, g in ipairs(glows) do
+				g.frame.Size = UDim2.fromOffset(g.size * (1 + 0.08 * tension), g.size * (1 + 0.08 * tension))
+			end
+		end
 		AudioManager.PlaySFX("reveal_tick", gui, { PlaybackSpeed = 1.15 + 0.09 * i, Volume = 0.22 + 0.02 * i })
 		task.wait(gap)
 	end
@@ -2965,9 +2997,10 @@ local function play(result, onReady)
 		task.wait(0.1)
 	end
 
-	-- THE LANDING. Everything from here is the server's answer.
+	-- THE LANDING. Everything from here is the server's answer. The card gets its own punch here
+	-- (not the same small boop a tick gets) so the eye can tell "it just locked" on sight alone.
 	local landAt = os.clock() - t0
-	setTint(landTier, 1.22)
+	setTint(landTier, nil, true)
 	local heat = landTier / RUNGS
 	AudioManager.PlaySFX("reveal_land", gui, { PlaybackSpeed = 0.82 + 0.5 * heat, Volume = 0.6 + 0.5 * heat })
 	sparkBurst(math.floor(14 + landTier * 15), landColor, 320 + landTier * 62)
@@ -3568,7 +3601,10 @@ end)
 -- clapperboard therefore falls on a settled panel with the roll already in hand, and `play` hands
 -- that same answer to the very same playResult() a live roll goes through: real remote, real
 -- server RNG, no seed and no forced outcome. Only the instant the hammer falls is scripted.
-GuiShowcase.motion("ForgeReveal", function()
+-- Registered under both names: "ForgeReveal" is the original capture target, "ReforgeReveal" is
+-- what the strike-to-reveal transition piece of the reveal is judged under -- same real strike,
+-- same real roll, same playResult().
+local function revealMotionPlay()
 	local result = forgeState.showcaseHeldResult
 	forgeState.showcaseHeldResult = nil
 	forgeState.showcaseHoldReveal = false
@@ -3594,7 +3630,8 @@ GuiShowcase.motion("ForgeReveal", function()
 	print(string.format("[ReforgeGuiFusion] showcase reveal: headline '%s' | rung '%s' | odds '%s' | modifiers '%s' | %s",
 		sum.headline, sum.band, sum.odds, sum.mods, sum.foot))
 	task.wait(1)
-end, function()
+end
+local function revealMotionPrepare()
 	forgeState.showcaseHoldReveal = true
 	forgeState.showcaseHeldResult = nil
 	REFORGE:FireServer("Open")
@@ -3622,7 +3659,9 @@ end, function()
 	while forgeState.active and os.clock() < struckBy do task.wait() end
 	task.wait(0.9) -- let the forge plate close and the panel go still before the clapperboard
 	print("[ReforgeGuiFusion] showcase reveal: the roll is in hand; the reveal waits for the clapperboard")
-end)
+end
+GuiShowcase.motion("ForgeReveal", revealMotionPlay, revealMotionPrepare)
+GuiShowcase.motion("ReforgeReveal", revealMotionPlay, revealMotionPrepare)
 
 -- Motion capture of the RARE moment (Studio only, see GuiShowcase.motion): a strike that lands
 -- the top rung of the ladder, which is what the whole server is told about. A real one is 1 in
