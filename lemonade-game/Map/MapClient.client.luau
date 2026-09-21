@@ -384,7 +384,7 @@ local function questDone(quest, progress: number): boolean
 		local stats = player:FindFirstChild("leaderstats")
 		local level = stats and stats:FindFirstChild("Level")
 		return level ~= nil and level.Value >= (objective.target or 1)
-	elseif objective.type == "OBTAIN" then
+	elseif objective.type == "OBTAIN" or objective.type == "OBTAIN_POOL" then
 		return progress >= 1
 	end
 	return progress >= (objective.count or 1)
@@ -446,7 +446,19 @@ local function resolveGuide(root: BasePart, inRegion)
 		return pos, "Turn in quest", model
 	end
 	local objective = quest.objective
-	if objective.type == "OBTAIN" then
+	if objective.type == "OBTAIN_POOL" then
+		-- Any sword of a boss's pool: earned from that boss.
+		return combatTarget({ type = "KILL_BOSS", archetype = objective.poolKey }, root, inRegion)
+	elseif objective.type == "REFORGE" then
+		local hub = workspace:FindFirstChild("LemonadeMap")
+		hub = hub and hub:FindFirstChild("Hub")
+		local smithy = hub and hub:FindFirstChild("Smithy")
+		local anvil = smithy and smithy:FindFirstChild("AnvilTop")
+		if anvil and anvil:IsA("BasePart") then
+			return anvil.Position, "The anvil", smithy
+		end
+		return nil
+	elseif objective.type == "OBTAIN" then
 		-- A boss's unique drop is earned from that boss; only items nobody drops point at the shop.
 		for archetype, weapon in pairs(BossWeapons.Weapons) do
 			if weapon.name == objective.itemName then

@@ -46,6 +46,11 @@ local function defaultData()
 		reforgeRecent = {},  -- the top rung of each of the last forges, oldest first (the anvil's run rail)
 		dropPity = 0,  -- drop credit owed: kills that paid nothing, each worth its own chance (DropRules)
 		dropRarePity = 0,  -- drops since the last Rare or better (DropRules)
+		dropKills = 0,  -- lifetime kills the drop system has rolled for: 0 means the next kill is the
+		                -- profile's FIRST and is guaranteed a sword; under DropRules.OPENING_KILLS the
+		                -- opening ramp applies (DropRules rule 5)
+		bossFirstDrops = {},  -- [poolKey] = true once this boss has paid the profile its first sword
+		                      -- (a boss's first kill always drops; the "claim a sword" quests read it)
 		merchantPity = 0,  -- blacksmith purchases in a row below MerchantConfig.PITY_FLOOR
 		merchantCount = 0,  -- lifetime blades bought from the Relic Blacksmith
 		vaultSlots = 0,  -- vault shelves BOUGHT with gold (Config.VaultConfig owns the price ladder);
@@ -257,6 +262,13 @@ function PlayerDataService.GetVault(player)
 	local profile = profiles[player]
 	if not profile or not profile.ready then return nil end
 	return profile.data.vault
+end
+
+-- True once the profile has loaded and been applied (GetField answers nil before that, and
+-- also for a field an older save never had, so callers that must tell the two apart ask this).
+function PlayerDataService.IsReady(player)
+	local profile = profiles[player]
+	return profile ~= nil and profile.ready == true
 end
 
 -- Small persisted counters (reforge pity and the like). nil until the profile is applied.

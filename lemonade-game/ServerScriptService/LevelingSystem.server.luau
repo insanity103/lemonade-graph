@@ -4,8 +4,8 @@ local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local BASE_XP_REQUIREMENT = 100
-local XP_INCREASE_PER_LEVEL = 0.15
+-- The curve lives in Config.XPCurve (one copy, shared with QuestSystem's XP rewards).
+local XPCurve = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("XPCurve"))
 local XP_REWARD_ATTRIBUTE = "ExperienceReward"
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
@@ -47,7 +47,7 @@ local connectedHumanoids = setmetatable({}, { __mode = "k" })
 local processedDeaths = setmetatable({}, { __mode = "k" })
 
 local function getRequiredExperience(level)
-	return math.floor(BASE_XP_REQUIREMENT * (1 + XP_INCREASE_PER_LEVEL) ^ (level - 1))
+	return XPCurve.Required(level)
 end
 
 local function getOrCreateIntValue(parent, name, value)
@@ -101,6 +101,26 @@ end
 local incomeLog = setmetatable({}, { __mode = "k" }) -- [player] = { {t, amount}, ... }
 local incomeWatched = setmetatable({}, { __mode = "k" })
 
+-- ── THE SESSION INCOME (what the rebirth panel's payback is priced against) ─────────────────
+-- The same faucet watch, summed over the whole session instead of a four-minute window, and
+-- published as the attribute SessionGoldPerHour so RebirthSystem can say how long the next
+-- rebirth's extra gold multiplier takes to pay its price back AT THIS PLAYER'S OWN PACE. It is
+-- never persisted and never divides by less than SESSION_MIN_SAMPLE seconds, so the first kill
+-- of a session cannot read as a fortune per hour.
+local SESSION_MIN_SAMPLE = 300
+local SESSION_PUBLISH_EVERY = 5
+local sessionEarned = setmetatable({}, { __mode = "k" }) -- [player] = gold earned since the profile landed
+
+local function publishSessionIncome(player)
+	local since = incomeWatched[player]
+	if not since or player:GetAttribute("DataLoaded") ~= true then return end
+	local elapsed = math.max(SESSION_MIN_SAMPLE, os.clock() - since)
+	local perHour = math.floor((sessionEarned[player] or 0) / elapsed * 3600)
+	if player:GetAttribute("SessionGoldPerHour") ~= perHour then
+		player:SetAttribute("SessionGoldPerHour", perHour)
+	end
+end
+
 local function pruneIncome(player, now)
 	local log = incomeLog[player]
 	if not log then return nil, 0, 0 end
@@ -132,6 +152,8 @@ local function watchIncome(player)
 		previous = gold.Value
 		incomeWatched[player] = os.clock()
 		incomeLog[player] = {}
+		sessionEarned[player] = 0
+		publishSessionIncome(player)
 	end)
 	gold:GetPropertyChangedSignal("Value"):Connect(function()
 		local current = gold.Value
@@ -141,9 +163,21 @@ local function watchIncome(player)
 		local log = incomeLog[player]
 		if not log then return end
 		table.insert(log, { t = os.clock(), amount = delta })
+		sessionEarned[player] = (sessionEarned[player] or 0) + delta
 		pruneIncome(player, os.clock())
 	end)
 end
+
+-- Publish the session income on a slow tick: it only ever changes when gold arrives, but the
+-- rate FALLS while the player is idle, and the panel should see that too.
+task.spawn(function()
+	while true do
+		task.wait(SESSION_PUBLISH_EVERY)
+		for _, player in ipairs(Players:GetPlayers()) do
+			publishSessionIncome(player)
+		end
+	end
+end)
 
 local function applyDeathGoldPenalty(player)
 	local leaderstats = player:FindFirstChild("leaderstats")
@@ -456,6 +490,7 @@ Players.PlayerRemoving:Connect(function(player)
 	lastSkillSpendAt[player] = nil
 	incomeLog[player] = nil
 	incomeWatched[player] = nil
+	sessionEarned[player] = nil
 	for humanoid in pairs(processedDeaths) do
 		local creatorTag = humanoid:FindFirstChild(CREATOR_TAG_NAME)
 		if creatorTag and creatorTag:IsA("ObjectValue") and creatorTag.Value == player then

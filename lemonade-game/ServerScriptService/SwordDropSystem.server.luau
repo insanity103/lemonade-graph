@@ -38,6 +38,7 @@ local BossWeapons = require(ReplicatedStorage:WaitForChild("Config"):WaitForChil
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
 local DropRules = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("DropRules"))
 local SellValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SellValue"))
+local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
 local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
 local REMOTES = ReplicatedStorage:WaitForChild("RemoteEvents")
 local DROP_EVENT = REMOTES:WaitForChild("SwordDrop")
@@ -177,6 +178,26 @@ local function setPity(player, credit, rare)
 	PlayerDataService.SetField(player, "dropRarePity", rare)
 end
 
+-- THE OPENING (DropRules rule 5). Two persisted records decide it:
+--   dropKills       lifetime kills this system has rolled for. 0 = the next kill is the profile's
+--                   first and pays a sword whatever the coin says; under DropRules.OPENING_KILLS
+--                   the lesser pools roll at the opening ramp's multiplied chance.
+--   bossFirstDrops  [poolKey] = true once a boss has paid this profile its first sword; until
+--                   then that boss's kill always drops.
+-- Both are nil until the profile is applied, and a kill made before that rolls as an ordinary
+-- kill (no guarantee is spent, no count is written), so a slow DataStore can never eat the first
+-- sword. A save written before these fields existed reads as 0 / {}: an old profile's next kill
+-- pays a sword once and its next forty ride the ramp, which is a gift, not a loss.
+local function openingState(player)
+	if not PlayerDataService.IsReady(player) then
+		return nil, nil
+	end
+	local kills = math.max(0, math.floor(tonumber(PlayerDataService.GetField(player, "dropKills")) or 0))
+	local record = PlayerDataService.GetField(player, "bossFirstDrops")
+	if typeof(record) ~= "table" then record = {} end
+	return kills, record
+end
+
 -- Built by the shared BossSwordFactory (MerchantSystem uses the same builder)
 -- A drop rolls its long tail at the killer's live luck (kill streak + rebirths; Lucky Charges
 -- are spent at the anvil, not here). Same 1-in-N ladder as the Reforge, see WeaponModifiers.
@@ -236,6 +257,9 @@ local function giveSword(player, archetypeKey, blessedBonus, plan, roll, source)
 			listedBase = weaponData.listedBase, rarityOdds = weaponData.rarityOdds, legendary = weaponData.isLegendary,
 			lesser = isLesser or nil, source = source, rank = plan and plan.rank or nil,
 			dropChance = roll and roll.chance or nil, pity = roll and roll.forced or nil,
+			-- the opening: "first" (the profile's first kill), "boss" (this boss's first kill for
+			-- the profile), and whether the opening ramp multiplied the chance printed above
+			guaranteed = roll and roll.guaranteed or nil, opening = roll and roll.opening or nil,
 			-- the KEEP-or-SELL offer: the id the client answers with, the price the server will
 			-- pay for it, and the countdown the card runs. No offer id means no prompt.
 			offerId = offerId, sellValue = offerValue, promptSeconds = offerId and PROMPT_SECONDS or nil })
@@ -251,10 +275,11 @@ local function giveSword(player, archetypeKey, blessedBonus, plan, roll, source)
 			NOTIFY:FireAllClients(line, "success")
 		end)
 	end
-	print(string.format("[SwordDropSystem] %s obtained [%s] (%s pool, %s, %s, Mult: x%.2f of listed x%.2f, Mods: %d%s%s)",
+	print(string.format("[SwordDropSystem] %s obtained [%s] (%s pool, %s, %s, Mult: x%.2f of listed x%.2f, Mods: %d%s%s%s)",
 		player.Name, fullName, tostring(weaponData.bossName), isLesser and "lesser" or "boss", weaponData.rarity,
 		weaponData.baseMult, weaponData.listedBase or weaponData.baseMult, #mods,
-		gotExtraSlot and " [BLESSED!]" or "", (roll and roll.forced) and " [PITY]" or ""))
+		gotExtraSlot and " [BLESSED!]" or "", (roll and roll.forced) and " [PITY]" or "",
+		(roll and roll.guaranteed == "first") and " [FIRST KILL]" or ((roll and roll.guaranteed == "boss") and " [FIRST OF THIS BOSS]" or "")))
 	return true, weaponData.rarity
 end
 
@@ -315,7 +340,9 @@ local function watchCharacter(player, character)
 			for _, tool in ipairs(character:GetChildren()) do
 				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true then
 					local level = player:GetAttribute("Level") or 1
-					if level > 8 and math.random() < DEATH_SWORD_LOSS_CHANCE then
+					-- The starter is forgeable now (BossDrop = true, see RuntimeBootstrap) but it
+					-- never shatters: a player can always be left with a sword.
+					if level > 8 and tool:GetAttribute("Starter") ~= true and math.random() < DEATH_SWORD_LOSS_CHANCE then
 						local lostName, lostRarity = tool.Name, tool:GetAttribute("Rarity")
 						tool:Destroy()
 						SWORD_LOST_EVENT:FireClient(player, lostName, lostRarity)
@@ -330,9 +357,45 @@ local function watchCharacter(player, character)
 	end
 end
 
+-- ONE STARTER. The StarterPack hands every character a ClassicSword, and a struck starter is
+-- saved and rebuilt like any other forgeable sword (PlayerDataService), so a returning player can
+-- briefly hold two. Keep the best-rated one (the saved, struck one) and drop the plain copy.
+local function dedupeStarter(player)
+	local starters = {}
+	for _, container in ipairs({ player.Character, player:FindFirstChildOfClass("Backpack") }) do
+		if container then
+			for _, tool in ipairs(container:GetChildren()) do
+				if tool:IsA("Tool") and tool:GetAttribute("Starter") == true then
+					table.insert(starters, tool)
+				end
+			end
+		end
+	end
+	if #starters < 2 then return end
+	table.sort(starters, function(a, b)
+		local ra, rb = SwordValue.rateTool(a), SwordValue.rateTool(b)
+		if ra ~= rb then return ra > rb end
+		return (a:GetAttribute("Prefixes") or "") ~= "" and (b:GetAttribute("Prefixes") or "") == ""
+	end)
+	for i = 2, #starters do
+		starters[i]:Destroy()
+	end
+end
+
 local function bindPlayer(player)
 	if player.Character then watchCharacter(player, player.Character) end
-	player.CharacterAdded:Connect(function(ch) watchCharacter(player, ch) end)
+	player.CharacterAdded:Connect(function(ch)
+		watchCharacter(player, ch)
+		task.delay(1, dedupeStarter, player)
+		local bag = player:FindFirstChildOfClass("Backpack")
+		if bag then
+			bag.ChildAdded:Connect(function(child)
+				if child:IsA("Tool") and child:GetAttribute("Starter") == true then
+					task.defer(dedupeStarter, player)
+				end
+			end)
+		end
+	end)
 end
 
 -- THE PROMPT'S ONE REMOTE. Everything that can go wrong here is a player pressing SELL more than
@@ -442,7 +505,13 @@ local function hook(model)
 		local blessedBonus = killer:GetAttribute("RebirthBlessedBonus") or 0
 
 		local pity, rarePity = getPity(killer)
-		local roll = DropRules.Roll(plan, { rebirths = rebirths, pity = pity, rarePity = rarePity })
+		local kills, firstDrops = openingState(killer)
+		local firstOfBoss = firstDrops ~= nil and plan.rank == "boss" and firstDrops[plan.poolKey] ~= true
+		local roll = DropRules.Roll(plan, { rebirths = rebirths, pity = pity, rarePity = rarePity,
+			kills = kills, firstOfBoss = firstOfBoss })
+		if kills then
+			PlayerDataService.SetField(killer, "dropKills", kills + 1)
+		end
 		local showcased = false
 		if showcaseForceDrop and plan.lesser and not roll.drop then
 			showcaseForceDrop = false -- one only, and only in Studio
@@ -466,6 +535,10 @@ local function hook(model)
 			return -- the forced card is not the player's: leave both pity counters where they were
 		end
 		setPity(killer, roll.pity, DropRules.AfterDrop(roll.rarePity, rarity))
+		if firstDrops and plan.rank == "boss" and firstDrops[plan.poolKey] ~= true then
+			firstDrops[plan.poolKey] = true
+			PlayerDataService.SetField(killer, "bossFirstDrops", firstDrops)
+		end
 	end)
 end
 
@@ -492,5 +565,8 @@ print(string.format("[SwordDropSystem] Drops live for every enemy: %d boss sword
 	BossWeapons.CountSwords("boss"), BossWeapons.CountSwords("lesser"), #BossWeapons.ZoneOrder, BossWeapons.CountSwords()))
 print(string.format("[SwordDropSystem] Pity: %.1f drops of credit owed before a kill is forced, Rare floor after %d drops (both persisted)",
 	DropRules.PITY_CREDIT, DropRules.RARE_PITY_DROPS))
+print(string.format("[SwordDropSystem] Opening: first kill of a profile %s a sword, kills 1-%d roll lesser pools at x%.1f, first kill of each boss %s a sword (dropKills / bossFirstDrops persisted)",
+	DropRules.FIRST_KILL_DROPS and "always pays" or "rolls normally", DropRules.OPENING_KILLS, DropRules.OPENING_CHANCE_MULT,
+	DropRules.FIRST_BOSS_KILL_DROPS and "always pays" or "rolls normally"))
 print(string.format("[SwordDropSystem] Pickup prompt (auto-sell is gone): every drop is kept unless SELL is pressed; %ds on the card, %ds honoured by the server; a sword sells for %.0f%% of a strike on it x%.2f if lesser (Config.SellValue, the same call the inventory sells at)",
 	PROMPT_SECONDS, OFFER_SECONDS, SellValue.SELL_FRACTION * 100, BossWeapons.LESSER_SELL_FACTOR))

@@ -57,13 +57,34 @@ QuestConfig.OBJECTIVE_TYPES = {
 	KILL = "KILL",             -- defeat N enemies (any zone)
 	KILL_ZONE = "KILL_ZONE",   -- defeat N enemies in a specific zone
 	KILL_BOSS = "KILL_BOSS",   -- defeat a specific boss archetype
-	OBTAIN = "OBTAIN",         -- obtain a specific sword/item (check inventory)
+	OBTAIN = "OBTAIN",         -- obtain one specific named sword (check inventory). No quest uses it
+	                           -- any more: it can dead-end on a weighted roll. Kept for old saves.
+	OBTAIN_POOL = "OBTAIN_POOL", -- obtain ANY sword from one boss's pool (poolKey). Satisfied by a
+	                           -- matching sword on the player OR by the profile's record of having
+	                           -- been handed one (bossFirstDrops), so selling it does not undo it.
+	REFORGE = "REFORGE",       -- strike the anvil N times, with any sword
 	LEVEL = "LEVEL",           -- reach a target level
 }
 
--- Quest definitions — progressive chain
--- Each quest has: id, name, description, objective, reward
--- The chain unlocks sequentially: complete quest N to unlock quest N+1
+-- ── THE CHAIN, AND WHY IT IS SHAPED LIKE THIS ─────────────────────────────────────────────────
+-- Measured (first_minutes r00, 300 first sessions through the shipped modules): the old chain
+-- sent a level-10 player at the Warden of the Pit as quest 3 (three deaths in 100% of runs, 2:16
+-- without a reward) and then asked for ONE named sword as quest 4, "Obtain the Warlord Greatsword",
+-- a 1.6%-per-kill roll that 72% of first sessions were still stuck on at 15:00. Three more quests
+-- later in the chain asked for named swords the same way.
+--
+-- Rules the chain now keeps, all of them checked by simulation (sim_first_minutes.luau):
+--   1. Nothing before minute ten can dead-end on a roll. Every objective in the first eight quests
+--      is a count the player controls: kills, a level, a strike at the anvil.
+--   2. The anvil is a quest, early. Quest 3 asks for one strike with any sword (the starter is
+--      forgeable and the first strike of a profile is free), so the game's core verb is taught
+--      by minute three, and the payout covers the first PAID strike on the starter.
+--   3. Bosses come after the level that beats them. The Warden of the Pit (Lv10, 7,075 HP) is
+--      asked for after "Reach level 15", where the simulated player kills him in one attempt.
+--   4. "Claim the blade" quests ask for ANY sword of the boss's pool, and a boss's FIRST kill by
+--      a profile always drops one (DropRules.FIRST_BOSS_KILL_DROPS), so each of them is settled by
+--      the kill quest that precedes it. No named-sword lottery anywhere in the chain.
+--   5. Quest 2's XP went from 500 to 150: 500 was 30% of the old level 1-10 band on its own.
 QuestConfig.QUESTS = {
 	{
 		id = "q1_first_blood",
@@ -77,30 +98,30 @@ QuestConfig.QUESTS = {
 		name = "Prove Yourself",
 		description = "Defeat 8 enemies in the Iron Lowlands.",
 		objective = { type = "KILL_ZONE", zone = "IronLowlands", count = 8 },
-		reward = { type = "XP", amount = 500 },
+		reward = { type = "XP", amount = 150 },
 	},
 	{
-		id = "q3_boss_hunter",
-		name = "Boss Hunter",
-		description = "Defeat the Warden of the Pit.",
-		objective = { type = "KILL_BOSS", archetype = "Boss_Gorgon", count = 1 },
-		reward = { type = "LEVEL", amount = 1 },
+		id = "q3_strike_the_anvil",
+		name = "Strike While It's Hot",
+		description = "Reforge any sword at the anvil once.",
+		objective = { type = "REFORGE", count = 1 },
+		reward = { type = "GOLD", kills = 20 },
 	},
 	{
-		id = "q4_claim_the_blade",
-		name = "Claim the Blade",
-		description = "Obtain the Warlord Greatsword.",
-		objective = { type = "OBTAIN", itemName = "Warlord Greatsword" },
-		reward = { type = "SKILL_POINTS", amount = 5 },
-	},
-	{
-		id = "q5_growing_stronger",
+		id = "q5_growing_stronger", -- id kept: a profile that already completed it stays completed
 		name = "Growing Stronger",
 		description = "Reach level 10.",
 		objective = { type = "LEVEL", target = 10 },
 		reward = { type = "GOLD", kills = 25 },
 	},
-	-- Briarwood bridge zone (Lv 8-14)
+	{
+		id = "q8_briarwood_ready", -- id kept
+		name = "Seasoned Steel",
+		description = "Reach level 15.",
+		objective = { type = "LEVEL", target = 15 },
+		reward = { type = "SKILL_POINTS", amount = 4 },
+	},
+	-- Briarwood bridge zone (Lv 9-14)
 	{
 		id = "q6_briarwood_thorns",
 		name = "Thorn Clearing",
@@ -116,11 +137,18 @@ QuestConfig.QUESTS = {
 		reward = { type = "XP", amount = 1200 },
 	},
 	{
-		id = "q8_briarwood_ready",
-		name = "Ready for the Cold",
-		description = "Reach level 15.",
-		objective = { type = "LEVEL", target = 15 },
-		reward = { type = "SKILL_POINTS", amount = 4 },
+		id = "q3_boss_hunter", -- id kept
+		name = "Boss Hunter",
+		description = "Defeat the Warden of the Pit.",
+		objective = { type = "KILL_BOSS", archetype = "Boss_Gorgon", count = 1 },
+		reward = { type = "LEVEL", amount = 1 },
+	},
+	{
+		id = "q4_claim_the_blade", -- id kept
+		name = "Claim the Blade",
+		description = "Claim any sword from the Warden of the Pit.",
+		objective = { type = "OBTAIN_POOL", poolKey = "Boss_Gorgon" },
+		reward = { type = "SKILL_POINTS", amount = 5 },
 	},
 	-- Frostbound Glacier (Lv 15-25)
 	{
@@ -140,8 +168,8 @@ QuestConfig.QUESTS = {
 	{
 		id = "q11_frost_fang",
 		name = "Frost's Fang",
-		description = "Obtain the Frostfang Cleaver.",
-		objective = { type = "OBTAIN", itemName = "Frostfang Cleaver" },
+		description = "Claim any sword from the Frost Revenant.",
+		objective = { type = "OBTAIN_POOL", poolKey = "Boss_FrostRevenant" },
 		reward = { type = "SKILL_POINTS", amount = 8 },
 	},
 	-- Sunken Marsh bridge zone (Lv 23-29)
@@ -184,8 +212,8 @@ QuestConfig.QUESTS = {
 	{
 		id = "q17_inferno_edge",
 		name = "Inferno Edge",
-		description = "Obtain the Inferno Edge.",
-		objective = { type = "OBTAIN", itemName = "Inferno Edge" },
+		description = "Claim any sword from the Infernal Colossus.",
+		objective = { type = "OBTAIN_POOL", poolKey = "Boss_InfernalColossus" },
 		reward = { type = "SKILL_POINTS", amount = 10 },
 	},
 	-- Stormwatch bridge zone (Lv 40-48)
@@ -219,10 +247,17 @@ QuestConfig.QUESTS = {
 		reward = { type = "GOLD", kills = 60 },
 	},
 	{
+		id = "q21b_void_archon",
+		name = "Archon's Fall",
+		description = "Defeat the Void Archon.",
+		objective = { type = "KILL_BOSS", archetype = "Boss_VoidWraith", count = 1 },
+		reward = { type = "LEVEL", amount = 1 },
+	},
+	{
 		id = "q22_voidrend",
 		name = "Voidrend",
-		description = "Obtain the Voidrend Blade.",
-		objective = { type = "OBTAIN", itemName = "Voidrend Blade" },
+		description = "Claim any sword from the Void Archon.",
+		objective = { type = "OBTAIN_POOL", poolKey = "Boss_VoidWraith" },
 		reward = { type = "LEVEL", amount = 2 },
 	},
 	-- Celestial Summit (Lv 75-100)
@@ -236,8 +271,8 @@ QuestConfig.QUESTS = {
 	{
 		id = "q24_astral_eclipse",
 		name = "Astral Eclipse",
-		description = "Obtain the Astral Eclipse.",
-		objective = { type = "OBTAIN", itemName = "Astral Eclipse" },
+		description = "Claim any sword from the Celestial Titan.",
+		objective = { type = "OBTAIN_POOL", poolKey = "Boss_CelestialTitan" },
 		reward = { type = "LEVEL", amount = 3 },
 	},
 }

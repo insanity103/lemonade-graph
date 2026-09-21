@@ -66,7 +66,7 @@ local function carriedRelics(player)
 	for _, container in ipairs({ player:FindFirstChildOfClass("Backpack"), player.Character }) do
 		if container then
 			for _, tool in ipairs(container:GetChildren()) do
-				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true then
+				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true and tool:GetAttribute("Starter") ~= true then
 					table.insert(list, describeTool(tool, tool == equippedTool))
 				end
 			end
@@ -79,8 +79,8 @@ local function findRelic(player, toolName)
 	for _, container in ipairs({ player.Character, player:FindFirstChildOfClass("Backpack") }) do
 		if container then
 			local tool = container:FindFirstChild(toolName)
-			if tool and tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true then
-				return tool
+			if tool and tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true and tool:GetAttribute("Starter") ~= true then
+				return tool -- the starter is never traded away: the player always keeps one blade
 			end
 		end
 	end

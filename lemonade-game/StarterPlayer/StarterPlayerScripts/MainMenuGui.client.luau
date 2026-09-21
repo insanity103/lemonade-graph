@@ -532,7 +532,8 @@ local function toolFacts(item)
 		blessed = tool:GetAttribute("ExtraSlot") == true,
 		bossDrop = tool:GetAttribute("BossDrop") == true,
 		-- Same rule as before: only unequipped boss drops (never the starter sword) can be sold.
-		sellable = tool.Name ~= "ClassicSword" and tool:GetAttribute("BossDrop") == true and not item.equipped,
+		sellable = tool.Name ~= "ClassicSword" and tool:GetAttribute("Starter") ~= true
+			and tool:GetAttribute("BossDrop") == true and not item.equipped,
 		-- ...and what it is worth, from Config.SellValue -- the same table, the same call and the
 		-- same rebirth multiplier the pickup prompt quoted when this sword dropped.
 		sellValue = SellValue.ForTool(tool, SellValue.GoldMultFor(player)),
@@ -1350,6 +1351,9 @@ end
 -- The server has always fired this event; until now nothing on the client listened,
 -- so a refused rebirth failed silently.
 local lastRebirthResult = nil
+-- Set by buildRebirthPanel: refreshes only the hero's status line (price / payback / more gold)
+-- when the server's payback tick changes, so the tab is not rebuilt every few seconds.
+local rebirthStatusRefresh = nil
 
 -- ── Rebirth tab ──────────────────────────────────────────────────────────────
 -- PS99 rank-rewards layout on the light panel: a blue hero card (rebirth medallion, "Rebirth N",
@@ -1668,7 +1672,31 @@ local function buildRebirthPanel()
 	if levelValue then level = levelValue.Value end
 	local requirement = player:GetAttribute("RebirthRequirement") or 20
 	local rebirths = player:GetAttribute("Rebirths") or 0
-	local ready = level >= requirement
+	-- Everything below comes from RebirthSystem's attributes: the price, the cap, the kept share
+	-- and the payback at this player's own measured income. The panel renders, never computes.
+	local goldValue = leaderstats and leaderstats:FindFirstChild("Gold")
+	local purse = goldValue and goldValue.Value or (player:GetAttribute("Gold") or 0)
+	local price = player:GetAttribute("RebirthGoldCost") or RebirthConfig.GetGoldCost(rebirths)
+	local maxed = player:GetAttribute("RebirthMaxed") == true
+	local maxCount = player:GetAttribute("RebirthMaxCount") or RebirthConfig.MAX_REBIRTHS
+	local keepShare = player:GetAttribute("RebirthKeepShare") or RebirthConfig.RETAINED_SHARE
+	local payback = tonumber(player:GetAttribute("RebirthPayback")) or -1
+	local levelMet = level >= requirement
+	local goldMet = purse >= price
+	local ready = levelMet and goldMet and not maxed
+	local function goldShort(n)
+		local v = math.max(0, math.floor(tonumber(n) or 0))
+		if v >= 1e6 then return string.format("%.2fM", v / 1e6) end
+		if v >= 1e4 then return string.format("%.0fK", v / 1e3) end
+		if v >= 1e3 then return string.format("%.1fK", v / 1e3) end
+		return tostring(v)
+	end
+	local function hoursShort(sec)
+		local m = math.floor(sec / 60 + 0.5)
+		if m < 60 then return ("%dm"):format(math.max(1, m)) end
+		if m < 60 * 48 then return ("%dh%02dm"):format(math.floor(m / 60), m % 60) end
+		return ("%dh"):format(math.floor(m / 60))
+	end
 
 	local milestoneIds = {}
 	for id in pairs(RebirthConfig.Milestones) do table.insert(milestoneIds, id) end
@@ -1774,28 +1802,42 @@ local function buildRebirthPanel()
 	fillShine.Parent = fill
 	addCorner(fillShine, 6)
 	PanelChrome.display(bar, {
-		name = "Text", text = if ready then "READY!" else ("Lv %d / %d"):format(level, requirement),
+		name = "Text", text = if maxed then ("MAX %d / %d"):format(rebirths, maxCount) elseif ready then "READY!" else ("Lv %d / %d"):format(level, requirement),
 		size = 20, stroke = 2.5, zIndex = 27,
 	})
 
-	local statusText, statusColor
-	if lastRebirthResult then
-		if lastRebirthResult.ok then
-			statusText = ("Rebirth complete! Now rebirth %d"):format(lastRebirthResult.rebirths or rebirths)
-			statusColor = Color3.fromRGB(170, 255, 140)
-		else
-			statusText = ("Not yet! Reach level %d"):format(lastRebirthResult.need or requirement)
-			statusColor = Color3.fromRGB(255, 150, 150)
+	-- The status line is the decision, in the server's numbers: the price, what a wipe keeps, and
+	-- how long the next rung's extra gold takes to pay the price back at this player's own pace.
+	-- It re-reads the live attributes so the payback tick can refresh just this line.
+	local function statusLine()
+		local livePurse = goldValue and goldValue.Value or purse
+		local livePayback = tonumber(player:GetAttribute("RebirthPayback")) or -1
+		local paybackText = if livePayback >= 0 then ("pays back in ~%s"):format(hoursShort(livePayback)) else "pays back: farm a little first"
+		if lastRebirthResult then
+			if lastRebirthResult.ok then
+				return ("Rebirth complete! Now rebirth %d"):format(lastRebirthResult.rebirths or rebirths), Color3.fromRGB(170, 255, 140)
+			elseif lastRebirthResult.reason == "maxed" then
+				return ("Rebirth %d is the last rung: the ladder ends here"):format(maxCount), Color3.fromRGB(255, 220, 150)
+			elseif lastRebirthResult.reason == "gold" then
+				return ("Not yet! %s more gold (costs %s)"):format(goldShort(price - livePurse), goldShort(price)), Color3.fromRGB(255, 150, 150)
+			end
+			return ("Not yet! Reach level %d"):format(lastRebirthResult.need or requirement), Color3.fromRGB(255, 150, 150)
+		elseif maxed then
+			return ("All %d rebirths bought. Every multiplier is yours to keep."):format(maxCount), Color3.fromRGB(255, 220, 150)
 		end
-	else
-		local left = #milestoneIds - claimedCount
-		statusText = if left > 0 then ("%d perk%s left to unlock"):format(left, left == 1 and "" or "s") else "Every perk unlocked!"
-		statusColor = Color3.new(1, 1, 1)
+		return ("Costs %s gold, keeps %d%% of your stats, %s"):format(goldShort(price), math.floor(keepShare * 100 + 0.5), paybackText), Color3.new(1, 1, 1)
 	end
-	PanelChrome.display(hero, {
+	local statusText, statusColor = statusLine()
+	local statusLabel = PanelChrome.display(hero, {
 		name = "Status", text = statusText, size = 17, color = statusColor, stroke = 2.5, scaled = true, minSize = 12,
 		xAlign = Enum.TextXAlignment.Left, pos = UDim2.fromOffset(textX + 2, 62), size2 = UDim2.new(1, -(textX + rightW + 2), 0, 20), zIndex = 26,
 	})
+	rebirthStatusRefresh = function()
+		if not statusLabel or not statusLabel.Parent then return end
+		local text, color = statusLine()
+		statusLabel.Text = text
+		statusLabel.TextColor3 = color
+	end
 
 	-- REBIRTH: a chunky bevelled button, green when the level requirement is met and greyed
 	-- until then. It fires the same remote either way; RebirthSystem decides and replies.
@@ -1857,12 +1899,21 @@ local function buildRebirthPanel()
 	btnIcon.Parent = face
 	local textLeft = btnH - LIP - 6
 	PanelChrome.display(face, {
-		name = "Label", text = if ready then "REBIRTH!" else "REBIRTH", size = 30, stroke = 3, scaled = true, minSize = 16, zIndex = 29,
+		name = "Label", text = if maxed then "MAXED" elseif ready then "REBIRTH!" else "REBIRTH", size = 30, stroke = 3, scaled = true, minSize = 16, zIndex = 29,
 		pos = UDim2.fromOffset(textLeft, if ready then 4 else 2), size2 = UDim2.new(1, -(textLeft + 6), if ready then 1 else 0.6, if ready then -8 else 0),
 	})
 	if not ready then
+		-- Which gate is still shut, in order: the cap, the level, then the gold.
+		local needText
+		if maxed then
+			needText = ("%d of %d"):format(rebirths, maxCount)
+		elseif not levelMet then
+			needText = ("Reach Lv %d"):format(requirement)
+		else
+			needText = ("%s more gold"):format(goldShort(price - purse))
+		end
 		PanelChrome.display(face, {
-			name = "Need", text = ("Reach Lv %d"):format(requirement), size = 16, stroke = 2, scaled = true, minSize = 11, zIndex = 29,
+			name = "Need", text = needText, size = 16, stroke = 2, scaled = true, minSize = 11, zIndex = 29,
 			pos = UDim2.new(0, textLeft, 0.58, -2), size2 = UDim2.new(1, -(textLeft + 6), 0.36, 0),
 		})
 	end
@@ -3767,16 +3818,20 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if input.KeyCode == Enum.KeyCode.M then toggleMenu() end
 end)
 
-local attrsToWatch = { 'Gold', 'SkillPoints', 'Strength', 'Health', 'Defense', 'ExperienceGain', 'Rebirths', 'RebirthRequirement', 'ShowDamageNumbers', 'MusicVolume' }
+local attrsToWatch = { 'Gold', 'SkillPoints', 'Strength', 'Health', 'Defense', 'ExperienceGain', 'Rebirths', 'RebirthRequirement', 'RebirthPayback', 'RebirthGoldCost', 'ShowDamageNumbers', 'MusicVolume' }
 for _, attr in ipairs(attrsToWatch) do
 	player:GetAttributeChangedSignal(attr):Connect(function()
 		refreshTopBar(); refreshSkills()
 		if attr == 'SkillPoints' then refreshRailBadges() end
 		-- A rebirth changes the gold multiplier, and so changes every sell price on every
-		-- inventory tile: rebuild the panel if it is the one on screen.
+		-- inventory tile: rebuild the panel if it is the one on screen. The Rebirth tab also
+		-- follows the server's payback tick (every few seconds at most) so its price line and
+		-- "more gold" figure never go stale while it is open.
 		if (attr == 'Rebirths' or attr == 'RebirthRequirement') and activeTab == 'Inventory' and panelOpen then
 			buildInventoryPanel()
-		elseif (attr == 'Rebirths' or attr == 'RebirthRequirement') and activeTab == 'Rebirth' and panelOpen then
+		elseif attr == 'RebirthPayback' and activeTab == 'Rebirth' and panelOpen then
+			if rebirthStatusRefresh then rebirthStatusRefresh() end
+		elseif (attr == 'Rebirths' or attr == 'RebirthRequirement' or attr == 'RebirthGoldCost') and activeTab == 'Rebirth' and panelOpen then
 			buildRebirthPanel()
 		elseif (attr == 'ShowDamageNumbers' or attr == 'MusicVolume') and activeTab == 'Settings' and panelOpen then
 			if settingsSync then settingsSync() else buildSettingsPanel() end
@@ -3820,8 +3875,9 @@ refreshTopBar()
 print('[MainMenuGui] Smash Simulator menu enabled (press M or use side buttons)')
 -- RebirthSystem fires RebirthResult(ok, rebirths, requiredLevel). Its original listener
 -- lived in RebirthGui, which was removed when rebirth moved into this menu.
-rebirthResultRemote.OnClientEvent:Connect(function(ok, rebirths, need)
-	lastRebirthResult = { ok = ok, rebirths = rebirths, need = need }
+-- It now also carries the price and WHY a refusal happened ("level" / "gold" / "maxed").
+rebirthResultRemote.OnClientEvent:Connect(function(ok, rebirths, need, price, reason)
+	lastRebirthResult = { ok = ok, rebirths = rebirths, need = need, price = price, reason = reason }
 	if panelOpen and activeTab == "Rebirth" then
 		buildRebirthPanel()
 	end

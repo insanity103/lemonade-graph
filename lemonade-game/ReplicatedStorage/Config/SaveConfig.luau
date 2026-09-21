@@ -53,6 +53,7 @@ SaveConfig.SWORD_ATTRS = {
 	            -- Added with the lesser pools; a save without it still resolves by BossTier.
 	"Lesser",   -- true on a lesser (normal-enemy) sword; absent on a boss sword and on old saves
 	"Variant",  -- the mutation name, if it rolled one (WeaponModifiers.Variants)
+	"Starter",  -- true on the profile's starter sword (forgeable, never sold, never shattered)
 }
 
 return SaveConfig

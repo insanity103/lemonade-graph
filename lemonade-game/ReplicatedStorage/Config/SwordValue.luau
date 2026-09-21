@@ -97,6 +97,12 @@ SwordValue.REROLL_BASE = {
 }
 -- The quality factor stops here, so a long-tail roll never makes its own sword unstrikable.
 SwordValue.REROLL_QUALITY_CAP = 3 -- [TUNING]
+-- [TUNING] The starter (attrs.Starter) strikes off this base instead of REROLL_BASE.Common: at
+-- x1.00 the ordinary price would be 380 gold, more than a new player holds when they first reach
+-- the anvil (measured: 320 at 0:51). At 25 it is 160 gold, so the first PAID strike is a real
+-- choice against the purse rather than a locked door. Everything else about the price (roll
+-- quality, locks) is the same rule as every other sword.
+SwordValue.STARTER_REROLL_BASE = 25
 
 -- [TUNING] THE POWER FACTOR -- the thing that makes the forge a cost CURVE instead of a flat fee.
 --
@@ -133,6 +139,7 @@ function SwordValue.rerollCost(attrs): number
 	attrs = attrs or {}
 	local rarity = attrs.Rarity or "Common"
 	local base = SwordValue.REROLL_BASE[rarity] or SwordValue.REROLL_BASE.Common
+	if attrs.Starter == true then base = SwordValue.STARTER_REROLL_BASE end
 	local quality = SwordValue.rateAttrs(attrs) / (SwordValue.RARITY_BASE[rarity] or SwordValue.RARITY_BASE.Common)
 	quality = math.min(quality, SwordValue.REROLL_QUALITY_CAP)
 	local price = base * quality * SwordValue.powerFactor(attrs.BaseMult)
@@ -182,6 +189,7 @@ function SwordValue.attrsOfTool(tool: Instance)
 		BossTier = tool:GetAttribute("BossTier"),
 		Variant = tool:GetAttribute("Variant"),
 		BaseMult = tool:GetAttribute("DamageMult"),
+		Starter = tool:GetAttribute("Starter"),
 	}
 end
 

@@ -60,7 +60,7 @@ local ICONS = { -- images the HUD and tooltips already use
 
 local OBJECTIVE_ICONS = {
 	KILL = ICONS.Sword, KILL_ZONE = ICONS.Sword, KILL_BOSS = ICONS.Target,
-	OBTAIN = ICONS.Trophy, LEVEL = ICONS.Star,
+	OBTAIN = ICONS.Trophy, OBTAIN_POOL = ICONS.Trophy, REFORGE = ICONS.Lighting, LEVEL = ICONS.Star,
 }
 
 local REWARD_COLORS = {
@@ -280,11 +280,11 @@ end
 -- Current and target counts, and the text the bars show.
 local function getProgressCounts(quest, progress)
 	local obj = quest.objective
-	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" then
+	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" or obj.type == "REFORGE" then
 		local target = obj.count or 1
 		local cur = math.min(progress, target)
 		return cur / target, string.format("%d / %d", cur, target)
-	elseif obj.type == "OBTAIN" then
+	elseif obj.type == "OBTAIN" or obj.type == "OBTAIN_POOL" then
 		local got = progress >= 1
 		return got and 1 or 0, got and "Found!" or "0 / 1"
 	elseif obj.type == "LEVEL" then
@@ -1314,9 +1314,9 @@ local function syncFromAttributes()
 			activeQuestComplete = false
 			-- Check if complete
 			local obj = quest.objective
-			if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" then
+			if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" or obj.type == "REFORGE" then
 				activeQuestComplete = activeProgress >= (obj.count or 1)
-			elseif obj.type == "OBTAIN" then
+			elseif obj.type == "OBTAIN" or obj.type == "OBTAIN_POOL" then
 				activeQuestComplete = activeProgress >= 1
 			elseif obj.type == "LEVEL" then
 				local leaderstats = player:FindFirstChild("leaderstats")

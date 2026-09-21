@@ -476,6 +476,17 @@ function BossWeapons.PoolName(key)
 	return BossWeapons.BossNames[key] or BossWeapons.ZoneNames[key] or key
 end
 
+-- THE STARTER. The ClassicSword every profile begins with is a real sword to the rest of the
+-- game now: it is a Common lesser sword of the Iron Lowlands' tier at x1.00 (RuntimeBootstrap
+-- stamps the attributes on the StarterPack template), so the anvil lists it, a strike rerolls
+-- its modifiers, and the very first visit to the forge works. It is in NO drop pool: FindSword
+-- resolves it by name only, so nothing ever drops it and it never appears in a pool's roster.
+-- It is worth nothing at a sale (SellValue) and never shatters on death (SwordDropSystem).
+BossWeapons.STARTER_POOL = "IronLowlands"
+BossWeapons.Starter = sword("Classic Sword", 1.00, 0,
+	{ mesh = "Blocks", color = rgb(185, 192, 200), material = Enum.Material.Metal, accent = rgb(170, 124, 60) },
+	{}, "The sword you came in with. It has a lot left to learn.")
+
 -- Used when an archetype has no pool
 BossWeapons.Fallback = {
 	name = "Relic Sword",
@@ -490,6 +501,9 @@ BossWeapons.Fallback = {
 -- The sword definition (regular or Legendary) named `name` in `archetypeKey`'s pool, or, with no
 -- archetype, the first pool that has it. Returns def, archetypeKey, isLegendary.
 function BossWeapons.FindSword(name, archetypeKey)
+	if name == BossWeapons.Starter.name then
+		return BossWeapons.Starter, archetypeKey or BossWeapons.STARTER_POOL, false
+	end
 	local keys = archetypeKey and { archetypeKey } or BossWeapons.PoolKeyOrder
 	for _, key in ipairs(keys) do
 		local pool = BossWeapons.PoolFor(key)

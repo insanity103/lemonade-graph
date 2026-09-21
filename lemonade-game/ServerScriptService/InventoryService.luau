@@ -266,7 +266,8 @@ function InventoryService.SellSword(player, toolName)
 	end
 
 	local tool = findOwnedTool(player, toolName)
-	if not tool or tool.Name == "ClassicSword" or tool:GetAttribute("BossDrop") ~= true then
+	if not tool or tool.Name == "ClassicSword" or tool:GetAttribute("Starter") == true
+		or tool:GetAttribute("BossDrop") ~= true then
 		return false
 	end
 

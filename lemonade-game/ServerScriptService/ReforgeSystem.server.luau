@@ -288,7 +288,10 @@ local function finishStrike(player, plan, quality: string, pos: number, timedOut
 	end
 	local after = SwordValue.rateTool(tool)
 	PlayerDataService.SetField(player, "reforgePity", if after > before then 0 else pity + 1)
-	PlayerDataService.SetField(player, "reforgeCount", (PlayerDataService.GetField(player, "reforgeCount") or 0) + 1)
+	local reforgeCount = (PlayerDataService.GetField(player, "reforgeCount") or 0) + 1
+	PlayerDataService.SetField(player, "reforgeCount", reforgeCount)
+	-- In-memory mirror of the persisted count: QuestSystem's REFORGE objectives step on each change.
+	player:SetAttribute("ReforgeCount", reforgeCount)
 	local best = PlayerDataService.GetField(player, "reforgeBest") or 0
 	local personalBest = after > best
 	if personalBest then PlayerDataService.SetField(player, "reforgeBest", after) end

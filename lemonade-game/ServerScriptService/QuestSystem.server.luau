@@ -5,6 +5,8 @@ local Workspace = game:GetService("Workspace")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
+local XPCurve = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("XPCurve"))
+local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
@@ -80,9 +82,7 @@ local function grantReward(player, reward)
 		local level = leaderstats and leaderstats:FindFirstChild("Level")
 		local experience = leaderstats and leaderstats:FindFirstChild("Experience")
 		if level and experience then
-			local BASE_XP = 100
-			local XP_INC = 0.15
-			local function reqExp(lv) return math.floor(BASE_XP * (1 + XP_INC) ^ (lv - 1)) end
+			local function reqExp(lv) return XPCurve.Required(lv) end
 			experience.Value += amount
 			local levelsGained = 0
 			while experience.Value >= reqExp(level.Value) do
@@ -118,26 +118,43 @@ end
 -- OBTAIN objectives name the base weapon ("Warlord Greatsword"); a rolled drop's Tool.Name
 -- carries its modifier prefixes ("Sly Warlord Greatsword"), so match the BaseWeaponName
 -- attribute BossSwordFactory stamps on every drop, with the plain name as the fallback.
-local function toolMatchesItem(tool, itemName)
-	return tool:IsA("Tool") and (tool:GetAttribute("BaseWeaponName") == itemName or tool.Name == itemName)
+-- OBTAIN_POOL objectives name a boss's pool ("Boss_Gorgon"): any sword the factory stamped with
+-- that PoolKey counts, whatever its name or rarity.
+local function toolMatches(tool, obj)
+	if not tool:IsA("Tool") then return false end
+	if obj.type == "OBTAIN_POOL" then
+		return tool:GetAttribute("PoolKey") == obj.poolKey
+	end
+	return tool:GetAttribute("BaseWeaponName") == obj.itemName or tool.Name == obj.itemName
 end
 
-local function playerHasItem(player, itemName)
+local function playerHasItem(player, obj)
 	for _, container in ipairs({ player:FindFirstChildOfClass("Backpack"), player.Character }) do
 		if container then
 			for _, tool in ipairs(container:GetChildren()) do
-				if toolMatchesItem(tool, itemName) then return true end
+				if toolMatches(tool, obj) then return true end
 			end
 		end
+	end
+	-- An OBTAIN_POOL quest is also settled by the profile's record of having been HANDED a sword
+	-- from that pool (SwordDropSystem writes bossFirstDrops on a boss's first drop): a player who
+	-- sold or vaulted the sword has still claimed it, and is never sent back to roll for another.
+	if obj.type == "OBTAIN_POOL" then
+		local record = PlayerDataService.GetField(player, "bossFirstDrops")
+		if typeof(record) == "table" and record[obj.poolKey] == true then return true end
 	end
 	return false
 end
 
+local function isObtain(obj)
+	return obj.type == "OBTAIN" or obj.type == "OBTAIN_POOL"
+end
+
 local function checkCompletion(player, quest, progress)
 	local obj = quest.objective
-	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" then
+	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" or obj.type == "REFORGE" then
 		return progress >= (obj.count or 1)
-	elseif obj.type == "OBTAIN" then
+	elseif isObtain(obj) then
 		return progress >= 1
 	elseif obj.type == "LEVEL" then
 		local leaderstats = player:FindFirstChild("leaderstats")
@@ -198,8 +215,8 @@ QUEST_ACCEPT.OnServerEvent:Connect(function(player, questId)
 
 	-- Check OBTAIN immediately in case player already has the item
 	local initialProgress = 0
-	if quest.objective.type == "OBTAIN" then
-		if playerHasItem(player, quest.objective.itemName) then
+	if isObtain(quest.objective) then
+		if playerHasItem(player, quest.objective) then
 			initialProgress = 1
 		end
 	elseif quest.objective.type == "LEVEL" then
@@ -309,8 +326,19 @@ for _, instance in workspace:GetChildren() do inspect(instance) end
 workspace.ChildAdded:Connect(inspect)
 
 -- ── Level-up listener (for LEVEL objectives) ─────────────────────────────
+-- ── ...and the anvil listener (for REFORGE objectives) ───────────────────
+-- ReforgeSystem bumps the in-memory ReforgeCount attribute after every finished strike (paid or
+-- free, any sword); each bump while a REFORGE quest is active is one step of progress.
 
 Players.PlayerAdded:Connect(function(player)
+	player:GetAttributeChangedSignal("ReforgeCount"):Connect(function()
+		local state = playerQuest[player]
+		if not state or not state.questId then return end
+		local quest = QuestConfig.getQuestById(state.questId)
+		if quest and quest.objective.type == "REFORGE" then
+			incrementProgress(player, 1)
+		end
+	end)
 	local leaderstats = player:WaitForChild("leaderstats", 15)
 	if not leaderstats then return end
 	local levelVal = leaderstats:WaitForChild("Level", 10)
@@ -332,9 +360,9 @@ local function checkObtainQuest(player)
 	local state = playerQuest[player]
 	if not state or not state.questId then return end
 	local quest = QuestConfig.getQuestById(state.questId)
-	if not quest or quest.objective.type ~= "OBTAIN" then return end
+	if not quest or not isObtain(quest.objective) then return end
 
-	local found = playerHasItem(player, quest.objective.itemName)
+	local found = playerHasItem(player, quest.objective)
 
 	if found and state.progress < 1 then
 		state.progress = 1

@@ -80,6 +80,10 @@ function SellValue.Gold(attrs, goldMult: number?): number
 	if typeof(attrs) ~= "table" then
 		return 0
 	end
+	-- The starter sword is never for sale: a new player cannot be talked out of their only blade.
+	if attrs.Starter == true then
+		return 0
+	end
 	-- A save written before the base was stamped, or a hand-made tool, prices at the opening
 	-- zone's own tier rather than for nothing (SwordValue.POWER_MIN_BASE does the flooring).
 	local baseMult = tonumber(attrs.DamageMult) or tonumber(attrs.BaseMult) or tonumber(attrs.baseMult)
@@ -109,6 +113,7 @@ function SellValue.ForTool(tool: Instance?, goldMult: number?): number
 		Rarity = tool:GetAttribute("Rarity"),
 		Lesser = tool:GetAttribute("Lesser"),
 		ExtraSlot = tool:GetAttribute("ExtraSlot"),
+		Starter = tool:GetAttribute("Starter"),
 	}, goldMult)
 end
 
