@@ -37,7 +37,8 @@ return {
 		Type = "Weapon",
 	},
 	-- The five keys above are each boss's signature sword (quests name them). The full roster,
-	-- 7 swords per boss (6 regular at Common..Epic plus one Legendary), lives in BossWeapons.Pools;
+	-- 7-10 swords per boss (regular ones at Common..Epic plus one Legendary) in BossWeapons.Pools,
+	-- and 6 per zone (5 lesser plus the zone Relic) in BossWeapons.NormalPools;
 	-- these rows are display metadata for the rest of it, keyed by the sword's name.
 	["Pit Shiv"] = { Name = "Pit Shiv", Description = "A prisoner's blade ground from a pit shackle.", MaxStack = 1, Type = "Weapon" },
 	["Ironjaw Saber"] = { Name = "Ironjaw Saber", Description = "Curved iron saber notched like a jaw.", MaxStack = 1, Type = "Weapon" },

@@ -22,18 +22,33 @@ local BLOCK_PARTS = { "Pommel", "Guard", "Blade", "TipUpper", "TipLower" }
 local BLOCK_BLADE_LEN, BLOCK_GUARD_BACK = 2.60, 0.82 -- stock blade length; z where the blade starts
 
 -- ---------------------------------------------------------------- the rolls
--- Rarity from BossWeapons.RarityOdds (one roll, the odds the toast prints).
-local function rollRarity()
+-- Rarity from a ladder (one roll, the odds the toast prints). A boss drop rolls
+-- BossWeapons.RarityOdds; a normal enemy's drop rolls the ladder of its rig's rank, which
+-- DropRules hands in as opts.rarityOdds. Both sum to 1 and both are published.
+local function rollRarity(odds)
+	odds = odds or BossWeapons.RarityOdds
 	local r = math.random()
 	local acc = 0
-	for _, row in ipairs(BossWeapons.RarityOdds) do
+	for _, row in ipairs(odds) do
 		acc += row.p
 		if r <= acc then
 			return row.rarity, row.p
 		end
 	end
-	local last = BossWeapons.RarityOdds[#BossWeapons.RarityOdds]
+	local last = odds[#odds]
 	return last.rarity, last.p
+end
+
+-- The rarity a floor lifts a roll to (drop pity: never worse than Rare on the pitied drop).
+local RARITY_INDEX = { Common = 1, Uncommon = 2, Rare = 3, Epic = 4, Legendary = 5 }
+local function applyFloor(rarity, floor, odds)
+	if not floor or (RARITY_INDEX[rarity] or 1) >= (RARITY_INDEX[floor] or 1) then
+		return rarity, nil
+	end
+	for _, row in ipairs(odds or BossWeapons.RarityOdds) do
+		if row.rarity == floor then return floor, row.p end
+	end
+	return floor, nil
 end
 
 -- Which regular sword of the pool, by weight.
@@ -58,21 +73,26 @@ end
 -- stat roll (merchant listings sell the listed stat).
 function BossSwordFactory.rollDrop(archetypeKey, opts)
 	opts = opts or {}
-	local pool = BossWeapons.Pools[archetypeKey]
+	local pool = BossWeapons.PoolFor(archetypeKey)
 	if not pool then
 		local fb = table.clone(BossWeapons.Fallback)
 		fb.listedBase = fb.baseMult
 		fb.rarityOdds = 1
 		return fb
 	end
+	local odds = opts.rarityOdds or pool.rarityOdds or BossWeapons.RarityOdds
 	local rarity, rarityP
 	if opts.rarity then
 		rarity = opts.rarity
-		for _, row in ipairs(BossWeapons.RarityOdds) do
+		for _, row in ipairs(odds) do
 			if row.rarity == rarity then rarityP = row.p end
 		end
 	else
-		rarity, rarityP = rollRarity()
+		rarity, rarityP = rollRarity(odds)
+		local floored, flooredP = applyFloor(rarity, opts.rarityFloor, odds)
+		if floored ~= rarity then
+			rarity, rarityP = floored, flooredP or rarityP
+		end
 	end
 	local name = opts.sword
 	if not name then
@@ -81,6 +101,7 @@ function BossSwordFactory.rollDrop(archetypeKey, opts)
 	local data = BossWeapons.Resolve(archetypeKey, name, rarity)
 	data.listedBase = data.baseMult
 	data.rarityOdds = rarityP or 0
+	data.poolKey = archetypeKey
 	if opts.jitter ~= false then
 		local j = BossWeapons.STAT_JITTER
 		data.baseMult = math.floor(data.listedBase * (1 - j + math.random() * 2 * j) * 100 + 0.5) / 100
@@ -306,6 +327,8 @@ end
 -- opts.jitter        false = the listed base, no +-5% roll (merchant). Default true.
 -- opts.blessedBonus  added to WeaponModifiers.EXTRA_SLOT_CHANCE (drops: +5% at rebirth 5+)
 -- opts.allowBlessed  false = never roll a Blessed extra slot. Defaults to true.
+-- opts.rarityOdds    the rarity ladder to roll (DropRules hands the rig's rank ladder in)
+-- opts.rarityFloor   drop pity: lift a roll below this rarity to it
 -- opts.luck          long-tail luck multiplier (WeaponModifiers.LuckFrom); drops pass the killer's.
 -- Returns tool, mods, fullName, gotExtraSlot, weaponData (weaponData.rarity / baseMult / name /
 -- bossName / listedBase / rarityOdds / isLegendary describe what was rolled).
@@ -372,6 +395,11 @@ function BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExt
 	tool.Name = fullName
 
 	tool:SetAttribute("BossTier", BossWeapons.GetTier(archetypeKey))
+	-- The exact pool this sword came from. BossTier alone cannot say it any more: a zone's lesser
+	-- pool carries its region's tier, so a Lodestone Edge and a Pit Sovereign are both tier 1.
+	-- Saves written before this attribute existed fall back to the tier (describeTool).
+	tool:SetAttribute("PoolKey", archetypeKey)
+	tool:SetAttribute("Lesser", BossWeapons.IsLesserPool(archetypeKey) or nil)
 	tool:SetAttribute("Rarity", weaponData.rarity)
 	tool:SetAttribute("DamageMult", weaponData.baseMult)
 	tool:SetAttribute("PoolBase", weaponData.listedBase or weaponData.baseMult)
@@ -392,7 +420,9 @@ end
 -- rolled when it dropped (an older save keeps the base it was saved with).
 local function describeTool(tool)
 	local tier = tonumber(tool:GetAttribute("BossTier")) or 1
-	local archetypeKey = BossWeapons.ArchetypeByTier[tier]
+	local poolKey = tool:GetAttribute("PoolKey")
+	local archetypeKey = (typeof(poolKey) == "string" and BossWeapons.PoolFor(poolKey) and poolKey)
+		or BossWeapons.ArchetypeByTier[tier]
 	if not archetypeKey then
 		return nil
 	end
@@ -419,6 +449,10 @@ BossSwordFactory.describeTool = describeTool
 -- whatever the rarity rolled, so locks never add slots.
 -- opts.luck (optional): the long-tail luck multiplier for this strike (default 1).
 -- Returns mods, fullName, gotExtraSlot, pityApplied, variantName.
+-- opts.luck is the whole luck the roll is made at: the player's earned luck (kill streak, Lucky
+-- Charge, rebirths) already multiplied by the forge strike's blow (ReforgeSystem: PERFECT 2x,
+-- GOOD 1.5x, OK 1x). It scales the ladder's long tail only, never the body, so a good blow buys
+-- better odds and never a guarantee.
 function BossSwordFactory.reroll(tool, blessedBonus, minTopTier, keepNames, opts)
 	opts = opts or {}
 	local weaponData, archetypeKey = describeTool(tool)

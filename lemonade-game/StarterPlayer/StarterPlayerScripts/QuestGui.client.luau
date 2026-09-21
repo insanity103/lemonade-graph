@@ -14,6 +14,18 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
+
+-- What a reward is actually worth to THIS player right now. Gold quests are priced in kills'
+-- worth at the level the quest is handed in (QuestConfig.GoldReward, the same call QuestSystem
+-- makes when it pays), so the card must ask rather than print the listed figure -- otherwise the
+-- number on screen is not the number the player receives.
+local function rewardAmount(reward): number
+	if typeof(reward) ~= "table" then return 0 end
+	if reward.type == "GOLD" then
+		return QuestConfig.GoldReward(reward, player:GetAttribute("Level") or 1)
+	end
+	return tonumber(reward.amount) or 0
+end
 local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
@@ -864,7 +876,7 @@ local function buildChainTile(quest, state)
 		icon.ImageTransparency = 0.35
 	end
 	display(tile, {
-		name = "Amount", text = "x" .. shortNumber(reward.amount or 0), size = 17, stroke = 2,
+		name = "Amount", text = "x" .. shortNumber(rewardAmount(reward)), size = 17, stroke = 2,
 		xAlign = Enum.TextXAlignment.Right, anchor = Vector2.new(1, 0.5), pos = UDim2.new(1, -8, 0.66, 0),
 		size2 = UDim2.fromOffset(70, 20), zIndex = 5,
 	})
@@ -1012,7 +1024,7 @@ end
 
 local function setRewardVisual(reward, icon, amountLabel, unitLabel)
 	icon.Image = REWARD_ICONS[reward.type] or ICONS.Star
-	amountLabel.Text = shortNumber(reward.amount or 0)
+	amountLabel.Text = shortNumber(rewardAmount(reward))
 	if unitLabel then
 		unitLabel.Text = REWARD_UNITS[reward.type] or ""
 		unitLabel.TextColor3 = REWARD_COLORS[reward.type] or BRIGHT.Gold

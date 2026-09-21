@@ -81,16 +81,53 @@ end
 
 -- [TUNING] Reforge (reroll) price: a rarity base scaled by how good the current roll is,
 -- so a plain Rare is cheap to gamble on and a near-perfect Legendary costs real gold.
+--
+-- These used to run 40 / 120 / 400 / 1500 / 6000 -- a x150 spread -- because rarity was the ONLY
+-- thing in the price and so had to carry the whole climb on its own. It could not: rarity says
+-- how good a sword is for its tier, not which tier it is, so the strike on the sword actually
+-- carried sat at 40-190 gold in six zones of eight. The climb now lives in the power factor
+-- below, which is what a zone actually changes, and rarity is back to being what it reads as:
+-- striking a Legendary costs about 8x striking a Common OF THE SAME TIER.
 SwordValue.REROLL_BASE = {
-	Common = 40,
-	Uncommon = 120,
-	Rare = 400,
-	Epic = 1500,
-	Legendary = 6000,
+	Common = 60,
+	Uncommon = 105,
+	Rare = 170,
+	Epic = 260,
+	Legendary = 400,
 }
--- The quality factor stops here, so a long-tail roll never makes its own sword unstrikable:
--- a Legendary strike is 6,000-18,000 gold (12-36 kills of a level-100 enemy at 5 gold a level).
+-- The quality factor stops here, so a long-tail roll never makes its own sword unstrikable.
 SwordValue.REROLL_QUALITY_CAP = 3 -- [TUNING]
+
+-- [TUNING] THE POWER FACTOR -- the thing that makes the forge a cost CURVE instead of a flat fee.
+--
+-- Rarity and roll quality say how good a sword is FOR ITS TIER; they say nothing about which tier
+-- it is. A Common out of the Celestial Summit pool and a Common out of the Iron Lowlands pool used
+-- to strike for the same 40 gold, which is why the strike price sat at 40-190 gold on the sword
+-- actually carried in six zones of eight and an hour of play bought hundreds of strikes.
+--
+-- A sword's rolled base damage multiplier (the DamageMult attribute BossSwordFactory stamps) IS
+-- its tier: the lesser pools run x0.90-1.28 in the Iron Lowlands up to x9.90-13.40 on the
+-- Celestial Summit, and the boss pools x1.30-2.20 up to x5.80-18.00. Pricing the strike on that
+-- makes the sink climb with the zone the player is standing in, at the same time as the income
+-- from that zone climbs -- so a stretch of farming buys roughly the same bounded number of
+-- strikes at every tier, from the first zone to the last, rather than going trivially cheap the
+-- moment the player leaves the opening zone.
+--
+-- powerFactor(base) = (base / POWER_REF) ^ POWER_EXP. Fitted so that an hour of the zone you are
+-- in buys 10-25 strikes on the median sword that zone drops, at every one of the eight zones.
+SwordValue.POWER_REF = 0.40
+SwordValue.POWER_EXP = 2.0
+SwordValue.POWER_MIN_BASE = 0.40 -- a base below this prices as this (no free strikes on oddities)
+SwordValue.POWER_MAX_FACTOR = 5000 -- guard rail: nothing prices past this, whatever it claims
+
+-- attrs.BaseMult is the sword's rolled DamageMult. A sword whose base is unknown (an older save,
+-- a hand-made tool) prices at x1.00 base, which is the opening zone's own tier.
+function SwordValue.powerFactor(baseMult: number?): number
+	local base = tonumber(baseMult) or 1
+	base = math.max(base, SwordValue.POWER_MIN_BASE)
+	local factor = (base / SwordValue.POWER_REF) ^ SwordValue.POWER_EXP
+	return math.clamp(factor, 0, SwordValue.POWER_MAX_FACTOR)
+end
 
 function SwordValue.rerollCost(attrs): number
 	attrs = attrs or {}
@@ -98,12 +135,18 @@ function SwordValue.rerollCost(attrs): number
 	local base = SwordValue.REROLL_BASE[rarity] or SwordValue.REROLL_BASE.Common
 	local quality = SwordValue.rateAttrs(attrs) / (SwordValue.RARITY_BASE[rarity] or SwordValue.RARITY_BASE.Common)
 	quality = math.min(quality, SwordValue.REROLL_QUALITY_CAP)
-	return math.floor(base * quality / 10 + 0.5) * 10
+	local price = base * quality * SwordValue.powerFactor(attrs.BaseMult)
+	return math.floor(price / 10 + 0.5) * 10
 end
 
 -- [TUNING] Locking a modifier through a reforge adds this fraction of the base price per lock,
 -- by the locked modifier's rung: keeping a Radiant costs far more than keeping a Fresh.
 SwordValue.LOCK_TIER_FACTOR = { 0.5, 0.8, 1.2, 1.8, 2.6, 3.6, 5.0, 7.0, 10.0, 14.0 }
+-- ...but the total stops here. Locks were the one price in the game with no ceiling at all, so a
+-- fistful of long-tail locks priced itself out of the game entirely (four rung-10 locks used to
+-- read 57x the bare strike). Capped, a full lock-down is the most expensive thing a player can
+-- buy and still something they can actually save up for.
+SwordValue.LOCK_FACTOR_CAP = 8 -- [TUNING]
 
 -- Full reforge price for a sword with the named modifiers locked.
 function SwordValue.rerollCostWithLocks(attrs, lockNames): number
@@ -121,17 +164,25 @@ function SwordValue.rerollCostWithLocks(attrs, lockNames): number
 			factor += SwordValue.LOCK_TIER_FACTOR[tier] or 0
 		end
 	end
+	factor = math.min(factor, SwordValue.LOCK_FACTOR_CAP)
 	return math.floor(base * factor / 10 + 0.5) * 10
 end
 
 function SwordValue.rerollCostForTool(tool: Instance): number
-	return SwordValue.rerollCost({
+	return SwordValue.rerollCost(SwordValue.attrsOfTool(tool))
+end
+
+-- The attribute table this module prices, read off a live Tool. One place, so the server, the
+-- forge panel and any measurement harness all price the same sword the same way.
+function SwordValue.attrsOfTool(tool: Instance)
+	return {
 		Rarity = tool:GetAttribute("Rarity"),
 		Prefixes = tool:GetAttribute("Prefixes"),
 		ExtraSlot = tool:GetAttribute("ExtraSlot"),
 		BossTier = tool:GetAttribute("BossTier"),
 		Variant = tool:GetAttribute("Variant"),
-	})
+		BaseMult = tool:GetAttribute("DamageMult"),
+	}
 end
 
 -- Short label for HUD use: 1.2K, 34K, 2.1M

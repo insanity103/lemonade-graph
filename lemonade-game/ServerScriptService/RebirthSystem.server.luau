@@ -7,6 +7,7 @@ local RebirthConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForCh
 local REMOTES = ReplicatedStorage:WaitForChild("RemoteEvents")
 local REBIRTH_EVENT  = REMOTES:WaitForChild("Rebirth")
 local REBIRTH_RESULT = REMOTES:WaitForChild("RebirthResult")
+local NOTIFY         = REMOTES:WaitForChild("Notify")
 
 local WIPE_ATTRS = { "Strength", "Health", "Defense", "ExperienceGain" }
 local REBIRTH_COOLDOWN = 1
@@ -26,6 +27,8 @@ local function applyRebirthAttributes(player, rebirths)
 	local mults = RebirthConfig.GetMultipliers(rebirths)
 	player:SetAttribute("Rebirths", rebirths)
 	player:SetAttribute("RebirthRequirement", RebirthConfig.GetRequiredLevel(rebirths))
+	-- The price of the NEXT rebirth, published so anything that wants to show it can read it.
+	player:SetAttribute("RebirthGoldCost", RebirthConfig.GetGoldCost(rebirths))
 	player:SetAttribute("RebirthXPMult", mults.xpMult)
 	player:SetAttribute("RebirthGoldMult", mults.goldMult)
 	player:SetAttribute("RebirthDamageMult", mults.damageMult)
@@ -89,14 +92,28 @@ REBIRTH_EVENT.OnServerEvent:Connect(function(player)
 	local rebirths = player:GetAttribute("Rebirths") or 0
 	local need = RebirthConfig.GetRequiredLevel(rebirths)
 	if levelStat.Value < need then
-		REBIRTH_RESULT:FireClient(player, false, rebirths, need)
+		REBIRTH_RESULT:FireClient(player, false, rebirths, need, RebirthConfig.GetGoldCost(rebirths))
 		return
 	end
 
-	-- Wipe progression
+	-- A rebirth is BOUGHT, not confiscated: the price is debited and whatever is left over stays
+	-- in the purse. The server is the only thing that reads or writes the price.
+	local goldCost = RebirthConfig.GetGoldCost(rebirths)
+	local gold = leaderstats:FindFirstChild("Gold")
+	local purse = (gold and gold:IsA("IntValue")) and gold.Value or 0
+	if purse < goldCost then
+		NOTIFY:FireClient(player, string.format("Rebirth %d costs %d Gold. You have %d.",
+			rebirths + 1, goldCost, purse), "error")
+		REBIRTH_RESULT:FireClient(player, false, rebirths, need, goldCost)
+		return
+	end
+	if gold and gold:IsA("IntValue") then
+		gold.Value = purse - goldCost
+	end
+
+	-- Wipe progression (level and XP; the gold left over after the price is the player's)
 	levelStat.Value = 1
 	local xp = leaderstats:FindFirstChild("Experience"); if xp then xp.Value = 0 end
-	local gold = leaderstats:FindFirstChild("Gold"); if gold then gold.Value = 0 end
 	
 	-- Grant the rebirth
 	rebirths += 1
@@ -119,9 +136,12 @@ REBIRTH_EVENT.OnServerEvent:Connect(function(player)
 		player.Character:BreakJoints()
 	end
 
-	REBIRTH_RESULT:FireClient(player, true, rebirths, RebirthConfig.GetRequiredLevel(rebirths))
-	print(string.format("[RebirthSystem] %s rebirthed -> Tier %d (next at Lv %d). Multipliers: +%d%% XP, +%d%% Dmg, +%d%% HP, +%d Bonus SP",
-		player.Name, rebirths, RebirthConfig.GetRequiredLevel(rebirths),
+	REBIRTH_RESULT:FireClient(player, true, rebirths, RebirthConfig.GetRequiredLevel(rebirths),
+		RebirthConfig.GetGoldCost(rebirths))
+	NOTIFY:FireClient(player, string.format("Rebirth %d bought for %d Gold. Next rebirth: Lv %d, %d Gold.",
+		rebirths, goldCost, RebirthConfig.GetRequiredLevel(rebirths), RebirthConfig.GetGoldCost(rebirths)), "success")
+	print(string.format("[RebirthSystem] %s rebirthed -> Tier %d for %d gold (next at Lv %d). Multipliers: +%d%% XP, +%d%% Dmg, +%d%% HP, +%d Bonus SP",
+		player.Name, rebirths, goldCost, RebirthConfig.GetRequiredLevel(rebirths),
 		math.floor((RebirthConfig.XP_BOOST_PER_REBIRTH * rebirths) * 100),
 		math.floor((RebirthConfig.DAMAGE_BOOST_PER_REBIRTH * rebirths) * 100),
 		math.floor((RebirthConfig.HEALTH_BOOST_PER_REBIRTH * rebirths) * 100),

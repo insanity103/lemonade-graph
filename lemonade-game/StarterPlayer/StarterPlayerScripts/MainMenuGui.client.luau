@@ -12,13 +12,23 @@ local playerGui = player:WaitForChild("PlayerGui")
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
 local spendEvent = remotes:WaitForChild("SpendSkillPoint")
 local inventoryAction = remotes:WaitForChild("InventoryAction")
-local toggleAutoSellRemote = remotes:WaitForChild("ToggleAutoSell")
 local rebirthResultRemote = remotes:WaitForChild("RebirthResult")
 local reforgeRemote = remotes:WaitForChild("ReforgeAction")
 
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 local NumberFormat = require(ReplicatedStorage:WaitForChild("NumberFormat"))
 local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
+-- The one sell price in the game, the same module the server pays out of. The button quotes the
+-- number the server will pay, it does not compute a number of its own.
+local SellValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SellValue"))
+
+-- 12,400 rather than 12400, on a button that has to be read at a glance.
+local function goldText(n: number): string
+	local out = string.format("%d", math.floor(n + 0.5))
+	local k
+	repeat out, k = string.gsub(out, "^(-?%d+)(%d%d%d)", "%1,%2") until k == 0
+	return out
+end
 local RebirthConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("RebirthConfig"))
 local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 local GuiShowcase = require(ReplicatedStorage:WaitForChild("GuiShowcase"))
@@ -523,6 +533,9 @@ local function toolFacts(item)
 		bossDrop = tool:GetAttribute("BossDrop") == true,
 		-- Same rule as before: only unequipped boss drops (never the starter sword) can be sold.
 		sellable = tool.Name ~= "ClassicSword" and tool:GetAttribute("BossDrop") == true and not item.equipped,
+		-- ...and what it is worth, from Config.SellValue -- the same table, the same call and the
+		-- same rebirth multiplier the pickup prompt quoted when this sword dropped.
+		sellValue = SellValue.ForTool(tool, SellValue.GoldMultFor(player)),
 	}
 end
 
@@ -703,9 +716,12 @@ local function openInventoryDetail(item)
 	end
 
 	if f.sellable then
+		-- The price is on the button, because a sell button with no number on it is a guess. It
+		-- is the same price the KEEP-or-SELL prompt quoted at pickup: one table, one number.
+		local sellText = f.sellValue > 0 and ("SELL  " .. goldText(f.sellValue)) or "SELL"
 		local sellButton, sellLabel = PanelChrome.chunkyButton(actions, {
-			name = "SellButton", text = "SELL", color = BRIGHT.Gold, colorDark = BRIGHT.GoldDark,
-			size = buttonWidth, textSize = 28, zIndex = 33,
+			name = "SellButton", text = sellText, color = BRIGHT.Gold, colorDark = BRIGHT.GoldDark,
+			size = buttonWidth, textSize = 24, zIndex = 33,
 		})
 		sellButton.LayoutOrder = 2
 		sellButton.Activated:Connect(function()
@@ -716,7 +732,7 @@ local function openInventoryDetail(item)
 			task.delay(5, function()
 				if sellButton and sellButton.Parent and sellLabel.Text == "SELLING..." then
 					sellButton.Active = true
-					sellLabel.Text = "SELL"
+					sellLabel.Text = sellText
 				end
 			end)
 		end)
@@ -914,35 +930,13 @@ buildInventoryPanel = function()
 	count.AutomaticSize = Enum.AutomaticSize.X
 	count.LayoutOrder = 2
 
-	-- Auto-Sell: a bright blue button with an ON/OFF switch pill, so it reads as pressable
-	-- in both states instead of greyed out.
-	local autoSellOn = player:GetAttribute("AutoSellLowerSwords") == true
-	local toggleH = layout.touch - 2
-	local toggleBtn, toggleLabel = PanelChrome.chunkyButton(header, {
-		name = "AutoSellToggle", text = "AUTO-SELL",
-		color = Color3.fromRGB(110, 196, 255), colorDark = Color3.fromRGB(36, 120, 226),
-		size = UDim2.fromOffset(layoutMode == "narrow" and 190 or 220, toggleH),
-		anchor = Vector2.new(1, 0.5), pos = UDim2.new(1, -4, 0.5, 0), textSize = 22, zIndex = 24,
-	})
-	toggleLabel.Size = UDim2.new(1, -78, 1, -6)
-	local switch = Instance.new("Frame")
-	switch.Name = "State"
-	switch.AnchorPoint = Vector2.new(1, 0.5)
-	switch.Position = UDim2.new(1, -8, 0.5, 0)
-	switch.Size = UDim2.fromOffset(62, toggleH - 16)
-	switch.BackgroundColor3 = Color3.new(1, 1, 1)
-	switch.ZIndex = 26
-	switch.Parent = toggleBtn
-	addCorner(switch, 12)
-	PanelChrome.stroke(switch, BRIGHT.Outline, 2.5)
-	PanelChrome.gradient(switch, autoSellOn and BRIGHT.Green or BRIGHT.Red, autoSellOn and BRIGHT.GreenDark or BRIGHT.RedDark)
-	PanelChrome.display(switch, { text = autoSellOn and "ON" or "OFF", size = 20, stroke = 2.5, zIndex = 27 })
-	toggleBtn.Activated:Connect(function()
-		toggleAutoSellRemote:FireServer()
-	end)
+	-- The AUTO-SELL toggle stood here. It is gone with auto-sell itself: a drop now opens a
+	-- KEEP-or-SELL prompt on the reveal (SwordDropSystem + SwordDropToast), so the decision is
+	-- made once, per sword, in front of the player -- not set once in a panel they may never
+	-- open and then applied silently forever.
 
 	local caption = brightText(body, {
-		text = "Auto-Sell sells new drops with fewer modifier slots than your held sword. Tap a sword for its stats.",
+		text = "Every drop asks KEEP or SELL when it lands. Anything you kept sells here for the same price. Tap a sword for its stats.",
 		font = Enum.Font.GothamMedium, size = 13, color = BRIGHT.Ink, xAlign = Enum.TextXAlignment.Center,
 		size2 = UDim2.new(1, 0, 0, 0), wrap = true, zIndex = 23,
 	})
@@ -3773,12 +3767,14 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if input.KeyCode == Enum.KeyCode.M then toggleMenu() end
 end)
 
-local attrsToWatch = { 'Gold', 'SkillPoints', 'Strength', 'Health', 'Defense', 'ExperienceGain', 'AutoSellLowerSwords', 'Rebirths', 'RebirthRequirement', 'ShowDamageNumbers', 'MusicVolume' }
+local attrsToWatch = { 'Gold', 'SkillPoints', 'Strength', 'Health', 'Defense', 'ExperienceGain', 'Rebirths', 'RebirthRequirement', 'ShowDamageNumbers', 'MusicVolume' }
 for _, attr in ipairs(attrsToWatch) do
 	player:GetAttributeChangedSignal(attr):Connect(function()
 		refreshTopBar(); refreshSkills()
 		if attr == 'SkillPoints' then refreshRailBadges() end
-		if attr == 'AutoSellLowerSwords' and activeTab == 'Inventory' and panelOpen then
+		-- A rebirth changes the gold multiplier, and so changes every sell price on every
+		-- inventory tile: rebuild the panel if it is the one on screen.
+		if (attr == 'Rebirths' or attr == 'RebirthRequirement') and activeTab == 'Inventory' and panelOpen then
 			buildInventoryPanel()
 		elseif (attr == 'Rebirths' or attr == 'RebirthRequirement') and activeTab == 'Rebirth' and panelOpen then
 			buildRebirthPanel()

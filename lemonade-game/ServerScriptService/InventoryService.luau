@@ -2,6 +2,13 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local ItemConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("Items"))
+-- The one sell price in the game. This module used to carry a private BOSS_SELL_VALUES of
+-- 50/150/450/1200/3000 with no rarity factor and no lesser factor, against the drop handler's
+-- own 60/300/2000/13000/100000 with both -- so the same tier-5 boss Legendary was worth 3,000
+-- gold here and 800,000 gold there (ledger r00, section 4). There is now exactly one table, in
+-- Config.SellValue, and the pickup prompt, this button and the price the inventory tile quotes
+-- all read it.
+local SellValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SellValue"))
 local INVENTORY_UPDATED_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("InventoryUpdated")
 
 local InventoryService = {}
@@ -235,14 +242,6 @@ function InventoryService.UseItem(player, itemId)
 	return false
 end
 
-local BOSS_SELL_VALUES = {
-	[1] = 50,
-	[2] = 150,
-	[3] = 450,
-	[4] = 1200,
-	[5] = 3000,
-}
-
 local function findOwnedTool(player, toolName)
 	local character = player.Character
 	local backpack = player:FindFirstChildOfClass("Backpack")
@@ -279,14 +278,14 @@ function InventoryService.SellSword(player, toolName)
 		return false
 	end
 
-	local bossTier = tool:GetAttribute("BossTier") or 1
-	local sellValue = BOSS_SELL_VALUES[bossTier] or BOSS_SELL_VALUES[1]
-	if tool:GetAttribute("ExtraSlot") == true then
-		sellValue = math.floor(sellValue * 1.5)
+	-- One price, from one module: tier x rarity x the lesser-pool factor x Blessed x the player's
+	-- rebirth gold multiplier -- the same call the pickup prompt made when this sword dropped, and
+	-- the same call the inventory tile made to print the number on this button.
+	local sellValue = SellValue.ForTool(tool, SellValue.GoldMultFor(player))
+	if sellValue <= 0 then
+		notifyClient(player)
+		return false
 	end
-
-	local rebirths = player:GetAttribute("Rebirths") or 0
-	sellValue = math.floor(sellValue * (1 + 0.50 * rebirths))
 
 	local leaderstats = player:FindFirstChild("leaderstats")
 	local gold = leaderstats and leaderstats:FindFirstChild("Gold")

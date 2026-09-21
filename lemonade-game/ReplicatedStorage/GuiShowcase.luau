@@ -274,7 +274,10 @@ if armed and string.sub(armed, 1, 7) == "Motion:" then
 			camera.CFrame = cframe
 			locked = true
 			for _, gui in ipairs(playerGui:GetChildren()) do
-				if gui:IsA("ScreenGui") and gui.Enabled and gui.Name ~= "GuiShowcaseClapper" then
+				-- A GUI that sets the attribute GuiShowcaseKeep stays up while the camera is held:
+				-- it is the thing being captured, not chrome in the way of it (the drop card).
+				if gui:IsA("ScreenGui") and gui.Enabled and gui.Name ~= "GuiShowcaseClapper"
+					and gui:GetAttribute("GuiShowcaseKeep") ~= true then
 					gui.Enabled = false
 					hidden[gui] = true
 				end

@@ -68,7 +68,12 @@ local function grantReward(player, reward)
 	if rtype == "GOLD" then
 		local leaderstats = player:FindFirstChild("leaderstats")
 		local gold = leaderstats and leaderstats:FindFirstChild("Gold")
-		if gold then gold.Value += amount end
+		-- Quest gold is priced in kills' worth at the level the quest is handed in (see
+		-- QuestConfig.GoldReward). QuestGui prints the same call, so the card and the payout
+		-- can never disagree.
+		local paid = QuestConfig.GoldReward(reward, player:GetAttribute("Level") or 1)
+		if gold then gold.Value += paid end
+		amount = paid
 
 	elseif rtype == "XP" then
 		local leaderstats = player:FindFirstChild("leaderstats")

@@ -32,6 +32,7 @@ local ENEMY_DAMAGE_MULTIPLIER = 0.55
 local ENEMY_HIT_INTERVAL_PER_PLAYER = 0.7 -- prevents several enemies landing damage on one frame
 local ATTACK_COOLDOWN = 0.4
 local RESPAWN_DELAY = 5
+local DROP_RESPAWN_DELAY = 1.5 -- [TUNING] a rig that just paid a sword is back this fast
 -- Enemy swings telegraph before they land: damage resolves when the blade comes down, and only
 -- if the target is still within reach (+ grace for movement during the swing). Heavy hitters
 -- (slow attack cycles) wind up longer. Archetypes may override with `windup`.
@@ -1088,8 +1089,15 @@ local function spawnEnemy(config)
 		end
 	end
 	startEnemyAI(model, humanoid, hrp, arch, groundedPos, config.level, function()
-		task.delay(RESPAWN_DELAY, function()
-			spawnEnemy(config)
+		-- A kill that PAID a sword brings its target back inside DROP_RESPAWN_DELAY instead of the
+		-- usual wait, so the drop reveal ends with the next roll already standing there rather
+		-- than on an empty floor. SwordDropSystem stamps DropPaid on the rig as it pays, which is
+		-- a beat after this Died handler runs, so the flag is read after a short look-again.
+		task.delay(0.25, function()
+			local paid = model and model:GetAttribute("DropPaid") == true
+			task.delay(math.max((paid and DROP_RESPAWN_DELAY or RESPAWN_DELAY) - 0.25, 0), function()
+				spawnEnemy(config)
+			end)
 		end)
 	end)
 end
@@ -1397,6 +1405,38 @@ GuiShowcase.stage("EnemyDeath", function(ctx)
 	task.wait(5)
 	finisher:Disconnect()
 	print("[GuiShowcase] EnemyDeath rewards after: " .. showcaseRewards(ctx.player))
+end)
+
+-- Drop moment: the same staged kill as EnemyDeath, except this one is meant to PAY. The player's
+-- own sword swing finishes an ordinary Quarry Cutthroat with the "creator" tag left on it, so the
+-- kill runs the shipped path end to end -- EnemyCombat's damage, the real Died handler,
+-- SwordDropSystem's DropRules.Plan and DropRules.Roll, BossSwordFactory's sword and modifiers, the
+-- shipped SwordDrop remote and the drop card the player sees in play. Nothing about the reveal is
+-- staged: the only Studio-only thing is that SwordDropSystem forces the ~2% drop coin for this one
+-- kill (see the note there), because the camera cannot wait a hundred corpses. Saves are refused
+-- for the whole session while the showcase attribute is set (PlayerDataService), so the sword, the
+-- gold, the XP and the kill die with the Play session.
+GuiShowcase.stage("DropReveal", function(ctx)
+	local stage = stageEnemy(ctx, DEFAULT_ARCHETYPE) -- Quarry Cutthroat, an ordinary enemy
+	local humanoid = stage.humanoid
+	stage.armDeath() -- the real death handling (sound, cleanup), without the AI attacking
+	-- One real hit has to finish it, so the swing itself is the killing blow and the kill is
+	-- credited to the player: anything above a single hit would need a scripted finisher, and a
+	-- scripted finisher carries no creator tag, which is exactly what must NOT happen here.
+	humanoid.MaxHealth = math.max(humanoid.MaxHealth, math.ceil(showcaseHitBound(ctx.player)) * 5)
+	humanoid.Health = 1
+	ctx.equipSword()
+	-- Same side-on framing as the death, pulled back a little: the body falls to screen left and
+	-- the drop card comes in at the right, so the strip holds both the kill and the reveal.
+	local s = stage.arch.scale
+	local focus = stage.hrp.Position + Vector3.new(-1.1, -1.2 * s, 0)
+	ctx.camera(CFrame.lookAt(focus + Vector3.new(0.4, 3.4, 12.0), focus))
+	task.wait(2.5) -- rig, sword and camera settle
+	print("[GuiShowcase] DropReveal rewards before: " .. showcaseRewards(ctx.player))
+	ctx.clapper()
+	ctx.swing()
+	task.wait(12) -- the kill, the wrapped drop, the ladder, the landing, the hold and the exit
+	print("[GuiShowcase] DropReveal rewards after: " .. showcaseRewards(ctx.player))
 end)
 
 -- Enemy notice: one enemy stands idle side-on to the player, who stands just outside its aggro

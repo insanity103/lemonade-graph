@@ -22,6 +22,9 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "Notifications"
 gui.ResetOnSpawn = false
 gui.DisplayOrder = 20
+-- A server-wide announce (a Legendary drop, a top-rung forge) is part of the moment a Studio
+-- capture is filming, not chrome in the way of it, so it stays up while the camera is held.
+gui:SetAttribute("GuiShowcaseKeep", true)
 gui.Parent = player:WaitForChild("PlayerGui")
 
 local stack = Instance.new("Frame")

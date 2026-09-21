@@ -3,6 +3,24 @@ local RebirthConfig = {}
 RebirthConfig.BASE_LEVEL = 20
 RebirthConfig.LEVEL_PER_REBIRTH = 15
 
+-- [TUNING] Gold price of a rebirth. A rebirth used to cost nothing at all and simply CONFISCATE
+-- whatever was in the purse, so the single largest permanent multiplier in the game (+50% gold,
+-- +35% XP, +25% damage per tier) was free, and all five were met inside two hours of play.
+-- It is now a purchase: you save up, you pay the price, and you keep the change -- which is what
+-- makes it a sink instead of a punishment, and gives banked gold somewhere to go at every level.
+-- Priced by simulation against the income actually available at the level each rebirth requires
+-- and with the multipliers the previous rebirths already gave, so the commitment grows from about
+-- an hour for the first to a couple of hours for the fifth instead of being free:
+-- Lv20 40,000 / Lv35 160,000 / Lv50 640,000 / Lv65 2,560,000 / Lv80 10,240,000.
+RebirthConfig.GOLD_COST_BASE = 40000
+RebirthConfig.GOLD_COST_GROWTH = 4.0
+
+-- Gold the NEXT rebirth costs a player who currently has `rebirths` of them.
+function RebirthConfig.GetGoldCost(rebirths)
+	local n = math.max(0, math.floor(tonumber(rebirths) or 0))
+	return math.floor(RebirthConfig.GOLD_COST_BASE * RebirthConfig.GOLD_COST_GROWTH ^ n / 10 + 0.5) * 10
+end
+
 -- Multipliers per rebirth (additive stacking)
 RebirthConfig.XP_BOOST_PER_REBIRTH = 0.35      -- +35% XP Gain per rebirth
 RebirthConfig.GOLD_BOOST_PER_REBIRTH = 0.50    -- +50% Gold Gain per rebirth

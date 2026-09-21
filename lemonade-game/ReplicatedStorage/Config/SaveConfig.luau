@@ -25,7 +25,11 @@ SaveConfig.ATTRIBUTES = {
 	Health = 0,
 	Defense = 0,
 	ExperienceGain = 0,
-	AutoSellLowerSwords = false,
+	-- AutoSellLowerSwords was here. Auto-sell is gone (a KEEP-or-SELL prompt at pickup replaced
+	-- it, SwordDropSystem), so the game no longer reads or writes the attribute. An old profile
+	-- that still carries the key loads and saves exactly as before -- PlayerDataService iterates
+	-- THIS table, so an extra key in a saved record is carried along untouched and nothing is
+	-- dropped from anybody's data.
 	ForgeLuckCharges = 0,      -- Lucky Charges from boss kills; a paid Reforge strike spends one (ReforgeSystem)
 	CompletedQuests = '',      -- comma-separated quest IDs (e.g., 'q1_first_blood,q2_prove_yourself')
 	ActiveQuestId = '',        -- current quest ID or '' if none
@@ -33,13 +37,22 @@ SaveConfig.ATTRIBUTES = {
 	DiscoveredWaypoints = '',  -- comma-separated map waypoint IDs (map project; empty on the baseplate)
 }
 
-SaveConfig.VAULT_CAPACITY = 12       -- [TUNING] boss swords the Vaultkeeper holds per player
+-- [TUNING] The FREE shelf: boss swords the Vaultkeeper holds for a brand-new profile. Slots
+-- beyond this are bought with gold (Config.VaultConfig owns the ladder and the cap) or granted by
+-- the wealth ladder (Config.WealthLadder), and the count of each is persisted per player
+-- (`vaultSlots` / `wealthRung` in PlayerDataService). The number is unchanged, so no existing
+-- profile loses a shelf.
+SaveConfig.VAULT_CAPACITY = 12
 
 -- attributes copied verbatim off each saved boss / merchant sword Tool
 SaveConfig.SWORD_ATTRS = {
 	"DamageMult", "BonusDamagePct", "CritChance", "RangeBonus", "KnockbackBonus",
 	"ExtraSlot", "Prefixes", "BossTier", "Rarity", "BaseWeaponName", "WeaponAppearanceMaterial",
 	"PoolBase", -- the pool's listed base at the sword's rarity (DamageMult is the +-5% roll of it)
+	"PoolKey",  -- the exact pool it came from: a boss archetype, or a zone (lesser swords).
+	            -- Added with the lesser pools; a save without it still resolves by BossTier.
+	"Lesser",   -- true on a lesser (normal-enemy) sword; absent on a boss sword and on old saves
+	"Variant",  -- the mutation name, if it rolled one (WeaponModifiers.Variants)
 }
 
 return SaveConfig

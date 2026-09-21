@@ -145,7 +145,7 @@ GuiShowcase.stage("SwordGallery", function(ctx)
 		table.insert(odds, string.format('<font color="%s">%s %s</font>', RARITY_HEX[row.rarity] or "#FFFFFF", row.rarity, fmtOdds(row.p)))
 	end
 	label(folder, ORIGIN + Vector3.new(-2, 4 * ROW_STEP + 2.6, 0), {
-		{ text = string.format("LEMONADE  |  BOSS SWORD POOLS  -  %d swords, 7 per boss, every one a real build", BossWeapons.CountSwords()), px = 32, color = LEMON },
+		{ text = string.format("LEMONADE  |  BOSS SWORD POOLS  -  %d boss swords in 5 pools (+%d lesser swords in %d zone pools)", BossWeapons.CountSwords("boss"), BossWeapons.CountSwords("lesser"), #BossWeapons.ZoneOrder), px = 32, color = LEMON },
 		{ text = "column = the boss whose pool it is  |  row = the sword  |  C / U / R / E = its base damage multiplier at Common / Uncommon / Rare / Epic (+5% a step)  |  Legendary = the boss showpiece, +17% over the best Epic", px = 17, color = DIM },
 		{ text = "a drop rolls its rarity first:  " .. table.concat(odds, "   ") .. "   then which sword (weight below)   then its base at x0.95 - x1.05", px = 17, color = DIM, rich = true },
 	}, 1500, 72)

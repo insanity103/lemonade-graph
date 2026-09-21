@@ -17,6 +17,8 @@ local playerGui = player:WaitForChild("PlayerGui")
 local VAULT_ACTION = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("VaultAction")
 local Config = ReplicatedStorage:WaitForChild("Config")
 local SwordValue = require(Config:WaitForChild("SwordValue"))
+local VaultConfig = require(Config:WaitForChild("VaultConfig"))
+local WealthLadder = require(Config:WaitForChild("WealthLadder"))
 local BossWeapons = require(Config:WaitForChild("BossWeapons"))
 local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 local GuiShowcase = require(ReplicatedStorage:WaitForChild("GuiShowcase"))
@@ -366,6 +368,8 @@ hint.TextColor3 = BRIGHT.InkMuted
 hint.TextXAlignment = Enum.TextXAlignment.Right
 hint.TextWrapped = true
 hint.Text = "Stored swords survive rebirths and follow you to any server."
+-- ...and once the server has sent a state packet this line carries the wealth ladder instead:
+-- the fortune, the rung being climbed and its threshold (see the end of `render`).
 hint.ZIndex = 8
 hint.Parent = modal
 
@@ -391,7 +395,7 @@ railPad.Parent = rail
 
 local filter = "All"
 local tabs = {}
-local lastState -- { stored, carried, capacity, wealth }
+local lastState -- { stored, carried, capacity, wealth, meta }
 local render -- forward
 
 for i, rarity in ipairs(RARITIES) do
@@ -979,6 +983,71 @@ local function buildTile(parent, order, info, carried, paneKey, key)
 	return rec
 end
 
+-- THE SHOP TILE. Slots past the free shelf are bought with gold, and the price of the next one
+-- climbs with how many this player has already bought (Config.VaultConfig). It lives in the vault
+-- grid itself, as the tile after the last empty well, so the price is in front of the player at
+-- the exact moment the shelf is the thing they are looking at -- and it is the only way to buy
+-- one. The server owns the price and the purchase; this tile sends the word "BuySlot" and nothing
+-- else, then re-renders from whatever the server sends back.
+local function buildBuySlotTile(parent, order, meta)
+	local price = meta and meta.slotPrice
+	local tile = Instance.new("TextButton")
+	tile.Name = "BuySlot"
+	tile.Text = ""
+	tile.AutoButtonColor = false
+	tile.LayoutOrder = order
+	tile.BackgroundColor3 = price and Color3.fromRGB(255, 249, 228) or Color3.fromRGB(240, 242, 248)
+	tile.ZIndex = 6
+	tile.Parent = parent
+	corner(tile, 18)
+	PanelChrome.stroke(tile, price and BRIGHT.Gold or BRIGHT.RowStroke, 3.5)
+	local plus = PanelChrome.display(tile, {
+		name = "Plus", text = price and "+1" or "MAX", size = price and 40 or 26, stroke = 2.5,
+		color = BRIGHT.Gold, pos = UDim2.fromOffset(0, 8), size2 = UDim2.new(1, 0, 0, 40), zIndex = 7,
+	})
+	plus.TextXAlignment = Enum.TextXAlignment.Center
+	local caption = Instance.new("TextLabel")
+	caption.Name = "Caption"
+	caption.BackgroundTransparency = 1
+	caption.Position = UDim2.fromOffset(4, 46)
+	caption.Size = UDim2.new(1, -8, 0, 18)
+	caption.Font = Enum.Font.GothamBold
+	caption.TextSize = 14
+	caption.TextColor3 = BRIGHT.InkMuted
+	caption.Text = price and "VAULT SLOT" or "EVERY SLOT OWNED"
+	caption.TextScaled = false
+	caption.TextWrapped = true
+	caption.ZIndex = 7
+	caption.Parent = tile
+	local priceLabel = PanelChrome.display(tile, {
+		name = "Price", text = price and (VaultConfig.short(price) .. "  GOLD") or "--",
+		size = 24, stroke = 2.5, color = price and BRIGHT.Gold or BRIGHT.InkMuted,
+		pos = UDim2.fromOffset(0, 64), size2 = UDim2.new(1, 0, 0, 28), zIndex = 7, scaled = true, minSize = 12,
+	})
+	priceLabel.TextXAlignment = Enum.TextXAlignment.Center
+	local owned = Instance.new("TextLabel")
+	owned.Name = "Owned"
+	owned.BackgroundTransparency = 1
+	owned.Position = UDim2.new(0, 4, 1, -22)
+	owned.Size = UDim2.new(1, -8, 0, 18)
+	owned.Font = Enum.Font.GothamBold
+	owned.TextSize = 13
+	owned.TextColor3 = BRIGHT.InkMuted
+	owned.TextWrapped = true
+	owned.ZIndex = 7
+	owned.Text = meta and string.format("%d free + %d bought + %d earned / %d", meta.freeSlots or 0,
+		meta.boughtSlots or 0, meta.grantedSlots or 0, meta.maxSlots or 0) or ""
+	owned.Parent = tile
+	if price then
+		local scale = Instance.new("UIScale")
+		scale.Parent = tile
+		tile.MouseEnter:Connect(function() scale.Scale = 1.05 end)
+		tile.MouseLeave:Connect(function() scale.Scale = 1 end)
+		tile.Activated:Connect(function() VAULT_ACTION:FireServer("BuySlot") end)
+	end
+	return tile
+end
+
 local function buildEmptyWell(parent, order)
 	local well = Instance.new("Frame")
 	well.Name = "EmptySlot"
@@ -1000,8 +1069,8 @@ local function clear(scroll)
 	end
 end
 
-render = function(stored, carried, capacity, wealth)
-	lastState = { stored, carried, capacity, wealth }
+render = function(stored, carried, capacity, wealth, meta)
+	lastState = { stored, carried, capacity, wealth, meta }
 	hideTip()
 	-- Keep each tray's pick across refreshes when that sword is still there.
 	local keep = {}
@@ -1064,6 +1133,8 @@ render = function(stored, carried, capacity, wealth)
 	for i = #stored + 1, capacity do
 		buildEmptyWell(vault.scroll, i)
 	end
+	-- ...and then the shop tile: the price of slot capacity+1, always visible, always last.
+	buildBuySlotTile(vault.scroll, capacity + 1, meta)
 	vault.note.Text = "No " .. filter .. " swords stored."
 	vault.note.Visible = #stored > 0 and shownStored == 0 and #stored >= capacity
 	panes.vault.pickHint = #stored == 0 and "Your vault is empty" or "Tap one to take it"
@@ -1073,6 +1144,24 @@ render = function(stored, carried, capacity, wealth)
 	capFill.Size = UDim2.fromScale(capacity > 0 and math.clamp(#stored / capacity, 0, 1) or 0, 1)
 	capFill.Visible = #stored > 0
 	wealthLabel.Text = SwordValue.short(wealth or 0)
+	-- The wealth ladder, in the header: the title this player has earned over the pill, and the
+	-- rung they are climbing towards -- with the threshold and how far along they are -- where the
+	-- vault's promise line used to sit. Fortune is net worth IN GOLD, so it reads against a price.
+	local title = meta and meta.title or ""
+	wealthCaption.Text = title ~= "" and string.upper(title) or "WEALTH"
+	if meta and meta.fortune then
+		local line = string.format("Fortune %s gold  (%s carried + %s stored x%.2f + purse)",
+			WealthLadder.short(meta.fortune), WealthLadder.short(meta.carriedGold or 0),
+			WealthLadder.short(meta.storedGold or 0), meta.appraisal or 1)
+		if meta.nextThreshold then
+			line ..= string.format("   ·   next: %s at %s  (%.0f%%)", meta.nextName,
+				WealthLadder.short(meta.nextThreshold),
+				math.clamp(meta.fortune / meta.nextThreshold * 100, 0, 100))
+		else
+			line ..= string.format("   ·   %s -- every rung earned", title)
+		end
+		hint.Text = line
+	end
 end
 
 -- ── Responsive layout: side by side when it fits, stacked on phones ──────────
@@ -1203,12 +1292,12 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if input.KeyCode == Enum.KeyCode.Escape and overlay.Visible then close() end
 end)
 
-VAULT_ACTION.OnClientEvent:Connect(function(kind, stored, carried, capacity, wealth)
+VAULT_ACTION.OnClientEvent:Connect(function(kind, stored, carried, capacity, wealth, meta)
 	if kind == "Open" then
 		overlay.Visible = true
 		PanelChrome.openMotion(motion)
 	elseif kind == "State" then
-		render(stored or {}, carried or {}, capacity or 12, wealth)
+		render(stored or {}, carried or {}, capacity or VaultConfig.STARTING_SLOTS, wealth, meta)
 	end
 end)
 

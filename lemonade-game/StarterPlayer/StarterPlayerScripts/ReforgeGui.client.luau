@@ -292,7 +292,7 @@ local function currentCost()
 	local names = lockList()
 	if #names > 0 then
 		return SwordValue.rerollCostWithLocks({ Rarity = selected.rarity, Prefixes = selected.prefixes, ExtraSlot = selected.blessed,
-			BossTier = selected.tier }, names)
+			BossTier = selected.tier, Variant = selected.variant, BaseMult = selected.baseMult }, names)
 	end
 	if oddsInfo and (oddsInfo.freeIn or 1) <= 0 then return 0 end
 	return selected.cost

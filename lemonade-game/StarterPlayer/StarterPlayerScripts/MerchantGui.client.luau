@@ -1,7 +1,13 @@
---// MerchantGui (Client shop UI for Safe Zone Relic Merchant)
--- Bright, chunky storefront: each relic is a big rarity tile with a 3D render of its blade,
--- a stroked name and a coin price button underneath. The sword models are small part-built
--- stand-ins assembled here on the client (the real boss meshes live in ServerStorage).
+--// MerchantGui | THE RELIC BLACKSMITH'S COUNTER. One blade, rolled for your level.
+-- The shop sells exactly ONE thing and the panel is built to say so: a single MYSTERY BLADE tile
+-- on the left with one price button under it, and on the right the three things the player needs
+-- to decide -- WHAT IT ROLLS (the pools and the real odds), WHAT IT COSTS (the price as a
+-- function of level, quoted in kills, in minutes of the player's own measured gold/hour and in
+-- forge strikes on the sword they are carrying), and THE TERMS (server-rolled, 0% Blessed, the
+-- bad-luck floor, no Robux).
+-- The client NEVER decides anything: the offer table, every odd and the price all arrive from
+-- MerchantSystem, which recomputes them from the player's own level before it takes any gold.
+-- The sword model in the tile is a small part-built stand-in (the real meshes live in ServerStorage).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -20,21 +26,22 @@ local corner = PanelChrome.corner
 local COIN_ICON = "rbxassetid://84697600263846" -- the HUD gold coin
 
 -- [TUNING] design-space sizes; the whole panel is scaled with one UIScale.
-local CARD_W, TILE_H, NAME_H, BUY_H = 158, 158, 32, 54
-local NAME_Y = TILE_H + 14 -- clears the rarity chip that rides the tile's bottom edge
-local CARD_H = NAME_Y + NAME_H + 2 + BUY_H
-local GAP = 14
 local RADIUS = 24 -- the window's corner radius
 local HEADER_H = 84 -- the ember header band the title, gold and close button sit in
 local CLOSE = 60
-local BANNER_Y, BANNER_H = HEADER_H + 14, 48 -- the "random modifiers / Blessed" ribbon
-local TRAY_X, TRAY_BOTTOM = 18, 20 -- the dark inset tray the cards sit in
+local BANNER_Y, BANNER_H = HEADER_H + 14, 48 -- the "one blade, rolled when you pay" ribbon
+local TRAY_X, TRAY_BOTTOM = 18, 20 -- the dark inset tray the two columns sit in
 local TRAY_Y = BANNER_Y + BANNER_H + 14
-local TRAY_INSET = 8 -- the scroll area's inset inside the tray
-local SCROLL_PAD_TOP, SCROLL_PAD_BOTTOM = 18, 14 -- room for the BEST! ribbon and the hover grow
+local TRAY_INSET = 10
+local COL_GAP = 14
+local BLADE_W = 296 -- the left column: the one thing the shop sells
+local TILE_H = 208 -- its 3D tile
+local BUY_H = 62 -- its one price button
 local GOLD_W_WIDE, GOLD_W_NARROW = 220, 176
-local WIDE_MIN = 700 -- narrower windows move the gold pill down beside the ribbon
+local WIDE_MIN = 760 -- narrower windows move the gold pill down beside the ribbon
 local SCREEN_MARGIN_X, SCREEN_MARGIN_Y = 28, 110
+local PANEL_W_WIDE, PANEL_H_WIDE = 952, 588
+local PANEL_W_NARROW, PANEL_H_NARROW = 452, 760
 
 -- Forge palette: ember header, warm parchment body, blued-steel tray, arcane-violet ribbon.
 local THEME = {
@@ -68,7 +75,7 @@ local window = Instance.new("Frame")
 window.Name = "ShopWindow"
 window.AnchorPoint = Vector2.new(0.5, 0.5)
 window.Position = UDim2.fromScale(0.5, 0.5)
-window.Size = UDim2.fromOffset(890, 520)
+window.Size = UDim2.fromOffset(PANEL_W_WIDE, PANEL_H_WIDE)
 window.BackgroundTransparency = 1
 window.Visible = false
 window.ZIndex = 51
@@ -91,7 +98,7 @@ corner(dropShadow, RADIUS + 6)
 local chrome = PanelChrome.buildBright({
 	name = "ShopModal",
 	title = "Relic Blacksmith",
-	size = UDim2.fromOffset(890, 520),
+	size = UDim2.fromOffset(PANEL_W_WIDE, PANEL_H_WIDE),
 	titleSize = 48,
 	closeSize = CLOSE,
 })
@@ -250,17 +257,16 @@ titleIcon.AnchorPoint = Vector2.new(0, 0.5)
 titleIcon.Position = UDim2.fromOffset(-30, HEADER_H / 2 - 10)
 titleIcon.Rotation = 0
 titleIcon.ZIndex = 60
-local items = MerchantConfig.Items
-for i, spec in ipairs({ { item = items[#items - 1], tilt = -45 }, { item = items[#items], tilt = 45 } }) do
-	if spec.item then
-		local view = Instance.new("ViewportFrame")
-		view.Name = "CrossedSword" .. i
-		view.BackgroundTransparency = 1
-		view.Size = UDim2.fromScale(1, 1)
-		view.ZIndex = titleIcon.ZIndex
-		view.Parent = titleIcon
-		PanelChrome.renderTool(view, buildSwordTool(spec.item), { tiltDeg = spec.tilt, yawDeg = 0, margin = 1.0 })
-	end
+-- Two crossed blades, the shop's crest. They are decoration, not listings: the blacksmith sells
+-- one thing and it has no name until it is rolled.
+for i, spec in ipairs({ { id = "Boss_Gorgon", tilt = -45 }, { id = "Boss_CelestialTitan", tilt = 45 } }) do
+	local view = Instance.new("ViewportFrame")
+	view.Name = "CrossedSword" .. i
+	view.BackgroundTransparency = 1
+	view.Size = UDim2.fromScale(1, 1)
+	view.ZIndex = titleIcon.ZIndex
+	view.Parent = titleIcon
+	PanelChrome.renderTool(view, buildSwordTool({ id = spec.id }), { tiltDeg = spec.tilt, yawDeg = 0, margin = 1.0 })
 end
 local TITLE_X = 90
 chrome.TitleLabel.Position = UDim2.fromOffset(TITLE_X, HEADER_H / 2 - 1)
@@ -370,7 +376,7 @@ local infoLabel = PanelChrome.display(banner, {
 	pos = UDim2.fromOffset(52, 3), size2 = UDim2.new(1, -52 - 190 - 18, 1, -6),
 })
 infoLabel.TextWrapped = true
-local DEFAULT_INFO = "Every relic is forged with random modifiers"
+local DEFAULT_INFO = "ONE BLADE \u{2014} ROLLED WHEN YOU PAY, FROM YOUR LEVEL'S POOLS"
 infoLabel.Text = DEFAULT_INFO
 
 -- Toast notice for purchase result: a pill riding the panel's bottom edge.
@@ -397,7 +403,10 @@ noticePad.PaddingLeft = UDim.new(0, 22)
 noticePad.PaddingRight = UDim.new(0, 22)
 noticePad.Parent = noticeLabel
 
--- ── Card grid, on a dark inset tray ──────────────────────────────────────────
+-- ══════════════════════════════════════════════════════════════════════════════
+-- THE COUNTER. Two columns on one dark tray: the ONE thing on the left, the terms
+-- of the roll on the right. Nothing here is a list.
+-- ══════════════════════════════════════════════════════════════════════════════
 local tray = Instance.new("Frame")
 tray.Name = "Tray"
 tray.Position = UDim2.fromOffset(TRAY_X, TRAY_Y)
@@ -406,41 +415,18 @@ tray.ZIndex = 52
 tray.Parent = modal
 PanelChrome.insetTray(tray, { top = THEME.TrayTop, bottom = THEME.TrayBottom, radius = 20, zIndex = 52 })
 
-local scroll = Instance.new("ScrollingFrame")
-scroll.Name = "ItemList"
-scroll.Position = UDim2.fromOffset(TRAY_INSET, TRAY_INSET)
-scroll.Size = UDim2.new(1, -TRAY_INSET * 2, 1, -TRAY_INSET * 2)
-scroll.BackgroundTransparency = 1
-scroll.BorderSizePixel = 0
-scroll.ScrollBarThickness = 8
-scroll.ScrollBarImageColor3 = Color3.fromRGB(214, 222, 240)
-scroll.CanvasSize = UDim2.fromOffset(0, 0)
-scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-scroll.ScrollingDirection = Enum.ScrollingDirection.Y
-scroll.ZIndex = 53
-scroll.Parent = tray
-
-local scrollPad = Instance.new("UIPadding")
-scrollPad.PaddingLeft = UDim.new(0, 6)
-scrollPad.PaddingRight = UDim.new(0, 6)
-scrollPad.PaddingTop = UDim.new(0, SCROLL_PAD_TOP)
-scrollPad.PaddingBottom = UDim.new(0, SCROLL_PAD_BOTTOM)
-scrollPad.Parent = scroll
-
-local grid = Instance.new("UIGridLayout")
-grid.CellSize = UDim2.fromOffset(CARD_W, CARD_H)
-grid.CellPadding = UDim2.fromOffset(GAP, GAP)
-grid.SortOrder = Enum.SortOrder.LayoutOrder
-grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
-grid.Parent = scroll
-
 local function formatGold(num)
-	return tostring(num):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+	return tostring(math.floor(num or 0)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
 end
 
 local function currentGold()
 	local leaderstats = player:FindFirstChild("leaderstats")
 	return (leaderstats and leaderstats:FindFirstChild("Gold")) and leaderstats.Gold.Value or (player:GetAttribute("Gold") or 0)
+end
+
+local function currentLevel()
+	local leaderstats = player:FindFirstChild("leaderstats")
+	return (leaderstats and leaderstats:FindFirstChild("Level")) and leaderstats.Level.Value or (player:GetAttribute("Level") or 1)
 end
 
 local function showNotice(text, isSuccess)
@@ -454,174 +440,406 @@ local function showNotice(text, isSuccess)
 	end)
 end
 
-local cards = {} -- { item, grad, label } per listing, built once
+-- ── LEFT COLUMN: the one purchasable thing ───────────────────────────────────
+local bladeCol = Instance.new("Frame")
+bladeCol.Name = "TheOneThing"
+bladeCol.BackgroundTransparency = 1
+bladeCol.Position = UDim2.fromOffset(TRAY_INSET, TRAY_INSET)
+bladeCol.Size = UDim2.fromOffset(BLADE_W, 100)
+bladeCol.ZIndex = 53
+bladeCol.Parent = tray
 
-local function buildCard(index, item)
-	local rarity = item.rarity or "Common"
-	local t = RARITY_TILE[rarity] or RARITY_TILE.Common
+local tile = Instance.new("Frame")
+tile.Name = "MysteryTile"
+tile.Size = UDim2.new(1, 0, 0, TILE_H)
+tile.ZIndex = 53
+tile.Parent = bladeCol
+corner(tile, 20)
+PanelChrome.lootTile(tile, "Epic", { radius = 20, zIndex = 53, glowY = 0.5 })
+local tileScale = Instance.new("UIScale")
+tileScale.Parent = tile
 
-	local card = Instance.new("Frame")
-	card.Name = "Item_" .. item.id
-	card.BackgroundTransparency = 1
-	card.LayoutOrder = index
-	card.ZIndex = 53
-	card.Parent = scroll
+local bladeView = Instance.new("ViewportFrame")
+bladeView.Name = "BladeRender"
+bladeView.BackgroundTransparency = 1
+bladeView.Position = UDim2.fromOffset(6, 10)
+bladeView.Size = UDim2.new(1, -12, 1, -16)
+bladeView.ZIndex = 54
+bladeView.Parent = tile
+PanelChrome.renderTool(bladeView, buildSwordTool({ id = "Mystery" }),
+	{ tiltDeg = 45, yawDeg = 0, margin = 0.9, ambient = Color3.fromRGB(205, 205, 218) })
 
-	local tile = Instance.new("Frame")
-	tile.Name = "Tile"
-	tile.Size = UDim2.fromOffset(CARD_W, TILE_H)
-	tile.ZIndex = 53
-	tile.Parent = card
-	corner(tile, 20)
-	PanelChrome.lootTile(tile, rarity, { radius = 20, zIndex = 53, glowY = 0.5 })
-	local tileScale = Instance.new("UIScale")
-	tileScale.Parent = tile
+-- The blade is unknown until the gold leaves: the tile wears a question mark, not a name.
+PanelChrome.display(tile, {
+	name = "Question", text = "?", size = 110, stroke = 5, zIndex = 56,
+	pos = UDim2.fromOffset(0, 0), size2 = UDim2.fromScale(1, 1),
+})
 
-	local view = Instance.new("ViewportFrame")
-	view.Name = "SwordRender"
-	view.BackgroundTransparency = 1
-	view.Position = UDim2.fromOffset(4, 6)
-	view.Size = UDim2.new(1, -8, 1, -8)
-	view.ZIndex = 54
-	view.Parent = tile
-	PanelChrome.renderTool(view, buildSwordTool(item), { tiltDeg = 45, yawDeg = 0, margin = 0.96, ambient = Color3.fromRGB(205, 205, 218) })
+-- "1 of N swords" -- the roster this one roll reaches into.
+local reachChip = Instance.new("Frame")
+reachChip.Name = "Reach"
+reachChip.AnchorPoint = Vector2.new(0.5, 0.5)
+reachChip.Position = UDim2.new(0.5, 0, 1, -4)
+reachChip.Size = UDim2.fromOffset(0, 28)
+reachChip.AutomaticSize = Enum.AutomaticSize.X
+reachChip.BackgroundColor3 = Color3.new(1, 1, 1)
+reachChip.ZIndex = 57
+reachChip.Parent = tile
+corner(reachChip, 14)
+PanelChrome.gradient(reachChip, BRIGHT.Gold, BRIGHT.GoldDark)
+PanelChrome.stroke(reachChip, BRIGHT.Outline, 2.5)
+local reachPad = Instance.new("UIPadding")
+reachPad.PaddingLeft = UDim.new(0, 12)
+reachPad.PaddingRight = UDim.new(0, 12)
+reachPad.Parent = reachChip
+local reachText = PanelChrome.display(reachChip, { text = "1 OF ? SWORDS", size = 16, stroke = 2, zIndex = 58 })
+reachText.Size = UDim2.fromScale(0, 1)
+reachText.AutomaticSize = Enum.AutomaticSize.X
 
-	-- The top relic gets a tilted ribbon, like a storefront's "best value" tag.
-	if index == #MerchantConfig.Items then
-		local tag = Instance.new("Frame")
-		tag.Name = "BestTag"
-		tag.AnchorPoint = Vector2.new(0.5, 0.5)
-		tag.Position = UDim2.fromOffset(30, 10)
-		tag.Size = UDim2.fromOffset(70, 28)
-		tag.Rotation = -12
-		tag.BackgroundColor3 = Color3.new(1, 1, 1)
-		tag.ZIndex = 58
-		tag.Parent = tile
-		corner(tag, 10)
-		PanelChrome.gradient(tag, BRIGHT.Red, BRIGHT.RedDark)
-		PanelChrome.stroke(tag, BRIGHT.Outline, 2.5)
-		PanelChrome.display(tag, { text = "BEST!", size = 19, stroke = 2, zIndex = 59 })
-	end
+local bladeName = PanelChrome.display(bladeCol, {
+	name = "BladeName", text = "MYSTERY BLADE", size = 30, stroke = 3, scaled = true, minSize = 14,
+	pos = UDim2.fromOffset(0, TILE_H + 10), size2 = UDim2.new(1, 0, 0, 36), zIndex = 54,
+})
+bladeName.TextColor3 = Color3.new(1, 1, 1)
 
-	-- Damage multiplier: the big stroked number in the corner, like a stack count.
-	PanelChrome.display(tile, {
-		name = "Mult", text = string.format("x%.1f", item.baseMult or 1), size = 28, stroke = 3,
-		xAlign = Enum.TextXAlignment.Right, yAlign = Enum.TextYAlignment.Top,
-		pos = UDim2.fromOffset(-10, 6), size2 = UDim2.new(1, 0, 0, 30), zIndex = 56,
+local bladeSub = PanelChrome.display(bladeCol, {
+	name = "BladeSub", text = "rolled at the moment you pay", size = 19, stroke = 2.5, scaled = true, minSize = 11,
+	pos = UDim2.fromOffset(0, TILE_H + 46), size2 = UDim2.new(1, 0, 0, 26), zIndex = 54,
+})
+bladeSub.TextColor3 = Color3.fromRGB(255, 238, 190)
+
+local bandLabel = PanelChrome.display(bladeCol, {
+	name = "Band", text = "", size = 22, stroke = 2.5, scaled = true, minSize = 12,
+	pos = UDim2.fromOffset(0, TILE_H + 74), size2 = UDim2.new(1, 0, 0, 30), zIndex = 54,
+})
+bandLabel.TextColor3 = Color3.fromRGB(190, 240, 255)
+
+local rangeLabel = PanelChrome.display(bladeCol, {
+	name = "Range", text = "", size = 30, stroke = 3, scaled = true, minSize = 13,
+	pos = UDim2.fromOffset(0, TILE_H + 106), size2 = UDim2.new(1, 0, 0, 38), zIndex = 54,
+})
+
+local BUY_Y = TILE_H + 152
+local buyBtn, buyLabel, buyGrad = PanelChrome.chunkyButton(bladeCol, {
+	name = "BuyButton", text = "---", size = UDim2.new(1, 0, 0, BUY_H),
+	pos = UDim2.fromOffset(0, BUY_Y), textSize = 32, zIndex = 54, radius = 18, strokeThickness = 3.5,
+})
+buyLabel.Position = UDim2.fromOffset(52, 3)
+buyLabel.Size = UDim2.new(1, -62, 1, -6)
+coinIcon(buyBtn, 52, UDim2.new(0, 2, 0.5, 0), nil, 56)
+
+local buyHint = PanelChrome.display(bladeCol, {
+	name = "BuyHint", text = "", size = 17, stroke = 2, scaled = true, minSize = 10,
+	pos = UDim2.fromOffset(0, BUY_Y + BUY_H + 4), size2 = UDim2.new(1, 0, 0, 24), zIndex = 54,
+})
+buyHint.TextColor3 = Color3.fromRGB(226, 234, 250)
+local BLADE_COL_H = BUY_Y + BUY_H + 30
+bladeCol.Size = UDim2.fromOffset(BLADE_W, BLADE_COL_H)
+
+-- ── RIGHT COLUMN: what it rolls, what it costs, the terms ────────────────────
+local terms = Instance.new("ScrollingFrame")
+terms.Name = "Terms"
+terms.BackgroundTransparency = 1
+terms.BorderSizePixel = 0
+terms.Position = UDim2.fromOffset(TRAY_INSET + BLADE_W + COL_GAP, TRAY_INSET)
+terms.Size = UDim2.new(1, -(TRAY_INSET * 2 + BLADE_W + COL_GAP), 1, -TRAY_INSET * 2)
+terms.ScrollBarThickness = 8
+terms.ScrollBarImageColor3 = Color3.fromRGB(214, 222, 240)
+terms.CanvasSize = UDim2.fromOffset(0, 0)
+terms.AutomaticCanvasSize = Enum.AutomaticSize.Y
+terms.ScrollingDirection = Enum.ScrollingDirection.Y
+terms.ZIndex = 53
+terms.Parent = tray
+
+local termsList = Instance.new("UIListLayout")
+termsList.Padding = UDim.new(0, 12)
+termsList.SortOrder = Enum.SortOrder.LayoutOrder
+termsList.Parent = terms
+local termsPad = Instance.new("UIPadding")
+termsPad.PaddingRight = UDim.new(0, 10)
+termsPad.Parent = terms
+
+-- A parchment card with a stroked heading and a column of rows under it.
+local function card(order, heading)
+	local frame = Instance.new("Frame")
+	frame.Name = heading:gsub("%W", "")
+	frame.Size = UDim2.new(1, 0, 0, 40)
+	frame.AutomaticSize = Enum.AutomaticSize.Y
+	frame.BackgroundColor3 = Color3.new(1, 1, 1)
+	frame.BorderSizePixel = 0
+	frame.LayoutOrder = order
+	frame.ZIndex = 54
+	frame.Parent = terms
+	corner(frame, 16)
+	PanelChrome.gradient(frame, Color3.fromRGB(255, 251, 240), Color3.fromRGB(238, 226, 200))
+	PanelChrome.stroke(frame, BRIGHT.Outline, 3)
+
+	local pad = Instance.new("UIPadding")
+	pad.PaddingTop = UDim.new(0, 10)
+	pad.PaddingBottom = UDim.new(0, 12)
+	pad.PaddingLeft = UDim.new(0, 14)
+	pad.PaddingRight = UDim.new(0, 14)
+	pad.Parent = frame
+
+	local list = Instance.new("UIListLayout")
+	list.Padding = UDim.new(0, 4)
+	list.SortOrder = Enum.SortOrder.LayoutOrder
+	list.Parent = frame
+
+	local title = PanelChrome.display(frame, {
+		name = "Heading", text = heading, size = 22, stroke = 2.5,
+		xAlign = Enum.TextXAlignment.Left, size2 = UDim2.new(1, 0, 0, 28), zIndex = 55,
 	})
-	local rarityChip = Instance.new("Frame")
-	rarityChip.Name = "Rarity"
-	rarityChip.AnchorPoint = Vector2.new(0.5, 0.5)
-	rarityChip.Position = UDim2.new(0.5, 0, 1, -2)
-	rarityChip.Size = UDim2.fromOffset(0, 24)
-	rarityChip.AutomaticSize = Enum.AutomaticSize.X
-	rarityChip.BackgroundColor3 = t.rim
-	rarityChip.ZIndex = 56
-	rarityChip.Parent = tile
-	corner(rarityChip, 12)
-	PanelChrome.stroke(rarityChip, BRIGHT.Outline, 2.5)
-	local chipPad = Instance.new("UIPadding")
-	chipPad.PaddingLeft = UDim.new(0, 10)
-	chipPad.PaddingRight = UDim.new(0, 10)
-	chipPad.Parent = rarityChip
-	local chipText = PanelChrome.display(rarityChip, { text = string.upper(rarity), size = 15, stroke = 2, zIndex = 57 })
-	chipText.Size = UDim2.fromScale(0, 1)
-	chipText.AutomaticSize = Enum.AutomaticSize.X
-
-	local nameLabel = PanelChrome.display(card, {
-		name = "ItemName", text = item.name or item.id, size = 20, stroke = 2.5, scaled = true, minSize = 12,
-		pos = UDim2.fromOffset(0, NAME_Y), size2 = UDim2.fromOffset(CARD_W, NAME_H), zIndex = 54,
-	})
-	nameLabel.TextWrapped = false
-	nameLabel.TextColor3 = Color3.new(1, 1, 1)
-
-	local buyBtn, buyLabel, buyGrad = PanelChrome.chunkyButton(card, {
-		name = "BuyButton", text = formatGold(item.price), size = UDim2.fromOffset(CARD_W, BUY_H),
-		pos = UDim2.fromOffset(0, CARD_H - BUY_H), textSize = 28, zIndex = 54, radius = 16, strokeThickness = 3.5,
-	})
-	buyLabel.Position = UDim2.fromOffset(46, 3)
-	buyLabel.Size = UDim2.new(1, -54, 1, -6)
-	coinIcon(buyBtn, 46, UDim2.new(0, 2, 0.5, 0), nil, 56)
-
-	buyBtn.Activated:Connect(function()
-		MERCHANT_ACTION:FireServer("BuySword", item.id)
-	end)
-
-	local function hover(on)
-		tileScale.Scale = on and 1.05 or 1
-		infoLabel.Text = on and (item.desc or DEFAULT_INFO) or DEFAULT_INFO
-	end
-	tile.MouseEnter:Connect(function() hover(true) end)
-	tile.MouseLeave:Connect(function() hover(false) end)
-	buyBtn.MouseEnter:Connect(function() hover(true) end)
-	buyBtn.MouseLeave:Connect(function() hover(false) end)
-
-	cards[index] = { item = item, grad = buyGrad }
+	title.LayoutOrder = 0
+	title.TextColor3 = Color3.fromRGB(255, 244, 214)
+	return frame
 end
 
--- Affordable prices go green; the rest stay grey (still pressable: the server answers).
-local function refreshPrices()
+-- One row: a left label, a right value, optional colour chip at the far left.
+local function row(parent, order, left, right, opts)
+	opts = opts or {}
+	local frame = Instance.new("Frame")
+	frame.Name = "Row"
+	frame.Size = UDim2.new(1, 0, 0, opts.height or 26)
+	frame.BackgroundTransparency = 1
+	frame.LayoutOrder = order
+	frame.ZIndex = 55
+	frame.Parent = parent
+
+	local x = 0
+	if opts.chip then
+		local chip = Instance.new("Frame")
+		chip.Name = "Chip"
+		chip.AnchorPoint = Vector2.new(0, 0.5)
+		chip.Position = UDim2.new(0, 0, 0.5, 0)
+		chip.Size = UDim2.fromOffset(96, 22)
+		chip.BackgroundColor3 = opts.chip
+		chip.ZIndex = 56
+		chip.Parent = frame
+		corner(chip, 11)
+		PanelChrome.stroke(chip, BRIGHT.Outline, 2)
+		PanelChrome.display(chip, { text = left, size = 15, stroke = 2, zIndex = 57 })
+		x = 104
+	else
+		-- A row with no value on the right (a note, a spacer) gives the label the whole width.
+		local split = (right == nil or right == "") and 1 or 0.55
+		local l = PanelChrome.display(frame, {
+			name = "Left", text = left, size = opts.size or 18, stroke = opts.stroke or 2,
+			xAlign = Enum.TextXAlignment.Left, yAlign = Enum.TextYAlignment.Center,
+			size2 = UDim2.new(split, -6, 1, 0), zIndex = 56,
+		})
+		l.TextColor3 = opts.leftColor or Color3.fromRGB(70, 52, 34)
+		l.TextWrapped = opts.wrap == true
+		x = -1
+	end
+
+	if right ~= nil and right ~= "" then
+		local r = PanelChrome.display(frame, {
+			name = "Right", text = right, size = opts.size or 18, stroke = opts.stroke or 2,
+			xAlign = x >= 0 and Enum.TextXAlignment.Left or Enum.TextXAlignment.Right,
+			yAlign = Enum.TextYAlignment.Center,
+			pos = x >= 0 and UDim2.fromOffset(x, 0) or UDim2.fromScale(0.55, 0),
+			size2 = x >= 0 and UDim2.new(1, -x, 1, 0) or UDim2.new(0.45, 0, 1, 0), zIndex = 56,
+		})
+		r.TextColor3 = opts.rightColor or Color3.fromRGB(28, 32, 54)
+	end
+	return frame
+end
+
+local rollsCard = card(1, "WHAT IT ROLLS")
+local costCard = card(2, "WHAT IT COSTS")
+local termsCard = card(3, "THE TERMS")
+
+local RARITY_CHIP = {
+	Common = Color3.fromRGB(150, 158, 176), Uncommon = Color3.fromRGB(96, 196, 108),
+	Rare = Color3.fromRGB(78, 152, 246), Epic = Color3.fromRGB(176, 108, 240),
+	Legendary = Color3.fromRGB(255, 184, 54),
+}
+
+local function clearRows(frame)
+	for _, child in ipairs(frame:GetChildren()) do
+		if child.Name == "Row" then child:Destroy() end
+	end
+end
+
+local function pct(p)
+	if p >= 0.1 then return string.format("%.0f%%", p * 100) end
+	if p >= 0.01 then return string.format("%.1f%%", p * 100) end
+	return string.format("%.2f%%", p * 100)
+end
+
+local function minutes(m)
+	if m < 1 then return "under a minute" end
+	if m < 90 then return string.format("%.0f min", m) end
+	return string.format("%.1f h", m / 60)
+end
+
+-- ── The offer: everything the panel shows comes from this one server table ───
+local offer = nil
+
+local function applyOffer(newOffer)
+	if typeof(newOffer) ~= "table" then return end
+	offer = newOffer
+
+	bandLabel.Text = string.format("LEVEL %d  \u{2022}  %s", offer.level or 1, offer.bandName or "?")
+	rangeLabel.Text = string.format("x%.2f  \u{2013}  x%.2f", offer.minBase or 0, offer.maxBase or 0)
+	rangeLabel.TextColor3 = Color3.fromRGB(255, 226, 140)
+	reachText.Text = string.format("1 OF %d SWORDS", offer.swordCount or 0)
+	buyLabel.Text = formatGold(offer.price or 0)
+
+	-- WHAT IT ROLLS: the pools, then the real rarity ladder with the band each rarity can land in.
+	clearRows(rollsCard)
+	local n = 0
+	for _, pool in ipairs(offer.pools or {}) do
+		n += 1
+		row(rollsCard, n, string.format("%s pool", pool.name),
+			string.format("%s  \u{2022}  %d swords  \u{2022}  x%.2f-x%.2f",
+				pct(pool.weight), pool.swords, pool.minBase, pool.maxBase), { size = 17 })
+	end
+	n += 1
+	row(rollsCard, n, "", "", { height = 6 })
+	n += 1
+	row(rollsCard, n, "RARITY", "CHANCE   (1 IN)   DAMAGE BAND",
+		{ size = 15, leftColor = Color3.fromRGB(120, 100, 70), rightColor = Color3.fromRGB(120, 100, 70) })
+	for _, odd in ipairs(offer.rarityOdds or {}) do
+		n += 1
+		row(rollsCard, n, string.upper(odd.rarity),
+			string.format("%s   (1 in %d)   x%.2f-x%.2f", pct(odd.p), odd.oneIn, odd.minBase, odd.maxBase),
+			{ chip = RARITY_CHIP[odd.rarity] or RARITY_CHIP.Common, size = 17 })
+	end
+	n += 1
+	row(rollsCard, n, string.format("Stat jitter \u{00B1}%.0f%% on the rolled base, as every drop gets.",
+		(offer.jitter or 0) * 100), "", { size = 15, leftColor = Color3.fromRGB(120, 100, 70) })
+
+	-- WHAT IT COSTS: the price as a function of level, in four units the player already spends in.
+	clearRows(costCard)
+	local c = 0
+	c += 1
+	row(costCard, c, string.format("Price at level %d", offer.level or 1),
+		formatGold(offer.price) .. " gold", { size = 20, stroke = 2.5, rightColor = Color3.fromRGB(196, 92, 20) })
+	c += 1
+	row(costCard, c, "  = forge strikes at this tier",
+		string.format("%.1f x %s", offer.priceStrikes or 0, formatGold(offer.strikeRef or 0)), { size = 17 })
+	c += 1
+	row(costCard, c, "  = kills at your level",
+		string.format("%d kills x %s gold", offer.priceKills or 0, formatGold(offer.goldPerKill or 0)), { size = 17 })
+	c += 1
+	if offer.goldPerHour and offer.goldPerHour > 0 then
+		row(costCard, c, "  = your gold per hour (measured)",
+			string.format("%s /h  \u{2192}  %s", formatGold(offer.goldPerHour), minutes((offer.price or 0) / offer.goldPerHour * 60)),
+			{ size = 17 })
+	else
+		row(costCard, c, "  = your gold per hour", "measuring\u{2026} (farm a little)",
+			{ size = 17, rightColor = Color3.fromRGB(120, 100, 70) })
+	end
+	c += 1
+	if offer.yourStrike and offer.yourStrike > 0 then
+		row(costCard, c, string.format("  = strikes on your %s", offer.yourSword or "sword"),
+			string.format("%.1f x %s", (offer.price or 0) / offer.yourStrike, formatGold(offer.yourStrike)), { size = 17 })
+	else
+		row(costCard, c, "  = strikes on your sword", "no relic carried", { size = 17 })
+	end
+	c += 1
+	row(costCard, c, "", "", { height = 4 })
+	c += 1
+	row(costCard, c, "The price is a function of your level only. It is read off your Level the moment you press buy \u{2014} the client never sends a price.",
+		"", { size = 15, leftColor = Color3.fromRGB(120, 100, 70), wrap = true, height = 38 })
+
+	-- THE TERMS.
+	clearRows(termsCard)
+	local t = 0
+	t += 1
+	row(termsCard, t, "Rolled", "on the server, when the gold leaves", { size = 17 })
+	t += 1
+	row(termsCard, t, "Re-rolls", "per purchase \u{2014} never on a timer or a visit", { size = 17 })
+	t += 1
+	row(termsCard, t, "Blessed extra slot", string.format("%d%% \u{2014} drops and the forge only", math.floor((offer.blessedChance or 0) * 100)), { size = 17 })
+	t += 1
+	row(termsCard, t, "Bad-luck floor",
+		string.format("%s guaranteed within %d buys", offer.pityFloor or "Rare", offer.pityIn or offer.pityPurchases or 0), { size = 17 })
+	t += 1
+	row(termsCard, t, "Robux", "none, anywhere on this counter", { size = 17 })
+	t += 1
+	row(termsCard, t, string.format("The same %d swords the drops give, from the pools of the zone you are in now.", offer.swordCount or 0),
+		"", { size = 15, leftColor = Color3.fromRGB(120, 100, 70), wrap = true, height = 34 })
+
+	-- Affordable goes green; the rest stays grey (still pressable: the server answers).
 	local gold = currentGold()
 	goldLabel.Text = formatGold(gold)
-	for _, c in ipairs(cards) do
-		local afford = gold >= c.item.price
-		c.grad.Color = ColorSequence.new(afford and BRIGHT.Green or BRIGHT.Grey, afford and BRIGHT.GreenDark or BRIGHT.GreyDark)
+	local afford = gold >= (offer.price or math.huge)
+	buyGrad.Color = ColorSequence.new(afford and BRIGHT.Green or BRIGHT.Grey, afford and BRIGHT.GreenDark or BRIGHT.GreyDark)
+	if afford then
+		buyHint.Text = "BUY THE BLADE"
+		buyHint.TextColor3 = Color3.fromRGB(180, 255, 190)
+	else
+		local short = (offer.price or 0) - gold
+		buyHint.Text = string.format("%s gold short", formatGold(short))
+		buyHint.TextColor3 = Color3.fromRGB(255, 196, 186)
 	end
 end
 
-local function buildShopList()
-	if #cards == 0 then
-		for index, item in ipairs(MerchantConfig.Items) do
-			buildCard(index, item)
-		end
-	end
-	refreshPrices()
+-- Until the server answers, the panel shows the shipped offer for the level the client can see.
+-- Same module, same numbers; the server's copy replaces it the moment it arrives.
+local function fallbackOffer()
+	local ok, result = pcall(MerchantConfig.OfferForLevel, currentLevel())
+	if ok then return result end
+	return nil
 end
 
--- ── Responsive layout: pick the column count that keeps the panel biggest ────
+buyBtn.Activated:Connect(function()
+	MERCHANT_ACTION:FireServer("BuyBlade")
+end)
+tile.MouseEnter:Connect(function()
+	tileScale.Scale = 1.04
+	infoLabel.Text = "THE BLADE HAS NO NAME UNTIL YOU PAY FOR IT"
+end)
+tile.MouseLeave:Connect(function()
+	tileScale.Scale = 1
+	infoLabel.Text = DEFAULT_INFO
+end)
+
+-- ── Responsive layout: side by side when there is room, stacked when there is not ──
 local baseScale = 1
 local function applyLayout(viewport)
-	local best
-	-- Everything outside the card rows: header, ribbon, tray lips and scroll padding.
-	local chromeH = TRAY_Y + TRAY_INSET * 2 + SCROLL_PAD_TOP + SCROLL_PAD_BOTTOM + TRAY_BOTTOM
-	for _, cols in ipairs({ 5, 3, 2 }) do
-		local rows = math.ceil(#MerchantConfig.Items / cols)
-		local W = TRAY_X * 2 + TRAY_INSET * 2 + 12 + cols * CARD_W + (cols - 1) * GAP + 8
-		local naturalH = chromeH + rows * CARD_H + (rows - 1) * GAP
-		local minH = chromeH + CARD_H
-		local s = math.min(1, (viewport.X - SCREEN_MARGIN_X) / W)
-		local H = naturalH
-		if H * s > viewport.Y - SCREEN_MARGIN_Y then
-			H = math.max(minH, (viewport.Y - SCREEN_MARGIN_Y) / s)
-			s = math.min(s, (viewport.Y - SCREEN_MARGIN_Y) / H)
-		end
-		if not best or s > best.s + 0.01 then
-			best = { cols = cols, W = W, H = H, s = s }
-		end
-	end
-	grid.FillDirectionMaxCells = best.cols
-	window.Size = UDim2.fromOffset(best.W, best.H)
-	baseScale = math.max(best.s, 0.3)
+	local wideS = math.min(1, (viewport.X - SCREEN_MARGIN_X) / PANEL_W_WIDE,
+		(viewport.Y - SCREEN_MARGIN_Y) / PANEL_H_WIDE)
+	local narrowS = math.min(1, (viewport.X - SCREEN_MARGIN_X) / PANEL_W_NARROW,
+		(viewport.Y - SCREEN_MARGIN_Y) / PANEL_H_NARROW)
+	local stacked = narrowS > wideS + 0.02
+	local W = stacked and PANEL_W_NARROW or PANEL_W_WIDE
+	local H = stacked and PANEL_H_NARROW or PANEL_H_WIDE
+	window.Size = UDim2.fromOffset(W, H)
+	baseScale = math.max(stacked and narrowS or wideS, 0.3)
 	panelScale.Scale = baseScale
 
-	local wide = best.W >= WIDE_MIN
+	if stacked then
+		bladeCol.Position = UDim2.fromOffset(TRAY_INSET, TRAY_INSET)
+		bladeCol.Size = UDim2.new(1, -TRAY_INSET * 2, 0, BLADE_COL_H)
+		terms.Position = UDim2.fromOffset(TRAY_INSET, TRAY_INSET + BLADE_COL_H + COL_GAP)
+		terms.Size = UDim2.new(1, -TRAY_INSET * 2, 1, -(TRAY_INSET * 2 + BLADE_COL_H + COL_GAP))
+	else
+		bladeCol.Position = UDim2.fromOffset(TRAY_INSET, TRAY_INSET)
+		bladeCol.Size = UDim2.fromOffset(BLADE_W, BLADE_COL_H)
+		terms.Position = UDim2.fromOffset(TRAY_INSET + BLADE_W + COL_GAP, TRAY_INSET)
+		terms.Size = UDim2.new(1, -(TRAY_INSET * 2 + BLADE_W + COL_GAP), 1, -TRAY_INSET * 2)
+	end
+
+	local wide = W >= WIDE_MIN
 	local goldW = wide and GOLD_W_WIDE or GOLD_W_NARROW
 	goldPill.Size = UDim2.fromOffset(goldW, 50)
 	if wide then
-		-- Gold rides in the header, just left of the close button; the ribbon spans the width.
 		goldPill.AnchorPoint = Vector2.new(1, 0.5)
 		goldPill.Position = UDim2.new(1, -(CLOSE + 34), 0, HEADER_H / 2)
 		banner.Position = UDim2.fromOffset(TRAY_X, BANNER_Y)
 		banner.Size = UDim2.new(1, -TRAY_X * 2, 0, BANNER_H)
-		chrome.TitleLabel.Size = UDim2.new(0, best.W - TITLE_X - goldW - CLOSE - 62, 0, 58)
+		chrome.TitleLabel.Size = UDim2.new(0, W - TITLE_X - goldW - CLOSE - 62, 0, 58)
 	else
-		-- Narrow: the header keeps just the title; gold drops beside a chip-only ribbon.
 		goldPill.AnchorPoint = Vector2.new(0, 0.5)
 		goldPill.Position = UDim2.fromOffset(TRAY_X + 22, BANNER_Y + BANNER_H / 2)
 		local bx = TRAY_X + 22 + goldW + 12
 		banner.Position = UDim2.fromOffset(bx, BANNER_Y)
 		banner.Size = UDim2.new(1, -(bx + TRAY_X), 0, BANNER_H)
-		chrome.TitleLabel.Size = UDim2.new(0, best.W - TITLE_X - CLOSE - 34, 0, 58)
+		chrome.TitleLabel.Size = UDim2.new(0, W - TITLE_X - CLOSE - 34, 0, 58)
 	end
 	infoLabel.Visible = wide
 	bannerSparkle.Visible = wide
@@ -633,11 +851,9 @@ PanelChrome.onViewport(applyLayout)
 
 local isOpen = false
 
--- Shared open/close motion (PanelChrome): the window grows in while the backdrop dims, then
--- the relic cards land row by row.
 local motion = {
 	frame = window, scale = panelScale, dim = overlay, dimTo = 0.5,
-	tiles = function() return { scroll } end,
+	tiles = function() return { bladeCol, terms } end,
 }
 
 local function setShopOpen(open)
@@ -646,7 +862,8 @@ local function setShopOpen(open)
 		overlay.Visible = true
 		window.Visible = true
 		modal.Visible = true
-		buildShopList()
+		applyOffer(offer or fallbackOffer())
+		MERCHANT_ACTION:FireServer("RequestOffer")
 		PanelChrome.openMotion(motion)
 	else
 		noticeLabel.Visible = false
@@ -661,27 +878,28 @@ end
 closeBtn.Activated:Connect(function() setShopOpen(false) end)
 overlay.Activated:Connect(function() setShopOpen(false) end)
 
-MERCHANT_ACTION.OnClientEvent:Connect(function(action, param1, param2)
+MERCHANT_ACTION.OnClientEvent:Connect(function(action, param1, param2, param3)
 	if action == "OpenShop" then
+		applyOffer(param1 or fallbackOffer())
 		setShopOpen(true)
+	elseif action == "Offer" then
+		applyOffer(param1)
 	elseif action == "PurchaseResult" then
-		local isSuccess = param1
-		local message = param2
-		showNotice(message, isSuccess)
-		if isOpen then
-			buildShopList()
-		end
+		showNotice(param2, param1)
+		applyOffer(param3 or offer)
 	end
 end)
 
 local leaderstats = player:WaitForChild("leaderstats", 10)
 if leaderstats then
-	local goldVal = leaderstats:WaitForChild("Gold", 5)
-	if goldVal then
-		goldVal.Changed:Connect(function()
-			if isOpen then buildShopList() end
-		end)
+	for _, statName in ipairs({ "Gold", "Level" }) do
+		local stat = leaderstats:WaitForChild(statName, 5)
+		if stat then
+			stat.Changed:Connect(function()
+				if isOpen then MERCHANT_ACTION:FireServer("RequestOffer") end
+			end)
+		end
 	end
 end
 
-print("[MerchantGui] Safe area relic merchant UI enabled")
+print("[MerchantGui] Relic Blacksmith counter enabled: one blade, rolled for your level")

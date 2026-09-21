@@ -6,7 +6,6 @@ local StarterPack = game:GetService("StarterPack")
 
 local REMOTE_NAMES = {
 	"AdminAction", -- dev/bug-testing mod menu; see AdminSystem.server.luau + AdminGui.client.luau
-	"AutoSellNotice",
 	"BossDoorNotice",
 	"ComboUpdate",
 	"DamageNumber",
@@ -28,7 +27,8 @@ local REMOTE_NAMES = {
 	"SpendSkillPoint",
 	"SwordDrop",
 	"SwordLostOnDeath",
-	"ToggleAutoSell",
+	"SwordPickup", -- KEEP-or-SELL at the moment a sword drops (SwordDropSystem + SwordDropToast).
+	               -- Replaced ToggleAutoSell + AutoSellNotice when auto-sell was removed.
 	"ReforgeAction",
 	"TradeAction",
 	"VaultAction",

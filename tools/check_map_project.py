@@ -671,8 +671,9 @@ def check_projects():
                      ("ServerScriptService", "WorldLook"), ("ServerScriptService", "WorldTerrain"),
                      ("StarterPlayer", "StarterPlayerScripts", "WorldShowcase"),
                      ("StarterPlayer", "StarterPlayerScripts", "WorldHorizon"),
-                     # Studio-only capture stage for the sword roster (inert outside Studio).
-                     ("ServerScriptService", "SwordGalleryStage")}
+                     # Studio-only capture stages (both inert outside Studio).
+                     ("ServerScriptService", "SwordGalleryStage"),
+                     ("ServerScriptService", "EnemyDropStage")}
 
     def walk(d, m, path=()):
         for key, value in d.items():

@@ -126,6 +126,10 @@ WeaponModifiers.Luck = {
 	CHARGE_MAX = 9,          -- charges held at once
 	REBIRTH_PER = 0.1,       -- +0.1x per rebirth...
 	REBIRTH_MAX = 1.0,       -- ...up to +1.0x
+	-- Standing luck earned from the wealth ladder (Config.WealthLadder rungs 4, 5, 6, 7 and 8).
+	-- The whole ladder is worth +0.50x -- half of what five rebirths already give -- and it is
+	-- earned by accumulating a fortune in play, never bought. TAIL_CAP still bounds the result.
+	MILESTONE_MAX = 0.5,
 	BLESSED_SLOT = 2.0,      -- the Blessed slot rolls its tail at twice the luck
 }
 
@@ -139,13 +143,17 @@ WeaponModifiers.Variants = {
 WeaponModifiers.VariantByName = {}
 for _, v in ipairs(WeaponModifiers.Variants) do WeaponModifiers.VariantByName[v.name] = v end
 
--- Total luck multiplier from its parts. streak/charges/rebirths are counts; returns total and parts.
-function WeaponModifiers.LuckFrom(streak: number?, spendCharge: boolean?, rebirths: number?)
+-- Total luck multiplier from its parts. streak/charges/rebirths are counts; milestoneLuck is the
+-- standing bonus the wealth ladder granted (player attribute MilestoneLuck, set by VaultSystem).
+-- Returns the total and every part, so a UI can show where each one came from.
+function WeaponModifiers.LuckFrom(streak: number?, spendCharge: boolean?, rebirths: number?, milestoneLuck: number?)
 	local L = WeaponModifiers.Luck
 	local streakBonus = math.min((tonumber(streak) or 0) * L.STREAK_PER_KILL, L.STREAK_MAX)
 	local chargeBonus = spendCharge and L.CHARGE_BONUS or 0
 	local rebirthBonus = math.min((tonumber(rebirths) or 0) * L.REBIRTH_PER, L.REBIRTH_MAX)
-	return 1 + streakBonus + chargeBonus + rebirthBonus, streakBonus, chargeBonus, rebirthBonus
+	local milestoneBonus = math.clamp(tonumber(milestoneLuck) or 0, 0, L.MILESTONE_MAX)
+	return 1 + streakBonus + chargeBonus + rebirthBonus + milestoneBonus,
+		streakBonus, chargeBonus, rebirthBonus, milestoneBonus
 end
 
 -- Probability of each rung (1..10) for one rolled slot of this rarity at this luck.
@@ -220,8 +228,19 @@ function WeaponModifiers.Ladder(rarityName, luck)
 	return rows
 end
 
+-- Studio capture only. The rare-forge capture (ReforgeSystem's "Motion:ForgeRare" stage, which
+-- is gated on RunService:IsStudio()) sets this to a rung so the very next rolled slot lands
+-- there, then it clears itself: one slot of one roll. Nothing outside that stage ever writes it,
+-- and it changes no odds -- the slot still reports the real probability of the rung it landed on.
+WeaponModifiers.ForceNextTier = nil
+
 local function rollTier(rarityName, peakShift, luck)
 	local odds = WeaponModifiers.TierOdds(rarityName, peakShift, luck)
+	local forced = WeaponModifiers.ForceNextTier
+	if forced then
+		WeaponModifiers.ForceNextTier = nil
+		return math.clamp(forced, 1, WeaponModifiers.TIER_COUNT), odds
+	end
 	local pick = math.random()
 	-- Top down, so the tail is drawn first at exactly its 1-in-N.
 	for tier = WeaponModifiers.TIER_COUNT, 1, -1 do

@@ -3,7 +3,40 @@
 -- Framework only: NPC design, dialogue, and art are not included.
 -- See: DESIGN_RULES.md rule #4 (no forced tutorials), sword-rpg-onboarding-FTUE.md
 
+local GoldCurve = require(script.Parent:WaitForChild("GoldCurve"))
+
 local QuestConfig = {}
+
+-- ── QUEST GOLD ──────────────────────────────────────────────────────────────────────────────
+-- The chain used to pay seven fixed sums -- 100, 300, 250, 600, 1,000, 1,500, 2,000 -- adding to
+-- 5,750 gold once, ever. Measured (ledger r00): 0.03% of a 12-hour career, and 43 minutes of the
+-- OPENING zone. A reward the player cannot feel at the moment they earn it is not a reward, and
+-- by the Void Rift the 2,000-gold capstone was worth about four kills.
+--
+-- A quest now pays a number of KILLS' WORTH OF GOLD AT THE LEVEL IT IS HANDED IN, priced by
+-- GoldCurve -- the same curve the kill loop itself is paid on. Two things follow. A quest is
+-- always worth a recognisable amount of play (roughly the stretch of farming it asked for, plus a
+-- bonus), at every level. And a player who leaves a quest in their log until much later is paid
+-- at the rate of where they are, not where the quest was written.
+--
+-- The `kills` figures are deliberately FLAT-ISH across the chain -- 20 rising to 60 -- which is
+-- the secondary bar's shape: Blox Fruits pays 350 for a level-0 quest and 8,250 for a level-300
+-- one, a x23 climb over a x300 level span, with boss quests worth 2-3x a normal one. The climb
+-- comes from the level factor, not from the listed number.
+--
+-- Both the server (QuestSystem, which grants it) and the client (QuestGui, which prints it) call
+-- this one function, so the number on the card is the number that will be paid.
+function QuestConfig.GoldReward(reward, level: number?): number
+	if typeof(reward) ~= "table" or reward.type ~= "GOLD" then
+		return 0
+	end
+	local kills = tonumber(reward.kills)
+	if kills then
+		return math.max(10, math.floor(kills * GoldCurve.PerKill(level, "minion") / 10 + 0.5) * 10)
+	end
+	-- An older-shaped reward that only carries a flat `amount` still pays that amount.
+	return math.max(0, math.floor(tonumber(reward.amount) or 0))
+end
 
 -- Quest giver placement (near spawn in the hub)
 QuestConfig.GIVER_POSITION = Vector3.new(0, 0, 0) -- fallback only; the placed NPC's position is used at runtime
@@ -37,7 +70,7 @@ QuestConfig.QUESTS = {
 		name = "First Blood",
 		description = "Defeat 3 enemies in the Iron Lowlands.",
 		objective = { type = "KILL_ZONE", zone = "IronLowlands", count = 3 },
-		reward = { type = "GOLD", amount = 100 },
+		reward = { type = "GOLD", kills = 20 },  -- 20 kills' worth at the level it is handed in
 	},
 	{
 		id = "q2_prove_yourself",
@@ -65,7 +98,7 @@ QuestConfig.QUESTS = {
 		name = "Growing Stronger",
 		description = "Reach level 10.",
 		objective = { type = "LEVEL", target = 10 },
-		reward = { type = "GOLD", amount = 300 },
+		reward = { type = "GOLD", kills = 25 },
 	},
 	-- Briarwood bridge zone (Lv 8-14)
 	{
@@ -73,7 +106,7 @@ QuestConfig.QUESTS = {
 		name = "Thorn Clearing",
 		description = "Defeat 4 enemies in the Briarwood.",
 		objective = { type = "KILL_ZONE", zone = "Briarwood", count = 4 },
-		reward = { type = "GOLD", amount = 250 },
+		reward = { type = "GOLD", kills = 25 },
 	},
 	{
 		id = "q7_grove_keeper",
@@ -117,7 +150,7 @@ QuestConfig.QUESTS = {
 		name = "Marsh Expedition",
 		description = "Defeat 6 enemies in the Sunken Marsh.",
 		objective = { type = "KILL_ZONE", zone = "SunkenMarsh", count = 6 },
-		reward = { type = "GOLD", amount = 600 },
+		reward = { type = "GOLD", kills = 35 },
 	},
 	{
 		id = "q13_bell_toll",
@@ -139,7 +172,7 @@ QuestConfig.QUESTS = {
 		name = "Infernal Trial",
 		description = "Defeat 10 enemies in the Infernal Caldera.",
 		objective = { type = "KILL_ZONE", zone = "InfernalCaldera", count = 10 },
-		reward = { type = "GOLD", amount = 1000 },
+		reward = { type = "GOLD", kills = 40 },
 	},
 	{
 		id = "q16_colossus_slayer",
@@ -161,7 +194,7 @@ QuestConfig.QUESTS = {
 		name = "Storm Assault",
 		description = "Defeat 8 enemies in Stormwatch.",
 		objective = { type = "KILL_ZONE", zone = "Stormwatch", count = 8 },
-		reward = { type = "GOLD", amount = 1500 },
+		reward = { type = "GOLD", kills = 45 },
 	},
 	{
 		id = "q19_tempest_challenge",
@@ -183,7 +216,7 @@ QuestConfig.QUESTS = {
 		name = "Void Walker",
 		description = "Defeat 15 enemies in the Void Rift.",
 		objective = { type = "KILL_ZONE", zone = "VoidRift", count = 15 },
-		reward = { type = "GOLD", amount = 2000 },
+		reward = { type = "GOLD", kills = 60 },
 	},
 	{
 		id = "q22_voidrend",

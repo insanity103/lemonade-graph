@@ -78,6 +78,9 @@
       "SwordGalleryStage": {
         "$path": "lemonade-game/ServerScriptService/SwordGalleryStage.server.luau"
       },
+      "EnemyDropStage": {
+        "$path": "lemonade-game/ServerScriptService/EnemyDropStage.server.luau"
+      },
       "MapMarkers": {
         "$path": "lemonade-game/Gameplay/MapMarkers.luau"
       },

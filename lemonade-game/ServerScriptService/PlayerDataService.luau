@@ -2,6 +2,7 @@
 --   skill/attribute points, inventory stacks, and boss swords with their rolled mods)
 local Players = game:GetService("Players")
 local DataStoreService = game:GetService("DataStoreService")
+local RunService = game:GetService("RunService")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SaveConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SaveConfig"))
@@ -42,6 +43,17 @@ local function defaultData()
 		reforgeBest = 0,  -- best rating ever produced by a reforge
 		reforgeCount = 0,  -- lifetime reforges
 		reforgeTailPity = 0,  -- strikes since the last Sunburst-or-better roll (ReforgeSystem long-tail pity)
+		reforgeRecent = {},  -- the top rung of each of the last forges, oldest first (the anvil's run rail)
+		dropPity = 0,  -- drop credit owed: kills that paid nothing, each worth its own chance (DropRules)
+		dropRarePity = 0,  -- drops since the last Rare or better (DropRules)
+		merchantPity = 0,  -- blacksmith purchases in a row below MerchantConfig.PITY_FLOOR
+		merchantCount = 0,  -- lifetime blades bought from the Relic Blacksmith
+		vaultSlots = 0,  -- vault shelves BOUGHT with gold (Config.VaultConfig owns the price ladder);
+		                 -- the free shelf is SaveConfig.VAULT_CAPACITY and milestone shelves come
+		                 -- from wealthRung, so this counts purchases only and nothing else
+		wealthRung = 0,  -- highest Config.WealthLadder rung ever reached. Earned once, never lost:
+		                 -- spending the fortune afterwards does not take the title or its perks back
+		wealthBest = 0,  -- the highest FORTUNE (net worth in gold) this profile has ever held
 		isNew = true,
 	}
 	for name, default in pairs(SaveConfig.LEADERSTATS) do data.leaderstats[name] = default end
@@ -123,9 +135,15 @@ function PlayerDataService.Load(player)
 	if typeof(record.vault) ~= "table" then
 		record.vault = {}
 	end
-	for _, key in ipairs({ "reforgePity", "reforgeFreeAt", "reforgeBest", "reforgeCount", "reforgeTailPity" }) do
+	-- vaultSlots / wealthRung / wealthBest were added with the paid vault and the wealth ladder;
+	-- a profile saved before them simply arrives with none and is backfilled to 0 here, exactly
+	-- the way every earlier counter was. Nothing is renamed and nothing is dropped.
+	for _, key in ipairs({ "reforgePity", "reforgeFreeAt", "reforgeBest", "reforgeCount", "reforgeTailPity",
+		"dropPity", "dropRarePity", "vaultSlots", "wealthRung", "wealthBest" }) do
 		if typeof(record[key]) ~= "number" then record[key] = 0 end
 	end
+	-- Added with the forge run rail: a save written before it simply has no rung history yet.
+	if typeof(record.reforgeRecent) ~= "table" then record.reforgeRecent = {} end
 	if not record.version or record.version < SaveConfig.SCHEMA_VERSION then
 		record.version = SaveConfig.SCHEMA_VERSION
 	end
@@ -290,9 +308,29 @@ function PlayerDataService.Serialize(player)
 end
 
 -- ---------------------------------------------------------------- save / release
+-- A Studio capture stage (GuiShowcase) lends relics, tops up gold and fires real rerolls so the
+-- camera sees the real code path. None of that is the player's: while the showcase attribute is
+-- set in Studio, saving is refused outright, so a staged session can never reach the DataStore.
+-- Live servers never take this branch (RunService:IsStudio() is false there).
+local function showcaseActive(): boolean
+	if not RunService:IsStudio() then return false end
+	local name = workspace:GetAttribute("GuiShowcase")
+	return typeof(name) == "string" and name ~= ""
+end
+
+local warnedShowcase = false
+
 function PlayerDataService.Save(player, releaseLock)
 	local profile = profiles[player]
 	if not profile then return false end
+
+	if showcaseActive() then
+		if not warnedShowcase then
+			warnedShowcase = true
+			warn("[PlayerDataService] GuiShowcase is staging in Studio: saves are refused for this session")
+		end
+		return false
+	end
 
 	local data = PlayerDataService.Serialize(player)
 	if not data or data.__loadFailed then return false end
