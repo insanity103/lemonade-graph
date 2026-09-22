@@ -177,8 +177,8 @@ GuiShowcase.stage("SwordGallery", function(ctx)
 			return a.poolBase > b.poolBase
 		end)
 		for row, entry in ipairs(rows) do
-			local tool, _, _, _, data = BossSwordFactory.build(key, { sword = entry.name, rarity = entry.legendary and "Legendary" or "Epic",
-				jitter = false, allowBlessed = false })
+			local tool, _, _, data = BossSwordFactory.build(key, { sword = entry.name, rarity = entry.legendary and "Legendary" or "Epic",
+				jitter = false })
 			local model = tool and swordModel(tool)
 			if tool then
 				tool:Destroy()

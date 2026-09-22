@@ -279,7 +279,7 @@ function InventoryService.SellSword(player, toolName)
 		return false
 	end
 
-	-- One price, from one module: tier x rarity x the lesser-pool factor x Blessed x the player's
+	-- One price, from one module: tier x rarity x the lesser-pool factor x the player's
 	-- rebirth gold multiplier -- the same call the pickup prompt made when this sword dropped, and
 	-- the same call the inventory tile made to print the number on this button.
 	local sellValue = SellValue.ForTool(tool, SellValue.GoldMultFor(player))

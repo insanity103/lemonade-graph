@@ -22,7 +22,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = ReplicatedStorage:WaitForChild("Config")
 local MerchantConfig = require(Config:WaitForChild("MerchantConfig"))
 local SwordValue = require(Config:WaitForChild("SwordValue"))
+local WeaponModifiers = require(Config:WaitForChild("WeaponModifiers"))
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
+local SpinService = require(script.Parent:WaitForChild("SpinService"))
 local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 WorldLayout.EnsureBuilt()
@@ -113,8 +115,8 @@ local function goldOf(player)
 	return nil
 end
 
--- The sword the player is holding, or the best one in their pack: the thing a forge strike would
--- actually be spent on, so the panel can put the two prices side by side.
+-- The sword the player is holding, or the best one in their pack, so the panel can name what the
+-- blade would be replacing.
 local function carriedSword(player): Instance?
 	local best, bestRating
 	local function consider(tool)
@@ -135,9 +137,8 @@ local function carriedSword(player): Instance?
 	return best
 end
 
--- The offer as the client receives it: the shipped table plus the three live, per-player numbers
--- that make the price readable -- what the player has, what they earn, and what a strike on their
--- own sword costs right now.
+-- The offer as the client receives it: the shipped table plus the live, per-player numbers that
+-- make the price readable -- what the player has, what they earn, and their prefix slots.
 local function offerFor(player)
 	local level = levelOf(player)
 	local offer = table.clone(MerchantConfig.OfferForLevel(level))
@@ -153,9 +154,11 @@ local function offerFor(player)
 		local attrs = SwordValue.attrsOfTool(tool)
 		offer.yourSword = tool:GetAttribute("BaseWeaponName") or tool.Name
 		offer.yourSwordBase = tonumber(attrs.BaseMult) or 0
-		offer.yourStrike = SwordValue.rerollCost(attrs)
-		offer.priceInYourStrikes = offer.yourStrike > 0 and offer.price / offer.yourStrike or nil
 	end
+	offer.prefixSlots = WeaponModifiers.SlotsOf(player)
+	-- The best thing a blade can roll at this level is the bracket's named chase: "??" until this
+	-- player has rolled it.
+	offer.prefixCeilingName = WeaponModifiers.ChaseLabel(player, WeaponModifiers.ChaseFor(level))
 
 	offer.pity = PlayerDataService.GetField(player, "merchantPity") or 0
 	offer.purchases = PlayerDataService.GetField(player, "merchantCount") or 0
@@ -196,12 +199,13 @@ end
 local RARITY_INDEX = {}
 for i, name in ipairs({ "Common", "Uncommon", "Rare", "Epic", "Legendary" }) do RARITY_INDEX[name] = i end
 
--- Rolls one blade for `level`, honouring the pity floor. Returns tool, mods, fullName, extraSlot,
--- weaponData, poolKey. Exposed so a Studio-only harness measures the SHIPPED roll, not a copy.
-local function rollBlade(level, pityCount)
-	local poolKey, opts, floor = MerchantConfig.RollArgs(level, pityCount)
-	local tool, mods, fullName, gotExtraSlot, weaponData = BossSwordFactory.build(poolKey, opts)
-	return tool, mods, fullName, gotExtraSlot, weaponData, poolKey, floor
+-- Rolls one blade for `level` (and the buyer's prefix slots), honouring the pity floor. Returns
+-- tool, mods, fullName, weaponData, poolKey, floor. Exposed so a Studio-only harness measures the
+-- SHIPPED roll, not a copy.
+local function rollBlade(level, pityCount, slots)
+	local poolKey, opts, floor = MerchantConfig.RollArgs(level, pityCount, nil, slots)
+	local tool, mods, fullName, weaponData = BossSwordFactory.build(poolKey, opts)
+	return tool, mods, fullName, weaponData, poolKey, floor
 end
 -- A Studio-only harness drives the SHIPPED roll through this handle, so a measurement can never
 -- be a copy of the roll. It does not exist on a live server.
@@ -231,7 +235,7 @@ MERCHANT_ACTION.OnServerEvent:Connect(function(player, action)
 	end
 	local now = os.clock()
 	if lastPurchase[player] and now - lastPurchase[player] < MerchantConfig.PURCHASE_COOLDOWN then
-		return fail(player, "The anvil is still hot. One blade at a time.")
+		return fail(player, "One blade at a time.")
 	end
 
 	local goldStat = goldOf(player)
@@ -253,11 +257,12 @@ MERCHANT_ACTION.OnServerEvent:Connect(function(player, action)
 	local pity = PlayerDataService.GetField(player, "merchantPity") or 0
 
 	-- Built before the gold is debited, so a bad template can never take payment for nothing.
-	local ok, tool, mods, fullName, gotExtraSlot, weaponData, poolKey, floor = pcall(rollBlade, level, pity)
+	local ok, tool, mods, fullName, weaponData, poolKey, floor = pcall(rollBlade, level, pity,
+		WeaponModifiers.SlotsOf(player))
 	if not ok or not tool then
 		warn(string.format("[MerchantSystem] Could not roll a blade for %s at level %d: %s",
 			player.Name, level, tostring(tool)))
-		return fail(player, "The forge is cold. Try again in a moment.")
+		return fail(player, "The blacksmith fumbled the blade. Try again in a moment.")
 	end
 
 	lastPurchase[player] = now
@@ -271,7 +276,12 @@ MERCHANT_ACTION.OnServerEvent:Connect(function(player, action)
 		(PlayerDataService.GetField(player, "merchantCount") or 0) + 1)
 	PlayerDataService.MarkDirty(player)
 
-	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods, gotExtraSlot,
+	for _, mod in ipairs(mods) do
+		mod.oneInText = WeaponModifiers.OneInText(mod.p or 0)
+		mod.rung = WeaponModifiers.Rungs[mod.tier] and WeaponModifiers.Rungs[mod.tier].name or nil
+	end
+	SpinService.CreditPrefixes(player, mods, fullName, 3)
+	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods,
 		{ pool = "Relic Blacksmith", baseName = weaponData.name, listedBase = weaponData.listedBase })
 	MERCHANT_ACTION:FireClient(player, "PurchaseResult", true,
 		("The blacksmith rolled [%s] for %d Gold!"):format(fullName, price), offerFor(player))

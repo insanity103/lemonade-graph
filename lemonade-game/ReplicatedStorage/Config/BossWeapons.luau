@@ -1,5 +1,5 @@
 --// BossWeapons  (single source of truth for the whole sword roster: 13 pools, 92 swords)
--- Read by BossSwordFactory (every drop, purchase, admin gift, vault / trade rebuild and reforge),
+-- Read by BossSwordFactory (every drop, purchase, admin gift and vault / trade rebuild),
 -- DropRules (which pool a dead rig rolls on, and at what chance), SwordDropSystem (auto-sell
 -- values), MerchantConfig (shop listings) and the Studio-only stages.
 --
@@ -232,6 +232,12 @@ BossWeapons.Pools = {
 -- the Summit's x9.90-x12.16 under the Titan's best regular x13.38 -- the Summit's normals are
 -- Lv 80-92, so capping them under the Titan's FLOOR would pay the hardest ordinary enemy in the
 -- game less than a Lv 45 boss). The whole ladder rises monotonically in content order. [TUNING]
+-- RELICS sit above that cap on purpose: each Relic is its area's spin-wheel chase (Config.SpinPools),
+-- and the next area's step 1 carries the last area's chase in as its nice pull. So every Relic beats
+-- the sword its area carries in (Lodestone x1.95 < Pit Sovereign x2.20 < Grovebound x2.40 < Blue Hour
+-- x2.70 < Aurora x3.80 < Drowned Chime x4.10 < First Spark x4.60 < Colossus Heart x6.50 < Thunderglass
+-- x7.10 < Quiet Star x9.40 < Archon x10.50 < Little Dawn x15.80 < Astral x18.00), and the chase
+-- ladder never runs backwards across a border.
 BossWeapons.NormalPools = {
 	IronLowlands = { -- Quarry Bandits, Lv 1-3
 		lesser = true, inherentBonusDmg = 0.05,
@@ -247,7 +253,7 @@ BossWeapons.NormalPools = {
 			sword("Foreman's Longsword", 1.20, 9, { mesh = "Template", textured = false, color = rgb(214, 206, 188), material = Enum.Material.Metal, length = 4.1 },
 				{ inherentRange = 1.0, inherentKnockback = 10 }, "The old foreman's own sword, kept sharp out of spite"),
 		},
-		legendary = sword("Lodestone Edge", 1.28, 0, { mesh = "Template", textured = false, color = rgb(255, 226, 120), material = Enum.Material.Neon, length = 4.2 },
+		legendary = sword("Lodestone Edge", 1.95, 0, { mesh = "Template", textured = false, color = rgb(255, 226, 120), material = Enum.Material.Neon, length = 4.2 },
 			{ inherentCrit = 0.05, inherentRange = 1.0 }, "A splinter of the quarry's singing lodestone, edged in gold"),
 	},
 	Briarwood = { -- Briarwood, Lv 9-14
@@ -264,7 +270,7 @@ BossWeapons.NormalPools = {
 			sword("Heartwood Broadsword", 1.64, 9, { mesh = "Blocks", color = rgb(96, 122, 56), material = Enum.Material.Wood, accent = rgb(186, 150, 74), length = 4.2, blade = 1.1, width = 1.4, guard = 1.1 },
 				{ inherentKnockback = 18, inherentRange = 0.8 }, "Broadsword grown, not forged, from heartwood"),
 		},
-		legendary = sword("Grovebound Bloom", 1.80, 0, { mesh = "Template", textured = false, color = rgb(184, 255, 150), material = Enum.Material.Neon, length = 4.3 },
+		legendary = sword("Grovebound Bloom", 2.40, 0, { mesh = "Template", textured = false, color = rgb(184, 255, 150), material = Enum.Material.Neon, length = 4.3 },
 			{ inherentCrit = 0.08, inherentRange = 1.2 }, "A blade that flowers along the fuller when it swings"),
 	},
 	FrostboundGlacier = { -- Frostbound Glacier, Lv 18-23
@@ -281,7 +287,7 @@ BossWeapons.NormalPools = {
 			sword("Rimecoat Broadsword", 1.86, 9, { mesh = "Blocks", color = rgb(132, 180, 226), material = Enum.Material.Ice, accent = rgb(200, 228, 248), length = 4.2, blade = 1.1, width = 1.4, guard = 1.1 },
 				{ inherentKnockback = 20 }, "Broadsword under a permanent coat of rime"),
 		},
-		legendary = sword("Blue Hour Shard", 2.05, 0, { mesh = "Template", textured = false, color = rgb(150, 236, 255), material = Enum.Material.Neon, length = 4.3 },
+		legendary = sword("Blue Hour Shard", 2.70, 0, { mesh = "Template", textured = false, color = rgb(150, 236, 255), material = Enum.Material.Neon, length = 4.3 },
 			{ inherentCrit = 0.1, inherentRange = 1.5 }, "Kept from the one blue hour the glacier lights up"),
 	},
 	SunkenMarsh = { -- Sunken Marsh, Lv 24-29
@@ -298,7 +304,7 @@ BossWeapons.NormalPools = {
 			sword("Bellringer Broadsword", 2.82, 9, { mesh = "Blocks", color = rgb(96, 116, 124), material = Enum.Material.Metal, accent = rgb(198, 172, 108), length = 4.3, blade = 1.1, width = 1.5, guard = 1.1 },
 				{ inherentKnockback = 24 }, "Rings like the sunken bell when it lands"),
 		},
-		legendary = sword("Drowned Chime", 3.10, 0, { mesh = "Template", textured = false, color = rgb(150, 255, 214), material = Enum.Material.Neon, length = 4.4 },
+		legendary = sword("Drowned Chime", 4.10, 0, { mesh = "Template", textured = false, color = rgb(150, 255, 214), material = Enum.Material.Neon, length = 4.4 },
 			{ inherentCrit = 0.1, inherentKnockback = 22 }, "The bell's own bronze, drawn out into a blade that hums"),
 	},
 	InfernalCaldera = { -- Infernal Caldera, Lv 34-41
@@ -315,7 +321,7 @@ BossWeapons.NormalPools = {
 			sword("Caldera Broadsword", 3.68, 9, { mesh = "Blocks", color = rgb(70, 56, 54), material = Enum.Material.Basalt, accent = rgb(255, 158, 70), length = 4.3, blade = 1.1, width = 1.5, guard = 1.1 },
 				{ inherentKnockback = 30 }, "Broad slab of caldera rock with a hilt"),
 		},
-		legendary = sword("First Spark", 4.05, 0, { mesh = "Template", textured = false, color = rgb(255, 196, 96), material = Enum.Material.Neon, length = 4.4 },
+		legendary = sword("First Spark", 4.60, 0, { mesh = "Template", textured = false, color = rgb(255, 196, 96), material = Enum.Material.Neon, length = 4.4 },
 			{ inherentCrit = 0.12, inherentKnockback = 28 }, "The spark the caldera was lit from, kept in a blade"),
 	},
 	Stormwatch = { -- Stormwatch, Lv 41-48
@@ -332,7 +338,7 @@ BossWeapons.NormalPools = {
 			sword("Observatory Broadsword", 5.04, 9, { mesh = "Blocks", color = rgb(88, 102, 138), material = Enum.Material.Metal, accent = rgb(150, 210, 255), length = 4.3, blade = 1.1, width = 1.5, guard = 1.1 },
 				{ inherentKnockback = 34, inherentRange = 1.2 }, "The Observatory's own standard, broad and blue"),
 		},
-		legendary = sword("Thunderglass Pane", 5.55, 0, { mesh = "Template", textured = false, color = rgb(170, 224, 255), material = Enum.Material.Neon, length = 4.5 },
+		legendary = sword("Thunderglass Pane", 7.10, 0, { mesh = "Template", textured = false, color = rgb(170, 224, 255), material = Enum.Material.Neon, length = 4.5 },
 			{ inherentCrit = 0.14, inherentKnockback = 30 }, "Glass fused where the lightning went to ground"),
 	},
 	VoidRift = { -- Void Rift, Lv 55-66
@@ -349,7 +355,7 @@ BossWeapons.NormalPools = {
 			sword("Riftwalker Broadsword", 7.50, 9, { mesh = "Blocks", color = rgb(46, 36, 68), material = Enum.Material.Glass, accent = rgb(214, 140, 255), length = 4.4, blade = 1.1, width = 1.5, guard = 1.1 },
 				{ inherentKnockback = 40, inherentRange = 1.5 }, "Broadsword of collapsed rift-glass, heavy as a door"),
 		},
-		legendary = sword("Quiet Star", 8.25, 0, { mesh = "Template", textured = false, color = rgb(226, 170, 255), material = Enum.Material.Neon, length = 4.6 },
+		legendary = sword("Quiet Star", 9.40, 0, { mesh = "Template", textured = false, color = rgb(226, 170, 255), material = Enum.Material.Neon, length = 4.6 },
 			{ inherentCrit = 0.18, inherentRange = 2.5 }, "A star that fell through the rift and stopped shining"),
 	},
 	CelestialSummit = { -- Celestial Summit, Lv 80-92
@@ -366,10 +372,135 @@ BossWeapons.NormalPools = {
 			sword("Summitward Broadsword", 12.16, 9, { mesh = "Blocks", color = rgb(240, 244, 255), material = Enum.Material.Metal, accent = rgb(255, 214, 110), length = 4.5, blade = 1.15, width = 1.5, guard = 1.15 },
 				{ inherentKnockback = 50, inherentRange = 2.0 }, "Broad blade carried up the last stair of the Summit"),
 		},
-		legendary = sword("Little Dawn", 13.40, 0, { mesh = "Template", textured = false, color = rgb(255, 246, 170), material = Enum.Material.Neon, length = 4.7 },
+		legendary = sword("Little Dawn", 15.80, 0, { mesh = "Template", textured = false, color = rgb(255, 246, 170), material = Enum.Material.Neon, length = 4.7 },
 			{ inherentCrit = 0.22, inherentRange = 3.0 }, "Not the Titan's sun: a small, stubborn dawn of your own"),
 	},
 }
+
+-- ---------------------------------------------------------------- spin-wheel-only swords
+-- Swords only the town spin wheel gives (Config.SpinPools). They live in their zone's pool so
+-- Resolve / FindSword / a saved sword's rebuild find them like any other, but no enemy drops them:
+--   * WARDEN EPICS join the zone's `swords` at weight 0 (rollSword never picks a 0-weight sword), so
+--     the three warden areas' boss steps bring a real new sword: Hollowbough, Frogsong, Pinwheel.
+--   * SPIN REGULARS give every area's wheel its own weapon family instead of one Shiv / Falchion /
+--     Sabre trio repeated eight times (billhooks in Briarwood, an estoc on the Glacier, cutlass and
+--     oar in the Marsh, khopesh / flamberge / chopper in the Caldera, rapier / gladius / epee /
+--     tulwar at Stormwatch, kris and tanto in the Void, katana and nodachi on the Summit). They also
+--     join the zone's `swords` at weight 0, and their bases sit inside the zone's existing band.
+--   * SPIN RELICS are extra named Legendaries (`spinRelics`, resolved as Legendary like the Relic):
+--     the warden areas' own chase (Honeycomb Thorn, Lilypad Lantern, Kitestring Rapier, and the
+--     Stormwatch midway camp's Bottled Lightning), the GREAT
+--     pull of the Caldera, Stormwatch and Summit boss steps (Caramelt Claymore, Double Rainbow,
+--     Sunsqueeze Blade), and five TRAILHEAD chases so a new area has its own hunt from the first
+--     spin (Snowglobe Sabre, Rubber Duck Rapier, Toasted Marshmallow Brand, Wishbone Comet,
+--     Origami Crane Blade). Each sits between the sword the area carries in and its ultra. [TUNING]
+local wardenEpics = {
+	Briarwood = sword("Hollowbough Claymore", 1.72, 0, { mesh = "Blocks", color = rgb(118, 92, 54), material = Enum.Material.Wood, accent = rgb(255, 214, 92), length = 4.4, blade = 1.15, width = 1.5, guard = 1.15 },
+		{ inherentKnockback = 20, inherentRange = 1.0 }, "Carved from the hollow bough the Root Warden sleeps in; bees still visit it"),
+	SunkenMarsh = sword("Frogsong Greatsword", 3.20, 0, { mesh = "Blocks", color = rgb(92, 170, 96), material = Enum.Material.Metal, accent = rgb(230, 255, 170), length = 4.5, blade = 1.15, width = 1.5, guard = 1.15 },
+		{ inherentKnockback = 26, inherentCrit = 0.06 }, "Croaks a little tune on every swing; the whole marsh sings back"),
+	Stormwatch = sword("Pinwheel Claymore", 5.61, 0, { mesh = "Blocks", color = rgb(255, 140, 170), material = Enum.Material.Metal, accent = rgb(140, 220, 255), length = 4.5, blade = 1.15, width = 1.5, guard = 1.15 },
+		{ inherentKnockback = 36, inherentRange = 1.2 }, "The Tempest Warden's pinwheel, spun up into a blade by the big storm"),
+}
+local spinRegulars = {
+	Briarwood = {
+		sword("Briar Billhook", 1.41, 0, { mesh = "Blocks", color = rgb(150, 120, 70), material = Enum.Material.Wood, accent = rgb(120, 168, 80), length = 3.6, blade = 1.2, width = 1.3, guard = 0.7 },
+			{ inherentKnockback = 10 }, "A hedge billhook with a thorn for a hilt; it clears a path and then some"),
+		sword("Hedgehog Hooksword", 1.48, 0, { mesh = "Blocks", color = rgb(168, 132, 96), material = Enum.Material.Metal, accent = rgb(96, 70, 44), length = 3.9, blade = 0.9, width = 1.0, guard = 1.3 },
+			{ inherentCrit = 0.04, inherentRange = 0.6 }, "Hooked tip, bristly guard; it curls up if you drop it"),
+	},
+	FrostboundGlacier = {
+		sword("Icicle Estoc", 1.89, 0, { mesh = "Template", textured = false, color = rgb(200, 236, 255), material = Enum.Material.Ice, length = 4.4 },
+			{ inherentRange = 1.4 }, "A long, thin icicle that set straight enough to thrust with"),
+	},
+	SunkenMarsh = {
+		sword("Ferryman's Cutlass", 2.42, 0, { mesh = "Blocks", color = rgb(120, 108, 84), material = Enum.Material.Metal, accent = rgb(200, 170, 90), length = 3.6, blade = 1.1, width = 1.2, guard = 1.3 },
+			{ inherentKnockback = 14 }, "The old ferryman's cutlass; still smells a little of river"),
+		sword("Oarblade", 2.55, 0, { mesh = "Blocks", color = rgb(150, 118, 80), material = Enum.Material.Wood, accent = rgb(110, 150, 120), length = 4.4, blade = 1.3, width = 1.6, guard = 0.7 },
+			{ inherentRange = 1.2, inherentKnockback = 12 }, "A flat oar with an edge on it; rows and cuts equally well"),
+	},
+	InfernalCaldera = {
+		sword("Kilnhook Khopesh", 3.00, 0, { mesh = "Blocks", color = rgb(110, 70, 52), material = Enum.Material.Basalt, accent = rgb(255, 150, 60), length = 3.5, blade = 1.2, width = 1.4, guard = 0.8 },
+			{ inherentKnockback = 16 }, "Sickle-backed blade the kiln-keepers hook the hot trays out with"),
+		sword("Cinderwave Flamberge", 3.16, 0, { mesh = "Template", textured = false, color = rgb(210, 90, 40), material = Enum.Material.Metal, length = 4.3 },
+			{ inherentCrit = 0.07, inherentRange = 1.0 }, "Wavy flamberge that flickers like a heat haze"),
+		sword("Anvilback Chopper", 3.33, 0, { mesh = "Blocks", color = rgb(80, 74, 72), material = Enum.Material.Metal, accent = rgb(255, 120, 50), length = 3.7, blade = 1.3, width = 1.7, guard = 0.9 },
+			{ inherentKnockback = 26 }, "A chopper with an anvil for a spine; mind your toes"),
+	},
+	Stormwatch = {
+		sword("Barometer Rapier", 4.10, 0, { mesh = "Template", textured = false, color = rgb(210, 190, 140), material = Enum.Material.Metal, length = 4.3 },
+			{ inherentCrit = 0.07 }, "A brass needle that swings toward low pressure"),
+		sword("Gustcutter Gladius", 4.32, 0, { mesh = "Blocks", color = rgb(170, 188, 214), material = Enum.Material.Metal, accent = rgb(120, 190, 255), length = 3.3, blade = 1.1, width = 1.2, guard = 1.0 },
+			{ inherentKnockback = 20 }, "Short, wide and quick, like the first gust of a storm"),
+		sword("Weathercock Epee", 4.45, 0, { mesh = "Template", textured = false, color = rgb(226, 176, 90), material = Enum.Material.Metal, length = 4.4 },
+			{ inherentRange = 1.2, inherentCrit = 0.05 }, "Off the top of the tallest roof; it still points into the wind"),
+		sword("Stormbell Tulwar", 4.55, 0, { mesh = "Blocks", color = rgb(120, 136, 170), material = Enum.Material.Metal, accent = rgb(255, 230, 140), length = 3.9, blade = 1.1, width = 1.3, guard = 1.2 },
+			{ inherentKnockback = 22, inherentRange = 0.8 }, "Curved tulwar with a little storm bell on the pommel"),
+	},
+	VoidRift = {
+		sword("Hushfang Kris", 6.42, 0, { mesh = "Blocks", color = rgb(86, 64, 124), material = Enum.Material.Foil, accent = rgb(210, 140, 255), length = 3.4, blade = 0.8, width = 0.9, guard = 0.9 },
+			{ inherentCrit = 0.12 }, "A wavy kris that bites without a sound"),
+		sword("Gloam Tanto", 6.76, 0, { mesh = "Blocks", color = rgb(50, 42, 72), material = Enum.Material.Metal, accent = rgb(170, 110, 255), length = 3.0, blade = 0.8, width = 0.9, guard = 0.6 },
+			{ inherentCrit = 0.14, inherentRange = 0.5 }, "Short and straight, drawn from the gloam between two rifts"),
+	},
+	CelestialSummit = {
+		sword("Cloudstep Katana", 9.90, 0, { mesh = "Template", textured = false, color = rgb(240, 244, 255), material = Enum.Material.Metal, length = 4.3 },
+			{ inherentCrit = 0.12, inherentRange = 1.5 }, "Light enough to carry up every stair of the Summit"),
+		sword("Highwind Nodachi", 10.97, 0, { mesh = "Template", textured = false, color = rgb(255, 236, 190), material = Enum.Material.Glass, length = 4.8 },
+			{ inherentRange = 2.5, inherentCrit = 0.12 }, "A very long blade for the very high wind"),
+	},
+}
+local spinRelics = {
+	FrostboundGlacier = {
+		sword("Snowglobe Sabre", 2.60, 0, { mesh = "Template", textured = false, color = rgb(220, 245, 255), material = Enum.Material.Neon, length = 4.3 },
+			{ inherentCrit = 0.09, inherentRange = 1.2 }, "Shake it and it snows on whoever you hit"),
+	},
+	Briarwood = {
+		sword("Honeycomb Thorn", 2.25, 0, { mesh = "Template", textured = false, color = rgb(255, 204, 72), material = Enum.Material.Neon, length = 4.3 },
+			{ inherentCrit = 0.07, inherentRange = 1.0 }, "A thorn the grove bees built a comb around; it drips a little when it hits"),
+	},
+	SunkenMarsh = {
+		sword("Rubber Duck Rapier", 3.95, 0, { mesh = "Template", textured = false, color = rgb(255, 226, 80), material = Enum.Material.Neon, length = 4.3 },
+			{ inherentCrit = 0.1, inherentKnockback = 18 }, "Squeaks on every hit. Nobody knows who made it; everybody wants it"),
+		sword("Lilypad Lantern", 3.85, 0, { mesh = "Template", textured = false, color = rgb(190, 255, 150), material = Enum.Material.Neon, length = 4.4 },
+			{ inherentCrit = 0.09, inherentRange = 1.2 }, "A lantern-bright blade that floats if you drop it in the marsh"),
+	},
+	InfernalCaldera = {
+		sword("Toasted Marshmallow Brand", 5.20, 0, { mesh = "Template", textured = false, color = rgb(255, 222, 170), material = Enum.Material.Neon, length = 4.5 },
+			{ inherentCrit = 0.11, inherentKnockback = 24 }, "Golden outside, gooey inside, held over the caldera just long enough"),
+		sword("Caramelt Claymore", 5.60, 0, { mesh = "Template", textured = false, color = rgb(255, 160, 60), material = Enum.Material.Neon, length = 4.6 },
+			{ inherentKnockback = 30, inherentCrit = 0.1 }, "Molten sugar that set as hard as basalt; smells like a fair"),
+	},
+	Stormwatch = {
+		sword("Bottled Lightning", 6.10, 0, { mesh = "Template", textured = false, color = rgb(255, 244, 150), material = Enum.Material.Neon, length = 4.4 },
+			{ inherentCrit = 0.13, inherentKnockback = 22 }, "A bolt somebody caught in a lemonade jar; it hums whenever a storm is near"),
+		sword("Kitestring Rapier", 6.70, 0, { mesh = "Template", textured = false, color = rgb(200, 236, 255), material = Enum.Material.Neon, length = 4.5 },
+			{ inherentCrit = 0.14, inherentRange = 1.5 }, "Flew on a kite through the big storm and came down charged"),
+		sword("Double Rainbow", 6.90, 0, { mesh = "Template", textured = false, color = rgb(255, 150, 230), material = Enum.Material.Neon, length = 4.6 },
+			{ inherentCrit = 0.15, inherentKnockback = 30 }, "Two rainbows after the storm, and one of them came down as a sword"),
+	},
+	VoidRift = {
+		sword("Wishbone Comet", 9.95, 0, { mesh = "Template", textured = false, color = rgb(250, 210, 255), material = Enum.Material.Neon, length = 4.7 },
+			{ inherentCrit = 0.18, inherentRange = 2.0 }, "A comet split like a wishbone; you got the bigger half"),
+	},
+	CelestialSummit = {
+		sword("Origami Crane Blade", 14.50, 0, { mesh = "Template", textured = false, color = rgb(255, 250, 235), material = Enum.Material.Neon, length = 4.6 },
+			{ inherentCrit = 0.2, inherentRange = 2.5 }, "Folded from one sheet of Summit cloud: a thousand folds, one edge"),
+		sword("Sunsqueeze Blade", 16.90, 0, { mesh = "Template", textured = false, color = rgb(255, 236, 90), material = Enum.Material.Neon, length = 4.8 },
+			{ inherentCrit = 0.22, inherentRange = 3.0 }, "Squeezed from the first sun over the Summit, like the best lemon in the bowl"),
+	},
+}
+for zone, def in pairs(wardenEpics) do
+	table.insert(BossWeapons.NormalPools[zone].swords, def)
+end
+for zone, list in pairs(spinRegulars) do
+	for _, def in ipairs(list) do
+		table.insert(BossWeapons.NormalPools[zone].swords, def)
+	end
+end
+for zone, list in pairs(spinRelics) do
+	BossWeapons.NormalPools[zone].spinRelics = list
+end
 
 -- ---------------------------------------------------------------- what a normal enemy pays
 -- Which zone pool a rig rolls on comes from its own Zone attribute (EnemyCombat sets it); this
@@ -478,8 +609,8 @@ end
 
 -- THE STARTER. The ClassicSword every profile begins with is a real sword to the rest of the
 -- game now: it is a Common lesser sword of the Iron Lowlands' tier at x1.00 (RuntimeBootstrap
--- stamps the attributes on the StarterPack template), so the anvil lists it, a strike rerolls
--- its modifiers, and the very first visit to the forge works. It is in NO drop pool: FindSword
+-- stamps the attributes on the StarterPack template), so it saves, rebuilds and rates like any
+-- other pool sword. It is in NO drop pool: FindSword
 -- resolves it by name only, so nothing ever drops it and it never appears in a pool's roster.
 -- It is worth nothing at a sale (SellValue) and never shatters on death (SwordDropSystem).
 BossWeapons.STARTER_POOL = "IronLowlands"
@@ -510,6 +641,11 @@ function BossWeapons.FindSword(name, archetypeKey)
 		if pool then
 			if pool.legendary.name == name then
 				return pool.legendary, key, true
+			end
+			for _, def in ipairs(pool.spinRelics or {}) do
+				if def.name == name then
+					return def, key, true
+				end
 			end
 			for _, def in ipairs(pool.swords) do
 				if def.name == name then

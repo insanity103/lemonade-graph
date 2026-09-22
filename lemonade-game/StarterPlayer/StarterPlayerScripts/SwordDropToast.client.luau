@@ -510,7 +510,7 @@ local oddsLabel = PanelChrome.display(root, {
 	pos = UDim2.fromOffset(0, ODDS_Y), size2 = UDim2.new(1, 0, 0, 32), scaled = true, minSize = 16,
 })
 
--- The stat chips: the damage the sword rolled, each modifier with its true 1-in-N, Blessed.
+-- The stat chips: the damage the sword rolled, then its prefix with its true 1-in-N.
 local chipRow = Instance.new("Frame")
 chipRow.Name = "Chips"
 chipRow.AnchorPoint = Vector2.new(0.5, 0)
@@ -851,7 +851,7 @@ end)
 -- if the drop was the pity credit paying out, rank = the rig's rank (which rarity ladder it
 -- rolled), luck = the killer's live luck, listedBase = the pool's listed base at this rarity,
 -- rarityOdds = the REAL chance of this rarity variant, legendary = the pool's showpiece.
-local function revealDrop(rarityName, mult, fullName, mods, gotExtraSlot, extras)
+local function revealDrop(rarityName, mult, fullName, mods, extras)
 	mods = mods or {}
 	extras = typeof(extras) == "table" and extras or {}
 	playToken += 1
@@ -1049,9 +1049,6 @@ local function revealDrop(rarityName, mult, fullName, mods, gotExtraSlot, extras
 			table.insert(chipData, { text = string.format("+%s %s%s", tostring(mod.name), tostring(mod.desc or ""), odds),
 				top = Color3.fromRGB(198, 248, 176), bottom = Color3.fromRGB(104, 206, 104) })
 		end
-		if gotExtraSlot then
-			table.insert(chipData, { text = "BLESSED +1 SLOT", top = Color3.fromRGB(255, 246, 170), bottom = BRIGHT.GoldDark })
-		end
 		for i, chip in ipairs(chips) do
 			local data = chipData[i]
 			chip.frame.Visible = data ~= nil
@@ -1110,8 +1107,7 @@ DROP_EVENT.OnClientEvent:Connect(revealDrop)
 GuiShowcase.motion("RewardReveal", function()
 	revealDrop("Legendary", 4.25, "Sunforged Dawnbreaker", {
 		{ name = "Keen", desc = "+12% Crit Chance", oneInText = "1 in 40" },
-		{ name = "Swift", desc = "+8% Attack Speed", oneInText = "1 in 12" },
-	}, true, { source = "Quarry Cutthroat", rank = "trash", rarityOdds = 0.0005, dropChance = 0.02, luck = 1.2 })
+	}, { source = "Quarry Cutthroat", rank = "trash", rarityOdds = 0.0005, dropChance = 0.02, luck = 1.2 })
 end)
 
 -- Handle sword-lost toasts

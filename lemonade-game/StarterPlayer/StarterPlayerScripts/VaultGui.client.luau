@@ -893,18 +893,6 @@ local function buildTile(parent, order, info, carried, paneKey, key)
 	local outline = PanelChrome.lootTile(tile, rarity, { radius = 18, zIndex = 6, glowY = 0.42 })
 	rarityFlair(tile, rarity, 7)
 
-	if string.find(info.name or "", "Blessed", 1, true) then
-		local halo = Instance.new("Frame")
-		halo.Name = "BlessedHalo"
-		halo.BackgroundTransparency = 1
-		halo.Position = UDim2.fromOffset(-5, -5)
-		halo.Size = UDim2.new(1, 10, 1, 10)
-		halo.ZIndex = 6
-		halo.Parent = tile
-		corner(halo, 23)
-		PanelChrome.stroke(halo, BRIGHT.Gold, 3)
-	end
-
 	local view = Instance.new("ViewportFrame")
 	view.Name = "SwordRender"
 	view.BackgroundTransparency = 1

@@ -142,14 +142,11 @@ RebirthConfig.DROP_RATE_BONUS_PER_REBIRTH = {
 	Common    = 0.030, -- +3.0% flat drop rate per rebirth (e.g. 80% -> 83% at RB1, 95% at RB5)
 }
 
--- Rebirth 5+ Blessed Drop Bonus
-RebirthConfig.REBIRTH_5_BLESSED_BONUS = 0.05 -- +5% Blessed weapon drop chance at Rebirth 5+ (3% base -> 8% total)
-
 -- Milestone Special Perks
 RebirthConfig.Milestones = {
 	[1] = {
 		title = "Ascendant Strike",
-		desc = "+50% Knockback, +5 Starting Skill Points, +Rarity Drop Rates",
+		desc = "+50% Knockback, +5 Starting Skill Points, +Rarity Drop Rates, opens the 3rd Prefix Slot (Lv 60)",
 		knockbackBonus = 50,
 	},
 	[2] = {
@@ -169,9 +166,8 @@ RebirthConfig.Milestones = {
 	},
 	[5] = {
 		title = "Astral Supernova",
-		desc = "+100% Critical Damage, +10 Starting Skill Points, +5% Blessed Weapon Chance",
+		desc = "+100% Critical Damage, +10 Starting Skill Points",
 		critDamageMultiplier = 2.0,
-		blessedBonus = 0.05,
 	},
 }
 
@@ -182,18 +178,12 @@ end
 
 function RebirthConfig.GetMultipliers(rebirths)
 	rebirths = math.max(0, math.floor(tonumber(rebirths) or 0))
-	local blessedBonus = 0
-	if rebirths >= 5 then
-		blessedBonus = RebirthConfig.REBIRTH_5_BLESSED_BONUS
-	end
-
 	return {
 		xpMult = 1 + (RebirthConfig.XP_BOOST_PER_REBIRTH * rebirths),
 		goldMult = 1 + (RebirthConfig.GOLD_BOOST_PER_REBIRTH * rebirths),
 		damageMult = 1 + (RebirthConfig.DAMAGE_BOOST_PER_REBIRTH * rebirths),
 		healthMult = 1 + (RebirthConfig.HEALTH_BOOST_PER_REBIRTH * rebirths),
 		bonusSkillPoints = RebirthConfig.BONUS_SKILL_POINTS_PER_REBIRTH * rebirths,
-		blessedBonus = blessedBonus,
 	}
 end
 

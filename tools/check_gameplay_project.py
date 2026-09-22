@@ -17,8 +17,8 @@ server = {name(item): item for item in services["ServerScriptService"].findall("
 required = {
     "AdminSystem", "RuntimeBootstrap", "WorldLayout", "SafeHub", "GameplayActors", "GameplayServices",
     "EnemyCombat", "SwordSystem", "SwordDropSystem", "BossSwordFactory", "CombatUtil",
-    "InventoryService", "InventorySystem", "LevelingSystem", "MerchantSystem", "QuestSystem",
-    "RebirthSystem", "PlayerDataService", "PlayerDataStore", "VaultSystem", "TradeSystem", "ReforgeSystem",
+    "InventoryService", "InventorySystem", "LevelingSystem", "MerchantSystem", "QuestSystem", "SpinService",
+    "RebirthSystem", "PlayerDataService", "PlayerDataStore", "VaultSystem", "TradeSystem",
 }
 assert required == server.keys(), required ^ server.keys()
 assert server["WorldLayout"].attrib["class"] == "ModuleScript"
@@ -38,7 +38,8 @@ client_scripts = {name(item) for item in services["StarterPlayer"].iter("Item") 
 assert "BossDoorClient" not in client_scripts
 assert {"CombatController", "QuestGui", "MerchantGui", "MainMenuGui", "RunController", "ComboVFX", "Notifications", "HitStreakGui"} <= client_scripts
 assert "OnboardingGui" not in client_scripts
-assert len(client_scripts) == 18, client_scripts
+assert "ReforgeGui" not in client_scripts  # the Reforge anvil was removed with the prefix rework
+assert len(client_scripts) == 17, client_scripts
 assert "WorldLayout.BLANK_SLATE = true" not in sources["WorldLayout"]
 assert "BLANK_SLATE = false" in sources["WorldLayout"]
 assert "MapAnchors" not in sources["WorldLayout"]

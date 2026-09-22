@@ -21,6 +21,7 @@ local SwordValue = require(Config:WaitForChild("SwordValue"))
 local SellValue = require(Config:WaitForChild("SellValue"))
 local VaultConfig = require(Config:WaitForChild("VaultConfig"))
 local WealthLadder = require(Config:WaitForChild("WealthLadder"))
+local WeaponModifiers = require(Config:WaitForChild("WeaponModifiers"))
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
@@ -112,8 +113,7 @@ end
 -- ── The wealth ladder: what being rich is worth ──────────────────────────────
 -- Perks are recomputed from the earned rung every time it changes, so they are always exactly
 -- what the profile says and never drift. They are published as attributes because the systems
--- that consume them live elsewhere: ReforgeSystem reads MilestoneLuck and MilestoneFreeStrike,
--- SwordDropSystem reads MilestoneLuck, VaultGui reads WealthTitle and VaultTrim, and the
+-- that consume them live elsewhere: SwordDropSystem reads MilestoneLuck, VaultGui reads WealthTitle and VaultTrim, and the
 -- overhead plate below reads WealthTitle.
 local function applyPerks(player)
 	local perks = WealthLadder.PerksFor(earnedRung(player))
@@ -121,7 +121,6 @@ local function applyPerks(player)
 	player:SetAttribute("WealthTitle", perks.title or "")
 	player:SetAttribute("VaultTrim", perks.trim or "")
 	player:SetAttribute("MilestoneLuck", perks.luck)
-	player:SetAttribute("MilestoneFreeStrike", perks.freeStrike)
 	player:SetAttribute("MilestoneSlots", perks.slots)
 end
 
@@ -185,8 +184,6 @@ local function grantMilestones(player, fortune)
 		if rung.slots then table.insert(rewards, string.format("+%d vault slot%s", rung.slots,
 			rung.slots == 1 and "" or "s")) end
 		if rung.luck then table.insert(rewards, string.format("+%.2f standing luck", rung.luck)) end
-		if rung.freeStrike then table.insert(rewards, string.format("-%d min on the free forge strike",
-			math.floor(rung.freeStrike / 60))) end
 		if rung.trim then table.insert(rewards, rung.trim .. " vault trim") end
 		NOTIFY:FireClient(player, string.format("WEALTH MILESTONE -- %s (%s fortune): %s",
 			rung.name, WealthLadder.short(rung.threshold), table.concat(rewards, ", ")), "success")
@@ -383,7 +380,7 @@ local function withdraw(player, index)
 	if not entry then return end
 	local backpack = player:FindFirstChildOfClass("Backpack")
 	if not backpack then return end
-	local tool = BossSwordFactory.rebuild(entry)
+	local tool = BossSwordFactory.rebuild(entry, WeaponModifiers.SlotsOf(player))
 	if not tool then
 		NOTIFY:FireClient(player, "That sword could not be restored.", "error")
 		return

@@ -17,6 +17,14 @@ function SafeHub.contains(position: Vector3): boolean
 	local dx, dz = position.X - center.X, position.Z - center.Z
 	return dx * dx + dz * dz <= layout.HUB.SafeRadius ^ 2
 end
+-- Is this player's living character standing in town? The spin wheel spends tokens only here
+-- (SpinSystem): tokens are earned out in the field and spent in town, never both at once.
+function SafeHub.playerInside(player: Player): boolean
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	return root ~= nil and humanoid ~= nil and humanoid.Health > 0 and SafeHub.contains(root.Position)
+end
 function SafeHub.canEnemyAttack(attackerPosition: Vector3, targetPosition: Vector3): boolean
 	return not SafeHub.contains(attackerPosition) and not SafeHub.contains(targetPosition)
 end

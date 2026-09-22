@@ -40,10 +40,9 @@
 --     the point: it must be safe to spend, or a title would be a reason not to play.
 --   * Every rung is reachable without paying anything. There is no Robux path to any of this.
 --   * The rewards are status and convenience, never damage: titles other players can read over
---     your head, free vault shelves, a shorter wait on the anvil's free strike, and a small
---     standing luck that only ever multiplies the long tail (WeaponModifiers.TAIL_CAP still
---     bounds it). The full ladder is worth +0.50 luck -- half of what five rebirths already give
---     for free, and a quarter of a single Lucky Charge plus a full kill streak.
+--     your head, free vault shelves, and a small standing luck that only ever multiplies the
+--     strong prefix rungs (never past the player's level ceiling, WeaponModifiers.TierOdds). The
+--     full ladder is worth +0.50 luck -- half of what five rebirths already give for free.
 local WealthLadder = {}
 
 -- [TUNING] The Vaultkeeper's appraisal on what she is holding. 1.25 was picked so that storing a
@@ -64,8 +63,7 @@ WealthLadder.STORED_APPRAISAL = 1.25
 -- reward fields, all optional:
 --   slots        free vault shelves granted (they count against VaultConfig.MAX_SLOTS and skip
 --                the player past the dearest rungs of the slot ladder)
---   luck         standing long-tail luck added to every drop roll and every forge strike
---   freeStrike   seconds off the anvil's free-strike wait (ReforgeSystem.FREE_INTERVAL)
+--   luck         standing prefix luck added to every sword roll (WeaponModifiers.LuckFrom)
 --   trim         the Vaultkeeper's chest cosmetic this rung unlocks (VaultGui reads it)
 WealthLadder.Rungs = {
 	{
@@ -76,7 +74,7 @@ WealthLadder.Rungs = {
 	{
 		id = "full_pitcher", name = "Full Pitcher", threshold = 50000,
 		blurb = "Enough put by that the stand stays open in the rain.",
-		trim = "Brass", freeStrike = 15 * 60,
+		trim = "Brass",
 	},
 	{
 		id = "sweet_stand", name = "Sweet Stand", threshold = 250000,
@@ -86,7 +84,7 @@ WealthLadder.Rungs = {
 	{
 		id = "golden_grove", name = "Golden Grove", threshold = 1000000,
 		blurb = "A million. The grove behind the stand is yours.",
-		trim = "Gold", freeStrike = 15 * 60, luck = 0.10,
+		trim = "Gold", luck = 0.10,
 	},
 	{
 		id = "sunlit_reserve", name = "Sunlit Reserve", threshold = 5000000,
@@ -96,7 +94,7 @@ WealthLadder.Rungs = {
 	{
 		id = "orchard_keeper", name = "Orchard Keeper", threshold = 15000000,
 		blurb = "Every tree on the bright coast has your mark on it.",
-		slots = 1, trim = "Amber", luck = 0.10, freeStrike = 15 * 60,
+		slots = 1, trim = "Amber", luck = 0.10,
 	},
 	{
 		id = "bright_coast_baron", name = "Baron of the Bright Coast", threshold = 40000000,
@@ -106,7 +104,7 @@ WealthLadder.Rungs = {
 	{
 		id = "sun_vault", name = "The Sun Vault", threshold = 100000000,
 		blurb = "A hundred million. They built a second door just for your shelf.",
-		trim = "Sun", luck = 0.10, freeStrike = 15 * 60,
+		trim = "Sun", luck = 0.10,
 	},
 }
 
@@ -125,12 +123,11 @@ end
 -- Everything a player who has reached `rung` has earned from the ladder, summed.
 function WealthLadder.PerksFor(rung: number?)
 	local top = math.clamp(math.floor(tonumber(rung) or 0), 0, WealthLadder.RUNG_COUNT)
-	local perks = { slots = 0, luck = 0, freeStrike = 0, trim = nil, title = nil, rung = top }
+	local perks = { slots = 0, luck = 0, trim = nil, title = nil, rung = top }
 	for index = 1, top do
 		local entry = WealthLadder.Rungs[index]
 		perks.slots += entry.slots or 0
 		perks.luck += entry.luck or 0
-		perks.freeStrike += entry.freeStrike or 0
 		if entry.trim then perks.trim = entry.trim end
 		perks.title = entry.name
 	end

@@ -68,8 +68,9 @@ local function addGold(player, amount)
 end
 
 -- Builds a fully-rolled copy of a boss's Legendary showpiece through the same factory every real
--- drop and purchase uses, then forces the best possible outcome (Blessed, every modifier
--- floored to the top tier) so the tool is a legitimate BossDrop, just always the best roll.
+-- drop and purchase uses, with the admin's own prefix slots and every prefix lifted to the best
+-- rung THEIR level allows (the level ceiling still holds), so the tool is a legitimate BossDrop,
+-- just always the best roll that level could land.
 -- swordName (optional) picks another sword of that boss's pool instead (dropped at Epic).
 local function giveSword(player, archetypeKey, swordName)
 	local weaponData = BossWeapons.Pools[archetypeKey]
@@ -83,9 +84,11 @@ local function giveSword(player, archetypeKey, swordName)
 		return
 	end
 	local def = swordName and BossWeapons.FindSword(swordName, archetypeKey)
-	local tool = BossSwordFactory.build(archetypeKey, { blessedBonus = 1.0, sword = def and def.name or nil,
-		rarity = (def and def ~= BossWeapons.Pools[archetypeKey].legendary) and "Epic" or "Legendary" })
-	local _, fullName = BossSwordFactory.reroll(tool, 1.0, WeaponModifiers.TIER_COUNT, {})
+	local stats = player:FindFirstChild("leaderstats")
+	local level = stats and stats:FindFirstChild("Level") and stats.Level.Value or 1
+	local tool, _, fullName = BossSwordFactory.build(archetypeKey, { sword = def and def.name or nil,
+		rarity = (def and def ~= BossWeapons.Pools[archetypeKey].legendary) and "Epic" or "Legendary",
+		level = level, slots = WeaponModifiers.SlotsOf(player), minTier = WeaponModifiers.TIER_COUNT })
 	tool.Parent = container
 	NOTIFY:FireClient(player, string.format("[Admin] Gave %s.", fullName or tool.Name), "success")
 	PlayerDataService.MarkDirty(player)

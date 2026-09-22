@@ -7,6 +7,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
+local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
 
@@ -292,12 +293,13 @@ local function complete(session)
 		table.remove(vaultTableB, table.find(vaultTableB, entry))
 		table.insert(entriesB, entry)
 	end
+	-- A traded sword wakes up as many of its prefixes as its NEW owner has slots for.
 	for _, entry in ipairs(entriesA) do
-		local rebuilt = BossSwordFactory.rebuild(entry)
+		local rebuilt = BossSwordFactory.rebuild(entry, WeaponModifiers.SlotsOf(b))
 		if rebuilt then rebuilt.Parent = bagB end
 	end
 	for _, entry in ipairs(entriesB) do
-		local rebuilt = BossSwordFactory.rebuild(entry)
+		local rebuilt = BossSwordFactory.rebuild(entry, WeaponModifiers.SlotsOf(a))
 		if rebuilt then rebuilt.Parent = bagA end
 	end
 	NOTIFY:FireClient(a, string.format("Trade complete: gave %d, received %d.", #entriesA, #entriesB), "success")

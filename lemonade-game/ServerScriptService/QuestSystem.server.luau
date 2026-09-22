@@ -152,7 +152,7 @@ end
 
 local function checkCompletion(player, quest, progress)
 	local obj = quest.objective
-	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" or obj.type == "REFORGE" then
+	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" then
 		return progress >= (obj.count or 1)
 	elseif isObtain(obj) then
 		return progress >= 1
@@ -326,19 +326,8 @@ for _, instance in workspace:GetChildren() do inspect(instance) end
 workspace.ChildAdded:Connect(inspect)
 
 -- ── Level-up listener (for LEVEL objectives) ─────────────────────────────
--- ── ...and the anvil listener (for REFORGE objectives) ───────────────────
--- ReforgeSystem bumps the in-memory ReforgeCount attribute after every finished strike (paid or
--- free, any sword); each bump while a REFORGE quest is active is one step of progress.
 
 Players.PlayerAdded:Connect(function(player)
-	player:GetAttributeChangedSignal("ReforgeCount"):Connect(function()
-		local state = playerQuest[player]
-		if not state or not state.questId then return end
-		local quest = QuestConfig.getQuestById(state.questId)
-		if quest and quest.objective.type == "REFORGE" then
-			incrementProgress(player, 1)
-		end
-	end)
 	local leaderstats = player:WaitForChild("leaderstats", 15)
 	if not leaderstats then return end
 	local levelVal = leaderstats:WaitForChild("Level", 10)

@@ -25,12 +25,17 @@ local REMOTE_NAMES = {
 	"RebirthResult",
 	"RebirthStationOpen",
 	"SpendSkillPoint",
+	"SpinAction", -- the town spin wheel: client -> server ("Spin", count); server -> client
+	              -- ("Result", payload) / ("Refused", reason). SpinSystem + SpinStation.client.
 	"SwordDrop",
 	"SwordLostOnDeath",
 	"SwordPickup", -- KEEP-or-SELL at the moment a sword drops (SwordDropSystem + SwordDropToast).
 	               -- Replaced ToggleAutoSell + AutoSellNotice when auto-sell was removed.
-	"ReforgeAction",
+	"TokenDrop", -- server -> killer: a kill's spin tokens, already credited, split into pickups
+	             -- (SwordDropSystem + TokenDrops.client). Replaced the kill's sword drop.
 	"TradeAction",
+	"UpgradeAction", -- the town Upgrade Stall: client -> server ("Buy", id) / ("State"); server -> client
+	                 -- ("Open"|"State"|"Bought"|"Refused", payload). GameplayServices + UpgradeShop.
 	"VaultAction",
 	"XPGain",
 }
@@ -61,15 +66,15 @@ sword.RequiresHandle = true
 sword.CanBeDropped = false
 sword.Grip = CFrame.Angles(-math.pi / 2, 0, 0)
 
--- The starter is a forgeable sword (see BossWeapons.Starter): a Common of the opening zone's tier
--- at x1.00 with no modifiers yet. Stamped on the StarterPack template so every copy the engine
+-- The starter is a real pool sword (see BossWeapons.Starter): a Common of the opening zone's tier
+-- at x1.00 with no prefix. Stamped on the StarterPack template so every copy the engine
 -- hands out carries it; a copy already in a Backpack (Studio's first test player) is stamped by
 -- repairPlayerSword below. Only attributes the copy does not already carry are written, so a
--- saved, struck starter rebuilt by PlayerDataService keeps its roll.
+-- saved starter rebuilt by PlayerDataService keeps its roll.
 local STARTER_ATTRS = {
 	BossDrop = true, Starter = true, Rarity = "Common", DamageMult = 1.0, PoolBase = 1.0, BossTier = 1,
 	PoolKey = "IronLowlands", Lesser = true, BaseWeaponName = "Classic Sword", Prefixes = "",
-	BonusDamagePct = 0, CritChance = 0, RangeBonus = 0, KnockbackBonus = 0, ExtraSlot = false,
+	BonusDamagePct = 0, CritChance = 0, RangeBonus = 0, KnockbackBonus = 0,
 }
 local function stampStarter(tool)
 	for key, value in pairs(STARTER_ATTRS) do

@@ -17,7 +17,6 @@ local CREATOR_TAG_NAME = "creator"
 
 local XP_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("XPGain")
 local SPEND_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("SpendSkillPoint")
-local GOLD_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("GoldGain")
 local LEVELUP_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("LevelUpBurst")
 local COMBAT_END_DELAY = 3 -- seconds without a kill before the combat session ends
 local SKILL_SPEND_COOLDOWN = 0.1
@@ -279,7 +278,7 @@ local function setupPlayer(player)
 		trackCombatHealth(humanoid)
 		humanoid.Died:Connect(function()
 			applyDeathGoldPenalty(player)
-			player:SetAttribute("KillStreak", 0) -- forge luck from a streak ends with the streak
+			player:SetAttribute("KillStreak", 0) -- prefix luck from a streak ends with the streak
 		end)
 		applyHealth(player, player:GetAttribute("Health") or 0)
 	end)
@@ -423,23 +422,17 @@ local function connectEnemyHumanoid(humanoid)
 			if goldStat then
 				goldStat.Value += gold
 			end
-			local root = model.PrimaryPart or model:FindFirstChild("HumanoidRootPart")
-			if root then
-				GOLD_EVENT:FireAllClients(root.Position, gold)
-			end
-			-- Forge luck, earned by playing (ReforgeSystem reads both). The kill streak counts kills
-			-- that land within STREAK_WINDOW seconds of the last one (KillStreak / KillStreakAt are
-			-- in-memory attributes; a death resets them). A boss kill banks a Lucky Charge
-			-- (ForgeLuckCharges persists through SaveConfig.ATTRIBUTES; a paid strike spends one).
+			-- No floating "+N Gold" over the body: a kill's payout on screen is its spin tokens
+			-- (TokenDrops), and a gold number on the same pixels read as neither. The gold still
+			-- counts up on the HUD readout.
+			-- Prefix luck, earned by playing (WeaponModifiers.LuckFrom reads it). The kill streak
+			-- counts kills that land within STREAK_WINDOW seconds of the last one (KillStreak /
+			-- KillStreakAt are in-memory attributes; a death resets them).
 			local now = os.clock()
 			local since = now - (tonumber(killer:GetAttribute("KillStreakAt")) or -math.huge)
 			local streak = if since <= WeaponModifiers.Luck.STREAK_WINDOW then (tonumber(killer:GetAttribute("KillStreak")) or 0) + 1 else 1
 			killer:SetAttribute("KillStreak", streak)
 			killer:SetAttribute("KillStreakAt", now)
-			if model:GetAttribute("Boss") == true then
-				local charges = tonumber(killer:GetAttribute("ForgeLuckCharges")) or 0
-				killer:SetAttribute("ForgeLuckCharges", math.min(charges + 1, WeaponModifiers.Luck.CHARGE_MAX))
-			end
 		end
 	end)
 end

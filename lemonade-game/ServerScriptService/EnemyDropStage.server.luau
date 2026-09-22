@@ -300,7 +300,7 @@ GuiShowcase.stage("EnemyDrops", function(ctx)
 				local rarity = pick.legendary and "Legendary" or "Epic"
 				table.insert(lines, { text = string.format('<font color="%s">%s</font> x%.2f',
 					RARITY_HEX[rarity] or "#FFD700", pick.name, pick.rarities[rarity] or pick.poolBase), px = 13, rich = true })
-				local tool = BossSwordFactory.build(plan.poolKey, { sword = pick.name, rarity = rarity, jitter = false, allowBlessed = false })
+				local tool = BossSwordFactory.build(plan.poolKey, { sword = pick.name, rarity = rarity, jitter = false })
 				local model = tool and swordModel(tool)
 				if tool then
 					tool:Destroy()
@@ -352,7 +352,7 @@ GuiShowcase.stage("EnemyDrops", function(ctx)
 		local pick = normals[math.random(#normals)]
 		local ok, err = pcall(function()
 			local roll = DropRules.Roll(pick.plan, { rebirths = 0, pity = 99, rarePity = 0 }) -- pity: always pays
-			local tool, mods, fullName, gotExtraSlot, weaponData = BossSwordFactory.build(pick.plan.poolKey,
+			local tool, mods, fullName, weaponData = BossSwordFactory.build(pick.plan.poolKey,
 				{ rarityOdds = pick.plan.rarityOdds, luck = 1 })
 			local rig = live[pick.e.key] or {}
 			for _, mod in ipairs(mods) do
@@ -360,7 +360,7 @@ GuiShowcase.stage("EnemyDrops", function(ctx)
 				mod.p = nil
 				mod.oneIn = nil
 			end
-			DROP_EVENT:FireClient(ctx.player, weaponData.rarity, weaponData.baseMult, fullName, mods, gotExtraSlot,
+			DROP_EVENT:FireClient(ctx.player, weaponData.rarity, weaponData.baseMult, fullName, mods,
 				{ pool = weaponData.bossName, baseName = weaponData.name, listedBase = weaponData.listedBase,
 					rarityOdds = weaponData.rarityOdds, legendary = weaponData.isLegendary, lesser = true,
 					source = enemyName(rig, pick.e.key), rank = pick.plan.rank, dropChance = roll.chance })

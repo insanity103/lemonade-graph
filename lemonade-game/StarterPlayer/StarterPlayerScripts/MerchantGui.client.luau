@@ -2,9 +2,8 @@
 -- The shop sells exactly ONE thing and the panel is built to say so: a single MYSTERY BLADE tile
 -- on the left with one price button under it, and on the right the three things the player needs
 -- to decide -- WHAT IT ROLLS (the pools and the real odds), WHAT IT COSTS (the price as a
--- function of level, quoted in kills, in minutes of the player's own measured gold/hour and in
--- forge strikes on the sword they are carrying), and THE TERMS (server-rolled, 0% Blessed, the
--- bad-luck floor, no Robux).
+-- function of level, quoted in kills and in minutes of the player's own measured gold/hour), and
+-- THE TERMS (server-rolled, one prefix slot and its level ceiling, the bad-luck floor, no Robux).
 -- The client NEVER decides anything: the offer table, every odd and the price all arrive from
 -- MerchantSystem, which recomputes them from the player's own level before it takes any gold.
 -- The sword model in the tile is a small part-built stand-in (the real meshes live in ServerStorage).
@@ -271,7 +270,7 @@ end
 local TITLE_X = 90
 chrome.TitleLabel.Position = UDim2.fromOffset(TITLE_X, HEADER_H / 2 - 1)
 
--- ── Gold balance (in the header) and the forge's terms (a ribbon under it) ────
+-- ── Gold balance (in the header) and the shop's terms (a ribbon under it) ────
 local function coinIcon(parent, size, pos, anchor, z)
 	local img = Instance.new("ImageLabel")
 	img.Name = "Coin"
@@ -354,19 +353,19 @@ bannerShine.Parent = banner
 corner(bannerShine, 10)
 local bannerSparkle = sparkle(banner, 22, UDim2.new(0, 28, 0.5, 0), Color3.fromRGB(255, 236, 120), 55)
 
-local blessedChip = Instance.new("Frame")
-blessedChip.Name = "BlessedChip"
-blessedChip.AnchorPoint = Vector2.new(1, 0.5)
-blessedChip.Position = UDim2.new(1, -7, 0.5, 0)
-blessedChip.Size = UDim2.new(0, 190, 1, -12)
-blessedChip.BackgroundColor3 = Color3.new(1, 1, 1)
-blessedChip.ZIndex = 55
-blessedChip.Parent = banner
-corner(blessedChip, (BANNER_H - 12) / 2)
-PanelChrome.gradient(blessedChip, BRIGHT.Gold, BRIGHT.GoldDark)
-PanelChrome.stroke(blessedChip, BRIGHT.Outline, 3)
-PanelChrome.display(blessedChip, {
-	name = "Blessed", text = "0% BLESSED", size = 22, stroke = 2.5, scaled = true, minSize = 12, zIndex = 56,
+local slotChip = Instance.new("Frame")
+slotChip.Name = "PrefixSlotChip"
+slotChip.AnchorPoint = Vector2.new(1, 0.5)
+slotChip.Position = UDim2.new(1, -7, 0.5, 0)
+slotChip.Size = UDim2.new(0, 190, 1, -12)
+slotChip.BackgroundColor3 = Color3.new(1, 1, 1)
+slotChip.ZIndex = 55
+slotChip.Parent = banner
+corner(slotChip, (BANNER_H - 12) / 2)
+PanelChrome.gradient(slotChip, BRIGHT.Gold, BRIGHT.GoldDark)
+PanelChrome.stroke(slotChip, BRIGHT.Outline, 3)
+local slotChipLabel = PanelChrome.display(slotChip, {
+	name = "PrefixSlots", text = "1 PREFIX SLOT", size = 22, stroke = 2.5, scaled = true, minSize = 12, zIndex = 56,
 	pos = UDim2.fromOffset(8, 2), size2 = UDim2.new(1, -16, 1, -4),
 })
 
@@ -718,7 +717,7 @@ local function applyOffer(newOffer)
 	row(costCard, c, string.format("Price at level %d", offer.level or 1),
 		formatGold(offer.price) .. " gold", { size = 20, stroke = 2.5, rightColor = Color3.fromRGB(196, 92, 20) })
 	c += 1
-	row(costCard, c, "  = forge strikes at this tier",
+	row(costCard, c, "  = price units at this tier",
 		string.format("%.1f x %s", offer.priceStrikes or 0, formatGold(offer.strikeRef or 0)), { size = 17 })
 	c += 1
 	row(costCard, c, "  = kills at your level",
@@ -733,13 +732,6 @@ local function applyOffer(newOffer)
 			{ size = 17, rightColor = Color3.fromRGB(120, 100, 70) })
 	end
 	c += 1
-	if offer.yourStrike and offer.yourStrike > 0 then
-		row(costCard, c, string.format("  = strikes on your %s", offer.yourSword or "sword"),
-			string.format("%.1f x %s", (offer.price or 0) / offer.yourStrike, formatGold(offer.yourStrike)), { size = 17 })
-	else
-		row(costCard, c, "  = strikes on your sword", "no relic carried", { size = 17 })
-	end
-	c += 1
 	row(costCard, c, "", "", { height = 4 })
 	c += 1
 	row(costCard, c, "The price is a function of your level only. It is read off your Level the moment you press buy \u{2014} the client never sends a price.",
@@ -747,13 +739,16 @@ local function applyOffer(newOffer)
 
 	-- THE TERMS.
 	clearRows(termsCard)
+	local slotCount = offer.prefixSlots or 1
+	slotChipLabel.Text = string.format("%d PREFIX SLOT%s", slotCount, slotCount == 1 and "" or "S")
 	local t = 0
 	t += 1
 	row(termsCard, t, "Rolled", "on the server, when the gold leaves", { size = 17 })
 	t += 1
 	row(termsCard, t, "Re-rolls", "per purchase \u{2014} never on a timer or a visit", { size = 17 })
 	t += 1
-	row(termsCard, t, "Blessed extra slot", string.format("%d%% \u{2014} drops and the forge only", math.floor((offer.blessedChance or 0) * 100)), { size = 17 })
+	row(termsCard, t, "Prefix slots", string.format("%d \u{2014} best rung at your level: %s",
+		offer.prefixSlots or 1, tostring(offer.prefixCeilingName or "?")), { size = 17 })
 	t += 1
 	row(termsCard, t, "Bad-luck floor",
 		string.format("%s guaranteed within %d buys", offer.pityFloor or "Rare", offer.pityIn or offer.pityPurchases or 0), { size = 17 })
@@ -843,9 +838,9 @@ local function applyLayout(viewport)
 	end
 	infoLabel.Visible = wide
 	bannerSparkle.Visible = wide
-	blessedChip.AnchorPoint = wide and Vector2.new(1, 0.5) or Vector2.new(0.5, 0.5)
-	blessedChip.Position = wide and UDim2.new(1, -7, 0.5, 0) or UDim2.fromScale(0.5, 0.5)
-	blessedChip.Size = wide and UDim2.new(0, 190, 1, -12) or UDim2.new(1, -12, 1, -12)
+	slotChip.AnchorPoint = wide and Vector2.new(1, 0.5) or Vector2.new(0.5, 0.5)
+	slotChip.Position = wide and UDim2.new(1, -7, 0.5, 0) or UDim2.fromScale(0.5, 0.5)
+	slotChip.Size = wide and UDim2.new(0, 190, 1, -12) or UDim2.new(1, -12, 1, -12)
 end
 PanelChrome.onViewport(applyLayout)
 

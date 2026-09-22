@@ -72,6 +72,20 @@ end
 
 local active = {}
 
+-- A killing blow hands the screen to the kill's token payout (TokenDrops): every number near a
+-- body that just paid tokens shrinks and fades out within QUENCH seconds, so the "+N" tokens are
+-- the brightest text on screen. Numbers that land a moment after the payout packet are caught too.
+local QUENCH = 0.22 -- [TUNING] seconds
+local QUENCH_RADIUS = 7 -- studs
+local quenchSpots = {} -- { pos, at }
+local function quenchNear(position: Vector3, now: number)
+	for _, n in ipairs(active) do
+		if not n.quenchAt and (n.part.Position - position).Magnitude <= QUENCH_RADIUS then
+			n.quenchAt = now
+		end
+	end
+end
+
 -- -1 puts the number left of the hit on screen, +1 right: toward the local character, so it
 -- floats over the gap between the fighters rather than over the body being knocked away.
 local function screenSide(position: Vector3): number
@@ -133,10 +147,17 @@ local function showDamage(position, amount, kind)
 		ramp = { { 0.22, combo }, { 0.5, combo:Lerp(RED, 0.5) }, { 0.8, RED } }
 	end
 
-	table.insert(active, {
+	local born = os.clock()
+	local entry = {
 		part = part, billboard = billboard, label = label, stroke = stroke,
-		style = style, ramp = ramp, side = side, born = os.clock(),
-	})
+		style = style, ramp = ramp, side = side, born = born,
+	}
+	for _, q in ipairs(quenchSpots) do
+		if born - q.at < 0.25 and (q.pos - position).Magnitude <= QUENCH_RADIUS then
+			entry.quenchAt = born
+		end
+	end
+	table.insert(active, entry)
 end
 
 RunService.RenderStepped:Connect(function()
@@ -149,7 +170,13 @@ RunService.RenderStepped:Connect(function()
 			table.remove(active, i)
 			continue
 		end
-		local s = scaleAt(t, n.style.peak)
+		local q = if n.quenchAt then math.clamp((now - n.quenchAt) / QUENCH, 0, 1) else 0
+		if q >= 1 then
+			n.part:Destroy()
+			table.remove(active, i)
+			continue
+		end
+		local s = scaleAt(t, n.style.peak) * (1 - 0.45 * q)
 		n.billboard.Size = UDim2.fromOffset(n.style.size.X * s, n.style.size.Y * s)
 		-- Beside the shoulder, drifting up and a little outward as it cools.
 		local rise = 1 - (1 - math.min(1, t / LIFE)) ^ 2
@@ -157,7 +184,7 @@ RunService.RenderStepped:Connect(function()
 		n.billboard.SizeOffset = Vector2.new(n.side * (0.42 + 0.12 * rise), 0)
 		n.label.Rotation = n.side * -8 * math.max(0, 1 - t / POP_OUT)
 		n.label.TextColor3 = rampColor(n.ramp, t)
-		local fade = math.clamp((t - FADE_FROM) / (LIFE - FADE_FROM), 0, 1)
+		local fade = math.max(q, math.clamp((t - FADE_FROM) / (LIFE - FADE_FROM), 0, 1))
 		n.label.TextTransparency = fade
 		n.stroke.Transparency = fade
 		n.stroke.Thickness = 3.2 * s
@@ -170,6 +197,17 @@ damageEvent.OnClientEvent:Connect(function(position, amount, kind)
 		return
 	end
 	showDamage(position, amount, kind)
+end)
+
+local tokenEvent = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("TokenDrop")
+tokenEvent.OnClientEvent:Connect(function(origin)
+	if typeof(origin) ~= "Vector3" then return end
+	local now = os.clock()
+	for i = #quenchSpots, 1, -1 do
+		if now - quenchSpots[i].at > 0.25 then table.remove(quenchSpots, i) end
+	end
+	table.insert(quenchSpots, { pos = origin, at = now })
+	quenchNear(origin, now)
 end)
 
 print("[DamageNumbers] Floating damage numbers with CRIT styling enabled")

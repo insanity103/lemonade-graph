@@ -15,6 +15,15 @@ local STYLES = {
 	info = { text = Color3.fromRGB(236, 232, 222), stroke = Color3.fromRGB(110, 104, 96) },
 	success = { text = Color3.fromRGB(160, 240, 170), stroke = Color3.fromRGB(70, 150, 90), sound = 0.9 },
 	error = { text = Color3.fromRGB(255, 150, 135), stroke = Color3.fromRGB(170, 70, 60), sound = 0.6 },
+	-- Server-wide rare-prefix shouts (SpinService.CreditPrefixes): a bracket's newest top-tier rung,
+	-- each bracket's named chase, and the Lemonade chase, the loudest thing the game says to everyone.
+	great = { text = Color3.fromRGB(120, 240, 250), stroke = Color3.fromRGB(40, 150, 170), sound = 1.1,
+		textSize = 18, lifetime = 5 },
+	-- Any other bracket's named chase (Lemondrop .. Starfizz): a banner every player sees.
+	chase = { text = Color3.fromRGB(255, 190, 235), stroke = Color3.fromRGB(220, 70, 150), sound = 1.2,
+		textSize = 20, lifetime = 6, bg = Color3.fromRGB(56, 20, 44), height = 40, strokeWidth = 2, pulse = true },
+	lemonade = { text = Color3.fromRGB(255, 244, 90), stroke = Color3.fromRGB(255, 170, 30), sound = 1.3,
+		textSize = 22, lifetime = 8, bg = Color3.fromRGB(60, 44, 10), height = 44, strokeWidth = 3, pulse = true },
 }
 local SOUND_ID = "rbxassetid://6042053626" -- the game's existing UI click, pitched per kind
 
@@ -60,11 +69,11 @@ local function show(message: string, kind: string?)
 	local label = Instance.new("TextLabel")
 	label.LayoutOrder = order
 	label.AutomaticSize = Enum.AutomaticSize.X
-	label.Size = UDim2.fromOffset(0, 34)
-	label.BackgroundColor3 = Color3.fromRGB(22, 20, 18)
+	label.Size = UDim2.fromOffset(0, style.height or 34)
+	label.BackgroundColor3 = style.bg or Color3.fromRGB(22, 20, 18)
 	label.BackgroundTransparency = 1
 	label.Font = Enum.Font.GothamMedium
-	label.TextSize = 16
+	label.TextSize = style.textSize or 16
 	label.TextColor3 = style.text
 	label.TextTransparency = 1
 	label.Text = message
@@ -76,6 +85,7 @@ local function show(message: string, kind: string?)
 	corner.Parent = label
 	local stroke = Instance.new("UIStroke")
 	stroke.Color = style.stroke
+	stroke.Thickness = style.strokeWidth or 1
 	stroke.Transparency = 1
 	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	stroke.Parent = label
@@ -94,8 +104,15 @@ local function show(message: string, kind: string?)
 	TweenService:Create(label, info, { TextTransparency = 0, BackgroundTransparency = 0.15 }):Play()
 	TweenService:Create(stroke, info, { Transparency = 0.2 }):Play()
 	if style.sound then playSound(style.sound) end
+	if style.pulse then -- a chase / Lemonade shout pops in bigger, then settles
+		local scale = Instance.new("UIScale")
+		scale.Scale = 1.35
+		scale.Parent = label
+		TweenService:Create(scale, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		task.delay(0.12, function() playSound(1.6) end)
+	end
 
-	task.delay(LIFETIME, function()
+	task.delay(style.lifetime or LIFETIME, function()
 		if not label.Parent then return end
 		local out = TweenService:Create(label, info, { TextTransparency = 1, BackgroundTransparency = 1 })
 		TweenService:Create(stroke, info, { Transparency = 1 }):Play()

@@ -21,7 +21,7 @@
 -- one faucet, it is two, and the second one only switches on when the player no longer needs it.
 --
 -- A sword is now worth SELL_FRACTION of what ONE BARE FORGE STRIKE ON THAT SAME SWORD costs, by
--- Config.SwordValue's own formula -- the rarity's REROLL_BASE times the power factor of the
+-- Config.SwordValue's own formula -- the rarity's PRICE_UNIT times the power factor of the
 -- sword's own rolled base damage. Three things follow, and they are the whole reason for it:
 --
 --   1. IT SCALES WITH THE GAME AUTOMATICALLY. The forge price already climbs with the zone,
@@ -54,9 +54,6 @@ local SellValue = {}
 -- stops being a decision, which is what the old tier-1 price did (a junk drop was worth 10 gold).
 SellValue.SELL_FRACTION = 0.40
 
--- [TUNING] A Blessed sword (the extra modifier slot) is worth half again.
-SellValue.BLESSED_MULT = 1.5
-
 -- A lesser (ordinary-enemy) sword sells for BossWeapons.LESSER_SELL_FACTOR of a boss sword of the
 -- same power and rarity. That factor lives with the pools, not here, so the pools stay the one
 -- place that says what "lesser" means.
@@ -64,16 +61,16 @@ function SellValue.LesserFactor(): number
 	return BossWeapons.LESSER_SELL_FACTOR
 end
 
--- What one bare strike on this sword costs: Config.SwordValue's own rarity base times its own
--- power factor. This is the same pair of calls MerchantConfig prices the mystery blade against,
--- so the shop, the forge and the sale are all quoted in the same unit.
+-- The sword's price unit: Config.SwordValue's own rarity base times its own power factor. This is
+-- the same pair of calls MerchantConfig prices the mystery blade against, so the shop and the sale
+-- are quoted in the same unit.
 function SellValue.StrikeReference(baseMult: number?, rarity: string?): number
-	local base = SwordValue.REROLL_BASE[rarity] or SwordValue.REROLL_BASE.Common
+	local base = SwordValue.PRICE_UNIT[rarity] or SwordValue.PRICE_UNIT.Common
 	return base * SwordValue.powerFactor(baseMult)
 end
 
 -- THE PRICE. `attrs` is the sword, in the same field names BossSwordFactory stamps on the Tool:
---   DamageMult (its rolled base), Rarity, Lesser (true on a normal-enemy sword), ExtraSlot.
+--   DamageMult (its rolled base), Rarity, Lesser (true on a normal-enemy sword), Starter.
 -- `goldMult` is the caller's rebirth gold multiplier (1 when there is none).
 -- Returns a whole number of gold, and 0 for anything that is not a sellable sword.
 function SellValue.Gold(attrs, goldMult: number?): number
@@ -90,9 +87,6 @@ function SellValue.Gold(attrs, goldMult: number?): number
 	local value = SellValue.SELL_FRACTION * SellValue.StrikeReference(baseMult, attrs.Rarity)
 	if attrs.Lesser == true then
 		value *= BossWeapons.LESSER_SELL_FACTOR
-	end
-	if attrs.ExtraSlot == true then
-		value *= SellValue.BLESSED_MULT
 	end
 	local mult = tonumber(goldMult)
 	if typeof(mult) ~= "number" or mult ~= mult or mult == math.huge then
@@ -112,7 +106,6 @@ function SellValue.ForTool(tool: Instance?, goldMult: number?): number
 		DamageMult = tool:GetAttribute("DamageMult"),
 		Rarity = tool:GetAttribute("Rarity"),
 		Lesser = tool:GetAttribute("Lesser"),
-		ExtraSlot = tool:GetAttribute("ExtraSlot"),
 		Starter = tool:GetAttribute("Starter"),
 	}, goldMult)
 end

@@ -13,7 +13,6 @@ local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
 local spendEvent = remotes:WaitForChild("SpendSkillPoint")
 local inventoryAction = remotes:WaitForChild("InventoryAction")
 local rebirthResultRemote = remotes:WaitForChild("RebirthResult")
-local reforgeRemote = remotes:WaitForChild("ReforgeAction")
 
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 local NumberFormat = require(ReplicatedStorage:WaitForChild("NumberFormat"))
@@ -82,7 +81,6 @@ local SKILL_ATTRIBUTES = {
 -- Each side button gets its own saturated tile (top/bottom of its gradient) instead of uniform
 -- gray, so the column reads as distinct categories at a glance.
 local NAV_ITEMS = {
-	{ id = "Reforge", text = "🎰", label = "Reforge", top = Color3.fromRGB(255, 176, 88), bottom = Color3.fromRGB(226, 92, 22) },
 	{ id = "Inventory", icon = ICONS.Inventory, label = "Items", top = Color3.fromRGB(126, 204, 255), bottom = Color3.fromRGB(36, 116, 236) },
 	{ id = "Skills", icon = ICONS.Skills, label = "Skills", top = Color3.fromRGB(160, 242, 118), bottom = Color3.fromRGB(44, 168, 60) },
 	{ id = "Rebirth", icon = "rbxassetid://80234316052758", label = "Rebirth", top = Color3.fromRGB(222, 164, 255), bottom = Color3.fromRGB(134, 62, 222) },
@@ -529,7 +527,11 @@ local function toolFacts(item)
 		critChance = tool:GetAttribute("CritChance") or 0,
 		rangeBonus = tool:GetAttribute("RangeBonus") or 0,
 		knockbackBonus = tool:GetAttribute("KnockbackBonus") or 0,
-		blessed = tool:GetAttribute("ExtraSlot") == true,
+		-- One prefix slot per sword (more are a player unlock, WeaponModifiers.SlotUnlocks). A
+		-- pre-rework sword can hold dormant prefixes in StoredPrefixes that wake with a new slot.
+		prefixCount = #SwordValue.modifiersFromPrefixes(tool:GetAttribute("Prefixes")),
+		storedCount = #SwordValue.modifiersFromPrefixes(tool:GetAttribute("StoredPrefixes") or tool:GetAttribute("Prefixes")),
+		slots = WeaponModifiers.SlotsOf(player),
 		bossDrop = tool:GetAttribute("BossDrop") == true,
 		-- Same rule as before: only unequipped boss drops (never the starter sword) can be sold.
 		sellable = tool.Name ~= "ClassicSword" and tool:GetAttribute("Starter") ~= true
@@ -661,10 +663,6 @@ local function openInventoryDetail(item)
 		local b = PanelChrome.checkBadge(hero, 36, 34)
 		b.Position = UDim2.new(1, -18, 0, 18)
 	end
-	if f.blessed then
-		PanelChrome.display(hero, { text = "BLESSED", size = 16, color = BRIGHT.Gold, stroke = 2, anchor = Vector2.new(0, 1),
-			pos = UDim2.new(0, 10, 1, -6), size2 = UDim2.fromOffset(90, 20), xAlign = Enum.TextXAlignment.Left, zIndex = 34 })
-	end
 
 	-- Stats: big outlined numbers, one row each.
 	local order = 10
@@ -680,7 +678,11 @@ local function openInventoryDetail(item)
 	if f.critChance > 0 then stat(ICONS.Target, "Crit chance", string.format("+%d%%", math.round(f.critChance * 100)), Color3.fromRGB(255, 190, 70)) end
 	if f.rangeBonus > 0 then stat(ICONS.Lighting, "Reach", string.format("+%s", tostring(f.rangeBonus)), Color3.fromRGB(120, 205, 255)) end
 	if f.knockbackBonus > 0 then stat(ICONS.Shield, "Knockback", string.format("+%d", f.knockbackBonus), Color3.fromRGB(150, 240, 140)) end
-	if f.blessed then stat(ICONS.Star, "Blessed", "+1 slot", BRIGHT.Gold) end
+	if f.bossDrop and tool:GetAttribute("Starter") ~= true then
+		local dormant = math.max(f.storedCount - f.prefixCount, 0)
+		stat(ICONS.Star, "Prefix slots", string.format("%d / %d%s", f.prefixCount, f.slots,
+			dormant > 0 and string.format(" (+%d dormant)", dormant) or ""), BRIGHT.Gold)
+	end
 
 	-- Actions: EQUIP (any backpack sword) and SELL (unequipped boss drops), same as before.
 	local canEquip = not item.equipped
@@ -774,7 +776,7 @@ local function openInventoryDetail(item)
 	end)
 end
 
--- Tile label for long rolled names ("Blessed Precision ... Voidrend Blade"): the last one or
+-- Tile label for long rolled names ("Sour Precision Voidrend Blade"): the last one or
 -- two words, which name the sword itself. The detail card always shows the full name.
 local function tileName(name)
 	if #name <= 14 then return name end
@@ -848,17 +850,6 @@ local function buildItemTile(parent, item, order)
 	if item.equipped then
 		local check = PanelChrome.checkBadge(tile, 34, 30)
 		check.Position = UDim2.fromOffset(8, 8)
-	end
-	if f.blessed then
-		local halo = Instance.new("Frame")
-		halo.Name = "BlessedHalo"
-		halo.BackgroundTransparency = 1
-		halo.Position = UDim2.fromOffset(-4, -4)
-		halo.Size = UDim2.new(1, 8, 1, 8)
-		halo.ZIndex = 23
-		halo.Parent = tile
-		addCorner(halo, 22)
-		PanelChrome.stroke(halo, BRIGHT.Gold, 3)
 	end
 
 	local scale = Instance.new("UIScale")
@@ -3756,11 +3747,6 @@ end)
 for i, item in ipairs(NAV_ITEMS) do
 	local btn = createNavButton(item, i)
 	btn.Activated:Connect(function()
-		if item.id == "Reforge" then
-			setMenuOpen(false)
-			reforgeRemote:FireServer("Open")
-			return
-		end
 		afterReleaseShows(function()
 			if panelOpen and activeTab == item.id then setMenuOpen(false)
 			else openMenuOn(item.id) end

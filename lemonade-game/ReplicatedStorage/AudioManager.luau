@@ -31,13 +31,13 @@ local SoundIDs: { [string]: string } = {
 	sword_drop      = "rbxassetid://6042053626",
 	ui_click        = "rbxassetid://6042053626",
 	combo_milestone = "rbxassetid://6042053626",
-	-- The forge strike (ReforgeSystem / ReforgeGuiFusion): the meter's heartbeat as the marker
-	-- crosses the sweet zone, and the hammer's clang, pitched and swelled by the blow's quality.
+	-- Strike / clang cues (first written for the removed Reforge anvil; kept for any reveal that
+	-- wants a heartbeat tick and a hammer clang, pitched and swelled by quality).
 	forge_tick          = "rbxassetid://6042053626",
 	forge_clang         = "rbxassetid://6042053626",
 	forge_clang_good    = "rbxassetid://6042053626",
 	forge_clang_perfect = "rbxassetid://6042053626",
-	-- The mystery-sword reveal (ReforgeGuiFusion): a tick per rung as the glow climbs the
+	-- A mystery-sword reveal: a tick per rung as the glow climbs the
 	-- ladder, the chime it lands on, and the stamp of each modifier locking in.
 	reveal_tick = "rbxassetid://6042053626",
 	reveal_land = "rbxassetid://2865227271",

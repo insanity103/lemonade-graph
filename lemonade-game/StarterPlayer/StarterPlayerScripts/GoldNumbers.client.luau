@@ -50,3 +50,17 @@ goldEvent.OnClientEvent:Connect(function(position, amount)
 end)
 
 print("[GoldNumbers] Floating gold numbers enabled")
+
+-- Kill tokens (the burst, the magnet and the HUD token counter over the gold) live in a shared
+-- module; requiring it here starts it on this client.
+require(ReplicatedStorage:WaitForChild("TokenDrops"))
+
+-- The town Spin Wheel's per-player face, pool board, key caps and spin (ReplicatedStorage.SpinStation)
+-- rides this script the same way.
+require(ReplicatedStorage:WaitForChild("SpinStation"))
+
+-- The spin result, told in a quest-card-sized popup at the top right (ReplicatedStorage.SpinPopup).
+require(ReplicatedStorage:WaitForChild("SpinPopup"))
+
+-- The Upgrade Stall's shop panel beside the wheel (ReplicatedStorage.UpgradeShop).
+require(ReplicatedStorage:WaitForChild("UpgradeShop"))

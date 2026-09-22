@@ -29,6 +29,7 @@
 local BossWeapons = require(script.Parent:WaitForChild("BossWeapons"))
 local SwordValue = require(script.Parent:WaitForChild("SwordValue"))
 local GoldCurve = require(script.Parent:WaitForChild("GoldCurve"))
+local WeaponModifiers = require(script.Parent:WaitForChild("WeaponModifiers"))
 
 local MerchantConfig = {}
 
@@ -67,9 +68,6 @@ MerchantConfig.RarityOdds = {
 -- Section 3 of the r01 dossier prints the resulting minutes-per-purchase for both, at all eight
 -- zones, so the ratio can be checked rather than believed.
 MerchantConfig.PRICE_STRIKES = 8.0
-
--- The shop never rolls a Blessed extra slot: that stays something only a drop or the forge gives.
-MerchantConfig.ALLOW_BLESSED = false
 
 -- [TUNING] Bad-luck floor. After this many purchases in a row that landed below PITY_FLOOR, the
 -- next purchase is floored at PITY_FLOOR. Earned by playing, saved in the profile (merchantPity),
@@ -173,8 +171,10 @@ local function poolBaseRange(poolKey)
 	if not pool then return 0, 0 end
 	local lo, hi = math.huge, 0
 	for _, def in ipairs(pool.swords) do
-		lo = math.min(lo, BossWeapons.BaseAt(def, "Common", false))
-		hi = math.max(hi, BossWeapons.BaseAt(def, "Epic", false))
+		if def.weight > 0 then -- 0-weight swords are spin-wheel only
+			lo = math.min(lo, BossWeapons.BaseAt(def, "Common", false))
+			hi = math.max(hi, BossWeapons.BaseAt(def, "Epic", false))
+		end
 	end
 	hi = math.max(hi, pool.legendary.base)
 	return lo, hi
@@ -184,7 +184,7 @@ end
 -- formula, with a bare roll (quality 1). Measured against the shipped forge this lands within 7%
 -- of the median strike the player is actually paying in that zone (dossier, r01).
 local function strikeCost(baseMult, rarity)
-	local base = SwordValue.REROLL_BASE[rarity] or SwordValue.REROLL_BASE.Common
+	local base = SwordValue.PRICE_UNIT[rarity] or SwordValue.PRICE_UNIT.Common
 	return base * SwordValue.powerFactor(baseMult)
 end
 
@@ -244,13 +244,18 @@ function MerchantConfig.OfferForLevel(level: number?)
 			local lo, hi = poolBaseRange(entry.key)
 			minBase, maxBase = math.min(minBase, lo), math.max(maxBase, hi)
 			expectedBase += entry.weight * expectOverPool(entry.key, function(b) return b end)
-			swordCount += #pool.swords + 1
+			-- a 0-weight sword is spin-wheel only (BossWeapons wardenEpics): the shop never sells it
+			local sellable = 0
+			for _, def in ipairs(pool.swords) do
+				if def.weight > 0 then sellable += 1 end
+			end
+			swordCount += sellable + 1
 			table.insert(pools, {
 				key = entry.key,
 				name = BossWeapons.PoolName(entry.key),
 				lesser = BossWeapons.IsLesserPool(entry.key),
 				weight = entry.weight,
-				swords = #pool.swords + 1,
+				swords = sellable + 1,
 				minBase = lo,
 				maxBase = hi,
 				legendaryName = pool.legendary.name,
@@ -304,7 +309,9 @@ function MerchantConfig.OfferForLevel(level: number?)
 		expectedBase = expectedBase,
 		swordCount = swordCount,
 		rosterCount = BossWeapons.CountSwords(),
-		blessedChance = MerchantConfig.ALLOW_BLESSED and 1 or 0,
+		prefixSlots = WeaponModifiers.BASE_SLOTS, -- every blade rolls the buyer's own slots (1 by default)
+		prefixCeiling = WeaponModifiers.MaxTierForLevel(lv),
+		prefixCeilingName = WeaponModifiers.CeilingName(lv), -- the bracket's chase; MerchantSystem hides it as "??"
 		jitter = BossWeapons.STAT_JITTER,
 		pityPurchases = MerchantConfig.PITY_PURCHASES,
 		pityFloor = MerchantConfig.PITY_FLOOR,
@@ -330,14 +337,16 @@ end
 -- THE PURCHASE, as one pair of arguments. MerchantSystem hands these straight to
 -- BossSwordFactory.build, and so does every measurement harness, so a measured roll can never be
 -- a copy of the shipped roll -- it IS the shipped roll.
-function MerchantConfig.RollArgs(level: number?, pityCount: number?, rng)
+-- slots: the buyer's prefix slots (WeaponModifiers.SlotsOf); the blade's prefix rolls at `level`.
+function MerchantConfig.RollArgs(level: number?, pityCount: number?, rng, slots: number?)
 	local poolKey = MerchantConfig.RollPool(level, rng)
 	local floor = nil
 	if (tonumber(pityCount) or 0) >= MerchantConfig.PITY_PURCHASES then
 		floor = MerchantConfig.PITY_FLOOR
 	end
 	return poolKey, {
-		allowBlessed = MerchantConfig.ALLOW_BLESSED,
+		level = tonumber(level) or 1,
+		slots = WeaponModifiers.ClampSlots(slots),
 		rarityOdds = MerchantConfig.RarityOdds,
 		rarityFloor = floor,
 		jitter = MerchantConfig.JITTER,

@@ -31,7 +31,6 @@ local BRIGHT = PanelChrome.BRIGHT
 local RARITY_TILE = PanelChrome.RARITY_TILE
 local HUD = PanelChrome.HUD
 local corner = PanelChrome.corner
-local BLESSED_GOLD = Color3.fromRGB(255, 215, 0)
 
 -- Icons already used by the Inventory's stat rows.
 local ICONS = {
@@ -119,7 +118,7 @@ shadow.Parent = slot
 corner(shadow, SLOT_RADIUS + 4)
 
 -- Equipped ring: a bright band just outside the dark outline with a soft glow around it, so the
--- held sword's slot stands out from the stone floor. Green when equipped, gold for a Blessed sword.
+-- held sword's slot stands out from the stone floor. Green when equipped.
 local EQUIPPED_GREEN = Color3.fromRGB(120, 255, 96)
 local equippedGlow = Instance.new("Frame")
 equippedGlow.Name = "EquippedGlow"
@@ -759,7 +758,6 @@ local function fillTooltip(tool: Tool)
 	local rarity = tool:GetAttribute("Rarity") or "Common"
 	local band = bandFor(rarity)
 	local isBossDrop = tool:GetAttribute("BossDrop") == true
-	local blessed = tool:GetAttribute("ExtraSlot") == true
 	local damageMult = tool:GetAttribute("DamageMult") or 1
 	local bossTier = tool:GetAttribute("BossTier")
 	local prefixes = tool:GetAttribute("Prefixes") or ""
@@ -792,17 +790,13 @@ local function fillTooltip(tool: Tool)
 		statRow(order, ICONS.Trophy, "Rating", SwordValue.short(SwordValue.rateTool(tool)), STAT_COLORS.Gold)
 		order += 1
 	end
-	if blessed then
-		statRow(order, ICONS.Star, "Blessed", "+1 slot", STAT_COLORS.Gold)
-		order += 1
-	end
 
 	local mods = SwordValue.modifiersFromPrefixes(prefixes)
 	if #mods > 0 then
 		sectionHeading(order, "MODIFIERS")
 		order += 1
 		for _, mod in ipairs(mods) do
-			local tierData = WeaponModifiers.Categories[mod.category].Tiers[mod.tier]
+			local tierData = WeaponModifiers.ModByName[mod.name] or WeaponModifiers.Categories[mod.category].Tiers[mod.tier]
 			modifierRow(order, mod.name, mod.tier, tierData and tierData.desc or mod.category)
 			order += 1
 		end
@@ -915,9 +909,8 @@ local function applyTool(tool: Tool?)
 	local rarity = tool:GetAttribute("Rarity") or "Common"
 	buildFace(rarity)
 	emptyLabel.Visible = false
-	-- The slot only ever shows the sword in hand, so it always wears the equipped ring; a Blessed
-	-- sword's ring turns gold (the Inventory card's Blessed treatment).
-	local ringColor = if tool:GetAttribute("ExtraSlot") == true then BLESSED_GOLD else EQUIPPED_GREEN
+	-- The slot only ever shows the sword in hand, so it always wears the equipped ring.
+	local ringColor = EQUIPPED_GREEN
 	ringStroke.Color = ringColor
 	glowStroke.Color = ringColor
 	equippedRing.Visible = true

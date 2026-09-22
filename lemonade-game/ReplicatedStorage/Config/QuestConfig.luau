@@ -62,7 +62,8 @@ QuestConfig.OBJECTIVE_TYPES = {
 	OBTAIN_POOL = "OBTAIN_POOL", -- obtain ANY sword from one boss's pool (poolKey). Satisfied by a
 	                           -- matching sword on the player OR by the profile's record of having
 	                           -- been handed one (bossFirstDrops), so selling it does not undo it.
-	REFORGE = "REFORGE",       -- strike the anvil N times, with any sword
+	REFORGE = "REFORGE",       -- legacy: the removed anvil. No quest uses it; kept so an old save's
+	                           -- active-quest id never names an unknown type.
 	LEVEL = "LEVEL",           -- reach a target level
 }
 
@@ -75,10 +76,11 @@ QuestConfig.OBJECTIVE_TYPES = {
 --
 -- Rules the chain now keeps, all of them checked by simulation (sim_first_minutes.luau):
 --   1. Nothing before minute ten can dead-end on a roll. Every objective in the first eight quests
---      is a count the player controls: kills, a level, a strike at the anvil.
---   2. The anvil is a quest, early. Quest 3 asks for one strike with any sword (the starter is
---      forgeable and the first strike of a profile is free), so the game's core verb is taught
---      by minute three, and the payout covers the first PAID strike on the starter.
+--      is a count the player controls: kills or a level.
+--   2. The prefix ladder is a quest, early. Quest 3 asks for level 5, the level that opens the
+--      Sunny prefix rung (WeaponModifiers.LevelCeiling), so the first thing a new player learns
+--      about swords is that levelling up is what makes stronger prefixes possible. (It used to be
+--      a strike at the removed Reforge anvil; the id is kept so a completed profile stays done.)
 --   3. Bosses come after the level that beats them. The Warden of the Pit (Lv10, 7,075 HP) is
 --      asked for after "Reach level 15", where the simulated player kills him in one attempt.
 --   4. "Claim the blade" quests ask for ANY sword of the boss's pool, and a boss's FIRST kill by
@@ -101,10 +103,10 @@ QuestConfig.QUESTS = {
 		reward = { type = "XP", amount = 150 },
 	},
 	{
-		id = "q3_strike_the_anvil",
-		name = "Strike While It's Hot",
-		description = "Reforge any sword at the anvil once.",
-		objective = { type = "REFORGE", count = 1 },
+		id = "q3_strike_the_anvil", -- id kept: a profile that already completed it stays completed
+		name = "Sunny Side Up",
+		description = "Reach level 5 to open Sunny sword prefixes.",
+		objective = { type = "LEVEL", target = 5 },
 		reward = { type = "GOLD", kills = 20 },
 	},
 	{

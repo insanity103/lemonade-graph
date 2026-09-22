@@ -2,9 +2,9 @@
 -- Shared by SwordDropSystem (boss drops), MerchantSystem (purchases), AdminSystem (gifts), the
 -- Vault / Trade rebuild path and the Studio-only gallery. The server owns every roll here:
 --   rollDrop  rarity -> which sword of the boss's pool -> base stat jitter (BossWeapons tables)
---   build     rollDrop (or the caller's fixed sword / rarity) + modifier roll + the Tool itself
---   reroll    the Reforge anvil: new modifiers, same sword / rarity / rolled base / look
---   rebuild   a saved sword restored exactly, nothing re-rolled
+--   build      rollDrop (or the caller's fixed sword / rarity) + prefix roll + the Tool itself
+--   rebuild    a saved sword restored exactly, nothing re-rolled
+--   applySlots keep a sword's strongest N prefixes active (N = the owner's PrefixSlots)
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local StarterPack = game:GetService("StarterPack")
@@ -63,6 +63,9 @@ local function rollSword(pool)
 		if r <= 0 then
 			return def
 		end
+	end
+	for i = #pool.swords, 1, -1 do -- float leftovers: the last sword that can drop (0-weight = spin-only)
+		if pool.swords[i].weight > 0 then return pool.swords[i] end
 	end
 	return pool.swords[#pool.swords]
 end
@@ -235,7 +238,7 @@ end
 
 -- Give the tool this look: swap the Handle for the mesh the look names (or its fallback), sized
 -- to the look's length, or restyle the block parts when the look is "Blocks" / no mesh exists.
--- Idempotent: reroll and rebuild re-run it on every sword.
+-- Idempotent: rebuild re-runs it on every sword.
 local function fitLook(tool, look)
 	look = look or BossWeapons.Fallback.look
 	local mesh = findMesh(look)
@@ -325,40 +328,38 @@ end
 -- opts.sword         fix which sword of the pool (by name); default: rolled by weight
 -- opts.rarity        fix the rarity; default: rolled from BossWeapons.RarityOdds
 -- opts.jitter        false = the listed base, no +-5% roll (merchant). Default true.
--- opts.blessedBonus  added to WeaponModifiers.EXTRA_SLOT_CHANCE (drops: +5% at rebirth 5+)
--- opts.allowBlessed  false = never roll a Blessed extra slot. Defaults to true.
 -- opts.rarityOdds    the rarity ladder to roll (DropRules hands the rig's rank ladder in)
 -- opts.rarityFloor   drop pity: lift a roll below this rarity to it
--- opts.luck          long-tail luck multiplier (WeaponModifiers.LuckFrom); drops pass the killer's.
--- Returns tool, mods, fullName, gotExtraSlot, weaponData (weaponData.rarity / baseMult / name /
+-- opts.level         the owner's level: picks the prefix odds bracket (WeaponModifiers.TierOdds)
+-- opts.slots         the owner's prefix slots (WeaponModifiers.SlotsOf). Default 1.
+-- opts.luck          earned luck multiplier (WeaponModifiers.LuckFrom); drops pass the killer's.
+-- opts.minTier       admin / showcase only: lift each prefix to this rung (never past the ceiling)
+-- Returns tool, mods, fullName, weaponData (weaponData.rarity / baseMult / name /
 -- bossName / listedBase / rarityOdds / isLegendary describe what was rolled).
 function BossSwordFactory.build(archetypeKey, opts)
 	opts = opts or {}
-	local allowBlessed = opts.allowBlessed ~= false
 	local weaponData = BossSwordFactory.rollDrop(archetypeKey, opts)
 
 	local tool = newTemplateTool()
 	fitLook(tool, weaponData.look)
 
-	-- Roll modifiers by rarity. A bonus of -1 pushes the Blessed chance below zero,
-	-- which is how purchases guarantee no extra slot.
-	local mods, gotExtraSlot, variant = WeaponModifiers.RollModifiers(weaponData.rarity,
-		allowBlessed and (opts.blessedBonus or 0) or -1.0, false, { luck = opts.luck })
-	if not allowBlessed then
-		gotExtraSlot = false
-	end
+	local mods, variant = WeaponModifiers.RollModifiers(weaponData.rarity, {
+		level = opts.level, luck = opts.luck, slots = opts.slots, minTier = opts.minTier,
+	})
 
-	local fullName = BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExtraSlot, variant)
+	local fullName = BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, variant)
 	copyClassicBits(tool)
-	return tool, mods, fullName, gotExtraSlot, weaponData
+	return tool, mods, fullName, weaponData
 end
 
 -- Write a roll onto a tool: name, prefixes and the combat attributes. Shared by build (fresh
--- drops and purchases) and reroll (the Reforge anvil). weaponData.baseMult is the sword's rolled
--- base; weaponData.listedBase (optional) the pool's listed base at that rarity.
+-- drops and purchases) and applySlots (a saved sword's active prefixes). weaponData.baseMult is
+-- the sword's rolled base; weaponData.listedBase (optional) the pool's listed base at that rarity.
 -- variant (optional): a mutation name (WeaponModifiers.Variants) that multiplies every modifier's
--- bonus and leads the name ("Sour Blessed Mythic ... Astral Eclipse"); saved as attribute Variant.
-function BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExtraSlot, variant)
+-- bonus and leads the name ("Sour Mythic Astral Eclipse"); saved as attribute Variant.
+-- storedPrefixes (optional): every prefix the sword owns, when more than are active (a pre-rework
+-- save). Saved as StoredPrefixes so an unlocked slot can wake the next one up.
+function BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, variant, storedPrefixes)
 	local prefixNames = {}
 	local bonusDamage = weaponData.inherentBonusDmg or 0
 	local critChance = weaponData.inherentCrit or 0
@@ -384,9 +385,6 @@ function BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExt
 	if variantData then
 		table.insert(namePrefixes, variantData.name)
 	end
-	if gotExtraSlot then
-		table.insert(namePrefixes, "Blessed")
-	end
 	for _, p in ipairs(prefixNames) do
 		table.insert(namePrefixes, p)
 	end
@@ -407,9 +405,12 @@ function BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExt
 	tool:SetAttribute("CritChance", critChance)
 	tool:SetAttribute("RangeBonus", rangeBonus)
 	tool:SetAttribute("KnockbackBonus", knockbackBonus)
-	tool:SetAttribute("ExtraSlot", gotExtraSlot)
+	-- ExtraSlot (the removed Blessed slot) is never written any more; an old save's value is
+	-- left on the tool untouched and nothing reads it.
+	local active = table.concat(prefixNames, ", ")
+	tool:SetAttribute("StoredPrefixes", (storedPrefixes and storedPrefixes ~= active) and storedPrefixes or nil)
 	tool:SetAttribute("Variant", variantData and variantData.name or nil)
-	tool:SetAttribute("Prefixes", table.concat(prefixNames, ", "))
+	tool:SetAttribute("Prefixes", active)
 	tool:SetAttribute("BossDrop", true)
 	tool:SetAttribute("BaseWeaponName", weaponData.name)
 	tool:SetAttribute("WeaponAppearanceMaterial", weaponData.material.Name)
@@ -440,70 +441,33 @@ local function describeTool(tool)
 end
 BossSwordFactory.describeTool = describeTool
 
--- Re-roll an existing boss sword's modifiers in place (the Reforge anvil). Sword, rarity, rolled
--- base and look stay; a Blessed sword keeps its extra slot. Returns the new mods and name.
--- minTopTier (optional): the pity floor — if no rolled modifier reaches it, the best one is
--- raised to it, so a run of bad luck cannot leave the sword worse at the top end.
--- keepNames (optional): modifier names currently on the sword to lock; each survives the reroll
--- in place of one rolled slot (a locked category is never rolled twice). The slot count is
--- whatever the rarity rolled, so locks never add slots.
--- opts.luck (optional): the long-tail luck multiplier for this strike (default 1).
--- Returns mods, fullName, gotExtraSlot, pityApplied, variantName.
--- opts.luck is the whole luck the roll is made at: the player's earned luck (kill streak, Lucky
--- Charge, rebirths) already multiplied by the forge strike's blow (ReforgeSystem: PERFECT 2x,
--- GOOD 1.5x, OK 1x). It scales the ladder's long tail only, never the body, so a good blow buys
--- better odds and never a guarantee.
-function BossSwordFactory.reroll(tool, blessedBonus, minTopTier, keepNames, opts)
-	opts = opts or {}
+-- Keep a sword's strongest `slots` prefixes active and re-derive its stats from them. Reads the
+-- full list from StoredPrefixes (or Prefixes on a save that never had one), so it is idempotent
+-- and reversible: 1 slot collapses a pre-rework four-prefix Legendary to its best prefix, and a
+-- later unlock of slot 2 brings its second-best back. The starter / non-pool swords are skipped.
+-- Returns true if the tool's active prefixes changed.
+function BossSwordFactory.applySlots(tool, slots)
+	if not (tool and tool:IsA("Tool")) or tool:GetAttribute("BossDrop") ~= true then return false end
+	local stored = tool:GetAttribute("StoredPrefixes")
+	local source = (typeof(stored) == "string" and stored ~= "") and stored or tool:GetAttribute("Prefixes")
+	local before = tool:GetAttribute("Prefixes")
+	local legacyBlessed = tool:GetAttribute("ExtraSlot") == true
+		and string.find(tool.Name, "Blessed", 1, true) ~= nil
+	local active, full = WeaponModifiers.CollapsePrefixes(source, slots)
+	local names = {}
+	for _, m in ipairs(active) do table.insert(names, m.name) end
+	if table.concat(names, ", ") == (before or "") and not legacyBlessed then return false end
 	local weaponData, archetypeKey = describeTool(tool)
-	if not weaponData then return nil end
-	-- Self-heal: a sword forged before the Grip fix in fitLook still has the hand centred on the
-	-- blade, and one forged before the pools has the starter look. Re-fitting is idempotent.
-	fitLook(tool, weaponData.look)
-	local mods, gotExtraSlot, variant = WeaponModifiers.RollModifiers(weaponData.rarity, blessedBonus or 0,
-		tool:GetAttribute("ExtraSlot") == true, { luck = opts.luck })
-	if keepNames and #keepNames > 0 then
-		local rolledCount = #mods
-		local kept, keptCategories = {}, {}
-		for _, keepName in ipairs(keepNames) do
-			for category, data in pairs(WeaponModifiers.Categories) do
-				for tierIndex, entry in ipairs(data.Tiers) do
-					if entry.name == keepName and not keptCategories[category] then
-						keptCategories[category] = true
-						table.insert(kept, { category = category, name = entry.name, bonus = entry.bonus, desc = entry.desc, tier = tierIndex, kept = true })
-					end
-				end
-			end
-		end
-		for i = #mods, 1, -1 do -- drop fresh rolls in locked categories
-			if keptCategories[mods[i].category] then table.remove(mods, i) end
-		end
-		while #mods > math.max(rolledCount, #kept) - #kept do table.remove(mods) end
-		for i = #kept, 1, -1 do table.insert(mods, 1, kept[i]) end
-	end
-	local pityApplied = false
-	if minTopTier and #mods > 0 then
-		local best, bestIndex = 0, 1
-		for i, mod in ipairs(mods) do
-			if mod.tier > best then best, bestIndex = mod.tier, i end
-		end
-		if best < minTopTier then
-			local category = WeaponModifiers.Categories[mods[bestIndex].category]
-			local target = math.min(minTopTier, #category.Tiers)
-			local tierData = category.Tiers[target]
-			local odds = WeaponModifiers.TierOdds(weaponData.rarity, 0, opts.luck)
-			mods[bestIndex] = { category = mods[bestIndex].category, name = tierData.name, bonus = tierData.bonus,
-				desc = tierData.desc, tier = target, p = odds[target], oneIn = WeaponModifiers.OneIn(odds[target]), pity = true }
-			pityApplied = true
-		end
-	end
-	local fullName = BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, mods, gotExtraSlot, variant)
-	return mods, fullName, gotExtraSlot, pityApplied, variant
+	if not weaponData then return false end
+	BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, active, tool:GetAttribute("Variant"), full)
+	return true
 end
 
 -- Rebuild a previously-saved boss sword from its serialized attribute set (see
--- PlayerDataService). Nothing is re-rolled -- the exact stats and look are restored.
-function BossSwordFactory.rebuild(data)
+-- PlayerDataService). Nothing is re-rolled -- the exact stats and look are restored, then the
+-- owner's prefix slots are applied (slots: WeaponModifiers.SlotsOf(owner); default 1), which is
+-- where a pre-rework Blessed / multi-prefix save collapses to its strongest prefix.
+function BossSwordFactory.rebuild(data, slots)
 	if typeof(data) ~= "table" then return nil end
 	local template = ServerStorage:FindFirstChild("BossSwordTool")
 		or StarterPack:FindFirstChild("ClassicSword")
@@ -543,6 +507,9 @@ function BossSwordFactory.rebuild(data)
 	end
 
 	copyClassicBits(tool)
+	if weaponData then
+		BossSwordFactory.applySlots(tool, slots or WeaponModifiers.BASE_SLOTS)
+	end
 	return tool
 end
 

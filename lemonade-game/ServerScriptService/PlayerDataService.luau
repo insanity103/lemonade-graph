@@ -8,6 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SaveConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SaveConfig"))
 local InventoryService = require(script.Parent:WaitForChild("InventoryService"))
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
+local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 
 local PlayerDataService = {}
 
@@ -38,12 +39,9 @@ local function defaultData()
 		version = SaveConfig.SCHEMA_VERSION,
 		leaderstats = {}, attributes = {}, inventory = {}, swords = {},
 		vault = {},  -- boss swords stored with the Vaultkeeper (same entry shape as `swords`)
-		reforgePity = 0,  -- consecutive reforges that did not improve the sword (ReforgeSystem)
-		reforgeFreeAt = 0,  -- os.time() when the next free daily reforge unlocks
-		reforgeBest = 0,  -- best rating ever produced by a reforge
-		reforgeCount = 0,  -- lifetime reforges
-		reforgeTailPity = 0,  -- strikes since the last Sunburst-or-better roll (ReforgeSystem long-tail pity)
-		reforgeRecent = {},  -- the top rung of each of the last forges, oldest first (the anvil's run rail)
+		-- reforgePity / reforgeFreeAt / reforgeBest / reforgeCount / reforgeTailPity / reforgeRecent
+		-- belonged to the removed Reforge anvil. New profiles no longer get them; an old profile
+		-- keeps its values untouched in the record (nothing reads them, nothing drops them).
 		dropPity = 0,  -- drop credit owed: kills that paid nothing, each worth its own chance (DropRules)
 		dropRarePity = 0,  -- drops since the last Rare or better (DropRules)
 		dropKills = 0,  -- lifetime kills the drop system has rolled for: 0 means the next kill is the
@@ -51,6 +49,10 @@ local function defaultData()
 		                -- opening ramp applies (DropRules rule 5)
 		bossFirstDrops = {},  -- [poolKey] = true once this boss has paid the profile its first sword
 		                      -- (a boss's first kill always drops; the "claim a sword" quests read it)
+		zoneDepth = {},  -- [zone] = { best = highest foe level beaten there, boss = true once its boss or
+		                 -- warden fell }: how deep the player has pushed, the spin pool's depth step
+		                 -- (SpinService). A save without it is rebuilt from level + bossFirstDrops.
+		spinCount = 0,  -- lifetime spins at the town Spin Wheel (SpinSystem); older saves read as 0
 		merchantPity = 0,  -- blacksmith purchases in a row below MerchantConfig.PITY_FLOOR
 		merchantCount = 0,  -- lifetime blades bought from the Relic Blacksmith
 		vaultSlots = 0,  -- vault shelves BOUGHT with gold (Config.VaultConfig owns the price ladder);
@@ -143,12 +145,34 @@ function PlayerDataService.Load(player)
 	-- vaultSlots / wealthRung / wealthBest were added with the paid vault and the wealth ladder;
 	-- a profile saved before them simply arrives with none and is backfilled to 0 here, exactly
 	-- the way every earlier counter was. Nothing is renamed and nothing is dropped.
-	for _, key in ipairs({ "reforgePity", "reforgeFreeAt", "reforgeBest", "reforgeCount", "reforgeTailPity",
-		"dropPity", "dropRarePity", "vaultSlots", "wealthRung", "wealthBest" }) do
+	for _, key in ipairs({ "dropPity", "dropRarePity", "vaultSlots", "wealthRung", "wealthBest" }) do
 		if typeof(record[key]) ~= "number" then record[key] = 0 end
 	end
-	-- Added with the forge run rail: a save written before it simply has no rung history yet.
-	if typeof(record.reforgeRecent) ~= "table" then record.reforgeRecent = {} end
+	-- One prefix slot per sword (WeaponModifiers.BASE_SLOTS; more are a player unlock). A vault
+	-- entry saved before the rework can carry a Blessed slot and up to five prefixes: keep every
+	-- name in StoredPrefixes and leave only the owner's strongest N in Prefixes, so its rating and
+	-- its card match what it will be when withdrawn (BossSwordFactory.rebuild re-derives the stats).
+	local slots = WeaponModifiers.ClampSlots(record.attributes.PrefixSlots)
+	for _, entry in ipairs(record.vault) do
+		local attrs = typeof(entry) == "table" and typeof(entry.attrs) == "table" and entry.attrs or nil
+		if attrs then
+			local source = (typeof(attrs.StoredPrefixes) == "string" and attrs.StoredPrefixes ~= "")
+				and attrs.StoredPrefixes or attrs.Prefixes
+			if typeof(source) == "string" then
+				local active, full = WeaponModifiers.CollapsePrefixes(source, slots)
+				local names = {}
+				for _, m in ipairs(active) do table.insert(names, m.name) end
+				local joined = table.concat(names, ", ")
+				if joined ~= attrs.Prefixes then
+					attrs.StoredPrefixes = full
+					attrs.Prefixes = joined
+				end
+			end
+			if typeof(entry.name) == "string" and attrs.ExtraSlot == true then
+				entry.name = (entry.name:gsub("Blessed ", "", 1))
+			end
+		end
+	end
 	if not record.version or record.version < SaveConfig.SCHEMA_VERSION then
 		record.version = SaveConfig.SCHEMA_VERSION
 	end
@@ -193,7 +217,7 @@ function PlayerDataService.Apply(player)
 	-- by the engine, which was silently eating restored swords.
 	local rebuiltSwords = {}
 	for _, entry in ipairs(data.swords) do
-		local tool = BossSwordFactory.rebuild(entry)
+		local tool = BossSwordFactory.rebuild(entry, WeaponModifiers.SlotsOf(player))
 		if tool then rebuiltSwords[#rebuiltSwords + 1] = tool end
 	end
 	local function giveSwords()
@@ -218,6 +242,17 @@ function PlayerDataService.Apply(player)
 	if data.isNew == true then
 		InventoryService.GiveStarterItems(player)
 	end
+
+	-- A prefix slot unlock (the upgrade shop raises PrefixSlots) wakes the next stored prefix on
+	-- every sword the player is carrying; vault swords pick it up when they are withdrawn.
+	player:GetAttributeChangedSignal("PrefixSlots"):Connect(function()
+		local slotsNow = WeaponModifiers.SlotsOf(player)
+		for _, container in ipairs({ player:FindFirstChildOfClass("Backpack"), player.Character }) do
+			for _, tool in ipairs(container and container:GetChildren() or {}) do
+				BossSwordFactory.applySlots(tool, slotsNow)
+			end
+		end
+	end)
 
 	profile.ready = true
 	player:SetAttribute("DataLoaded", true)
@@ -245,8 +280,8 @@ local function serializeSwords(player)
 	for _, container in ipairs({ player:FindFirstChildOfClass("Backpack"), player.Character }) do
 		if container then
 			for _, tool in ipairs(container:GetChildren()) do
-				-- GuiShowcaseOnly: a loaner relic a Studio-only capture stage put in the backpack
-				-- (ReforgeSystem); it must never reach the profile.
+				-- GuiShowcaseOnly: a loaner relic a Studio-only capture stage put in the backpack;
+				-- it must never reach the profile.
 				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true
 					and tool:GetAttribute("GuiShowcaseOnly") ~= true then
 					out[#out + 1] = PlayerDataService.SerializeTool(tool, tool == equippedTool)
@@ -271,7 +306,7 @@ function PlayerDataService.IsReady(player)
 	return profile ~= nil and profile.ready == true
 end
 
--- Small persisted counters (reforge pity and the like). nil until the profile is applied.
+-- Small persisted counters (drop pity and the like). nil until the profile is applied.
 function PlayerDataService.GetField(player, key)
 	local profile = profiles[player]
 	if not profile or not profile.ready then return nil end
@@ -320,7 +355,7 @@ function PlayerDataService.Serialize(player)
 end
 
 -- ---------------------------------------------------------------- save / release
--- A Studio capture stage (GuiShowcase) lends relics, tops up gold and fires real rerolls so the
+-- A Studio capture stage (GuiShowcase) lends relics, tops up gold and fires real rolls so the
 -- camera sees the real code path. None of that is the player's: while the showcase attribute is
 -- set in Studio, saving is refused outright, so a staged session can never reach the DataStore.
 -- Live servers never take this branch (RunService:IsStudio() is false there).

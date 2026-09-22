@@ -29,7 +29,20 @@ local DEFENSE_MAX_REDUCTION = 0.35 -- hard cap: Defense never mitigates more tha
 -- Keep early encounters forgiving and leave room for mistakes. Players should be
 -- able to clear a small group and reach the next level without repeated deaths.
 local ENEMY_DAMAGE_MULTIPLIER = 0.55
-local ENEMY_HIT_INTERVAL_PER_PLAYER = 0.7 -- prevents several enemies landing damage on one frame
+-- Enemies fight in packs (WorldLayout.PACKS): many small, fast hits instead of few big ones.
+-- Ordinary rigs hit for PACK_DAMAGE_SCALE of their listed damage and swing PACK_SPEED_MULT times as
+-- often, so one rig's damage per second is unchanged. Bosses keep their listed cadence and damage so
+-- a boss fight stays a readable duel. A crowd shares a damage budget: each hit on a player is scaled
+-- by (attackers on that player) ^ -CROWD_EXPONENT, so a pack of n deals n^(1-CROWD_EXPONENT) times
+-- one rig's DPS (4 rigs 2x, 6 rigs ~2.45x) -- the old flat 0.7 s per-player throttle landed ~1.9x
+-- from any group while swallowing most swings; now every swing that connects shows a number.
+local PACK_DAMAGE_SCALE = 0.5 -- [TUNING] per-hit damage of non-boss rigs
+local PACK_SPEED_MULT = 2.0 -- [TUNING] attack-rate multiplier of non-boss rigs
+local CROWD_EXPONENT = 0.5 -- [TUNING] crowd damage sharing (0 = none, 1 = a crowd deals one rig's DPS)
+local CROWD_WINDOW = 1.6 -- seconds a rig counts as "on" a player after its last swing at them
+local CADENCE_JITTER = 0.15 -- [TUNING] +- fraction of each swing interval, so a pack's hits stream
+local PACK_CALL_RADIUS = 45 -- studs: packmates this close join a fight one of them starts
+local ENEMY_HIT_INTERVAL_PER_PLAYER = 0.02 -- only stops two hits landing on the very same frame
 local ATTACK_COOLDOWN = 0.4
 local RESPAWN_DELAY = 5
 local DROP_RESPAWN_DELAY = 1.5 -- [TUNING] a rig that just paid a sword is back this fast
@@ -76,6 +89,7 @@ local DAMAGE_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild
 
 local playerCooldowns = {}
 local playerEnemyHitAt = {}
+local playerAttackers = {} -- [player] = { [enemy model] = time of its last swing at them }
 
 -- ==============================================================================
 -- 1. ENEMY & BOSS ARCHETYPES CONFIGURATION
@@ -446,6 +460,14 @@ local function getEnemyDamage(archetype, level)
 	end
 	local levelDelta = math.max(0, level - 1)
 	return math.floor(archetype.baseDamage * (1 + 0.08 * levelDelta + 0.0015 * levelDelta * levelDelta))
+end
+
+-- Seconds between one rig's swings (before jitter): packs swing fast, bosses keep their tempo.
+local function getAttackCooldown(archetype)
+	if archetype.boss then
+		return archetype.attackCooldown
+	end
+	return archetype.attackCooldown / PACK_SPEED_MULT
 end
 
 local function getEnemyXP(archetype, level)
@@ -830,6 +852,36 @@ local function findNearestLivingPlayer(origin, maxDist)
 	return bestPlayer, bestChar, bestHrp, bestDist
 end
 
+-- Rigs that swung at `player` within CROWD_WINDOW (at least 1): the crowd sharing each hit.
+local function countAttackers(player, now)
+	local list = playerAttackers[player]
+	if not list then
+		return 1
+	end
+	local n = 0
+	for model, at in pairs(list) do
+		if now - at > CROWD_WINDOW or not model.Parent then
+			list[model] = nil
+		else
+			n += 1
+		end
+	end
+	return math.max(1, n)
+end
+
+local function noteAttacker(playerChar, model, now)
+	local player = Players:GetPlayerFromCharacter(playerChar)
+	if not player then
+		return
+	end
+	local list = playerAttackers[player]
+	if not list then
+		list = setmetatable({}, { __mode = "k" })
+		playerAttackers[player] = list
+	end
+	list[model] = now
+end
+
 local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 	local humanoid = playerChar:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health <= 0 then
@@ -837,8 +889,14 @@ local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 	end
 	local enemyRoot = enemyModel.PrimaryPart or enemyModel:FindFirstChild("HumanoidRootPart")
 	local playerRoot = playerChar:FindFirstChild("HumanoidRootPart")
-	if not enemyRoot or not playerRoot
-		or not CombatUtil.hasLineOfSight(enemyRoot.Position, playerRoot.Position, { enemyModel, playerChar }) then
+	-- Line of sight ignores every rig, not just the attacker: in a pack the rig beside you must not
+	-- "block" its packmate's blade (walls and cliffs still do).
+	if not enemyRoot or not playerRoot then
+		return
+	end
+	local ignore = CollectionService:GetTagged(ENEMY_TAG)
+	table.insert(ignore, playerChar)
+	if not CombatUtil.hasLineOfSight(enemyRoot.Position, playerRoot.Position, ignore) then
 		return
 	end
 	-- The sanctuary is a hard no-damage volume, enforced on the server at the point
@@ -849,19 +907,32 @@ local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 	end
 
 	local player = Players:GetPlayerFromCharacter(playerChar)
+	local crowd = 1
 	if player then
 		local now = tick()
 		if now - (playerEnemyHitAt[player] or 0) < ENEMY_HIT_INTERVAL_PER_PLAYER then
 			return
 		end
 		playerEnemyHitAt[player] = now
+		crowd = countAttackers(player, now)
 	end
 	local defense = player and (player:GetAttribute("Defense") or 0) or 0
 	local rawDamage = getEnemyDamage(arch, level)
 	local reduction = math.min(defense * DEFENSE_PCT_PER_POINT, DEFENSE_MAX_REDUCTION)
-	local finalDamage = math.max(1, math.floor(rawDamage * ENEMY_DAMAGE_MULTIPLIER * (1 - reduction) + 0.5))
+	local scale = ENEMY_DAMAGE_MULTIPLIER * (1 - reduction)
+	if not arch.boss then
+		scale *= PACK_DAMAGE_SCALE * crowd ^ -CROWD_EXPONENT
+	end
+	-- Health takes the exact share (a crowd's small hits add up precisely); the number shown is it
+	-- rounded, never below 1.
+	local exactDamage = math.max(0.5, rawDamage * scale)
+	local finalDamage = math.max(1, math.floor(exactDamage + 0.5))
 
-	humanoid:TakeDamage(finalDamage)
+	humanoid:TakeDamage(exactDamage)
+	if player then
+		-- Combat stamp: the town spin wheel refuses a spin within a few seconds of a hit (SpinSystem).
+		player:SetAttribute("CombatAt", workspace:GetServerTimeNow())
+	end
 
 	local hrp = playerChar:FindFirstChild("HumanoidRootPart")
 	if hrp then
@@ -869,8 +940,15 @@ local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 	end
 end
 
+-- Heavy vs ordinary is judged on the listed cadence; a pack rig's faster swing shortens its windup
+-- so the whole swing (windup + ~0.44 s follow-through, EnemyAnimator.attackTimes) fits its cycle.
+local MIN_PACK_WINDUP = 0.18
 local function getWindup(arch)
-	return arch.windup or (arch.attackCooldown >= HEAVY_COOLDOWN and HEAVY_WINDUP or ENEMY_WINDUP)
+	local windup = arch.windup or (arch.attackCooldown >= HEAVY_COOLDOWN and HEAVY_WINDUP or ENEMY_WINDUP)
+	if arch.boss then
+		return windup
+	end
+	return math.max(MIN_PACK_WINDUP, math.min(windup * 0.75, getAttackCooldown(arch) - 0.44))
 end
 
 -- Starts the swing and returns the seconds until the blade lands (when damage applies). The swing
@@ -894,7 +972,12 @@ local function startEnemyAI(model, humanoid, hrp, arch, spawnPos, level, onDeath
 		spawnPos = spawnPos,
 		nextPatrolTime = tick() + math.random(1, 3),
 		lastAttackTime = 0,
+		nextSwingGap = 0,
 		targetChar = nil,
+		-- Where around its target this rig stands: its pack slot (so a pack fans out and surrounds
+		-- instead of queueing behind one another), nudged a little after every swing.
+		slotAngle = ((model:GetAttribute("PackIndex") or math.random(1, 6)) - 1) * 2 * math.pi
+			/ (model:GetAttribute("PackSize") or 6) + math.random() * 0.6,
 	}
 	activeEnemies[model] = state
 
@@ -942,6 +1025,34 @@ local function clearAlert(model)
 	if model:GetAttribute(ALERT_ATTRIBUTE) ~= nil then
 		model:SetAttribute(ALERT_ATTRIBUTE, nil)
 	end
+end
+
+-- Wakes the idle members of `model`'s pack standing within PACK_CALL_RADIUS onto the same target,
+-- so a camp answers as one crowd. Their first swings are staggered so the hits stream in.
+local function callPack(model, targetChar, now)
+	local packId = model:GetAttribute("PackId")
+	local root = model.PrimaryPart
+	if not packId or not root then
+		return
+	end
+	for other, otherState in pairs(activeEnemies) do
+		if other ~= model and otherState.mode ~= "CHASE" and other:GetAttribute("PackId") == packId then
+			local otherRoot = other.PrimaryPart
+			if otherRoot and (otherRoot.Position - root.Position).Magnitude <= PACK_CALL_RADIUS then
+				otherState.mode = "CHASE"
+				otherState.targetChar = targetChar
+				otherState.lastAttackTime = now
+				otherState.nextSwingGap = math.random() * 0.5
+				other:SetAttribute(ALERT_ATTRIBUTE, Workspace:GetServerTimeNow())
+			end
+		end
+	end
+end
+
+-- The spot this rig fights from: on its slot around the target, just inside its reach.
+local function slotPoint(state, targetPos, arch)
+	local r = math.max(2.8, arch.attackReach * 0.6)
+	return targetPos + Vector3.new(math.cos(state.slotAngle) * r, 0, math.sin(state.slotAngle) * r)
 end
 
 local function commandMove(state, humanoid, destination, now)
@@ -1011,11 +1122,26 @@ task.spawn(function()
 					clearAlert(model)
 					commandMove(state, humanoid, state.spawnPos, now)
 				elseif targetDist <= arch.attackReach then
-					commandMove(state, humanoid, hrp.Position, now)
-					if now - state.lastAttackTime >= arch.attackCooldown and not state.windingUp then
+					-- Pack rigs keep jostling around their slot between swings (constant motion); a rig
+					-- already on its spot turns to face the target. Bosses stand their ground.
+					local spot = if arch.boss then nil else slotPoint(state, targetHrp.Position, arch)
+					local flat = (targetHrp.Position - hrp.Position) * Vector3.new(1, 0, 1)
+					if spot and ((spot - hrp.Position) * Vector3.new(1, 0, 1)).Magnitude > 1.6 and not state.windingUp then
+						commandMove(state, humanoid, spot, now)
+					elseif flat.Magnitude > 0.1 and hrp.CFrame.LookVector:Dot(flat.Unit) < 0.85 then
+						commandMove(state, humanoid, hrp.Position + flat.Unit * 0.3, now)
+					else
+						commandMove(state, humanoid, hrp.Position, now)
+					end
+					if now - state.lastAttackTime >= getAttackCooldown(arch) + state.nextSwingGap and not state.windingUp then
 						state.lastAttackTime = now
+						state.nextSwingGap = getAttackCooldown(arch) * CADENCE_JITTER * (math.random() * 2 - 1)
 						state.windingUp = true
+						if not arch.boss then
+							state.slotAngle += (math.random() - 0.5) * 0.7
+						end
 						local target = state.targetChar
+						noteAttacker(target, model, now)
 						-- Every enemy telegraphs its swing; damage waits for the chop so a player
 						-- who reads the raise can step out of reach.
 						task.delay(swingWeapon(model, arch), function()
@@ -1029,7 +1155,10 @@ task.spawn(function()
 						end)
 					end
 				else
-					commandMove(state, humanoid, targetHrp.Position, now)
+					-- Run in toward the rig's own slot, so a pack fans out around the player.
+					local spot = if arch.boss or targetDist > arch.attackReach * 2.5 then targetHrp.Position
+						else slotPoint(state, targetHrp.Position, arch)
+					commandMove(state, humanoid, spot, now)
 				end
 			end
 
@@ -1045,6 +1174,7 @@ task.spawn(function()
 					state.mode = "CHASE"
 					state.targetChar = pChar
 					model:SetAttribute(ALERT_ATTRIBUTE, Workspace:GetServerTimeNow())
+					callPack(model, pChar, now)
 				end
 			end
 			if state.mode == "IDLE" then
@@ -1078,6 +1208,11 @@ local function spawnEnemy(config)
 	end
 	if config.role then
 		model:SetAttribute("SpawnRole", config.role)
+	end
+	if config.packId then
+		model:SetAttribute("PackId", config.packId)
+		model:SetAttribute("PackIndex", config.packIndex)
+		model:SetAttribute("PackSize", config.packSize)
 	end
 	if config.role == "elite" then
 		local head = model:FindFirstChild("Head")
@@ -1216,6 +1351,7 @@ ATTACK_REMOTE.OnServerEvent:Connect(tryUnarmedAttack)
 Players.PlayerRemoving:Connect(function(player)
 	playerCooldowns[player] = nil
 	playerEnemyHitAt[player] = nil
+	playerAttackers[player] = nil
 end)
 
 -- Spawn positions come from the anchor contract that also places the arenas and
@@ -1407,36 +1543,195 @@ GuiShowcase.stage("EnemyDeath", function(ctx)
 	print("[GuiShowcase] EnemyDeath rewards after: " .. showcaseRewards(ctx.player))
 end)
 
--- Drop moment: the same staged kill as EnemyDeath, except this one is meant to PAY. The player's
--- own sword swing finishes an ordinary Quarry Cutthroat with the "creator" tag left on it, so the
--- kill runs the shipped path end to end -- EnemyCombat's damage, the real Died handler,
--- SwordDropSystem's DropRules.Plan and DropRules.Roll, BossSwordFactory's sword and modifiers, the
--- shipped SwordDrop remote and the drop card the player sees in play. Nothing about the reveal is
--- staged: the only Studio-only thing is that SwordDropSystem forces the ~2% drop coin for this one
--- kill (see the note there), because the camera cannot wait a hundred corpses. Saves are refused
--- for the whole session while the showcase attribute is set (PlayerDataService), so the sword, the
--- gold, the XP and the kill die with the Play session.
-GuiShowcase.stage("DropReveal", function(ctx)
-	local stage = stageEnemy(ctx, DEFAULT_ARCHETYPE) -- Quarry Cutthroat, an ordinary enemy
-	local humanoid = stage.humanoid
-	stage.armDeath() -- the real death handling (sound, cleanup), without the AI attacking
-	-- One real hit has to finish it, so the swing itself is the killing blow and the kill is
-	-- credited to the player: anything above a single hit would need a scripted finisher, and a
-	-- scripted finisher carries no creator tag, which is exactly what must NOT happen here.
-	humanoid.MaxHealth = math.max(humanoid.MaxHealth, math.ceil(showcaseHitBound(ctx.player)) * 5)
-	humanoid.Health = 1
+-- Token drop: a pack of ordinary enemies stands in the player's sword reach on the open stage
+-- and ONE real sword swing (SwordSystem's hitbox, damage and "creator" tag) kills the lot, so
+-- every body goes down through the shipped Died handlers and SwordDropSystem pays each kill's
+-- spin tokens exactly as in play: TokenRules' real roll, the saved Tokens attribute, the TokenDrop
+-- remote and the client burst, magnet and HUD counter. Nothing is forced; the only staging is
+-- where the rigs stand, that their AI is held (they stand at guard) and their health is set to 1
+-- so the single swing is the killing blow for all of them. One of the pack is an elite (a bigger
+-- burst). The camera is a fixed third-person shot from behind the player, and the whole HUD stays
+-- up (TokenDrops.client marks it kept for this stage only), because the counter is the subject.
+-- Saves are refused for the whole session while the showcase attribute is set (PlayerDataService),
+-- so the tokens, gold and XP die with the Play session.
+-- { angle (degrees off the player's facing), distance, role }: an arc at one radius, spread wide
+-- enough that no rig stands between the player and another (the swing checks line of sight).
+local TOKEN_PACK = { -- [TUNING]
+	{ -44, 3.3, nil },
+	{ 0, 3.4, "elite" },
+	{ 44, 3.3, nil },
+}
+
+GuiShowcase.stage("TokenDrop", function(ctx)
+	local ground = resolveGroundPosition(SHOWCASE_STAGE)
+	local forward, side = Vector3.new(-1, 0, 0), Vector3.new(0, 0, 1)
+	-- A fresh Studio profile is level 1, and three kills would level it up mid-shot: the level-up
+	-- confetti would bury the tokens. Lift this session's level (never saved, see above) so the
+	-- kills' XP stays under the next level and the drop is the only thing on screen.
+	local stats = ctx.player:FindFirstChild("leaderstats")
+	local levelValue = stats and stats:FindFirstChild("Level")
+	local xpValue = stats and stats:FindFirstChild("Experience")
+	if levelValue and levelValue.Value < 12 then
+		levelValue.Value = 12
+		if xpValue then xpValue.Value = 0 end
+	end
+	ctx.place(CFrame.lookAt(ground + Vector3.new(0, 3, 0), ground + forward * 10 + Vector3.new(0, 3, 0)))
+	local pack = {}
+	for _, spot in ipairs(TOKEN_PACK) do
+		local a = math.rad(spot[1])
+		local at = ground + (forward * math.cos(a) + side * math.sin(a)) * spot[2]
+		local model, humanoid, hrp, arch, groundedPos = createEnemyRig(DEFAULT_ARCHETYPE, at, 1, spot[3])
+		ctx.track(model)
+		model:SetAttribute("Zone", "IronLowlands")
+		if spot[3] then
+			model:SetAttribute("SpawnRole", spot[3])
+		end
+		model:PivotTo(CFrame.lookAt(hrp.Position, Vector3.new(ground.X, hrp.Position.Y, ground.Z)))
+		-- The real death handling (sound, collapse, cleanup) without the AI loop.
+		startEnemyAI(model, humanoid, hrp, arch, groundedPos, 1, nil)
+		activeEnemies[model] = nil
+		humanoid.MaxHealth = math.max(humanoid.MaxHealth, math.ceil(showcaseHitBound(ctx.player)) * 5)
+		humanoid.Health = 1
+		table.insert(pack, model)
+	end
 	ctx.equipSword()
-	-- Same side-on framing as the death, pulled back a little: the body falls to screen left and
-	-- the drop card comes in at the right, so the strip holds both the kill and the reveal.
-	local s = stage.arch.scale
-	local focus = stage.hrp.Position + Vector3.new(-1.1, -1.2 * s, 0)
-	ctx.camera(CFrame.lookAt(focus + Vector3.new(0.4, 3.4, 12.0), focus))
-	task.wait(2.5) -- rig, sword and camera settle
-	print("[GuiShowcase] DropReveal rewards before: " .. showcaseRewards(ctx.player))
+	-- Behind and above the player's right shoulder, looking past them into the pack, wide enough
+	-- that the burst, the pickups streaming back and the bottom-left counter share the frame.
+	local focus = ground + forward * 2.6 + Vector3.new(0, 0.6, 0)
+	ctx.camera(CFrame.lookAt(ground - forward * 9 + side * 2.4 + Vector3.new(0, 6.4, 0), focus))
+	task.wait(2.5) -- rigs, sword and camera settle
+	print("[GuiShowcase] TokenDrop before: Tokens=" .. tostring(ctx.player:GetAttribute("Tokens")) .. " " .. showcaseRewards(ctx.player))
 	ctx.clapper()
 	ctx.swing()
-	task.wait(12) -- the kill, the wrapped drop, the ladder, the landing, the hold and the exit
-	print("[GuiShowcase] DropReveal rewards after: " .. showcaseRewards(ctx.player))
+	task.wait(6) -- the kills, the burst, the magnet, the flights and the counter settling
+	local dead = 0
+	for _, model in ipairs(pack) do
+		local humanoid = model:FindFirstChildOfClass("Humanoid")
+		if not model.Parent or (humanoid and humanoid.Health <= 0) then dead += 1 end
+	end
+	print(string.format("[GuiShowcase] TokenDrop after: %d/%d killed, Tokens=%s %s", dead, #pack,
+		tostring(ctx.player:GetAttribute("Tokens")), showcaseRewards(ctx.player)))
+end)
+
+-- Combat packs: a real camp of five Quarry Cutthroats (one pack, PackId stamped exactly as
+-- WorldLayout's spawns stamp it) stands eight studs ahead of the player on the open stage. The
+-- real AI does everything after the clapperboard: one rig spots the player, calls its pack
+-- (callPack), they fan out onto their slots around the player and swing at pack cadence, each hit
+-- running applyEnemyDamageToPlayer with the crowd share and the shipped DamageNumber remote. The
+-- player swings the real sword every half second at the nearest rig (turning to face it), so hits
+-- land both ways and kills pay tokens through the shipped Died path. Studio-only staging: the rigs'
+-- spots, the session level lifted to 40 (so level-up confetti stays out of the shot) and the
+-- session MaxHealth raised to 400 so the character outlives the whole take. Nothing is saved
+-- (PlayerDataService refuses saves while the showcase attribute is set). The measured hit rate,
+-- damage per hit and DPS taken are printed to the output.
+local PACK_STAGE_SIZE = 5 -- [TUNING]
+local PACK_STAGE_LEVEL = 6 -- deep enough in the Lowlands that the camp survives a few seconds of swings
+local PACK_STAGE_HEALTH = 400
+
+GuiShowcase.stage("CombatPacks", function(ctx)
+	local ground = resolveGroundPosition(SHOWCASE_STAGE)
+	local forward, side = Vector3.new(-1, 0, 0), Vector3.new(0, 0, 1)
+	local stats = ctx.player:FindFirstChild("leaderstats")
+	local levelValue = stats and stats:FindFirstChild("Level")
+	local xpValue = stats and stats:FindFirstChild("Experience")
+	if levelValue and levelValue.Value < 40 then
+		levelValue.Value = 40
+		if xpValue then xpValue.Value = 0 end
+	end
+	ctx.place(CFrame.lookAt(ground + Vector3.new(0, 3, 0), ground + forward * 10 + Vector3.new(0, 3, 0)))
+	local humanoid = ctx.character:FindFirstChildOfClass("Humanoid")
+	task.wait(0.5)
+	if humanoid then
+		humanoid.MaxHealth = PACK_STAGE_HEALTH
+		humanoid.Health = PACK_STAGE_HEALTH
+	end
+	local center = ground + forward * 8.5
+	local pack = {}
+	for index = 1, PACK_STAGE_SIZE do
+		local a = (index - 1) * 2 * math.pi / PACK_STAGE_SIZE
+		local at = center + (forward * math.cos(a) + side * math.sin(a)) * 3.6
+		local model, rigHumanoid, hrp, arch, groundedPos = createEnemyRig(DEFAULT_ARCHETYPE, at, PACK_STAGE_LEVEL, "minion")
+		ctx.track(model)
+		model:SetAttribute("Zone", "IronLowlands")
+		model:SetAttribute("SpawnRole", "minion")
+		model:SetAttribute("PackId", "ShowcasePack")
+		model:SetAttribute("PackIndex", index)
+		model:SetAttribute("PackSize", PACK_STAGE_SIZE)
+		model:PivotTo(CFrame.lookAt(hrp.Position, hrp.Position + forward:Cross(Vector3.yAxis) * (index % 2 == 0 and 1 or -1)))
+		table.insert(pack, { model = model, humanoid = rigHumanoid, hrp = hrp, arch = arch, groundedPos = groundedPos })
+	end
+	ctx.equipSword()
+	-- High behind the player's shoulder, looking down past them into the camp, wide enough that
+	-- the whole crowd stays in frame once it closes around the player.
+	local focus = ground + forward * 2.5 + Vector3.new(0, 1.2, 0)
+	ctx.camera(CFrame.lookAt(ground - forward * 7.5 + side * 2.2 + Vector3.new(0, 6.8, 0), focus))
+	task.wait(2.5)
+	ctx.clapper()
+	-- Hand the camp to the real AI: idle, scanning, exactly as a field spawn. The first rig's scan
+	-- finds the player (inside its 24-stud aggro range) and calls the rest.
+	for _, rig in ipairs(pack) do
+		startEnemyAI(rig.model, rig.humanoid, rig.hrp, rig.arch, rig.groundedPos, PACK_STAGE_LEVEL, nil)
+		local state = activeEnemies[rig.model]
+		if state then state.nextPatrolTime = math.huge end
+	end
+	-- Measure what the player takes: every health drop is one landed enemy hit.
+	-- Only drops while 4+ rigs are on the player count (the crowd the piece is judged on), and a drop
+	-- bigger than any pack hit (a MaxHealth reset) is ignored.
+	local hits, taken, firstHit, lastHit = 0, 0, nil, nil
+	local maxCrowd = 0
+	local lastHealth = humanoid and humanoid.Health or 0
+	local conn = humanoid and humanoid.HealthChanged:Connect(function(h)
+		local drop = lastHealth - h
+		lastHealth = h
+		if drop > 0.01 and drop < 40 then
+			local crowd = countAttackers(ctx.player, tick())
+			maxCrowd = math.max(maxCrowd, crowd)
+			if crowd >= 4 then
+				hits += 1
+				taken += drop
+				firstHit = firstHit or os.clock()
+				lastHit = os.clock()
+			end
+		end
+	end)
+	local swings = 0
+	for _, rig in ipairs(pack) do
+		rig.model:GetAttributeChangedSignal(ATTACK_ATTRIBUTE):Connect(function()
+			swings += 1
+		end)
+	end
+	local root = ctx.root
+	local stopAt = os.clock() + 24
+	while os.clock() < stopAt do
+		local nearest, best = nil, math.huge
+		for _, rig in ipairs(pack) do
+			if rig.model.Parent and rig.humanoid.Health > 0 then
+				local d = (rig.hrp.Position - root.Position).Magnitude
+				if d < best then nearest, best = rig, d end
+			end
+		end
+		if nearest and best < 9 then
+			local look = (nearest.hrp.Position - root.Position) * Vector3.new(1, 0, 1)
+			if look.Magnitude > 0.1 then
+				ctx.place(CFrame.lookAt(root.Position, root.Position + look))
+			end
+			ctx.swing()
+		end
+		task.wait(0.5)
+		if firstHit and lastHit and lastHit > firstHit then
+			-- Readable from Studio's command bar during play (the play session's output is not kept).
+			workspace:SetAttribute("GuiShowcaseStats", string.format("hits %d in %.1fs, %.2f dmg/hit, crowd %d, swings %d",
+				hits, lastHit - firstHit, taken / hits, maxCrowd, swings))
+		end
+	end
+	if conn then conn:Disconnect() end
+	local span = (firstHit and lastHit and lastHit > firstHit) and (lastHit - firstHit) or 1
+	local dead = 0
+	for _, rig in ipairs(pack) do
+		if not rig.model.Parent or rig.humanoid.Health <= 0 then dead += 1 end
+	end
+	print(string.format("[GuiShowcase] CombatPacks: pack %d, hits taken (4+ on the player) %d over %.1fs = %.2f hits/s, avg %.2f dmg/hit, %.1f DPS taken, max crowd %d, %d enemy swings total, %d/%d rigs killed",
+		PACK_STAGE_SIZE, hits, span, hits / span, hits > 0 and taken / hits or 0, taken / span, maxCrowd, swings, dead, #pack))
 end)
 
 -- Enemy notice: one enemy stands idle side-on to the player, who stands just outside its aggro

@@ -1,5 +1,5 @@
 -- ReplicatedStorage/PanelChrome.luau
--- Shared visual chrome for modal GUI panels (Reforge, Vault, Merchant, Quest, Main Menu):
+-- Shared visual chrome for modal GUI panels (Vault, Merchant, Quest, Main Menu):
 -- a consistent bordered shell with a title banner and a close button, so every panel reads
 -- as one system instead of five independently-styled ones. Returns plain
 -- Instances -- works from imperative scripts (set .Parent yourself) and from Fusion (drop
@@ -640,10 +640,17 @@ PanelChrome.HUD = {
 	VitalsWidth = 430, -- design-space footprint of the health/XP cluster
 	VitalsHeight = 134,
 	GoldHeight = 66, -- the gold readout that sits on top of the vitals
+	TokenHeight = 100, -- the spin-token readout (about 1.5x the gold row: the currency a kill pays) that sits on top of the gold (TokenDrops.client)
 	HotbarLift = 28, -- gap under the bottom-centre sword hotbar slot, in pixels (not scaled); its drop
 	-- shadow and equipped ring hang ~11 px below the tile, so this leaves ~16 px of clear screen edge
 	HotbarSize = 120, -- design-space side of the hotbar slot; it scales with hudScale
 	HotbarClear = 168, -- lift over the hotbar at full scale (28 lift + 120 slot + badges + gap)
+	QuestWidth = 324, -- design-space width of the right-edge quest tracker card (QuestGui)
+	QuestTabWidth = 236, -- design-space size of the quest card folded to its compact tab (QuestGui's
+	QuestTabHeight = 60, -- minimize button): quest name over a mini progress bar
+	PopupHeight = 136, -- design-space height of the top-right spin result popup (SpinPopup): never
+	-- wider than the quest card, and never taller than it is at its smallest (~150 px)
+	PopupGap = 12, -- design-space gap between the spin popup and the quest card it stacks on
 }
 
 -- One UIScale value for every HUD element: 1 on a desktop window, shrinking on phones but
@@ -666,12 +673,12 @@ function PanelChrome.hudVitalsBottom(viewport: Vector2): number
 end
 
 -- Distance from the screen bottom to the top of the whole bottom-left stack (vitals, then the
--- gold readout). Anything else that lives bottom-left, such as MapClient's Return to Hub
+-- gold readout, then the token readout). Anything else that lives bottom-left, such as MapClient's Return to Hub
 -- button, stacks above this so the HUD can grow without covering it.
 function PanelChrome.hudStackTop(viewport: Vector2): number
 	local HUD = PanelChrome.HUD
 	local s = PanelChrome.hudScale(viewport)
-	return PanelChrome.hudVitalsBottom(viewport) + (HUD.VitalsHeight + HUD.GoldHeight) * s + 2
+	return PanelChrome.hudVitalsBottom(viewport) + (HUD.VitalsHeight + HUD.GoldHeight + HUD.TokenHeight) * s + 2
 end
 
 -- Calls fn(viewport) now and whenever the camera's viewport changes size.
@@ -1214,10 +1221,20 @@ local function cubicOut(a) return ease(a, Enum.EasingStyle.Cubic, Enum.EasingDir
 --   deltaAt: ((text) -> UDim2)? where the floating gain starts, given the final number text
 --   deltaText: ((number) -> string)?  how the gain is written (default "+" .. format(gain))
 --   deltaZ: number?
+--   deltaColor: Color3?         colour of the floating gain (default BRIGHT.Green)
+--   deltaSize: number?, deltaStroke: Color3?   its text size (default 30) and outline colour
+--   tuning: {[string]: number}? overrides of PanelChrome.COUNTER for this counter only. With
+--                               Rekick set, every gain restarts the punch from at most that
+--                               scale, so gains landing one after another each read as a kick.
 -- }
 -- Returns { set = function(value, animate) }. set with animate false (or a loss) snaps.
 function PanelChrome.counter(opts)
 	local C = PanelChrome.COUNTER
+	if opts.tuning then
+		local merged = table.clone(C)
+		for k, v in pairs(opts.tuning) do merged[k] = v end
+		C = merged
+	end
 	local label, scale, icon = opts.label, opts.scale, opts.icon
 	local format = opts.format or function(v) return tostring(math.floor(v)) end
 	local restColor = label.TextColor3
@@ -1298,9 +1315,10 @@ function PanelChrome.counter(opts)
 		local text = if opts.deltaText then opts.deltaText(total) else "+" .. format(total)
 		if not delta then
 			local l = PanelChrome.display(parent, {
-				name = "GainDelta", text = text, size = 30, stroke = 3, color = BRIGHT.Green,
+				name = "GainDelta", text = text, size = opts.deltaSize or 30, stroke = 3, color = opts.deltaColor or BRIGHT.Green,
+				strokeColor = opts.deltaStroke,
 				xAlign = Enum.TextXAlignment.Left, anchor = Vector2.new(0, 0.5),
-				size2 = UDim2.fromOffset(0, 34), zIndex = opts.deltaZ or 12,
+				size2 = UDim2.fromOffset(0, (opts.deltaSize or 30) + 4), zIndex = opts.deltaZ or 12,
 			})
 			l.AutomaticSize = Enum.AutomaticSize.X
 			local us = Instance.new("UIScale")
@@ -1329,7 +1347,7 @@ function PanelChrome.counter(opts)
 		local gain = value - target
 		from = shown
 		target = value
-		s0 = scale.Scale
+		s0 = if C.Rekick then math.min(scale.Scale, C.Rekick) else scale.Scale
 		t = 0
 		showDelta(gain)
 		if not conn then conn = RunService.RenderStepped:Connect(step) end

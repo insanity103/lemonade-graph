@@ -30,7 +30,15 @@ SaveConfig.ATTRIBUTES = {
 	-- that still carries the key loads and saves exactly as before -- PlayerDataService iterates
 	-- THIS table, so an extra key in a saved record is carried along untouched and nothing is
 	-- dropped from anybody's data.
-	ForgeLuckCharges = 0,      -- Lucky Charges from boss kills; a paid Reforge strike spends one (ReforgeSystem)
+	-- ForgeLuckCharges was here (the removed Reforge anvil's boss-kill charges). Nothing reads or
+	-- writes it now; an old profile's value is carried along untouched, as above.
+	Tokens = 0,                -- spin tokens: every kill pays some (Config.TokenRules), the spin wheel spends them
+	MultiSpin = 0,             -- spins one multi-spin press buys at the town wheel; 0 = not unlocked yet (bought with gold)
+	PrefixSlots = 1,           -- prefix slots every new sword rolls (WeaponModifiers.SlotUnlocks; 1..3)
+	LemonadeFound = 0,         -- Lemonade chase prefixes this player has rolled; 0 = shown as "??" on odds displays
+	ChasesFound = '',          -- comma-separated chase prefixes this player has rolled (WeaponModifiers.Chases); the rest show as "??"
+	SwordsFound = '',          -- comma-separated spin-wheel chase swords this player has pulled (Config.SpinPools); the rest show as "??"
+	BonusSpinLevel = 0,        -- Lucky Spins tiers owned (Config.UpgradeConfig; 0..6): odds a paid spin pays a free bonus sword
 	CompletedQuests = '',      -- comma-separated quest IDs (e.g., 'q1_first_blood,q2_prove_yourself')
 	ActiveQuestId = '',        -- current quest ID or '' if none
 	QuestProgress = 0,         -- progress toward current objective
@@ -53,7 +61,10 @@ SaveConfig.SWORD_ATTRS = {
 	            -- Added with the lesser pools; a save without it still resolves by BossTier.
 	"Lesser",   -- true on a lesser (normal-enemy) sword; absent on a boss sword and on old saves
 	"Variant",  -- the mutation name, if it rolled one (WeaponModifiers.Variants)
-	"Starter",  -- true on the profile's starter sword (forgeable, never sold, never shattered)
+	"Starter",  -- true on the profile's starter sword (never sold, never shattered)
+	"StoredPrefixes", -- every prefix a pre-rework sword owns when more than its owner's slots are
+	                  -- active (BossSwordFactory.applySlots). "ExtraSlot" above is the removed
+	                  -- Blessed flag: still read from old saves, never written true again.
 }
 
 return SaveConfig

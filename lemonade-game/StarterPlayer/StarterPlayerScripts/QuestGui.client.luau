@@ -60,7 +60,7 @@ local ICONS = { -- images the HUD and tooltips already use
 
 local OBJECTIVE_ICONS = {
 	KILL = ICONS.Sword, KILL_ZONE = ICONS.Sword, KILL_BOSS = ICONS.Target,
-	OBTAIN = ICONS.Trophy, OBTAIN_POOL = ICONS.Trophy, REFORGE = ICONS.Lighting, LEVEL = ICONS.Star,
+	OBTAIN = ICONS.Trophy, OBTAIN_POOL = ICONS.Trophy, LEVEL = ICONS.Star,
 }
 
 local REWARD_COLORS = {
@@ -88,7 +88,7 @@ local FLAVOR_H, CARD_H, REWARD_H, BUTTONS_H, STACK_GAP = 48, 204, 86, 82, 12
 local CELL_W, CELL_H, CELL_GAP = 110, 122, 12
 local WIDE_MIN = 700 -- narrower screens drop the chain grid and keep just the quest card
 local SHORT_MAX = 430 -- shorter screens drop the flavour bubble so the buttons stay 44 px+
-local TRACKER_W = 324
+local TRACKER_W = PanelChrome.HUD.QuestWidth -- 324; the top-right spin popup (SpinPopup) matches it
 
 -- ── State ────────────────────────────────────────────────────────────────
 
@@ -280,7 +280,7 @@ end
 -- Current and target counts, and the text the bars show.
 local function getProgressCounts(quest, progress)
 	local obj = quest.objective
-	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" or obj.type == "REFORGE" then
+	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" then
 		local target = obj.count or 1
 		local cur = math.min(progress, target)
 		return cur / target, string.format("%d / %d", cur, target)
@@ -307,8 +307,7 @@ local trackerFrame = Instance.new("Frame")
 trackerFrame.Name = "QuestTracker"
 trackerFrame.AnchorPoint = Vector2.new(1, 0)
 trackerFrame.Position = UDim2.new(1, -110, 0, 140)
-trackerFrame.Size = UDim2.fromOffset(TRACKER_W, 0)
-trackerFrame.AutomaticSize = Enum.AutomaticSize.Y
+trackerFrame.Size = UDim2.fromOffset(TRACKER_W, 0) -- height follows the body (fitTracker below)
 trackerFrame.BackgroundColor3 = WHITE
 trackerFrame.BorderSizePixel = 0
 trackerFrame.Visible = false
@@ -334,14 +333,29 @@ corner(trackerBadge, 22)
 PanelChrome.gradient(trackerBadge, Color3.fromRGB(255, 236, 120), BRIGHT.GoldDark)
 PanelChrome.stroke(trackerBadge, BRIGHT.Outline, 3)
 display(trackerBadge, { text = "!", size = 32, stroke = 3, zIndex = 9 })
+local badgeScale = Instance.new("UIScale")
+badgeScale.Parent = trackerBadge
 
-local trackerBody = Instance.new("Frame")
+-- The card's contents live in a clipping lane so the card can fold down to its compact tab (see
+-- "Minimize" below): the full body keeps its 324 px layout and is cut away as the card narrows
+-- towards its top-right corner, while the tab fades in over the same corner.
+local trackerClip = Instance.new("Frame")
+trackerClip.Name = "Clip"
+trackerClip.BackgroundTransparency = 1
+trackerClip.Size = UDim2.fromScale(1, 1)
+trackerClip.ClipsDescendants = true
+trackerClip.ZIndex = 6
+trackerClip.Parent = trackerFrame
+
+local trackerBody = Instance.new("CanvasGroup")
 trackerBody.Name = "Body"
 trackerBody.BackgroundTransparency = 1
-trackerBody.Size = UDim2.new(1, 0, 0, 0)
+trackerBody.AnchorPoint = Vector2.new(1, 0)
+trackerBody.Position = UDim2.fromScale(1, 0)
+trackerBody.Size = UDim2.fromOffset(TRACKER_W, 0)
 trackerBody.AutomaticSize = Enum.AutomaticSize.Y
 trackerBody.ZIndex = 6
-trackerBody.Parent = trackerFrame
+trackerBody.Parent = trackerClip
 
 local trackerPadding = Instance.new("UIPadding")
 trackerPadding.PaddingTop = UDim.new(0, 10)
@@ -363,6 +377,11 @@ local questNameLabel = display(trackerBody, {
 })
 questNameLabel.LayoutOrder = 1
 questNameLabel.TextTruncate = Enum.TextTruncate.AtEnd
+do -- keep the name clear of the minimize button riding the card's top-right corner
+	local namePad = Instance.new("UIPadding")
+	namePad.PaddingRight = UDim.new(0, 30)
+	namePad.Parent = questNameLabel
+end
 
 -- Objective headline
 local questDescLabel = display(trackerBody, {
@@ -405,6 +424,178 @@ local progressLabel = display(trackerBody, {
 	xAlign = Enum.TextXAlignment.Right, size2 = UDim2.new(1, 0, 0, 20), zIndex = 7,
 })
 progressLabel.LayoutOrder = 4
+
+-- ── Minimize: the card folds into a compact tab that still shows progress ─
+-- A round chunky button rides the card's top-right corner (mirroring the "!" medallion on the
+-- left). Pressing it folds the card towards that corner into a small tab: quest name over a
+-- mini progress bar with the live count. The button stays under the pointer (the card is
+-- anchored top-right), turns into a "+", and pressing it or anywhere on the tab restores the card.
+-- The state lasts the whole session (a client-side player attribute, so it survives respawns);
+-- there is no settings field in the save to persist it further.
+local TAB_W, TAB_H = PanelChrome.HUD.QuestTabWidth, PanelChrome.HUD.QuestTabHeight
+local MIN_ATTR = "QuestTrackerMinimized"
+local FOLD_TIME, UNFOLD_TIME = 0.26, 0.30 -- [TUNING] seconds
+local minimized = player:GetAttribute(MIN_ATTR) == true
+local folding = false -- a fold/unfold is running; it drives the card's size itself
+
+local trackerTab = Instance.new("CanvasGroup")
+trackerTab.Name = "Tab"
+trackerTab.BackgroundTransparency = 1
+trackerTab.AnchorPoint = Vector2.new(1, 0)
+trackerTab.Position = UDim2.fromScale(1, 0)
+trackerTab.Size = UDim2.fromOffset(TAB_W, TAB_H)
+trackerTab.GroupTransparency = 1
+trackerTab.Visible = false
+trackerTab.ZIndex = 6
+trackerTab.Parent = trackerClip
+
+local tabName = display(trackerTab, {
+	name = "QuestName", text = "", size = 19, stroke = 2.5, color = THEME.QuestGold,
+	xAlign = Enum.TextXAlignment.Left, pos = UDim2.fromOffset(32, 6), size2 = UDim2.new(1, -76, 0, 22), zIndex = 7,
+})
+tabName.TextTruncate = Enum.TextTruncate.AtEnd
+local tabBarHolder = Instance.new("Frame")
+tabBarHolder.Name = "ProgressRow"
+tabBarHolder.BackgroundTransparency = 1
+tabBarHolder.Position = UDim2.fromOffset(14, 31)
+tabBarHolder.Size = UDim2.new(1, -30, 0, 22)
+tabBarHolder.ZIndex = 7
+tabBarHolder.Parent = trackerTab
+local tabBar = progressBar(tabBarHolder, 22, 16, 7)
+
+-- The whole tab is a restore target (a big, easy hit on a phone).
+local tabHit = Instance.new("TextButton")
+tabHit.Name = "RestoreArea"
+tabHit.BackgroundTransparency = 1
+tabHit.Text = ""
+tabHit.Size = UDim2.fromScale(1, 1)
+tabHit.ZIndex = 12
+tabHit.Visible = false
+tabHit.Parent = trackerTab
+
+-- Minimize / restore button: a 36 px face inside a 60 px invisible hit area (39 px at the
+-- smallest phone HUD scale), so it is easy to hit without crowding the card.
+local minHit = Instance.new("TextButton")
+minHit.Name = "MinimizeButton"
+minHit.BackgroundTransparency = 1
+minHit.Text = ""
+minHit.AnchorPoint = Vector2.new(0.5, 0.5)
+minHit.Position = UDim2.new(1, -22, 0, 2)
+minHit.Size = UDim2.fromOffset(60, 60)
+minHit.ZIndex = 14
+minHit.Parent = trackerFrame
+local minFace = Instance.new("Frame")
+minFace.Name = "Face"
+minFace.AnchorPoint = Vector2.new(0.5, 0.5)
+minFace.Position = UDim2.fromScale(0.5, 0.5)
+minFace.Size = UDim2.fromOffset(36, 36)
+minFace.BackgroundColor3 = WHITE
+minFace.ZIndex = 14
+minFace.Parent = minHit
+corner(minFace, 18)
+PanelChrome.gradient(minFace, Color3.fromRGB(150, 214, 255), Color3.fromRGB(48, 138, 246))
+PanelChrome.stroke(minFace, BRIGHT.Outline, 3)
+local minFaceScale = Instance.new("UIScale")
+minFaceScale.Parent = minFace
+local minGloss = shine(minFace, 14, 10, 0.4)
+minGloss.Position = UDim2.fromOffset(6, 3)
+minGloss.Size = UDim2.new(1, -12, 0.38, 0)
+local function glyphBar(name)
+	local b = Instance.new("Frame")
+	b.Name = name
+	b.AnchorPoint = Vector2.new(0.5, 0.5)
+	b.Position = UDim2.fromScale(0.5, 0.5)
+	b.BackgroundColor3 = WHITE
+	b.BorderSizePixel = 0
+	b.ZIndex = 16
+	b.Parent = minFace
+	corner(b, 3)
+	PanelChrome.stroke(b, BRIGHT.Outline, 2)
+	return b
+end
+local glyphH = glyphBar("Minus") -- the "-" (always shown)
+glyphH.Size = UDim2.fromOffset(18, 6)
+local glyphV = glyphBar("Plus") -- grows in to make the "+" when folded
+glyphV.Size = UDim2.fromOffset(6, 0)
+PanelChrome.pressFeedback(minHit, { scale = minFaceScale, face = minFace })
+
+local function bodyHeight(): number
+	local s = trackerScale.Scale
+	if s <= 0 then s = 1 end
+	return math.max(trackerBody.AbsoluteSize.Y / s, TAB_H)
+end
+
+-- a: 0 = full card, 1 = tab. Places every piece of the fold for one moment of it.
+local function poseFold(a: number, bodyFade: number, tabFade: number)
+	local h = bodyHeight()
+	trackerFrame.Size = UDim2.fromOffset(
+		math.floor(TRACKER_W + (TAB_W - TRACKER_W) * a + 0.5), math.floor(h + (TAB_H - h) * a + 0.5))
+	trackerBody.GroupTransparency = 1 - bodyFade
+	trackerTab.GroupTransparency = 1 - tabFade
+	trackerTab.Visible = tabFade > 0
+	glyphV.Size = UDim2.fromOffset(6, math.floor(18 * math.clamp(a, 0, 1) + 0.5))
+	glyphV.Visible = a > 0.02
+	badgeScale.Scale = 1 - 0.14 * a
+end
+
+local function restPose()
+	if minimized then poseFold(1, 0, 1) else poseFold(0, 1, 0) end
+	tabHit.Visible = minimized
+end
+
+-- The card follows the body's height at rest (a longer objective wraps to two lines).
+local function fitTracker()
+	if not folding then restPose() end
+end
+trackerBody:GetPropertyChangedSignal("AbsoluteSize"):Connect(fitTracker)
+trackerScale:GetPropertyChangedSignal("Scale"):Connect(fitTracker)
+
+local foldToken = 0
+local function ease(t, style)
+	return TweenService:GetValue(math.clamp(t, 0, 1), style, Enum.EasingDirection.Out)
+end
+local function setMinimized(on: boolean)
+	if on == minimized and not folding then return end
+	minimized = on
+	player:SetAttribute(MIN_ATTR, on)
+	tabHit.Visible = on
+	foldToken += 1
+	local token = foldToken
+	folding = true
+	-- Start from wherever the card is now, so a second press mid-fold reverses smoothly.
+	local s = trackerScale.Scale > 0 and trackerScale.Scale or 1
+	local w0 = trackerFrame.AbsoluteSize.X / s
+	local a0 = math.clamp((TRACKER_W - w0) / (TRACKER_W - TAB_W), 0, 1)
+	local a1 = on and 1 or 0
+	local bodyFade0 = 1 - trackerBody.GroupTransparency
+	local tabFade0 = trackerTab.Visible and (1 - trackerTab.GroupTransparency) or 0
+	local duration = (on and FOLD_TIME or UNFOLD_TIME) * math.max(math.abs(a1 - a0), 0.35)
+	local start = os.clock()
+	local conn
+	conn = RunService.RenderStepped:Connect(function()
+		if token ~= foldToken then conn:Disconnect(); return end
+		local t = math.clamp((os.clock() - start) / duration, 0, 1)
+		local a = a0 + (a1 - a0) * ease(t, Enum.EasingStyle.Quart)
+		local bodyFade, tabFade
+		if on then -- the full card fades out early; the tab fades in as the fold lands
+			bodyFade = bodyFade0 * (1 - math.clamp(t / 0.4, 0, 1))
+			tabFade = tabFade0 + (1 - tabFade0) * math.clamp((t - 0.35) / 0.5, 0, 1)
+		else -- the tab clears first; the card's contents fade in as it opens out
+			tabFade = tabFade0 * (1 - math.clamp(t / 0.3, 0, 1))
+			bodyFade = bodyFade0 + (1 - bodyFade0) * math.clamp((t - 0.3) / 0.6, 0, 1)
+		end
+		poseFold(a, bodyFade, tabFade)
+		if t >= 1 then
+			conn:Disconnect()
+			folding = false
+			restPose()
+		end
+	end)
+end
+
+minHit.Activated:Connect(function() setMinimized(not minimized) end)
+tabHit.Activated:Connect(function() setMinimized(false) end)
+restPose()
 
 -- Sits just left of the Main Menu's side-button column, level with its top, and scales with it.
 local navRail = nil
@@ -1056,6 +1247,8 @@ local function updateTracker()
 	local frac, countText = getProgressCounts(quest, progress)
 	local complete = (activeQuestId ~= "" and activeQuestComplete) or (activeQuestId == "" and frac >= 1)
 	trackerBar.set(frac, countText, complete)
+	tabName.Text = quest.name
+	tabBar.set(frac, countText, complete)
 	setRewardVisual(quest.reward, trackerRewardIcon, trackerRewardAmount)
 	progressLabel.Visible = hint ~= nil
 	progressLabel.Text = hint or ""
@@ -1314,7 +1507,7 @@ local function syncFromAttributes()
 			activeQuestComplete = false
 			-- Check if complete
 			local obj = quest.objective
-			if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" or obj.type == "REFORGE" then
+			if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" then
 				activeQuestComplete = activeProgress >= (obj.count or 1)
 			elseif obj.type == "OBTAIN" or obj.type == "OBTAIN_POOL" then
 				activeQuestComplete = activeProgress >= 1
@@ -1360,5 +1553,30 @@ if leaderstats then
 		updateTracker()
 	end
 end
+
+-- Studio-only motion capture hook (see GuiShowcase.motion): replays a mouse press on the tracker's
+-- minimize button. Scripts cannot fire a GuiButton's input events, so this steps the button's own
+-- hover/down/up states in the order a mouse fires them, then folds the card as its Activated
+-- handler does. The card shows the player's real quest and progress. Two seconds later the same
+-- press on the "+" restores it.
+local GuiShowcase = require(ReplicatedStorage:WaitForChild("GuiShowcase"))
+local function pressMinimize(after)
+	local press = PanelChrome.pressHandle(minHit)
+	if press then
+		press.down() -- MouseButton1Down
+		task.wait(0.1)
+		press.up() -- MouseButton1Up, then Activated
+	end
+	after()
+end
+GuiShowcase.motion("QuestMinimize", function()
+	pressMinimize(function() setMinimized(true) end)
+	task.wait(2)
+	pressMinimize(function() setMinimized(false) end)
+end, function()
+	if minimized then setMinimized(false) end
+	local press = PanelChrome.pressHandle(minHit)
+	if press then press.hover(true) end -- MouseEnter
+end)
 
 print("[QuestGui] Quest tracker and NPC interaction enabled")
