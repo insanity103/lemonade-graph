@@ -221,8 +221,30 @@ function World:flush()
 end
 
 -- Move the virtual clock forward, waking every timer that falls due on the way (in order).
+-- RunService.Heartbeat / Stepped fire every HEARTBEAT seconds of virtual time while the clock
+-- advances (only when something is connected, so idle worlds cost nothing).
+World.HEARTBEAT = 1 / 20
+
 function World:advance(seconds)
 	local target = self.clock + (seconds or 0)
+	local run = self.services.RunService and self.state[self.services.RunService]
+	local beat = run and (run.signals.Heartbeat or run.signals.Stepped or run.signals.PostSimulation)
+	if beat and #beat._handlers > 0 and target - self.clock > World.HEARTBEAT then
+		while self.clock + World.HEARTBEAT < target do
+			self:advanceTimers(self.clock + World.HEARTBEAT)
+			for _, name in ipairs({ "Stepped", "Heartbeat", "PostSimulation" }) do
+				local sig = run.signals[name]
+				if sig then
+					if name == "Stepped" then sig:Fire(self.clock, World.HEARTBEAT) else sig:Fire(World.HEARTBEAT) end
+				end
+			end
+			self:flush()
+		end
+	end
+	self:advanceTimers(target)
+end
+
+function World:advanceTimers(target)
 	self:flush()
 	while true do
 		local best, bestIndex = nil, nil
@@ -389,6 +411,10 @@ InstanceMT.__index = function(self, key)
 	end
 	if key == "Position" and isA(st.class, "BasePart") then
 		return InstanceMT.__index(self, "CFrame").Position
+	end
+	if key == "AssemblyMass" and isA(st.class, "BasePart") then
+		local size = InstanceMT.__index(self, "Size")
+		return size.X * size.Y * size.Z * 0.7
 	end
 	for _, child in ipairs(st.children) do
 		if rawget(child, STATE).props.Name == key then return child end
@@ -934,9 +960,54 @@ method("Workspace", "Raycast", function() return nil end)
 method("Workspace", "Blockcast", function() return nil end)
 method("Workspace", "Spherecast", function() return nil end)
 method("Workspace", "Shapecast", function() return nil end)
-method("Workspace", "GetPartBoundsInRadius", function() return {} end)
-method("Workspace", "GetPartBoundsInBox", function() return {} end)
-method("Workspace", "GetPartsInPart", function() return {} end)
+-- Spatial queries: every queryable BasePart in the workspace whose bounds reach the box / sphere.
+-- A part's bounds are a sphere of radius half its size's diagonal around its position (generous,
+-- orientation-free); the query box is exact (oriented by its CFrame). OverlapParams' Include /
+-- Exclude filter and CanQuery are honoured. There is no physics: parts are where scripts put them.
+local function overlapCandidates(world, params)
+	local filter = params and params.FilterDescendantsInstances or {}
+	local include = params and params.FilterType == Enum.RaycastFilterType.Include
+	local out = {}
+	for _, d in ipairs(descendants(world.workspace, {})) do
+		if d:IsA("BasePart") and d.CanQuery ~= false and d.Name ~= "Terrain" and d.Name ~= "Baseplate" then
+			local listed = false
+			for _, f in ipairs(filter) do
+				if d == f or d:IsDescendantOf(f) then listed = true break end
+			end
+			if listed == include then table.insert(out, d) end
+		end
+	end
+	return out
+end
+local function partRadius(part)
+	local s = part.Size
+	return 0.5 * math.sqrt(s.X * s.X + s.Y * s.Y + s.Z * s.Z)
+end
+local function inBox(world, cf, size, params)
+	local out = {}
+	local half = size / 2
+	for _, part in ipairs(overlapCandidates(world, params)) do
+		local p = cf:PointToObjectSpace(part.Position)
+		local r = partRadius(part)
+		if math.abs(p.X) <= half.X + r and math.abs(p.Y) <= half.Y + r and math.abs(p.Z) <= half.Z + r then
+			table.insert(out, part)
+		end
+	end
+	return out
+end
+method("Workspace", "GetPartBoundsInBox", function(self, cf, size, params)
+	return inBox(rawget(self, STATE).world, cf, size, params)
+end)
+method("Workspace", "GetPartBoundsInRadius", function(self, pos, radius, params)
+	local out = {}
+	for _, part in ipairs(overlapCandidates(rawget(self, STATE).world, params)) do
+		if (part.Position - pos).Magnitude <= radius + partRadius(part) then table.insert(out, part) end
+	end
+	return out
+end)
+method("Workspace", "GetPartsInPart", function(self, part, params)
+	return inBox(rawget(self, STATE).world, part.CFrame, part.Size, params)
+end)
 method("Workspace", "FindPartOnRay", function() return nil end)
 method("Workspace", "FindPartOnRayWithIgnoreList", function() return nil end)
 method("Workspace", "FindPartsInRegion3", function() return {} end)

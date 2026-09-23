@@ -40,8 +40,12 @@ in the script and replace the checksums.
 same entry points the engine uses: `PlayerAdded`, the `SpinAction` and `UpgradeAction` remotes,
 `Humanoid.Died`, and `PlayerDataService` load, save and release against an in-memory DataStore.
 
-**What is stubbed:** the engine itself. There is no physics, rendering or animation.
-`Workspace:Raycast` finds nothing. Tweens jump to their goal. `.rbxm` / `.rbxmx` assets mount as empty
+**What is stubbed:** the engine itself. There is no physics, rendering or animation, so
+characters and rigs never walk: `Humanoid:MoveTo` does nothing and a test puts the player where
+the fight is. Knockback impulses are accepted and ignored. `Workspace:Raycast` finds nothing, so
+there are no walls and line of sight is always clear. `GetPartBoundsInBox` / `InRadius` are real
+queries: sword hitboxes hit what stands in them, with each part's bounds taken as a sphere around
+its position. `RunService.Heartbeat` fires every 1/20 s of virtual time while the clock advances. Tweens jump to their goal. `.rbxm` / `.rbxmx` assets mount as empty
 Models, so NPC rigs fall back to block rigs and log a warning. `HttpService` requests error.
 `ServerStorage.BossSwordTool` and `SwordMeshTemplate` are stand-ins for the place file's templates.
 If game code uses an engine API the stubs lack, the test fails loudly with the Luau error; it does
@@ -63,16 +67,30 @@ no wall time.
 | `prefix_odds` | Every pool sword builds with exactly 1 prefix. 100k one-slot rolls give 1 prefix each, and 2 or 3 unlocked slots give one prefix per category. A level-3 player gets 0 top-tier prefixes in 100k rolls, also at maximum luck and end to end through `Grant`. Odds rise with rarity at every bracket (mean rung and P(rung ≥ k)). Odds rise with level for every rarity; the exception is the chase rung, which is made rarer each bracket on purpose. Rolled prefixes match `TierOdds` within 5 sigma. The level wall and the "luck never moves a chase" rule hold. |
 | `save_migration` | A pre-spin profile (Blessed and four-prefix swords, old rung-10 names, removed reforge and auto-sell fields) loads through the real join path. Extra prefixes collapse to the owned slots, strongest first, and stats are re-derived. Unlocking a slot wakes the next stored prefix. Old vault swords are stored and withdrawn collapsed (name and stats), and vault entries an older build left half-collapsed heal on load. Every stored field survives a save. The collapsed save reloads identically. Spin depth is rebuilt from level plus first boss kill. A DataStore hiccup is retried, and a failed load never overwrites the stored profile. |
 | `token_economy` | Every kill, across 8 areas and 4 roles, pays tokens in its configured band into the saved `Tokens` attribute, and the client is told the same number. Tokens reach the DataStore on autosave and on leave, and come back on rejoin. No payment for pre-load kills, dummies, untagged deaths or a repeated `Died`. Kills record depth. A spin costs exactly `pool.cost[step]` at every area and step. Prices climb, and the "5-13 kills a spin" design note holds. Multi-spin costs count × price, and Lucky Spins bonus swords are free. Every refusal takes nothing. Every upgrade tier charges exactly its price. |
+| `combat` | EnemyCombat, SwordSystem and LevelingSystem run for real, so every WorldLayout spawn becomes a rig. Rig stats are read off what EnemyCombat stamps: XP is linear in level per archetype, health never falls with level, and the Boss / warden flags are right. A sword's 5-hit combo deals `Config.Sword` damage times each hit's `ComboConfig` multiplier, including Strength, WeaponLevel, sword and rebirth multipliers. Endlag swallows an early swing, and the combo resets after `COMBO_RESET_TIME`. Crits deal 1.75× or the rebirth crit multiplier. The hitbox reaches forward, not behind, and `RangeBonus` extends it. A sword kill on a real rig pays XP, gold, tokens and depth, and the rig respawns. Unarmed attacks hit the nearest enemy, respect the cooldown, and yield to a held sword. Enemy hits are cut 0.3% per Defense point up to the 35% cap. A crowd of k rigs deals each hit ×k^-0.5. Stepping out of reach during a windup dodges the hit. Hits given and taken stamp `CombatAt`. No enemy chases a player in town. |
+| `leveling` | The XP curve: 100 XP to Lv 2, an opening hump on Lv 2-10 totalling 165 K, and the untouched 15% body after. The client's `ExperienceRequired` matches the curve at every level. A kill pays `ExperienceReward` × Experience Gain (capped at +35%) × rebirth. XP carries over, one kill can level several times, each level gives 8 skill points, and a level-up refills health. Level, XP, gold and points survive a rejoin. Kill gold is `GoldCurve.PerKill` × the rebirth gold multiplier. The kill streak window works and a death resets it. A death costs `GoldCurve.DeathLoss` of recent income: free at Lv 8 and below, nothing once the income is older than the window, and never priced on the purse. A death keeps the equipped sword. Spending skill points works, including Health's +20 max HP. Regeneration waits 4 s after the last hit. The post-fight XP toast is sent once. |
 | `config_integrity` | Every pool row resolves to its own sword and rarity in BossWeapons (`Resolve` would otherwise quietly hand out a Legendary or a Common). Pools are well formed. The documented pool shape holds. Areas agree across SpinPools, WorldLayout, BossWeapons and TokenRules with no orphans. Every token role has a band. Every upgrade has a price, a value and a gate, matching `WeaponModifiers.SlotUnlocks`. Everything the wheel, the stall and the swords write is persisted. Every remote a script waits for is created. Prefix names are unique. |
 
-Before this suite landed, 18 planted defects were each confirmed to fail it: a level-cap bypass,
-weight typos, a wrong-step roll, a biased pick, 2 base slots, a mislabelled chase rung, flat rarity
-odds, tokens written to the wrong or an unsaved attribute, a spin charged the wrong price, an
+Before the spin suite landed, 18 planted defects were each confirmed to fail it: a level-cap
+bypass, weight typos, a wrong-step roll, a biased pick, 2 base slots, a mislabelled chase rung, flat
+rarity odds, tokens written to the wrong or an unsaved attribute, a spin charged the wrong price, an
 upgrade discount, a reversed prefix collapse, dropped save fields, an uncollapsed vault, and a
 renamed, mislabelled or unpriced config row.
 
-**Not covered yet:** combat and damage (EnemyCombat, SwordSystem), XP and levelling, quests,
-rebirth, the merchant, trading, the vault's remote handlers (only the migration and rebuild paths
+The combat and levelling specs were checked the same way against 20 planted defects: no combo
+multiplier, no endlag, a wrong crit default, a backwards hitbox, an uncredited sword kill, a raised
+Defense cap, no crowd sharing, no reach check at impact, non-linear enemy XP, a wrong unarmed base,
+a raised Experience Gain cap, one level-up per kill, 5 points a level, ignored rebirth gold, an
+income window that never forgets, regeneration after 1 s, an XP bar one level ahead, an early XP
+toast, a steeper curve, and a streak that survives death.
+
+EnemyCombat's AI walks `pairs()` over rigs, so its swing jitter differs from run to run even with a
+fixed seed. The combat specs only assert what holds for every ordering; each was run 20 times, on
+the default seed and on ten others, without a failure.
+
+**Not covered yet:** enemy movement, leashing and patrols (no physics); bosses' own damage
+numbers (checked only through the pack ratios); knockback distances; quests (they share
+`XPCurve`, untested here), rebirth, the merchant, trading, the vault's remote handlers (only the migration and rebuild paths
 it uses), the admin menu, anything client-side (GUIs, SpinPopup, TokenDrops animation), the map
 project (`map.project.json`), and real DataStore behaviour such as throttling, size limits or
 cross-server session locks beyond the lock fields.
