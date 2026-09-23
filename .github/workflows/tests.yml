@@ -1,0 +1,23 @@
+name: Headless tests
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  lune:
+    name: Lune test suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Lune (pinned version and checksum)
+        run: |
+          tools/install_lune.sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Run the suite
+        run: tests/run.sh
