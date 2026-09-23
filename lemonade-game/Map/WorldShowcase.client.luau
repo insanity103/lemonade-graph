@@ -72,6 +72,20 @@ local VIEWS = {
 		fov = 52,
 		hideEnemies = true, -- the bandits wandering the rim would stand in front of the lens
 	},
+	-- Hearthmere's boundary wall (the castle-wall gauntlet piece), framed from inside the town: a
+	-- lens raised above the plaza's edge, looking north up High Street past the Sword Monument to
+	-- the Ascension Gate, pulled back and up enough to read the whole north wall's height and both
+	-- its corners in one shot, its crest silhouette against the sky above the rooftops -- the same
+	-- kind of establishing frame the reference uses (bright afternoon light, wide enough field to
+	-- show craft, colour and composition together, not a close detail crop). Checked clear of every
+	-- tree canopy and the monument along the sightline. WorldDay's clock, so this round's
+	-- before/after shots share one light.
+	WorldWall = {
+		clock = 15.3,
+		stand = { at = Vector3.new(8, 13.6, 16), face = Vector3.new(-6, 13.6, -100) },
+		camera = { at = Vector3.new(8, 24, 16), look = Vector3.new(-6, 42, -100) },
+		fov = 66,
+	},
 	-- Briarwood at WorldDay's light, framed like Arcane Odyssey's Mount Othrys forest frame: a low
 	-- lens in the wood beside the Old Road, south of Bramble Hollow, tilted up and looking north-west
 	-- toward the afternoon sun, so trunks stand at every depth from the near verge to the deep wood

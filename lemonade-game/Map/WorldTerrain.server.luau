@@ -40,32 +40,77 @@ local started = os.clock()
 -- ── Palette ──────────────────────────────────────────────────────────────────
 -- Terrain colours are per material, so each stratum is its own material. Warm and saturated, so the
 -- afternoon sun turns the rock golden while its shaded faces go cool under the blue sky fill.
-terrain:SetMaterialColor(M.Slate, Color3.fromRGB(104, 84, 80)) -- the dark foot and the seams
-terrain:SetMaterialColor(M.Rock, Color3.fromRGB(178, 106, 66)) -- rust
-terrain:SetMaterialColor(M.Limestone, Color3.fromRGB(222, 196, 148)) -- cream caprock
-terrain:SetMaterialColor(M.Pavement, Color3.fromRGB(214, 152, 78)) -- warm ochre
-terrain:SetMaterialColor(M.Sandstone, Color3.fromRGB(208, 160, 104)) -- tan
-terrain:SetMaterialColor(M.Asphalt, Color3.fromRGB(134, 114, 96)) -- gravel scree
-terrain:SetMaterialColor(M.Basalt, Color3.fromRGB(112, 92, 82)) -- fallen boulders
-terrain:SetMaterialColor(M.Grass, Color3.fromRGB(116, 164, 58))
-terrain:SetMaterialColor(M.Ground, Color3.fromRGB(132, 108, 80))
-terrain:SetMaterialColor(M.Mud, Color3.fromRGB(92, 72, 54))
-terrain:SetMaterialColor(M.LeafyGrass, Color3.fromRGB(104, 150, 60)) -- the moss creeping out of the High Street gutters
-terrain:SetMaterialColor(M.Cobblestone, Color3.fromRGB(162, 148, 128)) -- the High Street, sun-warmed
+-- Round-5 fix (root cause, not lighting): Rock/Limestone/Sandstone were a naturalistic tan/cream tint
+-- on Terrain's own normal-mapped surface -- Atmosphere/Lighting alone can never flatten that fully
+-- into cartoon, and the cream Limestone in particular was already pale before any haze touched it.
+-- All three are retinted directly, brighter and higher-saturation, in one warm gold/rust/orange
+-- family (Pet Simulator 99 storybook rock, not desaturated real stone); WorldLook's haze/decay is
+-- re-tuned below to fade toward this same family instead of toward grey.
+-- Round-10 fix (named gap): Rock/Limestone/Sandstone were already vivid, but Slate/Basalt/Asphalt --
+-- the foot band, the mid-height seam, the scree and the fallen boulders, all directly in the canyon
+-- face -- were a near-grey, low-saturation brown (Slate/Basalt sat ~0.25-0.28). Sitting inside the
+-- otherwise-saturated rust/gold rock, that muddy brown is exactly what read as a naturalistic
+-- "brown-to-rust sediment gradient with dark umber shadow banding": a real dark-umber tone banded
+-- through storybook-bright rock. All three are retinted to darker, still-saturated cousins of the
+-- same warm rust hue (never grey), per the target language's own rule that shadow is a darker
+-- version of the same hue, not a muted one.
+-- Round-11 fix: the whole family still sat on an earthy orange-brown hue (Rock ~24 degrees) that
+-- critics read as "naturalistic canyon", not storybook; every band was pushed toward coral/tangerine.
+-- Round-12 fix (named gap): coral/tangerine was still, in the critics' words, "realistic orange-red" --
+-- a single warm hue family reads as a sun-baked real canyon (however saturated) rather than a candy-
+-- coated storybook one. The family is rebuilt across three deliberately unrelated candy hues instead
+-- of shades of one: magenta for the main cliff face (Rock, by far the largest band), gold for the
+-- caprock (Limestone/Sandstone), and teal for the foot/scree/seam (Slate/Pavement/Asphalt) and the
+-- fallen boulders (a dark magenta-purple cousin of the cliff face, per the target language's rule
+-- that shadow is a darker version of the same hue, never grey). This is the Iron Lowlands' whole rock
+-- family, so it also matches WorldLook's new pink-purple sky/haze below instead of fighting it.
+-- Round-14 fix (HARD RULE, named gap): rounds 5-13 chased "more saturated" with no hue ceiling and
+-- walked this whole family off warm terracotta and through candy magenta into a broken-texture
+-- hot-pink/cyan palette (Rock hit literal Color3.fromRGB(255, 55, 170)). Rock and Basalt were already
+-- hand-fixed back to warm terracotta/rust before this round; this round finishes the job on the rest
+-- of the stack, which was still teal (Slate/Pavement/Asphalt, a cool cyan hue -- exactly as forbidden
+-- as magenta/purple under the new rule). Every terrain material below now sits in one warm earth-tone
+-- family -- hue roughly 10-45 degrees, red through yellow, never pink/magenta/purple/teal/cyan -- as a
+-- monotonic sweep from foot to crest: Slate (darkest, the foot/seam shadow) -> Basalt (dark rust
+-- boulders) -> Rock (terracotta cliff face, the dominant band) -> Sandstone (warm gold-orange) ->
+-- Limestone (bright gold crest), each a brighter, still-saturated step of the same warm family, so
+-- shade reads as a darker version of the same hue, never grey and never a cool colour. Pavement (the
+-- Warden's flagged arena, per this file's own header) moves off teal into warm ochre, matching the
+-- "ochre flags" the header already promised.
+-- PS99 ground pass: every terrain colour below is shared verbatim with tools/map_forge.py's ground
+-- palette (GRASS / GRASS_DARK / GRASS_DEEP / GROUND_PALE / PATH / GROUND_MID / GROUND_SAND /
+-- GROUND_TAN), so the terrain laid over a hidden floor slab and the slab itself are one colour.
+-- Round 2 (calm vs vivid): PS99 is not one even pastel. Its big walked surfaces are near-white
+-- tints and its grass and props are full chroma, and that contrast is what makes it punchy. So the
+-- greens are vivid lime, the roads and walks are near-white cream stepping up through peach to a
+-- golden sand, and the rock strata are the warm accents at full colour: a monotonic foot-to-crest
+-- sweep from coral-red through orange to coin gold, never grey, never brown, never a cool colour.
+terrain:SetMaterialColor(M.Slate, Color3.fromRGB(236, 88, 60)) -- the dark foot and the seam: coral-red, the family's deepest step
+terrain:SetMaterialColor(M.Rock, Color3.fromRGB(255, 140, 72)) -- the main cliff face: toy orange
+terrain:SetMaterialColor(M.Limestone, Color3.fromRGB(255, 214, 64)) -- the crest: coin gold
+terrain:SetMaterialColor(M.Pavement, Color3.fromRGB(255, 132, 112)) -- the Warden's flagged arena: a coral-pink pop set in the cream path
+terrain:SetMaterialColor(M.Sandstone, Color3.fromRGB(255, 172, 48)) -- bridging orange to gold: amber
+terrain:SetMaterialColor(M.Asphalt, Color3.fromRGB(246, 118, 56)) -- gravel scree: a deeper step of the orange face
+terrain:SetMaterialColor(M.Basalt, Color3.fromRGB(226, 80, 52)) -- fallen boulders: the foot's coral-red, a shade deeper
+terrain:SetMaterialColor(M.Grass, Color3.fromRGB(56, 248, 92)) -- GRASS: vivid lime, the hub meadow and open turf
+terrain:SetMaterialColor(M.Ground, Color3.fromRGB(252, 228, 190)) -- GROUND_MID: the cart line, path edges and leaf litter, one step below the road
+terrain:SetMaterialColor(M.Mud, Color3.fromRGB(30, 204, 116)) -- GRASS_DEEP: damp moss at the Mirror Pool shore and mottling the forest paths, never brown
+terrain:SetMaterialColor(M.LeafyGrass, Color3.fromRGB(38, 232, 86)) -- GRASS_DARK: leafy cover, the moss on the graves and creeping out of the gutters
+terrain:SetMaterialColor(M.Cobblestone, Color3.fromRGB(255, 238, 208)) -- PATH: the High Street, the same near-white cream as the road slabs
 
 -- The strata, by voxel-centre height. Voxels are 4 studs and terrain blends two materials across
 -- one voxel, so each band is two or three voxels thick: a solid core of its own colour with a
 -- short, straight transition at each boundary, never a gradient.
 local BODY = M.Salt -- the placeholder the rock is sculpted in before it is painted
+-- Round-14 fix: one monotonic sweep within the warm earth-tone family only, foot to crest -- dark
+-- rust-brown, dark rust, terracotta, gold-orange, bright gold -- so neighbouring bands are always
+-- adjacent warm hues, never a jump to a cool one (the hard rule) and never back to one already passed.
 local STRATA = {
-	{ top = 16, mat = M.Slate }, -- the dark foot, where the rock meets the lawn
-	{ top = 28, mat = M.Rock },
-	{ top = 36, mat = M.Limestone },
-	{ top = 48, mat = M.Pavement },
-	{ top = 52, mat = M.Slate }, -- a thin seam
-	{ top = 64, mat = M.Sandstone },
-	{ top = 72, mat = M.Limestone },
-	{ top = math.huge, mat = M.Rock },
+	{ top = 16, mat = M.Slate }, -- the dark foot, where the rock meets the lawn: dark rust-brown
+	{ top = 34, mat = M.Basalt }, -- shadow band: dark saturated rust, never grey
+	{ top = 60, mat = M.Rock }, -- the main cliff face, by far the largest band: bright terracotta
+	{ top = 78, mat = M.Sandstone }, -- bridging terracotta to gold: warm gold-orange
+	{ top = math.huge, mat = M.Limestone }, -- the crest, brightest and warmest: bright gold
 }
 local function stratum(y: number): Enum.Material
 	for _, band in ipairs(STRATA) do
@@ -118,10 +163,12 @@ local DIPS = {
 	W = { { 0, 24, 7 }, { 30, 18, 33 }, { 54, 18, 33 }, { -48, 17, 8 } },
 }
 local function crestAt(side, t: number): number
-	local y = 57 + 5 * math.noise(t / 41, #side.key * 3.1, 0.5) + 2.5 * math.noise(t / 13, 7.3, 1.7)
-	y += 9 * math.clamp((math.abs(t) - 70) / 30, 0, 1) -- the corners stand tallest
+	-- Flattened to a low rock skirt (not a mountain range) now that the castle wall (map_forge.py)
+	-- is the visible boundary: this just grounds the castle in a bit of rocky hillside.
+	local y = HUB_Y + 9 + 2 * math.noise(t / 41, #side.key * 3.1, 0.5) + 1 * math.noise(t / 13, 7.3, 1.7)
+	y += 3 * math.clamp((math.abs(t) - 70) / 30, 0, 1) -- the corners stand a little taller
 	for _, dip in ipairs(DIPS[side.key]) do
-		y -= dip[3] * bump(t, dip[1], dip[2])
+		y -= dip[3] * 0.3 * bump(t, dip[1], dip[2])
 	end
 	return y
 end
@@ -140,7 +187,7 @@ for _, side in ipairs(SIDES) do
 		t += length
 		runs += 1
 		local fall = waterfallRun(side, tc)
-		local top = if fall then 45.5 else crestAt(side, tc) + rng:NextNumber(-2.5, 2.5)
+		local top = if fall then HUB_Y + 24 else crestAt(side, tc) + rng:NextNumber(-2.5, 2.5)
 		-- the body: a slab from the lawn line back, its top tilted a little so crests are not flat
 		local tilt = CFrame.Angles(math.rad(rng:NextNumber(-3, 3)), math.rad(rng:NextNumber(-4, 4)), math.rad(rng:NextNumber(-3, 3)))
 		local depth = BACK + PAD + 2
@@ -150,19 +197,26 @@ for _, side in ipairs(SIDES) do
 			continue -- the waterfall runs down a plain face (carved clean below)
 		end
 
-		-- two ledges: the face steps back above each; the second ledge is the deeper one
-		local h1 = HUB_Y + rng:NextNumber(9, 15)
-		local h2 = h1 + rng:NextNumber(9, 14)
-		local s2 = rng:NextNumber(3.5, 7.5)
-		local s3 = s2 + rng:NextNumber(4.5, 8.5)
+		-- two ledges: the face steps back above each; the second ledge is the deeper one.
+		-- Round-14 fix: h1/h2/s2/s3 used to be fixed absolute studs sized for a ~57-75 stud wall.
+		-- Now that crestAt() returns a low rock skirt (roughly HUB_Y+3 to HUB_Y+25), those fixed
+		-- offsets were often taller than the wall itself, so `h1 < top - 6` was false almost every
+		-- run and the whole body went uncarved -- a solid, featureless, grass-topped slab (the
+		-- "giant flat green wall" bug). Ledge heights and setbacks now scale with how much rock
+		-- actually stands above the lawn (avail), so a short skirt still gets real carving.
+		local avail = top - HUB_Y
+		local h1 = HUB_Y + avail * rng:NextNumber(0.3, 0.5)
+		local h2 = h1 + avail * rng:NextNumber(0.25, 0.4)
+		local s2 = rng:NextNumber(1.5, 3.5)
+		local s3 = s2 + rng:NextNumber(2, 4)
 		local function cutBack(from: number, setback: number)
 			local d = setback + PAD + 2
 			terrain:FillBlock(CFrame.new(at(side, tc, setback - d / 2, from + 60)), wallBox(side, length + 0.2, d, 120), M.Air)
 		end
-		if h1 < top - 6 then
+		if avail > 6 and h1 < top - 2 then
 			cutBack(h1, s2)
 		end
-		if h2 < top - 5 then
+		if avail > 12 and h2 < top - 1.5 then
 			cutBack(h2, s3)
 		end
 		-- an undercut under a ledge's face: the rock above hangs out over its own shadow
@@ -194,11 +248,13 @@ for _, side in ipairs(SIDES) do
 				terrain:FillBlock(CFrame.new(c) * lean, size, BODY)
 			end
 		end
-		-- a deep vertical crevice at the run's end
-		if rng:NextNumber() < 0.5 and math.abs(t) < LINE - 4 then
+		-- a deep vertical crevice at the run's end. Guarded (min gap of 3 studs): on the now-low
+		-- skirt, top - rng(2,6) can undercut HUB_Y + rng(2,6) and invert the block's height.
+		if avail > 8 and rng:NextNumber() < 0.5 and math.abs(t) < LINE - 4 then
 			local w = rng:NextNumber(3.5, 5)
 			local d = rng:NextNumber(5, 9)
-			local y0, y1 = HUB_Y + rng:NextNumber(2, 6), top - rng:NextNumber(2, 6)
+			local y0 = HUB_Y + rng:NextNumber(2, 6)
+			local y1 = math.max(y0 + 3, top - rng:NextNumber(2, 6))
 			terrain:FillBlock(
 				CFrame.new(at(side, t, (d - PAD - 1) / 2, (y0 + y1) / 2)) * CFrame.Angles(0, math.rad(rng:NextNumber(-12, 12)), 0),
 				wallBox(side, w, d + PAD + 1, y1 - y0),
@@ -475,8 +531,9 @@ for ix = 1, COLS do
 			continue
 		end
 		local x, z = centreOf(ix), centreOf(iz)
-		local nearFire = fireAt ~= nil and Vector3.new(x - fireAt.X, 0, z - fireAt.Z).Magnitude < 6
-		local earth = if nearFire then M.Mud else M.Ground
+		-- Mud is now the Briarwood shore's damp-moss green (never brown), so the ring round the
+		-- campfire is plain Ground like the rest of the worn verge instead of a darker mud patch.
+		local earth = M.Ground
 		if k == PAVED and street[ix][iz] then
 			-- The High Street: cobbles, worn to bare earth in patches along the cart line down the
 			-- middle, with soil and a little grass creeping out of the gutters at the edges. Terrain
@@ -587,10 +644,10 @@ do
 
 		-- Materials the hub does not use carry the desert's own colours; the strata reuse the hub
 		-- canyon's tan sandstone, rust rock and cream limestone, so the two places share one palette.
-		terrain:SetMaterialColor(M.Sand, Color3.fromRGB(234, 180, 106)) -- warm golden sand
-		terrain:SetMaterialColor(M.Snow, Color3.fromRGB(240, 202, 138)) -- pale, wind-swept drift crests
-		terrain:SetMaterialColor(M.Salt, Color3.fromRGB(212, 152, 96)) -- the trodden hardpan trail
-		terrain:SetMaterialColor(M.Concrete, Color3.fromRGB(176, 122, 76)) -- damp sand at the water's edge
+		terrain:SetMaterialColor(M.Sand, Color3.fromRGB(255, 214, 130)) -- GROUND_SAND: the desert floor, golden toy sand matching the pit slab
+		terrain:SetMaterialColor(M.Snow, Color3.fromRGB(255, 248, 228)) -- GROUND_PALE: pale drift crests, the near-white step of the sand
+		terrain:SetMaterialColor(M.Salt, Color3.fromRGB(255, 224, 212)) -- the trodden hardpan trail: a pale rosy-cream path, calm against the golden sand
+		terrain:SetMaterialColor(M.Concrete, Color3.fromRGB(250, 214, 160)) -- GROUND_TAN: damp sand at the water's edge, peach, matching the pool beds
 		terrain.WaterColor = Color3.fromRGB(40, 176, 176)
 		terrain.WaterTransparency = 0.45
 		terrain.WaterReflectance = 0.55

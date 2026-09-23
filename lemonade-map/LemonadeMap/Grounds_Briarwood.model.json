@@ -38,11 +38,11 @@
      }
     },
     "Color": [
-     0.3137,
-     0.4941,
-     0.2196
+     0.1176,
+     0.8,
+     0.4549
     ],
-    "Material": "Grass",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -88,11 +88,11 @@
      }
     },
     "Color": [
-     0.3137,
-     0.4941,
-     0.2196
+     0.149,
+     0.9098,
+     0.3373
     ],
-    "Material": "Grass",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -138,11 +138,11 @@
      }
     },
     "Color": [
-     0.3137,
-     0.4941,
-     0.2196
+     0.149,
+     0.9098,
+     0.3373
     ],
-    "Material": "Grass",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -188,11 +188,11 @@
      }
     },
     "Color": [
-     0.3137,
-     0.4941,
-     0.2196
+     0.149,
+     0.9098,
+     0.3373
     ],
-    "Material": "Grass",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -238,11 +238,11 @@
      }
     },
     "Color": [
-     0.5333,
-     0.4392,
-     0.302
+     0.9804,
+     0.8392,
+     0.6275
     ],
-    "Material": "Ground",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -289,11 +289,11 @@
      }
     },
     "Color": [
-     0.3608,
-     0.502,
-     0.2353
+     0.149,
+     0.9098,
+     0.3373
     ],
-    "Material": "Grass",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -339,11 +339,11 @@
      }
     },
     "Color": [
-     0.3608,
-     0.502,
-     0.2353
+     0.149,
+     0.9098,
+     0.3373
     ],
-    "Material": "Grass",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -389,11 +389,11 @@
      }
     },
     "Color": [
-     0.3608,
-     0.502,
-     0.2353
+     0.149,
+     0.9098,
+     0.3373
     ],
-    "Material": "Grass",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -439,11 +439,11 @@
      }
     },
     "Color": [
-     0.3608,
-     0.502,
-     0.2353
+     0.149,
+     0.9098,
+     0.3373
     ],
-    "Material": "Grass",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -489,11 +489,11 @@
      }
     },
     "Color": [
-     0.5333,
-     0.4392,
-     0.302
+     0.9804,
+     0.8392,
+     0.6275
     ],
-    "Material": "Ground",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,

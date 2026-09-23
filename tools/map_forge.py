@@ -34,44 +34,59 @@ QUARRY_Y = 2.0
 PROXY_TOP = 110.0  # invisible wall proxies reach this high so nobody jumps out
 
 # ── Palette (RGB 0-255) ───────────────────────────────────────────────────────
-GRASS = (92, 142, 64)
-GRASS_DARK = (80, 126, 56)
-PATH = (124, 121, 115)
-PATH_EDGE = (98, 96, 92)
+# Ground palette (PS99 pass, round 2: calm vs vivid). PS99 is not one even pastel: its big walked
+# surfaces are near-white tints (cream paths, lavender-white walks, saturation ~0.1-0.25) and its grass
+# is a full-chroma lime (saturation ~0.75-0.85), and that pale-against-vivid contrast is what makes it
+# read as a punchy toy world. So the grass is pushed to three vivid greens (the accent), and the
+# warm family splits into near-white cream roads and walks (the calm) stepping up through peach to a
+# golden desert sand. Darker steps stay the same hue: never grey, never brown mud. Each value here is
+# shared verbatim with the matching terrain material colour in WorldTerrain.server.luau (Grass,
+# LeafyGrass, Mud, Sand, Ground, Snow, Cobblestone, Concrete): most floor slabs are hidden under that
+# terrain at runtime, so a slab carries the colour of the terrain that covers it and the ground reads
+# as one palette, not two.
+GRASS = (56, 248, 92)         # terrain Grass: the hub meadow and open Briarwood turf; vivid lime
+GRASS_DARK = (38, 232, 86)    # terrain LeafyGrass: leafy cover, moss on the graves and gutters
+GRASS_DEEP = (30, 204, 116)   # terrain Mud: the damp mossy shore of the Mirror Pool, path mottling
+GROUND_PALE = (255, 248, 228) # terrain Snow: pale drift crests; the quarry rim, the pass; near-white cream
+PATH = (255, 238, 208)        # terrain Cobblestone: the High Street, roads, plaza, yards, arena; cream
+GROUND_MID = (252, 228, 190)  # terrain Ground: the cart line, path edges, leaf litter; the mid bench
+GROUND_SAND = (255, 214, 130) # terrain Sand: the desert floor; the pit; golden toy sand
+GROUND_TAN = (250, 214, 160)  # terrain Concrete: damp sand at the water; pool beds, haul roads; peach
+PATH_EDGE = PATH
 HUB_ROCK = (124, 94, 68)
 HUB_ROCK_DARK = (100, 75, 55)
-TIMBER = (156, 100, 60)
-BEAM = (72, 48, 32)
-PLASTER = (216, 200, 164)
-ROOF = (112, 54, 44)
-STONE = (152, 148, 140)
-STONE_DARK = (112, 108, 102)
-QUARRY_FLOOR = (152, 110, 74)
-QUARRY_PATH = (128, 95, 66)
+TIMBER = (255, 158, 36)  # crate orange at full chroma: the toy-box pop, never brown
+BEAM = (240, 120, 20)  # the same orange one step darker for beams, posts, doors and trims
+PLASTER = (255, 238, 210)  # calm cream wall: a pale warm tint, the quiet surface the roofs pop against
+ROOF = (255, 84, 64)  # coral-red roof at full chroma
+STONE = (188, 216, 255)  # calm masonry: near-white sky-blue tint (PS99 walkway), gates, plinths, chimney caps
+STONE_DARK = (64, 144, 255)  # the same blue at full chroma for foundations, steps and trims: a pop, never grey
+QUARRY_FLOOR = GROUND_PALE
+QUARRY_PATH = GROUND_TAN
 QUARRY_CLIFF = (170, 122, 80)
 QUARRY_CLIFF_DARK = (142, 100, 66)
-ROCK_GRAY = (106, 103, 99)
-LEAVES = [(70, 128, 52), (60, 112, 46), (86, 138, 58)]
-TRUNK = (96, 64, 40)
-WARLORD_RED = (130, 45, 55)
-GOLD = (204, 168, 72)
-IRON = (92, 94, 100)
-FROST = (208, 226, 236)
-CALDERA = (62, 46, 42)
+ROCK_GRAY = (209, 222, 255)  # toy stone: a calm near-white sky-blue tint (PS99's walkway stone), never grey
+LEAVES = [(104, 230, 98), (80, 216, 86), (130, 238, 104)]  # spring greens, one hue, three values
+TRUNK = (244, 150, 62)  # bright toy caramel-orange bark, never chocolate
+WARLORD_RED = (236, 48, 84)  # the gang's banners: a full-chroma crimson-pink accent, never maroon
+GOLD = (255, 206, 24)
+IRON = (60, 122, 255)  # toy azure for bars, bands and brackets: full chroma, never grey
+FROST = (160, 226, 255)  # saturated ice blue
+CALDERA = (222, 84, 58)  # hot ember-red volcanic rock, never near-black
 EMBER = (232, 112, 42)
-CELESTIAL = (232, 226, 212)
-VOID = (72, 42, 104)
+CELESTIAL = (196, 184, 255)  # pale saturated lavender marble
+VOID = (120, 64, 200)
 VOID_GLOW = (150, 90, 220)
-LANTERN = (255, 196, 120)
+LANTERN = (255, 190, 64)
 # Quarry palette: packed earth, cart ruts, rusted iron, moss, sump mud and water.
-HAUL_ROAD = (128, 100, 70)
-RUT = (96, 74, 52)
-RUST = (150, 82, 44)
-IRON_DARK = (58, 56, 54)
-MOSS = (92, 128, 60)
-MUD = (104, 80, 54)
+HAUL_ROAD = GROUND_TAN
+RUT = (248, 184, 112)  # the cart ruts: one step deeper than the peach haul road, same hue, more saturated
+RUST = (246, 104, 52)  # the gang's scrap plates: vivid toy orange-red, no corrosion
+IRON_DARK = (44, 66, 160)  # the gang's iron (frames, chains, spikes): deep navy, a darker blue, never charcoal
+MOSS = (122, 228, 138)
+MUD = GROUND_TAN
 SUMP_WATER = (72, 118, 112)  # the sump, cleared by the waterfall that feeds it
-SPLINTER = (58, 40, 26)
+SPLINTER = (226, 110, 40)  # the gang's rough timber: crate orange one step deeper, never tar-brown
 
 IDENTITY = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 
@@ -334,13 +349,172 @@ def cliff_run(name, a, b, inward, base_y, height, color, dark, rng, depth=14.0, 
     return out, proxy
 
 
-# Hub tree palette: bark, and three leaf tones from the cool blue-green underside to the warm
-# yellow-green crown the sun catches.
-BARK = (88, 62, 44)
-BARK_DARK = (70, 50, 38)
-LEAF_SHADE = (44, 92, 62)
-LEAF_MID = (72, 132, 50)
-LEAF_SUN = (122, 168, 58)
+# ── Hearthmere castle wall ────────────────────────────────────────────────────
+# Bright, high-key, saturated sky-blue toy-plastic masonry and a coral-red cap: the
+# castle-wall pass (Pet Simulator 99 is the bar). Deliberately far from HUB_ROCK's muddy brown --
+# docs/ART_DIRECTION.md calls for nothing desaturated anywhere in frame.
+CASTLE_STONE = (188, 216, 255)  # main masonry: near-white sky blue, the big calm surface
+CASTLE_STONE_SHADE = (60, 140, 255)  # base course, parapet lip, tower rim: the same blue at full chroma
+CASTLE_TRIM = (168, 204, 255)  # buttress pilasters: one pale step deeper than the body
+CASTLE_ROOF = (255, 80, 60)  # tower cap: full-chroma coral red, the warm pop
+CASTLE_ROOF_DARK = (236, 48, 48)  # the cap's topmost, smallest ring
+
+
+def _wall_box(name, ax, az, dx, dz, nx, nz, r, t0, t1, o0, o1, y0, y1, color, material, **kw):
+    """A box in a wall run's local frame: spans segment-param [t0, t1] along the run (t=0 at a,
+    t=seg at b), [o0, o1] studs outward from the a->b line (negative o reaches toward the hub),
+    and [y0, y1] in height. Mirrors cliff_run's own axis convention exactly, so a castle_wall
+    call with the same (a, b, inward) as a cliff_run segment sits flush on its line."""
+    tc, oc = (t0 + t1) / 2, (o0 + o1) / 2
+    cx = ax + dx * tc - nx * oc
+    cz = az + dz * tc - nz * oc
+    size = (abs(t1 - t0), y1 - y0, abs(o1 - o0))
+    return part(name, size, (cx, (y0 + y1) / 2, cz), color, material, r, layer="castle", **kw)
+
+
+def castle_wall(name, a, b, inward, base_y, rng, depth=8.0, merlon_w=4.0, gap_w=4.0,
+                buttress_every=20.0):
+    """A chunky cream-sandstone castle-wall facade along segment a->b: a stepped base course, a
+    tall masonry body, a corbelled parapet lip and a battlemented row of merlons on top, with
+    buttress pilasters proud of the face at intervals -- rounded corner towers are its own
+    castle_tower, placed by the caller at the run's ends. Decorative only (every part here is
+    CanCollide=False): cliff_run's own invisible proxy, unchanged, still holds players in, and the
+    sculpted canyon crest still rises above and behind this facade -- a fortress built into the
+    canyon wall, not floating apart from it."""
+    ax, az = a
+    bx, bz = b
+    seg = math.hypot(bx - ax, bz - az)
+    dx, dz = (bx - ax) / seg, (bz - az) / seg
+    nx, nz = dz * inward, -dx * inward
+    yaw = math.degrees(math.atan2(-dz, dx))
+    r = rot_y(yaw)
+    base_h, body_h, lip_h, mer_h = 4.0, 20.0, 1.6, 4.4
+    y0 = base_y
+    y1 = y0 + base_h
+    y2 = y1 + body_h
+    y3 = y2 + lip_h
+    y4 = y3 + mer_h
+    kids = [
+        _wall_box(f"{name}_Base", ax, az, dx, dz, nx, nz, r, 0, seg, 0, depth + 3.0, y0, y1,
+                  CASTLE_STONE_SHADE, "SmoothPlastic", collide=False),
+        _wall_box(f"{name}_Body", ax, az, dx, dz, nx, nz, r, 0, seg, 0, depth, y1, y2,
+                  CASTLE_STONE, "SmoothPlastic", collide=False),
+        _wall_box(f"{name}_Lip", ax, az, dx, dz, nx, nz, r, -0.3, seg + 0.3, 0, depth + 1.6, y2, y3,
+                  CASTLE_STONE_SHADE, "SmoothPlastic", collide=False, shadow=False),
+    ]
+    # The buttress top sits 0.6 studs proud of the body's own top (y2): flush would be an exact
+    # coplanar overlap (z-fighting) between two different parts sharing that whole footprint.
+    n_but = max(0, round(seg / buttress_every) - 1)
+    for k in range(1, n_but + 1):
+        t = seg * k / (n_but + 1)
+        kids.append(_wall_box(f"{name}_Buttress{k}", ax, az, dx, dz, nx, nz, r, t - 1.3, t + 1.3,
+                              -1.4, depth - 2.0, y0, y2 + 0.6, CASTLE_TRIM, "SmoothPlastic",
+                              collide=False, shadow=False))
+    period = merlon_w + gap_w
+    n_mer = max(1, round(seg / period))
+    start = (seg - n_mer * period) / 2 + gap_w / 2
+    for k in range(n_mer):
+        t = start + k * period
+        if t < 0.5 or t + merlon_w > seg - 0.5:
+            continue
+        kids.append(_wall_box(f"{name}_Merlon{k}", ax, az, dx, dz, nx, nz, r, t, t + merlon_w,
+                              0.4, depth * 0.85, y3, y4, CASTLE_STONE, "SmoothPlastic",
+                              collide=False, shadow=False))
+    return model(name, kids, attrs={"CastleWall": True})
+
+
+def castle_tower(name, x, z, base_y, rng, height=24.0, radius=7.0, roof_h=11.0, merlons=8,
+                 stone=CASTLE_STONE, roof=CASTLE_ROOF, roof_dark=CASTLE_ROOF_DARK):
+    """A rounded corner/gatehouse tower: a cylindrical drum, a crenellated corbel rim, and a
+    chunky stepped conical cap (three tapering drums -- Roblox parts have no native cone -- with a
+    small gold finial). Decorative only (CanCollide=False everywhere): the wall's own invisible
+    proxy still blocks players at every tower position."""
+    top = base_y + height
+    kids = [
+        part(f"{name}_Trunk", (height, radius * 2, radius * 2), (x, base_y + height / 2, z),
+             stone, "SmoothPlastic", rot_z(90), shape="Cylinder", collide=False, layer="castle"),
+        part(f"{name}_Rim", (1.6, radius * 2 + 1.0, radius * 2 + 1.0), (x, top + 0.8, z),
+             CASTLE_STONE_SHADE, "SmoothPlastic", rot_z(90), shape="Cylinder", collide=False,
+             shadow=False, layer="castle"),
+    ]
+    rim_top = top + 1.6
+    for k in range(merlons):
+        a = math.tau * k / merlons + rng.uniform(-0.03, 0.03)
+        mx, mz = x + math.cos(a) * radius * 0.82, z + math.sin(a) * radius * 0.82
+        kids.append(part(f"{name}_Merlon{k}", (2.6, 3.6, 2.2), (mx, rim_top + 1.8, mz),
+                         stone, "SmoothPlastic", rot_y(math.degrees(a)), collide=False, shadow=False,
+                         layer="castle"))
+    cap_y = rim_top + 3.6  # above the rim and the merlon row
+    rings = 3
+    for k in range(rings):
+        frac = k / rings
+        d = radius * 2 * (0.98 - 0.62 * frac)
+        h = roof_h / rings
+        col = roof if k < rings - 1 else roof_dark
+        if k == rings - 1:
+            # The top ring is a round toy dome, not a third flat drum: a chunky rounded crown.
+            cy = cap_y + d * 0.3
+            kids.append(part(f"{name}_Cap{k}", (d, d, d), (x, cy, z), col, "SmoothPlastic",
+                             shape="Ball", collide=False, shadow=False, layer="castle"))
+            cap_y = cy + d / 2 - 0.2
+            continue
+        kids.append(part(f"{name}_Cap{k}", (h, d, d), (x, cap_y + h / 2, z), col, "SmoothPlastic",
+                         rot_z(90), shape="Cylinder", collide=False, shadow=False, layer="castle"))
+        cap_y += h
+    kids.append(part(f"{name}_Finial", (1.4, 1.4, 1.4), (x, cap_y + 0.7, z), GOLD, "SmoothPlastic",
+                     shape="Ball", collide=False, shadow=False, layer="castle"))
+    return model(name, kids, attrs={"CastleTower": True})
+
+
+def hsv(h, s, v):
+    """An RGB 0-255 tuple from hue in degrees and saturation/value in 0..1."""
+    h = (h % 360) / 60
+    i, f = int(h), h - int(h)
+    p, q, t = v * (1 - s), v * (1 - s * f), v * (1 - s * (1 - f))
+    r, g, b = ((v, t, p), (q, v, p), (p, v, t), (p, q, v), (t, p, v), (v, p, q))[i % 6]
+    return (round(r * 255), round(g * 255), round(b * 255))
+
+
+def blend(a, b, t):
+    return tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3))
+
+
+# Toy canopies, the Pet Simulator 99 way: not one green but several candy hues, each a
+# (shade, body, highlight) triple. The shade is the same hue deeper (never grey), the highlight a
+# pale tint of it where the sun catches the crown. Vivid families (lime, pink, cyan, orange) are the
+# full-chroma pops; calm families (mint, cream, lavender) are pale quiet masses they pop against,
+# so the wood ranges from near-white tints to full chroma instead of one mid pastel wash.
+CANOPY = {
+    "lime": (hsv(112, 0.88, 0.84), hsv(104, 0.82, 0.96), hsv(92, 0.22, 1.0)),
+    "pink": (hsv(334, 0.82, 0.9), hsv(330, 0.66, 1.0), hsv(330, 0.17, 1.0)),
+    "cyan": (hsv(194, 0.9, 0.86), hsv(188, 0.74, 1.0), hsv(186, 0.18, 1.0)),
+    "orange": (hsv(26, 0.88, 0.96), hsv(36, 0.78, 1.0), hsv(42, 0.2, 1.0)),
+    "lavender": (hsv(268, 0.62, 0.92), hsv(270, 0.4, 1.0), hsv(272, 0.16, 1.0)),
+    "mint": (hsv(150, 0.56, 0.9), hsv(146, 0.22, 0.98), hsv(138, 0.1, 1.0)),
+    "cream": (hsv(46, 0.6, 1.0), hsv(50, 0.24, 1.0), hsv(54, 0.1, 1.0)),
+}
+# Which family a broadleaf takes: mostly lime and the candy pops, with pale mint/cream/lavender
+# crowns scattered through them as the calm masses.
+BROADLEAF_MIX = (("lime", 0.22), ("pink", 0.14), ("cyan", 0.12), ("orange", 0.08), ("lavender", 0.14), ("mint", 0.16),
+                 ("cream", 0.14))
+CONIFER_MIX = (("lime", 0.34), ("cyan", 0.3), ("mint", 0.36))
+UNDERSTORY_MIX = (("cream", 0.3), ("pink", 0.25), ("orange", 0.2), ("lime", 0.25))
+
+
+def canopy_of(name, mix=BROADLEAF_MIX):
+    """A tree's canopy family, picked from its name so no shared random stream is drawn."""
+    u = (zlib.crc32(f"canopy:{name}".encode()) % 10007) / 10007 * sum(w for _, w in mix)
+    for fam, w in mix:
+        u -= w
+        if u < 0:
+            return CANOPY[fam]
+    return CANOPY[mix[-1][0]]
+
+
+# Hub tree palette: caramel bark, and the lime canopy triple as the default leaf tones.
+BARK = (250, 160, 72)  # bright caramel-orange plastic bark: a crate-orange pop, never brown
+BARK_DARK = (236, 138, 56)  # the same caramel one step deeper for the bole and roots
+LEAF_SHADE, LEAF_MID, LEAF_SUN = CANOPY["lime"]
 # Horizontal direction toward the afternoon sun (WorldLook: latitude -10, mid afternoon), so the
 # leaf masses on that side take the warm tone.
 SUN_XZ = (-0.68, -0.73)
@@ -361,13 +535,14 @@ def tree(name, x, y, z, rng, scale=1.0):
     yaw = rng.uniform(0, 90)
     rng.choice(LEAVES)
     local = random.Random(zlib.crc32(name.encode()))
+    shade, mid, sun = canopy_of(name)
     up = rot_z(90)  # Cylinder parts run along X; this stands them up
     kids = [
-        part("Bole", (trunk_h * 0.5, 2.7 * s, 2.7 * s), (x, y + trunk_h * 0.25, z), BARK_DARK, "Wood",
+        part("Bole", (trunk_h * 0.5, 2.7 * s, 2.7 * s), (x, y + trunk_h * 0.25, z), BARK_DARK, "SmoothPlastic",
              mul(rot_y(trunk_yaw), up), shape="Cylinder", layer="tree"),
-        part("Trunk", (trunk_h * 0.62, 2.0 * s, 2.0 * s), (x, y + trunk_h * 0.69, z), BARK, "Wood",
+        part("Trunk", (trunk_h * 0.62, 2.0 * s, 2.0 * s), (x, y + trunk_h * 0.69, z), BARK, "SmoothPlastic",
              mul(rot_y(trunk_yaw + 40), up), shape="Cylinder", layer="tree"),
-        part("RootFlare", (1.0 * s, 3.8 * s, 3.8 * s), (x, y + 0.5 * s, z), BARK_DARK, "Wood", up,
+        part("RootFlare", (1.0 * s, 3.8 * s, 3.8 * s), (x, y + 0.5 * s, z), BARK_DARK, "SmoothPlastic", up,
              shape="Cylinder", collide=False, shadow=False, layer="tree"),
     ]
     for k in range(4):
@@ -375,21 +550,21 @@ def tree(name, x, y, z, rng, scale=1.0):
         reach = local.uniform(2.6, 3.4) * s
         kids.append(beam(f"Root{k}", (x + math.cos(a) * 0.6 * s, y + 1.9 * s, z + math.sin(a) * 0.6 * s),
                          (x + math.cos(a) * reach, y + 0.1, z + math.sin(a) * reach), 0.75 * s, BARK_DARK,
-                         depth=0.9 * s, collide=False, query=False, shadow=False, layer="tree"))
+                         "SmoothPlastic", depth=0.9 * s, collide=False, query=False, shadow=False, layer="tree"))
     top = y + trunk_h
     for k in range(2):
         a = math.radians(yaw) + k * math.pi + local.uniform(-0.4, 0.4)
         kids.append(beam(f"Limb{k}", (x, top - 2.6 * s, z), (x + math.cos(a) * 3.2 * s, top + 1.2 * s, z + math.sin(a) * 3.2 * s),
-                         0.7 * s, BARK, collide=False, query=False, shadow=False, layer="tree"))
+                         0.7 * s, BARK, "SmoothPlastic", collide=False, query=False, shadow=False, layer="tree"))
 
     def tone(dx, dy, dz):
         """Leaf tone for a lobe offset: underside cool, sun side and crown warm."""
         h = math.hypot(dx, dz) or 1.0
         facing = (dx * SUN_XZ[0] + dz * SUN_XZ[1]) / h
         lift = dy / (2.5 * s) + facing * 0.8
-        return LEAF_SUN if lift > 0.6 else LEAF_SHADE if lift < -0.35 else LEAF_MID
+        return sun if lift > 0.6 else shade if lift < -0.35 else mid
 
-    lobes = [("Canopy", 0.0, 2.2 * s, 0.0, 9.0 * s, LEAF_MID)]
+    lobes = [("Canopy", 0.0, 2.2 * s, 0.0, 9.0 * s, mid)]
     ring = local.randint(5, 6)
     for k in range(ring):
         a = math.radians(yaw) + k * math.tau / ring + local.uniform(-0.3, 0.3)
@@ -402,9 +577,9 @@ def tree(name, x, y, z, rng, scale=1.0):
     for k in range(2):
         a = math.radians(yaw) + math.pi / 3 + k * math.pi + local.uniform(-0.4, 0.4)
         dx, dz = math.cos(a) * 1.8 * s, math.sin(a) * 1.8 * s
-        lobes.append((f"Crown{k}", dx, local.uniform(5.2, 6.2) * s, dz, local.uniform(5.4, 6.4) * s, LEAF_SUN))
+        lobes.append((f"Crown{k}", dx, local.uniform(5.2, 6.2) * s, dz, local.uniform(5.4, 6.4) * s, sun))
     for lname, dx, dy, dz, d, color in lobes:
-        kids.append(part(lname, (d, d, d), (x + dx, top + dy, z + dz), color, "LeafyGrass",
+        kids.append(part(lname, (d, d, d), (x + dx, top + dy, z + dz), color, "SmoothPlastic",
                          rot_y(local.uniform(0, 360)), shape="Ball", collide=False, query=False, layer="canopy"))
     return model(name, kids)
 
@@ -420,7 +595,7 @@ def rock_cluster(name, x, y, z, rng, color=ROCK_GRAY, size=1.0, collide=True):
         tops.add(round(h * 10))
         ox, oz = rng.uniform(-4, 4) * size, rng.uniform(-4, 4) * size
         r = mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-10, 10)))
-        kids.append(part(f"Rock{i}", (w, h, d), (x + ox, y + h / 2 - 0.6, z + oz), color, "Slate", r,
+        kids.append(part(f"Rock{i}", (w, h, d), (x + ox, y + h / 2 - 0.6, z + oz), color, "SmoothPlastic", r,
                          collide=collide and i == 0, layer="rock"))
     return model(name, kids)
 
@@ -430,8 +605,8 @@ def lamp_post(name, x, y, z, yaw=0.0):
     fwd = apply(rot_y(yaw), (0, 0, -1))
     arm = (x + fwd[0] * 1.6, y + 9.2, z + fwd[2] * 1.6)
     return model(name, [
-        part("Post", (0.8, 10, 0.8), (x, y + 5, z), BEAM, "Wood"),
-        part("Arm", (0.5, 0.5, 3), (x + fwd[0] * 1.2, y + 9.7, z + fwd[2] * 1.2), BEAM, "Wood",
+        part("Post", (0.8, 10, 0.8), (x, y + 5, z), BEAM, "SmoothPlastic"),
+        part("Arm", (0.5, 0.5, 3), (x + fwd[0] * 1.2, y + 9.7, z + fwd[2] * 1.2), BEAM, "SmoothPlastic",
              rot_y(yaw), collide=False),
         part("Lantern", (1.3, 1.6, 1.3), (arm[0], y + 8.6, arm[2]), LANTERN, "Neon", rot_y(yaw),
              collide=False, query=False, shadow=False, transparency=0.15, children=[light(20, 1.1)]),
@@ -451,8 +626,8 @@ def sign(name, x, y, z, yaw, width, height, title, subtitle="", board=TIMBER, te
         for side in (-1, 1):
             offset = side * (width / 2 + 0.45)
             kids.append(part(f"Post{side}", (0.8, post_h, 0.8), (x + right[0] * offset, y + post_h / 2, z + right[2] * offset),
-                             BEAM, "Wood", r))
-    kids.append(part("Board", (width, height, 0.5), (x, board_y, z), board, "WoodPlanks", r,
+                             BEAM, "SmoothPlastic", r))
+    kids.append(part("Board", (width, height, 0.5), (x, board_y, z), board, "SmoothPlastic", r,
                      collide=False, children=[label_gui("Front", title, subtitle, text),
                                               label_gui("Back", title, subtitle, text)]))
     return model(name, kids)
@@ -477,12 +652,12 @@ def fence_run(name, a, b, y, height=3.2, gap=None, collide=True, skip_first_post
                 continue
             s = s0 + (s1 - s0) * k / n
             kids.append(part(f"Post{si}_{k}", (0.9, height + 0.6, 0.9),
-                             (ax + dx * s, y + (height + 0.6) / 2, az + dz * s), BEAM, "Wood", rot_y(yaw),
+                             (ax + dx * s, y + (height + 0.6) / 2, az + dz * s), BEAM, "SmoothPlastic", rot_y(yaw),
                              collide=collide))
         mid = (s0 + s1) / 2
         for ri, rh in enumerate((height * 0.45, height * 0.9)):
             kids.append(part(f"Rail{si}_{ri}", (s1 - s0, 0.45, 0.35),
-                             (ax + dx * mid, y + rh, az + dz * mid), TIMBER, "WoodPlanks", rot_y(yaw),
+                             (ax + dx * mid, y + rh, az + dz * mid), TIMBER, "SmoothPlastic", rot_y(yaw),
                              collide=collide))
     return model(name, kids)
 
@@ -499,7 +674,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
     door=True closes the doorway with a collidable plank door; windows get frames, glass and a
     warm light; the chimney carries a Smoke emitter.
     """
-    kids = [box("Foundation", x0 - 1, x1 + 1, y - 0.6, y + 0.8, z0 - 1, z1 + 1, STONE_DARK, "Cobblestone")]
+    kids = [box("Foundation", x0 - 1, x1 + 1, y - 0.6, y + 0.8, z0 - 1, z1 + 1, STONE_DARK, "SmoothPlastic")]
     t = 1.0
     walls = {
         "N": (x0, x1, z0, z0 + t), "S": (x0, x1, z1 - t, z1),
@@ -513,14 +688,14 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
                 continue
             if horizontal:
                 mid = (a0 + a1) / 2
-                kids.append(box(f"Wall{side}L", a0, mid - door_w / 2, y + 0.8, top, b0, b1, wall_color, "Plaster"))
-                kids.append(box(f"Wall{side}R", mid + door_w / 2, a1, y + 0.8, top, b0, b1, wall_color, "Plaster"))
+                kids.append(box(f"Wall{side}L", a0, mid - door_w / 2, y + 0.8, top, b0, b1, wall_color, "SmoothPlastic"))
+                kids.append(box(f"Wall{side}R", mid + door_w / 2, a1, y + 0.8, top, b0, b1, wall_color, "SmoothPlastic"))
             else:
                 mid = (b0 + b1) / 2
-                kids.append(box(f"Wall{side}L", a0, a1, y + 0.8, top, b0, mid - door_w / 2, wall_color, "Plaster"))
-                kids.append(box(f"Wall{side}R", a0, a1, y + 0.8, top, mid + door_w / 2, b1, wall_color, "Plaster"))
+                kids.append(box(f"Wall{side}L", a0, a1, y + 0.8, top, b0, mid - door_w / 2, wall_color, "SmoothPlastic"))
+                kids.append(box(f"Wall{side}R", a0, a1, y + 0.8, top, mid + door_w / 2, b1, wall_color, "SmoothPlastic"))
             continue
-        kids.append(box(f"Wall{side}", a0, a1, y + 0.8, top, b0, b1, wall_color, "Plaster"))
+        kids.append(box(f"Wall{side}", a0, a1, y + 0.8, top, b0, b1, wall_color, "SmoothPlastic"))
     # Door: plank slab in the opening, iron bands and a ring handle. Collidable, so the empty
     # interior stays closed rather than being a box players can wander into.
     if door and not open_front:
@@ -530,30 +705,30 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
             mid = (a0 + a1) / 2
             bz = (b0 + b1) / 2
             kids.append(box("Door", mid - door_w / 2 + 0.2, mid + door_w / 2 - 0.2, y + 0.8, y + 0.8 + door_h,
-                            bz - 0.2, bz + 0.2, (110, 72, 42), "WoodPlanks"))
+                            bz - 0.2, bz + 0.2, BEAM, "SmoothPlastic"))
             for k, hy in enumerate((0.25, 0.7)):
                 kids.append(box(f"DoorBand{k}", mid - door_w / 2 + 0.3, mid + door_w / 2 - 0.3,
                                 y + 0.8 + door_h * hy - 0.2, y + 0.8 + door_h * hy + 0.2, bz - 0.32, bz + 0.32,
-                                IRON, "Metal", collide=False))
+                                IRON, "SmoothPlastic", collide=False))
             hz = bz - 0.3 if front == "N" else bz + 0.3  # 0.05 into the leaf so it moves with the door
             kids.append(part("DoorHandle", (0.5, 0.5, 0.3), (mid + door_w / 2 - 1.1, y + 0.8 + door_h * 0.45, hz),
-                             GOLD, "Metal", collide=False))
+                             GOLD, "SmoothPlastic", collide=False))
             kids.append(box("DoorLintel", mid - door_w / 2 - 0.6, mid + door_w / 2 + 0.6, y + 0.8 + door_h,
-                            y + 0.8 + door_h + 0.7, b0 - 0.15, b1 + 0.15, BEAM, "Wood"))
+                            y + 0.8 + door_h + 0.7, b0 - 0.15, b1 + 0.15, BEAM, "SmoothPlastic"))
         else:
             mid = (b0 + b1) / 2
             bx = (a0 + a1) / 2
             kids.append(box("Door", bx - 0.2, bx + 0.2, y + 0.8, y + 0.8 + door_h, mid - door_w / 2 + 0.2,
-                            mid + door_w / 2 - 0.2, (110, 72, 42), "WoodPlanks"))
+                            mid + door_w / 2 - 0.2, BEAM, "SmoothPlastic"))
             for k, hy in enumerate((0.25, 0.7)):
                 kids.append(box(f"DoorBand{k}", bx - 0.32, bx + 0.32, y + 0.8 + door_h * hy - 0.2,
                                 y + 0.8 + door_h * hy + 0.2, mid - door_w / 2 + 0.3, mid + door_w / 2 - 0.3,
-                                IRON, "Metal", collide=False))
+                                IRON, "SmoothPlastic", collide=False))
             hx = bx - 0.3 if front == "W" else bx + 0.3
             kids.append(part("DoorHandle", (0.3, 0.5, 0.5), (hx, y + 0.8 + door_h * 0.45, mid + door_w / 2 - 1.1),
-                             GOLD, "Metal", collide=False))
+                             GOLD, "SmoothPlastic", collide=False))
             kids.append(box("DoorLintel", a0 - 0.15, a1 + 0.15, y + 0.8 + door_h, y + 0.8 + door_h + 0.7,
-                            mid - door_w / 2 - 0.6, mid + door_w / 2 + 0.6, BEAM, "Wood"))
+                            mid - door_w / 2 - 0.6, mid + door_w / 2 + 0.6, BEAM, "SmoothPlastic"))
     # Windows on every wall but the front: frame, glass and a warm light inside; a flower box below.
     if windows:
         wy = y + 0.8 + wall_h * 0.55
@@ -581,13 +756,13 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
                     side_a, side_b = (wx, wy, wz - 1.45), (wx, wy, wz + 1.45)
                     box_pos = (wx + (0.55 if side == "E" else -0.55), wy - 1.9, wz)
                     box_size = (0.9, 0.7, 3.0)
-                kids.append(part(f"Glass{side}{wi}", size, glass_pos, (150, 190, 205), "Glass", collide=False,
+                kids.append(part(f"Glass{side}{wi}", size, glass_pos, (130, 216, 255), "Glass", collide=False,
                                  transparency=0.35, children=[light(9, 0.8, (255, 205, 140))]))
-                kids.append(part(f"Frame{side}{wi}T", fsize, frame_h, BEAM, "Wood", collide=False))
-                kids.append(part(f"Frame{side}{wi}B", fsize, frame_l, BEAM, "Wood", collide=False))
-                kids.append(part(f"Frame{side}{wi}L", sides_size, side_a, BEAM, "Wood", collide=False))
-                kids.append(part(f"Frame{side}{wi}R", sides_size, side_b, BEAM, "Wood", collide=False))
-                kids.append(part(f"FlowerBox{side}{wi}", box_size, box_pos, (96, 64, 40), "Wood", collide=False))
+                kids.append(part(f"Frame{side}{wi}T", fsize, frame_h, BEAM, "SmoothPlastic", collide=False))
+                kids.append(part(f"Frame{side}{wi}B", fsize, frame_l, BEAM, "SmoothPlastic", collide=False))
+                kids.append(part(f"Frame{side}{wi}L", sides_size, side_a, BEAM, "SmoothPlastic", collide=False))
+                kids.append(part(f"Frame{side}{wi}R", sides_size, side_b, BEAM, "SmoothPlastic", collide=False))
+                kids.append(part(f"FlowerBox{side}{wi}", box_size, box_pos, BEAM, "SmoothPlastic", collide=False))
                 for fi in range(3):
                     off = (fi - 1) * 0.9
                     fp = (box_pos[0] + (off if side in "NS" else 0), box_pos[1] + 0.55,
@@ -597,7 +772,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
     # Timber frame: corner posts, sill and top beams, a diagonal brace per long wall.
     for cx in (x0, x1):
         for cz in (z0, z1):
-            kids.append(box("CornerPost", cx - 0.7, cx + 0.7, y + 0.8, top - 0.2, cz - 0.7, cz + 0.7, BEAM, "Wood"))
+            kids.append(box("CornerPost", cx - 0.7, cx + 0.7, y + 0.8, top - 0.2, cz - 0.7, cz + 0.7, BEAM, "SmoothPlastic"))
     for side, (a0, a1, b0, b1) in walls.items():
         if side == front and open_front:
             continue
@@ -607,19 +782,19 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
         # chest height and players walked straight through it.
         if side in "NS":
             bz = b0 - pad if side == "N" else b1 + pad
-            kids.append(box(f"TopBeam{side}", a0, a1, top - 0.9, top, bz - 0.3, bz + 0.3, BEAM, "Wood", collide=False))
+            kids.append(box(f"TopBeam{side}", a0, a1, top - 0.9, top, bz - 0.3, bz + 0.3, BEAM, "SmoothPlastic", collide=False))
             spans = [(a0, a1)] if side != front else [(a0, (a0 + a1) / 2 - door_w / 2), ((a0 + a1) / 2 + door_w / 2, a1)]
             for si, (m0, m1) in enumerate(spans):
                 if m1 - m0 > 0.2:
-                    kids.append(box(f"MidBeam{side}{si}", m0, m1, mid0, mid1, bz - 0.3, bz + 0.3, BEAM, "Wood",
+                    kids.append(box(f"MidBeam{side}{si}", m0, m1, mid0, mid1, bz - 0.3, bz + 0.3, BEAM, "SmoothPlastic",
                                     collide=False))
         else:
             bx = a0 - pad if side == "W" else a1 + pad
-            kids.append(box(f"TopBeam{side}", bx - 0.3, bx + 0.3, top - 0.9, top, b0, b1, BEAM, "Wood", collide=False))
+            kids.append(box(f"TopBeam{side}", bx - 0.3, bx + 0.3, top - 0.9, top, b0, b1, BEAM, "SmoothPlastic", collide=False))
             spans = [(b0, b1)] if side != front else [(b0, (b0 + b1) / 2 - door_w / 2), ((b0 + b1) / 2 + door_w / 2, b1)]
             for si, (m0, m1) in enumerate(spans):
                 if m1 - m0 > 0.2:
-                    kids.append(box(f"MidBeam{side}{si}", bx - 0.3, bx + 0.3, mid0, mid1, m0, m1, BEAM, "Wood",
+                    kids.append(box(f"MidBeam{side}{si}", bx - 0.3, bx + 0.3, mid0, mid1, m0, m1, BEAM, "SmoothPlastic",
                                     collide=False))
     # Gable roof, ridge along the longer axis, built from two tilted slabs + stepped gable fill.
     span_x, span_z = x1 - x0, z1 - z0
@@ -633,13 +808,13 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
         for sgn in (-1, 1):
             r = rot_x(pitch * sgn)  # +pitch lowers +Z: the south slab drops toward +Z
             kids.append(part(f"Roof{'N' if sgn < 0 else 'S'}", (span_x + overhang * 2, 0.9, slope_len),
-                             (cx, top + math.tan(math.radians(pitch)) * (span_z / 4 - overhang / 2), cz + sgn * half / 2), roof_color, "RoofShingles", r,
+                             (cx, top + math.tan(math.radians(pitch)) * (span_z / 4 - overhang / 2), cz + sgn * half / 2), roof_color, "SmoothPlastic", r,
                              collide=False, layer="roof"))
         # WedgePart: bottom face flat, vertical face at local +Z, slope descending toward -Z.
         for gx in (x0 + 0.5, x1 - 0.5):
             for sgn, yaw in ((-1, 0), (1, 180)):  # north half rises toward +Z, south half toward -Z
                 kids.append(part(f"Gable{'N' if sgn < 0 else 'S'}", (1, rise, span_z / 2),
-                                 (gx, top + rise / 2, cz + sgn * span_z / 4), wall_color, "Plaster", rot_y(yaw),
+                                 (gx, top + rise / 2, cz + sgn * span_z / 4), wall_color, "SmoothPlastic", rot_y(yaw),
                                  cls="WedgePart", collide=False, layer="roof"))
     else:
         half = span_x / 2 + overhang
@@ -649,12 +824,12 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
         for sgn in (-1, 1):
             r = rot_z(-pitch * sgn)  # rot_z(+a) raises +X; the east slab drops toward +X
             kids.append(part(f"Roof{'W' if sgn < 0 else 'E'}", (slope_len, 0.9, span_z + overhang * 2),
-                             (cx + sgn * half / 2, top + math.tan(math.radians(pitch)) * (span_x / 4 - overhang / 2), cz), roof_color, "RoofShingles", r,
+                             (cx + sgn * half / 2, top + math.tan(math.radians(pitch)) * (span_x / 4 - overhang / 2), cz), roof_color, "SmoothPlastic", r,
                              collide=False, layer="roof"))
         for gz in (z0 + 0.5, z1 - 0.5):
             for sgn, yaw in ((-1, 90), (1, -90)):  # west half rises toward +X, east half toward -X
                 kids.append(part(f"Gable{'W' if sgn < 0 else 'E'}", (1, rise, span_x / 2),
-                                 (cx + sgn * span_x / 4, top + rise / 2, gz), wall_color, "Plaster", rot_y(yaw),
+                                 (cx + sgn * span_x / 4, top + rise / 2, gz), wall_color, "SmoothPlastic", rot_y(yaw),
                                  cls="WedgePart", collide=False, layer="roof"))
     if chimney:
         # Stone stack through the roof near one end of the ridge, with smoke drifting from it.
@@ -664,43 +839,43 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
             chx, chz = cx, z0 + span_z * 0.22
         ch_top = top + rise + 2.4
         kids.append(part("Chimney", (2.4, ch_top - top + 1.5, 2.4), (chx, (top - 1.5 + ch_top) / 2, chz), STONE_DARK,
-                         "Cobblestone", collide=False))
-        kids.append(part("ChimneyCap", (3.0, 0.6, 3.0), (chx, ch_top + 0.3, chz), STONE, "Slate", collide=False))
-        kids.append(part("ChimneyFlue", (1.2, 0.3, 1.2), (chx, ch_top + 0.6, chz), (30, 28, 26), "Slate",
+                         "SmoothPlastic", collide=False))
+        kids.append(part("ChimneyCap", (3.0, 0.6, 3.0), (chx, ch_top + 0.3, chz), STONE, "SmoothPlastic", collide=False))
+        kids.append(part("ChimneyFlue", (1.2, 0.3, 1.2), (chx, ch_top + 0.6, chz), (44, 112, 240), "SmoothPlastic",
                          collide=False, query=False, children=[smoke(2.2, 0.16, 2.5)]))
     if door and not open_front:
         # A furnished room so an opened door shows a home, not an empty box.
         fl = y + 0.8
         ix0, ix1, iz0, iz1 = x0 + 1.2, x1 - 1.2, z0 + 1.2, z1 - 1.2
         cxi, czi = (ix0 + ix1) / 2, (iz0 + iz1) / 2
-        kids.append(box("FloorBoards", ix0, ix1, fl, fl + 0.12, iz0, iz1, (150, 112, 70), "WoodPlanks", collide=False))
+        kids.append(box("FloorBoards", ix0, ix1, fl, fl + 0.12, iz0, iz1, TIMBER, "SmoothPlastic", collide=False))
         kids.append(part("Rug", (min(7, (ix1 - ix0) * 0.5), 0.08, min(5, (iz1 - iz0) * 0.4)), (cxi, fl + 0.18, czi),
-                         rng.choice([(150, 60, 60), (70, 100, 150), (120, 90, 60)]), "Fabric", collide=False))
+                         rng.choice([(255, 72, 72), (90, 150, 250), TIMBER]), "SmoothPlastic", collide=False))
         # Bed along the wall opposite the door; table and stools in the middle; shelf on a side wall.
         if front in "NS":
             bz = iz0 + 2.2 if front == "S" else iz1 - 2.2
-            kids.append(part("BedFrame", (4.4, 1.2, 3.2), (ix0 + 3.0, fl + 0.6, bz), BEAM, "Wood"))
-            kids.append(part("Mattress", (4.2, 0.6, 3.0), (ix0 + 3.0, fl + 1.5, bz), (226, 214, 190), "Fabric", collide=False))
-            kids.append(part("Blanket", (2.6, 0.25, 3.05), (ix0 + 3.8, fl + 1.9, bz), (120, 60, 60), "Fabric", collide=False))
-            kids.append(part("Pillow", (1.2, 0.5, 1.6), (ix0 + 1.4, fl + 2.0, bz), (240, 236, 226), "Fabric", collide=False))
+            kids.append(part("BedFrame", (4.4, 1.2, 3.2), (ix0 + 3.0, fl + 0.6, bz), BEAM, "SmoothPlastic"))
+            kids.append(part("Mattress", (4.2, 0.6, 3.0), (ix0 + 3.0, fl + 1.5, bz), (255, 236, 200), "SmoothPlastic", collide=False))
+            kids.append(part("Blanket", (2.6, 0.25, 3.05), (ix0 + 3.8, fl + 1.9, bz), (255, 72, 72), "SmoothPlastic", collide=False))
+            kids.append(part("Pillow", (1.2, 0.5, 1.6), (ix0 + 1.4, fl + 2.0, bz), (255, 240, 210), "SmoothPlastic", collide=False))
             kids.append(part("Shelf", (3.0, 0.3, 0.9), (ix1 - 2.0, fl + 5.0, iz0 + 0.35 if front == "S" else iz1 - 0.35),
-                             BEAM, "Wood", collide=False))
+                             BEAM, "SmoothPlastic", collide=False))
         else:
             bx = ix0 + 2.2 if front == "E" else ix1 - 2.2
-            kids.append(part("BedFrame", (3.2, 1.2, 4.4), (bx, fl + 0.6, iz0 + 3.0), BEAM, "Wood"))
-            kids.append(part("Mattress", (3.0, 0.6, 4.2), (bx, fl + 1.5, iz0 + 3.0), (226, 214, 190), "Fabric", collide=False))
-            kids.append(part("Blanket", (3.05, 0.25, 2.6), (bx, fl + 1.9, iz0 + 3.8), (120, 60, 60), "Fabric", collide=False))
-            kids.append(part("Pillow", (1.6, 0.5, 1.2), (bx, fl + 2.0, iz0 + 1.4), (240, 236, 226), "Fabric", collide=False))
+            kids.append(part("BedFrame", (3.2, 1.2, 4.4), (bx, fl + 0.6, iz0 + 3.0), BEAM, "SmoothPlastic"))
+            kids.append(part("Mattress", (3.0, 0.6, 4.2), (bx, fl + 1.5, iz0 + 3.0), (255, 236, 200), "SmoothPlastic", collide=False))
+            kids.append(part("Blanket", (3.05, 0.25, 2.6), (bx, fl + 1.9, iz0 + 3.8), (255, 72, 72), "SmoothPlastic", collide=False))
+            kids.append(part("Pillow", (1.6, 0.5, 1.2), (bx, fl + 2.0, iz0 + 1.4), (255, 240, 210), "SmoothPlastic", collide=False))
             kids.append(part("Shelf", (0.9, 0.3, 3.0), (ix0 + 0.35 if front == "E" else ix1 - 0.35, fl + 5.0, iz1 - 2.0),
-                             BEAM, "Wood", collide=False))
-        kids.append(part("TableTop", (3.6, 0.3, 2.4), (cxi, fl + 2.6, czi), TIMBER, "WoodPlanks"))
+                             BEAM, "SmoothPlastic", collide=False))
+        kids.append(part("TableTop", (3.6, 0.3, 2.4), (cxi, fl + 2.6, czi), TIMBER, "SmoothPlastic"))
         for sx, sz in ((-1.5, -0.9), (1.5, -0.9), (-1.5, 0.9), (1.5, 0.9)):
-            kids.append(part("TableLeg", (0.3, 2.5, 0.3), (cxi + sx, fl + 1.25, czi + sz), BEAM, "Wood", collide=False))
+            kids.append(part("TableLeg", (0.3, 2.5, 0.3), (cxi + sx, fl + 1.25, czi + sz), BEAM, "SmoothPlastic", collide=False))
         for sx in (-2.8, 2.8):
-            kids.append(part("Stool", (1.1, 1.4, 1.1), (cxi + sx, fl + 0.7, czi), BEAM, "Wood"))
+            kids.append(part("Stool", (1.1, 1.4, 1.1), (cxi + sx, fl + 0.7, czi), BEAM, "SmoothPlastic"))
         kids.append(part("Candle", (0.25, 0.7, 0.25), (cxi + 0.6, fl + 3.1, czi - 0.4), (240, 230, 200), "SmoothPlastic",
                          collide=False, query=False, children=[fire(0.6, 4), light(10, 0.8, (255, 200, 130))]))
-        kids.append(part("Bowl", (0.9, 0.3, 0.9), (cxi - 0.8, fl + 2.9, czi + 0.3), (110, 72, 42), "Wood", rot_z(90),
+        kids.append(part("Bowl", (0.9, 0.3, 0.9), (cxi - 0.8, fl + 2.9, czi + 0.3), BEAM, "SmoothPlastic", rot_z(90),
                          shape="Cylinder", collide=False))
     attrs = None
     if door and not open_front:
@@ -719,7 +894,7 @@ def timber_house(name, x0, x1, z0, z1, y, wall_h, front, rng, door_w=6.0, open_f
     return model(name, kids, attrs=attrs)
 
 
-def gate(name, cx, y, cz, yaw, width, height, title, subtitle, sealed, stone=STONE, accent=WARLORD_RED,
+def gate(name, cx, y, cz, yaw, width, height, title, subtitle, sealed, stone=STONE, accent=(250, 80, 70),
          region="", required_level=0, back_title="Hearthmere", back_subtitle=""):
     """Two pillars, a lintel with sign, banners. Local X spans the opening; travel is along local Z."""
     r = rot_y(yaw)
@@ -733,38 +908,38 @@ def gate(name, cx, y, cz, yaw, width, height, title, subtitle, sealed, stone=STO
     pw = 7.0
     for side in (-1, 1):
         px, pz = at(side * (width / 2 + pw / 2), 0)
-        kids.append(part(f"Pillar{side}", (pw, height, pw + 1), (px, y + height / 2, pz), stone, "Cobblestone", r))
+        kids.append(part(f"Pillar{side}", (pw, height, pw + 1), (px, y + height / 2, pz), stone, "SmoothPlastic", r))
         kids.append(part(f"PillarCap{side}", (pw + 1.5, 1.6, pw + 2.5), (px, y + height + 0.8, pz), STONE_DARK,
-                         "Cobblestone", r))
+                         "SmoothPlastic", r))
         tx, tz = at(side * (width / 2 + pw / 2), -(pw + 1) / 2 - 0.4)
         kids.append(part(f"Torch{side}", (0.9, 1.4, 0.9), (tx, y + height * 0.62, tz), LANTERN, "Neon", r,
                          collide=False, query=False, shadow=False, children=[light(18, 1.0)]))
-    kids.append(part("Lintel", (width + pw * 2 + 2, 4, pw + 1.4), (cx, y + height + 2.6, cz), BEAM, "Wood", r))
+    kids.append(part("Lintel", (width + pw * 2 + 2, 4, pw + 1.4), (cx, y + height + 2.6, cz), BEAM, "SmoothPlastic", r))
     sign_depth = (pw + 2.5) / 2 + 0.4  # clear of the pillar caps, which are the deepest part
     sx, sz = at(0, -sign_depth)
-    kids.append(part("Sign", (width + 4, 5.2, 0.5), (sx, y + height + 2.8, sz), (58, 38, 26), "WoodPlanks", r,
+    kids.append(part("Sign", (width + 4, 5.2, 0.5), (sx, y + height + 2.8, sz), BEAM, "SmoothPlastic", r,
                      collide=False, children=[label_gui("Front", title, subtitle, (255, 226, 160), px=30)]))
     bx2, bz2 = at(0, sign_depth)
-    kids.append(part("SignBack", (width + 4, 5.2, 0.5), (bx2, y + height + 2.8, bz2), (58, 38, 26), "WoodPlanks",
+    kids.append(part("SignBack", (width + 4, 5.2, 0.5), (bx2, y + height + 2.8, bz2), BEAM, "SmoothPlastic",
                      r, collide=False, children=[label_gui("Back", back_title, back_subtitle, (255, 226, 160), px=30)]))
     for side in (-1, 1):  # brackets tie both boards to the lintel
         for sgn in (-1, 1):
             kx, kz = at(side * (width / 2 + 1.2), sgn * (sign_depth - 0.7))
-            kids.append(part(f"SignBracket{side}{sgn}", (0.5, 0.5, 1.8), (kx, y + height + 4.4, kz), BEAM, "Wood", r,
+            kids.append(part(f"SignBracket{side}{sgn}", (0.5, 0.5, 1.8), (kx, y + height + 4.4, kz), BEAM, "SmoothPlastic", r,
                              collide=False))
     for side in (-1, 1):
         bx, bz = at(side * (width / 2 + pw / 2), -(pw + 1) / 2 - 0.3)
-        kids.append(part(f"Banner{side}", (4.2, 9, 0.3), (bx, y + height - 5.5, bz), accent, "Fabric", r,
+        kids.append(part(f"Banner{side}", (4.2, 9, 0.3), (bx, y + height - 5.5, bz), accent, "SmoothPlastic", r,
                          collide=False))
     if sealed:
         bars = max(4, int(width // 3))
         for k in range(bars):
             lx = -width / 2 + width * (k + 0.5) / bars
             px, pz = at(lx, 0)
-            kids.append(part(f"Bar{k}", (0.7, height, 0.7), (px, y + height / 2, pz), IRON, "Metal", r,
+            kids.append(part(f"Bar{k}", (0.7, height, 0.7), (px, y + height / 2, pz), IRON, "SmoothPlastic", r,
                              collide=False))
         for hk, hy in enumerate((height * 0.3, height * 0.7)):
-            kids.append(part(f"Crossbar{hk}", (width, 0.7, 0.8), (cx, y + hy, cz), IRON, "Metal", r, collide=False))
+            kids.append(part(f"Crossbar{hk}", (width, 0.7, 0.8), (cx, y + hy, cz), IRON, "SmoothPlastic", r, collide=False))
         kids.append(part("SealProxy", (width + 0.5, height, 2), (cx, y + height / 2, cz), (255, 0, 255),
                          transparency=1, query=False, shadow=False, rot=r, layer="proxy"))
     return model(name, kids, attrs={"Region": region, "Sealed": sealed, "RequiredLevel": required_level})
@@ -804,8 +979,8 @@ def hologram_sword(name, x, floor_y, z):
     return model(name, kids, attrs={"Hologram": True, "HoloAxisY": center_y, "HoloX": x, "HoloZ": z})
 
 
-FABRIC_GREEN = (78, 112, 72)
-FABRIC_CREAM = (222, 206, 166)
+FABRIC_GREEN = (64, 204, 120)  # a clean toy green, not olive
+FABRIC_CREAM = (255, 236, 190)
 
 
 def quest_stall(name, npc_x, y, cz):
@@ -821,22 +996,22 @@ def quest_stall(name, npc_x, y, cz):
     # Corner posts up to the eaves, king posts at each end up to the ridge.
     for px_ in (x0, x1):
         for pz in (z0, z1):
-            kids.append(part("Post", (0.9, eave - y, 0.9), (px_, y + (eave - y) / 2, pz), BEAM, "Wood"))
+            kids.append(part("Post", (0.9, eave - y, 0.9), (px_, y + (eave - y) / 2, pz), BEAM, "SmoothPlastic"))
     for pz in (z0, z1):
-        kids.append(part("KingPost", (0.8, ridge - y, 0.8), (npc_x, y + (ridge - y) / 2, pz), BEAM, "Wood"))
+        kids.append(part("KingPost", (0.8, ridge - y, 0.8), (npc_x, y + (ridge - y) / 2, pz), BEAM, "SmoothPlastic"))
     # Frame: eave plates along Z, tie beams along X, ridge beam, rafters on each gable.
     for px_ in (x0, x1):
-        kids.append(part("EavePlate", (0.7, 0.7, z1 - z0 + 1.2), (px_, eave - 0.35, cz), BEAM, "Wood", collide=False))
+        kids.append(part("EavePlate", (0.7, 0.7, z1 - z0 + 1.2), (px_, eave - 0.35, cz), BEAM, "SmoothPlastic", collide=False))
     for pz in (z0, z1):
-        kids.append(part("TieBeam", (x1 - x0 + 1.2, 0.6, 0.7), (npc_x, eave - 1.2, pz), BEAM, "Wood", collide=False))
-    kids.append(part("RidgeBeam", (0.8, 0.8, z1 - z0 + 1.6), (npc_x, ridge + 0.1, cz), BEAM, "Wood", collide=False))
+        kids.append(part("TieBeam", (x1 - x0 + 1.2, 0.6, 0.7), (npc_x, eave - 1.2, pz), BEAM, "SmoothPlastic", collide=False))
+    kids.append(part("RidgeBeam", (0.8, 0.8, z1 - z0 + 1.6), (npc_x, ridge + 0.1, cz), BEAM, "SmoothPlastic", collide=False))
     run = npc_x - x0
     pitch = math.degrees(math.atan2(ridge - eave, run))
     rafter = math.hypot(run, ridge - eave) + 0.6
     for pz in (z0, z1):
         for sgn in (-1, 1):  # front rafter rises toward +X (rot_z +), back rafter toward -X
             kids.append(part("Rafter", (rafter, 0.55, 0.55), (npc_x + sgn * run / 2, (eave + ridge) / 2, pz), BEAM,
-                             "Wood", rot_z(-sgn * pitch), collide=False))
+                             "SmoothPlastic", rot_z(-sgn * pitch), collide=False))
     # Striped canopy: strips run down each slope, alternating green and cream, with an overhang.
     overhang = 1.4
     slope_run = run + overhang
@@ -850,7 +1025,7 @@ def quest_stall(name, npc_x, y, cz):
             zk = z0 - 1.2 + strip_w * (k + 0.5)
             color = FABRIC_GREEN if k % 2 == 0 else FABRIC_CREAM
             kids.append(part(f"Canopy{'F' if sgn < 0 else 'B'}{k}", (slope_len, 0.22, strip_w),
-                             (mid_x, mid_y, zk), color, "Fabric", rot_z(-sgn * pitch),
+                             (mid_x, mid_y, zk), color, "SmoothPlastic", rot_z(-sgn * pitch),
                              collide=False, layer="roof"))
         # Valance: short hanging flaps along the low edge.
         edge_x = npc_x + sgn * (slope_run - 0.05)
@@ -859,38 +1034,38 @@ def quest_stall(name, npc_x, y, cz):
             zk = z0 - 1.2 + strip_w * (k + 0.5)
             color = FABRIC_CREAM if k % 2 == 0 else FABRIC_GREEN
             kids.append(part(f"Valance{'F' if sgn < 0 else 'B'}{k}", (0.15, 0.9, strip_w - 0.1),
-                             (edge_x, edge_y - 0.45, zk), color, "Fabric", collide=False, layer="roof"))
+                             (edge_x, edge_y - 0.45, zk), color, "SmoothPlastic", collide=False, layer="roof"))
     # Counter on the road side: plank top, slatted front, lower shelf, legs.
     cx0, cx1 = x0 - 0.4, x0 + 2.4
     top_y = y + 3.4
-    kids.append(box("CounterTop", cx0 - 0.3, cx1 + 0.2, top_y - 0.35, top_y, z0 + 0.6, z1 - 0.6, TIMBER, "WoodPlanks"))
-    kids.append(box("CounterShelf", cx0 + 0.3, cx1 - 0.2, y + 1.0, y + 1.3, z0 + 0.9, z1 - 0.9, TIMBER, "WoodPlanks",
+    kids.append(box("CounterTop", cx0 - 0.3, cx1 + 0.2, top_y - 0.35, top_y, z0 + 0.6, z1 - 0.6, TIMBER, "SmoothPlastic"))
+    kids.append(box("CounterShelf", cx0 + 0.3, cx1 - 0.2, y + 1.0, y + 1.3, z0 + 0.9, z1 - 0.9, TIMBER, "SmoothPlastic",
                     collide=False))
     slats = 9
     for k in range(slats):
         zk = z0 + 1.1 + (z1 - z0 - 2.2) * (k + 0.5) / slats
         kids.append(box(f"Slat{k}", cx0 - 0.15, cx0 + 0.15, y, top_y - 0.35, zk - 0.55, zk + 0.55,
-                        (120, 78, 46) if k % 2 else (104, 68, 40), "Wood"))
+                        TIMBER if k % 2 else BEAM, "SmoothPlastic"))
     for lz in (z0 + 0.8, z1 - 0.8):
-        kids.append(box("CounterLeg", cx1 - 0.5, cx1, y, top_y - 0.35, lz - 0.25, lz + 0.25, BEAM, "Wood",
+        kids.append(box("CounterLeg", cx1 - 0.5, cx1, y, top_y - 0.35, lz - 0.25, lz + 0.25, BEAM, "SmoothPlastic",
                         collide=False))
     # Goods: rolled quest scrolls, a stack of notices, an ink pot and a small crate.
     for k, (dz, length) in enumerate(((-3.8, 1.6), (-2.6, 1.3), (-3.2, 1.4))):
         kids.append(part(f"Scroll{k}", (length, 0.45, 0.45), (x0 + 0.9 + 0.1 * k, top_y + 0.23 + (0.4 if k == 2 else 0),
-                                                            cz + dz), FABRIC_CREAM, "Fabric",
+                                                            cz + dz), FABRIC_CREAM, "SmoothPlastic",
                          rot_y(15 * k), shape="Cylinder", collide=False))
-    kids.append(part("Notices", (1.4, 0.3, 1.9), (x0 + 1.0, top_y + 0.15, cz + 2.8), (236, 224, 196), "SmoothPlastic",
+    kids.append(part("Notices", (1.4, 0.3, 1.9), (x0 + 1.0, top_y + 0.15, cz + 2.8), (255, 236, 190), "SmoothPlastic",
                      rot_y(-8), collide=False))
-    kids.append(part("InkPot", (0.45, 0.5, 0.45), (x0 + 1.2, top_y + 0.25, cz + 4.4), (36, 32, 40), "Glass",
+    kids.append(part("InkPot", (0.45, 0.5, 0.45), (x0 + 1.2, top_y + 0.25, cz + 4.4), (44, 112, 240), "Glass",
                      collide=False))
-    kids.append(part("Crate", (2.2, 2.2, 2.2), (x1 - 0.9, y + 1.1, z1 - 1.6), TIMBER, "WoodPlanks", rot_y(10)))
-    kids.append(part("CrateSmall", (1.5, 1.5, 1.5), (x1 - 1.0, y + 2.95, z1 - 1.8), (140, 92, 54), "WoodPlanks",
+    kids.append(part("Crate", (2.2, 2.2, 2.2), (x1 - 0.9, y + 1.1, z1 - 1.6), TIMBER, "SmoothPlastic", rot_y(10)))
+    kids.append(part("CrateSmall", (1.5, 1.5, 1.5), (x1 - 1.0, y + 2.95, z1 - 1.8), TIMBER, "SmoothPlastic",
                      rot_y(-14), collide=False))
     # Hanging sign under the front eave.
     sign_y = eave - 2.1
     for dz in (-1.8, 1.8):
-        kids.append(part("SignChain", (0.12, 1.0, 0.12), (x0 - 0.2, eave - 1.0, cz + dz), IRON, "Metal", collide=False))
-    kids.append(part("SignBoard", (4.6, 1.8, 0.35), (x0 - 0.2, sign_y, cz), (70, 46, 30), "WoodPlanks",
+        kids.append(part("SignChain", (0.12, 1.0, 0.12), (x0 - 0.2, eave - 1.0, cz + dz), IRON, "SmoothPlastic", collide=False))
+    kids.append(part("SignBoard", (4.6, 1.8, 0.35), (x0 - 0.2, sign_y, cz), BEAM, "SmoothPlastic",
                      rot_y(yaw_facing(-1, 0)), collide=False,
                      children=[label_gui("Front", "Quests", "", (255, 232, 170), px=60),
                                label_gui("Back", "Quests", "", (255, 232, 170), px=60)]))
@@ -903,26 +1078,26 @@ def well(name, x, y, z, rng, radius=3.2):
     rim_top = y + 2.8
     # Round rim: a stone cylinder with a darker, slightly inset shaft cylinder inside it.
     kids.append(part("Rim", (rim_top - y, (radius + 0.2) * 2, (radius + 0.2) * 2), (x, (y + rim_top) / 2, z),
-                     STONE, "Cobblestone", rot_z(90), shape="Cylinder"))
+                     STONE, "SmoothPlastic", rot_z(90), shape="Cylinder"))
     kids.append(part("RimCap", (0.35, (radius + 0.5) * 2, (radius + 0.5) * 2), (x, rim_top + 0.1, z), STONE_DARK,
-                     "Cobblestone", rot_z(90), shape="Cylinder", collide=False))
+                     "SmoothPlastic", rot_z(90), shape="Cylinder", collide=False))
     kids.append(part("Shaft", (rim_top - y + 0.6, (radius - 0.9) * 2, (radius - 0.9) * 2), (x, (y + rim_top) / 2 - 0.1, z),
-                     (26, 26, 30), "Slate", rot_z(90), shape="Cylinder", collide=False))
-    kids.append(part("Water", (0.4, (radius - 1.1) * 2, (radius - 1.1) * 2), (x, y + 0.9, z), (58, 96, 128), "Glass",
+                     (70, 110, 210), "SmoothPlastic", rot_z(90), shape="Cylinder", collide=False))
+    kids.append(part("Water", (0.4, (radius - 1.1) * 2, (radius - 1.1) * 2), (x, y + 0.9, z), (90, 190, 255), "Glass",
                      rot_z(90), shape="Cylinder", collide=False, transparency=0.25))
     # Winch frame: two posts up to the eaves, a crossbeam, the roller and a crank.
     post_top = y + 9.4
     for side in (-1, 1):
         kids.append(part(f"Post{side}", (0.7, post_top - y, 0.7), (x + side * (radius + 0.4), (y + post_top) / 2, z),
-                         BEAM, "Wood"))
-    kids.append(part("Crossbeam", (radius * 2 + 2.4, 0.7, 0.7), (x, y + 8.6, z), BEAM, "Wood", collide=False))
-    kids.append(part("Roller", (radius * 2 - 0.4, 0.8, 0.8), (x, y + 7.4, z), (120, 78, 46), "Wood", rot_z(90),
+                         BEAM, "SmoothPlastic"))
+    kids.append(part("Crossbeam", (radius * 2 + 2.4, 0.7, 0.7), (x, y + 8.6, z), BEAM, "SmoothPlastic", collide=False))
+    kids.append(part("Roller", (radius * 2 - 0.4, 0.8, 0.8), (x, y + 7.4, z), TIMBER, "SmoothPlastic", rot_z(90),
                      shape="Cylinder", collide=False))
     kids.append(part("Crank", (0.35, 1.4, 0.35), (x + radius + 0.2, y + 6.9, z), IRON, "Metal", collide=False))
     kids.append(part("CrankHandle", (0.9, 0.3, 0.3), (x + radius + 0.6, y + 6.3, z), IRON, "Metal", collide=False))
     # Rope and bucket hanging over the shaft.
-    kids.append(part("Rope", (0.14, 2.6, 0.14), (x, y + 5.9, z - 0.2), (120, 104, 78), "Fabric", collide=False))
-    kids.append(part("Bucket", (1.5, 1.5, 1.5), (x, y + 3.9, z - 0.2), (118, 80, 48), "WoodPlanks", rot_y(12),
+    kids.append(part("Rope", (0.14, 2.6, 0.14), (x, y + 5.9, z - 0.2), (255, 214, 150), "SmoothPlastic", collide=False))
+    kids.append(part("Bucket", (1.5, 1.5, 1.5), (x, y + 3.9, z - 0.2), TIMBER, "SmoothPlastic", rot_y(12),
                      collide=False))
     kids.append(part("BucketBand", (1.62, 0.3, 1.62), (x, y + 4.2, z - 0.2), IRON, "Metal", rot_y(12), collide=False))
     # Small pitched roof resting on the posts: eave plates on the post tops, rafters, two slabs.
@@ -932,29 +1107,31 @@ def well(name, x, y, z, rng, radius=3.2):
     eave = post_top
     for side in (-1, 1):
         kids.append(part(f"EavePlate{side}", (0.7, 0.6, half * 2 + 0.6), (x + side * (radius + 0.4), eave + 0.3, z),
-                         BEAM, "Wood", collide=False))
+                         BEAM, "SmoothPlastic", collide=False))
         for sgn in (-1, 1):
             kids.append(part(f"Rafter{side}{sgn}", (0.5, 0.5, slope), (x + side * (radius + 0.4), eave + 0.6 + rise / 2,
-                                                                       z + sgn * half / 2), BEAM, "Wood",
+                                                                       z + sgn * half / 2), BEAM, "SmoothPlastic",
                              rot_x(pitch * sgn), collide=False))
-    kids.append(part("RidgeBeam", (radius * 2 + 1.6, 0.6, 0.6), (x, eave + 0.6 + rise, z), BEAM, "Wood", collide=False))
+    kids.append(part("RidgeBeam", (radius * 2 + 1.6, 0.6, 0.6), (x, eave + 0.6 + rise, z), BEAM, "SmoothPlastic", collide=False))
     for sgn in (-1, 1):
         kids.append(part(f"Roof{sgn}", (radius * 2 + 3, 0.4, slope + 0.4), (x, eave + 1.05 + rise / 2, z + sgn * half / 2),
-                         ROOF, "RoofShingles", rot_x(pitch * sgn), collide=False, layer="roof"))
+                         ROOF, "SmoothPlastic", rot_x(pitch * sgn), collide=False, layer="roof"))
     return model(name, kids)
 
 
 FLOWER_COLORS = [(232, 92, 96), (244, 206, 76), (236, 236, 240), (176, 108, 220), (255, 150, 70)]
-BUNTING_COLORS = [(196, 60, 52), (232, 200, 90), (70, 120, 176), (78, 140, 90), (220, 220, 210)]
+BUNTING_COLORS = [(250, 80, 70), (255, 220, 90), (90, 160, 250), (100, 220, 120), (255, 240, 210)]
 
 
 def bush(name, x, y, z, rng, scale=1.0):
     y = floor_at(x, z, y)
+    fam = canopy_of(name, UNDERSTORY_MIX)
     kids = []
     for k in range(3):
         d = rng.uniform(2.0, 3.2) * scale
         ox, oz = rng.uniform(-0.9, 0.9) * scale, rng.uniform(-0.9, 0.9) * scale
-        kids.append(part(f"Leaf{k}", (d, d * 0.8, d), (x + ox, y + d * 0.36, z + oz), rng.choice(LEAVES), "Grass",
+        tone = fam[(1, 0, 2)[LEAVES.index(rng.choice(LEAVES))]]  # the old draw picks body, shade or highlight
+        kids.append(part(f"Leaf{k}", (d, d * 0.8, d), (x + ox, y + d * 0.36, z + oz), tone, "SmoothPlastic",
                          rot_y(rng.uniform(0, 90)), shape="Ball", collide=False, query=False, layer="prop"))
     return model(name, kids)
 
@@ -1011,20 +1188,20 @@ def bench(name, x, y, z, yaw):
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     back = apply(r, (0, 0, 1))
-    kids = [part("Seat", (5.2, 0.4, 1.6), (x, y + 1.6, z), TIMBER, "WoodPlanks", r),
-            part("Back", (5.2, 1.6, 0.35), (x + back[0] * 0.65, y + 2.7, z + back[2] * 0.65), TIMBER, "WoodPlanks",
+    kids = [part("Seat", (5.2, 0.4, 1.6), (x, y + 1.6, z), TIMBER, "SmoothPlastic", r),
+            part("Back", (5.2, 1.6, 0.35), (x + back[0] * 0.65, y + 2.7, z + back[2] * 0.65), TIMBER, "SmoothPlastic",
                  mul(r, rot_x(-8)), collide=False)]
     for side in (-1, 1):
         kids.append(part(f"Leg{side}", (0.5, 1.4, 1.4), (x + right[0] * side * 2.1, y + 0.7, z + right[2] * side * 2.1),
-                         IRON, "Metal", r))
+                         IRON, "SmoothPlastic", r))
     return model(name, kids)
 
 
 def barrel(name, x, y, z, rng):
     y = floor_at(x, z, y)
-    kids = [part("Body", (3.0, 2.6, 2.6), (x, y + 1.5, z), (118, 84, 52), "Wood", rot_z(90), shape="Cylinder")]
+    kids = [part("Body", (3.0, 2.6, 2.6), (x, y + 1.5, z), TIMBER, "SmoothPlastic", rot_z(90), shape="Cylinder")]
     for k, hy in enumerate((0.7, 2.3)):
-        kids.append(part(f"Band{k}", (0.25, 2.75, 2.75), (x, y + hy, z), IRON, "Metal", rot_z(90), shape="Cylinder",
+        kids.append(part(f"Band{k}", (0.25, 2.75, 2.75), (x, y + hy, z), IRON, "SmoothPlastic", rot_z(90), shape="Cylinder",
                          collide=False))
     return model(name, kids)
 
@@ -1032,10 +1209,10 @@ def barrel(name, x, y, z, rng):
 def crate_stack(name, x, y, z, rng):
     y = floor_at(x, z, y)
     return model(name, [
-        part("Crate0", (3, 3, 3), (x, y + 1.5, z), TIMBER, "WoodPlanks", rot_y(rng.uniform(-8, 8))),
-        part("Crate1", (2.4, 2.4, 2.4), (x + 0.3, y + 4.2, z - 0.2), (140, 96, 58), "WoodPlanks",
+        part("Crate0", (3, 3, 3), (x, y + 1.5, z), TIMBER, "SmoothPlastic", rot_y(rng.uniform(-8, 8))),
+        part("Crate1", (2.4, 2.4, 2.4), (x + 0.3, y + 4.2, z - 0.2), TIMBER, "SmoothPlastic",
              rot_y(rng.uniform(10, 30)), collide=False),
-        part("Crate2", (2.6, 2.6, 2.6), (x + 3.2, y + 1.3, z + 0.6), (128, 88, 52), "WoodPlanks",
+        part("Crate2", (2.6, 2.6, 2.6), (x + 3.2, y + 1.3, z + 0.6), TIMBER, "SmoothPlastic",
              rot_y(rng.uniform(-20, -5))),
     ])
 
@@ -1048,7 +1225,7 @@ def woodpile(name, x, y, z, yaw, rng):
         for k in range(5 - row):
             off = apply(r, ((k - (4 - row) / 2) * 1.05, 0, 0))
             kids.append(part(f"Log{row}{k}", (1.0, 1.0, 3.6), (x + off[0], y + 0.5 + row * 0.9, z + off[2]), TRUNK,
-                             "Wood", mul(r, rot_z(rng.uniform(-4, 4))), collide=(row == 0)))
+                             "SmoothPlastic", mul(r, rot_z(rng.uniform(-4, 4))), collide=(row == 0)))
     return model(name, kids)
 
 
@@ -1057,19 +1234,19 @@ def hand_cart(name, x, y, z, yaw):
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     fwd = apply(r, (0, 0, -1))
-    kids = [part("Bed", (4.2, 0.5, 6.0), (x, y + 2.2, z), TIMBER, "WoodPlanks", mul(r, rot_x(-6))),
-            part("SideL", (0.3, 1.4, 5.6), (x + right[0] * 2.0, y + 2.9, z + right[2] * 2.0), TIMBER, "WoodPlanks",
+    kids = [part("Bed", (4.2, 0.5, 6.0), (x, y + 2.2, z), TIMBER, "SmoothPlastic", mul(r, rot_x(-6))),
+            part("SideL", (0.3, 1.4, 5.6), (x + right[0] * 2.0, y + 2.9, z + right[2] * 2.0), TIMBER, "SmoothPlastic",
                  mul(r, rot_x(-6)), collide=False),
-            part("SideR", (0.3, 1.4, 5.6), (x - right[0] * 2.0, y + 2.9, z - right[2] * 2.0), TIMBER, "WoodPlanks",
+            part("SideR", (0.3, 1.4, 5.6), (x - right[0] * 2.0, y + 2.9, z - right[2] * 2.0), TIMBER, "SmoothPlastic",
                  mul(r, rot_x(-6)), collide=False),
             part("Axle", (5.4, 0.35, 0.35), (x, y + 1.8, z), IRON, "Metal", r, collide=False)]
     for side in (-1, 1):
         kids.append(part(f"Wheel{side}", (0.5, 3.6, 3.6), (x + right[0] * side * 2.6, y + 1.8, z + right[2] * side * 2.6),
-                         (96, 64, 40), "Wood", r, shape="Cylinder", collide=False))
+                         BEAM, "SmoothPlastic", r, shape="Cylinder", collide=False))
         kids.append(part(f"Handle{side}", (0.35, 0.35, 4.0), (x + right[0] * side * 1.6 + fwd[0] * 4.4, y + 2.4,
-                                                              z + right[2] * side * 1.6 + fwd[2] * 4.4), BEAM, "Wood",
+                                                              z + right[2] * side * 1.6 + fwd[2] * 4.4), BEAM, "SmoothPlastic",
                          mul(r, rot_x(10)), collide=False))
-    kids.append(part("Sacks", (3.2, 1.4, 3.6), (x - fwd[0] * 0.4, y + 3.1, z - fwd[2] * 0.4), (190, 168, 120), "Fabric",
+    kids.append(part("Sacks", (3.2, 1.4, 3.6), (x - fwd[0] * 0.4, y + 3.1, z - fwd[2] * 0.4), (255, 214, 150), "SmoothPlastic",
                      mul(r, rot_y(6)), collide=False))
     return model(name, kids)
 
@@ -1077,8 +1254,8 @@ def hand_cart(name, x, y, z, yaw):
 def hay_bale(name, x, y, z, yaw):
     y = floor_at(x, z, y)
     return model(name, [
-        part("Bale", (3.2, 2.2, 2.2), (x, y + 1.1, z), (214, 186, 96), "Grass", rot_y(yaw)),
-        part("Twine", (3.3, 0.15, 2.3), (x, y + 1.35, z), (120, 92, 60), "Fabric", rot_y(yaw), collide=False),
+        part("Bale", (3.2, 2.2, 2.2), (x, y + 1.1, z), (255, 220, 100), "SmoothPlastic", rot_y(yaw)),
+        part("Twine", (3.3, 0.15, 2.3), (x, y + 1.35, z), BEAM, "SmoothPlastic", rot_y(yaw), collide=False),
     ])
 
 
@@ -1086,29 +1263,29 @@ def stump(name, x, y, z, rng):
     y = floor_at(x, z, y)
     d = rng.uniform(2.2, 3.0)
     return model(name, [
-        part("Stump", (1.4, d, d), (x, y + 0.7, z), TRUNK, "Wood", rot_z(90), shape="Cylinder"),
-        part("Rings", (0.12, d * 0.7, d * 0.7), (x, y + 1.42, z), (168, 132, 90), "Wood", rot_z(90), shape="Cylinder",
+        part("Stump", (1.4, d, d), (x, y + 0.7, z), TRUNK, "SmoothPlastic", rot_z(90), shape="Cylinder"),
+        part("Rings", (0.12, d * 0.7, d * 0.7), (x, y + 1.42, z), (250, 214, 150), "SmoothPlastic", rot_z(90), shape="Cylinder",
              collide=False),
         part("MushroomStem", (0.5, 0.6, 0.5), (x + d / 2 + 0.3, y + 0.3, z + 0.4), (230, 220, 200), "SmoothPlastic",
              collide=False, query=False),
-        part("MushroomCap", (0.9, 0.35, 0.9), (x + d / 2 + 0.3, y + 0.72, z + 0.4), (200, 70, 60), "SmoothPlastic",
+        part("MushroomCap", (0.9, 0.35, 0.9), (x + d / 2 + 0.3, y + 0.72, z + 0.4), (244, 84, 84), "SmoothPlastic",
              shape="Ball", collide=False, query=False),
     ])
 
 
 def fingerpost(name, x, y, z, boards):
     """Signpost with one pointing board per destination. boards: [(text, yaw_deg, height)]."""
-    kids = [part("Post", (0.9, 11, 0.9), (x, y + 5.5, z), BEAM, "Wood"),
+    kids = [part("Post", (0.9, 11, 0.9), (x, y + 5.5, z), BEAM, "SmoothPlastic"),
             part("Finial", (1.3, 1.3, 1.3), (x, y + 11.4, z), GOLD, "Metal", shape="Ball", collide=False)]
     for k, (text, yaw, h) in enumerate(boards):
         r = rot_y(yaw)
         fwd = apply(r, (0, 0, -1))  # the board points along its look vector
         centre = (x + fwd[0] * 3.1, y + h, z + fwd[2] * 3.1)
-        kids.append(part(f"Board{k}", (1.4, 1.5, 6.0), centre, (70, 46, 30), "WoodPlanks", r, collide=False,
+        kids.append(part(f"Board{k}", (1.4, 1.5, 6.0), centre, BEAM, "SmoothPlastic", r, collide=False,
                          children=[label_gui("Right", text, "", (255, 232, 170), px=50),
                                    label_gui("Left", text, "", (255, 232, 170), px=50)]))
-        kids.append(part(f"Point{k}", (1.4, 1.5, 1.4), (x + fwd[0] * 6.4, y + h, z + fwd[2] * 6.4), (70, 46, 30),
-                         "WoodPlanks", mul(r, rot_y(45)), collide=False))
+        kids.append(part(f"Point{k}", (1.4, 1.5, 1.4), (x + fwd[0] * 6.4, y + h, z + fwd[2] * 6.4), BEAM,
+                         "SmoothPlastic", mul(r, rot_y(45)), collide=False))
     return model(name, kids)
 
 
@@ -1121,15 +1298,15 @@ def bunting(name, a, b, y, height, rng, pennants=9):
     yaw = math.degrees(math.atan2(-dz, dx))
     kids = []
     for k, (px_, pz) in enumerate((a, b)):
-        kids.append(part(f"Pole{k}", (0.5, height + 0.6, 0.5), (px_, y + (height + 0.6) / 2, pz), BEAM, "Wood"))
-    kids.append(part("Cord", (seg, 0.12, 0.12), ((ax + bx) / 2, y + height, (az + bz) / 2), (60, 50, 40), "Fabric",
+        kids.append(part(f"Pole{k}", (0.5, height + 0.6, 0.5), (px_, y + (height + 0.6) / 2, pz), BEAM, "SmoothPlastic"))
+    kids.append(part("Cord", (seg, 0.12, 0.12), ((ax + bx) / 2, y + height, (az + bz) / 2), BEAM, "SmoothPlastic",
                      rot_y(yaw), collide=False, query=False))
     for k in range(pennants):
         t = (k + 0.5) / pennants
         sag = math.sin(t * math.pi) * 0.9
         cx_, cz_ = ax + dx * seg * t, az + dz * seg * t
         kids.append(part(f"Pennant{k}", (1.4, 1.6, 0.08), (cx_, y + height - sag - 0.85, cz_), BUNTING_COLORS[k % 5],
-                         "Fabric", mul(rot_y(yaw), rot_x(180)), cls="WedgePart", collide=False, query=False,
+                         "SmoothPlastic", mul(rot_y(yaw), rot_x(180)), cls="WedgePart", collide=False, query=False,
                          shadow=False, layer="roof"))
     return model(name, kids, attrs={"Bunting": True})
 
@@ -1209,32 +1386,32 @@ def market_stall(name, npc_x, y, cz, rng, canopy=(196, 70, 60)):
     kids = []
     for px_ in (x0, x1):
         for pz in (z0, z1):
-            kids.append(part("Post", (0.8, top - y, 0.8), (px_, y + (top - y) / 2, pz), BEAM, "Wood"))
-    kids.append(part("Awning", (x1 - x0 + 3.2, 0.3, z1 - z0 + 2.4), (npc_x - 0.6, top + 0.4, cz), canopy, "Fabric",
+            kids.append(part("Post", (0.8, top - y, 0.8), (px_, y + (top - y) / 2, pz), BEAM, "SmoothPlastic"))
+    kids.append(part("Awning", (x1 - x0 + 3.2, 0.3, z1 - z0 + 2.4), (npc_x - 0.6, top + 0.4, cz), canopy, "SmoothPlastic",
                      rot_z(-9), collide=False, layer="roof"))
     for k in range(6):
         zk = z0 - 1.2 + (z1 - z0 + 2.4) * (k + 0.5) / 6
         kids.append(part(f"Scallop{k}", (0.12, 0.9, (z1 - z0 + 2.4) / 6 - 0.1), (x0 - 2.1, top - 0.35, zk),
-                         canopy if k % 2 else (236, 226, 200), "Fabric", collide=False, layer="roof"))
+                         canopy if k % 2 else (255, 236, 190), "SmoothPlastic", collide=False, layer="roof"))
     cx0, cx1 = x0 - 0.3, x0 + 2.2
-    kids.append(box("CounterTop", cx0 - 0.3, cx1 + 0.2, y + 3.0, y + 3.35, z0 + 0.5, z1 - 0.5, TIMBER, "WoodPlanks"))
-    kids.append(box("CounterFront", cx0 - 0.15, cx0 + 0.15, y, y + 3.0, z0 + 0.7, z1 - 0.7, (104, 68, 40), "WoodPlanks"))
-    for k, color in enumerate(((200, 50, 50), (240, 150, 50), (120, 170, 60))):
+    kids.append(box("CounterTop", cx0 - 0.3, cx1 + 0.2, y + 3.0, y + 3.35, z0 + 0.5, z1 - 0.5, TIMBER, "SmoothPlastic"))
+    kids.append(box("CounterFront", cx0 - 0.15, cx0 + 0.15, y, y + 3.0, z0 + 0.7, z1 - 0.7, BEAM, "SmoothPlastic"))
+    for k, color in enumerate(((250, 80, 70), (255, 160, 56), (120, 210, 90))):
         zk = z0 + 1.8 + k * 3.4
-        kids.append(part(f"Crate{k}", (2.4, 1.2, 2.6), (x0 + 1.0, y + 3.95, zk), (128, 88, 52), "WoodPlanks", collide=False))
+        kids.append(part(f"Crate{k}", (2.4, 1.2, 2.6), (x0 + 1.0, y + 3.95, zk), TIMBER, "SmoothPlastic", collide=False))
         for j in range(5):
             kids.append(part(f"Fruit{k}{j}", (0.7, 0.7, 0.7), (x0 + 0.5 + (j % 3) * 0.5, y + 4.9 + (j // 3) * 0.4,
                                                                  zk - 0.8 + (j % 2) * 0.8 + (j // 3) * 0.3), color,
                              "SmoothPlastic", shape="Ball", collide=False, query=False, shadow=False))
-    kids.append(part("Sacks", (2.2, 1.6, 2.2), (x1 - 1.2, y + 0.8, z1 - 1.6), (190, 168, 120), "Fabric", rot_y(12)))
-    kids.append(part("Basket", (1.6, 1.0, 1.6), (x1 - 1.4, y + 0.5, z0 + 1.6), (150, 110, 60), "Wood", rot_z(90),
+    kids.append(part("Sacks", (2.2, 1.6, 2.2), (x1 - 1.2, y + 0.8, z1 - 1.6), (255, 214, 150), "SmoothPlastic", rot_y(12)))
+    kids.append(part("Basket", (1.6, 1.0, 1.6), (x1 - 1.4, y + 0.5, z0 + 1.6), TIMBER, "SmoothPlastic", rot_z(90),
                      shape="Cylinder", collide=False))
     return model(name, kids, attrs={"Vendor": True, "VendorX": npc_x + 1.2, "VendorY": y, "VendorZ": cz})
 
 
-SLATE_ROOF = (72, 72, 80)
-STONE_WALL = (118, 112, 104)
-STONE_WALL_DARK = (94, 88, 82)
+SLATE_ROOF = (36, 118, 255)
+STONE_WALL = (188, 216, 255)
+STONE_WALL_DARK = (64, 144, 255)
 
 
 def smithy(name, x0, x1, z0, z1, y, rng):
@@ -1247,31 +1424,31 @@ def smithy(name, x0, x1, z0, z1, y, rng):
     cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
     top = y + wall_h
     ox0, ox1 = cx - 8.0, cx + 8.0  # front opening
-    kids = [box("Paving", x0 - 1.5, x1 + 1.5, y, y + 0.2, z0 - 1.5, z1 + 2.0, STONE_DARK, "Cobblestone", layer="prop")]
+    kids = [box("Paving", x0 - 1.5, x1 + 1.5, y, y + 0.2, z0 - 1.5, z1 + 2.0, STONE_DARK, "SmoothPlastic", layer="prop")]
     # Walls: back and front (with the opening), sides inset between them so no tops overlap.
-    kids.append(box("WallN", x0, x1, y, top, z0, z0 + t, STONE_WALL, "Cobblestone"))
-    kids.append(box("WallSL", x0, ox0 - 1.2, y, top, z1 - t, z1, STONE_WALL, "Cobblestone"))
-    kids.append(box("WallSR", ox1 + 1.2, x1, y, top, z1 - t, z1, STONE_WALL, "Cobblestone"))
-    kids.append(box("WallW", x0, x0 + t, y, top, z0 + t, z1 - t, STONE_WALL, "Cobblestone"))
-    kids.append(box("WallE", x1 - t, x1, y, top, z0 + t, z1 - t, STONE_WALL, "Cobblestone"))
+    kids.append(box("WallN", x0, x1, y, top, z0, z0 + t, STONE_WALL, "SmoothPlastic"))
+    kids.append(box("WallSL", x0, ox0 - 1.2, y, top, z1 - t, z1, STONE_WALL, "SmoothPlastic"))
+    kids.append(box("WallSR", ox1 + 1.2, x1, y, top, z1 - t, z1, STONE_WALL, "SmoothPlastic"))
+    kids.append(box("WallW", x0, x0 + t, y, top, z0 + t, z1 - t, STONE_WALL, "SmoothPlastic"))
+    kids.append(box("WallE", x1 - t, x1, y, top, z0 + t, z1 - t, STONE_WALL, "SmoothPlastic"))
     for k in range(6):  # darker courses break up the stone
         zz = z0 + t + 0.02 if k % 2 else z1 - t - 0.02
         kids.append(box(f"Course{k}", x0 + 2 + k * 5.5, x0 + 5.5 + k * 5.5, y + 2 + (k % 3) * 3.2, y + 3.2 + (k % 3) * 3.2,
-                        z0 - 0.1, z0 + 0.1, STONE_WALL_DARK, "Cobblestone", collide=False))
+                        z0 - 0.1, z0 + 0.1, STONE_WALL_DARK, "SmoothPlastic", collide=False))
     # Timber front frame around the opening and a heavy lintel.
     for px_ in (ox0 - 0.6, ox1 + 0.6):
-        kids.append(box("FramePost", px_ - 0.7, px_ + 0.7, y, top - 2.4, z1 - t - 0.3, z1 + 0.3, BEAM, "Wood"))
-    kids.append(box("Lintel", ox0 - 1.6, ox1 + 1.6, top - 2.4, top - 0.8, z1 - t - 0.35, z1 + 0.35, BEAM, "Wood"))
+        kids.append(box("FramePost", px_ - 0.7, px_ + 0.7, y, top - 2.4, z1 - t - 0.3, z1 + 0.3, BEAM, "SmoothPlastic"))
+    kids.append(box("Lintel", ox0 - 1.6, ox1 + 1.6, top - 2.4, top - 0.8, z1 - t - 0.35, z1 + 0.35, BEAM, "SmoothPlastic"))
     kids.append(box("LintelBrace", ox0 - 1.2, ox1 + 1.2, top - 0.8, top + 0.6, z1 - t - 0.3, z1 + 0.3, STONE_WALL_DARK,
-                    "Cobblestone", collide=False))
+                    "SmoothPlastic", collide=False))
     # Barred windows on the side walls with a warm glow inside.
     for side, wx in (("W", x0 - 0.2), ("E", x1 + 0.2)):
         for wi, wz in enumerate((z0 + 9, z1 - 9)):
-            kids.append(part(f"Window{side}{wi}", (0.4, 2.8, 2.8), (wx, y + 7.2, wz), (28, 26, 24), "Slate", collide=False,
+            kids.append(part(f"Window{side}{wi}", (0.4, 2.8, 2.8), (wx, y + 7.2, wz), (255, 178, 96), "SmoothPlastic", collide=False,
                              children=[light(9, 0.9, (255, 170, 90))]))
             for b in (-0.7, 0, 0.7):
-                kids.append(part(f"Bar{side}{wi}", (0.5, 3.0, 0.18), (wx, y + 7.2, wz + b), IRON, "Metal", collide=False))
-            kids.append(part(f"Sill{side}{wi}", (0.9, 0.3, 3.4), (wx, y + 5.7, wz), STONE_WALL_DARK, "Cobblestone", collide=False))
+                kids.append(part(f"Bar{side}{wi}", (0.5, 3.0, 0.18), (wx, y + 7.2, wz + b), IRON, "SmoothPlastic", collide=False))
+            kids.append(part(f"Sill{side}{wi}", (0.9, 0.3, 3.4), (wx, y + 5.7, wz), STONE_WALL_DARK, "SmoothPlastic", collide=False))
     # Low slate roof, ridge along X, stone gables, big overhang.
     pitch, overhang = 22.0, 2.4
     span_z = z1 - z0
@@ -1280,97 +1457,97 @@ def smithy(name, x0, x1, z0, z1, y, rng):
     slope = half / math.cos(math.radians(pitch))
     for sgn, label in ((-1, "N"), (1, "S")):
         kids.append(part(f"Roof{label}", (x1 - x0 + overhang * 2, 0.7, slope), (cx, top + math.tan(math.radians(pitch)) * (span_z / 4 - overhang / 2),
-                                                                             cz + sgn * half / 2), SLATE_ROOF, "Slate",
+                                                                             cz + sgn * half / 2), SLATE_ROOF, "SmoothPlastic",
                          rot_x(pitch * sgn), collide=False, layer="roof"))
         kids.append(part(f"Eave{label}", (x1 - x0 + overhang * 2 + 0.4, 0.5, 0.5), (cx, top - 0.35, cz + sgn * (span_z / 2 + overhang - 0.2)),
-                         BEAM, "Wood", collide=False, layer="roof"))
-    kids.append(part("Ridge", (x1 - x0 + overhang * 2 + 0.6, 0.6, 0.9), (cx, top + rise + 0.3, cz), STONE_WALL_DARK, "Slate",
+                         BEAM, "SmoothPlastic", collide=False, layer="roof"))
+    kids.append(part("Ridge", (x1 - x0 + overhang * 2 + 0.6, 0.6, 0.9), (cx, top + rise + 0.3, cz), STONE_WALL_DARK, "SmoothPlastic",
                      collide=False, layer="roof"))
     for gx in (x0 + 0.7, x1 - 0.7):
         for sgn, yaw in ((-1, 0), (1, 180)):
             kids.append(part(f"Gable{'N' if sgn < 0 else 'S'}", (1.4, rise, span_z / 2), (gx, top + rise / 2, cz + sgn * span_z / 4),
-                             STONE_WALL, "Cobblestone", rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
+                             STONE_WALL, "SmoothPlastic", rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
     # Hearth against the back wall, its stack rising into the chimney through the roof.
     hx, hz = cx + 11, z0 + 4.2
     kids += [
-        box("HearthBase", hx - 3.2, hx + 3.2, y + 0.2, y + 3.6, hz - 2.4, hz + 2.4, STONE_WALL_DARK, "Cobblestone"),
-        box("HearthBack", hx - 3.2, hx + 3.2, y + 3.6, y + 9.0, hz - 2.4, hz - 0.8, STONE_WALL_DARK, "Cobblestone", collide=False),
+        box("HearthBase", hx - 3.2, hx + 3.2, y + 0.2, y + 3.6, hz - 2.4, hz + 2.4, STONE_WALL_DARK, "SmoothPlastic"),
+        box("HearthBack", hx - 3.2, hx + 3.2, y + 3.6, y + 9.0, hz - 2.4, hz - 0.8, STONE_WALL_DARK, "SmoothPlastic", collide=False),
         part("Coals", (4.4, 0.5, 2.6), (hx, y + 3.85, hz + 0.5), EMBER, "Neon", collide=False, query=False, shadow=False,
              children=[fire(5, 10), light(22, 1.8, (255, 140, 70))]),
-        part("Hood", (6.0, 0.8, 4.6), (hx, y + 9.2, hz + 0.6), IRON, "Metal", collide=False),
-        part("HoodFront", (6.0, 2.2, 0.4), (hx, y + 7.9, hz + 2.7), IRON, "Metal", collide=False),
+        part("Hood", (6.0, 0.8, 4.6), (hx, y + 9.2, hz + 0.6), IRON, "SmoothPlastic", collide=False),
+        part("HoodFront", (6.0, 2.2, 0.4), (hx, y + 7.9, hz + 2.7), IRON, "SmoothPlastic", collide=False),
         part("Stack", (3.2, top + rise + 5 - (y + 9.6), 3.2), (hx, (y + 9.6 + top + rise + 5) / 2, hz - 0.6), STONE_WALL_DARK,
-             "Cobblestone", collide=False),
-        part("StackCap", (4.0, 0.7, 4.0), (hx, top + rise + 5.35, hz - 0.6), STONE_WALL, "Slate", collide=False),
-        part("StackFlue", (1.6, 0.3, 1.6), (hx, top + rise + 5.8, hz - 0.6), (30, 28, 26), "Slate", collide=False, query=False,
+             "SmoothPlastic", collide=False),
+        part("StackCap", (4.0, 0.7, 4.0), (hx, top + rise + 5.35, hz - 0.6), STONE_WALL, "SmoothPlastic", collide=False),
+        part("StackFlue", (1.6, 0.3, 1.6), (hx, top + rise + 5.8, hz - 0.6), (44, 112, 240), "SmoothPlastic", collide=False, query=False,
              children=[smoke(5.0, 0.24, 4.0, (226, 214, 202))]),  # pale, so it never reads as soot against the sky
-        part("Bellows", (2.6, 1.0, 1.8), (hx - 4.6, y + 2.8, hz + 0.4), (110, 72, 42), "Wood", rot_y(-20), collide=False),
-        part("BellowsHandle", (0.3, 0.3, 2.4), (hx - 5.8, y + 3.4, hz + 1.2), BEAM, "Wood", rot_y(-20), collide=False),
+        part("Bellows", (2.6, 1.0, 1.8), (hx - 4.6, y + 2.8, hz + 0.4), BEAM, "SmoothPlastic", rot_y(-20), collide=False),
+        part("BellowsHandle", (0.3, 0.3, 2.4), (hx - 5.8, y + 3.4, hz + 1.2), BEAM, "SmoothPlastic", rot_y(-20), collide=False),
     ]
     # Anvil on a stump mid-room, where the smith works.
     ax, az = cx + 3, cz + 4
     kids += [
-        part("AnvilStump", (2.0, 3.0, 3.0), (ax, y + 1.2, az), TRUNK, "Wood", rot_z(90), shape="Cylinder"),
-        part("AnvilBase", (1.5, 1.0, 1.8), (ax, y + 2.7, az), IRON, "Metal", collide=False),
-        part("AnvilTop", (3.6, 0.8, 1.5), (ax, y + 3.6, az), (120, 122, 128), "Metal", collide=False),
-        part("AnvilHorn", (1.3, 0.55, 0.8), (ax + 2.35, y + 3.7, az), (120, 122, 128), "Metal", rot_z(-12), collide=False),
+        part("AnvilStump", (2.0, 3.0, 3.0), (ax, y + 1.2, az), BEAM, "SmoothPlastic", rot_z(90), shape="Cylinder"),
+        part("AnvilBase", (1.5, 1.0, 1.8), (ax, y + 2.7, az), IRON, "SmoothPlastic", collide=False),
+        part("AnvilTop", (3.6, 0.8, 1.5), (ax, y + 3.6, az), (60, 122, 255), "SmoothPlastic", collide=False),
+        part("AnvilHorn", (1.3, 0.55, 0.8), (ax + 2.35, y + 3.7, az), (60, 122, 255), "SmoothPlastic", rot_z(-12), collide=False),
         part("Workpiece", (1.6, 0.24, 0.32), (ax - 0.3, y + 4.12, az), (255, 150, 60), "Neon", collide=False, query=False,
              shadow=False, children=[light(8, 0.7, (255, 140, 60))]),
     ]
     # Quench trough along the east wall, workbench and racks along the west wall, tools on the back wall.
     kids += [
-        box("Trough", x1 - t - 2.6, x1 - t - 0.4, y + 0.2, y + 2.4, cz - 4, cz + 4, (100, 70, 44), "WoodPlanks"),
-        box("TroughWater", x1 - t - 2.4, x1 - t - 0.6, y + 1.9, y + 2.25, cz - 3.8, cz + 3.8, (60, 100, 130), "Glass",
+        box("Trough", x1 - t - 2.6, x1 - t - 0.4, y + 0.2, y + 2.4, cz - 4, cz + 4, BEAM, "SmoothPlastic"),
+        box("TroughWater", x1 - t - 2.4, x1 - t - 0.6, y + 1.9, y + 2.25, cz - 3.8, cz + 3.8, (90, 190, 255), "Glass",
             collide=False, transparency=0.3),
-        box("Bench", x0 + t + 0.4, x0 + t + 3.2, y + 2.6, y + 3.0, z0 + 5, z0 + 13, TIMBER, "WoodPlanks"),
-        box("BenchLegA", x0 + t + 0.6, x0 + t + 1.0, y + 0.2, y + 2.6, z0 + 5.3, z0 + 5.7, BEAM, "Wood", collide=False),
-        box("BenchLegB", x0 + t + 0.6, x0 + t + 1.0, y + 0.2, y + 2.6, z0 + 12.3, z0 + 12.7, BEAM, "Wood", collide=False),
-        part("Vise", (1.0, 1.0, 1.4), (x0 + t + 2.4, y + 3.5, z0 + 7), IRON, "Metal", collide=False),
-        box("RackBoard", x0 + t, x0 + t + 0.4, y + 3.0, y + 8.6, z1 - 12, z1 - 3, BEAM, "Wood", collide=False),
+        box("Bench", x0 + t + 0.4, x0 + t + 3.2, y + 2.6, y + 3.0, z0 + 5, z0 + 13, TIMBER, "SmoothPlastic"),
+        box("BenchLegA", x0 + t + 0.6, x0 + t + 1.0, y + 0.2, y + 2.6, z0 + 5.3, z0 + 5.7, BEAM, "SmoothPlastic", collide=False),
+        box("BenchLegB", x0 + t + 0.6, x0 + t + 1.0, y + 0.2, y + 2.6, z0 + 12.3, z0 + 12.7, BEAM, "SmoothPlastic", collide=False),
+        part("Vise", (1.0, 1.0, 1.4), (x0 + t + 2.4, y + 3.5, z0 + 7), IRON, "SmoothPlastic", collide=False),
+        box("RackBoard", x0 + t, x0 + t + 0.4, y + 3.0, y + 8.6, z1 - 12, z1 - 3, BEAM, "SmoothPlastic", collide=False),
     ]
     for k in range(5):  # finished blades hanging on the rack
         zz = z1 - 11 + k * 1.8
-        kids.append(part(f"RackBlade{k}", (0.25, 4.0, 0.7), (x0 + t + 0.55, y + 5.4, zz), (200, 204, 210), "Metal",
+        kids.append(part(f"RackBlade{k}", (0.25, 4.0, 0.7), (x0 + t + 0.55, y + 5.4, zz), (200, 220, 255), "SmoothPlastic",
                          rot_x(rng.uniform(-3, 3)), collide=False))
-        kids.append(part(f"RackHilt{k}", (0.35, 0.9, 0.35), (x0 + t + 0.55, y + 7.8, zz), (84, 52, 36), "Fabric", collide=False))
-        kids.append(part(f"RackGuard{k}", (0.3, 0.25, 1.3), (x0 + t + 0.55, y + 7.35, zz), GOLD, "Metal", collide=False))
+        kids.append(part(f"RackHilt{k}", (0.35, 0.9, 0.35), (x0 + t + 0.55, y + 7.8, zz), BEAM, "SmoothPlastic", collide=False))
+        kids.append(part(f"RackGuard{k}", (0.3, 0.25, 1.3), (x0 + t + 0.55, y + 7.35, zz), GOLD, "SmoothPlastic", collide=False))
     for k, (dz, kind) in enumerate(((-11, "tongs"), (-9.2, "hammer"), (-7.4, "tongs"), (-5.6, "hammer"))):
         px_, pz = cx + dz, z0 + t + 0.4
         if kind == "tongs":
-            kids.append(part(f"Tool{k}", (0.22, 2.8, 0.22), (px_, y + 7.0, pz), IRON, "Metal", rot_z(6), collide=False))
-            kids.append(part(f"ToolB{k}", (0.22, 2.8, 0.22), (px_ + 0.35, y + 7.0, pz), IRON, "Metal", rot_z(-6), collide=False))
+            kids.append(part(f"Tool{k}", (0.22, 2.8, 0.22), (px_, y + 7.0, pz), IRON, "SmoothPlastic", rot_z(6), collide=False))
+            kids.append(part(f"ToolB{k}", (0.22, 2.8, 0.22), (px_ + 0.35, y + 7.0, pz), IRON, "SmoothPlastic", rot_z(-6), collide=False))
         else:
-            kids.append(part(f"Tool{k}", (0.3, 2.4, 0.3), (px_, y + 6.8, pz), (120, 84, 50), "Wood", collide=False))
-            kids.append(part(f"ToolB{k}", (1.0, 0.5, 0.5), (px_, y + 8.1, pz), IRON, "Metal", collide=False))
-    kids.append(box("ToolBoard", cx - 12.2, cx - 4.4, y + 5.2, y + 8.8, z0 + t, z0 + t + 0.25, BEAM, "Wood", collide=False))
+            kids.append(part(f"Tool{k}", (0.3, 2.4, 0.3), (px_, y + 6.8, pz), TIMBER, "SmoothPlastic", collide=False))
+            kids.append(part(f"ToolB{k}", (1.0, 0.5, 0.5), (px_, y + 8.1, pz), IRON, "SmoothPlastic", collide=False))
+    kids.append(box("ToolBoard", cx - 12.2, cx - 4.4, y + 5.2, y + 8.8, z0 + t, z0 + t + 0.25, BEAM, "SmoothPlastic", collide=False))
     # Counter across the opening with two display blades; the merchant stands behind it.
     kz = z1 - 0.9
-    kids.append(box("CounterTop", ox0 - 0.4, ox1 + 0.4, y + 3.3, y + 3.7, kz - 1.3, kz + 1.0, TIMBER, "WoodPlanks"))
-    kids.append(box("CounterFront", ox0 - 0.2, ox1 + 0.2, y + 0.2, y + 3.3, kz + 0.6, kz + 1.0, (104, 68, 40), "WoodPlanks"))
-    kids.append(box("CounterBack", ox0 - 0.2, ox1 + 0.2, y + 0.2, y + 3.3, kz - 1.3, kz - 0.9, (104, 68, 40), "WoodPlanks",
+    kids.append(box("CounterTop", ox0 - 0.4, ox1 + 0.4, y + 3.3, y + 3.7, kz - 1.3, kz + 1.0, TIMBER, "SmoothPlastic"))
+    kids.append(box("CounterFront", ox0 - 0.2, ox1 + 0.2, y + 0.2, y + 3.3, kz + 0.6, kz + 1.0, BEAM, "SmoothPlastic"))
+    kids.append(box("CounterBack", ox0 - 0.2, ox1 + 0.2, y + 0.2, y + 3.3, kz - 1.3, kz - 0.9, BEAM, "SmoothPlastic",
                     collide=False))
     for k, dx in enumerate((-4.5, 4.5)):
-        kids.append(part(f"DisplayBlade{k}", (3.8, 0.2, 0.7), (cx + dx, y + 3.85, kz - 0.2), (200, 204, 210), "Metal",
+        kids.append(part(f"DisplayBlade{k}", (3.8, 0.2, 0.7), (cx + dx, y + 3.85, kz - 0.2), (200, 220, 255), "SmoothPlastic",
                          rot_y(12 * (1 if k else -1)), collide=False))
-        kids.append(part(f"DisplayGuard{k}", (0.3, 0.3, 1.3), (cx + dx - 2.0 * (1 if k else -1), y + 3.85, kz - 0.2), GOLD, "Metal",
+        kids.append(part(f"DisplayGuard{k}", (0.3, 0.3, 1.3), (cx + dx - 2.0 * (1 if k else -1), y + 3.85, kz - 0.2), GOLD, "SmoothPlastic",
                          rot_y(12 * (1 if k else -1)), collide=False))
     # Hanging shop sign on a bracket at the front corner.
     bx_ = x1 + 0.6
-    kids.append(part("SignBracket", (3.6, 0.4, 0.4), (bx_ + 1.1, y + 9.6, z1 - 3), IRON, "Metal", collide=False))
-    kids.append(part("SignChainA", (0.12, 1.2, 0.12), (bx_ + 1.4, y + 8.9, z1 - 2.2), IRON, "Metal", collide=False))
-    kids.append(part("SignChainB", (0.12, 1.2, 0.12), (bx_ + 1.4, y + 8.9, z1 - 3.8), IRON, "Metal", collide=False))
-    kids.append(part("SignBoard", (0.35, 2.6, 3.4), (bx_ + 1.4, y + 7.0, z1 - 3), (58, 38, 26), "WoodPlanks", collide=False,
+    kids.append(part("SignBracket", (3.6, 0.4, 0.4), (bx_ + 1.1, y + 9.6, z1 - 3), IRON, "SmoothPlastic", collide=False))
+    kids.append(part("SignChainA", (0.12, 1.2, 0.12), (bx_ + 1.4, y + 8.9, z1 - 2.2), IRON, "SmoothPlastic", collide=False))
+    kids.append(part("SignChainB", (0.12, 1.2, 0.12), (bx_ + 1.4, y + 8.9, z1 - 3.8), IRON, "SmoothPlastic", collide=False))
+    kids.append(part("SignBoard", (0.35, 2.6, 3.4), (bx_ + 1.4, y + 7.0, z1 - 3), BEAM, "SmoothPlastic", collide=False,
                      children=[label_gui("Right", "Sword Shop", "Relic blades", (255, 232, 170), px=50),
                                label_gui("Left", "Sword Shop", "Relic blades", (255, 232, 170), px=50)]))
-    kids.append(part("SignAnvilIcon", (0.5, 0.6, 1.3), (bx_ + 1.4, y + 5.2, z1 - 3), IRON, "Metal", collide=False))
+    kids.append(part("SignAnvilIcon", (0.5, 0.6, 1.3), (bx_ + 1.4, y + 5.2, z1 - 3), IRON, "SmoothPlastic", collide=False))
     # Outside: coal heap, ingot stack, water bucket.
     for k in range(5):
         kids.append(part(f"Coal{k}", (rng.uniform(1.2, 2.0), rng.uniform(0.8, 1.3), rng.uniform(1.2, 2.0)),
-                         (x1 + 3.5 + rng.uniform(-1, 1), y + 0.5 + k * 0.12, z0 + 6 + rng.uniform(-1.5, 1.5)), (36, 34, 34),
-                         "Slate", mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-8, 8))), collide=False))
+                         (x1 + 3.5 + rng.uniform(-1, 1), y + 0.5 + k * 0.12, z0 + 6 + rng.uniform(-1.5, 1.5)), (120, 150, 230),
+                         "SmoothPlastic", mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-8, 8))), collide=False))
     for k in range(6):
         kids.append(part(f"Ingot{k}", (2.2, 0.5, 0.9), (x1 + 3.5 + (k % 2) * 1.0 - 0.5, y + 0.45 + (k // 2) * 0.5, z0 + 12 + (k // 2) * 0.1),
-                         (150, 152, 158), "Metal", rot_y((k // 2) * 90), collide=False))
+                         (160, 190, 250), "SmoothPlastic", rot_y((k // 2) * 90), collide=False))
     return model(name, kids, attrs={"Forge": True, "Smithy": True, "AnvilX": ax - 0.3, "AnvilY": y + 4.1, "AnvilZ": az,
                                     "AnvilStandX": ax - 3.0, "AnvilStandY": y + 0.2, "AnvilStandZ": az,
                                     "CounterX": cx, "CounterY": y + 0.2, "CounterZ": kz - 3.4})
@@ -1379,25 +1556,25 @@ def smithy(name, x0, x1, z0, z1, y, rng):
 def chest(name, x, y, z, yaw, open_lid=False, rng=None):
     """Iron-banded wooden chest; an open one shows sword hilts standing in it."""
     r = rot_y(yaw)
-    kids = [part("Body", (3.4, 1.8, 2.2), (x, y + 0.9, z), (110, 72, 42), "WoodPlanks", r),
+    kids = [part("Body", (3.4, 1.8, 2.2), (x, y + 0.9, z), TIMBER, "SmoothPlastic", r),
             # Bands stop 0.1 short of the body's top so the two faces never sit coplanar.
-            part("BandL", (0.25, 1.6, 2.3), (x + apply(r, (-1.0, 0, 0))[0], y + 0.9, z + apply(r, (-1.0, 0, 0))[2]), IRON, "Metal", r, collide=False),
-            part("BandR", (0.25, 1.6, 2.3), (x + apply(r, (1.0, 0, 0))[0], y + 0.9, z + apply(r, (1.0, 0, 0))[2]), IRON, "Metal", r, collide=False),
-            part("Lock", (0.5, 0.6, 0.2), (x + apply(r, (0, 0, -1.15))[0], y + 1.1, z + apply(r, (0, 0, -1.15))[2]), GOLD, "Metal", r, collide=False)]
+            part("BandL", (0.25, 1.6, 2.3), (x + apply(r, (-1.0, 0, 0))[0], y + 0.9, z + apply(r, (-1.0, 0, 0))[2]), IRON, "SmoothPlastic", r, collide=False),
+            part("BandR", (0.25, 1.6, 2.3), (x + apply(r, (1.0, 0, 0))[0], y + 0.9, z + apply(r, (1.0, 0, 0))[2]), IRON, "SmoothPlastic", r, collide=False),
+            part("Lock", (0.5, 0.6, 0.2), (x + apply(r, (0, 0, -1.15))[0], y + 1.1, z + apply(r, (0, 0, -1.15))[2]), GOLD, "SmoothPlastic", r, collide=False)]
     if open_lid:
         back = apply(r, (0, 0, 1.0))
-        kids.append(part("Lid", (3.5, 0.5, 2.3), (x + back[0], y + 2.9, z + back[2]), (96, 62, 36), "WoodPlanks",
+        kids.append(part("Lid", (3.5, 0.5, 2.3), (x + back[0], y + 2.9, z + back[2]), BEAM, "SmoothPlastic",
                          mul(r, rot_x(-100)), collide=False))
         for k in range(3):
             off = apply(r, ((k - 1) * 0.9, 0, 0.1))
-            kids.append(part(f"Hilt{k}", (0.3, 1.3, 0.3), (x + off[0], y + 2.3, z + off[2]), (84, 52, 36), "Fabric",
+            kids.append(part(f"Hilt{k}", (0.3, 1.3, 0.3), (x + off[0], y + 2.3, z + off[2]), (255, 72, 72), "SmoothPlastic",
                              mul(r, rot_z((k - 1) * 8)), collide=False))
-            kids.append(part(f"Guard{k}", (1.0, 0.22, 0.3), (x + off[0], y + 1.75, z + off[2]), GOLD, "Metal",
+            kids.append(part(f"Guard{k}", (1.0, 0.22, 0.3), (x + off[0], y + 1.75, z + off[2]), GOLD, "SmoothPlastic",
                              mul(r, rot_z((k - 1) * 8)), collide=False))
-            kids.append(part(f"Pommel{k}", (0.45, 0.45, 0.45), (x + off[0], y + 3.0, z + off[2]), GOLD, "Metal",
+            kids.append(part(f"Pommel{k}", (0.45, 0.45, 0.45), (x + off[0], y + 3.0, z + off[2]), GOLD, "SmoothPlastic",
                              shape="Ball", collide=False))
     else:
-        kids.append(part("Lid", (3.5, 0.5, 2.3), (x, y + 2.05, z), (96, 62, 36), "WoodPlanks", r, collide=False))
+        kids.append(part("Lid", (3.5, 0.5, 2.3), (x, y + 2.05, z), BEAM, "SmoothPlastic", r, collide=False))
     return model(name, kids)
 
 
@@ -1408,24 +1585,24 @@ def storage_shack(name, x0, x1, z0, z1, y, rng):
     cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
     wall_h = 9.0
     base_top = y + 0.4
-    kids = [box("Base", x0 - 0.8, x1 + 0.8, y, base_top, z0 - 0.8, z1 + 0.8, STONE_DARK, "Cobblestone"),
-            box("Floor", x0 + 0.6, x1 - 0.6, base_top, base_top + 0.12, z0 + 0.6, z1 - 0.6, (150, 112, 70), "WoodPlanks", collide=False)]
+    kids = [box("Base", x0 - 0.8, x1 + 0.8, y, base_top, z0 - 0.8, z1 + 0.8, STONE_DARK, "SmoothPlastic"),
+            box("Floor", x0 + 0.6, x1 - 0.6, base_top, base_top + 0.12, z0 + 0.6, z1 - 0.6, TIMBER, "SmoothPlastic", collide=False)]
     # Log walls: horizontal cylinders stacked; the south wall leaves a doorway.
     logs = int(wall_h / 1.15)
     door_w = 5.0
     for k in range(logs):
         ly = base_top + 0.575 + k * 1.15
-        shade = TRUNK if k % 2 else (86, 58, 36)
-        kids.append(part(f"LogN{k}", (x1 - x0 + 1.2, 1.15, 1.15), (cx, ly, z0), shade, "Wood", collide=(k < 3)))
-        kids.append(part(f"LogW{k}", (1.15, 1.15, z1 - z0 + 1.2), (x0, ly, cz), shade, "Wood", collide=(k < 3)))
-        kids.append(part(f"LogE{k}", (1.15, 1.15, z1 - z0 + 1.2), (x1, ly, cz), shade, "Wood", collide=(k < 3)))
+        shade = BEAM if k % 2 else BEAM
+        kids.append(part(f"LogN{k}", (x1 - x0 + 1.2, 1.15, 1.15), (cx, ly, z0), shade, "SmoothPlastic", collide=(k < 3)))
+        kids.append(part(f"LogW{k}", (1.15, 1.15, z1 - z0 + 1.2), (x0, ly, cz), shade, "SmoothPlastic", collide=(k < 3)))
+        kids.append(part(f"LogE{k}", (1.15, 1.15, z1 - z0 + 1.2), (x1, ly, cz), shade, "SmoothPlastic", collide=(k < 3)))
         if k >= 7:  # above the doorway the south logs run full width
-            kids.append(part(f"LogS{k}", (x1 - x0 + 1.2, 1.15, 1.15), (cx, ly, z1), shade, "Wood", collide=False))
+            kids.append(part(f"LogS{k}", (x1 - x0 + 1.2, 1.15, 1.15), (cx, ly, z1), shade, "SmoothPlastic", collide=False))
         else:
             kids.append(part(f"LogSL{k}", (cx - door_w / 2 - x0 + 0.6, 1.15, 1.15), ((x0 - 0.6 + cx - door_w / 2) / 2, ly, z1),
-                             shade, "Wood", collide=(k < 3)))
+                             shade, "SmoothPlastic", collide=(k < 3)))
             kids.append(part(f"LogSR{k}", (x1 + 0.6 - cx - door_w / 2, 1.15, 1.15), ((cx + door_w / 2 + x1 + 0.6) / 2, ly, z1),
-                             shade, "Wood", collide=(k < 3)))
+                             shade, "SmoothPlastic", collide=(k < 3)))
     # Invisible wall proxies so the round logs feel solid.
     top = base_top + logs * 1.15
     for label, (a0, a1, b0, b1) in (("N", (x0 - 0.6, x1 + 0.6, z0 - 0.6, z0 + 0.6)), ("W", (x0 - 0.6, x0 + 0.6, z0, z1)),
@@ -1434,9 +1611,9 @@ def storage_shack(name, x0, x1, z0, z1, y, rng):
     kids.append(box("ProxySL", x0 - 0.6, cx - door_w / 2, base_top, top, z1 - 0.6, z1 + 0.6, (255, 0, 255), transparency=1, query=False, shadow=False))
     kids.append(box("ProxySR", cx + door_w / 2, x1 + 0.6, base_top, top, z1 - 0.6, z1 + 0.6, (255, 0, 255), transparency=1, query=False, shadow=False))
     for px_ in (cx - door_w / 2 - 0.5, cx + door_w / 2 + 0.5):
-        kids.append(box("DoorPost", px_ - 0.5, px_ + 0.5, base_top, base_top + 7 * 1.15, z1 - 0.7, z1 + 0.7, BEAM, "Wood"))
+        kids.append(box("DoorPost", px_ - 0.5, px_ + 0.5, base_top, base_top + 7 * 1.15, z1 - 0.7, z1 + 0.7, BEAM, "SmoothPlastic"))
     kids.append(box("DoorLintel", cx - door_w / 2 - 1.0, cx + door_w / 2 + 1.0, base_top + 7 * 1.15, base_top + 7 * 1.15 + 0.8,
-                    z1 - 0.7, z1 + 0.7, BEAM, "Wood", collide=False))
+                    z1 - 0.7, z1 + 0.7, BEAM, "SmoothPlastic", collide=False))
     # Plank roof: two slabs meeting at a ridge along X, plus a rear chimney-less cap.
     pitch, overhang = 26.0, 1.8
     span_z = z1 - z0
@@ -1445,14 +1622,14 @@ def storage_shack(name, x0, x1, z0, z1, y, rng):
     slope = half / math.cos(math.radians(pitch))
     for sgn, label in ((-1, "N"), (1, "S")):
         kids.append(part(f"Roof{label}", (x1 - x0 + overhang * 2, 0.6, slope), (cx, top + math.tan(math.radians(pitch)) * (span_z / 4 - overhang / 2),
-                                                                             cz + sgn * half / 2), (98, 66, 44), "WoodPlanks",
+                                                                             cz + sgn * half / 2), BEAM, "SmoothPlastic",
                          rot_x(pitch * sgn), collide=False, layer="roof"))
-    kids.append(part("RoofRidge", (x1 - x0 + overhang * 2 + 0.4, 0.5, 0.8), (cx, top + rise + 0.25, cz), BEAM, "Wood",
+    kids.append(part("RoofRidge", (x1 - x0 + overhang * 2 + 0.4, 0.5, 0.8), (cx, top + rise + 0.25, cz), BEAM, "SmoothPlastic",
                      collide=False, layer="roof"))
     for gx in (x0 + 0.5, x1 - 0.5):
         for sgn, yaw in ((-1, 0), (1, 180)):
             kids.append(part(f"Gable{'N' if sgn < 0 else 'S'}", (1.1, rise, span_z / 2), (gx, top + rise / 2, cz + sgn * span_z / 4),
-                             (86, 58, 36), "Wood", rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
+                             BEAM, "SmoothPlastic", rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
     # Inside: chests along the back and side walls, one open; shelves with crates and sacks.
     fl = base_top + 0.12
     kids.append(chest("ChestOpen", cx - 4.2, fl, z0 + 2.4, 0, open_lid=True))
@@ -1460,23 +1637,23 @@ def storage_shack(name, x0, x1, z0, z1, y, rng):
     kids.append(chest("Chest2", cx + 4.2, fl, z0 + 2.4, 0))
     kids.append(chest("Chest3", x0 + 2.4, fl, cz + 1.0, 90))
     kids.append(chest("Chest4", x0 + 2.4, fl, cz + 4.4, 90))
-    kids.append(box("Shelf1", x1 - 2.6, x1 - 1.0, fl + 3.2, fl + 3.5, z0 + 1.2, z1 - 1.2, BEAM, "Wood", collide=False))
-    kids.append(box("Shelf2", x1 - 2.6, x1 - 1.0, fl + 6.0, fl + 6.3, z0 + 1.2, z1 - 1.2, BEAM, "Wood", collide=False))
+    kids.append(box("Shelf1", x1 - 2.6, x1 - 1.0, fl + 3.2, fl + 3.5, z0 + 1.2, z1 - 1.2, BEAM, "SmoothPlastic", collide=False))
+    kids.append(box("Shelf2", x1 - 2.6, x1 - 1.0, fl + 6.0, fl + 6.3, z0 + 1.2, z1 - 1.2, BEAM, "SmoothPlastic", collide=False))
     for k, zz in enumerate((z0 + 2.4, z0 + 5.4, z1 - 3.0)):
-        kids.append(part(f"ShelfCrate{k}", (1.4, 1.4, 1.4), (x1 - 1.8, fl + 4.2, zz), TIMBER, "WoodPlanks", rot_y(k * 17), collide=False))
-    kids.append(part("ShelfSack", (1.5, 1.2, 1.5), (x1 - 1.8, fl + 6.9, cz), (190, 168, 120), "Fabric", collide=False))
-    kids.append(part("ShelfJar", (0.6, 0.9, 0.6), (x1 - 1.8, fl + 6.75, z0 + 2.4), (120, 150, 170), "Glass", rot_z(90),
+        kids.append(part(f"ShelfCrate{k}", (1.4, 1.4, 1.4), (x1 - 1.8, fl + 4.2, zz), TIMBER, "SmoothPlastic", rot_y(k * 17), collide=False))
+    kids.append(part("ShelfSack", (1.5, 1.2, 1.5), (x1 - 1.8, fl + 6.9, cz), (255, 214, 150), "SmoothPlastic", collide=False))
+    kids.append(part("ShelfJar", (0.6, 0.9, 0.6), (x1 - 1.8, fl + 6.75, z0 + 2.4), (110, 220, 255), "Glass", rot_z(90),
                      shape="Cylinder", collide=False, transparency=0.3))
     # Keeper's desk by the door with a ledger and lantern.
-    kids.append(box("Desk", cx + 1.4, cx + 5.0, fl + 2.5, fl + 2.8, z1 - 5.2, z1 - 3.2, TIMBER, "WoodPlanks"))
+    kids.append(box("Desk", cx + 1.4, cx + 5.0, fl + 2.5, fl + 2.8, z1 - 5.2, z1 - 3.2, TIMBER, "SmoothPlastic"))
     for dx, dz in ((cx + 1.7, z1 - 5.0), (cx + 4.7, z1 - 5.0), (cx + 1.7, z1 - 3.4), (cx + 4.7, z1 - 3.4)):
-        kids.append(part("DeskLeg", (0.3, 2.5, 0.3), (dx, fl + 1.25, dz), BEAM, "Wood", collide=False))
-    kids.append(part("Ledger", (1.4, 0.25, 1.0), (cx + 3.2, fl + 2.95, z1 - 4.2), (90, 50, 40), "Fabric", rot_y(-12), collide=False))
+        kids.append(part("DeskLeg", (0.3, 2.5, 0.3), (dx, fl + 1.25, dz), BEAM, "SmoothPlastic", collide=False))
+    kids.append(part("Ledger", (1.4, 0.25, 1.0), (cx + 3.2, fl + 2.95, z1 - 4.2), (255, 72, 72), "SmoothPlastic", rot_y(-12), collide=False))
     kids.append(part("DeskLantern", (0.9, 1.2, 0.9), (cx + 4.4, fl + 3.4, z1 - 3.6), LANTERN, "Neon", collide=False, query=False,
                      shadow=False, transparency=0.15, children=[light(14, 1.0)]))
     # Hanging sign by the door.
-    kids.append(part("SignBracket", (0.3, 0.3, 2.6), (cx + door_w / 2 + 1.6, base_top + 7.4, z1 + 1.0), IRON, "Metal", collide=False))
-    kids.append(part("SignBoard", (2.8, 1.6, 0.3), (cx + door_w / 2 + 1.6, base_top + 6.2, z1 + 2.0), (58, 38, 26), "WoodPlanks",
+    kids.append(part("SignBracket", (0.3, 0.3, 2.6), (cx + door_w / 2 + 1.6, base_top + 7.4, z1 + 1.0), IRON, "SmoothPlastic", collide=False))
+    kids.append(part("SignBoard", (2.8, 1.6, 0.3), (cx + door_w / 2 + 1.6, base_top + 6.2, z1 + 2.0), BEAM, "SmoothPlastic",
                      collide=False, children=[label_gui("Front", "Vault", "", (255, 232, 170), px=60),
                                               label_gui("Back", "Vault", "", (255, 232, 170), px=60)]))
     kids.append(lamp_post("DoorLamp", cx - door_w / 2 - 2.4, y, z1 + 2.6, yaw_facing(1, 0)))
@@ -1489,9 +1666,9 @@ def campfire(name, x, y, z, rng):
     for k in range(7):
         a = k / 7 * math.tau
         kids.append(part(f"Stone{k}", (1.4, 0.9, 1.2), (x + math.cos(a) * 2.4, y + 0.45, z + math.sin(a) * 2.4),
-                         STONE_DARK, "Slate", rot_y(math.degrees(-a)), collide=False))
+                         STONE_DARK, "SmoothPlastic", rot_y(math.degrees(-a)), collide=False))
     for k in range(3):
-        kids.append(part(f"Log{k}", (0.8, 0.8, 4.2), (x, y + 0.6, z), TRUNK, "Wood",
+        kids.append(part(f"Log{k}", (0.8, 0.8, 4.2), (x, y + 0.6, z), BEAM, "SmoothPlastic",
                          mul(rot_y(k * 60), rot_x(18)), collide=False))
     kids.append(part("Embers", (1.2, 0.4, 1.2), (x, y + 0.5, z), EMBER, "Neon", collide=False, query=False,
                      shadow=False, children=[fire(4, 7), light(22, 1.6, (255, 160, 90))]))
@@ -1596,15 +1773,15 @@ def stone_stack(name, x, y, z, rng, color=(186, 160, 120)):
     return model(name, kids)
 
 
-def tent(name, x, y, z, yaw, color=(150, 120, 90)):
+def tent(name, x, y, z, yaw, color=(60, 196, 245)):
     y = floor_at(x, z, y)
     r = rot_y(yaw)
     kids = []
     for sgn in (-1, 1):
         off = apply(r, (sgn * 2.05, 0, 0))
-        kids.append(part(f"Cloth{sgn}", (7.5, 0.3, 6.2), (x + off[0], y + 2.3, z + off[2]), color, "Fabric",
+        kids.append(part(f"Cloth{sgn}", (7.5, 0.3, 6.2), (x + off[0], y + 2.3, z + off[2]), color, "SmoothPlastic",
                          mul(r, rot_z(-sgn * 48)), collide=False))
-    kids.append(part("Ridge", (0.5, 0.5, 8), (x, y + 4.6, z), BEAM, "Wood", mul(r, rot_y(90)), collide=False))
+    kids.append(part("Ridge", (0.5, 0.5, 8), (x, y + 4.6, z), BEAM, "SmoothPlastic", mul(r, rot_y(90)), collide=False))
     return model(name, kids)
 
 
@@ -1613,18 +1790,18 @@ def banner_pole(name, x, y, z, yaw, color=WARLORD_RED):
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     return model(name, [
-        part("Pole", (0.7, 14, 0.7), (x, y + 7, z), BEAM, "Wood"),
-        part("Cloth", (3.6, 7, 0.25), (x + right[0] * 2.1, y + 9.5, z + right[2] * 2.1), color, "Fabric", r,
+        part("Pole", (0.7, 14, 0.7), (x, y + 7, z), BEAM, "SmoothPlastic"),
+        part("Cloth", (3.6, 7, 0.25), (x + right[0] * 2.1, y + 9.5, z + right[2] * 2.1), color, "SmoothPlastic", r,
              collide=False),
-        part("Finial", (1, 1, 1), (x, y + 14.5, z), GOLD, "Metal", collide=False, shape="Ball"),
+        part("Finial", (1, 1, 1), (x, y + 14.5, z), GOLD, "SmoothPlastic", collide=False, shape="Ball"),
     ])
 
 
 def brazier(name, x, y, z):
     y = floor_at(x, z, y)
     return model(name, [
-        part("Base", (2.6, 3.2, 2.6), (x, y + 1.6, z), STONE_DARK, "Cobblestone"),
-        part("Bowl", (3.6, 1.2, 3.6), (x, y + 3.8, z), IRON, "Metal", collide=False),
+        part("Base", (2.6, 3.2, 2.6), (x, y + 1.6, z), STONE_DARK, "SmoothPlastic"),
+        part("Bowl", (3.6, 1.2, 3.6), (x, y + 3.8, z), IRON, "SmoothPlastic", collide=False),
         part("Coals", (2.6, 0.5, 2.6), (x, y + 4.4, z), EMBER, "Neon", collide=False, query=False, shadow=False,
              children=[fire(5, 8), light(26, 1.4, (255, 150, 80))]),
     ])
@@ -1638,7 +1815,7 @@ def waystone(name, waypoint_id, x, y, z, glow=(120, 210, 240)):
     """
     y = floor_at(x, z, y)
     rng = random.Random(zlib.crc32(waypoint_id.encode()) & 0xFFFF)
-    kids = [part("Base", (1.6, 7.6, 7.6), (x, y + 0.8, z), STONE_DARK, "Slate", rot_z(90), shape="Cylinder")]
+    kids = [part("Base", (1.6, 7.6, 7.6), (x, y + 0.8, z), STONE_DARK, "SmoothPlastic", rot_z(90), shape="Cylinder")]
     shards = [("Core", 11.0, 2.1, 0.0, 0.0, 6.0), ("Shard1", 7.0, 1.5, -2.2, 1.4, 13.0),
               ("Shard2", 5.4, 1.2, 1.9, -1.7, -15.0), ("Shard3", 3.6, 1.0, 0.6, 2.6, 20.0)]
     for label, height, width, dx, dz, tilt in shards:
@@ -1774,26 +1951,28 @@ def build_markers():
 # boxes, awnings and hanging signs, a real roof), since every face but the street front is seen
 # only from afar. Palette: sun-bleached whitewash and lemon, peach and cream plaster under
 # terracotta, teal, berry and orange roofs, with bright shutters: warm and friendly, Lemonade's own.
-TOWN_PLINTH = (146, 134, 118)
-TOWN_TRIM = (86, 58, 38)
-TOWN_GLASS = (64, 92, 116)
-TOWN_CURB = (204, 190, 164)
-TOWN_GUTTER = (92, 86, 80)
-TOWN_WALK = (176, 162, 140)
-WHITEWASH = (246, 240, 226)
-LEMON_WASH = (250, 226, 148)
-PEACH_WASH = (244, 200, 162)
-CREAM_WASH = (238, 222, 188)
-TERRACOTTA = (204, 98, 58)
-ROOF_TEAL = (48, 132, 142)
-ROOF_BERRY = (170, 62, 76)
-ROOF_ORANGE = (226, 136, 56)
-AWNING_CREAM = (252, 246, 230)
+TOWN_PLINTH = (64, 144, 255)
+TOWN_TRIM = (240, 120, 20)
+TOWN_GLASS = (110, 220, 255)
+# The High Street's walks are PS99's lavender-white walkway (a pale tint, calm), edged by a raised
+# curb in the same lavender-blue at full chroma, the way PS99 trims its pale paths in a deeper blue.
+TOWN_CURB = (116, 142, 252)  # the raised curb: vivid periwinkle, the walk's hue pushed to full colour
+TOWN_GUTTER = GROUND_TAN
+TOWN_WALK = (226, 232, 255)  # the flagstone walk: lavender-white, the cool calm beside the cream road
+WHITEWASH = (255, 242, 220)  # calm: a pale warm tint
+LEMON_WASH = (255, 220, 40)  # lemon at full chroma: the pop wall
+PEACH_WASH = (255, 150, 90)
+CREAM_WASH = (255, 234, 198)
+TERRACOTTA = (255, 104, 48)
+ROOF_TEAL = (20, 200, 228)
+ROOF_BERRY = (248, 50, 124)
+ROOF_ORANGE = (255, 150, 20)
+AWNING_CREAM = (255, 234, 186)
 
 
 def town_house(name, fx, fz, out, width, depth, y, rng, storeys=2, roof="eaves", wall=WHITEWASH,
-               roof_color=TERRACOTTA, roof_material="ClayRoofTiles", shutter=(60, 150, 160), awning=None,
-               sign_text=None, door_color=(122, 76, 44), chimney=True, smoky=False, pitch=34.0,
+               roof_color=TERRACOTTA, roof_material="SmoothPlastic", shutter=(80, 200, 215), awning=None,
+               sign_text=None, door_color=BEAM, chimney=True, smoky=False, pitch=34.0,
                storey_h=(8.6, 7.2), shop=False, flowers=True):
     """A street-fronted town building. (fx, fz) is the middle of the front wall's face; `out` is the
     outward normal of that front ((±1, 0) or (0, ±1)); the body runs `depth` studs inward and
@@ -1816,34 +1995,34 @@ def town_house(name, fx, fz, out, width, depth, y, rng, storeys=2, roof="eaves",
     top = base + s1 + s2
     d0 = -0.9 if storeys > 1 else 0.0  # front face of the top storey
     kids = [
-        P("Plinth", (W + 0.6, 1.7, D + 0.6), 0, 0.45, D / 2, TOWN_PLINTH, "Cobblestone"),
-        P("Ground", (W, s1, D), 0, base + s1 / 2, D / 2, wall, "Plaster"),
+        P("Plinth", (W + 0.6, 1.7, D + 0.6), 0, 0.45, D / 2, TOWN_PLINTH, "SmoothPlastic"),
+        P("SmoothPlastic", (W, s1, D), 0, base + s1 / 2, D / 2, wall, "SmoothPlastic"),
     ]
     if storeys > 1:
-        kids.append(P("Upper", (W, s2, D - d0), 0, base + s1 + s2 / 2, (D + d0) / 2, wall, "Plaster"))
-        kids.append(P("JettyBeam", (W + 0.4, 0.8, 1.3), 0, base + s1 - 0.1, -0.45, TOWN_TRIM, "Wood", collide=False))
+        kids.append(P("Upper", (W, s2, D - d0), 0, base + s1 + s2 / 2, (D + d0) / 2, wall, "SmoothPlastic"))
+        kids.append(P("JettyBeam", (W + 0.4, 0.8, 1.3), 0, base + s1 - 0.1, -0.45, TOWN_TRIM, "SmoothPlastic", collide=False))
     # Timber corner posts on the ground storey, and a head beam under the eaves.
     for side in (-1, 1):
-        kids.append(P(f"Corner{side}", (0.8, s1, 0.8), side * (W / 2 - 0.25), base + s1 / 2, -0.15, TOWN_TRIM, "Wood",
+        kids.append(P(f"Corner{side}", (0.8, s1, 0.8), side * (W / 2 - 0.25), base + s1 / 2, -0.15, TOWN_TRIM, "SmoothPlastic",
                       collide=False))
     # Its top sits 0.08 under the wall's (flush, the two tops z-fought where the beam bites the wall).
-    kids.append(P("HeadBeam", (W + 0.3, 0.7, 0.5), 0, top - 0.43, d0 - 0.1, TOWN_TRIM, "Wood", collide=False))
+    kids.append(P("HeadBeam", (W + 0.3, 0.7, 0.5), 0, top - 0.43, d0 - 0.1, TOWN_TRIM, "SmoothPlastic", collide=False))
 
     def window(tag, u, hc, face, w=2.6, h=3.0, shutters=True, box=False):
-        kids.append(P(f"Frame{tag}", (w + 0.7, h + 0.7, 0.3), u, hc, face - 0.1, TOWN_TRIM, "Wood", collide=False))
+        kids.append(P(f"Frame{tag}", (w + 0.7, h + 0.7, 0.3), u, hc, face - 0.1, TOWN_TRIM, "SmoothPlastic", collide=False))
         kids.append(P(f"Glass{tag}", (w, h, 0.2), u, hc, face - 0.2, TOWN_GLASS, "Glass", collide=False, query=False,
                       extra={"Reflectance": 0.18}))
-        kids.append(P(f"Mullion{tag}", (0.22, h, 0.24), u, hc, face - 0.24, TOWN_TRIM, "Wood", collide=False,
+        kids.append(P(f"Mullion{tag}", (0.22, h, 0.24), u, hc, face - 0.24, TOWN_TRIM, "SmoothPlastic", collide=False,
                       query=False, shadow=False))
         if shutters:
             for sgn in (-1, 1):
                 kids.append(P(f"Shutter{tag}{sgn}", (w / 2 - 0.1, h + 0.5, 0.2), u + sgn * (w / 2 + w / 4 + 0.35),
-                              hc, face - 0.12, shutter, "WoodPlanks", collide=False, query=False, shadow=False))
+                              hc, face - 0.12, shutter, "SmoothPlastic", collide=False, query=False, shadow=False))
         if box:
             by = hc - h / 2 - 0.75
-            kids.append(P(f"FlowerBox{tag}", (w + 0.6, 0.7, 0.9), u, by, face - 0.45, TOWN_TRIM, "WoodPlanks",
+            kids.append(P(f"FlowerBox{tag}", (w + 0.6, 0.7, 0.9), u, by, face - 0.45, TOWN_TRIM, "SmoothPlastic",
                           collide=False))
-            kids.append(P(f"Leaves{tag}", (w + 0.4, 0.7, 0.8), u, by + 0.6, face - 0.5, (84, 142, 56), "LeafyGrass",
+            kids.append(P(f"Leaves{tag}", (w + 0.4, 0.7, 0.8), u, by + 0.6, face - 0.5, (110, 232, 110), "SmoothPlastic",
                           collide=False, query=False, shadow=False))
             for k in range(3):
                 kids.append(P(f"Bloom{tag}{k}", (0.65, 0.65, 0.65), u + (k - 1) * (w / 3), by + 1.05, face - 0.55,
@@ -1852,9 +2031,9 @@ def town_house(name, fx, fz, out, width, depth, y, rng, storeys=2, roof="eaves",
 
     # Ground storey: the door off-centre, a shop window or a house window beside it.
     door_u = -W / 2 + 3.0 if W >= 10 else 0.0
-    kids.append(P("DoorFrame", (4.0, 7.4, 0.3), door_u, base + 3.7, -0.1, TOWN_TRIM, "Wood", collide=False))
-    kids.append(P("Door", (3.0, 6.8, 0.3), door_u, base + 3.4, -0.2, door_color, "WoodPlanks", collide=False))
-    kids.append(P("Step", (4.4, 0.8, 1.4), door_u, 0.9, -0.7, TOWN_PLINTH, "Slate"))
+    kids.append(P("DoorFrame", (4.0, 7.4, 0.3), door_u, base + 3.7, -0.1, TOWN_TRIM, "SmoothPlastic", collide=False))
+    kids.append(P("Door", (3.0, 6.8, 0.3), door_u, base + 3.4, -0.2, door_color, "SmoothPlastic", collide=False))
+    kids.append(P("Step", (4.4, 0.8, 1.4), door_u, 0.9, -0.7, TOWN_PLINTH, "SmoothPlastic"))
     rest = W / 2 - (door_u + 2.0)  # frontage left of the door, beside it
     if W >= 10:
         wu = door_u + 2.0 + rest / 2
@@ -1872,10 +2051,10 @@ def town_house(name, fx, fz, out, width, depth, y, rng, storeys=2, roof="eaves",
         for k in range(strips):
             su = -aw / 2 + aw * (k + 0.5) / strips
             kids.append(P(f"Awning{k}", (aw / strips, 0.22, reach), su, ah - math.sin(drop) * reach / 2,
-                          -math.cos(drop) * reach / 2, awning if k % 2 == 0 else AWNING_CREAM, "Fabric",
+                          -math.cos(drop) * reach / 2, awning if k % 2 == 0 else AWNING_CREAM, "SmoothPlastic",
                           rot_x(-22), collide=False, query=False, layer="roof"))
         kids.append(P("Valance", (aw, 0.7, 0.14), 0, ah - math.sin(drop) * reach - 0.3, -math.cos(drop) * reach - 0.02,
-                      awning, "Fabric", collide=False, query=False, shadow=False, layer="roof"))
+                      awning, "SmoothPlastic", collide=False, query=False, shadow=False, layer="roof"))
     # Upper storey (or the attic of a single storey): two shuttered windows, flower boxes below.
     if storeys > 1:
         hc = base + s1 + s2 * 0.5
@@ -1888,8 +2067,8 @@ def town_house(name, fx, fz, out, width, depth, y, rng, storeys=2, roof="eaves",
         su = W / 2 - 1.4 if storeys > 1 else W / 2 + 0.2
         sh = base + s1 + 0.9 if storeys > 1 else base + s1 - 3.1
         sd = d0 if storeys > 1 else 0.0
-        kids.append(P("SignArm", (0.3, 0.3, 3.2), su, sh + 1.15, sd - 1.6, (40, 38, 36), "Metal", collide=False))
-        kids.append(P("SignBoard", (0.3, 2.0, 2.6), su, sh, sd - 1.9, TOWN_TRIM, "WoodPlanks", collide=False,
+        kids.append(P("SignArm", (0.3, 0.3, 3.2), su, sh + 1.15, sd - 1.6, (44, 112, 240), "SmoothPlastic", collide=False))
+        kids.append(P("SignBoard", (0.3, 2.0, 2.6), su, sh, sd - 1.9, TOWN_TRIM, "SmoothPlastic", collide=False,
                       children=[label_gui("Left", sign_text, "", (255, 232, 170), px=60),
                                 label_gui("Right", sign_text, "", (255, 232, 170), px=60)]))
     # Roof.
@@ -1907,8 +2086,8 @@ def town_house(name, fx, fz, out, width, depth, y, rng, storeys=2, roof="eaves",
         for gu in (-W / 2 + 0.5, W / 2 - 0.5):
             for sgn, yaw in ((-1, 0), (1, 180)):
                 kids.append(P(f"Gable{sgn}", (1, rise, span_d / 2), gu, top + rise / 2, dc + sgn * span_d / 4, wall,
-                              "Plaster", rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
-        kids.append(P("Ridge", (W + 1.8, 0.6, 1.1), 0, top + rise + 0.45, dc, TOWN_TRIM, "Wood", collide=False,
+                              "SmoothPlastic", rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
+        kids.append(P("Ridge", (W + 1.8, 0.6, 1.1), 0, top + rise + 0.45, dc, TOWN_TRIM, "SmoothPlastic", collide=False,
                       layer="roof"))
     else:
         half = W / 2 + ov
@@ -1919,21 +2098,21 @@ def town_house(name, fx, fz, out, width, depth, y, rng, storeys=2, roof="eaves",
                           dc - 0.4, roof_color, roof_material, rot_z(-pitch * sgn), collide=False, layer="roof"))
         for gd in (d0 + 0.5, D - 0.5):
             for sgn, yaw in ((-1, 90), (1, -90)):
-                kids.append(P(f"Gable{sgn}", (1, rise, W / 2), sgn * W / 4, top + rise / 2, gd, wall, "Plaster",
+                kids.append(P(f"Gable{sgn}", (1, rise, W / 2), sgn * W / 4, top + rise / 2, gd, wall, "SmoothPlastic",
                               rot_y(yaw), cls="WedgePart", collide=False, layer="roof"))
         # A diamond attic window in the street gable.
         ah = top + rise * 0.38
-        kids.append(P("AtticFrame", (2.0, 2.0, 0.3), 0, ah, d0 - 0.1, TOWN_TRIM, "Wood", rot_z(45), collide=False))
+        kids.append(P("AtticFrame", (2.0, 2.0, 0.3), 0, ah, d0 - 0.1, TOWN_TRIM, "SmoothPlastic", rot_z(45), collide=False))
         kids.append(P("AtticGlass", (1.4, 1.4, 0.2), 0, ah, d0 - 0.2, TOWN_GLASS, "Glass", rot_z(45), collide=False,
                       query=False, extra={"Reflectance": 0.18}))
-        kids.append(P("Ridge", (1.1, 0.6, span_d + 1.8), 0, top + rise + 0.45, dc - 0.4, TOWN_TRIM, "Wood",
+        kids.append(P("Ridge", (1.1, 0.6, span_d + 1.8), 0, top + rise + 0.45, dc - 0.4, TOWN_TRIM, "SmoothPlastic",
                       collide=False, layer="roof"))
     if chimney:
         cu, cd = (W * 0.28, D * 0.62) if roof == "eaves" else (W * 0.22, D * 0.75)
         ch_top = top + rise + 2.2
-        kids.append(P("Chimney", (2.0, ch_top - top + 1.0, 2.0), cu, (top - 1.0 + ch_top) / 2, cd, (178, 96, 70),
-                      "Brick", collide=False))
-        kids.append(P("ChimneyCap", (2.6, 0.5, 2.6), cu, ch_top + 0.25, cd, TOWN_PLINTH, "Slate", collide=False,
+        kids.append(P("Chimney", (2.0, ch_top - top + 1.0, 2.0), cu, (top - 1.0 + ch_top) / 2, cd, (250, 120, 90),
+                      "SmoothPlastic", collide=False))
+        kids.append(P("ChimneyCap", (2.6, 0.5, 2.6), cu, ch_top + 0.25, cd, TOWN_PLINTH, "SmoothPlastic", collide=False,
                       children=[smoke(2.6, 0.2, 3.0, (236, 228, 218))] if smoky else None))
     return model(name, kids)
 
@@ -1951,24 +2130,24 @@ def street_stall(name, x, z, out, rng, canopy=(246, 196, 52), length=7.0, goods=
     kids = []
     for su in (-1, 1):
         for sd, hh in ((-1, 7.4), (1, 8.4)):
-            kids.append(P("Post", (0.6, hh, 0.6), su * (L / 2 - 0.3), hh / 2, sd * (Dp / 2 - 0.3), TOWN_TRIM, "Wood"))
+            kids.append(P("Post", (0.6, hh, 0.6), su * (L / 2 - 0.3), hh / 2, sd * (Dp / 2 - 0.3), TOWN_TRIM, "SmoothPlastic"))
     strips = 4
     for k in range(strips):
         su = -L / 2 - 0.4 + (L + 0.8) * (k + 0.5) / strips
         kids.append(P(f"Canopy{k}", ((L + 0.8) / strips, 0.2, Dp + 1.8), su, 8.0, -0.1,
-                      canopy if k % 2 == 0 else AWNING_CREAM, "Fabric", rot_x(-16), collide=False, query=False,
+                      canopy if k % 2 == 0 else AWNING_CREAM, "SmoothPlastic", rot_x(-16), collide=False, query=False,
                       layer="roof"))
-    kids.append(P("Valance", (L + 0.8, 0.6, 0.12), 0, 6.9, -Dp / 2 - 1.05, canopy, "Fabric", collide=False,
+    kids.append(P("Valance", (L + 0.8, 0.6, 0.12), 0, 6.9, -Dp / 2 - 1.05, canopy, "SmoothPlastic", collide=False,
                   query=False, shadow=False, layer="roof"))
-    kids.append(P("Counter", (L - 0.4, 0.35, 1.8), 0, 3.2, -Dp / 2 + 1.1, (170, 122, 76), "WoodPlanks"))
-    kids.append(P("CounterFront", (L - 0.6, 3.0, 0.3), 0, 1.5, -Dp / 2 + 0.3, (122, 80, 48), "WoodPlanks"))
+    kids.append(P("Counter", (L - 0.4, 0.35, 1.8), 0, 3.2, -Dp / 2 + 1.1, TIMBER, "SmoothPlastic"))
+    kids.append(P("CounterFront", (L - 0.6, 3.0, 0.3), 0, 1.5, -Dp / 2 + 0.3, BEAM, "SmoothPlastic"))
     for k, color in enumerate(goods):
         cu = (k - 0.5) * (L * 0.45)
-        kids.append(P(f"Crate{k}", (2.4, 0.9, 1.5), cu, 3.8, -Dp / 2 + 1.1, (140, 96, 58), "WoodPlanks", collide=False,
+        kids.append(P(f"Crate{k}", (2.4, 0.9, 1.5), cu, 3.8, -Dp / 2 + 1.1, TIMBER, "SmoothPlastic", collide=False,
                       shadow=False))
         kids.append(P(f"Heap{k}", (2.1, 0.8, 1.2), cu, 4.35, -Dp / 2 + 1.1, color, "SmoothPlastic",
                       rot_y(rng.uniform(-6, 6)), shape="Ball", collide=False, query=False, shadow=False))
-    kids.append(P("Sack", (1.8, 1.6, 1.6), L / 2 - 1.4, 0.8, Dp / 2 - 1.2, (198, 176, 128), "Fabric", rot_y(rng.uniform(-20, 20)),
+    kids.append(P("Sack", (1.8, 1.6, 1.6), L / 2 - 1.4, 0.8, Dp / 2 - 1.2, (255, 214, 150), "SmoothPlastic", rot_y(rng.uniform(-20, 20)),
                   collide=False, shadow=False))
     return model(name, kids)
 
@@ -1979,15 +2158,15 @@ def street_lamp(name, x, y, z, yaw=0.0):
     fwd = apply(rot_y(yaw), (0, 0, -1))
     r = rot_y(yaw)
     lx, lz = x + fwd[0] * 2.2, z + fwd[2] * 2.2
-    iron = (46, 42, 40)
+    iron = (44, 112, 240)
     return model(name, [
-        part("Footing", (1.3, 0.8, 1.3), (x, y + 0.4, z), TOWN_PLINTH, "Cobblestone", r),
-        part("Post", (0.6, 9.6, 0.6), (x, y + 5.2, z), TOWN_TRIM, "Wood", r),
-        part("Arm", (0.3, 0.3, 2.8), (x + fwd[0] * 1.2, y + 9.7, z + fwd[2] * 1.2), iron, "Metal", r, collide=False),
-        part("Hood", (1.2, 0.4, 1.2), (lx, y + 9.25, lz), iron, "Metal", mul(r, rot_y(45)), collide=False, shadow=False),
+        part("Footing", (1.3, 0.8, 1.3), (x, y + 0.4, z), TOWN_PLINTH, "SmoothPlastic", r),
+        part("Post", (0.6, 9.6, 0.6), (x, y + 5.2, z), TOWN_TRIM, "SmoothPlastic", r),
+        part("Arm", (0.3, 0.3, 2.8), (x + fwd[0] * 1.2, y + 9.7, z + fwd[2] * 1.2), iron, "SmoothPlastic", r, collide=False),
+        part("Hood", (1.2, 0.4, 1.2), (lx, y + 9.25, lz), iron, "SmoothPlastic", mul(r, rot_y(45)), collide=False, shadow=False),
         part("Glow", (0.7, 1.0, 0.7), (lx, y + 8.55, lz), (255, 206, 138), "Neon", r, collide=False, query=False,
              shadow=False, transparency=0.35, children=[light(18, 1.0)]),
-        part("Plate", (0.95, 0.2, 0.95), (lx, y + 7.95, lz), iron, "Metal", r, collide=False, query=False, shadow=False),
+        part("Plate", (0.95, 0.2, 0.95), (lx, y + 7.95, lz), iron, "SmoothPlastic", r, collide=False, query=False, shadow=False),
     ])
 
 
@@ -2023,34 +2202,34 @@ def street_bunting(name, a, b, heights, rng, pennants=10, sag=1.4):
         t0, t1 = half * 0.5, half * 0.5 + 0.5
         p0 = (ax + dx * seg * t0, cord_y(t0), az + dz * seg * t0)
         p1 = (ax + dx * seg * t1, cord_y(t1), az + dz * seg * t1)
-        kids.append(beam(f"Cord{half}", p0, p1, 0.12, (70, 56, 44), "Fabric", collide=False, query=False, shadow=False))
+        kids.append(beam(f"Cord{half}", p0, p1, 0.12, BEAM, "SmoothPlastic", collide=False, query=False, shadow=False))
     for k in range(pennants):
         t = (k + 0.5) / pennants
         cx_, cz_ = ax + dx * seg * t, az + dz * seg * t
         kids.append(part(f"Pennant{k}", (1.3, 1.5, 0.08), (cx_, cord_y(t) - 0.8, cz_),
-                         [(246, 200, 50), (232, 88, 80), (72, 164, 176), (250, 244, 230), (240, 140, 60)][k % 5],
-                         "Fabric", mul(rot_y(yaw), rot_x(180)), cls="WedgePart", collide=False, query=False,
+                         [(246, 200, 50), (232, 88, 80), (90, 200, 215), (255, 240, 210), (240, 140, 60)][k % 5],
+                         "SmoothPlastic", mul(rot_y(yaw), rot_x(180)), cls="WedgePart", collide=False, query=False,
                          shadow=False, layer="roof"))
     return model(name, kids, attrs={"Bunting": True})
 
 
 # ── Hub: Hearthmere ───────────────────────────────────────────────────────────
 def build_hub(rng):
-    ground = [slab("HubFloor", -104, 104, -104, 104, HUB_Y, GRASS, "Grass")]
+    ground = [slab("HubFloor", -104, 104, -104, 104, HUB_Y, GRASS, "SmoothPlastic")]
     road = HUB_Y + 0.2
-    ground += disc("Plaza", 0, 0, 27, road + 0.1, 0.7, PATH, "Cobblestone")
+    ground += disc("Plaza", 0, 0, 27, road + 0.1, 0.7, PATH, "SmoothPlastic")
     ground += [
-        box("RoadSouth", -8, 8, road - 0.6, road, 25, 104, PATH, "Cobblestone", layer="ground"),
+        box("RoadSouth", -8, 8, road - 0.6, road, 25, 104, PATH, "SmoothPlastic", layer="ground"),
         # The High Street's surface is painted in voxel Terrain by WorldTerrain.server.luau (cobbles
         # worn to earth down the cart line, grass and soil creeping in at the gutters); this slab
         # keeps its collision and is hidden at runtime.
-        box("RoadNorth", -8, 8, road - 0.6, road, -104, -25, PATH, "Cobblestone", layer="ground",
+        box("RoadNorth", -8, 8, road - 0.6, road, -104, -25, PATH, "SmoothPlastic", layer="ground",
             attrs={"TerrainPaving": True}),
-        box("RoadWest", -104, -25, road - 0.6, road, -8, 8, PATH, "Cobblestone", layer="ground"),
-        box("RoadEast", 25, 104, road - 0.6, road, -8, 8, PATH, "Cobblestone", layer="ground"),
-        box("ShopYard", -84, -40, road - 0.6, road, -18, -8, PATH_EDGE, "Cobblestone", layer="ground"),
-        box("TrainingYard", 42, 86, road - 0.6, road, -48, -8, (150, 120, 86), "Ground", layer="ground"),
-        box("QuestCourt", 8, 26, road - 0.6, road, 40, 62, PATH_EDGE, "Cobblestone", layer="ground"),
+        box("RoadWest", -104, -25, road - 0.6, road, -8, 8, PATH, "SmoothPlastic", layer="ground"),
+        box("RoadEast", 25, 104, road - 0.6, road, -8, 8, PATH, "SmoothPlastic", layer="ground"),
+        box("ShopYard", -84, -40, road - 0.6, road, -18, -8, PATH_EDGE, "SmoothPlastic", layer="ground"),
+        box("TrainingYard", 42, 86, road - 0.6, road, -48, -8, PATH, "SmoothPlastic", layer="ground"),
+        box("QuestCourt", 8, 26, road - 0.6, road, 40, 62, PATH_EDGE, "SmoothPlastic", layer="ground"),
     ]
     visual = []
     proxies = []
@@ -2076,11 +2255,47 @@ def build_hub(rng):
     REGISTRY[:] = [e for e in REGISTRY if not (e["layer"] == "cliff" and (
         re.match(r"^HubCliff\d+_\d+(_cap)?$", e["name"]) or e["name"] == "CornerBastion"))]
 
+    # Hearthmere castle wall: chunky cream-sandstone masonry with rounded, crenellated corner and
+    # gatehouse towers all the way around the ring -- every side (the Ascension, Iron Lowlands,
+    # Caldera and Frostbound gates alike), not just the north stretch a player first sees from the
+    # plaza. Wrapping all four sides is deliberate: a facade on only one side read as a stone
+    # front tacked onto an otherwise bare dirt-brown canyon, not a cobblestone castle. The rest of
+    # the ring's height (the crest above the facade, and behind it) stays the sculpted canyon rock
+    # WorldTerrain.server.luau builds at runtime, so Hearthmere still reads as a fortress built
+    # into the canyon rather than a wall floating apart from it. No gate itself is moved or
+    # resized -- these towers only flank each one. Everything here is decorative
+    # (CanCollide=False): cliff_run's own invisible proxies, generated above unchanged, still hold
+    # players in along the whole ring.
+    castle_rng = random.Random(20260921)
+    visual.append(castle_wall("CastleWallNW", (-100, -100), (-19.5, -100), -1, HUB_Y, castle_rng))
+    visual.append(castle_wall("CastleWallNE", (19.5, -100), (100, -100), -1, HUB_Y, castle_rng))
+    visual.append(castle_wall("CastleWallEN", (100, -100), (100, -19.5), -1, HUB_Y, castle_rng))
+    visual.append(castle_wall("CastleWallES", (100, 19.5), (100, 100), -1, HUB_Y, castle_rng))
+    visual.append(castle_wall("CastleWallSE", (100, 100), (19.5, 100), -1, HUB_Y, castle_rng))
+    visual.append(castle_wall("CastleWallSW", (-19.5, 100), (-100, 100), -1, HUB_Y, castle_rng))
+    visual.append(castle_wall("CastleWallWS", (-100, 100), (-100, 19.5), -1, HUB_Y, castle_rng))
+    visual.append(castle_wall("CastleWallWN", (-100, -19.5), (-100, -100), -1, HUB_Y, castle_rng))
+    # Heights are picked clear of the wall's own course tops (y 34/34.6/35.6/40 above HUB_Y=10) so
+    # a tower trunk or rim never lands exactly coplanar with the wall body, its buttress caps or
+    # its parapet lip: an exact match there is invisible in the model but z-fights in Studio.
+    visual.append(castle_tower("CastleTowerNW", -100, -100, HUB_Y, castle_rng, height=34))
+    visual.append(castle_tower("CastleTowerNE", 100, -100, HUB_Y, castle_rng, height=34))
+    visual.append(castle_tower("CastleTowerSE", 100, 100, HUB_Y, castle_rng, height=34))
+    visual.append(castle_tower("CastleTowerSW", -100, 100, HUB_Y, castle_rng, height=34))
+    visual.append(castle_tower("CastleTowerGateNW", -24, -100, HUB_Y, castle_rng, radius=6.5, height=28))
+    visual.append(castle_tower("CastleTowerGateNE", 24, -100, HUB_Y, castle_rng, radius=6.5, height=28))
+    visual.append(castle_tower("CastleTowerGateSW", -24, 100, HUB_Y, castle_rng, radius=6.5, height=28))
+    visual.append(castle_tower("CastleTowerGateSE", 24, 100, HUB_Y, castle_rng, radius=6.5, height=28))
+    visual.append(castle_tower("CastleTowerGateEN", 100, -24, HUB_Y, castle_rng, radius=6.5, height=28))
+    visual.append(castle_tower("CastleTowerGateES", 100, 24, HUB_Y, castle_rng, radius=6.5, height=28))
+    visual.append(castle_tower("CastleTowerGateWN", -100, -24, HUB_Y, castle_rng, radius=6.5, height=28))
+    visual.append(castle_tower("CastleTowerGateWS", -100, 24, HUB_Y, castle_rng, radius=6.5, height=28))
+
     # Monument: a sword in a stepped stone plinth, orientation landmark at the plaza centre.
     mon = []
     for k, (w, h) in enumerate(((13, 1.2), (9.5, 1.4), (6.5, 3.2))):
         base = HUB_Y + 0.2 + sum(hh for _, hh in ((13, 1.2), (9.5, 1.4), (6.5, 3.2))[:k])
-        mon.append(part(f"Step{k}", (w, h, w), (0, base + h / 2, 0), STONE if k < 2 else STONE_DARK, "Cobblestone",
+        mon.append(part(f"Step{k}", (w, h, w), (0, base + h / 2, 0), STONE if k < 2 else STONE_DARK, "SmoothPlastic",
                         rot_y(45 * k)))
     top = HUB_Y + 0.2 + 5.8
     tilt = rot_z(7)
@@ -2091,16 +2306,16 @@ def build_hub(rng):
 
     # Distances along the axis from where the blade enters the stone (negative = buried).
     mon += [
-        part("Blade", (0.6, 12, 2.2), along(4.5), (196, 200, 206), "Metal", tilt, collide=False),  # -1.5 .. 10.5
-        part("Fuller", (0.64, 9, 0.5), along(5.2), (150, 154, 162), "Metal", tilt, collide=False),
+        part("Blade", (0.6, 12, 2.2), along(4.5), (200, 220, 255), "Metal", tilt, collide=False),  # -1.5 .. 10.5
+        part("Fuller", (0.64, 9, 0.5), along(5.2), (150, 176, 240), "Metal", tilt, collide=False),
         part("Guard", (1.2, 0.9, 7), along(10.95), GOLD, "Metal", tilt, collide=False),
-        part("Grip", (0.9, 3.2, 0.9), along(13.0), (84, 52, 36), "Fabric", tilt, collide=False),
+        part("Grip", (0.9, 3.2, 0.9), along(13.0), BEAM, "SmoothPlastic", tilt, collide=False),
         part("Pommel", (1.6, 1.6, 1.6), along(15.2), GOLD, "Metal", tilt, collide=False, shape="Ball"),
     ]
     visual.append(model("SwordMonument", mon))
 
     # Spawn pad + travel board.
-    visual += disc("SpawnPad", 0, -40, 6, HUB_Y + 0.45, 0.5, STONE, "Slate", collide=False, layer="decal")
+    visual += disc("SpawnPad", 0, -40, 6, HUB_Y + 0.45, 0.5, STONE, "SmoothPlastic", collide=False, layer="decal")
     for k in range(8):  # rune ring
         a = math.tau * k / 8
         visual.append(part(f"SpawnRune{k}", (1.0, 0.12, 1.0), (math.cos(a) * 5.0, HUB_Y + 0.56, -40 + math.sin(a) * 5.0),
@@ -2114,25 +2329,25 @@ def build_hub(rng):
     visual.append(smithy("Smithy", -82, -44, -50, -20, HUB_Y, rng))
 
     # Skill trainer (east): fenced yard with dummies and a hut.
-    visual.append(timber_house("TrainerHut", 70, 88, -50, -36, HUB_Y, 10, "W", rng, door_w=5, roof_color=(84, 70, 60), door=True))
+    visual.append(timber_house("TrainerHut", 70, 88, -50, -36, HUB_Y, 10, "W", rng, door_w=5, roof_color=(80, 150, 240), door=True))
     visual.append(fence_run("TrainingFenceN", (42, -50), (70, -50), road))
     visual.append(fence_run("TrainingFenceW", (42, -49.5), (42, -10), road, gap=(26, 40), skip_first_post=True))
     visual.append(fence_run("TrainingFenceE", (88, -36), (88, -10), road))
     for k, (x, z) in enumerate(((52, -40), (60, -30), (68, -22), (76, -28))):
         visual.append(model(f"Dummy{k}", [
-            part("Post", (0.8, 6, 0.8), (x, HUB_Y + 3, z), BEAM, "Wood", collide=False),
-            part("Body", (2.4, 3, 1.4), (x, HUB_Y + 4.4, z), (196, 170, 100), "Sand", collide=False),
-            part("Arms", (5, 0.6, 0.6), (x, HUB_Y + 5.2, z), BEAM, "Wood", collide=False),
+            part("Post", (0.8, 6, 0.8), (x, HUB_Y + 3, z), BEAM, "SmoothPlastic", collide=False),
+            part("Body", (2.4, 3, 1.4), (x, HUB_Y + 4.4, z), (255, 214, 120), "SmoothPlastic", collide=False),
+            part("Arms", (5, 0.6, 0.6), (x, HUB_Y + 5.2, z), BEAM, "SmoothPlastic", collide=False),
         ], attrs={"TrainingDummy": True}))  # HubAmbience: the Skill Trainer practises on these
     visual.append(sign("TrainerSign", 50, HUB_Y, -10.5, 180, 10, 3.6, "Skill Trainer", "Reset your skill points"))
 
     # Rebirth shrine (south-east): octagonal dais, pillars, a pale floating crystal.
-    visual += disc("ShrineDais", 64, 40, 15, HUB_Y + 1.2, 1.2, STONE, "Marble", layer="prop")
-    visual += disc("ShrineInner", 64, 40, 9, HUB_Y + 2.2, 1.0, (200, 196, 186), "Marble", layer="prop")
+    visual += disc("ShrineDais", 64, 40, 15, HUB_Y + 1.2, 1.2, STONE, "SmoothPlastic", layer="prop")
+    visual += disc("ShrineInner", 64, 40, 9, HUB_Y + 2.2, 1.0, (210, 198, 255), "SmoothPlastic", layer="prop")
     for k in range(4):
         a = math.radians(45 + 90 * k)
         px, pz = 64 + math.cos(a) * 12, 40 + math.sin(a) * 12
-        visual.append(part(f"ShrinePillar{k}", (2.4, 14, 2.4), (px, HUB_Y + 1.2 + 7, pz), (220, 216, 204), "Marble"))
+        visual.append(part(f"ShrinePillar{k}", (2.4, 14, 2.4), (px, HUB_Y + 1.2 + 7, pz), (222, 212, 255), "SmoothPlastic"))
         visual.append(part(f"ShrineCap{k}", (3.4, 1, 3.4), (px, HUB_Y + 15.7, pz), GOLD, "Metal", collide=False))
     visual.append(hologram_sword("RebirthHologram", 64, HUB_Y + 2.2, 40))
     visual.append(sign("ShrineSign", 76, HUB_Y, 22, yaw_facing(0, -1), 10, 3.6, "Rebirth Shrine", "Begin again, stronger"))
@@ -2142,11 +2357,11 @@ def build_hub(rng):
 
     # Houses and dressing (north-west, south-west).
     visual.append(timber_house("HouseNW1", -86, -60, -90, -70, HUB_Y, 11, "S", rng, door=True))
-    visual.append(timber_house("HouseNW2", -48, -26, -88, -68, HUB_Y, 10, "S", rng, wall_color=(206, 184, 150),
-                               roof_color=(90, 64, 48), door=True))
-    visual.append(timber_house("HouseSW", -86, -64, 66, 90, HUB_Y, 10, "E", rng, roof_color=(96, 58, 46), door=True))
-    visual.append(timber_house("HouseSE", 46, 68, 76, 94, HUB_Y, 10, "W", rng, wall_color=(214, 196, 158),
-                               roof_color=(84, 60, 50), door=True))
+    visual.append(timber_house("HouseNW2", -48, -26, -88, -68, HUB_Y, 10, "S", rng, wall_color=LEMON_WASH,
+                               roof_color=ROOF, door=True))
+    visual.append(timber_house("HouseSW", -86, -64, 66, 90, HUB_Y, 10, "E", rng, roof_color=(64, 200, 210), door=True))
+    visual.append(timber_house("HouseSE", 46, 68, 76, 94, HUB_Y, 10, "W", rng, wall_color=PEACH_WASH,
+                               roof_color=(255, 160, 56), door=True))
     visual.append(barrel("BarrelSE", 70, HUB_Y, 92, rng))
     visual.append(storage_shack("VaultShack", 22, 40, -94, -78, HUB_Y, rng))
     visual.append(woodpile("WoodpileNW", -58, HUB_Y, -84, 0, rng))
@@ -2175,16 +2390,16 @@ def build_hub(rng):
     for k in range(3):
         a = math.radians(30 + 120 * k)
         visual.append(part(f"SeatLog{k}", (1.2, 1.2, 4.4), (-24 + math.cos(a) * 4.8, HUB_Y + 0.6, 66 + math.sin(a) * 4.8),
-                           TRUNK, "Wood", mul(rot_y(-math.degrees(a)), rot_z(90)), shape="Cylinder"))
+                           BEAM, "SmoothPlastic", mul(rot_y(-math.degrees(a)), rot_z(90)), shape="Cylinder"))
     # Waterfall on the east cliff into a pool.
     visual.append(waterfall("Waterfall", 100, HUB_Y, 72, rng))
     # Trainer yard extras.
     visual.append(hay_bale("Hay0", 80, HUB_Y + 0.2, -14, 20))
     visual.append(hay_bale("Hay1", 83, HUB_Y + 0.2, -18, -30))
     visual.append(hay_bale("Hay2", 81.5, HUB_Y + 2.4, -16, 5))
-    visual.append(part("YardRack", (6, 5, 0.9), (48, HUB_Y + 2.5, -46), BEAM, "Wood"))
+    visual.append(part("YardRack", (6, 5, 0.9), (48, HUB_Y + 2.5, -46), BEAM, "SmoothPlastic"))
     for j in range(4):
-        visual.append(part(f"YardRackBlade{j}", (0.4, 4.2, 1), (46 + j * 1.3, HUB_Y + 3.6, -45.4), (150, 110, 70), "Wood",
+        visual.append(part(f"YardRackBlade{j}", (0.4, 4.2, 1), (46 + j * 1.3, HUB_Y + 3.6, -45.4), (188, 216, 255), "SmoothPlastic",
                            collide=False))
     # Bushes, stumps and boulders soften the edges.
     for k, (x, z) in enumerate(((-92, -40), (-92, 30), (92, -30), (92, 40), (-30, 92), (30, 92), (-60, -92), (60, -92),
@@ -2193,37 +2408,37 @@ def build_hub(rng):
     for k, (x, z) in enumerate(((-78, -52), (28, -74), (-24, 20), (44, 62))):
         visual.append(stump(f"Stump{k}", x, HUB_Y, z, rng))
     for k, (x, z) in enumerate(((-94, -34), (94, -62), (-50, 94), (82, 94), (-94, 86))):
-        visual.append(rock_cluster(f"HubBoulder{k}", x, HUB_Y, z, rng, color=HUB_ROCK_DARK, size=0.9))
+        visual.append(rock_cluster(f"HubBoulder{k}", x, HUB_Y, z, rng, color=ROCK_GRAY, size=0.9))
     visual.append(well("Well", -50, HUB_Y, 48, rng))
 
     # Sealed destinations: visible milestones through barred gates.
     visual.append(gate("GateIronLowlands", 0, HUB_Y, 100, 0, 24, 22, "Iron Lowlands", "Lv 1 - 10  |  Open",
                        sealed=False, region="IronLowlands", required_level=1))
     visual.append(gate("GateFrostbound", -100, HUB_Y, 0, -90, 24, 22, "Frostbound Glacier", "Lv 18+  |  Coming soon",
-                       sealed=True, accent=(90, 140, 190), region="FrostboundGlacier", required_level=18))
+                       sealed=True, accent=(110, 180, 250), region="FrostboundGlacier", required_level=18))
     visual.append(gate("GateCaldera", 100, HUB_Y, 0, 90, 24, 22, "Infernal Caldera", "Lv 34+  |  Coming soon",
-                       sealed=True, accent=(190, 80, 30), region="InfernalCaldera", required_level=34))
+                       sealed=True, accent=(250, 120, 50), region="InfernalCaldera", required_level=34))
     visual.append(gate("GateAscension", 0, HUB_Y, -100, 180, 24, 26, "Ascension Gate", "Celestial Summit  |  Coming soon",
                        sealed=True, stone=CELESTIAL, accent=GOLD, region="CelestialSummit", required_level=80))
     # Vistas behind sealed gates (collidable floors, unreachable past the portcullis).
     for k in range(8):  # celestial stair rising north
         z0 = -104 - k * 6
-        visual.append(box(f"AscensionStep{k}", -10, 10, 0, HUB_Y + 1.5 * (k + 1), z0 - 6, z0, CELESTIAL, "Marble",
+        visual.append(box(f"AscensionStep{k}", -10, 10, 0, HUB_Y + 1.5 * (k + 1), z0 - 6, z0, CELESTIAL, "SmoothPlastic",
                           layer="vista"))
     for side in (-1, 1):
         for k in range(3):
             visual.append(part(f"AscensionColumn{side}{k}", (3, 22 + k * 4, 3),
-                               (side * 11, HUB_Y + 11 + k * 6, -112 - k * 14), CELESTIAL, "Marble", collide=False,
+                               (side * 11, HUB_Y + 11 + k * 6, -112 - k * 14), CELESTIAL, "SmoothPlastic", collide=False,
                                layer="vista"))
-    visual.append(box("FrostVista", -150, -104, 0, HUB_Y + 2, -14, 14, FROST, "Snow", layer="vista"))
+    visual.append(box("FrostVista", -150, -104, 0, HUB_Y + 2, -14, 14, FROST, "SmoothPlastic", layer="vista"))
     for k in range(4):
         visual.append(part(f"FrostRock{k}", (10, 18 + k * 5, 12), (-118 - k * 9, HUB_Y + 8 + k * 2, -8 + k * 5),
-                           FROST, "Snow", rot_y(20 * k), collide=False, layer="vista"))
-    visual.append(box("CalderaVista", 104, 150, 0, HUB_Y, -14, 14, CALDERA, "Basalt", layer="vista"))
+                           FROST, "SmoothPlastic", rot_y(20 * k), collide=False, layer="vista"))
+    visual.append(box("CalderaVista", 104, 150, 0, HUB_Y, -14, 14, CALDERA, "SmoothPlastic", layer="vista"))
     visual.append(part("CalderaGlow", (3, 10, 20), (140, HUB_Y + 5, 0), EMBER, "Neon", collide=False, query=False,
                        transparency=0.35, layer="vista", children=[light(40, 2.0, (255, 120, 50))]))
     for k in range(3):
-        visual.append(part(f"MineBeam{k}", (1.4, 14, 1.4), (118 + k * 8, HUB_Y + 7, 10 - k), BEAM, "Wood",
+        visual.append(part(f"MineBeam{k}", (1.4, 14, 1.4), (118 + k * 8, HUB_Y + 7, 10 - k), BEAM, "SmoothPlastic",
                            collide=False, layer="vista"))
 
     # Void Rift portal (sealed) in the north-east quarter.
@@ -2233,12 +2448,12 @@ def build_hub(rng):
     right = apply(r, (1, 0, 0))
     for side in (-1, 1):
         vr.append(part(f"VoidPillar{side}", (4, 18, 4), (fx + right[0] * side * 8, HUB_Y + 9, fz + right[2] * side * 8),
-                       VOID, "Basalt", r))
-    vr.append(part("VoidArch", (21, 3.5, 4.4), (fx, HUB_Y + 19.5, fz), VOID, "Basalt", r))
+                       VOID, "SmoothPlastic", r))
+    vr.append(part("VoidArch", (21, 3.5, 4.4), (fx, HUB_Y + 19.5, fz), VOID, "SmoothPlastic", r))
     vr.append(part("VoidVeil", (12, 16, 0.4), (fx, HUB_Y + 8.5, fz), VOID_GLOW, "ForceField", r, collide=True,
                    query=False, transparency=0.3, shadow=False, children=[light(20, 0.9, VOID_GLOW)]))
     vr.append(sign("VoidSign", fx - 9, HUB_Y, fz + 9, yaw_facing(-1, 1), 9, 3.4, "Void Rift", "Lv 55+  |  Coming soon",
-                   board=(50, 36, 70), text=(220, 190, 255)))
+                   board=(120, 70, 200), text=(220, 190, 255)))
     visual.append(model("VoidRiftPortal", vr, attrs={"Region": "VoidRift", "Sealed": True, "RequiredLevel": 55}))
 
     # Trees in the green quarters, lamp posts along roads.
@@ -2267,34 +2482,34 @@ def high_street(ground, visual):
         sx = side
         # Gutter course (dark, flush with the cobbles), a raised pale curb, then the flagstone walk.
         ground.append(box(f"Gutter{'W' if side < 0 else 'E'}", *sorted((sx * 8.0, sx * 8.8)), HUB_Y - 0.4, HUB_Y + 0.27,
-                          z_gate, z_end, TOWN_GUTTER, "Slate", layer="ground"))
+                          z_gate, z_end, TOWN_GUTTER, "SmoothPlastic", layer="ground"))
         ground.append(box(f"Curb{'W' if side < 0 else 'E'}", *sorted((sx * 8.8, sx * 9.6)), HUB_Y - 0.4, HUB_Y + 0.62,
-                          z_gate, z_end + 0.4, TOWN_CURB, "Limestone", layer="ground"))
+                          z_gate, z_end + 0.4, TOWN_CURB, "SmoothPlastic", layer="ground"))
         ground.append(box(f"Walk{'W' if side < 0 else 'E'}", *sorted((sx * 9.6, sx * 14.0)), HUB_Y - 0.4, walk_top,
-                          z_gate, z_end, TOWN_WALK, "Slate", layer="ground"))
-    ground.append(box("WalkForecourt", -17.0, -14.0, HUB_Y - 0.4, walk_top, -94.0, -84.0, TOWN_WALK, "Slate",
+                          z_gate, z_end, TOWN_WALK, "SmoothPlastic", layer="ground"))
+    ground.append(box("WalkForecourt", -17.0, -14.0, HUB_Y - 0.4, walk_top, -94.0, -84.0, TOWN_WALK, "SmoothPlastic",
                       layer="ground"))
 
     # East row (fronts face west, lit by the afternoon sun): bakery, a tall gabled house, the tailor.
     visual.append(town_house("Bakery", 14, -48, (-1, 0), 12, 12, HUB_Y, trng, wall=LEMON_WASH, roof_color=TERRACOTTA,
-                             shutter=(54, 150, 164), awning=(226, 82, 70), sign_text="Bakery", shop=True, smoky=True))
+                             shutter=(72, 200, 220), awning=(250, 90, 80), sign_text="Bakery", shop=True, smoky=True))
     visual.append(town_house("GableHouseE", 14, -64, (-1, 0), 12, 11, HUB_Y, trng, roof="gable", wall=WHITEWASH,
-                             roof_color=ROOF_TEAL, roof_material="RoofShingles", shutter=(240, 186, 56),
-                             door_color=(54, 120, 132), storey_h=(8.6, 7.6), pitch=42.0))
+                             roof_color=ROOF_TEAL, roof_material="SmoothPlastic", shutter=(240, 186, 56),
+                             door_color=(70, 170, 190), storey_h=(8.6, 7.6), pitch=42.0))
     visual.append(town_house("Tailor", 14, -87.5, (-1, 0), 11, 6.6, HUB_Y, trng, storeys=1, wall=PEACH_WASH,
-                             roof_color=ROOF_BERRY, roof_material="RoofShingles", awning=(48, 150, 160),
+                             roof_color=ROOF_BERRY, roof_material="SmoothPlastic", awning=(72, 200, 220),
                              sign_text="Tailor", shop=True, storey_h=(9.6, 0.0), pitch=40.0, chimney=False))
     # West row: the Lemon Press cafe, a gabled house, a little lemon-washed cottage. It is kept to a
     # single storey: the mid-afternoon sun comes from the west, and taller fronts here would shade
     # the whole street; low ones throw their eaves' and gables' shadows only across its near half.
     visual.append(town_house("LemonPress", -14, -55.5, (1, 0), 12, 11, HUB_Y, trng, storeys=1, wall=CREAM_WASH,
-                             roof_color=ROOF_ORANGE, shutter=(90, 150, 60), awning=(246, 196, 52),
+                             roof_color=ROOF_ORANGE, shutter=(120, 210, 90), awning=(246, 196, 52),
                              sign_text="Lemon Press", shop=True, storey_h=(9.8, 0.0), pitch=30.0, smoky=True))
     visual.append(town_house("GableHouseW", -14, -71.5, (1, 0), 13, 10, HUB_Y, trng, storeys=1, roof="gable",
-                             wall=PEACH_WASH, roof_color=TERRACOTTA, shutter=(80, 140, 210), door_color=(150, 60, 56),
+                             wall=PEACH_WASH, roof_color=TERRACOTTA, shutter=(100, 170, 250), door_color=(230, 80, 80),
                              storey_h=(9.4, 0.0), pitch=40.0))
     visual.append(town_house("Cottage", -17, -89, (1, 0), 10, 6, HUB_Y, trng, storeys=1, roof="gable", wall=LEMON_WASH,
-                             roof_color=ROOF_TEAL, roof_material="RoofShingles", shutter=(232, 96, 80),
+                             roof_color=ROOF_TEAL, roof_material="SmoothPlastic", shutter=(250, 100, 90),
                              storey_h=(9.0, 0.0), pitch=45.0, chimney=False))
 
     # Stalls where people stop: one at the plaza end, one in the cottage's forecourt by the gate.
@@ -2659,56 +2874,63 @@ def build_horizon():
     view axis, its top vertex the summit, snow capped when tall). No collision, queries or shadows;
     the model is Persistent so none of it streams out. Seeded on its own, so it does not disturb the
     regions' layout."""
-    rng = random.Random(20260918)
-    kids = build_south_country()
+    # Scrapped entirely: Alex asked to remove the background mountains, foothills and the
+    # Sunspire hill (this whole far-country dressing: south country AND the north/east/west
+    # diamond-peak ranges), not just hide them client-side. Every part this used to build had
+    # collide=False, query=False, shadow=False -- pure decoration, no gameplay footprint -- so an
+    # empty Horizon model is safe: nothing depended on it existing.
     ex, ey, ez = HORIZON_EYE
-    # North, east and west: one range each, built like the south ranges (two-tone ridges, hazed
-    # about as far as the middle southern range), turned to face the town.
-    sides = [
-        ((0, -1), 1150, 1300, 9, (110, 220), 180),   # north
-        ((1, 0), 1150, 1400, 10, (100, 200), 90),    # east
-        ((-1, 0), 1150, 1400, 10, (100, 200), -90),  # west
-    ]
-    f = 0.44
-    for (ox, oz), out, half, n, (h0, h1), yaw in sides:
-        along = (oz, ox) if ox == 0 else (0, 1)
-        centre_z = 520 if ox != 0 else 0  # east/west ranges run alongside the whole map
-        turn = rot_y(yaw)
-        # which of a peak's halves (local -x or +x) ends up on the sun's side once turned
-        lx = apply(turn, (-1, 0, 0))
-        sun_first = lx[0] * SUN_XZ[0] + lx[2] * SUN_XZ[1] > 0
-        sun, shade = haze(HORIZON_SUN, f), haze(HORIZON_SHADE, f)
-        if not sun_first:
-            sun, shade = shade, sun
-        for k in range(n):
-            t = (k + rng.uniform(0.2, 0.8)) / n * 2 - 1
-            d = out + rng.uniform(-80, 140)
-            px = ox * d + along[0] * t * half
-            pz = oz * d + along[1] * t * half + centre_z
-            h = rng.uniform(h0, h1)
-            left, right = h * rng.uniform(1.4, 2.2), h * rng.uniform(1.4, 2.2)
-            depth = rng.uniform(160, 240)
-            lean = rng.uniform(16, 26)
-            dist = math.hypot(px - ex, pz - ez)
-            ks = _sky_k("ring", dist)
-            base = ey - SKY_DROP / ks
-            stretch = (h - base) / (h + 20)
-            group = _peak(f"Side{len(kids):03d}", 0, 0, h, left * stretch, right * stretch, depth, sun, lean,
-                          base=base, shade=shade)
-            if h > (h0 + h1) / 2:
-                c = 0.22
-                snow_sun, snow_shade = haze(HORIZON_SNOW, f * 0.8), haze(HORIZON_SNOW_SHADE, f * 0.8)
-                if not sun_first:
-                    snow_sun, snow_shade = snow_shade, snow_sun
-                group += _peak(f"SideSnow{len(kids):03d}", 0, 0, h + 1, left * c, right * c, depth + 6, snow_sun,
-                               lean, base=h - (h + 20) * c, shade=snow_shade)
-            for node in group:  # turn to face the town, then stand at (px, pz)
-                cf = node["properties"]["CFrame"]["CFrame"]
-                x, y, z = cf["position"]
-                q = apply(turn, (x, y, z))
-                cf["position"] = [_r(q[0] + px), _r(q[1]), _r(q[2] + pz)]
-                cf["orientation"] = [[_r(v) for v in row] for row in mul(turn, cf["orientation"])]
-            kids += _to_sky(group, ks)
+    kids = []
+    if False:
+        rng = random.Random(20260918)
+        kids = build_south_country()
+        # North, east and west: one range each, built like the south ranges (two-tone ridges,
+        # hazed about as far as the middle southern range), turned to face the town.
+        sides = [
+            ((0, -1), 1150, 1300, 9, (110, 220), 180),   # north
+            ((1, 0), 1150, 1400, 10, (100, 200), 90),    # east
+            ((-1, 0), 1150, 1400, 10, (100, 200), -90),  # west
+        ]
+        f = 0.44
+        for (ox, oz), out, half, n, (h0, h1), yaw in sides:
+            along = (oz, ox) if ox == 0 else (0, 1)
+            centre_z = 520 if ox != 0 else 0  # east/west ranges run alongside the whole map
+            turn = rot_y(yaw)
+            # which of a peak's halves (local -x or +x) ends up on the sun's side once turned
+            lx = apply(turn, (-1, 0, 0))
+            sun_first = lx[0] * SUN_XZ[0] + lx[2] * SUN_XZ[1] > 0
+            sun, shade = haze(HORIZON_SUN, f), haze(HORIZON_SHADE, f)
+            if not sun_first:
+                sun, shade = shade, sun
+            for k in range(n):
+                t = (k + rng.uniform(0.2, 0.8)) / n * 2 - 1
+                d = out + rng.uniform(-80, 140)
+                px = ox * d + along[0] * t * half
+                pz = oz * d + along[1] * t * half + centre_z
+                h = rng.uniform(h0, h1)
+                left, right = h * rng.uniform(1.4, 2.2), h * rng.uniform(1.4, 2.2)
+                depth = rng.uniform(160, 240)
+                lean = rng.uniform(16, 26)
+                dist = math.hypot(px - ex, pz - ez)
+                ks = _sky_k("ring", dist)
+                base = ey - SKY_DROP / ks
+                stretch = (h - base) / (h + 20)
+                group = _peak(f"Side{len(kids):03d}", 0, 0, h, left * stretch, right * stretch, depth, sun, lean,
+                              base=base, shade=shade)
+                if h > (h0 + h1) / 2:
+                    c = 0.22
+                    snow_sun, snow_shade = haze(HORIZON_SNOW, f * 0.8), haze(HORIZON_SNOW_SHADE, f * 0.8)
+                    if not sun_first:
+                        snow_sun, snow_shade = snow_shade, snow_sun
+                    group += _peak(f"SideSnow{len(kids):03d}", 0, 0, h + 1, left * c, right * c, depth + 6, snow_sun,
+                                   lean, base=h - (h + 20) * c, shade=snow_shade)
+                for node in group:  # turn to face the town, then stand at (px, pz)
+                    cf = node["properties"]["CFrame"]["CFrame"]
+                    x, y, z = cf["position"]
+                    q = apply(turn, (x, y, z))
+                    cf["position"] = [_r(q[0] + px), _r(q[1]), _r(q[2] + pz)]
+                    cf["orientation"] = [[_r(v) for v in row] for row in mul(turn, cf["orientation"])]
+                kids += _to_sky(group, ks)
     horizon = model("Horizon", kids, attrs={"Region": "Horizon", "SkyEyeX": ex, "SkyEyeY": ey, "SkyEyeZ": ez})
     horizon["properties"] = {"ModelStreamingMode": "Persistent"}
     return horizon
@@ -2727,7 +2949,7 @@ PASSAGE = (-167, -112, 270, 330)  # the gang's back-door passage off the mid ben
 
 def haul_ramp(name, x0, x1, z0, z1, y_top, y_bottom):
     """Packed-earth ramp with a timber curb log on each side, laid along the slope."""
-    floor = ramp(name, x0, x1, z0, z1, y_top, y_bottom, HAUL_ROAD, "Ground")
+    floor = ramp(name, x0, x1, z0, z1, y_top, y_bottom, HAUL_ROAD, "SmoothPlastic")
     dz, dy = z1 - z0, y_bottom - y_top
     angle = -math.degrees(math.atan2(dy, dz))
     length = math.hypot(dz, dy)
@@ -2741,15 +2963,15 @@ def haul_ramp(name, x0, x1, z0, z1, y_top, y_bottom):
 def haul_road(name, x0, x1, z0, z1, y, along="z"):
     """Worn earth strip (a floor) plus two cart ruts (decals, slightly proud so they read at a
     distance). Returns (floor_parts, decal_parts): decals belong in the region model, not Grounds_*."""
-    floor = [box(f"{name}", x0, x1, y, y + 0.2, z0, z1, HAUL_ROAD, "Ground", layer="ground")]
+    floor = [box(f"{name}", x0, x1, y, y + 0.2, z0, z1, HAUL_ROAD, "SmoothPlastic", layer="ground")]
     ruts = []
     if along == "z":
         for k, x in enumerate(((x0 + x1) / 2 - 2.6, (x0 + x1) / 2 + 2.6)):
-            ruts.append(box(f"{name}Rut{k}", x - 0.35, x + 0.35, y + 0.2, y + 0.32, z0 + 1, z1 - 1, RUT, "Ground",
+            ruts.append(box(f"{name}Rut{k}", x - 0.35, x + 0.35, y + 0.2, y + 0.32, z0 + 1, z1 - 1, RUT, "SmoothPlastic",
                             collide=False, layer="decal"))
     else:
         for k, z in enumerate(((z0 + z1) / 2 - 2.6, (z0 + z1) / 2 + 2.6)):
-            ruts.append(box(f"{name}Rut{k}", x0 + 1, x1 - 1, y + 0.2, y + 0.32, z - 0.35, z + 0.35, RUT, "Ground",
+            ruts.append(box(f"{name}Rut{k}", x0 + 1, x1 - 1, y + 0.2, y + 0.32, z - 0.35, z + 0.35, RUT, "SmoothPlastic",
                             collide=False, layer="decal"))
     return floor, ruts
 
@@ -3048,13 +3270,13 @@ def broken_cart(name, x, z, yaw, rng):
 
 
 
-def bedroll(name, x, z, yaw, color=(120, 92, 70)):
+def bedroll(name, x, z, yaw, color=(60, 196, 245)):
     y = floor_at(x, z, MID_Y)
     r = rot_y(yaw)
     fwd = apply(r, (0, 0, -1))
     return model(name, [
-        part("Roll", (2.4, 0.45, 5.6), (x, y + 0.22, z), color, "Fabric", r, collide=False),
-        part("Pillow", (1.8, 0.7, 1.4), (x + fwd[0] * 2.2, y + 0.55, z + fwd[2] * 2.2), (170, 150, 120), "Fabric", r,
+        part("Roll", (2.4, 0.45, 5.6), (x, y + 0.22, z), color, "SmoothPlastic", r, collide=False),
+        part("Pillow", (1.8, 0.7, 1.4), (x + fwd[0] * 2.2, y + 0.55, z + fwd[2] * 2.2), (255, 246, 228), "SmoothPlastic", r,
              collide=False),
     ])
 
@@ -3064,10 +3286,10 @@ def cook_fire(name, x, z, rng):
     y = floor_at(x, z, MID_Y)
     kids = [campfire("Fire", x, 0, z, rng)]
     for side in (-1, 1):
-        kids.append(part(f"SpitPost{side}", (0.5, 3.4, 0.5), (x + side * 2.8, y + 1.7, z), BEAM, "Wood", rot_z(side * 6),
+        kids.append(part(f"SpitPost{side}", (0.5, 3.4, 0.5), (x + side * 2.8, y + 1.7, z), BEAM, "SmoothPlastic", rot_z(side * 6),
                          collide=False))
-    kids.append(part("SpitRod", (6.6, 0.3, 0.3), (x, y + 3.2, z), IRON_DARK, "CorrodedMetal", collide=False))
-    kids.append(part("Roast", (2.2, 1.1, 1.1), (x - 0.4, y + 3.2, z), (140, 84, 56), "Fabric", rot_x(90), shape="Cylinder",
+    kids.append(part("SpitRod", (6.6, 0.3, 0.3), (x, y + 3.2, z), IRON_DARK, "SmoothPlastic", collide=False))
+    kids.append(part("Roast", (2.2, 1.1, 1.1), (x - 0.4, y + 3.2, z), (240, 120, 80), "SmoothPlastic", rot_x(90), shape="Cylinder",
                      collide=False))
     return model(name, kids)
 
@@ -3075,22 +3297,22 @@ def cook_fire(name, x, z, rng):
 def hanging_lantern(name, x, y_hook, z, drop=1.6, bright=1.0):
     """Lantern on a short chain below a beam or bracket at y_hook (the chain overlaps the beam)."""
     return model(name, [
-        part("Chain", (0.18, drop + 0.4, 0.18), (x, y_hook - drop / 2 + 0.2, z), IRON_DARK, "CorrodedMetal", collide=False),
+        part("Chain", (0.18, drop + 0.4, 0.18), (x, y_hook - drop / 2 + 0.2, z), IRON_DARK, "SmoothPlastic", collide=False),
         part("Lantern", (1.1, 1.4, 1.1), (x, y_hook - drop - 0.6, z), LANTERN, "Neon", collide=False, query=False, shadow=False,
              transparency=0.15, children=[light(16, bright)]),
-        part("Cap", (1.3, 0.25, 1.3), (x, y_hook - drop + 0.2, z), IRON_DARK, "CorrodedMetal", collide=False),
+        part("Cap", (1.3, 0.25, 1.3), (x, y_hook - drop + 0.2, z), IRON_DARK, "SmoothPlastic", collide=False),
     ])
 
 
-def rag_banner(name, x, z, yaw, height=9.0, color=(96, 40, 40), on_y=None):
+def rag_banner(name, x, z, yaw, height=9.0, color=WARLORD_RED, on_y=None):
     """Torn gang banner: pole with two ragged cloth strips. on_y = base height when it stands on a deck."""
     y = floor_at(x, z, MID_Y) if on_y is None else on_y
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
-    kids = [part("Pole", (0.5, height, 0.5), (x, y + height / 2, z), SPLINTER, "Wood", collide=False)]
+    kids = [part("Pole", (0.5, height, 0.5), (x, y + height / 2, z), SPLINTER, "SmoothPlastic", collide=False)]
     for k, (w, h, dy) in enumerate(((2.6, 4.2, height - 2.6), (1.4, 5.0, height - 3.4))):
         kids.append(part(f"Rag{k}", (w, h, 0.2), (x + right[0] * (0.25 + w / 2 + k * 1.2), y + dy, z + right[2] * (0.25 + w / 2 + k * 1.2)),
-                         color, "Fabric", mul(r, rot_z(-6 - k * 8)), collide=False))
+                         color, "SmoothPlastic", mul(r, rot_z(-6 - k * 8)), collide=False))
     return model(name, kids)
 
 
@@ -3100,16 +3322,16 @@ def barricade(name, x, z, yaw, length, rng):
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     fwd = apply(r, (0, 0, -1))
-    kids = [part("Planks", (length, 3.2, 1.6), (x, y + 1.6, z), SPLINTER, "WoodPlanks", r),
-            part("TopPlank", (length * 0.8, 0.7, 1.8), (x + right[0] * 0.6, y + 3.6, z + right[2] * 0.6), TIMBER, "WoodPlanks",
+    kids = [part("Planks", (length, 3.2, 1.6), (x, y + 1.6, z), SPLINTER, "SmoothPlastic", r),
+            part("TopPlank", (length * 0.8, 0.7, 1.8), (x + right[0] * 0.6, y + 3.6, z + right[2] * 0.6), TIMBER, "SmoothPlastic",
                  mul(r, rot_z(3)), collide=False)]
     for k in range(int(length / 4)):
         sx = -length / 2 + 2 + k * 4
         kids.append(part(f"Stake{k}", (0.45, 4.6, 0.45), (x + right[0] * sx + fwd[0] * 1.3, y + 1.9, z + right[2] * sx + fwd[2] * 1.3),
-                         SPLINTER, "Wood", mul(r, rot_x(-38)), collide=False))
+                         SPLINTER, "SmoothPlastic", mul(r, rot_x(-38)), collide=False))
     for k, sx in enumerate((-length / 2 + 1.5, length / 2 - 1.5)):
         wx, wz = x + right[0] * sx - fwd[0] * 1.2, z + right[2] * sx - fwd[2] * 1.2
-        kids.append(part(f"Wheel{k}", (0.5, 3.6, 3.6), (wx, y + 1.8, wz), (96, 64, 40), "Wood", mul(r, rot_y(90 + rng.uniform(-8, 8))),
+        kids.append(part(f"Wheel{k}", (0.5, 3.6, 3.6), (wx, y + 1.8, wz), IRON_DARK, "SmoothPlastic", mul(r, rot_y(90 + rng.uniform(-8, 8))),
                          shape="Cylinder", collide=False))
     return model(name, kids)
 
@@ -3118,13 +3340,13 @@ def skull_sign(name, x, z, yaw, title, subtitle):
     """Bandit warning: a signboard with a bone-white skull spiked on the post."""
     y = floor_at(x, z, RIM_Y)
     r = rot_y(yaw)
-    kids = [sign("Board", x, 0, z, yaw, 9, 3.6, title, subtitle, board=(58, 40, 30), text=(230, 210, 180), post_h=7.6)]
+    kids = [sign("Board", x, 0, z, yaw, 9, 3.6, title, subtitle, board=WARLORD_RED, text=(255, 246, 228), post_h=7.6)]
     right = apply(r, (1, 0, 0))
     sx, sz = x + right[0] * 4.95, z + right[2] * 4.95
-    kids.append(part("Skull", (1.3, 1.4, 1.3), (sx, y + 8.2, sz), (226, 214, 190), "SmoothPlastic", shape="Ball", collide=False,
+    kids.append(part("Skull", (1.3, 1.4, 1.3), (sx, y + 8.2, sz), (255, 250, 240), "SmoothPlastic", shape="Ball", collide=False,
                      query=False))
-    kids.append(part("Jaw", (1.0, 0.5, 0.9), (sx, y + 7.55, sz), (214, 200, 176), "SmoothPlastic", r, collide=False, query=False))
-    kids.append(part("Spike", (0.3, 1.4, 0.3), (sx, y + 7.4, sz), IRON_DARK, "CorrodedMetal", collide=False, query=False))
+    kids.append(part("Jaw", (1.0, 0.5, 0.9), (sx, y + 7.55, sz), (246, 238, 226), "SmoothPlastic", r, collide=False, query=False))
+    kids.append(part("Spike", (0.3, 1.4, 0.3), (sx, y + 7.4, sz), IRON_DARK, "SmoothPlastic", collide=False, query=False))
     return model(name, kids)
 
 
@@ -3133,13 +3355,13 @@ def scrap_gate(name, x, z, yaw, width=9.0, height=12.0):
     y = floor_at(x, z, PIT_Y)
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
-    kids = [part("HingePost", (1.4, height + 1, 1.4), (x, y + (height + 1) / 2, z), BEAM, "Wood")]
+    kids = [part("HingePost", (1.4, height + 1, 1.4), (x, y + (height + 1) / 2, z), BEAM, "SmoothPlastic")]
     cx, cz = x + right[0] * (width / 2 + 0.7), z + right[2] * (width / 2 + 0.7)
-    kids.append(part("Frame", (width, height, 0.6), (cx, y + height / 2, cz), IRON_DARK, "CorrodedMetal", r))
+    kids.append(part("Frame", (width, height, 0.6), (cx, y + height / 2, cz), IRON_DARK, "SmoothPlastic", r))
     for k, (dx, dy, w, h) in enumerate(((-2.2, 3.2, 3.6, 4.4), (1.9, 2.6, 4.0, 3.6), (-1.4, 8.0, 4.4, 3.2), (2.4, 7.4, 3.0, 4.6))):
-        kids.append(part(f"Plate{k}", (w, h, 0.35), (cx + right[0] * dx, y + dy, cz + right[2] * dx), RUST, "CorrodedMetal", r,
+        kids.append(part(f"Plate{k}", (w, h, 0.35), (cx + right[0] * dx, y + dy, cz + right[2] * dx), RUST, "SmoothPlastic", r,
                          collide=False))
-    kids.append(part("Spikes", (width - 1, 1.2, 0.4), (cx, y + height + 0.4, cz), IRON_DARK, "CorrodedMetal", r, collide=False))
+    kids.append(part("Spikes", (width - 1, 1.2, 0.4), (cx, y + height + 0.4, cz), IRON_DARK, "SmoothPlastic", r, collide=False))
     return model(name, kids)
 
 
@@ -3151,15 +3373,15 @@ def throne(name, x, z, yaw):
     right = apply(r, (1, 0, 0))
     def at(dx, dz, dy):
         return (x + right[0] * dx - fwd[0] * dz, y + dy, z + right[2] * dx - fwd[2] * dz)
-    kids = [part("Block", (7.0, 2.0, 5.5), at(0, 0, 1.0), STONE_DARK, "Cobblestone", r),
-            part("Step", (7.0, 0.8, 2.0), at(0, -3.6, 0.4), STONE_DARK, "Cobblestone", r),
-            part("Seat", (4.0, 0.7, 3.4), at(0, 0.3, 2.35), SPLINTER, "WoodPlanks", r, collide=False),
-            part("Back", (4.4, 5.2, 0.6), at(0, 2.2, 4.6), (88, 70, 54), "WoodPlanks", mul(r, rot_x(-8)), collide=False),
-            part("BackPlate", (3.0, 3.0, 0.3), at(0, 2.55, 5.0), RUST, "CorrodedMetal", mul(r, rot_x(-8)), collide=False),
-            part("Crest", (1.6, 1.6, 0.4), at(0, 2.3, 7.4), IRON_DARK, "CorrodedMetal", mul(r, rot_y(45)), collide=False)]
+    kids = [part("Block", (7.0, 2.0, 5.5), at(0, 0, 1.0), STONE_DARK, "SmoothPlastic", r),
+            part("Step", (7.0, 0.8, 2.0), at(0, -3.6, 0.4), STONE_DARK, "SmoothPlastic", r),
+            part("Seat", (4.0, 0.7, 3.4), at(0, 0.3, 2.35), SPLINTER, "SmoothPlastic", r, collide=False),
+            part("Back", (4.4, 5.2, 0.6), at(0, 2.2, 4.6), WARLORD_RED, "SmoothPlastic", mul(r, rot_x(-8)), collide=False),
+            part("BackPlate", (3.0, 3.0, 0.3), at(0, 2.55, 5.0), RUST, "SmoothPlastic", mul(r, rot_x(-8)), collide=False),
+            part("Crest", (1.6, 1.6, 0.4), at(0, 2.3, 7.4), IRON_DARK, "SmoothPlastic", mul(r, rot_y(45)), collide=False)]
     for side in (-1, 1):
-        kids.append(part(f"Arm{side}", (0.4, 0.4, 3.6), at(side * 2.2, 0.2, 3.3), RUST, "CorrodedMetal", r, collide=False))
-        kids.append(part(f"ArmPost{side}", (0.4, 1.2, 0.4), at(side * 2.2, -1.2, 2.6), IRON_DARK, "CorrodedMetal", r, collide=False))
+        kids.append(part(f"Arm{side}", (0.4, 0.4, 3.6), at(side * 2.2, 0.2, 3.3), RUST, "SmoothPlastic", r, collide=False))
+        kids.append(part(f"ArmPost{side}", (0.4, 1.2, 0.4), at(side * 2.2, -1.2, 2.6), IRON_DARK, "SmoothPlastic", r, collide=False))
     return model(name, kids)
 
 
@@ -3168,13 +3390,13 @@ def manacles(name, x, y, z, yaw):
     r = rot_y(yaw)
     right = apply(r, (1, 0, 0))
     fwd = apply(r, (0, 0, -1))
-    kids = [part("Pin", (0.5, 0.5, 0.9), (x - fwd[0] * 0.25, y, z - fwd[2] * 0.25), IRON_DARK, "CorrodedMetal", r, collide=False)]
+    kids = [part("Pin", (0.5, 0.5, 0.9), (x - fwd[0] * 0.25, y, z - fwd[2] * 0.25), IRON_DARK, "SmoothPlastic", r, collide=False)]
     for side in (-1, 1):
         kids.append(part(f"Chain{side}", (0.16, 1.6, 0.16), (x + right[0] * side * 0.5 + fwd[0] * 0.3, y - 0.8,
-                                                            z + right[2] * side * 0.5 + fwd[2] * 0.3), IRON_DARK, "CorrodedMetal",
+                                                            z + right[2] * side * 0.5 + fwd[2] * 0.3), IRON_DARK, "SmoothPlastic",
                          rot_z(side * 12), collide=False))
         kids.append(part(f"Cuff{side}", (0.45, 0.9, 0.9), (x + right[0] * side * 0.7 + fwd[0] * 0.35, y - 1.7,
-                                                          z + right[2] * side * 0.7 + fwd[2] * 0.35), RUST, "CorrodedMetal",
+                                                          z + right[2] * side * 0.7 + fwd[2] * 0.35), RUST, "SmoothPlastic",
                          mul(r, rot_y(90)), shape="Cylinder", collide=False))
     return model(name, kids)
 
@@ -3436,17 +3658,17 @@ def quarry_layout(rng):
     for top in (RIM_Y, MID_Y, PIT_Y, PIT_Y - 1.2, PIT_Y + 0.2, MID_Y + 0.2, PIT_Y + 0.25, PIT_Y + 0.32, MID_Y + 0.32):
         USED_CLIFF_TOPS.add(round(top * 10))
     ground = [
-        slab("PassFloor", -14, 14, 104, 140, T, (140, 130, 116), "Cobblestone"),
-        slab("OverlookFloor", -40, 40, 140, 168, T, (140, 112, 84), "Ground"),
+        slab("PassFloor", -14, 14, 104, 140, T, GROUND_PALE, "SmoothPlastic"),
+        slab("OverlookFloor", -40, 40, 140, 168, T, GROUND_TAN, "SmoothPlastic"),
         # Bench 1, the rim: level with the overlook; the gang's front yard.
-        slab("RimBench", -112, 112, RIM_Z[0], RIM_Z[1], RIM_Y, QUARRY_FLOOR, "Ground"),
+        slab("RimBench", -112, 112, RIM_Z[0], RIM_Z[1], RIM_Y, QUARRY_FLOOR, "SmoothPlastic"),
         # Bench 2: machinery level, plus the back-door passage west.
-        slab("MidBench", -112, 112, MID_Z[0], MID_Z[1], MID_Y, (146, 106, 72), "Ground"),
-        slab("PassageFloor", PASSAGE[0], PASSAGE[1], PASSAGE[2], PASSAGE[3], MID_Y, (146, 106, 72), "Ground"),
+        slab("MidBench", -112, 112, MID_Z[0], MID_Z[1], MID_Y, GROUND_MID, "SmoothPlastic"),
+        slab("PassageFloor", PASSAGE[0], PASSAGE[1], PASSAGE[2], PASSAGE[3], MID_Y, PATH, "SmoothPlastic"),
         # Bench 3, the pit: split around the drainage sump in its east corner.
-        slab("PitFloorW", -112, SUMP[0], PIT_Z[0], PIT_Z[1], PIT_Y, (140, 100, 68), "Ground"),
-        slab("PitFloorE", SUMP[0], 112, SUMP[3], PIT_Z[1], PIT_Y, (140, 100, 68), "Ground"),
-        slab("SumpBed", SUMP[0], SUMP[1], SUMP[2], SUMP[3], PIT_Y - 1.2, MUD, "Mud"),
+        slab("PitFloorW", -112, SUMP[0], PIT_Z[0], PIT_Z[1], PIT_Y, GROUND_SAND, "SmoothPlastic"),
+        slab("PitFloorE", SUMP[0], 112, SUMP[3], PIT_Z[1], PIT_Y, GROUND_TAN, "SmoothPlastic"),
+        slab("SumpBed", SUMP[0], SUMP[1], SUMP[2], SUMP[3], PIT_Y - 1.2, MUD, "SmoothPlastic"),
     ]
     ruts = []
     for name, rect, y0, y1 in (("HaulRamp1", RAMP1, RIM_Y, MID_Y), ("HaulRamp2", RAMP2, MID_Y, PIT_Y)):
@@ -3463,7 +3685,7 @@ def quarry_layout(rng):
                  ("HaulRoadF", -12, 12, 372, 385.5, PIT_Y)):
         floor, _ = haul_road(*args)
         ground += floor
-    ground += disc("ArenaFloor", 0, 424, 38, PIT_Y + 0.25, 0.5, (118, 108, 98), "Cobblestone")
+    ground += disc("ArenaFloor", 0, 424, 38, PIT_Y + 0.25, 0.5, PATH, "SmoothPlastic")
     visual, proxies = [model("HaulRuts", ruts)], []
     # Minecart line down the haul road: rim → ramp 1 → mid bench → ramp 2 → pit → the ridge gap.
     # Each leg runs to the centreline of the next so the corners meet.
@@ -3594,8 +3816,8 @@ def quarry_layout(rng):
     visual.append(hanging_lantern("LookoutLantern", 61.6, MID_Y + 12.25, 243.6, drop=0.2))
     # Back-door hideout in the passage.
     visual.append(tent("HideoutTentA", -150, 0, 282, 10))
-    visual.append(tent("HideoutTentB", -128, 0, 318, -12, color=(130, 100, 80)))
-    visual.append(bedroll("HideoutBedroll", -150, 312, 80, color=(96, 84, 70)))
+    visual.append(tent("HideoutTentB", -128, 0, 318, -12, color=(255, 110, 160)))
+    visual.append(bedroll("HideoutBedroll", -150, 312, 80, color=(160, 104, 255)))
     visual.append(crate_stack("HideoutCrates", -134, 0, 284, rng))
     visual.append(rag_banner("HideoutBanner", -118, 276, 90))
     # The old plank "ledges" on the pit walls are gone (the terrain walls have real benches); the
@@ -3612,10 +3834,10 @@ def quarry_layout(rng):
         hanging_lantern("LanternN", -111, MID_Y + 11.6, PASSAGE[2] + 15, drop=1.2),
     ]))
     visual.append(model("SupplyCache", [
-        part("Chest", (4.5, 3, 3), (-158, MID_Y + 1.5, 300), (110, 70, 40), "WoodPlanks"),
-        part("ChestBand", (4.7, 0.5, 3.2), (-158, MID_Y + 2.2, 300), GOLD, "Metal", collide=False),
-        part("Crate1", (4, 4, 4), (-156, MID_Y + 2, 290), TIMBER, "WoodPlanks", rot_y(12)),
-        part("Crate2", (3.4, 3.4, 3.4), (-159, MID_Y + 1.7, 311), TIMBER, "WoodPlanks", rot_y(-20)),
+        part("Chest", (4.5, 3, 3), (-158, MID_Y + 1.5, 300), SPLINTER, "SmoothPlastic"),
+        part("ChestBand", (4.7, 0.5, 3.2), (-158, MID_Y + 2.2, 300), GOLD, "SmoothPlastic", collide=False),
+        part("Crate1", (4, 4, 4), (-156, MID_Y + 2, 290), TIMBER, "SmoothPlastic", rot_y(12)),
+        part("Crate2", (3.4, 3.4, 3.4), (-159, MID_Y + 1.7, 311), TIMBER, "SmoothPlastic", rot_y(-20)),
     ]))
 
     # Pit: lamps at the ramp foot, standing stones and braziers around the boss, sealed Briarwood gate.
@@ -3626,14 +3848,14 @@ def quarry_layout(rng):
             continue
         x, z = math.sin(a) * 42, 424 - math.cos(a) * 42
         h = rng.uniform(10, 15)
-        visual.append(part(f"StandingStone{k:02d}", (4.5, h, 3), (x, PIT_Y + h / 2, z), (130, 118, 104), "Slate",
+        visual.append(part(f"StandingStone{k:02d}", (4.5, h, 3), (x, PIT_Y + h / 2, z), (240, 184, 120), "SmoothPlastic",
                            rot_y(-math.degrees(a)), layer="rock"))
     for k, (x, z) in enumerate(((-22, 390), (22, 390), (-42, 440), (42, 440))):
         visual.append(brazier(f"PitBrazier{k}", x, 0, z))
     # The Warden's throne behind the arena, gang banners, empty manacles on three standing stones.
     visual.append(throne("WardenThrone", 0, 454, yaw_facing(0, -1)))
     for k, x in enumerate((-9, 9)):
-        visual.append(rag_banner(f"ThroneBanner{k}", x, 458, yaw_facing(0, -1), height=11, color=(110, 36, 40)))
+        visual.append(rag_banner(f"ThroneBanner{k}", x, 458, yaw_facing(0, -1), height=11, color=WARLORD_RED))
     for k, x in enumerate((-18, 18)):
         visual.append(banner_pole(f"WarlordBanner{k}", x, 0, 464, 0))
     for k in (3, 5, 10):
@@ -3646,7 +3868,7 @@ def quarry_layout(rng):
     visual.append(scrap_gate("ScrapGateW", -18.3, 367.5, -90))
     visual.append(scrap_gate("ScrapGateE", 18.3, 367.5, -90))
     visual.append(sign("WardenSign", 36, 0, 360, yaw_facing(0, -1), 12, 5, "Warden's Pit",
-                       "Warden of the Pit  |  Lv 10  |  Boss", board=(70, 36, 36)))
+                       "Warden of the Pit  |  Lv 10  |  Boss", board=WARLORD_RED))
     visual.append(waystone("WarlordWaystone", "WarlordGate", 12, 0, 352))
     visual.append(gate("GateBriarwood", 0, PIT_Y, 470, 0, 24, 22, "Briarwood", "Lv 9+  |  The wooded vale", sealed=False,
                        accent=(90, 120, 60), region="Briarwood", required_level=9,
@@ -3666,24 +3888,35 @@ def quarry_layout(rng):
 # the quarry's floors. What stands on the sand is here: a small adobe settlement (sun-baked plaster
 # houses with dark window frames, vigas, parapets and striped awnings), the bandits' tent camp round
 # its fire, market stalls, palms and reeds at the oasis, cacti, fences, clay pots, lemon crates and
-# the scattered rubble that seats everything in the sand. One warm palette throughout: sand,
-# sandstone and terracotta, with Lemonade's bright awnings and greens as accents.
-ADOBE_WALLS = [(232, 184, 126), (222, 168, 112), (238, 198, 144), (226, 174, 118)]
-ADOBE_PLINTH = (186, 128, 84)
-ADOBE_TRIM = (208, 150, 98)
-ADOBE_BRICK = (196, 118, 78)
-FRAME_DARK = (86, 52, 32)
-PANE_DARK = (44, 32, 30)
-VIGA = (124, 80, 46)
-AWNINGS = [(226, 72, 58), (244, 160, 60), (250, 204, 60), (238, 128, 58)]  # all warm: no cool accents in the sand
-AWNING_CREAM = (250, 240, 216)
-POT_CLAY = [(204, 108, 66), (190, 96, 58), (214, 128, 80)]
-CACTUS = [(86, 150, 72), (74, 136, 64), (98, 160, 78)]
-PALM_TRUNK = (156, 112, 70)
-PALM_RING = (118, 84, 52)
-PALM_LEAF = [(118, 150, 70), (102, 136, 62), (136, 160, 84)]  # dusty olive and sage, not lawn green
-RUBBLE = [(214, 156, 102), (196, 124, 80), (226, 178, 118), (182, 110, 72)]
-TENT_CLOTH = [(234, 198, 146), (226, 150, 96), (218, 180, 128)]
+# the scattered rubble that seats everything in the sand. Pet Simulator 99's toy box, all smooth
+# plastic: the big calm surfaces (walls, trim, rubble) are pale apricot and cream, a tint of a hue
+# and never grey; the shadow side (plinths, pots, beams) is the same apricot pushed to a saturated
+# terracotta, never brown; and the small things (awnings, tents, doors, panes, crates) are the
+# full-chroma pops: hot pink, orange, lemon, cyan.
+# The walls alternate house by house between pale apricot and a blue-washed powder blue (the
+# painted-adobe towns of the Maghreb): one calm warm tone and one calm cool tone, as PS99 pairs its
+# cream and lavender-blue walkways, with the terracotta and the awnings left to carry the colour.
+ADOBE_WALLS = [(255, 204, 160), (180, 212, 255), (255, 206, 164), (184, 214, 255)]
+ADOBE_PLINTH = (240, 104, 54)  # the walls' shadow side: saturated terracotta
+ADOBE_TRIM = (255, 248, 234)  # copings and sills: nearly white cream
+ADOBE_BRICK = (250, 140, 90)  # the painted tiles by the doors
+FRAME_DARK = (255, 250, 240)  # window frames: toy white
+PANE_DARK = (96, 186, 255)  # window panes: sky-blue glass
+DOOR = (40, 196, 214)  # turquoise doors: the cool pop against the apricot
+VIGA = (236, 124, 52)  # beams, poles and lintels: crate orange one step deeper
+AWNINGS = [(255, 72, 110), (255, 150, 40), (255, 212, 48), (48, 196, 240)]  # hot pink, orange, lemon, cyan
+AWNING_CREAM = (255, 250, 236)
+POT_CLAY = [(248, 120, 72), (240, 104, 64), (255, 138, 86)]
+CACTUS = [hsv(140, 0.8, 0.88), hsv(134, 0.74, 0.94), hsv(146, 0.66, 0.98)]  # full-chroma toy greens: the desert's pop
+PALM_TRUNK = hsv(38, 0.24, 1.0)  # calm sandy-cream trunk
+PALM_TRUNK_ALT = hsv(34, 0.36, 0.98)  # the same cream one step warmer on alternate segments
+PALM_RING = hsv(28, 0.86, 0.96)  # the growth rings as full-chroma orange candy stripes
+PALM_LEAF = [hsv(104, 0.82, 0.96), hsv(112, 0.88, 0.84), hsv(96, 0.34, 1.0)]  # lime body, deeper lime, pale-lime highlight
+RUBBLE = [(255, 232, 204), (255, 220, 186), (252, 236, 214), (255, 214, 180)]  # pale cream-apricot: calm, never tan
+TENT_CLOTH = [(255, 110, 160), (60, 196, 245), (160, 104, 255)]  # candy pink, cyan, violet
+# Rubble used to draw a random stone finish per block; it is all smooth plastic now, but the draw is
+# kept (three entries, as before) so the shared random stream, and every placement after it, is unchanged.
+RUBBLE_FINISH = ("SmoothPlastic",) * 3
 LEMON = (252, 220, 60)
 
 
@@ -3713,7 +3946,7 @@ def rubble(name, x, z, rng, n=8, spread=4.0, y=None, drift=0.9, shadow=False):
         sx, sy, sz = rng.uniform(1.4, 2.3), rng.uniform(0.9, 1.4), rng.uniform(1.1, 1.8)
         cx, cz = x + math.cos(a) * d, z + math.sin(a) * d
         kids.append(part(f"Block{k}", (sx, sy, sz), (cx, y + sy * 0.2, cz), rng.choice(RUBBLE),
-                         rng.choice(("Sandstone", "Brick", "Sandstone")),
+                         rng.choice(RUBBLE_FINISH),
                          mul(rot_y(rng.uniform(0, 180)), rot_x(rng.uniform(-10, 10))), collide=False, query=False,
                          shadow=shadow))
         tops.append((cx, y + sy * 0.7, cz))
@@ -3721,13 +3954,13 @@ def rubble(name, x, z, rng, n=8, spread=4.0, y=None, drift=0.9, shadow=False):
         bx, by, bz = tops[k]
         sx, sy, sz = rng.uniform(1.0, 1.6), rng.uniform(0.7, 1.0), rng.uniform(0.9, 1.3)
         kids.append(part(f"Top{k}", (sx, sy, sz), ((bx + x) / 2, by + sy * 0.15, (bz + z) / 2), rng.choice(RUBBLE),
-                         "Sandstone", mul(rot_y(rng.uniform(0, 180)), rot_z(rng.uniform(-18, 18))), collide=False,
+                         "SmoothPlastic", mul(rot_y(rng.uniform(0, 180)), rot_z(rng.uniform(-18, 18))), collide=False,
                          query=False, shadow=False))
     for k in range(n - big):
         a, d = rng.uniform(0, math.tau), spread * rng.uniform(0.45, 1.0)
         sx, sy, sz = rng.uniform(0.5, 1.2), rng.uniform(0.35, 0.7), rng.uniform(0.45, 1.0)
         kids.append(part(f"Bit{k}", (sx, sy, sz), (x + math.cos(a) * d, y + sy * 0.25, z + math.sin(a) * d),
-                         rng.choice(RUBBLE), rng.choice(("Sandstone", "Brick", "Sandstone")),
+                         rng.choice(RUBBLE), rng.choice(RUBBLE_FINISH),
                          mul(rot_y(rng.uniform(0, 180)), rot_x(rng.uniform(-14, 14))), collide=False, query=False,
                          shadow=False, layer="decal"))
     return model(name, kids, attrs={"SandDrift": drift} if drift else None)
@@ -3738,10 +3971,10 @@ def clay_pot(name, x, z, rng, scale=1.0, y=None):
     s = scale
     c = rng.choice(POT_CLAY)
     return model(name, attrs={"SandDrift": 0.55}, children=[
-        part("Belly", (1.9 * s, 1.9 * s, 1.9 * s), (x, y + 0.85 * s, z), c, "Brick", shape="Ball", collide=False),
-        part("Neck", (0.8 * s, 1.1 * s, 1.1 * s), (x, y + 1.95 * s, z), c, "Brick", rot_z(90), shape="Cylinder",
+        part("Belly", (1.9 * s, 1.9 * s, 1.9 * s), (x, y + 0.85 * s, z), c, "SmoothPlastic", shape="Ball", collide=False),
+        part("Neck", (0.8 * s, 1.1 * s, 1.1 * s), (x, y + 1.95 * s, z), c, "SmoothPlastic", rot_z(90), shape="Cylinder",
              collide=False),
-        part("Lip", (0.2 * s, 1.4 * s, 1.4 * s), (x, y + 2.45 * s, z), ADOBE_BRICK, "Brick", rot_z(90), shape="Cylinder",
+        part("Lip", (0.2 * s, 1.4 * s, 1.4 * s), (x, y + 2.45 * s, z), ADOBE_BRICK, "SmoothPlastic", rot_z(90), shape="Cylinder",
              collide=False),
     ])
 
@@ -3750,7 +3983,7 @@ def lemon_crate(name, x, z, yaw, rng, y=None):
     """Lemonade's own touch: a crate of lemons."""
     y = floor_at(x, z, y) - 0.2  # its foot sunk in the sand (WorldTerrain drifts round it)
     r, at = local_frame(x, y, z, yaw)
-    kids = [part("Crate", (2.6, 1.5, 2.2), at(0, 0.75, 0), TIMBER, "WoodPlanks", r)]
+    kids = [part("Crate", (2.6, 1.5, 2.2), at(0, 0.75, 0), TIMBER, "SmoothPlastic", r)]
     for k in range(5):
         kids.append(part(f"Lemon{k}", (0.8, 0.7, 0.7), at(-0.8 + (k % 3) * 0.8, 1.6 + (k // 3) * 0.3, -0.4 + (k % 2) * 0.8),
                          LEMON, "SmoothPlastic", mul(r, rot_y(rng.uniform(0, 90))), shape="Ball", collide=False,
@@ -3761,33 +3994,33 @@ def lemon_crate(name, x, z, yaw, rng, y=None):
 def adobe_window(kids, at, r, lx, ly, face_z, shutters=None):
     """A dark pane in a timber frame with a cross bar, a plaster sill and a beam lintel."""
     kids.append(part("Pane", (2.0, 2.4, 0.3), at(lx, ly, face_z - 0.1), PANE_DARK, "SmoothPlastic", r, collide=False))
-    kids.append(part("FrameV", (0.32, 2.7, 0.3), at(lx, ly, face_z - 0.22), FRAME_DARK, "Wood", r, collide=False))
-    kids.append(part("FrameH", (2.3, 0.32, 0.3), at(lx, ly + 0.15, face_z - 0.22), FRAME_DARK, "Wood", r, collide=False))
-    kids.append(part("Sill", (2.9, 0.4, 0.8), at(lx, ly - 1.45, face_z - 0.3), ADOBE_TRIM, "Plaster", r, collide=False))
-    kids.append(part("Lintel", (3.1, 0.55, 0.7), at(lx, ly + 1.5, face_z - 0.25), VIGA, "Wood", r, collide=False))
+    kids.append(part("FrameV", (0.32, 2.7, 0.3), at(lx, ly, face_z - 0.22), FRAME_DARK, "SmoothPlastic", r, collide=False))
+    kids.append(part("FrameH", (2.3, 0.32, 0.3), at(lx, ly + 0.15, face_z - 0.22), FRAME_DARK, "SmoothPlastic", r, collide=False))
+    kids.append(part("Sill", (2.9, 0.4, 0.8), at(lx, ly - 1.45, face_z - 0.3), ADOBE_TRIM, "SmoothPlastic", r, collide=False))
+    kids.append(part("Lintel", (3.1, 0.55, 0.7), at(lx, ly + 1.5, face_z - 0.25), VIGA, "SmoothPlastic", r, collide=False))
     if shutters:
         for side in (-1, 1):
             kids.append(part(f"Shutter{side}", (0.95, 2.5, 0.2), at(lx + side * 1.55, ly, face_z - 0.12), shutters,
-                             "WoodPlanks", r, collide=False))
+                             "SmoothPlastic", r, collide=False))
 
 
 def adobe_box(kids, at, r, rng, w, d, h, y0, wall, vigas=True, lz0=0.0, lx0=0.0):
     """One storey: a plaster body on a sandstone plinth, a roof lip, parapets front and back and
     the ends of the roof beams (vigas) poking out of the front. Returns the roof top height."""
-    kids.append(part("Body", (w, h, d), at(lx0, y0 + h / 2, lz0), wall, "Plaster", r))
-    kids.append(part("Coping", (w + 0.7, 0.7, d + 0.7), at(lx0, y0 + h + 0.35, lz0), ADOBE_TRIM, "Plaster", r))
+    kids.append(part("Body", (w, h, d), at(lx0, y0 + h / 2, lz0), wall, "SmoothPlastic", r))
+    kids.append(part("Coping", (w + 0.7, 0.7, d + 0.7), at(lx0, y0 + h + 0.35, lz0), ADOBE_TRIM, "SmoothPlastic", r))
     top = y0 + h + 0.7
     for k, sz in enumerate((-1, 1)):
         kids.append(part(f"Parapet{k}", (w + 0.7, 1.3, 0.8), at(lx0, top + 0.65, lz0 + sz * (d + 0.7 - 0.8) / 2),
-                         wall, "Plaster", r))
+                         wall, "SmoothPlastic", r))
     for k, sx in enumerate((-1, 1)):
         kids.append(part(f"ParapetEnd{k}", (0.8, 1.0, d + 0.7 - 1.6), at(lx0 + sx * (w + 0.7 - 0.8) / 2, top + 0.5, lz0),
-                         wall, "Plaster", r))
+                         wall, "SmoothPlastic", r))
     if vigas:
         n = max(2, int(w / 3.4))
         for k in range(n):
             lx = lx0 - w / 2 + w * (k + 0.5) / n
-            kids.append(part(f"Viga{k}", (2.4, 0.6, 0.6), at(lx, y0 + h - 1.0, lz0 - d / 2 - 0.7), VIGA, "Wood",
+            kids.append(part(f"Viga{k}", (2.4, 0.6, 0.6), at(lx, y0 + h - 1.0, lz0 - d / 2 - 0.7), VIGA, "SmoothPlastic",
                              mul(r, rot_y(90)), shape="Cylinder", collide=False))
     return top
 
@@ -3801,12 +4034,12 @@ def adobe_house(name, x, z, w, d, h, face, rng, wall=None, awning=None, upper=No
     y = floor_at(x, z, None)
     wall = wall or rng.choice(ADOBE_WALLS)
     r, at = local_frame(x, y - 0.3, z, yaw_facing(*face))
-    kids = [part("Plinth", (w + 0.5, 1.5, d + 0.5), at(0, 0.75, 0), ADOBE_PLINTH, "Sandstone", r)]
+    kids = [part("Plinth", (w + 0.5, 1.5, d + 0.5), at(0, 0.75, 0), ADOBE_PLINTH, "SmoothPlastic", r)]
     roof = adobe_box(kids, at, r, rng, w, d, h, 0.0, wall)
     fz = -d / 2
     door_x = rng.choice((-1, 1)) * (w / 2 - 3.2) if w > 11 else 0.0
-    kids.append(part("Door", (3.2, 5.6, 0.35), at(door_x, 2.8, fz - 0.1), (112, 70, 42), "WoodPlanks", r, collide=False))
-    kids.append(part("DoorLintel", (4.6, 0.7, 0.9), at(door_x, 5.95, fz - 0.3), VIGA, "Wood", r, collide=False))
+    kids.append(part("Door", (3.2, 5.6, 0.35), at(door_x, 2.8, fz - 0.1), DOOR, "SmoothPlastic", r, collide=False))
+    kids.append(part("DoorLintel", (4.6, 0.7, 0.9), at(door_x, 5.95, fz - 0.3), VIGA, "SmoothPlastic", r, collide=False))
     slots = [lx for lx in (-w / 2 + 2.6, 0.0, w / 2 - 2.6) if abs(lx - door_x) > 3.6][:windows]
     for lx in slots:
         adobe_window(kids, at, r, lx, 3.9 if h < 9.5 else 3.6, fz, shutters)
@@ -3817,17 +4050,17 @@ def adobe_house(name, x, z, w, d, h, face, rng, wall=None, awning=None, upper=No
     if awning:
         for k in range(4):
             kids.append(part(f"Awning{k}", (aw / 4, 0.18, 3.2), at(door_x - aw / 2 + aw * (k + 0.5) / 4, 7.2, fz - 1.5),
-                             awning if k % 2 == 0 else AWNING_CREAM, "Fabric", mul(r, rot_x(-16)), collide=False,
+                             awning if k % 2 == 0 else AWNING_CREAM, "SmoothPlastic", mul(r, rot_x(-16)), collide=False,
                              layer="roof"))
         for side in (-1, 1):
             kids.append(part(f"AwningPole{side}", (0.3, 6.9, 0.3), at(door_x + side * (aw / 2 - 0.2), 3.45, fz - 2.9),
-                             VIGA, "Wood", r, collide=False))
-    # plaster flaked off the corners and the wall foot, bare adobe brick beneath
+                             VIGA, "SmoothPlastic", r, collide=False))
+    # painted terracotta tiles set into the wall by the corners (smooth, no flaking or grime)
     for k in range(2):
         px = rng.choice((-1, 1)) * (w / 2 - rng.uniform(0.9, 1.6))
         py = rng.uniform(2.2, h - 2.2)
         kids.append(part(f"Brick{k}", (rng.uniform(1.4, 2.4), rng.uniform(0.9, 1.6), 0.12), at(px, py, fz - 0.06),
-                         ADOBE_BRICK, "Brick", r, collide=False, query=False, shadow=False))
+                         ADOBE_BRICK, "SmoothPlastic", r, collide=False, query=False, shadow=False))
     if upper:
         uw, ud, uh = upper
         lz = d / 2 - ud / 2 - 0.4
@@ -3838,7 +4071,7 @@ def adobe_house(name, x, z, w, d, h, face, rng, wall=None, awning=None, upper=No
 
 
 def a_tent(name, x, z, yaw, cloth, length=7.4, half=3.2, height=4.6, drift=1.4, stripe=None, rng=None):
-    """An A-frame tent of sun-faded canvas over a ridge pole, crossed poles jutting past the ridge at
+    """An A-frame tent of candy-coloured toy cloth over a ridge pole, crossed poles jutting past the ridge at
     both ends. `yaw` turns the ridge; its ends face along it. Each side is cut the way cloth hangs:
     it falls steep from the ridge to a knee where it sags in, a dyed band (`stripe`, the awnings'
     terracotta) runs along the knee, and below it the skirt flares out to the ground in two
@@ -3854,7 +4087,7 @@ def a_tent(name, x, z, yaw, cloth, length=7.4, half=3.2, height=4.6, drift=1.4, 
         top = (0.0, height)
         knee = (sgn * half * 0.5, knee_y)  # inside the straight ridge-to-foot line: the sag
         cloth_s = faded if sgn > 0 else cloth
-        dusty = tuple(round(c * 0.84 + d) for c, d in zip(cloth_s, (6, 2, -4)))  # the hem, stained by the sand
+        dusty = tuple(round(c * 0.86) for c in cloth_s)  # the skirt: the same hue one step darker, never stained
         # upper sheet: ridge to knee
         ln = math.hypot(knee[0] - top[0], knee[1] - top[1])
         ang = math.degrees(math.atan2(top[1] - knee[1], abs(knee[0])))
@@ -3862,11 +4095,11 @@ def a_tent(name, x, z, yaw, cloth, length=7.4, half=3.2, height=4.6, drift=1.4, 
         # two sheets meeting in a shallow crease halfway along, where the cloth sags between the poles
         for k, lz in enumerate((-length / 4, length / 4)):
             kids.append(part(f"Canvas{sgn}_{k}", (ln + 0.2, 0.22, length / 2 + 0.05),
-                             at(knee[0] / 2 * (1.04 if k else 1.0), (top[1] + knee[1]) / 2, lz), cloth_s, "Fabric",
+                             at(knee[0] / 2 * (1.04 if k else 1.0), (top[1] + knee[1]) / 2, lz), cloth_s, "SmoothPlastic",
                              mul(mul(r, rz), rot_x((-1 if k else 1) * sgn * 4.0)), collide=False, layer="roof"))
         # the dyed band along the knee, standing just proud of the sheet
         kids.append(part(f"Band{sgn}", (1.1, 0.4, length + 0.05), at(knee[0] * 0.93, knee[1] + 0.35, 0), stripe,
-                         "Fabric", mul(r, rz), collide=False, query=False, shadow=False, layer="roof"))
+                         "SmoothPlastic", mul(r, rz), collide=False, query=False, shadow=False, layer="roof"))
         # the skirt: two panels, each flaring out to its own foot, the hem sunk into the sand
         for k, (lz, flare, foot_y) in enumerate(((-length / 4, 1.12, -0.35), (length / 4, 1.0, -0.2))):
             foot = (sgn * half * flare, foot_y)
@@ -3874,7 +4107,7 @@ def a_tent(name, x, z, yaw, cloth, length=7.4, half=3.2, height=4.6, drift=1.4, 
             ang2 = math.degrees(math.atan2(knee[1] - foot[1], abs(foot[0] - knee[0])))
             rz2 = mul(rot_z(ang2 if sgn < 0 else -ang2), rot_x((1 if k else -1) * 1.5))
             kids.append(part(f"Skirt{sgn}_{k}", (ln2 + 0.25, 0.22, length / 2 + 0.06),
-                             at((knee[0] + foot[0]) / 2, (knee[1] + foot[1]) / 2, lz), dusty, "Fabric", mul(r, rz2),
+                             at((knee[0] + foot[0]) / 2, (knee[1] + foot[1]) / 2, lz), dusty, "SmoothPlastic", mul(r, rz2),
                              collide=False, layer="roof"))
         # the crossed poles, along the straight ridge-to-foot line
         slant = math.hypot(half, height)
@@ -3883,9 +4116,9 @@ def a_tent(name, x, z, yaw, cloth, length=7.4, half=3.2, height=4.6, drift=1.4, 
         ux, uy = (half / slant) * (-sgn), height / slant
         for k, lz in enumerate((-length / 2 - 0.1, length / 2 + 0.1)):
             kids.append(part(f"Pole{sgn}_{k}", (slant + 1.6, 0.35, 0.35),
-                             at(sgn * half / 2 + ux * 0.8, height / 2 + uy * 0.8, lz), VIGA, "Wood", mul(r, prz),
+                             at(sgn * half / 2 + ux * 0.8, height / 2 + uy * 0.8, lz), VIGA, "SmoothPlastic", mul(r, prz),
                              collide=False))
-    kids.append(part("Ridge", (length + 0.8, 0.4, 0.4), at(0, height, 0), VIGA, "Wood", mul(r, rot_y(90)),
+    kids.append(part("Ridge", (length + 0.8, 0.4, 0.4), at(0, height, 0), VIGA, "SmoothPlastic", mul(r, rot_y(90)),
                      shape="Cylinder", collide=False))
     return model(name, kids, attrs={"SandDrift": drift})
 
@@ -3897,10 +4130,10 @@ def desert_fire(name, x, z, rng):
     for k in range(8):
         a = k / 8 * math.tau + rng.uniform(-0.15, 0.15)
         kids.append(part(f"Stone{k}", (1.3, 0.8, 1.0), (x + math.cos(a) * 2.3, y + 0.3, z + math.sin(a) * 2.3),
-                         rng.choice(RUBBLE), "Sandstone", mul(rot_y(math.degrees(-a)), rot_x(rng.uniform(-8, 8))),
+                         rng.choice(RUBBLE), "SmoothPlastic", mul(rot_y(math.degrees(-a)), rot_x(rng.uniform(-8, 8))),
                          collide=False))
     for k in range(3):
-        kids.append(part(f"Log{k}", (0.8, 0.8, 3.8), (x, y + 0.5, z), TRUNK, "Wood", mul(rot_y(k * 60 + 10), rot_x(16)),
+        kids.append(part(f"Log{k}", (0.8, 0.8, 3.8), (x, y + 0.5, z), TRUNK, "SmoothPlastic", mul(rot_y(k * 60 + 10), rot_x(16)),
                          collide=False))
     kids.append(part("Embers", (1.4, 0.35, 1.4), (x, y + 0.35, z), EMBER, "Neon", collide=False, query=False,
                      shadow=False, children=[fire(5, 8), light(24, 1.7, (255, 170, 96))]))
@@ -3910,12 +4143,12 @@ def desert_fire(name, x, z, rng):
 def camp_table(name, x, z, yaw, rng, chairs=2):
     y = floor_at(x, z, None)
     r, at = local_frame(x, y - 0.1, z, yaw)
-    kids = [part("Top", (4.6, 0.35, 2.8), at(0, 2.75, 0), (132, 84, 50), "WoodPlanks", r)]
+    kids = [part("Top", (4.6, 0.35, 2.8), at(0, 2.75, 0), TIMBER, "SmoothPlastic", r)]
     for k, (sx, sz) in enumerate(((-1, -1), (1, -1), (-1, 1), (1, 1))):
-        kids.append(part(f"Leg{k}", (0.35, 2.6, 0.35), at(sx * 1.9, 1.3, sz * 1.05), VIGA, "Wood", r))
-    kids.append(part("Mug0", (0.7, 0.55, 0.55), at(-0.9, 3.28, 0.3), (226, 214, 190), "SmoothPlastic", mul(r, rot_z(90)),
+        kids.append(part(f"Leg{k}", (0.35, 2.6, 0.35), at(sx * 1.9, 1.3, sz * 1.05), VIGA, "SmoothPlastic", r))
+    kids.append(part("Mug0", (0.7, 0.55, 0.55), at(-0.9, 3.28, 0.3), (255, 250, 240), "SmoothPlastic", mul(r, rot_z(90)),
                      shape="Cylinder", collide=False, query=False, shadow=False))
-    kids.append(part("Jug", (1.2, 0.9, 0.9), at(1.1, 3.5, -0.2), POT_CLAY[0], "Brick", mul(r, rot_z(90)), shape="Cylinder",
+    kids.append(part("Jug", (1.2, 0.9, 0.9), at(1.1, 3.5, -0.2), POT_CLAY[0], "SmoothPlastic", mul(r, rot_z(90)), shape="Cylinder",
                      collide=False, query=False, shadow=False))
     for c in range(chairs):
         side = -1 if c % 2 == 0 else 1
@@ -3925,10 +4158,10 @@ def camp_table(name, x, z, yaw, rng, chairs=2):
         def cp(lx, ly, lz, cx=cx, cy=cy, cz=cz, cr=cr):
             d = apply(cr, (lx, 0, lz))
             return (cx + d[0], cy + ly, cz + d[2])
-        kids.append(part(f"Seat{c}", (1.8, 0.3, 1.7), cp(0, 1.6, 0), (140, 88, 52), "WoodPlanks", cr))
-        kids.append(part(f"Back{c}", (1.8, 2.1, 0.3), cp(0, 2.6, 0.85), (140, 88, 52), "WoodPlanks", cr))
+        kids.append(part(f"Seat{c}", (1.8, 0.3, 1.7), cp(0, 1.6, 0), AWNINGS[3], "SmoothPlastic", cr))
+        kids.append(part(f"Back{c}", (1.8, 2.1, 0.3), cp(0, 2.6, 0.85), AWNINGS[3], "SmoothPlastic", cr))
         for k, sx in enumerate((-0.75, 0.75)):
-            kids.append(part(f"Side{c}_{k}", (0.3, 1.45, 1.5), cp(sx, 0.72, 0), VIGA, "Wood", cr))
+            kids.append(part(f"Side{c}_{k}", (0.3, 1.45, 1.5), cp(sx, 0.72, 0), VIGA, "SmoothPlastic", cr))
     return model(name, kids, attrs={"SandDrift": 0.35})
 
 
@@ -3936,8 +4169,8 @@ def log_bench(name, x, z, yaw, length=8.0):
     y = floor_at(x, z, None) - 0.2  # the log half-settled into the sand
     r, at = local_frame(x, y, z, yaw)
     return model(name, [
-        part("Log", (length, 1.7, 1.7), at(0, 0.7, 0), (136, 88, 52), "Wood", r, shape="Cylinder"),
-        part("Seat", (length - 0.6, 0.3, 1.2), at(0, 1.5, 0), (158, 104, 62), "WoodPlanks", r, collide=False),
+        part("Log", (length, 1.7, 1.7), at(0, 0.7, 0), VIGA, "SmoothPlastic", r, shape="Cylinder"),
+        part("Seat", (length - 0.6, 0.3, 1.2), at(0, 1.5, 0), TIMBER, "SmoothPlastic", r, collide=False),
     ], attrs={"SandDrift": 0.45})
 
 
@@ -3947,17 +4180,17 @@ def saguaro(name, x, z, h, rng, arms=2):
     c = rng.choice(CACTUS)
     yaw = rng.uniform(0, 180)
     r, at = local_frame(x, y, z, yaw)
-    kids = [part("Trunk", (h, 1.9, 1.9), at(0, h / 2, 0), c, "Grass", rot_z(90), shape="Cylinder"),
-            part("Crown", (1.9, 1.9, 1.9), at(0, h, 0), c, "Grass", shape="Ball", collide=False)]
+    kids = [part("Trunk", (h, 1.9, 1.9), at(0, h / 2, 0), c, "SmoothPlastic", rot_z(90), shape="Cylinder"),
+            part("Crown", (1.9, 1.9, 1.9), at(0, h, 0), c, "SmoothPlastic", shape="Ball", collide=False)]
     for k in range(arms):
         side = 1 if k == 0 else -1
         ay = h * rng.uniform(0.35, 0.55)
         up = h * rng.uniform(0.22, 0.34)
-        kids.append(part(f"ArmOut{k}", (2.2, 1.35, 1.35), at(side * 1.4, ay, 0), c, "Grass", r, shape="Cylinder",
+        kids.append(part(f"ArmOut{k}", (2.2, 1.35, 1.35), at(side * 1.4, ay, 0), c, "SmoothPlastic", r, shape="Cylinder",
                          collide=False))
-        kids.append(part(f"ArmUp{k}", (up, 1.35, 1.35), at(side * 2.35, ay + up / 2, 0), c, "Grass", rot_z(90),
+        kids.append(part(f"ArmUp{k}", (up, 1.35, 1.35), at(side * 2.35, ay + up / 2, 0), c, "SmoothPlastic", rot_z(90),
                          shape="Cylinder", collide=False))
-        kids.append(part(f"ArmTip{k}", (1.35, 1.35, 1.35), at(side * 2.35, ay + up, 0), c, "Grass", shape="Ball",
+        kids.append(part(f"ArmTip{k}", (1.35, 1.35, 1.35), at(side * 2.35, ay + up, 0), c, "SmoothPlastic", shape="Ball",
                          collide=False))
     return model(name, kids)
 
@@ -3967,7 +4200,7 @@ def barrel_cactus(name, x, z, rng):
     c = rng.choice(CACTUS)
     s = rng.uniform(1.6, 2.4)
     return model(name, [
-        part("Body", (s, s * 0.9, s), (x, y + s * 0.35, z), c, "Grass", shape="Ball", collide=False),
+        part("Body", (s, s * 0.9, s), (x, y + s * 0.35, z), c, "SmoothPlastic", shape="Ball", collide=False),
         part("Flower", (0.6, 0.45, 0.6), (x, y + s * 0.78, z), rng.choice(((240, 90, 110), (252, 204, 60))), "SmoothPlastic",
              shape="Ball", collide=False, query=False, shadow=False),
     ])
@@ -3993,13 +4226,13 @@ def palm(name, x, z, rng, height=17.0, lean=(1.0, 0.0), y=None):
         u = tuple((q[i] - p[i]) / seg for i in range(3))
         mid = tuple((p[i] + q[i]) / 2 - u[i] * back / 2 for i in range(3))
         rad = 1.5 - k * 0.12
-        kids.append(part(f"Trunk{k}", (seg + 0.35 + back, rad, rad), mid, PALM_TRUNK if k % 2 == 0 else (144, 102, 64), "Wood",
+        kids.append(part(f"Trunk{k}", (seg + 0.35 + back, rad, rad), mid, PALM_TRUNK if k % 2 == 0 else PALM_TRUNK_ALT, "SmoothPlastic",
                          mul(beam_rot(p, q), rot_z(90)), shape="Cylinder", collide=(k == 0)))
         if k < 4:  # the knobbly ring where each year's growth meets the next
-            kids.append(part(f"Ring{k}", (rad + 0.25, rad + 0.25, rad + 0.25), q, PALM_RING, "Wood", shape="Ball",
+            kids.append(part(f"Ring{k}", (rad + 0.25, rad + 0.25, rad + 0.25), q, PALM_RING, "SmoothPlastic", shape="Ball",
                              collide=False, query=False))
         p = q
-    kids.append(part("Heart", (1.6, 1.4, 1.6), (p[0], p[1] + 0.2, p[2]), PALM_RING, "Wood", shape="Ball", collide=False))
+    kids.append(part("Heart", (1.6, 1.4, 1.6), (p[0], p[1] + 0.2, p[2]), PALM_RING, "SmoothPlastic", shape="Ball", collide=False))
     fronds = rng.randint(7, 8)
     for k in range(fronds):
         a = k / fronds * 360 + rng.uniform(-12, 12)
@@ -4009,7 +4242,7 @@ def palm(name, x, z, rng, height=17.0, lean=(1.0, 0.0), y=None):
         d1 = apply(r1, (0, 0, 1))
         l1 = rng.uniform(4.2, 5.2)
         c1 = (p[0] + d1[0] * l1 / 2, p[1] + 0.3 + d1[1] * l1 / 2, p[2] + d1[2] * l1 / 2)
-        kids.append(part(f"Frond{k}a", (2.0, 0.22, l1), c1, c, "Grass", r1, collide=False, query=False))
+        kids.append(part(f"Frond{k}a", (2.0, 0.22, l1), c1, c, "SmoothPlastic", r1, collide=False, query=False))
         e1 = (p[0] + d1[0] * l1, p[1] + 0.3 + d1[1] * l1, p[2] + d1[2] * l1)
         r2 = mul(rot_y(a), rot_x(droop + 26))
         d2 = apply(r2, (0, 0, 1))
@@ -4017,12 +4250,12 @@ def palm(name, x, z, rng, height=17.0, lean=(1.0, 0.0), y=None):
         # the tip tapers to a point: a wedge laid flat, its thin edge running out along the frond
         kids.append(part(f"Frond{k}b", (0.2, 1.5, l2), (e1[0] + d2[0] * (l2 / 2 - 0.45), e1[1] + d2[1] * (l2 / 2 - 0.45),
                                                          e1[2] + d2[2] * (l2 / 2 - 0.45)),
-                         c, "Grass", mul(r2, ((0, 1, 0), (1, 0, 0), (0, 0, -1))), cls="WedgePart", collide=False,
+                         c, "SmoothPlastic", mul(r2, ((0, 1, 0), (1, 0, 0), (0, 0, -1))), cls="WedgePart", collide=False,
                          query=False, shadow=False))
     for k in range(2):
         a = rng.uniform(0, math.tau)
         kids.append(part(f"Dates{k}", (0.8, 0.9, 0.8), (p[0] + math.cos(a) * 0.9, p[1] - 0.6, p[2] + math.sin(a) * 0.9),
-                         (196, 120, 48), "SmoothPlastic", shape="Ball", collide=False, query=False, shadow=False))
+                         (240, 150, 60), "SmoothPlastic", shape="Ball", collide=False, query=False, shadow=False))
     return model(name, kids)
 
 
@@ -4033,11 +4266,11 @@ def oasis_reeds(name, x, z, rng, n=7):
     for k in range(n):
         h = rng.uniform(4.4, 6.6)
         ox, oz = rng.uniform(-1.1, 1.1), rng.uniform(-1.1, 1.1)
-        kids.append(part(f"Reed{k}", (0.22, h, 0.22), (x + ox, y + h / 2, z + oz), rng.choice((MOSS, (120, 160, 64), (150, 170, 80))),
-                         "Grass", mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-7, 7))), collide=False, query=False,
+        kids.append(part(f"Reed{k}", (0.22, h, 0.22), (x + ox, y + h / 2, z + oz), rng.choice((MOSS, (150, 236, 96), (176, 240, 110))),
+                         "SmoothPlastic", mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-7, 7))), collide=False, query=False,
                          shadow=False))
         if k % 3 == 0:
-            kids.append(part(f"Head{k}", (0.42, 1.1, 0.42), (x + ox, y + h - 0.4, z + oz), (120, 76, 44), "Fabric",
+            kids.append(part(f"Head{k}", (0.42, 1.1, 0.42), (x + ox, y + h - 0.4, z + oz), (214, 128, 52), "SmoothPlastic",
                              collide=False, query=False, shadow=False))
     return model(name, kids)
 
@@ -4049,14 +4282,14 @@ def desert_stall(name, x, z, face, rng, canopy):
     kids = []
     for k, (sx, sz) in enumerate(((-1, -1), (1, -1), (-1, 1), (1, 1))):
         h = 7.5 if sz < 0 else 8.25
-        kids.append(part(f"Post{k}", (0.5, h, 0.5), at(sx * 3.6, h / 2, sz * 2.4), VIGA, "Wood", r))
+        kids.append(part(f"Post{k}", (0.5, h, 0.5), at(sx * 3.6, h / 2, sz * 2.4), VIGA, "SmoothPlastic", r))
     for k in range(5):
         kids.append(part(f"Canopy{k}", (7.8 / 5, 0.18, 6.2), at(-3.9 + 7.8 * (k + 0.5) / 5, 8.0, 0),
-                         canopy if k % 2 == 0 else AWNING_CREAM, "Fabric", mul(r, rot_x(-7)), collide=False, layer="roof"))
-    kids.append(part("Counter", (7.0, 2.6, 1.6), at(0, 1.3, -1.6), (150, 98, 58), "WoodPlanks", r))
-    for k, color in enumerate((LEMON, (240, 148, 52), (150, 76, 44))):
+                         canopy if k % 2 == 0 else AWNING_CREAM, "SmoothPlastic", mul(r, rot_x(-7)), collide=False, layer="roof"))
+    kids.append(part("Counter", (7.0, 2.6, 1.6), at(0, 1.3, -1.6), TIMBER, "SmoothPlastic", r))
+    for k, color in enumerate((LEMON, (255, 150, 40), (255, 84, 96))):
         bx = -2.3 + k * 2.3
-        kids.append(part(f"Basket{k}", (1.9, 0.7, 1.3), at(bx, 2.95, -1.6), (178, 132, 80), "Fabric", r, collide=False))
+        kids.append(part(f"Basket{k}", (1.9, 0.7, 1.3), at(bx, 2.95, -1.6), ADOBE_TRIM, "SmoothPlastic", r, collide=False))
         for j in range(3):
             kids.append(part(f"Fruit{k}{j}", (0.75, 0.7, 0.7), at(bx - 0.5 + j * 0.5, 3.45 + (j % 2) * 0.15, -1.6 + (j % 2) * 0.2),
                              color, "SmoothPlastic", r, shape="Ball", collide=False, query=False, shadow=False))
@@ -4067,8 +4300,8 @@ def lantern_post(name, x, z, yaw, rng):
     y = floor_at(x, z, None)
     r, at = local_frame(x, y, z, yaw)
     return model(name, [
-        part("Pole", (0.5, 8.4, 0.5), at(0, 4.2, 0), VIGA, "Wood", r),
-        part("Arm", (0.35, 0.35, 2.2), at(0, 8.0, -0.9), VIGA, "Wood", r, collide=False),
+        part("Pole", (0.5, 8.4, 0.5), at(0, 4.2, 0), VIGA, "SmoothPlastic", r),
+        part("Arm", (0.35, 0.35, 2.2), at(0, 8.0, -0.9), VIGA, "SmoothPlastic", r, collide=False),
         part("Lantern", (0.9, 1.3, 0.9), at(0, 7.0, -1.7), (255, 208, 132), "Neon", r, collide=False, query=False,
              shadow=False, children=[light(18, 1.1, LANTERN)]),
     ])
@@ -4215,28 +4448,25 @@ def build_iron_lowlands(rng):
     # proxies and the pieces QUARRY_KEEP names.
     REGISTRY[mark:] = [e for e in REGISTRY[mark:] if e["layer"] in ("ground", "proxy")]
     visual = [n for n in legacy if QUARRY_KEEP.match(n["name"])]
-    def resurface(node, pattern, color, material="Sandstone"):
+    def resurface(node, pattern, color, material="SmoothPlastic"):
         for c in node.get("children", ()):
             if re.match(pattern, c["name"]):
                 c["properties"]["Material"] = material
                 c["properties"]["Color"] = [_r(v / 255) for v in color]
     for n in visual:
-        if n["name"].startswith("StandingStone"):  # the arena's ring, re-cut in the basin's sandstone
-            n["properties"]["Material"] = "Sandstone"
-            n["properties"]["Color"] = [_r(c / 255) for c in (206, 152, 102)]
-        elif n["name"] == "GateBriarwood":  # the gate's grey pillars, rebuilt in sandstone
-            resurface(n, r"^Pillar-?1$", (214, 164, 110))
-            resurface(n, r"^PillarCap", (186, 128, 84))
+        if n["name"].startswith("StandingStone"):  # the arena's ring, re-cut in the basin's peach sandstone (toy plastic)
+            n["properties"]["Material"] = "SmoothPlastic"
+            n["properties"]["Color"] = [_r(c / 255) for c in hsv(32, 0.2, 1.0)]  # calm pale peach tint
+        elif n["name"] == "GateBriarwood":  # the gate's pillars in the adobe's apricot, capped in terracotta
+            resurface(n, r"^Pillar-?1$", ADOBE_WALLS[0])
+            resurface(n, r"^PillarCap", ADOBE_PLINTH)
         elif n["name"].startswith("PitBrazier"):
-            resurface(n, r"^Base$", (190, 132, 88))
-        elif n["name"].startswith("Barricade"):  # sun-bleached timber, not the quarry's tarred planks
-            resurface(n, r"^(Planks|Stake\d+)$", (164, 110, 66), "WoodPlanks")
-            resurface(n, r"^Wheel\d+$", (140, 92, 54), "Wood")
+            resurface(n, r"^Base$", ADOBE_PLINTH)
         _register_tree(n)
     for g in ground:
         if g["name"] == "SumpBed":  # the oasis pool's floor, seen through the water
-            g["properties"]["Material"] = "Sand"
-            g["properties"]["Color"] = [_r(c / 255) for c in (196, 160, 104)]
+            g["properties"]["Material"] = "SmoothPlastic"
+            g["properties"]["Color"] = [_r(c / 255) for c in GROUND_TAN]
     global AUTO_GROUND
     AUTO_GROUND = True
     visual += desert_dressing()
@@ -4255,15 +4485,17 @@ GROTTO = (118, 134, 649, 661)  # pocket behind the Mirror Pool waterfall: x0 x1 
 POOL = (82, 655, 15.5)         # Mirror Pool centre and water radius
 POOL_HOLE = (66, 98, 639, 671) # gap in the grass floor the pool bed fills
 GROVE = (0, 868, 36)           # Warden's Grove arena centre and radius
-EARTH = (136, 112, 77)
-SAND = (180, 154, 112)
-POOL_WATER = (84, 125, 120)
-FALL_WATER = (183, 211, 207)
-BRIAR_ROCK = (106, 103, 99)
-BRIAR_ROCK_DARK = (86, 84, 80)
-BRIAR_IRON = (56, 61, 53)
-BRIAR_GLOW = (168, 202, 176)
-BRIAR_CANOPY = [(70, 138, 52), (60, 112, 48), (86, 138, 58)]
+EARTH = (238, 190, 126)
+SAND = (238, 198, 134)  # the quarry stones: pale saturated sandstone-peach
+POOL_WATER = (40, 184, 228)  # the Mirror Pool and its streams: a vivid toy cyan, never slate teal
+FALL_WATER = (206, 242, 255)  # the falling sheets: nearly white aqua
+BRIAR_ROCK = (130, 158, 250)  # the waterfalls' rock shoulders: periwinkle toy stone
+BRIAR_ROCK_DARK = (86, 112, 232)  # the same blue one step deeper, never charcoal
+BRIAR_IRON = (24, 138, 150)  # grave pickets, straps and hooks: deep teal, never gunmetal
+BRIAR_GLOW = (120, 240, 170)  # the vale's waystones: a clean mint, not sage
+BRIAR_STONE = (228, 238, 255)  # the chapel and grave masonry: the big calm surface, a pale sky-blue white
+BRIAR_STONE_DARK = (168, 196, 255)  # its alternate courses and darker headstones: the same blue, deeper
+BRIAR_CANOPY = [(104, 230, 98), (60, 210, 68), (130, 238, 104)]  # spring greens, one hue, three values
 
 
 def beam_rot(a, b):
@@ -4304,29 +4536,29 @@ def briar_tree(name, x, y, z, rng, scale=1.0, roots=True):
     lean = rng.uniform(0, math.tau)
     lx, lz = x + math.cos(lean) * 0.4 * s, z + math.sin(lean) * 0.4 * s
     tops = Tops()
-    kids = [part("Bole", (2.0 * s, h * 0.5, 2.0 * s), (x, y + h * 0.25, z), TRUNK, "Wood", rot_y(rng.uniform(0, 90)),
+    kids = [part("Bole", (2.0 * s, h * 0.5, 2.0 * s), (x, y + h * 0.25, z), TRUNK, "SmoothPlastic", rot_y(rng.uniform(0, 90)),
                  layer="tree"),
-            part("Trunk", (1.4 * s, h * 0.62, 1.4 * s), (lx, y + h * 0.69, lz), TRUNK, "Wood", rot_y(rng.uniform(0, 90)),
+            part("Trunk", (1.4 * s, h * 0.62, 1.4 * s), (lx, y + h * 0.69, lz), TRUNK, "SmoothPlastic", rot_y(rng.uniform(0, 90)),
                  layer="tree")]
     tops(y + h * 0.5)
     tops(y + h)
     for k in range(3):
         a = k * 2.094 + rng.uniform(0, 0.5)
         tip = (lx + math.cos(a) * 2.4 * s, y + h * 0.9, lz + math.sin(a) * 2.4 * s)
-        kids.append(beam(f"Limb{k}", (lx, y + h * 0.55, lz), tip, 0.36 * s, TRUNK, collide=False, layer="tree"))
+        kids.append(beam(f"Limb{k}", (lx, y + h * 0.55, lz), tip, 0.36 * s, TRUNK, "SmoothPlastic", collide=False, layer="tree"))
         ch = 2.6 * s
         top = tops(y + h * 0.9 + 1.0 * s + ch / 2 + k * 0.35 * s)
-        kids.append(part(f"Canopy{k}", (5 * s, ch, 4.5 * s), (tip[0], top - ch / 2, tip[2]), BRIAR_CANOPY[k], "Grass",
+        kids.append(part(f"Canopy{k}", (5 * s, ch, 4.5 * s), (tip[0], top - ch / 2, tip[2]), BRIAR_CANOPY[k], "SmoothPlastic",
                          rot_y(math.degrees(a) * 0.3), collide=False, layer="canopy"))
     ch = 2.2 * s
     top = tops(y + h + 1.0 * s + ch / 2)
-    kids.append(part("Crown", (4.6 * s, ch, 4.2 * s), (lx, top - ch / 2, lz), BRIAR_CANOPY[1], "Grass", rot_y(12),
+    kids.append(part("Crown", (4.6 * s, ch, 4.2 * s), (lx, top - ch / 2, lz), BRIAR_CANOPY[1], "SmoothPlastic", rot_y(12),
                      collide=False, layer="canopy"))
     if roots:
         for k in range(4):
             a = k * math.pi / 2 + 0.3 + lean
             kids.append(beam(f"Root{k}", (x, y + 1.2 * s, z), (x + math.cos(a) * 3 * s, y + 0.15, z + math.sin(a) * 3 * s),
-                             0.5 * s, TRUNK, collide=False, query=False, layer="tree"))
+                             0.5 * s, TRUNK, "SmoothPlastic", collide=False, query=False, layer="tree"))
     return model(name, kids)
 
 
@@ -4337,8 +4569,8 @@ def moss_boulder(name, x, y, z, rng, s=1.0, collide=True):
     yaw = rng.uniform(0, 90)
     r = mul(rot_y(yaw), rot_z(rng.uniform(-8, 8)))
     return model(name, [
-        part("Rock", (w, h, d), (x, y + h / 2 - 0.15, z), BRIAR_ROCK, "Slate", r, collide=collide, layer="rock"),
-        part("Moss", (w * 0.9, 0.3, d * 0.9), (x, y + h - 0.2, z), MOSS, "Grass", rot_y(yaw), collide=False, query=False,
+        part("Rock", (w, h, d), (x, y + h / 2 - 0.15, z), BRIAR_ROCK, "SmoothPlastic", r, collide=collide, layer="rock"),
+        part("Moss", (w * 0.9, 0.3, d * 0.9), (x, y + h - 0.2, z), MOSS, "SmoothPlastic", rot_y(yaw), collide=False, query=False,
              layer="rock"),
     ])
 
@@ -4421,14 +4653,14 @@ def ruin_wall(name, x, z, yaw, n, rows, rng, block=(2.9, 1.8, 1.6)):
                 present[row][i] = False
                 continue
             px, pz = x + right[0] * s + fwd[0] * rng.uniform(-0.1, 0.1), z + right[2] * s + fwd[2] * rng.uniform(-0.1, 0.1)
-            kids.append(part(f"Block{row}_{i}", (bw, bh, bd), (px, y + bh / 2 + row * bh, pz), STONE, "Cobblestone",
+            kids.append(part(f"Block{row}_{i}", (bw, bh, bd), (px, y + bh / 2 + row * bh, pz), BRIAR_STONE, "SmoothPlastic",
                              mul(r, rot_y(rng.uniform(-3, 3))), layer="prop"))
         present[row][n] = False
     for i in range(0, n, 2):
         s = i * (bw + 0.1) + bw * 0.4
         side = 1 if i % 4 == 0 else -1
         mx, mz = x + right[0] * s + fwd[0] * side * (bd * 0.5 + 0.6), z + right[2] * s + fwd[2] * side * (bd * 0.5 + 0.6)
-        kids.append(part(f"Moss{i}", (3.0, 0.7 + (i % 3) * 0.06, 2.2), (mx, y + (0.7 + (i % 3) * 0.06) / 2, mz), MOSS, "Grass",
+        kids.append(part(f"Moss{i}", (3.0, 0.7 + (i % 3) * 0.06, 2.2), (mx, y + (0.7 + (i % 3) * 0.06) / 2, mz), MOSS, "SmoothPlastic",
                          mul(r, rot_y(15)), collide=False, query=False, layer="prop"))
     return model(name, kids)
 
@@ -4448,8 +4680,8 @@ def briar_fall(name, x, z, yaw, height, width, rng, lip_bottom=None):
         cx = x + right[0] * k * (width / 2 + cw / 2 - 0.4) - fwd[0] * 1.0
         cz = z + right[2] * k * (width / 2 + cw / 2 - 0.4) - fwd[2] * 1.0
         kids.append(part(f"Step{k}", (cw, top - y + 1, 4.6), (cx, (top + y - 1) / 2, cz), BRIAR_ROCK if k > 0 else BRIAR_ROCK_DARK,
-                         "Slate", r, collide=False, layer="cliff"))
-        kids.append(part(f"StepMoss{k}", (cw + 0.2, 0.36, 4.8), (cx, top + 0.18, cz), MOSS, "Grass", r, collide=False,
+                         "SmoothPlastic", r, collide=False, layer="cliff"))
+        kids.append(part(f"StepMoss{k}", (cw + 0.2, 0.36, 4.8), (cx, top + 0.18, cz), MOSS, "SmoothPlastic", r, collide=False,
                          query=False, layer="cliff"))
     for k in range(2):
         kids.append(part(f"WaterSheet{k}", (width - k * 0.8, height, 0.4), (x + fwd[0] * (0.3 + k * 0.5), y + height / 2 + 0.4,
@@ -4465,7 +4697,7 @@ def briar_fall(name, x, z, yaw, height, width, rng, lip_bottom=None):
     kids.append(part("Mist", (0.5, 0.5, 0.5), (x + fwd[0] * 1.6, y + 1.2, z + fwd[2] * 1.6), (255, 255, 255), "SmoothPlastic",
                      transparency=1, collide=False, query=False, shadow=False, children=[smoke(5.0, 0.16, 1.0, (235, 240, 245))]))
     kids.append(part("Lip", (width + 3, 3.2, 5.5), (x - fwd[0] * 1.2, lip_bottom + 1.6, z - fwd[2] * 1.2), BRIAR_ROCK_DARK,
-                     "Slate", mul(r, rot_y(4)), collide=False, layer="cliff"))
+                     "SmoothPlastic", mul(r, rot_y(4)), collide=False, layer="cliff"))
     return model(name, kids, attrs={"Waterfall": True})
 
 
@@ -4480,13 +4712,13 @@ def hanging_sign(name, x, z, yaw, title, subtitle=""):
 
     px, pz = at(0)
     ax, az = at(2.6)
-    kids = [part("Post", (0.7, 11, 0.7), (px, y + 5.5, pz), BEAM, "Wood", r),
-            part("Arm", (5.6, 0.5, 0.5), (ax, y + 10.6, az), BEAM, "Wood", r, collide=False)]
+    kids = [part("Post", (0.7, 11, 0.7), (px, y + 5.5, pz), BEAM, "SmoothPlastic", r),
+            part("Arm", (5.6, 0.5, 0.5), (ax, y + 10.6, az), BEAM, "SmoothPlastic", r, collide=False)]
     for k, lx in enumerate((1.4, 4.4)):
         sx, sz = at(lx)
-        kids.append(part(f"Strap{k}", (0.25, 1.0, 0.25), (sx, y + 9.85, sz), BRIAR_IRON, "Metal", r, collide=False, query=False))
+        kids.append(part(f"Strap{k}", (0.25, 1.0, 0.25), (sx, y + 9.85, sz), BRIAR_IRON, "SmoothPlastic", r, collide=False, query=False))
     bx, bz = at(2.9)
-    kids.append(part("Board", (4.6, 1.9, 0.45), (bx, y + 8.4, bz), (110, 76, 46), "WoodPlanks", r, collide=False,
+    kids.append(part("Board", (4.6, 1.9, 0.45), (bx, y + 8.4, bz), BRIAR_IRON, "SmoothPlastic", r, collide=False,
                      children=[label_gui("Front", title, subtitle, (236, 220, 170), px=60),
                                label_gui("Back", title, subtitle, (236, 220, 170), px=60)]))
     return model(name, kids)
@@ -4495,7 +4727,7 @@ def hanging_sign(name, x, z, yaw, title, subtitle=""):
 def headstone(name, x, z, rng, y=None):
     y = floor_at(x, z, y if y is not None else BRIAR_Y)
     h = rng.uniform(2.6, 3.6)
-    return part(name, (1.8, h, 0.7), (x, y + h / 2 - 0.15, z), STONE if rng.random() < 0.7 else STONE_DARK, "Slate",
+    return part(name, (1.8, h, 0.7), (x, y + h / 2 - 0.15, z), BRIAR_STONE if rng.random() < 0.7 else BRIAR_STONE_DARK, "SmoothPlastic",
                 mul(rot_y(rng.uniform(-8, 8)), rot_z(rng.uniform(-5, 5))), layer="prop")
 
 
@@ -4518,7 +4750,7 @@ def iron_fence(name, a, b, rng, gaps=()):
         else:
             h = rng.uniform(2.4, 3.6)
             px, pz = ax + dx * s, az + dz * s
-            kids.append(part(f"Picket{k}", (0.22, h, 0.22), (px, floor_at(px, pz, BRIAR_Y) + h / 2, pz), BRIAR_IRON, "Metal",
+            kids.append(part(f"Picket{k}", (0.22, h, 0.22), (px, floor_at(px, pz, BRIAR_Y) + h / 2, pz), BRIAR_IRON, "SmoothPlastic",
                              rot_y(yaw), collide=False))
             run.append(s)
         s += 2.0
@@ -4531,7 +4763,7 @@ def iron_fence(name, a, b, rng, gaps=()):
         s0, s1 = run[0], run[-1]
         mid = (s0 + s1) / 2
         px, pz = ax + dx * mid, az + dz * mid
-        kids.append(part(f"Rail{i}", (s1 - s0, 0.16, 0.16), (px, floor_at(px, pz, BRIAR_Y) + 2.0, pz), BRIAR_IRON, "Metal",
+        kids.append(part(f"Rail{i}", (s1 - s0, 0.16, 0.16), (px, floor_at(px, pz, BRIAR_Y) + 2.0, pz), BRIAR_IRON, "SmoothPlastic",
                          rot_y(yaw), collide=False, query=False))
     return model(name, kids)
 
@@ -4548,8 +4780,8 @@ def stone_arch(name, cx, cz, yaw, span=10.0, pier_h=8.4, depth=2.6, wedges=7):
     for side in (-1, 1):
         for i in range(courses):
             px, pz = cx + right[0] * side * (span / 2 + 1.25), cz + right[2] * side * (span / 2 + 1.25)
-            kids.append(part(f"Pier{side}_{i}", (2.5, ch, depth), (px, y + ch / 2 + i * ch, pz), STONE if i % 2 else STONE_DARK,
-                             "Cobblestone", mul(r, rot_y(2 * (-1) ** i))))
+            kids.append(part(f"Pier{side}_{i}", (2.5, ch, depth), (px, y + ch / 2 + i * ch, pz), BRIAR_STONE if i % 2 else BRIAR_STONE_DARK,
+                             "SmoothPlastic", mul(r, rot_y(2 * (-1) ** i))))
     r_in, r_out = span / 2, span / 2 + 2.3
     r_mid = (r_in + r_out) / 2
     chord = 2 * r_mid * math.sin(math.pi / (2 * wedges)) + 0.25
@@ -4557,8 +4789,29 @@ def stone_arch(name, cx, cz, yaw, span=10.0, pier_h=8.4, depth=2.6, wedges=7):
         am = (i + 0.5) * math.pi / wedges
         wx, wz = cx + right[0] * math.cos(am) * r_mid, cz + right[2] * math.cos(am) * r_mid
         kids.append(part(f"Wedge{i}", (chord, r_out - r_in, depth), (wx, y + pier_h + math.sin(am) * r_mid, wz),
-                         STONE if i % 2 else (140, 136, 128), "Cobblestone", mul(r, rot_z(math.degrees(am) + 90)), collide=False))
+                         BRIAR_STONE if i % 2 else BRIAR_STONE_DARK, "SmoothPlastic", mul(r, rot_z(math.degrees(am) + 90)), collide=False))
     return model(name, kids)
+
+
+GRAINY = {"Wood", "WoodPlanks", "Fabric", "Metal", "CorrodedMetal", "Slate", "Cobblestone", "Brick", "Sandstone",
+          "Plaster", "Grass", "LeafyGrass", "Ground", "Sand"}
+
+
+def toy_finish(node, recolor=None):
+    """Re-finish a kit-built prop standing in the vale as smooth toy plastic: every grainy material
+    goes to SmoothPlastic, and parts named in `recolor` take that colour. Geometry is untouched."""
+    for c in node.get("children", ()):
+        pr = c.get("properties", {})
+        if pr.get("Material") in GRAINY:
+            pr["Material"] = "SmoothPlastic"
+        if recolor and c.get("name") in recolor:
+            pr["Color"] = [_r(v / 255) for v in recolor[c["name"]]]
+        toy_finish(c, recolor)
+    return node
+
+
+TOY_CHEST = {"Body": VIGA, "Lid": TIMBER, "BandL": IRON_DARK, "BandR": IRON_DARK, "Hilt0": IRON_DARK, "Hilt1": IRON_DARK,
+             "Hilt2": IRON_DARK}
 
 
 def lily_pads(name, cx, cz, radius, water_top, n, rng):
@@ -4572,7 +4825,7 @@ def lily_pads(name, cx, cz, radius, water_top, n, rng):
         if any(math.hypot(x - px, z - pz) < rr + pr + 0.4 for px, pz, pr in placed):
             continue
         placed.append((x, z, rr))
-        kids += disc(f"Pad{len(placed)}", x, z, rr, water_top + 0.1, 0.1, rng.choice([MOSS, BRIAR_CANOPY[2]]), "Grass",
+        kids += disc(f"Pad{len(placed)}", x, z, rr, water_top + 0.1, 0.1, rng.choice([MOSS, BRIAR_CANOPY[2]]), "SmoothPlastic",
                      collide=False, layer="decal")
     return model(name, kids)
 
@@ -4583,7 +4836,7 @@ def reeds(name, x, z, rng, n=6):
     for k in range(n):
         h = rng.uniform(1.6, 3.2)
         ox, oz = rng.uniform(-0.8, 0.8), rng.uniform(-0.8, 0.8)
-        kids.append(part(f"Reed{k}", (0.18, h, 0.18), (x + ox, y + h / 2, z + oz), rng.choice([MOSS, BRIAR_CANOPY[0]]), "Grass",
+        kids.append(part(f"Reed{k}", (0.18, h, 0.18), (x + ox, y + h / 2, z + oz), rng.choice([MOSS, BRIAR_CANOPY[0]]), "SmoothPlastic",
                          mul(rot_y(rng.uniform(0, 90)), rot_z(rng.uniform(-6, 6))), collide=False, query=False, shadow=False))
     return model(name, kids)
 
@@ -4602,24 +4855,32 @@ def reeds(name, x, z, rng, n=6):
 # Under them: bush clusters (some lemon-yellow), fern clumps, and fallen mossy logs. The ground,
 # paths, leaf litter, moss, root mounds and rocks are Terrain (WorldTerrain reads the ForestPlan
 # this module writes), so nothing here is a floor or a rock.
-OAK_BARK = (92, 66, 50)
-OAK_BARK_DARK = (88, 63, 48)
-FIR_BARK = (100, 66, 50)
-BIRCH_BARK = (138, 116, 92)  # a lighter, warmer bark than the oaks', not a pale stick
-OAK_SHADE = (50, 112, 62)
-OAK_MID = (84, 150, 52)
-OAK_SUN = (140, 186, 58)
-FIR_TONES = [(38, 104, 74), (48, 120, 76), (66, 138, 72), (84, 152, 70)]  # bottom tier to spire
-BIRCH_TONES = [(84, 148, 54), (100, 158, 56), (72, 134, 58), (116, 168, 58)]  # the canopy's greens
-THICKET_TONES = [(48, 116, 70), (60, 128, 64), (74, 138, 60), (56, 120, 58)]
-SHRUB_TONES = [(66, 132, 58), (84, 146, 56), (56, 118, 60), (98, 154, 58)]
-LEMON_BUSH = [(232, 206, 70), (220, 196, 64), (242, 218, 96)]
-FERN_TONES = [(98, 168, 62), (80, 150, 58), (120, 180, 66)]
-LOG_BARK = (104, 80, 56)
+# Toy-plastic palette: every green is one spring-green hue at three values (never pine, teal or
+# olive), every bark a warm saturated caramel (never chocolate or grey).
+OAK_BARK = BARK
+OAK_BARK_DARK = BARK_DARK
+FIR_BARK = (240, 146, 60)
+BIRCH_BARK = hsv(40, 0.22, 1.0)  # birches keep a calm pale cream trunk against the caramel oaks
+OAK_SHADE, OAK_MID, OAK_SUN = CANOPY["lime"]  # the default (lime) canopy triple
 
 
-def ellipsoid(name, size, pos, color, material="LeafyGrass", rot=None, **kw):
-    """A textured ellipsoid (Part + Sphere SpecialMesh). Always give it a small tilt: a level
+def fir_tones(fam):
+    """Bottom tier to spire: the family's shade rising through its body to a pale-tinted tip."""
+    shade, mid, sun = fam
+    return [shade, blend(shade, mid, 0.5), mid, blend(mid, sun, 0.55)]
+
+
+FIR_TONES = fir_tones(CANOPY["lime"])
+BIRCH_TONES = [CANOPY["lime"][1], CANOPY["lime"][2], CANOPY["cream"][1], CANOPY["pink"][1]]  # sapling crowns
+THICKET_TONES = [CANOPY["lime"][0], CANOPY["lime"][1], CANOPY["mint"][0], CANOPY["cyan"][1]]
+SHRUB_TONES = [CANOPY["lime"][1], CANOPY["lime"][2], CANOPY["lime"][0], CANOPY["mint"][1]]
+LEMON_BUSH = [hsv(52, 0.8, 1.0), hsv(48, 0.84, 0.98), hsv(54, 0.3, 1.0)]  # full-chroma lemon, a pale-lemon highlight
+FERN_TONES = [hsv(150, 0.74, 0.92), hsv(144, 0.66, 0.97), hsv(156, 0.36, 1.0)]  # vivid mint-green pops, a pale tip
+LOG_BARK = (246, 154, 66)
+
+
+def ellipsoid(name, size, pos, color, material="SmoothPlastic", rot=None, **kw):
+    """A smooth-plastic ellipsoid (Part + Sphere SpecialMesh). Always give it a small tilt: a level
     box's top face would read to the validator as a flat top that could z-fight."""
     kw.setdefault("collide", False)
     kw.setdefault("query", False)
@@ -4627,7 +4888,7 @@ def ellipsoid(name, size, pos, color, material="LeafyGrass", rot=None, **kw):
     return part(name, size, pos, color, material, rot, children=[inst("Mesh", "SpecialMesh", {"MeshType": "Sphere"})], **kw)
 
 
-def cyl(name, a, b, diam, color, material="Wood", **kw):
+def cyl(name, a, b, diam, color, material="SmoothPlastic", **kw):
     """Round log from a to b."""
     length = math.dist(a, b)
     centre = tuple((a[i] + b[i]) / 2 for i in range(3))
@@ -4645,12 +4906,14 @@ def jitter(c, rng, amt=7):
     return tuple(max(0, min(255, round(c[i] + v + (g if i == 1 else 0)))) for i in range(3))
 
 
-def leaf_tone(dx, dy, dz, span):
-    """Underside cool, sun side and crown warm (SUN_XZ points at the afternoon sun)."""
+def leaf_tone(dx, dy, dz, span, fam=None):
+    """Underside in the family's shade, sun side and crown in its pale highlight (SUN_XZ points at
+    the afternoon sun)."""
+    shade, mid, sun = fam or CANOPY["lime"]
     h = math.hypot(dx, dz) or 1.0
     facing = (dx * SUN_XZ[0] + dz * SUN_XZ[1]) / h
     lift = dy / span + facing * 0.7
-    return OAK_SUN if lift > 0.45 else OAK_SHADE if lift < -0.35 else OAK_MID
+    return sun if lift > 0.45 else shade if lift < -0.35 else mid
 
 
 def _roots(kids, x, y, z, r0, n, rng, reach=3.4, color=OAK_BARK_DARK):
@@ -4792,8 +5055,9 @@ def briar_oak(name, x, z, rng, s=1.0, y=None, roots=3):
         _, dx, dy, dz, _, _ = lobes[1 + k * (ring // 2)]
         kids.append(cyl(f"Limb{k}", (top[0], top[1] - C * 0.14, top[2]), (cx + dx * 0.7, cy + dy - 1, cz + dz * 0.7), r0 * 0.6,
                         OAK_BARK, collide=False, query=False, shadow=False))
+    fam = canopy_of(name)
     for lname, dx, dy, dz, w, h in lobes:
-        kids.append(ellipsoid(lname, (w, h, w * rng.uniform(0.85, 1.0)), (cx + dx, cy + dy, cz + dz), leaf_tone(dx, dy, dz, span),
+        kids.append(ellipsoid(lname, (w, h, w * rng.uniform(0.85, 1.0)), (cx + dx, cy + dy, cz + dz), leaf_tone(dx, dy, dz, span, fam),
                               rot=tilt(rng)))
     return model(name, kids, attrs={"Species": "Oak"})
 
@@ -4814,20 +5078,21 @@ def briar_fir(name, x, z, rng, s=1.0, y=None):
     n = 5
     cy = y + H * 0.4
     oa = rng.uniform(0, math.tau)
+    tones = fir_tones(canopy_of(name, CONIFER_MIX))
     for i in range(n):
         t = i / (n - 1)
         w = H * (0.46 - 0.3 * t) * rng.uniform(0.88, 1.1)
         h = w * rng.uniform(0.8, 0.95)
         oa += 2.4 + rng.uniform(-0.4, 0.4)
         od = rng.uniform(0.05, 0.11) * w
-        f = t * (len(FIR_TONES) - 1)
-        lo = FIR_TONES[int(f)]
-        hi = FIR_TONES[min(len(FIR_TONES) - 1, int(f) + 1)]
+        f = t * (len(tones) - 1)
+        lo = tones[int(f)]
+        hi = tones[min(len(tones) - 1, int(f) + 1)]
         tone = tuple(round(lo[c] + (hi[c] - lo[c]) * (f - int(f))) for c in range(3))
         kids.append(ellipsoid(f"Tier{i}", (w, h, w * rng.uniform(0.8, 0.95)), (x + math.cos(oa) * od, cy, z + math.sin(oa) * od),
                               jitter(tone, rng, 5), rot=tilt(rng, 5, 12)))
         cy += h * rng.uniform(0.38, 0.44)
-    kids.append(ellipsoid("Spire", (H * 0.06, H * 0.16, H * 0.06), (x, cy + H * 0.04, z), FIR_TONES[3], rot=tilt(rng, 1, 4)))
+    kids.append(ellipsoid("Spire", (H * 0.06, H * 0.16, H * 0.06), (x, cy + H * 0.04, z), tones[3], rot=tilt(rng, 1, 4)))
     return model(name, kids, attrs={"Species": "Fir"})
 
 
@@ -4843,18 +5108,19 @@ def briar_birch(name, x, z, rng, s=1.0, y=None):
     top = (x + math.cos(la) * lean, y + H * 0.66, z + math.sin(la) * lean)
     fa = la + rng.uniform(1.6, 2.6)
     fork = (top[0] + math.cos(fa) * H * 0.2, y + H * 0.74, top[2] + math.sin(fa) * H * 0.2)
-    kids = [cyl("Trunk", (x, y - 1.2, z), top, d, BIRCH_BARK, "Wood"),
-            cyl("Fork", (x + (top[0] - x) * 0.5, y + H * 0.36, z + (top[2] - z) * 0.5), fork, d * 0.6, BIRCH_BARK, "Wood",
+    kids = [cyl("Trunk", (x, y - 1.2, z), top, d, BIRCH_BARK, "SmoothPlastic"),
+            cyl("Fork", (x + (top[0] - x) * 0.5, y + H * 0.36, z + (top[2] - z) * 0.5), fork, d * 0.6, BIRCH_BARK, "SmoothPlastic",
                 collide=False, query=False, shadow=False)]
     oa = fa + math.pi + rng.uniform(-0.6, 0.6)
     crown = ((top[0], top[2], 0.56, 0.78, 0.44), (fork[0], fork[2], 0.44, 0.8, 0.5),
              (top[0] + math.cos(oa) * H * 0.2, top[2] + math.sin(oa) * H * 0.2, 0.4, 0.7, 0.55))
     span = H * 0.3
+    fam = canopy_of(name, UNDERSTORY_MIX)
     for k, (px, pz, w, fy, hr) in enumerate(crown):
         w *= H
         dx, dz = px - top[0], pz - top[2]
         kids.append(ellipsoid(f"Leaves{k}", (w, w * hr * rng.uniform(0.9, 1.1), w * rng.uniform(0.75, 0.95)),
-                              (px, y + H * fy, pz), jitter(leaf_tone(dx, H * (fy - 0.75), dz, span), rng), rot=tilt(rng, 4, 12)))
+                              (px, y + H * fy, pz), jitter(leaf_tone(dx, H * (fy - 0.75), dz, span, fam), rng), rot=tilt(rng, 4, 12)))
     return model(name, kids, attrs={"Species": "Birch"})
 
 
@@ -4873,7 +5139,7 @@ def young_fir(name, x, z, rng, s=1.0, y=None):
         a = a0 + da
         kids.append(ellipsoid(f"Leaf{k}", (w, h, w * rng.uniform(0.6, 0.9)),
                               (x + math.cos(a) * off * H * 0.6, y + h * sink, z + math.sin(a) * off * H * 0.6),
-                              jitter(rng.choice(THICKET_TONES), rng), "Grass", rot=tilt(rng, 6, 18), layer="prop", shadow=k == 0))
+                              jitter(rng.choice(THICKET_TONES), rng), "SmoothPlastic", rot=tilt(rng, 6, 18), layer="prop", shadow=k == 0))
     return model(name, kids, attrs={"Species": "Thicket"})
 
 
@@ -4900,10 +5166,10 @@ def sapling(name, x, z, rng, s=1.0, y=None):
 @_keeps_layout(_draws_bush_clump)
 def bush_clump(name, x, z, rng, s=1.0, lemon=False, y=None):
     """Loose undergrowth: two or three uneven leaf masses (one taller, the others spread low and
-    pushed off it) sunk well into the ground, in the ground's own Grass texture so they read as
-    growth, not as mossy stones."""
+    pushed off it) sunk well into the ground, in one canopy family's smooth-plastic tones."""
     y = floor_at(x, z, BRIAR_Y) if y is None else y
-    tones = LEMON_BUSH if lemon else SHRUB_TONES
+    fam = canopy_of(name, (("lime", 0.4), ("pink", 0.2), ("mint", 0.2), ("lavender", 0.2)))
+    tones = LEMON_BUSH if lemon else (fam[1], fam[2], fam[0], fam[1])
     kids = []
     a0 = rng.uniform(0, math.tau)
     for k in range(rng.randint(2, 3)):
@@ -4912,7 +5178,7 @@ def bush_clump(name, x, z, rng, s=1.0, lemon=False, y=None):
         a = a0 + k * rng.uniform(1.8, 2.6)
         off = 0.0 if k == 0 else rng.uniform(1.6, 2.6) * s
         kids.append(ellipsoid(f"Leaf{k}", (w, h, w * rng.uniform(0.6, 0.9)), (x + math.cos(a) * off, y + h * 0.2, z + math.sin(a) * off),
-                              jitter(tones[k % len(tones)] if k else rng.choice(tones), rng), "Grass", rot=tilt(rng, 6, 16),
+                              jitter(tones[k % len(tones)] if k else rng.choice(tones), rng), "SmoothPlastic", rot=tilt(rng, 6, 16),
                               shadow=False, layer="prop"))
     return model(name, kids)
 
@@ -4931,7 +5197,7 @@ def fern_clump(name, x, z, rng, s=1.0, y=None):
         base = (x + d[0] * 0.3, y + 0.1, z + d[2] * 0.3)
         tip = tuple(base[i] + d[i] * L for i in range(3))
         centre = tuple((base[i] + tip[i]) / 2 for i in range(3))
-        kids.append(part(f"Frond{k}", (0.22 * s, L, 1.3 * s), centre, tone if k % 2 else FERN_TONES[(k // 2) % 3], "Grass",
+        kids.append(part(f"Frond{k}", (0.22 * s, L, 1.3 * s), centre, tone if k % 2 else FERN_TONES[(k // 2) % 3], "SmoothPlastic",
                          beam_rot(base, tip), collide=False, query=False, shadow=False, layer="prop",
                          children=[inst("Mesh", "SpecialMesh", {"MeshType": "Sphere"})]))
     return model(name, kids)
@@ -4944,12 +5210,14 @@ def mossy_log(name, x, z, yaw, length, rng, y=None):
     a, b = (x - dx, y + d * 0.32, z - dz), (x + dx, y + d * 0.32 + rng.uniform(-0.2, 0.3), z + dz)
     return model(name, [
         cyl("Log", a, b, d, LOG_BARK, collide=False, shadow=False),
-        ellipsoid("Moss", (length * 0.6, d * 0.5, d * 0.9), (x, y + d * 0.72, z), OAK_SHADE, "LeafyGrass",
+        ellipsoid("Moss", (length * 0.6, d * 0.5, d * 0.9), (x, y + d * 0.72, z), OAK_SHADE, "SmoothPlastic",
                   mul(rot_y(-yaw), rot_x(4)), shadow=False, layer="prop"),
     ])
 
 
-BOULDER_GREYS = [(124, 122, 116), (112, 110, 106), (136, 132, 124)]
+# Toy stone: calm near-white sky-blue tints (PS99's pale walkway stone), the quiet surface the
+# candy canopies pop against; the deepest is the same blue one step down, never grey.
+BOULDER_GREYS = [hsv(222, 0.18, 1.0), hsv(224, 0.26, 0.97), hsv(216, 0.1, 1.0)]
 
 
 def boulder(name, x, z, r, rng, collide=True, y=None):
@@ -4958,13 +5226,13 @@ def boulder(name, x, z, r, rng, collide=True, y=None):
     y = floor_at(x, z, BRIAR_Y) if y is None else y
     w, h, d = 2 * r * rng.uniform(0.95, 1.2), r * rng.uniform(1.1, 1.4), 2 * r * rng.uniform(0.75, 0.95)
     rot = mul(rot_y(rng.uniform(0, 180)), mul(rot_x(rng.uniform(6, 14) * rng.choice((-1, 1))), rot_z(rng.uniform(-12, 12))))
-    kids = [part("Rock", (w, h, d), (x, y + h * 0.04, z), rng.choice(BOULDER_GREYS), "Slate", rot, collide=collide, layer="rock")]
+    kids = [part("Rock", (w, h, d), (x, y + h * 0.04, z), rng.choice(BOULDER_GREYS), "SmoothPlastic", rot, collide=collide, layer="rock")]
     if r > 2.6:
         a = rng.uniform(0, math.tau)
         s2 = rng.uniform(0.45, 0.6)
         rot2 = mul(rot_y(rng.uniform(0, 180)), mul(rot_x(rng.uniform(10, 22)), rot_z(rng.uniform(-15, 15))))
         kids.append(part("Stone", (w * s2, h * s2, d * s2), (x + math.cos(a) * r * 0.95, y + h * s2 * 0.05, z + math.sin(a) * r * 0.95),
-                         rng.choice(BOULDER_GREYS), "Slate", rot2, collide=False, shadow=False, layer="rock"))
+                         rng.choice(BOULDER_GREYS), "SmoothPlastic", rot2, collide=False, shadow=False, layer="rock"))
     return model(name, kids)
 
 
@@ -5236,15 +5504,15 @@ def build_briarwood(rng):
     # The floors stay as collision (and enemy ground raycasts); WorldTerrain lays the visible
     # ground over them and hides them.
     ground = [
-        slab("BriarFloorN", x0, x1, z0, hz0, Y, GRASS_DARK, "Grass"),
-        slab("BriarFloorS", x0, x1, hz1, z1 + 2, Y, GRASS_DARK, "Grass"),
-        slab("BriarFloorW", x0, hx0, hz0, hz1, Y, GRASS_DARK, "Grass"),
-        slab("BriarFloorE", hx1, x1, hz0, hz1, Y, GRASS_DARK, "Grass"),
+        slab("BriarFloorN", x0, x1, z0, hz0, Y, GRASS_DEEP, "SmoothPlastic"),
+        slab("BriarFloorS", x0, x1, hz1, z1 + 2, Y, GRASS_DARK, "SmoothPlastic"),
+        slab("BriarFloorW", x0, hx0, hz0, hz1, Y, GRASS_DARK, "SmoothPlastic"),
+        slab("BriarFloorE", hx1, x1, hz0, hz1, Y, GRASS_DARK, "SmoothPlastic"),
     ]
-    ground += disc("PoolBed", POOL[0], POOL[1], 23.5, Y - 1.0, 1.0, EARTH, "Ground")
+    ground += disc("PoolBed", POOL[0], POOL[1], 23.5, Y - 1.0, 1.0, GROUND_TAN, "SmoothPlastic")
     for row in range(4):  # Hollow Rest: four shallow mossy terraces climbing away from the fence
-        ground.append(slab(f"GraveTerrace{row}", -88, -52, 728 + row * 6, 734 + row * 6, Y + 0.4 * (row + 1), MOSS, "Grass"))
-    ground += disc("GroveFloor", GROVE[0], GROVE[1], GROVE[2], Y + 0.25, 0.5, EARTH, "Ground")
+        ground.append(slab(f"GraveTerrace{row}", -88, -52, 728 + row * 6, 734 + row * 6, Y + 0.4 * (row + 1), GRASS_DARK, "SmoothPlastic"))
+    ground += disc("GroveFloor", GROVE[0], GROVE[1], GROVE[2], Y + 0.25, 0.5, GROUND_TAN, "SmoothPlastic")
     visual, proxies = [], []
     rocks = []  # [x, z, radius, collide]: boulders, planted last (WorldTerrain beds each in leaf cover)
 
@@ -5286,15 +5554,16 @@ def build_briarwood(rng):
     visual.append(hanging_sign("BriarwoodSign", -8, 486, yaw_facing(-1, 0), "Briarwood", "Lv 9+"))
     visual.append(waystone("BriarGateWaystone", "BriarGate", 13, 0, 500, glow=BRIAR_GLOW))
     for k, (x, z, s) in enumerate(((-13, 478, 1.0), (13, 482, 0.8), (-12, 496, 0.7), (14, 512, 0.9))):
-        visual.append(part(f"QuarryStone{k}", (5 * s, 2.2 * s, 4 * s), (x, Y + 1.1 * s - 0.1, z), SAND, "Sandstone",
+        visual.append(part(f"QuarryStone{k}", (5 * s, 2.2 * s, 4 * s), (x, Y + 1.1 * s - 0.1, z), SAND, "SmoothPlastic",
                            rot_y(rng.uniform(0, 90)), collide=False, layer="rock"))
 
     # Bramble Hollow: the road forks around gnarled trees between broken walls.
     visual.append(ruin_wall("HollowWallW", -34, 570, 20, 5, 2, rng))
     visual.append(ruin_wall("HollowWallE", 36, 614, -80, 5, 1, rng))
     visual.append(ruin_wall("HollowWallS", -36, 608, -10, 5, 2, rng))
-    visual.append(fingerpost("HollowPost", 8, Y, 566, [("Mirror Pool", yaw_facing(1, 1), 8.6), ("Hollow Rest", yaw_facing(-1, 1), 7.2),
-                                                        ("Iron Lowlands", yaw_facing(0, -1), 5.8)]))
+    visual.append(toy_finish(fingerpost("HollowPost", 8, Y, 566, [("Mirror Pool", yaw_facing(1, 1), 8.6),
+                                                                   ("Hollow Rest", yaw_facing(-1, 1), 7.2),
+                                                                   ("Iron Lowlands", yaw_facing(0, -1), 5.8)])))
     for x, z in ((-24, 584), (30, 578), (-30, 626), (34, 618)):
         terrain_rock(x, z, rng.uniform(0.9, 1.4))
     for k, (x, z) in enumerate(((-36, 592), (38, 600))):
@@ -5315,18 +5584,18 @@ def build_briarwood(rng):
         terrain_rock(px + math.cos(a) * 18.2, pz + math.sin(a) * 17.4, rng.uniform(0.9, 1.7))
     for k, (x, z) in enumerate(((70, 640), (98, 636), (100, 676), (72, 682), (52, 646))):
         visual.append(reeds(f"PoolReeds{k}", x, z, rng))
-    visual.append(model("BuriedChest", [chest("Chest", 52, Y - 0.55, 672, yaw_facing(1, -0.3), rng=rng),
-                                        part("Mound", (5.2, 0.6, 3.8), (52, Y + 0.3, 672), EARTH, "Ground", rot_y(-14),
+    visual.append(model("BuriedChest", [toy_finish(chest("Chest", 52, Y - 0.55, 672, yaw_facing(1, -0.3), rng=rng), TOY_CHEST),
+                                        part("Mound", (5.2, 0.6, 3.8), (52, Y + 0.3, 672), EARTH, "SmoothPlastic", rot_y(-14),
                                              collide=False, query=False, layer="decal")]))
     visual.append(briar_fall("MirrorFall", BRIAR_X[1] + 0.6, pz, yaw_facing(-1, 0), 27, 11, rng, lip_bottom=Y + 29))
     visual.append(model("Grotto", [
-        chest("Cache", 130, Y, 652, yaw_facing(-1, 0), open_lid=True, rng=rng),
+        toy_finish(chest("Cache", 130, Y, 652, yaw_facing(-1, 0), open_lid=True, rng=rng), TOY_CHEST),
         part("CacheLantern", (0.9, 1.2, 0.9), (131, Y + 5.4, 659), LANTERN, "Neon", collide=False, query=False, shadow=False,
              transparency=0.2, children=[light(16, 0.9)]),
-        part("LanternHook", (0.3, 3.0, 0.3), (131, Y + 7.5, 659), BRIAR_IRON, "Metal", collide=False, query=False),
+        part("LanternHook", (0.3, 3.0, 0.3), (131, Y + 7.5, 659), BRIAR_IRON, "SmoothPlastic", collide=False, query=False),
         part("GrottoRoof", (GROTTO[1] - GROTTO[0] + 8, 6, GROTTO[3] - GROTTO[2] + 4), ((GROTTO[0] + GROTTO[1]) / 2 + 2, Y + 34,
                                                                                     (GROTTO[2] + GROTTO[3]) / 2),
-             BRIAR_ROCK_DARK, "Slate", collide=False, layer="cliff"),
+             BRIAR_ROCK_DARK, "SmoothPlastic", collide=False, layer="cliff"),
     ]))
     terrain_rock(121, 651, 0.8)
 
@@ -5378,20 +5647,20 @@ def build_briarwood(rng):
         if not clear_of(x, z, keep):
             continue
         h = tops(rng.uniform(1.2, 1.8), 0.08)
-        visual.append(part(f"FallenBlock{k}", (rng.uniform(2.0, 2.8), h, rng.uniform(1.6, 2.2)), (x, Y + h / 2 - 0.1, z), STONE,
-                           "Cobblestone", rot_y(rng.uniform(0, 90)), collide=False, layer="prop"))
+        visual.append(part(f"FallenBlock{k}", (rng.uniform(2.0, 2.8), h, rng.uniform(1.6, 2.2)), (x, Y + h / 2 - 0.1, z), BRIAR_STONE,
+                           "SmoothPlastic", rot_y(rng.uniform(0, 90)), collide=False, layer="prop"))
     visual.append(model("WrenchingRoots", [
-        beam("RootW0", (-30, Y + 2.0, 812), (-20, Y + 6.5, 803), 1.0, OAK_BARK_DARK, collide=False),
-        beam("RootW1", (-20, Y + 6.5, 803), (-14, Y + 5.2, 800), 0.7, OAK_BARK_DARK, collide=False),
-        beam("RootE0", (30, Y + 2.4, 818), (17, Y + 4.4, 804), 1.0, OAK_BARK_DARK, collide=False),
-        beam("RootE1", (17, Y + 4.4, 804), (13, Y + 3.0, 801), 0.6, OAK_BARK_DARK, collide=False),
+        beam("RootW0", (-30, Y + 2.0, 812), (-20, Y + 6.5, 803), 1.0, OAK_BARK_DARK, "SmoothPlastic", collide=False),
+        beam("RootW1", (-20, Y + 6.5, 803), (-14, Y + 5.2, 800), 0.7, OAK_BARK_DARK, "SmoothPlastic", collide=False),
+        beam("RootE0", (30, Y + 2.4, 818), (17, Y + 4.4, 804), 1.0, OAK_BARK_DARK, "SmoothPlastic", collide=False),
+        beam("RootE1", (17, Y + 4.4, 804), (13, Y + 3.0, 801), 0.6, OAK_BARK_DARK, "SmoothPlastic", collide=False),
     ]))
     # Vines drape down the wall face to the floor, so they stand whether or not the course above survived.
-    visual.append(model("ChapelVines", [beam(f"Vine{k}", (x, Y + 4.8, 800.7), (x + 0.4, Y + 0.3, 800.95), 0.22, MOSS, "Grass",
+    visual.append(model("ChapelVines", [beam(f"Vine{k}", (x, Y + 4.8, 800.7), (x + 0.4, Y + 0.3, 800.95), 0.22, MOSS, "SmoothPlastic",
                                              collide=False, query=False) for k, x in enumerate((-17, -12, 10, 14))]))
     visual.append(waystone("GroveWaystone", "GroveEdge", 23, 0, 780, glow=BRIAR_GLOW))
     visual.append(sign("GroveSign", -14, 0, 826, yaw_facing(0, -1), 12, 5, "Warden's Grove",
-                       "Rootbound Warden  |  Lv 14  |  Keeper of the Grove", board=(52, 60, 36)))
+                       "Rootbound Warden  |  Lv 14  |  Keeper of the Grove", board=BRIAR_IRON))
 
     # Everything built so far keeps the planting off it: one circle per prop part.
     clear = [(POOL[0], POOL[1], 24), (GROVE[0], GROVE[1], GROVE[2] + 4), (-70, 742, 24), (0, 800, 14), (0, 500, 14)]

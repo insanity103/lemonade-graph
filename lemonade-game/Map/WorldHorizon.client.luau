@@ -22,6 +22,20 @@ if not horizon then
 	return
 end
 
+-- Scrapped: Alex asked to drop the background mountains entirely now that the castle wall
+-- (tools/map_forge.py) is Hearthmere's visible boundary. The baked far ranges kept reading as
+-- naturalistic/desaturated no matter how they were re-hued (see WorldLook's recolorHorizon, which
+-- is now a no-op with nothing left to colour), so instead of another recolour pass this whole
+-- layer is hidden and its camera-following render step never starts.
+for _, d in ipairs(horizon:GetDescendants()) do
+	if d:IsA("BasePart") then
+		d.Transparency = 1
+		d.CanCollide = false
+		d.CanQuery = false
+	end
+end
+return
+
 local eye = Vector3.new(
 	horizon:GetAttribute("SkyEyeX") or 0,
 	horizon:GetAttribute("SkyEyeY") or 20,
