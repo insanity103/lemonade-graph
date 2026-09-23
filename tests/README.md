@@ -82,11 +82,7 @@ cross-server session locks beyond the lock fields.
 A test marked `{ knownIssue = "..." }` documents a confirmed defect in the game code. It runs every
 time and its failures are printed in full under **KNOWN ISSUES**, but it does not fail the run. Once
 the defect is fixed the test passes, and the runner then fails with `FIXED?` until the marker is
-removed. `--strict` turns known issues into failures. Currently:
-
-- **Spin swords become starters without the template.** With no `ServerStorage.BossSwordTool` (a
-  fresh Rojo sync), spin swords are cloned from the starter template and carry `Starter = true`.
-  SwordDropSystem's starter de-dupe then destroys all but one: 3 paid spins leave 1 sword.
+removed. `--strict` turns known issues into failures. There are none open right now.
 
 ## Adding a test
 

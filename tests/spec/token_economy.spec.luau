@@ -366,7 +366,24 @@ return function(t)
 			end
 		end
 		t.eq(#spun, 3, "spun swords still in the backpack after 3 spins")
-	end, { knownIssue = "with no ServerStorage.BossSwordTool, BossSwordFactory clones StarterPack.ClassicSword, "
-		.. "whose stamped Starter = true survives, so spun swords count as starters (SwordDropSystem's starter "
-		.. "de-dupe destroys all but one; they never sell or shatter)" })
+	end)
+
+	t.test("saved swords rebuilt on a fresh Rojo sync keep what they are (starter or not)", function()
+		local g = Game.new({ scripts = true, templates = false })
+		local Factory = g:module("ServerScriptService.BossSwordFactory")
+		-- a boss sword: must not pick up the starter template's Starter / Lesser / PoolKey stamp
+		local boss = Factory.rebuild({ name = "Nova Pit Shiv", attrs = { DamageMult = 1.4, Prefixes = "Nova", BossTier = 1,
+			Rarity = "Rare", BaseWeaponName = "Pit Shiv", PoolKey = "Boss_Gorgon", PoolBase = 1.4 } }, 1)
+		t.eq(boss:GetAttribute("Starter"), nil, "rebuilt boss sword Starter")
+		t.eq(boss:GetAttribute("Lesser"), nil, "rebuilt boss sword Lesser")
+		t.eq(boss:GetAttribute("PoolKey"), "Boss_Gorgon", "rebuilt boss sword PoolKey")
+		t.eq(boss:GetAttribute("BaseWeaponName"), "Pit Shiv", "rebuilt boss sword BaseWeaponName")
+		-- the saved starter still comes back as the starter
+		local starter = Factory.rebuild({ name = "Classic Sword", attrs = { DamageMult = 1, Prefixes = "", BossTier = 1,
+			Rarity = "Common", BaseWeaponName = "Classic Sword", PoolKey = "IronLowlands", Lesser = true, Starter = true,
+			PoolBase = 1 } }, 1)
+		t.eq(starter:GetAttribute("Starter"), true, "rebuilt starter keeps Starter")
+		-- the StarterPack template itself is untouched (new players still get a real starter)
+		t.eq(g:find("StarterPack.ClassicSword"):GetAttribute("Starter"), true, "StarterPack template Starter")
+	end)
 end
