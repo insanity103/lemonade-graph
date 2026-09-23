@@ -456,7 +456,12 @@ function BossSwordFactory.applySlots(tool, slots)
 	local active, full = WeaponModifiers.CollapsePrefixes(source, slots)
 	local names = {}
 	for _, m in ipairs(active) do table.insert(names, m.name) end
-	if table.concat(names, ", ") == (before or "") and not legacyBlessed then return false end
+	-- A collapsed sword (it owns more prefixes than are active) is always re-derived, even when its
+	-- active list is unchanged: its stats and name may still carry the inactive prefixes (a vault
+	-- entry an older PlayerDataService.Load collapsed without re-deriving). applyRoll is
+	-- deterministic, so re-deriving a sword that is already right changes nothing.
+	local collapsed = full ~= table.concat(names, ", ")
+	if table.concat(names, ", ") == (before or "") and not legacyBlessed and not collapsed then return false end
 	local weaponData, archetypeKey = describeTool(tool)
 	if not weaponData then return false end
 	BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, active, tool:GetAttribute("Variant"), full)

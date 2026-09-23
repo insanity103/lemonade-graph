@@ -230,43 +230,70 @@ return function(t)
 		t.eq(second.vault[1].name, first.vault[1].name, "vault name across a second load")
 	end)
 
-	-- Backpack swords collapse inside BossSwordFactory.rebuild. Vault entries are collapsed earlier,
-	-- in PlayerDataService.Load, which rewrites attrs.Prefixes / StoredPrefixes and drops "Blessed"
-	-- from the name but leaves the stat attributes and the other prefix words in the name. On
-	-- withdrawal, rebuild -> applySlots then finds the active list unchanged and returns early.
-	t.test("a migrated multi-prefix vault sword is withdrawn collapsed (name and stats)", function()
-		local g, player = boot(oldProfile())
+	-- Backpack swords collapse inside BossSwordFactory.rebuild on join. Vault entries are never Tools
+	-- until withdrawn, so PlayerDataService.Load collapses them: the stored entry, its card and the
+	-- sword a withdrawal rebuilds must all carry only the active prefixes' name and stats.
+	local function checkVault(g, player)
 		local PDS = g:module("ServerScriptService.PlayerDataService")
 		local Factory = g:module("ServerScriptService.BossSwordFactory")
 		local WM = g:module("ReplicatedStorage.Config.WeaponModifiers")
 		local BossWeapons = g:module("ReplicatedStorage.Config.BossWeapons")
 		local SwordValue = g:module("ReplicatedStorage.Config.SwordValue")
 		local cases = {
-			{ base = "Ironjaw Saber", active = "Godly", name = "Sour Godly Ironjaw Saber", damage = 0.50 * 1.7 },
-			{ base = "Pit Shiv", active = "Nova", name = "Nova Pit Shiv", damage = 1.20 },
+			{ base = "Ironjaw Saber", active = "Godly", stored = "Godly, Sly, Reaching", name = "Sour Godly Ironjaw Saber",
+				damage = 0.50 * 1.7 },
+			{ base = "Pit Shiv", active = "Nova", stored = "Nova, Deadly, Colossal, Heavy", name = "Nova Pit Shiv",
+				damage = 1.20 },
 		}
 		local byBase = {}
 		for _, entry in ipairs(PDS.GetVault(player)) do byBase[entry.attrs.BaseWeaponName] = entry end
 		for _, c in ipairs(cases) do
 			local entry = byBase[c.base]
 			if t.check(entry, "vault entry %s missing", c.base) then
-				local withdrawn = Factory.rebuild(entry, WM.SlotsOf(player)) -- what VaultSystem's withdraw does
 				local data = BossWeapons.Resolve("Boss_Gorgon", c.base, entry.attrs.Rarity)
-				t.eq(withdrawn:GetAttribute("Prefixes"), c.active, c.base .. " withdrawn Prefixes")
+				local want = {
+					BonusDamagePct = c.damage + (data.inherentBonusDmg or 0), -- only the active prefix
+					CritChance = data.inherentCrit or 0,                       -- inactive crit prefixes do not count
+					RangeBonus = data.inherentRange or 0,                      -- inactive range prefixes do not count
+				}
+				-- the stored entry (what the vault card shows and what is saved)
+				t.eq(entry.name, c.name, c.base .. " vault entry name")
+				t.eq(entry.attrs.Prefixes, c.active, c.base .. " vault entry Prefixes")
+				t.eq(entry.attrs.StoredPrefixes, c.stored, c.base .. " vault entry StoredPrefixes")
+				for key, value in pairs(want) do
+					t.near(entry.attrs[key], value, 1e-9, c.base .. " vault entry " .. key)
+				end
+				-- the sword a withdrawal hands back (what VaultSystem's withdraw does)
+				local withdrawn = Factory.rebuild(entry, WM.SlotsOf(player))
 				t.eq(withdrawn.Name, c.name, c.base .. " withdrawn sword name")
-				t.near(withdrawn:GetAttribute("BonusDamagePct"), c.damage + (data.inherentBonusDmg or 0), 1e-9,
-					c.base .. " withdrawn BonusDamagePct (only the active prefix)")
-				t.near(withdrawn:GetAttribute("CritChance"), data.inherentCrit or 0, 1e-9,
-					c.base .. " withdrawn CritChance (inactive crit prefix must not count)")
-				t.near(withdrawn:GetAttribute("RangeBonus"), data.inherentRange or 0, 1e-9,
-					c.base .. " withdrawn RangeBonus (inactive range prefix must not count)")
-				t.eq(entry.name, withdrawn.Name, c.base .. " vault card name vs the sword withdrawn")
+				t.eq(withdrawn:GetAttribute("Prefixes"), c.active, c.base .. " withdrawn Prefixes")
+				t.eq(withdrawn:GetAttribute("StoredPrefixes"), c.stored, c.base .. " withdrawn StoredPrefixes")
+				for key, value in pairs(want) do
+					t.near(withdrawn:GetAttribute(key), value, 1e-9, c.base .. " withdrawn " .. key)
+				end
 				t.eq(SwordValue.rateAttrs(entry.attrs), SwordValue.rateTool(withdrawn), c.base .. " vault card rating")
+				t.eq(withdrawn:GetAttribute("DamageMult"), entry.attrs.DamageMult, c.base .. " rolled base kept")
 			end
 		end
-	end, { knownIssue = "vault swords migrated in PlayerDataService.Load keep every old prefix's stats and "
-		.. "their old prefix words in the name when withdrawn (applySlots sees Prefixes already collapsed and "
-		.. "returns early)" })
+	end
+
+	t.test("a migrated multi-prefix vault sword is stored and withdrawn collapsed (name and stats)", function()
+		local g, player = boot(oldProfile())
+		checkVault(g, player)
+	end)
+
+	t.test("a vault entry an older build collapsed without re-deriving (stale stats and name) heals on load", function()
+		-- what the previous PlayerDataService.Load left behind: Prefixes / StoredPrefixes rewritten and
+		-- "Blessed" dropped, but the old prefix words still in the name and every old stat still set
+		local damaged = oldProfile()
+		damaged.vault[1].name = "Sour Godly Sly Reaching Ironjaw Saber"
+		damaged.vault[1].attrs.Prefixes = "Godly"
+		damaged.vault[1].attrs.StoredPrefixes = "Godly, Sly, Reaching"
+		damaged.vault[2].attrs.Prefixes = "Nova"
+		damaged.vault[2].attrs.StoredPrefixes = "Nova, Deadly, Colossal, Heavy"
+		local g, player = boot(damaged)
+		checkVault(g, player)
+	end)
 
 	t.test("the pre-spin profile gets a spin depth from its level and first boss kill", function()
 		local g, player = boot(oldProfile())
