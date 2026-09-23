@@ -149,27 +149,36 @@ function PlayerDataService.Load(player)
 		if typeof(record[key]) ~= "number" then record[key] = 0 end
 	end
 	-- One prefix slot per sword (WeaponModifiers.BASE_SLOTS; more are a player unlock). A vault
-	-- entry saved before the rework can carry a Blessed slot and up to five prefixes: keep every
-	-- name in StoredPrefixes and leave only the owner's strongest N in Prefixes, so its rating and
-	-- its card match what it will be when withdrawn (BossSwordFactory.rebuild re-derives the stats).
+	-- entry saved before the rework can carry a Blessed slot and up to five prefixes. Such an entry
+	-- is rebuilt here exactly as a withdrawal would rebuild it (BossSwordFactory.rebuild: every name
+	-- kept in StoredPrefixes, only the owner's strongest N active, stats and name re-derived from
+	-- those) and stored back, so its card, its rating and the sword you withdraw all agree. An entry
+	-- already carrying StoredPrefixes is rebuilt too: that heals entries an older version of this
+	-- loop collapsed without re-deriving their stats or name. One-prefix entries are left untouched.
 	local slots = WeaponModifiers.ClampSlots(record.attributes.PrefixSlots)
 	for _, entry in ipairs(record.vault) do
 		local attrs = typeof(entry) == "table" and typeof(entry.attrs) == "table" and entry.attrs or nil
 		if attrs then
-			local source = (typeof(attrs.StoredPrefixes) == "string" and attrs.StoredPrefixes ~= "")
-				and attrs.StoredPrefixes or attrs.Prefixes
-			if typeof(source) == "string" then
-				local active, full = WeaponModifiers.CollapsePrefixes(source, slots)
+			local stored = typeof(attrs.StoredPrefixes) == "string" and attrs.StoredPrefixes ~= ""
+			local source = stored and attrs.StoredPrefixes or attrs.Prefixes
+			local stale = stored
+				or (attrs.ExtraSlot == true and typeof(entry.name) == "string" and string.find(entry.name, "Blessed", 1, true) ~= nil)
+			if not stale and typeof(source) == "string" then
+				local active = WeaponModifiers.CollapsePrefixes(source, slots)
 				local names = {}
 				for _, m in ipairs(active) do table.insert(names, m.name) end
-				local joined = table.concat(names, ", ")
-				if joined ~= attrs.Prefixes then
-					attrs.StoredPrefixes = full
-					attrs.Prefixes = joined
-				end
+				stale = table.concat(names, ", ") ~= attrs.Prefixes
 			end
-			if typeof(entry.name) == "string" and attrs.ExtraSlot == true then
-				entry.name = (entry.name:gsub("Blessed ", "", 1))
+			if stale then
+				local tool = BossSwordFactory.rebuild(entry, slots)
+				if tool then
+					local fresh = PlayerDataService.SerializeTool(tool, entry.equipped == true)
+					tool:Destroy()
+					entry.name = fresh.name
+					entry.attrs = fresh.attrs
+					entry.color = fresh.color or entry.color
+					entry.material = fresh.material or entry.material
+				end
 			end
 		end
 	end

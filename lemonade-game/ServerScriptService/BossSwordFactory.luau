@@ -309,11 +309,32 @@ local function copyClassicBits(tool)
 	end
 end
 
-local function newTemplateTool()
+-- A copy of the Tool every boss / spin sword is built on: ServerStorage.BossSwordTool, or, when a
+-- place lacks it (a fresh Rojo sync), StarterPack.ClassicSword. The starter template carries the
+-- starter's identity (RuntimeBootstrap stamps Starter = true, Lesser, PoolKey, BaseWeaponName ...),
+-- so a copy of it is wiped of every attribute: otherwise each sword built on it counts as a starter
+-- (SwordDropSystem's starter de-dupe destroys all but one; it never sells or shatters). Whatever the
+-- sword really is gets written afterwards (applyRoll for a new sword, the save for a rebuilt one).
+local function cloneTemplate()
 	local template = ServerStorage:FindFirstChild("BossSwordTool")
-		or StarterPack:FindFirstChild("ClassicSword")
 	if template then
 		return template:Clone()
+	end
+	local classic = StarterPack:FindFirstChild("ClassicSword")
+	if not classic then
+		return nil
+	end
+	local tool = classic:Clone()
+	for key in pairs(tool:GetAttributes()) do
+		tool:SetAttribute(key, nil)
+	end
+	return tool
+end
+
+local function newTemplateTool()
+	local fromTemplate = cloneTemplate()
+	if fromTemplate then
+		return fromTemplate
 	end
 	local tool = Instance.new("Tool")
 	tool.RequiresHandle = true
@@ -456,7 +477,12 @@ function BossSwordFactory.applySlots(tool, slots)
 	local active, full = WeaponModifiers.CollapsePrefixes(source, slots)
 	local names = {}
 	for _, m in ipairs(active) do table.insert(names, m.name) end
-	if table.concat(names, ", ") == (before or "") and not legacyBlessed then return false end
+	-- A collapsed sword (it owns more prefixes than are active) is always re-derived, even when its
+	-- active list is unchanged: its stats and name may still carry the inactive prefixes (a vault
+	-- entry an older PlayerDataService.Load collapsed without re-deriving). applyRoll is
+	-- deterministic, so re-deriving a sword that is already right changes nothing.
+	local collapsed = full ~= table.concat(names, ", ")
+	if table.concat(names, ", ") == (before or "") and not legacyBlessed and not collapsed then return false end
 	local weaponData, archetypeKey = describeTool(tool)
 	if not weaponData then return false end
 	BossSwordFactory.applyRoll(tool, weaponData, archetypeKey, active, tool:GetAttribute("Variant"), full)
@@ -469,11 +495,8 @@ end
 -- where a pre-rework Blessed / multi-prefix save collapses to its strongest prefix.
 function BossSwordFactory.rebuild(data, slots)
 	if typeof(data) ~= "table" then return nil end
-	local template = ServerStorage:FindFirstChild("BossSwordTool")
-		or StarterPack:FindFirstChild("ClassicSword")
-	if not template then return nil end
-
-	local tool = template:Clone()
+	local tool = cloneTemplate()
+	if not tool then return nil end
 	tool.Name = typeof(data.name) == "string" and data.name or "Relic Sword"
 	tool:SetAttribute("BossDrop", true)
 	local attrs = typeof(data.attrs) == "table" and data.attrs or {}
