@@ -74,6 +74,9 @@ local function applyDamage(enemyModel, player, tool, playerHrp, comboIndex, char
 
 	local damage, isCrit = calculateDamage(player, tool, comboIndex)
 	humanoid:TakeDamage(damage)
+	-- Combat stamp (server time): the town spin wheel refuses a spin within a few seconds of
+	-- any hit given or taken (SpinSystem), so fighting and spinning never overlap.
+	player:SetAttribute("CombatAt", workspace:GetServerTimeNow())
 
 	-- Play hit sound
 	local root = enemyModel.PrimaryPart or enemyModel:FindFirstChild("HumanoidRootPart")

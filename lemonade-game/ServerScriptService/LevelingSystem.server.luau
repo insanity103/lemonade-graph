@@ -4,10 +4,12 @@ local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local BASE_XP_REQUIREMENT = 100
-local XP_INCREASE_PER_LEVEL = 0.15
+-- The curve lives in Config.XPCurve (one copy, shared with QuestSystem's XP rewards).
+local XPCurve = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("XPCurve"))
 local XP_REWARD_ATTRIBUTE = "ExperienceReward"
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
+local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
+local GoldCurve = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("GoldCurve"))
 local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
 
 local ENEMY_ATTRIBUTE = CombatUtil.ENEMY_ATTRIBUTE
@@ -15,7 +17,6 @@ local CREATOR_TAG_NAME = "creator"
 
 local XP_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("XPGain")
 local SPEND_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("SpendSkillPoint")
-local GOLD_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("GoldGain")
 local LEVELUP_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("LevelUpBurst")
 local COMBAT_END_DELAY = 3 -- seconds without a kill before the combat session ends
 local SKILL_SPEND_COOLDOWN = 0.1
@@ -31,8 +32,9 @@ local XPGAIN_PCT_PER_POINT = 0.005 -- each Experience Gain point grants +0.5% XP
 local XPGAIN_MAX_BONUS = 0.35 -- hard low cap: Experience Gain skill points can never exceed +35% bonus XP
 local XPGAIN_PER_POINT = XPGAIN_PCT_PER_POINT -- backwards compatibility alias
 
--- Gold drop tuning (scales with enemy level)
-local GOLD_BASE = 5 -- gold dropped by a level 1 enemy
+-- Gold drop tuning lives in Config.GoldCurve: a kill pays GOLD_BASE x level x band x role, and
+-- the band compounds per level above the opening zone so gold PER HOUR keeps climbing after the
+-- kills-per-hour collapse leaves a flat per-level payout behind.
 
 local ATTRIBUTE_NAMES = { "Strength", "Health", "Defense", "ExperienceGain" }
 
@@ -44,7 +46,7 @@ local connectedHumanoids = setmetatable({}, { __mode = "k" })
 local processedDeaths = setmetatable({}, { __mode = "k" })
 
 local function getRequiredExperience(level)
-	return math.floor(BASE_XP_REQUIREMENT * (1 + XP_INCREASE_PER_LEVEL) ^ (level - 1))
+	return XPCurve.Required(level)
 end
 
 local function getOrCreateIntValue(parent, name, value)
@@ -87,6 +89,95 @@ local function applyHealth(player, points)
 	humanoid.Health = newMax
 end
 
+-- ── THE INCOME WINDOW (what the death penalty is priced against) ────────────────────────────
+-- A death costs a fixed slice of the player's OWN earning rate rather than a slice of their
+-- savings (see Config.GoldCurve's DEATH block for why). To have a rate at all the server has to
+-- watch one, so every INCREASE of the Gold leaderstat is recorded here -- kill gold, a sword sold
+-- at pickup, a sword sold from the inventory, a quest reward, all of them, because they are all
+-- income. Decreases (the forge, the shop, the rebirth keeper, this very penalty) are ignored.
+-- Nothing is persisted: the window is this session's, it starts empty, and a player who has
+-- earned nothing since they arrived owes nothing when they fall.
+local incomeLog = setmetatable({}, { __mode = "k" }) -- [player] = { {t, amount}, ... }
+local incomeWatched = setmetatable({}, { __mode = "k" })
+
+-- ── THE SESSION INCOME (what the rebirth panel's payback is priced against) ─────────────────
+-- The same faucet watch, summed over the whole session instead of a four-minute window, and
+-- published as the attribute SessionGoldPerHour so RebirthSystem can say how long the next
+-- rebirth's extra gold multiplier takes to pay its price back AT THIS PLAYER'S OWN PACE. It is
+-- never persisted and never divides by less than SESSION_MIN_SAMPLE seconds, so the first kill
+-- of a session cannot read as a fortune per hour.
+local SESSION_MIN_SAMPLE = 300
+local SESSION_PUBLISH_EVERY = 5
+local sessionEarned = setmetatable({}, { __mode = "k" }) -- [player] = gold earned since the profile landed
+
+local function publishSessionIncome(player)
+	local since = incomeWatched[player]
+	if not since or player:GetAttribute("DataLoaded") ~= true then return end
+	local elapsed = math.max(SESSION_MIN_SAMPLE, os.clock() - since)
+	local perHour = math.floor((sessionEarned[player] or 0) / elapsed * 3600)
+	if player:GetAttribute("SessionGoldPerHour") ~= perHour then
+		player:SetAttribute("SessionGoldPerHour", perHour)
+	end
+end
+
+local function pruneIncome(player, now)
+	local log = incomeLog[player]
+	if not log then return nil, 0, 0 end
+	local cutoff = now - GoldCurve.DEATH_INCOME_WINDOW
+	while log[1] and log[1].t < cutoff do
+		table.remove(log, 1)
+	end
+	local total = 0
+	for _, row in ipairs(log) do total += row.amount end
+	local elapsed = math.min(GoldCurve.DEATH_INCOME_WINDOW, now - (incomeWatched[player] or now))
+	return log, total, elapsed
+end
+
+-- Watch the one IntValue every faucet in the game writes to, so no faucet can be forgotten here.
+local function watchIncome(player)
+	local leaderstats = player:FindFirstChild("leaderstats")
+	local gold = leaderstats and leaderstats:FindFirstChild("Gold")
+	if not gold or not gold:IsA("IntValue") or incomeWatched[player] then
+		return
+	end
+	incomeWatched[player] = os.clock()
+	incomeLog[player] = {}
+	local previous = gold.Value
+	-- The saved purse arriving from the DataStore is NOT income: PlayerDataService writes the
+	-- whole leaderstat in one go and only then sets DataLoaded. Until it does, every change is
+	-- treated as a restore and the window starts over at the moment the profile lands.
+	player:GetAttributeChangedSignal("DataLoaded"):Connect(function()
+		if player:GetAttribute("DataLoaded") ~= true then return end
+		previous = gold.Value
+		incomeWatched[player] = os.clock()
+		incomeLog[player] = {}
+		sessionEarned[player] = 0
+		publishSessionIncome(player)
+	end)
+	gold:GetPropertyChangedSignal("Value"):Connect(function()
+		local current = gold.Value
+		local delta = current - previous
+		previous = current
+		if delta <= 0 or player:GetAttribute("DataLoaded") ~= true then return end
+		local log = incomeLog[player]
+		if not log then return end
+		table.insert(log, { t = os.clock(), amount = delta })
+		sessionEarned[player] = (sessionEarned[player] or 0) + delta
+		pruneIncome(player, os.clock())
+	end)
+end
+
+-- Publish the session income on a slow tick: it only ever changes when gold arrives, but the
+-- rate FALLS while the player is idle, and the panel should see that too.
+task.spawn(function()
+	while true do
+		task.wait(SESSION_PUBLISH_EVERY)
+		for _, player in ipairs(Players:GetPlayers()) do
+			publishSessionIncome(player)
+		end
+	end
+end)
+
 local function applyDeathGoldPenalty(player)
 	local leaderstats = player:FindFirstChild("leaderstats")
 	local gold = leaderstats and leaderstats:FindFirstChild("Gold")
@@ -95,18 +186,26 @@ local function applyDeathGoldPenalty(player)
 	end
 
 	local level = player:GetAttribute("Level") or 1
-	-- Early exploration should teach the loop without deleting the player's
-	-- earnings. The gold sink starts after the opening zone.
-	local penaltyRate = level <= 8 and 0 or 0.15
-	local lostGold = math.floor(gold.Value * penaltyRate)
+	-- The price of dying is DEATH_LOSS_SECONDS of what this player has actually been earning,
+	-- capped at DEATH_PURSE_CAP of what they are carrying. It does not care what they saved: a
+	-- hoarder and a spender farming the same zone pay the same, which the old percentage-of-purse
+	-- rule did not (5.3% of lifetime earnings against 48.9%, ledger r00).
+	local now = os.clock()
+	local _, earned, elapsed = pruneIncome(player, now)
+	local lostGold = GoldCurve.DeathLoss(gold.Value, level, earned, elapsed)
 	gold.Value -= lostGold
 	if lostGold > 0 then
-		print(string.format("[LevelingSystem] %s lost %d Gold on death (15%% of %d)", player.Name, lostGold, gold.Value + lostGold))
+		print(string.format("[LevelingSystem] %s lost %d Gold on death (%ds of their own income: %d gold over %ds = %.1f/s; purse %d, cap %d%%)",
+			player.Name, lostGold, GoldCurve.DEATH_LOSS_SECONDS, math.floor(earned), math.floor(elapsed),
+			GoldCurve.IncomeRate(earned, elapsed), gold.Value + lostGold,
+			math.floor(GoldCurve.DEATH_PURSE_CAP * 100)))
 	end
 end
 
-local function getEnemyGold(level)
-	return math.floor(GOLD_BASE * level)
+-- What a kill pays, before the rebirth gold multiplier. The whole shape (the flat opening, the
+-- per-level compounding, the boss/elite paydays) is Config.GoldCurve's; this is the only caller.
+local function getEnemyGold(level, role)
+	return GoldCurve.PerKill(level, role)
 end
 
 local function trackCombatHealth(humanoid)
@@ -150,6 +249,9 @@ local function setupPlayer(player)
 		player:SetAttribute("Gold", value)
 	end)
 
+	-- Start the rolling income window the death penalty is priced against.
+	watchIncome(player)
+
 	-- Initialize the skill-point economy (player attributes replicate to the client).
 	if player:GetAttribute("SkillPoints") == nil then
 		player:SetAttribute("SkillPoints", 0)
@@ -176,6 +278,7 @@ local function setupPlayer(player)
 		trackCombatHealth(humanoid)
 		humanoid.Died:Connect(function()
 			applyDeathGoldPenalty(player)
+			player:SetAttribute("KillStreak", 0) -- prefix luck from a streak ends with the streak
 		end)
 		applyHealth(player, player:GetAttribute("Health") or 0)
 	end)
@@ -314,15 +417,22 @@ local function connectEnemyHumanoid(humanoid)
 			local enemyLevel = model:GetAttribute("EnemyLevel") or 1
 			local rebirthGoldMultiplier = killer:GetAttribute("RebirthGoldMult") or 1
 			if typeof(rebirthGoldMultiplier) ~= "number" then rebirthGoldMultiplier = 1 end
-			local gold = math.floor(getEnemyGold(enemyLevel) * math.max(0, rebirthGoldMultiplier))
+			local gold = math.floor(getEnemyGold(enemyLevel, GoldCurve.RoleOf(model)) * math.max(0, rebirthGoldMultiplier))
 			local goldStat = killer:FindFirstChild("leaderstats") and killer.leaderstats:FindFirstChild("Gold")
 			if goldStat then
 				goldStat.Value += gold
 			end
-			local root = model.PrimaryPart or model:FindFirstChild("HumanoidRootPart")
-			if root then
-				GOLD_EVENT:FireAllClients(root.Position, gold)
-			end
+			-- No floating "+N Gold" over the body: a kill's payout on screen is its spin tokens
+			-- (TokenDrops), and a gold number on the same pixels read as neither. The gold still
+			-- counts up on the HUD readout.
+			-- Prefix luck, earned by playing (WeaponModifiers.LuckFrom reads it). The kill streak
+			-- counts kills that land within STREAK_WINDOW seconds of the last one (KillStreak /
+			-- KillStreakAt are in-memory attributes; a death resets them).
+			local now = os.clock()
+			local since = now - (tonumber(killer:GetAttribute("KillStreakAt")) or -math.huge)
+			local streak = if since <= WeaponModifiers.Luck.STREAK_WINDOW then (tonumber(killer:GetAttribute("KillStreak")) or 0) + 1 else 1
+			killer:SetAttribute("KillStreak", streak)
+			killer:SetAttribute("KillStreakAt", now)
 		end
 	end)
 end
@@ -371,6 +481,9 @@ Players.PlayerRemoving:Connect(function(player)
 	combatXP[player] = nil
 	lastCombatAction[player] = nil
 	lastSkillSpendAt[player] = nil
+	incomeLog[player] = nil
+	incomeWatched[player] = nil
+	sessionEarned[player] = nil
 	for humanoid in pairs(processedDeaths) do
 		local creatorTag = humanoid:FindFirstChild(CREATOR_TAG_NAME)
 		if creatorTag and creatorTag:IsA("ObjectValue") and creatorTag.Value == player then

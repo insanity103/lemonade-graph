@@ -19,6 +19,8 @@ if not (map and markers and travelRemote) then
 end
 
 local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
+local BossWeapons = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("BossWeapons"))
+local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 
 local HUB_WAYPOINT = "HubSpawn"
 local REGION_POLL = 0.4
@@ -122,8 +124,12 @@ round(toast, 8)
 local hubButton = Instance.new("TextButton")
 hubButton.Name = "ReturnToHub"
 hubButton.AnchorPoint = Vector2.new(0, 1)
-hubButton.Position = UDim2.new(0, 12, 1, -146)
 hubButton.Size = UDim2.fromOffset(158, 38)
+-- Stacks on top of the HUD's bottom-left cluster (vitals + gold readout), which scales with the
+-- screen, so the two never overlap however that cluster is sized.
+PanelChrome.onViewport(function(viewport)
+	hubButton.Position = UDim2.new(0, PanelChrome.HUD.Margin, 1, -math.floor(PanelChrome.hudStackTop(viewport) + 8))
+end)
 hubButton.BackgroundColor3 = COLORS.button
 hubButton.TextColor3 = COLORS.title
 hubButton.Font = Enum.Font.GothamBold
@@ -378,7 +384,7 @@ local function questDone(quest, progress: number): boolean
 		local stats = player:FindFirstChild("leaderstats")
 		local level = stats and stats:FindFirstChild("Level")
 		return level ~= nil and level.Value >= (objective.target or 1)
-	elseif objective.type == "OBTAIN" then
+	elseif objective.type == "OBTAIN" or objective.type == "OBTAIN_POOL" then
 		return progress >= 1
 	end
 	return progress >= (objective.count or 1)
@@ -440,7 +446,16 @@ local function resolveGuide(root: BasePart, inRegion)
 		return pos, "Turn in quest", model
 	end
 	local objective = quest.objective
-	if objective.type == "OBTAIN" then
+	if objective.type == "OBTAIN_POOL" then
+		-- Any sword of a boss's pool: earned from that boss.
+		return combatTarget({ type = "KILL_BOSS", archetype = objective.poolKey }, root, inRegion)
+	elseif objective.type == "OBTAIN" then
+		-- A boss's unique drop is earned from that boss; only items nobody drops point at the shop.
+		for archetype, weapon in pairs(BossWeapons.Weapons) do
+			if weapon.name == objective.itemName then
+				return combatTarget({ type = "KILL_BOSS", archetype = archetype }, root, inRegion)
+			end
+		end
 		local pos, model = namedModel("RelicMerchantNPC")
 		return pos, "Relic Blacksmith", model
 	elseif objective.type == "KILL" or objective.type == "KILL_ZONE" or objective.type == "KILL_BOSS" then

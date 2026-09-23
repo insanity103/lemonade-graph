@@ -16,10 +16,13 @@ SwordValue.RARITY_BASE = {
 	Legendary = 400,
 }
 
--- [TUNING] Each modifier adds this fraction of the base, by its tier (1..6). A four-slot
--- Legendary with all tier-6 rolls is worth (1 + 4 * 1.8) = 8.2x the base.
-SwordValue.TIER_WEIGHT = { 0.15, 0.30, 0.50, 0.80, 1.20, 1.80 }
-SwordValue.BLESSED_BONUS = 0.25 -- extra slot rolled: +25% on top
+-- [TUNING] Each active prefix adds this fraction of the base, by its rung (1..10). Every sword
+-- has one prefix slot (WeaponModifiers.BASE_SLOTS), so a Radiant (6) Legendary is worth 2.8x the
+-- base and a Lemonade (10) one 8x. The removed Blessed slot adds nothing: an old save's ExtraSlot
+-- flag is ignored here.
+SwordValue.TIER_WEIGHT = { 0.15, 0.30, 0.50, 0.80, 1.20, 1.80, 2.60, 3.60, 5.00, 7.00 }
+-- A mutation (Iced / Sugared / Sour) multiplies every modifier's bonus, so it adds this much.
+SwordValue.VARIANT_BONUS = { Iced = 0.30, Sugared = 0.70, Sour = 1.50 }
 SwordValue.BOSS_TIER_STEP = 0.10 -- later bosses' relics carry a little more prestige per tier
 
 -- name -> { category, tier } for every modifier prefix
@@ -28,6 +31,11 @@ for category, data in pairs(WeaponModifiers.Categories) do
 	for tier, entry in ipairs(data.Tiers) do
 		TIER_BY_NAME[entry.name] = { category = category, tier = tier }
 	end
+end
+-- Each bracket's named chase (Lemondrop .. Lemonade) is a prefix outside the category lists,
+-- rated at the highest ordinary rung its stat meets (WeaponModifiers.Chases valueTier).
+for _, chase in ipairs(WeaponModifiers.Chases) do
+	TIER_BY_NAME[chase.name] = { category = chase.category, tier = chase.valueTier or chase.tier }
 end
 SwordValue.TIER_BY_NAME = TIER_BY_NAME
 
@@ -43,7 +51,7 @@ function SwordValue.modifiersFromPrefixes(prefixes: string?): { { name: string, 
 	return list
 end
 
--- attrs: the sword's saved attribute table (Rarity, Prefixes, ExtraSlot, BossTier) — the same
+-- attrs: the sword's saved attribute table (Rarity, Prefixes, Variant, BossTier) — the same
 -- keys a Tool carries as attributes, so SwordValue.rateTool wraps this.
 function SwordValue.rateAttrs(attrs): number
 	attrs = attrs or {}
@@ -52,8 +60,8 @@ function SwordValue.rateAttrs(attrs): number
 	for _, mod in ipairs(SwordValue.modifiersFromPrefixes(attrs.Prefixes)) do
 		multiplier += SwordValue.TIER_WEIGHT[mod.tier] or 0
 	end
-	if attrs.ExtraSlot == true then
-		multiplier += SwordValue.BLESSED_BONUS
+	if typeof(attrs.Variant) == "string" then
+		multiplier += SwordValue.VARIANT_BONUS[attrs.Variant] or 0
 	end
 	local bossTier = tonumber(attrs.BossTier) or 1
 	multiplier *= 1 + SwordValue.BOSS_TIER_STEP * (bossTier - 1)
@@ -67,59 +75,65 @@ function SwordValue.rateTool(tool: Instance): number
 	return SwordValue.rateAttrs({
 		Rarity = tool:GetAttribute("Rarity"),
 		Prefixes = tool:GetAttribute("Prefixes"),
-		ExtraSlot = tool:GetAttribute("ExtraSlot"),
 		BossTier = tool:GetAttribute("BossTier"),
+		Variant = tool:GetAttribute("Variant"),
 	})
 end
 
--- [TUNING] Reforge (reroll) price: a rarity base scaled by how good the current roll is,
--- so a plain Rare is cheap to gamble on and a near-perfect Legendary costs real gold.
-SwordValue.REROLL_BASE = {
-	Common = 40,
-	Uncommon = 120,
-	Rare = 400,
-	Epic = 1500,
-	Legendary = 6000,
+-- [TUNING] THE PRICE UNIT by rarity: what the shop's mystery blade and the sell price are quoted
+-- against (MerchantConfig.StrikeRefForLevel, SellValue.StrikeReference), times the power factor
+-- below. The values are the ones the removed forge strike used, so no shop or sell price moved
+-- when the anvil went away. A Legendary's unit is about 7x a Common's OF THE SAME TIER.
+SwordValue.PRICE_UNIT = {
+	Common = 60,
+	Uncommon = 105,
+	Rare = 170,
+	Epic = 260,
+	Legendary = 400,
 }
 
-function SwordValue.rerollCost(attrs): number
-	attrs = attrs or {}
-	local rarity = attrs.Rarity or "Common"
-	local base = SwordValue.REROLL_BASE[rarity] or SwordValue.REROLL_BASE.Common
-	local quality = SwordValue.rateAttrs(attrs) / (SwordValue.RARITY_BASE[rarity] or SwordValue.RARITY_BASE.Common)
-	return math.floor(base * quality / 10 + 0.5) * 10
+-- [TUNING] THE POWER FACTOR -- the thing that makes every sword price a CURVE instead of a flat fee.
+--
+-- Rarity and roll quality say how good a sword is FOR ITS TIER; they say nothing about which tier
+-- it is. A Common out of the Celestial Summit pool and a Common out of the Iron Lowlands pool used
+-- to strike for the same 40 gold, which is why the strike price sat at 40-190 gold on the sword
+-- actually carried in six zones of eight and an hour of play bought hundreds of strikes.
+--
+-- A sword's rolled base damage multiplier (the DamageMult attribute BossSwordFactory stamps) IS
+-- its tier: the lesser pools run x0.90-1.95 in the Iron Lowlands up to x9.90-15.80 on the
+-- Celestial Summit, and the boss pools x1.30-2.20 up to x5.80-18.00. Pricing the strike on that
+-- makes the sink climb with the zone the player is standing in, at the same time as the income
+-- from that zone climbs -- so a stretch of farming buys roughly the same bounded number of
+-- strikes at every tier, from the first zone to the last, rather than going trivially cheap the
+-- moment the player leaves the opening zone.
+--
+-- powerFactor(base) = (base / POWER_REF) ^ POWER_EXP. Fitted so that an hour of the zone you are
+-- in buys 10-25 strikes on the median sword that zone drops, at every one of the eight zones.
+SwordValue.POWER_REF = 0.40
+SwordValue.POWER_EXP = 2.0
+SwordValue.POWER_MIN_BASE = 0.40 -- a base below this prices as this (no free strikes on oddities)
+SwordValue.POWER_MAX_FACTOR = 5000 -- guard rail: nothing prices past this, whatever it claims
+
+-- attrs.BaseMult is the sword's rolled DamageMult. A sword whose base is unknown (an older save,
+-- a hand-made tool) prices at x1.00 base, which is the opening zone's own tier.
+function SwordValue.powerFactor(baseMult: number?): number
+	local base = tonumber(baseMult) or 1
+	base = math.max(base, SwordValue.POWER_MIN_BASE)
+	local factor = (base / SwordValue.POWER_REF) ^ SwordValue.POWER_EXP
+	return math.clamp(factor, 0, SwordValue.POWER_MAX_FACTOR)
 end
 
--- [TUNING] Locking a modifier through a reforge adds this fraction of the base price per lock,
--- by the locked modifier's tier: keeping a T6 costs far more than keeping a T1.
-SwordValue.LOCK_TIER_FACTOR = { 0.5, 0.8, 1.2, 1.8, 2.6, 3.6 }
-
--- Full reforge price for a sword with the named modifiers locked.
-function SwordValue.rerollCostWithLocks(attrs, lockNames): number
-	local base = SwordValue.rerollCost(attrs)
-	local factor = 1
-	local onSword = {}
-	for _, mod in ipairs(SwordValue.modifiersFromPrefixes(attrs and attrs.Prefixes)) do
-		onSword[mod.name] = mod.tier
-	end
-	local seen = {}
-	for _, name in ipairs(lockNames or {}) do
-		local tier = onSword[name]
-		if tier and not seen[name] then
-			seen[name] = true
-			factor += SwordValue.LOCK_TIER_FACTOR[tier] or 0
-		end
-	end
-	return math.floor(base * factor / 10 + 0.5) * 10
-end
-
-function SwordValue.rerollCostForTool(tool: Instance): number
-	return SwordValue.rerollCost({
+-- The attribute table this module prices, read off a live Tool. One place, so the server, the
+-- panels and any measurement harness all price the same sword the same way.
+function SwordValue.attrsOfTool(tool: Instance)
+	return {
 		Rarity = tool:GetAttribute("Rarity"),
 		Prefixes = tool:GetAttribute("Prefixes"),
-		ExtraSlot = tool:GetAttribute("ExtraSlot"),
 		BossTier = tool:GetAttribute("BossTier"),
-	})
+		Variant = tool:GetAttribute("Variant"),
+		BaseMult = tool:GetAttribute("DamageMult"),
+		Starter = tool:GetAttribute("Starter"),
+	}
 end
 
 -- Short label for HUD use: 1.2K, 34K, 2.1M

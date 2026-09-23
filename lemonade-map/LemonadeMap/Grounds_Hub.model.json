@@ -38,11 +38,11 @@
      }
     },
     "Color": [
-     0.3608,
-     0.5569,
-     0.251
+     0.2196,
+     0.9725,
+     0.3608
     ],
-    "Material": "Grass",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -88,11 +88,11 @@
      }
     },
     "Color": [
-     0.4863,
-     0.4745,
-     0.451
+     1.0,
+     0.9333,
+     0.8157
     ],
-    "Material": "Cobblestone",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -139,11 +139,11 @@
      }
     },
     "Color": [
-     0.4863,
-     0.4745,
-     0.451
+     1.0,
+     0.9333,
+     0.8157
     ],
-    "Material": "Cobblestone",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -189,17 +189,20 @@
      }
     },
     "Color": [
-     0.4863,
-     0.4745,
-     0.451
+     1.0,
+     0.9333,
+     0.8157
     ],
-    "Material": "Cobblestone",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
     "CanQuery": true,
     "CanTouch": false,
     "CastShadow": true
+   },
+   "attributes": {
+    "TerrainPaving": true
    }
   },
   {
@@ -239,11 +242,11 @@
      }
     },
     "Color": [
-     0.4863,
-     0.4745,
-     0.451
+     1.0,
+     0.9333,
+     0.8157
     ],
-    "Material": "Cobblestone",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -289,11 +292,11 @@
      }
     },
     "Color": [
-     0.4863,
-     0.4745,
-     0.451
+     1.0,
+     0.9333,
+     0.8157
     ],
-    "Material": "Cobblestone",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -339,11 +342,11 @@
      }
     },
     "Color": [
-     0.3843,
-     0.3765,
-     0.3608
+     1.0,
+     0.9333,
+     0.8157
     ],
-    "Material": "Cobblestone",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -389,11 +392,11 @@
      }
     },
     "Color": [
-     0.5882,
-     0.4706,
-     0.3373
+     1.0,
+     0.9333,
+     0.8157
     ],
-    "Material": "Ground",
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,
@@ -439,11 +442,361 @@
      }
     },
     "Color": [
-     0.3843,
-     0.3765,
-     0.3608
+     1.0,
+     0.9333,
+     0.8157
     ],
-    "Material": "Cobblestone",
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GutterW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.8,
+     0.67,
+     54.5
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -8.4,
+       9.935,
+       -68.25
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9804,
+     0.8392,
+     0.6275
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "CurbW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.8,
+     1.02,
+     54.9
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -9.2,
+       10.11,
+       -68.05
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.4549,
+     0.5569,
+     0.9882
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "WalkW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     4.4,
+     0.9,
+     54.5
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -11.8,
+       10.05,
+       -68.25
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.8863,
+     0.9098,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GutterE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.8,
+     0.67,
+     54.5
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       8.4,
+       9.935,
+       -68.25
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9804,
+     0.8392,
+     0.6275
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "CurbE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.8,
+     1.02,
+     54.9
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       9.2,
+       10.11,
+       -68.05
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.4549,
+     0.5569,
+     0.9882
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "WalkE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     4.4,
+     0.9,
+     54.5
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       11.8,
+       10.05,
+       -68.25
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.8863,
+     0.9098,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "WalkForecourt",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     3.0,
+     0.9,
+     10.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -15.5,
+       10.05,
+       -89.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.8863,
+     0.9098,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "CanCollide": true,

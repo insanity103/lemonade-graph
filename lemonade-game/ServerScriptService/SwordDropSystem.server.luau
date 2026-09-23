@@ -1,129 +1,163 @@
---// SwordDropSystem  (Unique Boss Weapon drops with randomized prefixes, Blessed slots, Rebirth scaling, and slot-based Auto-Sell)
+--// SwordDropSystem  (every kill pays SPIN TOKENS; the equipped-sword stat mirror; the one-starter
+--   rule; and the KEEP-or-SELL offer machinery)
+-- Enemies do not drop swords any more. A kill pays spin tokens (Config.TokenRules): the server
+-- credits them to the killer's saved `Tokens` attribute the instant the kill lands, then tells
+-- that player's client how the payout splits into pickups (remote TokenDrop) so it can burst them
+-- out of the body, magnet them in and fly them to the HUD counter. The count is the server's; the
+-- client only animates a number it was handed. Tokens are spent at the spin wheel in town, which
+-- is where swords come from now (SpinService rolls the area- and depth-appropriate pool).
+--
+-- THE KEEP-OR-SELL OFFER (below) predates the tokens: a sword that lands in the Backpack can be
+-- offered for sale once, server-priced by Config.SellValue, one id and one outcome. Kills no
+-- longer open offers; the machinery stays for whatever hands a player a sword next.
+--   1. THE SERVER OWNS THE DECISION. The price is computed here from Config.SellValue.
+--   2. ONE SWORD, ONE OUTCOME. The offer is claimed (removed) before any gold moves, no yield.
+--   3. IGNORING IT IS FREE. No answer means KEEP.
+--   4. IT NEVER BLOCKS PLAY. The Tool is in the bag before the offer is sent.
+--   5. NOTHING IS LOST BY MISSING IT. The inventory SELL button pays the same price.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
-local RebirthConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("RebirthConfig"))
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 local BossWeapons = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("BossWeapons"))
-local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
+local TokenRules = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("TokenRules"))
+local SellValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SellValue"))
+local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
+local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
+-- Depth into each area (the spin pool's rotation step) is recorded from this same Died hook.
+local SpinService = require(script.Parent:WaitForChild("SpinService"))
 local REMOTES = ReplicatedStorage:WaitForChild("RemoteEvents")
-local DROP_EVENT = REMOTES:WaitForChild("SwordDrop")
-local TOGGLE_AUTO_SELL = REMOTES:WaitForChild("ToggleAutoSell")
-local AUTO_SELL_NOTICE = REMOTES:WaitForChild("AutoSellNotice")
+local TOKEN_EVENT = REMOTES:WaitForChild("TokenDrop")
+-- The pickup prompt, both ways down one remote: the client fires (offerId, "SELL" | "KEEP") and
+-- the server answers (offerId, "SOLD" | "KEPT" | "DENIED", gold, reason).
+local PICKUP_EVENT = REMOTES:WaitForChild("SwordPickup")
 local GOLD_EVENT = REMOTES:WaitForChild("GoldGain")
 local SWORD_LOST_EVENT = REMOTES:WaitForChild("SwordLostOnDeath")
-
-local BOSS_ONLY   = true   -- only rigs flagged Boss by EnemyCombat can drop a sword
 
 -- On death you keep your swords -- the equipped one is moved to the Backpack so it
 -- survives respawn -- EXCEPT this small chance it shatters instead.
 local DEATH_SWORD_LOSS_CHANCE = 0.02
 
--- Boss tiers and weapon stats live in ReplicatedStorage/Config/BossWeapons
-local BOSS_TIERS = BossWeapons.Tiers
+-- What a sword is worth is Config.SellValue's, and only Config.SellValue's: the prompt below, the
+-- inventory SELL button and the price the inventory tile quotes all read that one module, so the
+-- same sword is worth the same gold whichever way the player sells it.
 
--- Gold value awarded when auto-selling a sword from each boss tier
-local BOSS_SELL_VALUES = {
-	[1] = 50,    -- Warlord Greatsword (Uncommon)
-	[2] = 150,   -- Frostfang Cleaver (Rare)
-	[3] = 450,   -- Inferno Edge (Epic)
-	[4] = 1200,  -- Voidrend Blade (Epic)
-	[5] = 3000,  -- Astral Eclipse (Legendary)
-}
+-- [TUNING] THE PROMPT'S CLOCK. `PROMPT_SECONDS` is what the reveal counts down on screen;
+-- `OFFER_SECONDS` is how long the server will still honour the offer, and it is deliberately
+-- longer so a laggy press that left the client inside the window is never punished for arriving
+-- late. Past that the offer lapses and the sword is simply kept -- which is also what happens if
+-- the player never touches it.
+local PROMPT_SECONDS = 12
+local OFFER_SECONDS = 25
+-- A player can have this many offers open at once (fast farming pays faster than a reveal plays).
+-- Past it the oldest lapses, kept, so the table can never grow without bound.
+local MAX_OPEN_OFFERS = 10
+-- Remote guard, not a design gate: presses per player per second, averaged over a short burst.
+local PRESS_BURST = 12
+local PRESS_WINDOW = 3
 
--- Standardized Base Rarity Drop Chances across all bosses:
--- Legendary: 5%, Epic: 10%, Rare: 40%, Uncommon: 60%, Common: 80%
-local BASE_RARITY_DROP_CHANCES = {
-	Legendary = 0.05,
-	Epic      = 0.10,
-	Rare      = 0.40,
-	Uncommon  = 0.60,
-	Common    = 0.80,
-}
+-- [player] = { [offerId] = { tool, value, name, rarity, expires } }. An offer is CLAIMED by being
+-- removed from this table, which is the whole of the one-sword-one-outcome guarantee: the claim
+-- and the payout happen in one uninterrupted stretch of the remote handler, with no yield between
+-- them, so two presses cannot both find the same offer.
+local offers = setmetatable({}, { __mode = "k" })
+local pressLog = setmetatable({}, { __mode = "k" })
+local offerSeq = 0
 
-local PITY_THRESHOLD_BASE = 50 -- [TUNING] guaranteed drop after this many failures
-local PITY_PER_REBIRTH = 5    -- [TUNING] threshold increases with rebirth count
-local playerPityCount = {} -- [player] = consecutive failed rare drops
-
-local BOSS_WEAPONS = BossWeapons.Weapons
-
-local function getWeaponSlots(tool)
-	if not tool then return 0 end
-	local rarity = tool:GetAttribute("Rarity") or "Common"
-	local rarityConfig = WeaponModifiers.RarityConfig[rarity]
-	local slots = rarityConfig and rarityConfig.baseSlots or 0
-	if tool:GetAttribute("ExtraSlot") == true then
-		slots += 1
+local function offerBag(player)
+	local bag = offers[player]
+	if not bag then
+		bag = {}
+		offers[player] = bag
 	end
-	return slots
+	return bag
 end
 
-local function getEquippedWeaponSlots(player)
-	local char = player.Character
-	if not char then return 0 end
-	return getWeaponSlots(char:FindFirstChildOfClass("Tool"))
+-- Drop anything that has lapsed (and the oldest, if the player is over the cap). A lapsed offer
+-- costs the player nothing: the Tool is already in their Backpack and stays there.
+local function pruneOffers(player)
+	local bag = offers[player]
+	if not bag then return end
+	local now = os.clock()
+	local live = {}
+	for id, offer in pairs(bag) do
+		if now > offer.expires or typeof(offer.tool) ~= "Instance" or not offer.tool.Parent then
+			bag[id] = nil
+		else
+			table.insert(live, { id = id, at = offer.expires })
+		end
+	end
+	if #live > MAX_OPEN_OFFERS then
+		table.sort(live, function(a, b) return a.at < b.at end)
+		for i = 1, #live - MAX_OPEN_OFFERS do
+			bag[live[i].id] = nil
+		end
+	end
 end
 
--- Built by the shared BossSwordFactory (MerchantSystem uses the same builder)
-local function makeBossSword(archetypeKey, blessedBonus)
-	return BossSwordFactory.build(archetypeKey, { blessedBonus = blessedBonus })
+-- The Tool this offer names, ONLY if it is still the one sitting in this player's own Backpack.
+-- Anything else -- equipped, vaulted, traded away, shattered on death, already sold -- is not
+-- sellable through the prompt, and the refusal is honest about why.
+local function sellableTool(player, offer)
+	local tool = offer.tool
+	if typeof(tool) ~= "Instance" or not tool:IsA("Tool") or not tool.Parent then
+		return nil, "gone"
+	end
+	local bag = player:FindFirstChildOfClass("Backpack")
+	if not bag or tool.Parent ~= bag then
+		if player.Character and tool.Parent == player.Character then
+			return nil, "equipped"
+		end
+		return nil, "gone"
+	end
+	return tool
 end
 
-local function giveSword(player, archetypeKey, blessedBonus)
-	if not player or not player.Parent then
-		return false
+-- Open an offer on a sword that has just landed in the bag, and return the id and the price so
+-- the drop card can print them. The price is computed HERE, server-side, from Config.SellValue.
+local function openOffer(player, tool, weaponData, fullName)
+	local value = SellValue.Gold({
+		DamageMult = weaponData.baseMult,
+		Rarity = weaponData.rarity,
+		Lesser = weaponData.lesser == true,
+	}, SellValue.GoldMultFor(player))
+	if value <= 0 then
+		return nil, 0
 	end
-	local container = player:FindFirstChildOfClass("Backpack") or player.Character
-	if not container then
-		return false
+	pruneOffers(player)
+	offerSeq += 1
+	local id = string.format("%d-%d", offerSeq, math.floor(os.clock() * 1000) % 1000000)
+	offerBag(player)[id] = {
+		tool = tool,
+		value = value,
+		name = fullName,
+		rarity = weaponData.rarity,
+		expires = os.clock() + OFFER_SECONDS,
+	}
+	return id, value
+end
+
+-- A kill's tokens (the Died hook at the foot of this file). Credited to the saved attribute
+-- first, then the killer's client is told where the body fell and how the payout splits into
+-- pickups. The event is fired BEFORE the attribute moves, so the client has already counted the
+-- tokens as "in flight" when the new total arrives and its counter ticks up pickup by pickup
+-- instead of jumping.
+local function payTokens(player, model)
+	-- Before the profile is applied the saved total would overwrite this credit on load, so a
+	-- kill in that first second is not paid rather than paid and then silently taken back.
+	if not PlayerDataService.IsReady(player) then
+		return 0, nil
 	end
-
-	local tool, mods, fullName, gotExtraSlot, weaponData = makeBossSword(archetypeKey, blessedBonus)
-	local droppedTier = BOSS_TIERS[archetypeKey] or 1
-	local droppedSlots = #mods + (gotExtraSlot and 1 or 0)
-	local autoSellEnabled = player:GetAttribute("AutoSellLowerSwords") == true
-	local equippedSlots = getEquippedWeaponSlots(player)
-
-	-- Auto-sell only drops with fewer modifier slots than the equipped weapon.
-	if autoSellEnabled and equippedSlots > droppedSlots then
-		local baseValue = BOSS_SELL_VALUES[droppedTier] or 50
-		if gotExtraSlot then
-			baseValue = math.floor(baseValue * 1.5)
-		end
-		
-		-- Rebirth gold bonus
-		local rebirthGoldMultiplier = player:GetAttribute("RebirthGoldMult") or 1
-		if typeof(rebirthGoldMultiplier) ~= "number" then rebirthGoldMultiplier = 1 end
-		local goldEarned = math.floor(baseValue * math.max(0, rebirthGoldMultiplier))
-
-		local leaderstats = player:FindFirstChild("leaderstats")
-		local goldStat = leaderstats and leaderstats:FindFirstChild("Gold")
-		if goldStat then
-			goldStat.Value += goldEarned
-		end
-
-		local char = player.Character
-		local hrp = char and char:FindFirstChild("HumanoidRootPart")
-		if hrp then
-			GOLD_EVENT:FireAllClients(hrp.Position + Vector3.new(0, 3, 0), goldEarned)
-		end
-
-		AUTO_SELL_NOTICE:FireClient(player, fullName, weaponData.rarity, goldEarned)
-		print(string.format("[SwordDropSystem] Auto-sold [%s] for %s (%d Gold awarded) [Equipped Slots %d > Dropped Slots %d]",
-			fullName, player.Name, goldEarned, equippedSlots, droppedSlots))
-		
-		tool:Destroy()
-		return
-	end
-
-	tool.Parent = container
-	
-	-- Pass modifiers summary to client toast
-	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods, gotExtraSlot)
-	print(string.format("[SwordDropSystem] %s obtained [%s] (Mult: x%.2f, Rarity: %s, Mods: %d%s)",
-		player.Name, fullName, weaponData.baseMult, weaponData.rarity, #mods, gotExtraSlot and " [BLESSED!]" or ""))
-	return true
+	local role = TokenRules.RoleOf(model)
+	local zone = model:GetAttribute("Zone")
+	local total = TokenRules.ForKill(role, nil, typeof(zone) == "string" and zone or nil)
+	local root = model:FindFirstChild("HumanoidRootPart") or model.PrimaryPart
+	local origin = root and root.Position or model:GetPivot().Position
+	TOKEN_EVENT:FireClient(player, origin, TokenRules.Split(total), total, role)
+	local after = math.max(0, math.floor(tonumber(player:GetAttribute("Tokens")) or 0)) + total
+	player:SetAttribute("Tokens", after)
+	print(string.format("[SwordDropSystem] %s +%d tokens off %s (%s) -> %d", player.Name, total, model.Name, role, after))
+	return total, role
 end
 
 -- Watch equipped tool -> expose its stats as player attributes for combat systems
@@ -161,7 +195,9 @@ local function watchCharacter(player, character)
 			for _, tool in ipairs(character:GetChildren()) do
 				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true then
 					local level = player:GetAttribute("Level") or 1
-					if level > 8 and math.random() < DEATH_SWORD_LOSS_CHANCE then
+					-- The starter is a pool sword now (BossDrop = true, see RuntimeBootstrap) but it
+					-- never shatters: a player can always be left with a sword.
+					if level > 8 and tool:GetAttribute("Starter") ~= true and math.random() < DEATH_SWORD_LOSS_CHANCE then
 						local lostName, lostRarity = tool.Name, tool:GetAttribute("Rarity")
 						tool:Destroy()
 						SWORD_LOST_EVENT:FireClient(player, lostName, lostRarity)
@@ -176,23 +212,120 @@ local function watchCharacter(player, character)
 	end
 end
 
-local function bindPlayer(player)
-	if player:GetAttribute("AutoSellLowerSwords") == nil then
-		player:SetAttribute("AutoSellLowerSwords", false)
+-- ONE STARTER. The StarterPack hands every character a ClassicSword, and a struck starter is
+-- saved and rebuilt like any other pool sword (PlayerDataService), so a returning player can
+-- briefly hold two. Keep the best-rated one (the saved, struck one) and drop the plain copy.
+local function dedupeStarter(player)
+	local starters = {}
+	for _, container in ipairs({ player.Character, player:FindFirstChildOfClass("Backpack") }) do
+		if container then
+			for _, tool in ipairs(container:GetChildren()) do
+				if tool:IsA("Tool") and tool:GetAttribute("Starter") == true then
+					table.insert(starters, tool)
+				end
+			end
+		end
 	end
-	if player.Character then watchCharacter(player, player.Character) end
-	player.CharacterAdded:Connect(function(ch) watchCharacter(player, ch) end)
+	if #starters < 2 then return end
+	table.sort(starters, function(a, b)
+		local ra, rb = SwordValue.rateTool(a), SwordValue.rateTool(b)
+		if ra ~= rb then return ra > rb end
+		return (a:GetAttribute("Prefixes") or "") ~= "" and (b:GetAttribute("Prefixes") or "") == ""
+	end)
+	for i = 2, #starters do
+		starters[i]:Destroy()
+	end
 end
 
--- Toggle Auto-Sell Remote
-TOGGLE_AUTO_SELL.OnServerEvent:Connect(function(player, requestedState)
-	if requestedState ~= nil and typeof(requestedState) ~= "boolean" then
+local function bindPlayer(player)
+	if player.Character then watchCharacter(player, player.Character) end
+	player.CharacterAdded:Connect(function(ch)
+		watchCharacter(player, ch)
+		task.delay(1, dedupeStarter, player)
+		local bag = player:FindFirstChildOfClass("Backpack")
+		if bag then
+			bag.ChildAdded:Connect(function(child)
+				if child:IsA("Tool") and child:GetAttribute("Starter") == true then
+					task.defer(dedupeStarter, player)
+				end
+			end)
+		end
+	end)
+end
+
+-- THE PROMPT'S ONE REMOTE. Everything that can go wrong here is a player pressing SELL more than
+-- once, so read the order of the lines below as the guarantee: the offer is taken out of the
+-- table (line "bag[offerId] = nil") before anything is paid or destroyed, and nothing between
+-- that line and the payout yields. A second press arrives afterwards, finds no offer, and is
+-- refused. Two swords are never one offer and one sword is never two payouts.
+PICKUP_EVENT.OnServerEvent:Connect(function(player, offerId, choice)
+	if typeof(offerId) ~= "string" or #offerId > 40 or #offerId == 0 then
 		return
 	end
-	local current = player:GetAttribute("AutoSellLowerSwords") == true
-	local newState = (requestedState ~= nil) and (requestedState == true) or (not current)
-	player:SetAttribute("AutoSellLowerSwords", newState)
-	print(string.format("[SwordDropSystem] %s set AutoSellLowerSwords to %s", player.Name, tostring(newState)))
+	if choice ~= nil and choice ~= "SELL" and choice ~= "KEEP" then
+		return
+	end
+
+	-- Remote guard: a held-down button or a script cannot spin this handler.
+	local now = os.clock()
+	local log = pressLog[player]
+	if not log or now - log.at > PRESS_WINDOW then
+		log = { at = now, n = 0 }
+		pressLog[player] = log
+	end
+	log.n += 1
+	if log.n > PRESS_BURST then
+		return
+	end
+
+	local bag = offers[player]
+	local offer = bag and bag[offerId]
+	if not offer then
+		PICKUP_EVENT:FireClient(player, offerId, "DENIED", 0, "gone")
+		return
+	end
+
+	-- KEEP is the default and costs nothing: close the offer and say so.
+	if choice ~= "SELL" then
+		bag[offerId] = nil
+		PICKUP_EVENT:FireClient(player, offerId, "KEPT", 0)
+		return
+	end
+
+	if now > offer.expires then
+		bag[offerId] = nil
+		PICKUP_EVENT:FireClient(player, offerId, "DENIED", 0, "expired")
+		return
+	end
+
+	-- CLAIM. From here the offer no longer exists, whatever happens next.
+	bag[offerId] = nil
+
+	local tool, why = sellableTool(player, offer)
+	if not tool then
+		PICKUP_EVENT:FireClient(player, offerId, "DENIED", 0, why or "gone")
+		return
+	end
+
+	local leaderstats = player:FindFirstChild("leaderstats")
+	local goldStat = leaderstats and leaderstats:FindFirstChild("Gold")
+	if not goldStat or not goldStat:IsA("IntValue") then
+		PICKUP_EVENT:FireClient(player, offerId, "DENIED", 0, "gone")
+		return
+	end
+
+	local paid = offer.value
+	tool:Destroy()
+	goldStat.Value += paid
+
+	local char = player.Character
+	local hrp = char and char:FindFirstChild("HumanoidRootPart")
+	if hrp then
+		GOLD_EVENT:FireAllClients(hrp.Position + Vector3.new(0, 3, 0), paid)
+	end
+	PICKUP_EVENT:FireClient(player, offerId, "SOLD", paid)
+	print(string.format("[SwordDropSystem] %s sold [%s] (%s) at pickup for %d Gold",
+		player.Name, tostring(offer.name), tostring(offer.rarity), paid))
 end)
 
 -- Hook enemy deaths (enemies carry Attribute "Enemy" or CollectionService tag "Enemy")
@@ -211,55 +344,12 @@ local function hook(model)
 		if not (killer and killer:IsA("Player")) then
 			return
 		end
-		if BOSS_ONLY and model:GetAttribute("Boss") ~= true then
+		SpinService.RecordKill(killer, model)
+		-- Every enemy pays tokens; a rig with no archetype (a test dummy) pays nothing.
+		if model:GetAttribute("Archetype") == nil then
 			return
 		end
-
-		local rebirths = killer:GetAttribute("Rebirths") or 0
-		local archKey = model:GetAttribute("Archetype") or "Boss_Gorgon"
-		local weaponData = BOSS_WEAPONS[archKey]
-		local rarity = weaponData and weaponData.rarity or "Common"
-		local baseDropRate = BASE_RARITY_DROP_CHANCES[rarity] or 0.80
-		
-		-- Scale drop chance with rebirths
-		local effectiveDropRate = RebirthConfig.GetEffectiveDropChance(baseDropRate, rarity, rebirths)
-		
-		-- Scale blessed chance bonus (set by RebirthSystem milestone 5)
-		local blessedBonus = killer:GetAttribute("RebirthBlessedBonus") or 0
-
-		local rollSuccess = (math.random() <= effectiveDropRate)
-		local isRarePlus = (rarity == "Rare" or rarity == "Epic" or rarity == "Legendary")
-
-		if rollSuccess and isRarePlus then
-			-- Natural rare+ drop: reset pity and give sword
-			playerPityCount[killer] = 0
-			giveSword(killer, archKey, blessedBonus)
-		else
-			-- Failed to produce a rare+ drop
-			if rollSuccess then
-				-- Still give the non-rare drop
-				giveSword(killer, archKey, blessedBonus)
-			end
-
-			-- Pity tracking: increment on failed rare drops
-			local pity = playerPityCount[killer] or 0
-			pity = pity + 1
-			playerPityCount[killer] = pity
-
-			local pityRebirths = killer:GetAttribute("Rebirths") or 0
-			local pityThreshold = PITY_THRESHOLD_BASE + (pityRebirths * PITY_PER_REBIRTH)
-
-			-- Force a rare drop at pity threshold
-			if pity >= pityThreshold then
-				-- Override rarity to Rare
-				rarity = "Rare"
-				playerPityCount[killer] = 0 -- reset pity
-				if not rollSuccess then
-					-- Roll failed but pity triggered: force the drop
-					giveSword(killer, archKey, blessedBonus)
-				end
-			end
-		end
+		payTokens(killer, model)
 	end)
 end
 
@@ -276,8 +366,13 @@ Players.PlayerAdded:Connect(bindPlayer)
 for _, p in ipairs(Players:GetPlayers()) do bindPlayer(p) end
 
 Players.PlayerRemoving:Connect(function(player)
-	playerPityCount[player] = nil
+	offers[player] = nil
+	pressLog[player] = nil
 end)
 
-print("[SwordDropSystem] Pity system enabled (base threshold: " .. PITY_THRESHOLD_BASE .. ")")
-print("[SwordDropSystem] Boss weapon drop system initialized with Rebirth rarity scaling, Rebirth 5+ Blessed bonuses, and Auto-Sell")
+print(string.format("[SwordDropSystem] Kills pay spin tokens (no sword drops): minion %d-%d, elite %d-%d, warden %d-%d, boss %d-%d, burst into up to %d pickups",
+	TokenRules.PER_KILL.minion[1], TokenRules.PER_KILL.minion[2], TokenRules.PER_KILL.elite[1], TokenRules.PER_KILL.elite[2],
+	TokenRules.PER_KILL.warden[1], TokenRules.PER_KILL.warden[2], TokenRules.PER_KILL.boss[1], TokenRules.PER_KILL.boss[2],
+	TokenRules.MAX_PICKUPS))
+print(string.format("[SwordDropSystem] KEEP-or-SELL offers: %ds on the card, %ds honoured by the server; a sword sells for %.0f%% x%.2f if lesser (Config.SellValue)",
+	PROMPT_SECONDS, OFFER_SECONDS, SellValue.SELL_FRACTION * 100, BossWeapons.LESSER_SELL_FACTOR))

@@ -5,6 +5,8 @@ local Workspace = game:GetService("Workspace")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
 local QuestConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("QuestConfig"))
+local XPCurve = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("XPCurve"))
+local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
@@ -68,16 +70,19 @@ local function grantReward(player, reward)
 	if rtype == "GOLD" then
 		local leaderstats = player:FindFirstChild("leaderstats")
 		local gold = leaderstats and leaderstats:FindFirstChild("Gold")
-		if gold then gold.Value += amount end
+		-- Quest gold is priced in kills' worth at the level the quest is handed in (see
+		-- QuestConfig.GoldReward). QuestGui prints the same call, so the card and the payout
+		-- can never disagree.
+		local paid = QuestConfig.GoldReward(reward, player:GetAttribute("Level") or 1)
+		if gold then gold.Value += paid end
+		amount = paid
 
 	elseif rtype == "XP" then
 		local leaderstats = player:FindFirstChild("leaderstats")
 		local level = leaderstats and leaderstats:FindFirstChild("Level")
 		local experience = leaderstats and leaderstats:FindFirstChild("Experience")
 		if level and experience then
-			local BASE_XP = 100
-			local XP_INC = 0.15
-			local function reqExp(lv) return math.floor(BASE_XP * (1 + XP_INC) ^ (lv - 1)) end
+			local function reqExp(lv) return XPCurve.Required(lv) end
 			experience.Value += amount
 			local levelsGained = 0
 			while experience.Value >= reqExp(level.Value) do
@@ -110,11 +115,46 @@ end
 
 -- ── Objective checking ───────────────────────────────────────────────────
 
+-- OBTAIN objectives name the base weapon ("Warlord Greatsword"); a rolled drop's Tool.Name
+-- carries its modifier prefixes ("Sly Warlord Greatsword"), so match the BaseWeaponName
+-- attribute BossSwordFactory stamps on every drop, with the plain name as the fallback.
+-- OBTAIN_POOL objectives name a boss's pool ("Boss_Gorgon"): any sword the factory stamped with
+-- that PoolKey counts, whatever its name or rarity.
+local function toolMatches(tool, obj)
+	if not tool:IsA("Tool") then return false end
+	if obj.type == "OBTAIN_POOL" then
+		return tool:GetAttribute("PoolKey") == obj.poolKey
+	end
+	return tool:GetAttribute("BaseWeaponName") == obj.itemName or tool.Name == obj.itemName
+end
+
+local function playerHasItem(player, obj)
+	for _, container in ipairs({ player:FindFirstChildOfClass("Backpack"), player.Character }) do
+		if container then
+			for _, tool in ipairs(container:GetChildren()) do
+				if toolMatches(tool, obj) then return true end
+			end
+		end
+	end
+	-- An OBTAIN_POOL quest is also settled by the profile's record of having been HANDED a sword
+	-- from that pool (SwordDropSystem writes bossFirstDrops on a boss's first drop): a player who
+	-- sold or vaulted the sword has still claimed it, and is never sent back to roll for another.
+	if obj.type == "OBTAIN_POOL" then
+		local record = PlayerDataService.GetField(player, "bossFirstDrops")
+		if typeof(record) == "table" and record[obj.poolKey] == true then return true end
+	end
+	return false
+end
+
+local function isObtain(obj)
+	return obj.type == "OBTAIN" or obj.type == "OBTAIN_POOL"
+end
+
 local function checkCompletion(player, quest, progress)
 	local obj = quest.objective
 	if obj.type == "KILL" or obj.type == "KILL_ZONE" or obj.type == "KILL_BOSS" then
 		return progress >= (obj.count or 1)
-	elseif obj.type == "OBTAIN" then
+	elseif isObtain(obj) then
 		return progress >= 1
 	elseif obj.type == "LEVEL" then
 		local leaderstats = player:FindFirstChild("leaderstats")
@@ -175,25 +215,9 @@ QUEST_ACCEPT.OnServerEvent:Connect(function(player, questId)
 
 	-- Check OBTAIN immediately in case player already has the item
 	local initialProgress = 0
-	if quest.objective.type == "OBTAIN" then
-		local backpack = player:FindFirstChildOfClass("Backpack")
-		local character = player.Character
-		local itemName = quest.objective.itemName
-		if backpack then
-			for _, tool in ipairs(backpack:GetChildren()) do
-				if tool:IsA("Tool") and tool.Name == itemName then
-					initialProgress = 1
-					break
-				end
-			end
-		end
-		if initialProgress == 0 and character then
-			for _, tool in ipairs(character:GetChildren()) do
-				if tool:IsA("Tool") and tool.Name == itemName then
-					initialProgress = 1
-					break
-				end
-			end
+	if isObtain(quest.objective) then
+		if playerHasItem(player, quest.objective) then
+			initialProgress = 1
 		end
 	elseif quest.objective.type == "LEVEL" then
 		local leaderstats = player:FindFirstChild("leaderstats")
@@ -325,27 +349,9 @@ local function checkObtainQuest(player)
 	local state = playerQuest[player]
 	if not state or not state.questId then return end
 	local quest = QuestConfig.getQuestById(state.questId)
-	if not quest or quest.objective.type ~= "OBTAIN" then return end
+	if not quest or not isObtain(quest.objective) then return end
 
-	local itemName = quest.objective.itemName
-	local found = false
-	local backpack = player:FindFirstChildOfClass("Backpack")
-	if backpack then
-		for _, tool in ipairs(backpack:GetChildren()) do
-			if tool:IsA("Tool") and tool.Name == itemName then
-				found = true
-				break
-			end
-		end
-	end
-	if not found and player.Character then
-		for _, tool in ipairs(player.Character:GetChildren()) do
-			if tool:IsA("Tool") and tool.Name == itemName then
-				found = true
-				break
-			end
-		end
-	end
+	local found = playerHasItem(player, quest.objective)
 
 	if found and state.progress < 1 then
 		state.progress = 1
@@ -358,13 +364,16 @@ Players.PlayerAdded:Connect(function(player)
 	player.CharacterAdded:Connect(function(character)
 		task.defer(function()
 			checkObtainQuest(player)
-			-- Watch for tool additions in backpack
+			-- Watch for tools arriving in the backpack or straight into the character's hands.
 			local backpack = player:FindFirstChildOfClass("Backpack")
 			if backpack then
 				backpack.ChildAdded:Connect(function()
 					task.defer(checkObtainQuest, player)
 				end)
 			end
+			character.ChildAdded:Connect(function(child)
+				if child:IsA("Tool") then task.defer(checkObtainQuest, player) end
+			end)
 		end)
 	end)
 end)

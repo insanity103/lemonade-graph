@@ -46,12 +46,7 @@ if hitlagRemote then
     end)
 end
 
--- Listen for combo updates to trigger shake
-local comboRemote = ReplicatedStorage:WaitForChild("RemoteEvents"):FindFirstChild("ComboUpdate")
-if comboRemote then
-    comboRemote.OnClientEvent:Connect(function(count, endlag)
-        triggerShake(count)
-    end)
-end
+-- Shake only on HitlagEffect above: it fires once per landed hit. ComboUpdate fires on every
+-- swing, hit or miss, so shaking on it too meant whiffs shook the screen and hits shook twice.
 
 print("[ComboVFX] Screen shake and hitlag effects enabled")

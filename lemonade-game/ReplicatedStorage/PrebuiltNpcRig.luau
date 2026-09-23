@@ -39,6 +39,13 @@ function PrebuiltNpcRig.clone(outfit: string, name: string, position: Vector3): 
 	model.PrimaryPart = root
 	model:PivotTo(CFrame.new(position + Vector3.new(0, 3, 0)))
 	root.Anchored = true
+	-- Roblox draws a Humanoid's name and health bar over its head by default; the game has its
+	-- own nameplates (GameplayActors) and villagers shouldn't be labelled at all.
+	local humanoid = model:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		humanoid.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
+	end
 	return model
 end
 

@@ -15,6 +15,9 @@
       "BossSwordFactory": {
         "$path": "lemonade-game/ServerScriptService/BossSwordFactory.luau"
       },
+      "SpinService": {
+        "$path": "lemonade-game/ServerScriptService/SpinService.luau"
+      },
       "CombatUtil": {
         "$path": "lemonade-game/ServerScriptService/CombatUtil.luau"
       },
@@ -72,14 +75,23 @@
       "TradeSystem": {
         "$path": "lemonade-game/ServerScriptService/TradeSystem.server.luau"
       },
-      "ReforgeSystem": {
-        "$path": "lemonade-game/ServerScriptService/ReforgeSystem.server.luau"
+      "SwordGalleryStage": {
+        "$path": "lemonade-game/ServerScriptService/SwordGalleryStage.server.luau"
+      },
+      "EnemyDropStage": {
+        "$path": "lemonade-game/ServerScriptService/EnemyDropStage.server.luau"
       },
       "MapMarkers": {
         "$path": "lemonade-game/Gameplay/MapMarkers.luau"
       },
       "MapTravel": {
         "$path": "lemonade-game/Map/MapTravel.server.luau"
+      },
+      "WorldLook": {
+        "$path": "lemonade-game/Map/WorldLook.server.luau"
+      },
+      "WorldTerrain": {
+        "$path": "lemonade-game/Map/WorldTerrain.server.luau"
       }
     },
     "StarterPack": {
@@ -134,11 +146,11 @@
         "SwordDropToast": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau"
         },
+        "SwordHotbarGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordHotbarGui.client.luau"
+        },
         "VaultGui": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/VaultGui.client.luau"
-        },
-        "ReforgeGui": {
-          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/ReforgeGuiFusion.client.luau"
         },
         "XPGainUI": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau"
@@ -148,6 +160,12 @@
         },
         "HubAmbience": {
           "$path": "lemonade-game/Map/HubAmbience.client.luau"
+        },
+        "WorldShowcase": {
+          "$path": "lemonade-game/Map/WorldShowcase.client.luau"
+        },
+        "WorldHorizon": {
+          "$path": "lemonade-game/Map/WorldHorizon.client.luau"
         }
       }
     },

@@ -1,0 +1,12 @@
+{
+ "className": "Model",
+ "attributes": {
+  "Region": "Horizon",
+  "SkyEyeX": 0.0,
+  "SkyEyeY": 20.0,
+  "SkyEyeZ": 13.0
+ },
+ "properties": {
+  "ModelStreamingMode": "Persistent"
+ }
+}

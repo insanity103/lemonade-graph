@@ -17,7 +17,9 @@ local function showGold(position, amount)
 
 	local billboard = Instance.new("BillboardGui")
 	billboard.Size = UDim2.new(0, 140, 0, 50)
-	billboard.StudsOffset = Vector3.new(0, 5, 0)
+	-- Up and to the RIGHT of whatever paid it: dead centre is where the drop reveal lands, and
+	-- a gold number and a sword reveal on the same pixels read as neither.
+	billboard.StudsOffset = Vector3.new(2.6, 5, 0)
 	billboard.AlwaysOnTop = true
 	billboard.Adornee = part
 	billboard.Parent = part
@@ -33,7 +35,7 @@ local function showGold(position, amount)
 	label.TextStrokeColor3 = Color3.new(0, 0, 0)
 	label.Parent = billboard
 
-	local rise = TweenService:Create(billboard, TWEEN_INFO, { StudsOffset = Vector3.new(0, 8, 0) })
+	local rise = TweenService:Create(billboard, TWEEN_INFO, { StudsOffset = Vector3.new(3.4, 9, 0) })
 	rise:Play()
 
 	local fade = TweenService:Create(label, TWEEN_INFO, { TextTransparency = 1 })
@@ -48,3 +50,17 @@ goldEvent.OnClientEvent:Connect(function(position, amount)
 end)
 
 print("[GoldNumbers] Floating gold numbers enabled")
+
+-- Kill tokens (the burst, the magnet and the HUD token counter over the gold) live in a shared
+-- module; requiring it here starts it on this client.
+require(ReplicatedStorage:WaitForChild("TokenDrops"))
+
+-- The town Spin Wheel's per-player face, pool board, key caps and spin (ReplicatedStorage.SpinStation)
+-- rides this script the same way.
+require(ReplicatedStorage:WaitForChild("SpinStation"))
+
+-- The spin result, told in a quest-card-sized popup at the top right (ReplicatedStorage.SpinPopup).
+require(ReplicatedStorage:WaitForChild("SpinPopup"))
+
+-- The Upgrade Stall's shop panel beside the wheel (ReplicatedStorage.UpgradeShop).
+require(ReplicatedStorage:WaitForChild("UpgradeShop"))

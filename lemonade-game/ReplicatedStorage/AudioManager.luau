@@ -31,6 +31,17 @@ local SoundIDs: { [string]: string } = {
 	sword_drop      = "rbxassetid://6042053626",
 	ui_click        = "rbxassetid://6042053626",
 	combo_milestone = "rbxassetid://6042053626",
+	-- Strike / clang cues (first written for the removed Reforge anvil; kept for any reveal that
+	-- wants a heartbeat tick and a hammer clang, pitched and swelled by quality).
+	forge_tick          = "rbxassetid://6042053626",
+	forge_clang         = "rbxassetid://6042053626",
+	forge_clang_good    = "rbxassetid://6042053626",
+	forge_clang_perfect = "rbxassetid://6042053626",
+	-- A mystery-sword reveal: a tick per rung as the glow climbs the
+	-- ladder, the chime it lands on, and the stamp of each modifier locking in.
+	reveal_tick = "rbxassetid://6042053626",
+	reveal_land = "rbxassetid://2865227271",
+	reveal_lock = "rbxassetid://6042053626",
 }
 
 -------------------------------------------------
@@ -50,6 +61,33 @@ local SoundOverrides: { [string]: { [string]: number } } = {
 	},
 	rebirth = {
 		Volume = 1.0,
+	},
+	forge_tick = {
+		PlaybackSpeed = 2.1, -- a light tick as the marker enters the sweet zone
+		Volume = 0.35,
+	},
+	forge_clang = {
+		PlaybackSpeed = 0.42, -- a flat, heavy hit: an OK blow
+		Volume = 0.9,
+	},
+	forge_clang_good = {
+		PlaybackSpeed = 0.55,
+		Volume = 1.1,
+	},
+	forge_clang_perfect = {
+		PlaybackSpeed = 0.7, -- the bright ring of a clean strike
+		Volume = 1.3,
+	},
+	reveal_tick = {
+		PlaybackSpeed = 1.4, -- the caller pitches each tick up as the ladder slows
+		Volume = 0.3,
+	},
+	reveal_land = {
+		Volume = 1.0, -- the caller swells and pitches this by the rung that landed
+	},
+	reveal_lock = {
+		PlaybackSpeed = 1.0,
+		Volume = 0.5,
 	},
 }
 
@@ -90,8 +128,10 @@ end
 
     @param soundName  Key from the SoundIDs table (e.g. "enemy_hit")
     @param parent     Instance to parent the Sound under (e.g. a Part or the workspace)
+    @param overrides  Optional per-call { PlaybackSpeed, Volume }, applied over the table above,
+                      for one-shots that need to rise or swell across a sequence.
 ]]
-function AudioManager.PlaySFX(soundName: string, parent: Instance)
+function AudioManager.PlaySFX(soundName: string, parent: Instance, overrides: { [string]: number }?)
 	local soundId = getSoundId(soundName)
 	if not soundId then
 		return
@@ -103,6 +143,10 @@ function AudioManager.PlaySFX(soundName: string, parent: Instance)
 	sound.Parent = parent
 
 	applyOverrides(sound, soundName)
+	if overrides then
+		if overrides.PlaybackSpeed then sound.PlaybackSpeed = overrides.PlaybackSpeed end
+		if overrides.Volume then sound.Volume = overrides.Volume end
+	end
 
 	sound:Play()
 

@@ -107,8 +107,10 @@ screenGui.Parent = playerGui
 
 local toggleBtn = Instance.new("TextButton")
 toggleBtn.Name = "Toggle"
-toggleBtn.AnchorPoint = Vector2.new(0, 1)
-toggleBtn.Position = UDim2.new(0, 12, 1, -12)
+-- Top-left, under Roblox's own top bar: the bottom-left corner belongs to the player HUD
+-- (gold readout, health and XP), which this dev button used to cover.
+toggleBtn.AnchorPoint = Vector2.new(0, 0)
+toggleBtn.Position = UDim2.new(0, 12, 0, 66)
 toggleBtn.Size = UDim2.fromOffset(44, 44)
 toggleBtn.BackgroundColor3 = COLORS.Panel
 toggleBtn.Font = Enum.Font.GothamBold
@@ -120,15 +122,14 @@ corner(toggleBtn, 22)
 stroke(toggleBtn, COLORS.Accent, 1.5)
 
 local panel = Instance.new("Frame")
-panel.AnchorPoint = Vector2.new(0, 1)
-panel.Position = UDim2.new(0, 12, 1, -66)
+panel.AnchorPoint = Vector2.new(0, 0)
+panel.Position = UDim2.new(0, 12, 0, 118)
 panel.Size = UDim2.fromOffset(300, 452)
 panel.BackgroundColor3 = COLORS.Panel
 panel.Visible = false
 panel.Parent = screenGui
 corner(panel, 10)
 stroke(panel, COLORS.Accent, 1.5)
-PanelChrome.addCornerOrnaments(panel, COLORS.Accent)
 
 label(panel, { text = "Admin  (dev / bug-testing)", font = Enum.Font.GothamBold, textSize = 15,
 	color = COLORS.Gold, pos = UDim2.fromOffset(14, 12), size = UDim2.new(1, -28, 0, 20) })
@@ -173,7 +174,8 @@ end
 label(panel, { text = "Give sword (best roll)", font = Enum.Font.GothamBold, pos = UDim2.fromOffset(14, 200), size = UDim2.new(1, -28, 0, 16) })
 
 local swordList = {}
-for archetypeKey, weaponData in pairs(BossWeapons.Weapons) do
+for archetypeKey in pairs(BossWeapons.Pools) do
+	local weaponData = BossWeapons.GetLegendary(archetypeKey)
 	table.insert(swordList, { key = archetypeKey, name = weaponData.name, rarity = weaponData.rarity, tier = BossWeapons.GetTier(archetypeKey) })
 end
 table.sort(swordList, function(a, b) return a.tier < b.tier end)
