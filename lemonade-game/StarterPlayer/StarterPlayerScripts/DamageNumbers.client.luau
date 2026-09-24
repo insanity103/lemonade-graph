@@ -72,6 +72,13 @@ end
 
 local active = {}
 
+-- How far apart two hits count as "the same body" for stacking, and how many steps the fan is
+-- allowed before it stops climbing (past five it would walk off the top of the screen).
+local STACK_RADIUS = 6 -- studs
+local STACK_MAX = 4
+local STACK_RISE = 0.85 -- studs of extra height per step
+local STACK_OUT = 0.10 -- extra outward SizeOffset per step
+
 -- A killing blow hands the screen to the kill's token payout (TokenDrops): every number near a
 -- body that just paid tokens shrinks and fades out within QUENCH seconds, so the "+N" tokens are
 -- the brightest text on screen. Numbers that land a moment after the payout packet are caught too.
@@ -148,9 +155,23 @@ local function showDamage(position, amount, kind)
 	end
 
 	local born = os.clock()
+	-- STACK INDEX. A number lives 1.05 s and an M1 chain lands five of them on one body inside
+	-- 1.6 s, so up to five used to be drawn at the same offset from the same point: they piled
+	-- into one unreadable clot ON TOP of the fighters. Round 5's blind read counted the damage
+	-- text covering the action in four of eight frames, and that is what it was seeing. Each new
+	-- number now counts the live ones near it and stacks a step higher and a little further out,
+	-- so a chain fans its numbers up and away from the bodies instead of over them. The count is
+	-- over `active`, which is at most a handful of entries, once per hit.
+	local stack = 0
+	for _, n in ipairs(active) do
+		if (n.part.Position - position).Magnitude <= STACK_RADIUS then
+			stack += 1
+		end
+	end
 	local entry = {
 		part = part, billboard = billboard, label = label, stroke = stroke,
 		style = style, ramp = ramp, side = side, born = born,
+		stack = math.min(stack, STACK_MAX),
 	}
 	for _, q in ipairs(quenchSpots) do
 		if born - q.at < 0.25 and (q.pos - position).Magnitude <= QUENCH_RADIUS then
@@ -178,10 +199,14 @@ RunService.RenderStepped:Connect(function()
 		end
 		local s = scaleAt(t, n.style.peak) * (1 - 0.45 * q)
 		n.billboard.Size = UDim2.fromOffset(n.style.size.X * s, n.style.size.Y * s)
-		-- Beside the shoulder, drifting up and a little outward as it cools.
+		-- Above the shoulder, drifting up and a little outward as it cools, and stepped clear of
+		-- whatever numbers were already there. The base height went 1.7 -> 2.4 studs at the same
+		-- time as the stacking: even a single number at 1.7 sat across the top of a man-sized
+		-- body from a side-on lens, and the body is the thing a fighting game is judged on.
 		local rise = 1 - (1 - math.min(1, t / LIFE)) ^ 2
-		n.billboard.StudsOffset = Vector3.new(0, 1.7 + 1.5 * rise, 0)
-		n.billboard.SizeOffset = Vector2.new(n.side * (0.42 + 0.12 * rise), 0)
+		local step = (n.stack or 0)
+		n.billboard.StudsOffset = Vector3.new(0, 2.4 + STACK_RISE * step + 1.5 * rise, 0)
+		n.billboard.SizeOffset = Vector2.new(n.side * (0.42 + STACK_OUT * step + 0.12 * rise), 0)
 		n.label.Rotation = n.side * -8 * math.max(0, 1 - t / POP_OUT)
 		n.label.TextColor3 = rampColor(n.ramp, t)
 		local fade = math.max(q, math.clamp((t - FADE_FROM) / (LIFE - FADE_FROM), 0, 1))
