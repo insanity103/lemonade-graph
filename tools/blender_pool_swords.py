@@ -418,8 +418,8 @@ def design_thornwood_dirk(f):
         f.sphere(f"BarkKnot{z}", (0, -0.218, z), 0.027, "timber", segs=12, rings=6)
     grip_bands(f, "timber", "pale_leaf", bands=2)
     # The flat lower face is exactly -0.5; a pointed or rounded end would retreat under bevel.
-    f.prism("LeafPommel", [(-0.5, -0.012), (-0.5, 0.012), (-0.474, 0.039),
-                           (-0.441, 0.028), (-0.43, 0), (-0.441, -0.028), (-0.474, -0.039)], 0.027, "lime")
+    f.prism("LeafPommel", [(-0.5, -0.014), (-0.5, 0.014), (-0.482, 0.052), (-0.456, 0.06),
+                           (-0.436, 0.036), (-0.43, 0), (-0.436, -0.036), (-0.456, -0.06), (-0.482, -0.052)], 0.03, "lime")
     return {"design": "Thornwood Dirk", "concept": "a single curved thorn cut from a bark trunk", "tier": 1,
             "calm": ["pale_leaf"], "vivid": ["timber", "lime"]}
 
@@ -508,10 +508,10 @@ def design_rangers_longblade(f):
     # The bow string is a second slender solid strip, visible across the open crescent.
     f.prism("BowString", [(-0.262, -0.115), (-0.262, 0.115), (-0.247, 0.115), (-0.247, -0.115)], 0.010, "lime")
     grip_bands(f, "leaf_bright", "pale_leaf", bands=3)
-    f.lathe("AcornNut", [(0.012, -0.5), (0.028, -0.49), (0.038, -0.47),
-                        (0.04, -0.447), (0.03, -0.436), (0, -0.436)], "lime", segs=20)
-    f.lathe("AcornCap", [(0, -0.452), (0.044, -0.452), (0.044, -0.438),
-                        (0.033, -0.427), (0.01, -0.425), (0, -0.425)], "timber", segs=20)
+    f.lathe("AcornNut", [(0.008, -0.5), (0.022, -0.493), (0.033, -0.478), (0.037, -0.463),
+                        (0.036, -0.455), (0, -0.455)], "lime", segs=20)
+    f.lathe("AcornCap", [(0, -0.466), (0.047, -0.466), (0.052, -0.456), (0.047, -0.444),
+                        (0.03, -0.435), (0.012, -0.432), (0, -0.432)], "timber", segs=20)
     return {"design": "Ranger's Longblade", "concept": "a ranger's straight blade with carved fuller, bow guard and acorn", "tier": 3,
             "calm": ["pale_leaf"], "vivid": ["lime", "leaf_bright", "timber"]}
 
@@ -586,7 +586,8 @@ def design_briar_billhook(f):
 def design_hedgehog_hooksword(f):
     """Hedgehog Hooksword -- a pointed pale blade above a bristly little hedgehog. A straight
     double-edged pale blade with timber chamfered edges tapering to a normal point, twelve short
-    bristles on a domed guard, green grip and a snout pommel with timber eyes and a bloom nose.
+    bristles along the back of a side-on hedgehog guard with a pale snout, bloom nose and timber
+    eyes, a green grip with bloom bands and a round bloom berry pommel.
     (The original returning J-hook was replaced with a normal point at Alex's request.)
     Calm: pale_leaf. Vivid: timber, leaf_bright, bloom."""
     def fn(y):
@@ -599,8 +600,10 @@ def design_hedgehog_hooksword(f):
     dome = [(-0.231, -0.092), (-0.231, 0.092)]
     dome += [(-0.231 + 0.063 * math.sin(a), 0.092 * math.cos(a)) for a in [math.pi * j / 16 for j in range(1, 17)]]
     f.prism("HedgehogBody", dome, 0.046, "pale_leaf")
+    # a hedgehog side-on: bristles along its back (the -z end is the rump), a snout and nose
+    # pointing out of the +z end, an eye on each face
     for k in range(12):
-        a = math.pi * (k + 0.5) / 12
+        a = math.pi * (0.32 + 0.68 * (k + 0.5) / 12)
         pos = Vector((0, -0.232 + 0.062 * math.sin(a), 0.089 * math.cos(a)))
         direction = Vector((0, math.sin(a), math.cos(a)))
         spike = f.lathe(f"Bristle{k}", [(0.012, 0), (0.013, 0.008), (0, 0.030)], "timber", segs=12)
@@ -608,13 +611,15 @@ def design_hedgehog_hooksword(f):
         spike.rotation_quaternion = Vector((0, 1, 0)).rotation_difference(direction)
         spike.location = pos
         f.apply_transform(spike)
-    grip_bands(f, "leaf_bright", "bloom", bands=2)
-    f.sphere("SnoutHead", (0, -0.47, 0), 0.03, "pale_leaf", segs=16, rings=8)
-    f.prism("SnoutMuzzle", [(-0.487, 0.01), (-0.458, 0.01), (-0.471, 0.052)], 0.024, "pale_leaf")
-    f.sphere("Nose", (0, -0.471, 0.049), 0.015, "bloom", segs=12, rings=6)
+    snout = f.lathe("Snout", [(0.0, 0.0), (0.03, 0.0), (0.022, 0.022), (0.0, 0.042)], "pale_leaf", segs=16)
+    f.orient(snout, rot=(math.radians(-90), 0, 0), loc=(0, -0.214, 0.066))   # lathe +Y -> +Z
+    f.sphere("Nose", (0, -0.214, 0.106), 0.014, "bloom", segs=12, rings=6)
     for side in (-1, 1):
-        f.sphere(f"Eye{side}", (side * 0.026, -0.457, 0.016), 0.009, "timber", segs=12, rings=6)
-    return {"design": "Hedgehog Hooksword", "concept": "a pointed blade over a twelve-bristle hedgehog guard and snout pommel", "tier": 3,
+        f.sphere(f"Eye{side}", (side * 0.044, -0.206, 0.052), 0.011, "timber", segs=12, rings=6)
+    grip_bands(f, "leaf_bright", "bloom", bands=2)
+    f.lathe("Berry", [(0.012, -0.5), (0.03, -0.494), (0.04, -0.474), (0.036, -0.452), (0.02, -0.44), (0.0, -0.44)],
+            "bloom", segs=20)
+    return {"design": "Hedgehog Hooksword", "concept": "a pointed blade over a side-on hedgehog guard with a snout, eyes and back bristles", "tier": 3,
             "calm": ["pale_leaf"], "vivid": ["timber", "leaf_bright", "bloom"]}
 
 

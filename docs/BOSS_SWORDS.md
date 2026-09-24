@@ -213,25 +213,29 @@ them in `ServerStorage/BossSwordMeshes`, confirm a plain MeshPart with a Texture
 SurfaceAppearance, MeshSize about (0.09-0.12, 0.26, 1.0). `Motion:SwordGallery` shows them all through
 the real factory (its grid was spaced for thin blades; widen it if tiles overlap).
 
-### Briarwood
+### Briarwood (done 2026-09-24)
 
-Design plan (2026-09-24). Each blade outline and guard has a different construction; none uses
-Grovebound Bloom's broad leaf outline or flower pommel. Area splits are starting targets, to be
-replaced by measured results after the visual review. All grips remain solid and on the hand axis.
+Designed and built by another model (Astra) from `docs/prompts/briarwood_swords_astra.md`, then
+reviewed and finished here: the Hedgehog Hooksword's J-hook (which rendered black faces inside its
+curl) became a normal point and its guard a side-on hedgehog; the Briar Billhook's guard bar no longer
+z-fights its leaf ends; the Ranger's acorn and the Thornwood leaf pommel were enlarged to read. All nine
+pass every pool check (calm 21-44 %, worst silhouette IoU 0.79) and their `look` in the config names
+their mesh. Each blade outline and guard has a different construction; none uses Grovebound Bloom's
+broad leaf outline or flower pommel.
 
 | Sword | Mesh key | Tier | Forms |
 |---|---|---|---|
 | Thornwood Dirk | `Sword_ThornwoodDirk` | T1 | a single curved pale thorn with timber collar; knotted bark bar; timber grip with pale bands; lime leaf pommel |
 | Sapwood Falchion | `Sword_SapwoodFalchion` | T2 | an S-curved lime falchion with three raised pale grain ribs; leaf-prong guard; timber grip; two-leaf sprout pommel |
 | Bramblecut Sabre | `Sword_BramblecutSabre` | T2 | a curved green sabre with five timber spine thorns and pale edge; curling vine guard; pale grip with green spiral; coral raspberry pommel |
-| Ranger's Longblade | `Sword_RangersLongblade` | T3 | a narrow straight pale blade with carved green fuller and lime edges; timber bow-arc guard; green grip with pale bands; lime acorn with timber cap |
+| Ranger's Longblade | `Sword_RangersLongblade` | T3 | a narrow straight pale blade with carved green fuller and lime edges; timber bow-arc guard; green grip with pale bands; a tapered lime acorn under a wide flared timber cap |
 | Heartwood Broadsword | `Sword_HeartwoodBroadsword` | T3 | broad timber blade with three pale growth-ring arcs and two leaf sprouts; root tendrils curling toward the grip; pale grip; concentric tree-ring disc pommel |
 | Briar Billhook | `Sword_BriarBillhook` | T2 | a straight timber blade ending in a forward beak, lime inner edge; leaf-ended bar; pale grip with three lime thorn nubs; lime thorn-point pommel |
-| Hedgehog Hooksword | `Sword_HedgehogHooksword` | T3 | a pale blade with a returning J-hook and timber edge; bristly hedgehog dome on a flat-ended bar; green grip; snout pommel with timber eyes and bloom nose |
+| Hedgehog Hooksword | `Sword_HedgehogHooksword` | T3 | a straight pale double-edged blade with timber edges and a normal point; a side-on hedgehog guard (back bristles, pale snout, bloom nose, an eye each face) on a flat-ended bar; green grip with bloom bands; bloom berry pommel |
 | Hollowbough Claymore | `Sword_HollowboughClaymore` | T4 | a broad timber claymore with pale core, oval hollow and two striped bees; leafed branch guard; timber grip; bloom honey-drop pommel |
 | Honeycomb Thorn | `Sword_HoneycombThorn` | T4 | a pale upper thorn over a lower comb of recessed hex cells and two honey drips; hex-ended bar; timber grip; grooved honey-dipper pommel |
 
-Planned surface shares (percent):
+Planned surface shares (percent; Astra's plan -- the measured shares are in `assets/swords/pool/manifest.json`):
 
 | Sword | pale_leaf | timber | lime | leaf_bright | bloom | Other |
 |---|---:|---:|---:|---:|---:|---|

@@ -264,15 +264,15 @@ BossWeapons.NormalPools = {
 	Briarwood = { -- Briarwood, Lv 9-14
 		lesser = true, inherentBonusDmg = 0.08,
 		swords = {
-			sword("Thornwood Dirk", 1.34, 30, { mesh = "Blocks", color = rgb(236, 255, 208), material = Enum.Material.Wood, accent = rgb(255, 158, 36), length = 3.3, blade = 0.7, width = 0.8, guard = 0.8 },
+			sword("Thornwood Dirk", 1.34, 30, { mesh = "Sword_ThornwoodDirk", color = rgb(236, 255, 208), material = Enum.Material.Wood, length = 3.3 },
 				{ inherentCrit = 0.04 }, "Short dirk cut from a thorn trunk"),
-			sword("Sapwood Falchion", 1.41, 24, { mesh = "Template", textured = false, color = rgb(120, 236, 56), material = Enum.Material.Wood, length = 3.9 },
+			sword("Sapwood Falchion", 1.41, 24, { mesh = "Sword_SapwoodFalchion", color = rgb(120, 236, 56), material = Enum.Material.Wood, length = 3.9 },
 				{ inherentRange = 0.8 }, "Springy sapwood falchion, light as a branch"),
-			sword("Bramblecut Sabre", 1.48, 18, { mesh = "Blocks", color = rgb(56, 224, 96), material = Enum.Material.Grass, accent = rgb(236, 255, 208), length = 3.8, blade = 1.0, width = 1.1, guard = 1.0 },
+			sword("Bramblecut Sabre", 1.48, 18, { mesh = "Sword_BramblecutSabre", color = rgb(56, 224, 96), material = Enum.Material.Grass, length = 3.8 },
 				{ inherentKnockback = 12 }, "Sabre that clears bramble by the armful"),
-			sword("Ranger's Longblade", 1.56, 13, { mesh = "Template", textured = false, color = rgb(236, 255, 208), material = Enum.Material.Metal, length = 4.1 },
+			sword("Ranger's Longblade", 1.56, 13, { mesh = "Sword_RangersLongblade", color = rgb(236, 255, 208), material = Enum.Material.Metal, length = 4.1 },
 				{ inherentRange = 1.2 }, "Standard issue for the grove wardens' rangers"),
-			sword("Heartwood Broadsword", 1.64, 9, { mesh = "Blocks", color = rgb(255, 158, 36), material = Enum.Material.Wood, accent = rgb(56, 224, 96), length = 4.2, blade = 1.1, width = 1.4, guard = 1.1 },
+			sword("Heartwood Broadsword", 1.64, 9, { mesh = "Sword_HeartwoodBroadsword", color = rgb(255, 158, 36), material = Enum.Material.Wood, length = 4.2 },
 				{ inherentKnockback = 18, inherentRange = 0.8 }, "Broadsword grown, not forged, from heartwood"),
 		},
 		legendary = sword("Grovebound Bloom", 2.40, 0, { mesh = "RootWarden", color = rgb(150, 255, 100), material = Enum.Material.Neon, length = 4.3 },
@@ -400,7 +400,7 @@ BossWeapons.NormalPools = {
 --     spin (Snowglobe Sabre, Rubber Duck Rapier, Toasted Marshmallow Brand, Wishbone Comet,
 --     Origami Crane Blade). Each sits between the sword the area carries in and its ultra. [TUNING]
 local wardenEpics = {
-	Briarwood = sword("Hollowbough Claymore", 1.72, 0, { mesh = "Blocks", color = rgb(255, 158, 36), material = Enum.Material.Wood, accent = rgb(120, 236, 56), length = 4.4, blade = 1.15, width = 1.5, guard = 1.15 },
+	Briarwood = sword("Hollowbough Claymore", 1.72, 0, { mesh = "Sword_HollowboughClaymore", color = rgb(255, 158, 36), material = Enum.Material.Wood, length = 4.4 },
 		{ inherentKnockback = 20, inherentRange = 1.0 }, "Carved from the hollow bough the Root Warden sleeps in; bees still visit it"),
 	SunkenMarsh = sword("Frogsong Greatsword", 3.20, 0, { mesh = "Blocks", color = rgb(48, 224, 176), material = Enum.Material.Metal, accent = rgb(190, 255, 96), length = 4.5, blade = 1.15, width = 1.5, guard = 1.15 },
 		{ inherentKnockback = 26, inherentCrit = 0.06 }, "Croaks a little tune on every swing; the whole marsh sings back"),
@@ -409,9 +409,9 @@ local wardenEpics = {
 }
 local spinRegulars = {
 	Briarwood = {
-		sword("Briar Billhook", 1.41, 0, { mesh = "Blocks", color = rgb(255, 158, 36), material = Enum.Material.Wood, accent = rgb(120, 236, 56), length = 3.6, blade = 1.2, width = 1.3, guard = 0.7 },
+		sword("Briar Billhook", 1.41, 0, { mesh = "Sword_BriarBillhook", color = rgb(255, 158, 36), material = Enum.Material.Wood, length = 3.6 },
 			{ inherentKnockback = 10 }, "A hedge billhook with a thorn for a hilt; it clears a path and then some"),
-		sword("Hedgehog Hooksword", 1.48, 0, { mesh = "Blocks", color = rgb(236, 255, 208), material = Enum.Material.Metal, accent = rgb(255, 158, 36), length = 3.9, blade = 0.9, width = 1.0, guard = 1.3 },
+		sword("Hedgehog Hooksword", 1.48, 0, { mesh = "Sword_HedgehogHooksword", color = rgb(236, 255, 208), material = Enum.Material.Metal, length = 3.9 },
 			{ inherentCrit = 0.04, inherentRange = 0.6 }, "Hooked tip, bristly guard; it curls up if you drop it"),
 	},
 	FrostboundGlacier = {
@@ -461,7 +461,7 @@ local spinRelics = {
 			{ inherentCrit = 0.09, inherentRange = 1.2 }, "Shake it and it snows on whoever you hit"),
 	},
 	Briarwood = {
-		sword("Honeycomb Thorn", 2.25, 0, { mesh = "Template", textured = false, color = rgb(255, 204, 72), material = Enum.Material.Neon, length = 4.3 },
+		sword("Honeycomb Thorn", 2.25, 0, { mesh = "Sword_HoneycombThorn", color = rgb(255, 204, 72), material = Enum.Material.Neon, length = 4.3 },
 			{ inherentCrit = 0.07, inherentRange = 1.0 }, "A thorn the grove bees built a comb around; it drips a little when it hits"),
 	},
 	SunkenMarsh = {

@@ -414,9 +414,9 @@
     "tier": 1,
     "concept": "a single curved thorn cut from a bark trunk",
     "file": "Sword_ThornwoodDirk.glb",
-    "bytes": 79992,
-    "triangles": 2880,
-    "vertices": 1458,
+    "bytes": 79016,
+    "triangles": 2856,
+    "vertices": 1446,
     "meshSize": [
       0.09195,
       0.26,
@@ -440,13 +440,13 @@
       ]
     },
     "areaShare": {
-      "pale_leaf": 0.218,
-      "lime": 0.275,
-      "timber": 0.507
+      "pale_leaf": 0.211,
+      "lime": 0.296,
+      "timber": 0.493
     },
     "calmVivid": {
-      "calm": 0.218,
-      "vivid": 0.782
+      "calm": 0.211,
+      "vivid": 0.789
     },
     "normalise": {
       "centre_shift": [
@@ -458,8 +458,8 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.627,
-      "against": "Sword_HedgehogHooksword"
+      "iou": 0.63,
+      "against": "Sword_BramblecutSabre"
     }
   },
   "Sword_SapwoodFalchion": {
@@ -519,7 +519,7 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.74,
+      "iou": 0.741,
       "against": "Sword_HedgehogHooksword"
     }
   },
@@ -591,11 +591,11 @@
     "tier": 3,
     "concept": "a ranger's straight blade with carved fuller, bow guard and acorn",
     "file": "Sword_RangersLongblade.glb",
-    "bytes": 132456,
-    "triangles": 4870,
-    "vertices": 2453,
+    "bytes": 130456,
+    "triangles": 4750,
+    "vertices": 2393,
     "meshSize": [
-      0.096,
+      0.10371,
       0.26,
       1.0
     ],
@@ -622,10 +622,10 @@
       ]
     },
     "areaShare": {
-      "lime": 0.272,
+      "lime": 0.26,
       "leaf_bright": 0.28,
       "pale_leaf": 0.238,
-      "timber": 0.21
+      "timber": 0.222
     },
     "calmVivid": {
       "calm": 0.238,
@@ -641,7 +641,7 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.787,
+      "iou": 0.792,
       "against": "Sword_HedgehogHooksword"
     }
   },
@@ -757,7 +757,7 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.671,
+      "iou": 0.67,
       "against": "Sword_RangersLongblade"
     }
   },
@@ -766,11 +766,11 @@
     "key": "Sword_HedgehogHooksword",
     "pool": "Briarwood",
     "tier": 3,
-    "concept": "a pointed blade over a twelve-bristle hedgehog guard and snout pommel",
+    "concept": "a pointed blade over a side-on hedgehog guard with a snout, eyes and back bristles",
     "file": "Sword_HedgehogHooksword.glb",
-    "bytes": 129372,
-    "triangles": 4776,
-    "vertices": 2434,
+    "bytes": 136444,
+    "triangles": 5118,
+    "vertices": 2605,
     "meshSize": [
       0.11,
       0.26,
@@ -787,26 +787,26 @@
         158,
         36
       ],
-      "leaf_bright": [
-        56,
-        224,
-        96
-      ],
       "bloom": [
         255,
         236,
         96
+      ],
+      "leaf_bright": [
+        56,
+        224,
+        96
       ]
     },
     "areaShare": {
-      "pale_leaf": 0.339,
-      "timber": 0.451,
-      "leaf_bright": 0.128,
-      "bloom": 0.081
+      "pale_leaf": 0.313,
+      "timber": 0.444,
+      "leaf_bright": 0.126,
+      "bloom": 0.117
     },
     "calmVivid": {
-      "calm": 0.339,
-      "vivid": 0.661
+      "calm": 0.313,
+      "vivid": 0.687
     },
     "normalise": {
       "centre_shift": [
@@ -818,7 +818,7 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.787,
+      "iou": 0.792,
       "against": "Sword_RangersLongblade"
     }
   },
@@ -946,7 +946,7 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.772,
+      "iou": 0.779,
       "against": "Sword_HedgehogHooksword"
     }
   }
