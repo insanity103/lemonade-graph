@@ -1464,9 +1464,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/Map/WorldHorizon.client.luau": {
-    "mtime": 1790028042.1559837,
-    "seen": 1790036790.0195684,
-    "ast_hash": "39a871ef61c42b085b667016104dc54e",
+    "mtime": 1790220008.444259,
+    "seen": 1790220033.5426254,
+    "ast_hash": "8f9cc84bb7c27509e514202267f0e9ef",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/SwordGalleryStage.server.luau": {
