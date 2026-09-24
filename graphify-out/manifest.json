@@ -246,9 +246,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/MerchantGui.client.luau": {
-    "mtime": 1790220964.690523,
-    "seen": 1790282112.2855966,
-    "ast_hash": "362389bcdf11b5c07f2ba950b9eaba25",
+    "mtime": 1790288698.3741174,
+    "seen": 1790288705.652984,
+    "ast_hash": "98a948925b3a43f27d73e43e58d69768",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/RunController.client.luau": {
@@ -258,9 +258,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/SwordDropToast.client.luau": {
-    "mtime": 1790220964.690523,
-    "seen": 1790282112.2856007,
-    "ast_hash": "027c277081ce4ecdfb564bedb6cb9627",
+    "mtime": 1790288698.3746967,
+    "seen": 1790288705.6530497,
+    "ast_hash": "6d361e401e96aea2fcb1bf41c6563cf7",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau": {
@@ -654,9 +654,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/QuestGui.client.luau": {
-    "mtime": 1790285988.9029586,
-    "seen": 1790286052.870662,
-    "ast_hash": "f2b473ec6e441dbbeca943e0d6779a45",
+    "mtime": 1790288698.3743613,
+    "seen": 1790288705.653017,
+    "ast_hash": "ce0968c1d7156038a92e9732c0edceb9",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/SafeHub.luau": {
@@ -762,9 +762,9 @@
     "semantic_hash": ""
   },
   "map.project.json": {
-    "mtime": 1790280989.481439,
-    "seen": 1790282112.2856128,
-    "ast_hash": "e6cd689abfeab0ad6db8cc2c34c0b83d",
+    "mtime": 1790288698.3124804,
+    "seen": 1790288705.653396,
+    "ast_hash": "b9ddc79826bec662061d5f22c19204c9",
     "semantic_hash": ""
   },
   "tools/check_gameplay_project.py": {
@@ -774,9 +774,9 @@
     "semantic_hash": ""
   },
   "tools/check_map_project.py": {
-    "mtime": 1790280989.5135036,
-    "seen": 1790282112.2856312,
-    "ast_hash": "7dae980682afed6b0ac2f4798f103408",
+    "mtime": 1790288698.3126457,
+    "seen": 1790288705.6539247,
+    "ast_hash": "cfe8126d9d3ade0ec578a1355f206122",
     "semantic_hash": ""
   },
   "tools/luau_balance_check.py": {
@@ -786,9 +786,9 @@
     "semantic_hash": ""
   },
   "tools/map_forge.py": {
-    "mtime": 1790281998.2861822,
-    "seen": 1790282112.2856395,
-    "ast_hash": "095101bbfde4aad08875975dc5285d8d",
+    "mtime": 1790288698.3126752,
+    "seen": 1790288705.654087,
+    "ast_hash": "279cab8a94b1db2ea2298268d66049c4",
     "semantic_hash": ""
   },
   "CLAUDE_IMPLEMENTATION_HANDOFF.md": {
@@ -828,9 +828,9 @@
     "semantic_hash": ""
   },
   "docs/map/first_slice_topdown.png": {
-    "mtime": 1790281999.6216552,
-    "seen": 1790282112.2857819,
-    "ast_hash": "fc0951d22a5b6b2dc7cd1b3b648f7bf9",
+    "mtime": 1790288698.2806747,
+    "seen": 1790288705.6575801,
+    "ast_hash": "0d28074fea1aba17f37f9318cdeffcf3",
     "semantic_hash": ""
   },
   "legacy/BossRoomGate.server.luau": {
@@ -2031,6 +2031,12 @@
     "mtime": 1790284280.1987097,
     "seen": 1790286052.869576,
     "ast_hash": "a1d5d28be467405bc4d24c231c08539d",
+    "semantic_hash": ""
+  },
+  "lemonade-game/Map/ZoneAir.client.luau": {
+    "mtime": 1790288698.3042657,
+    "seen": 1790288705.647626,
+    "ast_hash": "d0505c62a3177780cae81a28f6bfea5e",
     "semantic_hash": ""
   }
 }
