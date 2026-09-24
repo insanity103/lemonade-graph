@@ -162,9 +162,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau": {
-    "mtime": 1790215436.6860702,
-    "seen": 1790216009.3880303,
-    "ast_hash": "8e772d99bd7aeac69354238a523212a2",
+    "mtime": 1790131372.8472455,
+    "seen": 1790143798.7707028,
+    "ast_hash": "c9b90a69e240739cb62eccf068cfc6e2",
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/SwordDropSystem.server.luau": {
@@ -174,9 +174,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ServerScriptService/SwordSystem.server.luau": {
-    "mtime": 1790215828.9471726,
-    "seen": 1790216009.3881977,
-    "ast_hash": "2e8a97e9b672f0b9885c16bf2323f8c1",
+    "mtime": 1790213674.6832685,
+    "seen": 1790214863.0137184,
+    "ast_hash": "1ebd8017fdb2b4bbcb8737242e6d84c1",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPack/ClassicSword/MouseIcon.client.luau": {
@@ -216,9 +216,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/DamageNumbers.client.luau": {
-    "mtime": 1790215468.8806474,
-    "seen": 1790216009.3886104,
-    "ast_hash": "7a94941e7c3a31a5b731795fa4802a65",
+    "mtime": 1790036431.6273532,
+    "seen": 1790036790.0230236,
+    "ast_hash": "8455d7a76002fc2c5005eb0f4e9c3366",
     "semantic_hash": ""
   },
   "lemonade-game/StarterPlayer/StarterPlayerScripts/GoldNumbers.client.luau": {
@@ -1602,20 +1602,20 @@
     "semantic_hash": ""
   },
   "lemonade-game/ReplicatedStorage/Animations/Sword Guard Hold.luau": {
-    "mtime": 1790216762.9324312,
-    "seen": 1790219429.0874987,
+    "mtime": 1790124554.3800547,
+    "seen": 1790126157.2749164,
     "ast_hash": "3ed63bb1558c868a18c9fd53b321051d",
     "semantic_hash": ""
   },
   "lemonade-game/ReplicatedStorage/Config/SwingTiming.luau": {
-    "mtime": 1790216762.9203703,
-    "seen": 1790219429.088084,
+    "mtime": 1790211924.5248983,
+    "seen": 1790214863.0100265,
     "ast_hash": "253c7e33109982d635688137804215ce",
     "semantic_hash": ""
   },
   "lemonade-game/ReplicatedStorage/SwingBlade.luau": {
-    "mtime": 1790216762.9043474,
-    "seen": 1790219429.0911407,
+    "mtime": 1790138748.3838835,
+    "seen": 1790143798.770225,
     "ast_hash": "e12e2b822cfe1210a801ece714eb55b8",
     "semantic_hash": ""
   },
@@ -1734,9 +1734,9 @@
     "semantic_hash": ""
   },
   "lemonade-game/ReplicatedStorage/SwingTrail.luau": {
-    "mtime": 1790215453.5774753,
-    "seen": 1790216009.3874784,
-    "ast_hash": "ffd801ac0c85b803b2a2dcaedc7d494a",
+    "mtime": 1790199445.5450273,
+    "seen": 1790199496.401086,
+    "ast_hash": "4623eea0fe29779ca83f0db83ac315f0",
     "semantic_hash": ""
   },
   "tools/check_outfit_clipping.py": {
@@ -1758,8 +1758,8 @@
     "semantic_hash": ""
   },
   "lemonade-game/ReplicatedStorage/SwingImpact.luau": {
-    "mtime": 1790216762.9452858,
-    "seen": 1790219429.0911994,
+    "mtime": 1790208579.26553,
+    "seen": 1790211617.6010234,
     "ast_hash": "87246648f6cb8474fa8882f030c15605",
     "semantic_hash": ""
   },

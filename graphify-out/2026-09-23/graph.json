@@ -6073,7 +6073,7 @@
       "file_type": "code",
       "norm_label": "quenchnear()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/DamageNumbers.client.luau",
-      "source_location": "L88"
+      "source_location": "L81"
     },
     {
       "id": "lemonade_game_starterplayer_starterplayerscripts_damagenumbers_client_rampcolor",
@@ -6109,7 +6109,7 @@
       "file_type": "code",
       "norm_label": "screenside()",
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/DamageNumbers.client.luau",
-      "source_location": "L98"
+      "source_location": "L91"
     },
     {
       "id": "legacy_bossroomgate_server_applytier",
@@ -9601,7 +9601,7 @@
       "file_type": "code",
       "norm_label": "swingtrail.light()",
       "source_file": "lemonade-game/ReplicatedStorage/SwingTrail.luau",
-      "source_location": "L151"
+      "source_location": "L139"
     },
     {
       "id": "lemonade_game_replicatedstorage_swingtrail_swingtrail_lit",
@@ -9613,7 +9613,7 @@
       "file_type": "code",
       "norm_label": "swingtrail.lit()",
       "source_file": "lemonade-game/ReplicatedStorage/SwingTrail.luau",
-      "source_location": "L198"
+      "source_location": "L186"
     },
     {
       "id": "lemonade_game_replicatedstorage_swingtrail_swingtrail_out",
@@ -9625,7 +9625,7 @@
       "file_type": "code",
       "norm_label": "swingtrail.out()",
       "source_file": "lemonade-game/ReplicatedStorage/SwingTrail.luau",
-      "source_location": "L189"
+      "source_location": "L177"
     },
     {
       "id": "lemonade_game_replicatedstorage_swingtrail_swingtrail_tip",
@@ -9637,7 +9637,7 @@
       "file_type": "code",
       "norm_label": "swingtrail.tip()",
       "source_file": "lemonade-game/ReplicatedStorage/SwingTrail.luau",
-      "source_location": "L172"
+      "source_location": "L160"
     },
     {
       "id": "lemonade_game_starterpack_classicsword_swordclient_client_onactivated",
@@ -15793,7 +15793,7 @@
       "file_type": "code",
       "norm_label": "ensureweld()",
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L133"
+      "source_location": "L123"
     },
     {
       "id": "lemonade_game_serverscriptservice_runtimebootstrap_server_repairplayersword",
@@ -15805,7 +15805,7 @@
       "file_type": "code",
       "norm_label": "repairplayersword()",
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L170"
+      "source_location": "L160"
     },
     {
       "id": "lemonade_game_serverscriptservice_runtimebootstrap_server_stampstarter",
@@ -17689,7 +17689,7 @@
       "file_type": "code",
       "norm_label": "swingstage()",
       "source_file": "lemonade-game/ServerScriptService/SwordSystem.server.luau",
-      "source_location": "L822"
+      "source_location": "L819"
     },
     {
       "id": "lemonade_game_replicatedstorage_enemyoutfits_a",
@@ -55947,7 +55947,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ReplicatedStorage/SwingTrail.luau",
-      "source_location": "L152",
+      "source_location": "L140",
       "weight": 1.0
     },
     {
@@ -55959,7 +55959,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ReplicatedStorage/SwingTrail.luau",
-      "source_location": "L182",
+      "source_location": "L170",
       "weight": 1.0
     },
     {
@@ -57867,7 +57867,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L177",
+      "source_location": "L167",
       "weight": 1.0
     },
     {
@@ -58371,7 +58371,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordSystem.server.luau",
-      "source_location": "L855",
+      "source_location": "L852",
       "weight": 1.0
     },
     {
@@ -85483,7 +85483,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ReplicatedStorage/SwingTrail.luau",
-      "source_location": "L151",
+      "source_location": "L139",
       "weight": 1.0
     },
     {
@@ -85494,7 +85494,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ReplicatedStorage/SwingTrail.luau",
-      "source_location": "L172",
+      "source_location": "L160",
       "weight": 1.0
     },
     {
@@ -85505,7 +85505,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ReplicatedStorage/SwingTrail.luau",
-      "source_location": "L189",
+      "source_location": "L177",
       "weight": 1.0
     },
     {
@@ -85516,7 +85516,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ReplicatedStorage/SwingTrail.luau",
-      "source_location": "L198",
+      "source_location": "L186",
       "weight": 1.0
     },
     {
@@ -87606,7 +87606,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L133",
+      "source_location": "L123",
       "weight": 1.0
     },
     {
@@ -87617,7 +87617,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/RuntimeBootstrap.server.luau",
-      "source_location": "L170",
+      "source_location": "L160",
       "weight": 1.0
     },
     {
@@ -88167,7 +88167,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/ServerScriptService/SwordSystem.server.luau",
-      "source_location": "L822",
+      "source_location": "L819",
       "weight": 1.0
     },
     {
@@ -88871,7 +88871,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/DamageNumbers.client.luau",
-      "source_location": "L88",
+      "source_location": "L81",
       "weight": 1.0
     },
     {
@@ -88882,7 +88882,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lemonade-game/StarterPlayer/StarterPlayerScripts/DamageNumbers.client.luau",
-      "source_location": "L98",
+      "source_location": "L91",
       "weight": 1.0
     },
     {
@@ -118437,7 +118437,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "lemonade-game/ServerScriptService/SwordSystem.server.luau",
-      "source_location": "L841",
+      "source_location": "L838",
       "weight": 1.0
     },
     {
