@@ -944,7 +944,14 @@ do
 			local x = ctr(X0, ix)
 			for iz = 1, NZ do
 				local z = ctr(Z0, iz)
-				local hub = z < 136 and math.abs(x) <= 140 and not (math.abs(x) <= 34 and z >= 100)
+				-- With the hub's rock skirt scrapped (HUB_ROCK_SKIRT), the strip between the castle's south
+				-- wall and the basin was left empty, and from the Lowlands the camera looked straight
+				-- through it at the baseplate (2026-09-24 playtest screenshot). So when the skirt is off
+				-- the desert's dune bank fills everything outside the castle's own footprint (the wall
+				-- stands at |x|, z = 100, its depth inward), right up to the wall's outer face.
+				local hub = if HUB_ROCK_SKIRT
+					then z < 136 and math.abs(x) <= 140 and not (math.abs(x) <= 34 and z >= 100)
+					else z < 101 and math.abs(x) <= 101
 				if hub or (math.abs(x) < 240 and z > 518) then
 					continue -- the hub's canyon and lawn; Briarwood
 				end
@@ -955,6 +962,11 @@ do
 					local s = wallSurface(x, z, if mouthWall then 14 else d, rect[5])
 					if z > 498 then -- the rim falls away toward Briarwood's trees
 						s = math.min(s, rect[5] + (522 - z) * 2.4)
+					end
+					if not HUB_ROCK_SKIRT and z < 150 then
+						-- behind the castle the bank slopes down to its wall rather than towering over it
+						-- (the wall body tops out at Y34, its merlons Y40, the corner towers' roofs Y55)
+						s = math.min(s, 30 + math.max(0, z - 108) * 1.1)
 					end
 					kind[ix][iz] = if z < 136 then "add" else "wall"
 					surf[ix][iz], base[ix][iz] = s, rect[5]

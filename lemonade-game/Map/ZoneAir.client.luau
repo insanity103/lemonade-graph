@@ -15,6 +15,36 @@
 local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
+local Players = game:GetService("Players")
+
+-- ── Camera reach ────────────────────────────────────────────────────────────────────────────────
+-- The Lowlands are a basin walled by dune banks, not a closed room: at the default zoom the camera
+-- could climb out over the crests and look past the edge of the map (the grey baseplate beyond the
+-- terrain, 2026-09-24 playtest). While the player is in the basin the zoom-out is held to where the
+-- banks still fill the view; anywhere else the place's own limit applies again.
+local BASIN_ZOOM = 42 -- [TUNING] studs
+local BASIN_Z = { 136, 474 } -- the basin, from the pass to the Briarwood gate
+local player = Players.LocalPlayer
+local baseZoom = player.CameraMaxZoomDistance
+local zoomCapped = false
+local function stepZoom()
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return
+	end
+	local z = (root :: BasePart).Position.Z
+	local inBasin = z > BASIN_Z[1] and z < BASIN_Z[2]
+	if inBasin ~= zoomCapped then
+		zoomCapped = inBasin
+		if inBasin then
+			baseZoom = player.CameraMaxZoomDistance
+			player.CameraMaxZoomDistance = math.min(baseZoom, BASIN_ZOOM)
+		else
+			player.CameraMaxZoomDistance = baseZoom
+		end
+	end
+end
 
 -- ── Air ─────────────────────────────────────────────────────────────────────────────────────────
 local DESERT_FADE = { 140, 180, 462, 492 } -- [TUNING] camera Z: fade in from..to, fade out from..to
@@ -119,6 +149,7 @@ RunService:BindToRenderStep("ZoneAir", Enum.RenderPriority.Camera.Value + 3, fun
 	end
 	local at = camera.CFrame.Position
 	stepAir(at.Z)
+	stepZoom()
 	if #beds > 0 then
 		stepSound(at, dt)
 	end
