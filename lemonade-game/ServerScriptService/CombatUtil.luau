@@ -107,10 +107,16 @@ function CombatUtil.sizeSwordMesh(part, length)
 	end
 end
 
--- Hitlag: freeze both attacker and victim briefly on hit.
--- Research: "20-50ms freeze frames — biggest feel-good factor most Roblox sword games miss"
--- This pauses the animation timeline (not just a visual effect) by temporarily
--- setting WalkSpeed to 0 and freezing Motor6D transforms.
+-- Hitlag: the GAMEPLAY half of contact. Both fighters' WalkSpeed goes to zero for `duration`, so
+-- neither can walk out of the moment the blade lands. Authoritative, and nothing else.
+--
+-- It does NOT pause any animation, and used to claim it did. The animation half of contact --
+-- the attacker's swing clip and the victim's rig both held dead still on the contact frame -- is
+-- client work, because that is where the clip's clock and the rig's joints are:
+-- ReplicatedStorage/Hitstop holds the attacker (told by fireHitlagToClient below), and
+-- EnemyAnimator holds the victim (told by the "HitStop" attribute SwordSystem publishes). The
+-- scale pulse that used to be stubbed out here is gone with it; see ComboConfig.HITLAG_SCALE_MULT
+-- for why an R6 enemy rig cannot be scaled without lifting its feet off the ground.
 function CombatUtil.applyHitlag(attackerModel, victimModel, duration)
 	if duration <= 0 then return end
 	duration = math.clamp(duration, 0.010, 0.080) -- safety clamp
@@ -126,17 +132,10 @@ function CombatUtil.applyHitlag(attackerModel, victimModel, duration)
 
 	-- Freeze victim
 	local victimHumanoid = victimModel and victimModel:FindFirstChildOfClass("Humanoid")
-	local victimRoot = victimModel and (victimModel.PrimaryPart or victimModel:FindFirstChild("HumanoidRootPart"))
 	local origVictimSpeed = 0
 	if victimHumanoid then
 		origVictimSpeed = victimHumanoid.WalkSpeed
 		victimHumanoid.WalkSpeed = 0
-	end
-
-	-- Brief scale pulse on victim for visual feedback
-	if victimRoot then
-		local origSize = victimRoot.Size
-		-- Scale pulse would require all parts, skip for now
 	end
 
 	-- Restore after duration
@@ -150,12 +149,24 @@ function CombatUtil.applyHitlag(attackerModel, victimModel, duration)
 	end)
 end
 
--- Notify client of hitlag for screen effects (duration + comboIndex for shake scaling)
-function CombatUtil.fireHitlagToClient(player, duration, comboIndex)
+-- The one message that tells an attacker's client a hit landed. Everything the client does at
+-- contact hangs off it, so a whiff -- which never reaches here -- can never produce any of it.
+--
+--   duration    the gameplay hitlag, for the existing hit flash (CombatController)
+--   comboIndex  scales the camera kick, the shake and the hold (ComboVFX)
+--   contact     where the blade met the body, facing the way the blade was travelling; the
+--               camera is punched along it. nil for the unarmed path, which has no blade.
+--   hold        how long to hold this client's own swing animation. Sent rather than recomputed
+--               so the attacker and the victim let go on the same frame.
+--   kick        { deg, studs, fov } for the camera punch, or nil to use the combo index's own
+--               row of ComboConfig. Only the heavy sends it: its payoff scales with a charge the
+--               client cannot see the server's measurement of, and it is bigger than anything
+--               in the combo table (7.2 degrees at a full charge against the finisher's 5.0).
+function CombatUtil.fireHitlagToClient(player, duration, comboIndex, contact, hold, kick)
 	local RS = game:GetService("ReplicatedStorage")
 	local remote = RS:WaitForChild("RemoteEvents"):FindFirstChild("HitlagEffect")
 	if remote then
-		remote:FireClient(player, duration, comboIndex or 1)
+		remote:FireClient(player, duration, comboIndex or 1, contact, hold, kick)
 	end
 end
 

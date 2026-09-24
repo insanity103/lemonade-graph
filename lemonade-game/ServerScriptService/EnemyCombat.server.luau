@@ -1255,6 +1255,11 @@ local function attackEnemy(player, enemyModel)
 	creatorTag.Value = player
 
 	local damage, isCrit = getPlayerAttackDamage(player)
+	-- A fist has no blade, so there is no point on one to draw the impact at: clear whatever the
+	-- last sword hit left on this rig, or the streak would be drawn where a sword was several
+	-- hits ago. Cleared BEFORE the damage, in the same frame, exactly as SwordSystem publishes.
+	enemyModel:SetAttribute("HitBlade", nil)
+	enemyModel:SetAttribute("HitStop", ComboConfig.HITLAG_DURATION[1] + ComboConfig.HITSTOP_EXTRA)
 	humanoid:TakeDamage(damage)
 
 	-- Apply hitlag for unarmed attacks (use combo hit 1 duration)
@@ -1479,6 +1484,101 @@ GuiShowcase.stage("EnemyHit", function(ctx)
 	ctx.clapper()
 	ctx.swing()
 	task.wait(4)
+end)
+
+-- ── Contact: the hitstop, the camera kick and the impact ────────────────────────────────────
+-- The moment the blade lands, framed on the moment rather than on the swing. A real enemy rig
+-- (not a dummy: the flinch, the flash and the stagger are EnemyAnimator's, and only a real rig
+-- has them) is stood exactly where the blade passes on the contact frame, derived from the swing
+-- clip through SwingBlade, so the hit is on the steel and cannot miss. Its health is raised well
+-- above one hit, so it survives: nothing dies, so no XP, gold, drop or quest credit.
+--
+-- The swing is pressed through ctx.swing() -- tool:Activate() on the client, the real click path
+-- -- so the real clip, the real server hitbox, the real HitlagEffect and every real effect run.
+--
+-- ── Why the swing starts UNDER the clapperboard ─────────────────────────────────────────────
+-- gx.py starts the filmstrip at the first frame after the flash that differs from the one before
+-- it, and reads eight frames from there. The moment being judged here is 250 ms wide -- contact
+-- plus the hold plus the first beats of the stagger -- so the frames have to be ~33 ms apart, and
+-- eight of those only cover 230 ms in total. Start the strip at the start of the SWING and
+-- contact falls off the end of it; the windup and the arc have their own pieces and their own
+-- strips. So the swing is fired SWING_LEAD into the quarter-second the clapperboard is on
+-- screen: the windup happens behind the flash, and the first frame the strip can see is the
+-- blade two hundredths of a second from the target.
+local SWING_LEAD = 0.13 -- [TUNING] seconds after the clapperboard goes up that the swing fires
+
+GuiShowcase.stage("SwingHit", function(ctx)
+	local SwingBlade = require(ReplicatedStorage:WaitForChild("SwingBlade"))
+	local SwingClip = require(ReplicatedStorage:WaitForChild("Animations"):WaitForChild("Sword Attack Animation"))
+
+	local stage = stageEnemy(ctx, DEFAULT_ARCHETYPE)
+	local health = math.max(stage.humanoid.MaxHealth, math.ceil(showcaseHitBound(ctx.player) * 10))
+	stage.humanoid.MaxHealth = health
+	stage.humanoid.Health = health
+
+	-- The sword has to be welded to the hand before the blade can be derived from it: SwingBlade
+	-- walks the clip's pose down the arm and out through the grip weld, and the weld is made by
+	-- the engine when the client equips.
+	local tool = ctx.equipSword()
+	local blade = nil
+	for _ = 1, 40 do
+		blade = tool and SwingBlade.contact(ctx.character, tool, SwingClip)
+		if blade then
+			break
+		end
+		task.wait(0.1)
+	end
+
+	-- Stand the enemy on the blade: its root goes where the middle of the blade is on the contact
+	-- frame, flattened to the ground it is standing on. That is the same geometry the server's
+	-- hitbox uses, so the swing lands on it by construction however the swing is re-timed.
+	local rootCF = ctx.root.CFrame
+	if blade then
+		local seg = blade.Segments[2] or blade.Segments[1]
+		-- The root goes 0.15 studs short of the TIP, so on the contact frame the point of the
+		-- blade is about half a stud inside the torso (R6 torso, 1 stud deep, root at its
+		-- centre) and stops there for the hold. It stood at 68% before, with the tip out the far
+		-- side of the body: a blade already through and past a body is a blade nothing resisted,
+		-- which is what the first hitstop strips were marked down for. The hit still lands by
+		-- construction -- the root is 0.15 studs from the segment against a 2.3-stud radius.
+		local point = seg.B + (seg.A - seg.B).Unit * 0.15
+		print(string.format("[SwingHit] contact blade guard=(%.2f, %.2f, %.2f) tip=(%.2f, %.2f, %.2f)",
+			seg.A.X, seg.A.Y, seg.A.Z, seg.B.X, seg.B.Y, seg.B.Z))
+		local world = rootCF * Vector3.new(point.X, 0, point.Z)
+		local y = stage.hrp.Position.Y
+		stage.model:PivotTo(CFrame.lookAt(
+			Vector3.new(world.X, y, world.Z),
+			Vector3.new(ctx.root.Position.X, y, ctx.root.Position.Z)))
+		print(string.format("[SwingHit] enemy stood at (%.2f, 0, %.2f) in character space", point.X, point.Z))
+	else
+		warn("[SwingHit] no blade could be derived; the enemy is where stageEnemy put it")
+	end
+
+	-- Third person, side-on from the player's SWORD side (the character faces world -X, so its
+	-- right shoulder -- where the blade is cocked and where the cut starts -- faces world -Z),
+	-- and pulled a little toward the enemy so the cut runs across the frame rather than into it.
+	-- 6.3 studs out at FOV 70 puts a character at about three fifths of the frame height, with
+	-- both fighters and the whole knockback still inside it.
+	local mid = (ctx.root.Position + stage.hrp.Position) * 0.5
+	local focus = Vector3.new(mid.X, ctx.root.Position.Y + 0.4, mid.Z)
+	ctx.camera(CFrame.lookAt(focus + Vector3.new(-1.4, 2.0, -5.8), focus))
+
+	task.wait(2.5) -- rig, sword and camera settle
+	-- Dead still before the flash, so nothing but the hit can start the strip's clock.
+	ctx.hold()
+	task.wait(0.7)
+	task.delay(SWING_LEAD, ctx.swing) -- fires while the clapperboard is still up; see above
+	ctx.clapper()
+
+	-- Proof, well after the captured moment: the rig took damage, and what it was told about the
+	-- contact. If "HitBlade" is missing the impact streak fell back to the torso centre, and the
+	-- strip is not showing what it is supposed to be showing.
+	task.wait(1.5)
+	local connected = stage.humanoid.Health < stage.humanoid.MaxHealth
+	print(string.format("[SwingHit] hit connected: %s  HitStop=%s  HitBlade=%s",
+		tostring(connected), tostring(stage.model:GetAttribute("HitStop")),
+		tostring(stage.model:GetAttribute("HitBlade"))))
+	task.wait(1.5)
 end)
 
 -- Enemy death: the player's real sword swing lands on a staged enemy with low remaining health,

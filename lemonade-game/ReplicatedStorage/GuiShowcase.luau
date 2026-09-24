@@ -99,8 +99,33 @@ end
 -- motion), and tracks anything spawned (ctx.track) so it is destroyed when the stage returns.
 -- It never grants XP, gold, drops or quest progress: it only places things and waits.
 local CAMERA_ATTRIBUTE = "GuiShowcaseCamera"
+-- A camera that TRACKS the character instead of standing still. Two world-space offsets from the
+-- character's root -- where the lens sits and what it looks at -- so a moment that travels (a
+-- swing thrown at a run) stays framed the same way from the first frame to the last, and the
+-- ground slides underneath rather than the subject sliding out of shot. The offsets are world
+-- vectors, computed once by the stage from the direction it sends the character, so the camera
+-- never swings around when the character turns.
+local FOLLOW_FROM_ATTRIBUTE = "GuiShowcaseFollowFrom"
+local FOLLOW_AT_ATTRIBUTE = "GuiShowcaseFollowAt"
 local SWING_ATTRIBUTE = "GuiShowcaseSwing" -- player attribute; each change is one sword swing
 local WALK_ATTRIBUTE = "GuiShowcaseWalkTo" -- player attribute; a Vector3 the character walks to
+local HOLD_ATTRIBUTE = "GuiShowcaseHold"   -- player attribute; hold the sword guard pose, dead still
+local CHAIN_ATTRIBUTE = "GuiShowcaseChain" -- player attribute; Vector2(nth call, hits to throw on the beat)
+local HEAVY_ATTRIBUTE = "GuiShowcaseHeavy" -- player attribute; Vector2(nth call, seconds to hold the
+                                           -- heavy attack's button down before letting go)
+-- Player attribute, raised by the client half at the bottom of this file the moment its camera
+-- lock is bound, and waited on by GuiShowcase.stage before it stages anything.
+--
+-- It exists because the two halves used to start on unrelated clocks and the stage lost the race.
+-- The server half starts counting at DataLoaded; the client half only exists once SOME LocalScript
+-- has required this module, and the scripts that do (MainMenuGui, QuestGui, VaultGui, ...) each
+-- sit behind their own WaitForChild chain first. On a slow load the whole stage -- camera set, HUD
+-- hidden, clapperboard, five swings, camera handed back -- could run and finish before the render
+-- step that obeys the camera attribute was ever bound, and the capture came back as ordinary
+-- third-person gameplay with the HUD up, with the server's own prints all correct. Nothing about
+-- that was visible from the server, which is why it read as a camera bug for a round.
+local READY_ATTRIBUTE = "GuiShowcaseReady"
+local READY_TIMEOUT = 20 -- seconds; past this the stage runs anyway rather than hanging a capture
 
 local function serverTarget(): string?
 	if not RunService:IsStudio() or not RunService:IsServer() then
@@ -139,6 +164,14 @@ function GuiShowcase.stage(name: string, stage: (ctx: any) -> ())
 		end
 		local character = player.Character or player.CharacterAdded:Wait()
 		local root = character:WaitForChild("HumanoidRootPart", 10) :: BasePart
+		-- Do not stage anything until the client's camera lock is actually bound (READY_ATTRIBUTE).
+		local readyBy = os.clock() + READY_TIMEOUT
+		while player:GetAttribute(READY_ATTRIBUTE) ~= true and os.clock() < readyBy do
+			task.wait(0.1)
+		end
+		if player:GetAttribute(READY_ATTRIBUTE) ~= true then
+			warn("[GuiShowcase] client camera lock never reported ready; staging anyway")
+		end
 		task.wait(SETTLE)
 
 		local spawned = {}
@@ -155,6 +188,20 @@ function GuiShowcase.stage(name: string, stage: (ctx: any) -> ())
 		function ctx.camera(cframe: CFrame?)
 			workspace:SetAttribute(CAMERA_ATTRIBUTE, cframe)
 		end
+		-- Track the character: the lens sits at root + `from` and looks at root + `at`, both world
+		-- vectors, every frame. Pass nothing to hand the camera back.
+		function ctx.follow(from: Vector3?, at: Vector3?)
+			workspace:SetAttribute(FOLLOW_FROM_ATTRIBUTE, from)
+			workspace:SetAttribute(FOLLOW_AT_ATTRIBUTE, at)
+		end
+		-- How fast the character moves on its own legs, for a stage that films motion. The server
+		-- owns WalkSpeed, exactly as it does in play, and the client only obeys it.
+		function ctx.speed(studsPerSecond: number)
+			local humanoid = character:FindFirstChildOfClass("Humanoid")
+			if humanoid then
+				humanoid.WalkSpeed = studsPerSecond
+			end
+		end
 		function ctx.clapper()
 			showClapper(player)
 		end
@@ -165,10 +212,52 @@ function GuiShowcase.stage(name: string, stage: (ctx: any) -> ())
 			swings += 1
 			player:SetAttribute(SWING_ATTRIBUTE, swings)
 		end
+		-- Throw a whole M1 chain ON THE BEAT, timed by the CLIENT.
+		--
+		-- ctx.swing() above is one press, and a stage that wants five presses used to make five
+		-- of these calls with task.wait(ENDLAG) between them, on the server. That works and it
+		-- measures nothing the server does not already own -- but every press then costs a full
+		-- server -> attribute replication -> client -> Activated -> server round trip before the
+		-- next wait even starts, and each of those is rounded up to a whole client frame. In a
+		-- Studio play session rendering in the teens that is 100-200 ms a hit, it ACCUMULATES,
+		-- and the filmed chain came out at 2.05 s against the 1.55 s the timing tables describe
+		-- -- with the gaps stretched so unevenly that the one thing the cadence is built to show,
+		-- 280 -> 238 -> 232 ms tightening into a 548 ms telegraph, was not in the footage at all.
+		--
+		-- So the client is told the whole chain once and presses it against ONE absolute clock:
+		-- press i is due at t0 + sum(ENDLAG[1..i-1]), so a slow frame delays a single press
+		-- instead of pushing every later press back with it, and the gaps stay the gaps. Nothing
+		-- about what is measured changes -- the client still only presses, the server still
+		-- times its own endlag from its own receipt and still decides every hit.
+		local chains = 0
+		function ctx.chain(hits: number)
+			chains += 1
+			player:SetAttribute(CHAIN_ATTRIBUTE, Vector2.new(chains, hits))
+		end
+		-- Charge the heavy attack for `hold` seconds and let go, through the REAL input path: the
+		-- client calls the same HeavyCharge.press()/release() the R key calls, which sends the same
+		-- two messages to the same remote, so the server measures the charge, the clip, the hitbox,
+		-- the damage and every effect exactly as it would for a player holding the button.
+		local heavies = 0
+		function ctx.heavy(hold: number)
+			heavies += 1
+			player:SetAttribute(HEAVY_ATTRIBUTE, Vector2.new(heavies, hold))
+		end
 		-- Walk the player's character to `position` on its own legs: the client calls
 		-- Humanoid:MoveTo, exactly as a click-to-move does, so it moves at its real walk speed.
 		function ctx.walkTo(position: Vector3)
 			player:SetAttribute(WALK_ATTRIBUTE, position)
+		end
+		-- Hold the sword guard pose, dead still, until something else drives the joints.
+		--
+		-- This is a CAPTURE device, not part of the moment being filmed. gx.py starts the
+		-- filmstrip's clock at the first frame after the clapperboard that differs from the one
+		-- before it; Roblox's stock idle never stops moving, so without this the clock starts on
+		-- the idle's breathing and the strip runs out before the blade reaches the target -- which
+		-- is exactly what the round-1 arc strip turned out to be. Held, the first thing that moves
+		-- after the clapperboard is the swing.
+		function ctx.hold()
+			player:SetAttribute(HOLD_ATTRIBUTE, true)
 		end
 		-- Hold a sword (the first one in the backpack) if the character is not already holding one.
 		function ctx.equipSword(): Tool?
@@ -200,8 +289,13 @@ function GuiShowcase.stage(name: string, stage: (ctx: any) -> ())
 			humanoid.Health = humanoid.MaxHealth
 		end
 		workspace:SetAttribute(CAMERA_ATTRIBUTE, nil)
+		workspace:SetAttribute(FOLLOW_FROM_ATTRIBUTE, nil)
+		workspace:SetAttribute(FOLLOW_AT_ATTRIBUTE, nil)
 		player:SetAttribute(SWING_ATTRIBUTE, nil)
 		player:SetAttribute(WALK_ATTRIBUTE, nil)
+		player:SetAttribute(HOLD_ATTRIBUTE, nil)
+		player:SetAttribute(HEAVY_ATTRIBUTE, nil)
+		player:SetAttribute(CHAIN_ATTRIBUTE, nil)
 		print("[GuiShowcase] stage " .. name .. " done")
 	end)
 end
@@ -249,8 +343,27 @@ local function pressNpcPrompt(spec)
 	prompt:InputHoldEnd()
 end
 
--- Requiring the module arms NPC targets; panel targets wait for their script to register.
+-- Requiring the module arms NPC targets and Motion capture below. The attribute is set in edit
+-- mode, before Play, so it is part of the client's very first replicated state -- but half a
+-- dozen GUI LocalScripts require this module (MainMenuGui, QuestGui, VaultGui, ...) and Lua
+-- caches a module's result on the FIRST require, so whichever of them runs first decides `armed`
+-- for the whole client session. That first require can beat Workspace's attribute replication by
+-- a frame or two, and a nil caught here is never rechecked -- the camera-lock block below only
+-- ever reads this cached value. So, in Studio only, give the attribute a few frames to land
+-- before deciding there is none; on a live server IsStudio() is false and this costs nothing.
 local armed = target()
+if not armed and RunService:IsStudio() and RunService:IsClient() then
+	-- Three seconds, not ten frames. Ten frames is ten frames of whatever this session is
+	-- rendering at, and a Studio client loading a town runs in the teens: the window was under a
+	-- second and the attribute is replicated with the rest of Workspace's initial state, which on
+	-- a slow load lands after it. A capture that silently films ordinary gameplay costs a whole
+	-- round, so the window is a real one. It only ever elapses in full when nothing is armed.
+	local deadline = os.clock() + 3
+	repeat
+		task.wait()
+		armed = target()
+	until armed or os.clock() > deadline
+end
 if armed and NPC_TARGETS[armed] then
 	afterDataLoaded(function()
 		pressNpcPrompt(NPC_TARGETS[armed])
@@ -265,9 +378,25 @@ if armed and string.sub(armed, 1, 7) == "Motion:" then
 	local locked = false
 	local hidden = {}
 	local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
-	RunService:BindToRenderStep("GuiShowcaseCamera", Enum.RenderPriority.Camera.Value + 1, function()
+	-- The tracking camera's own smoothed position, so the character's per-step velocity ripple
+	-- does not shake the lens. Seeded on the first frame, so there is no swoop into position.
+	local followAt: Vector3? = nil
+	RunService:BindToRenderStep("GuiShowcaseCamera", Enum.RenderPriority.Camera.Value + 1, function(delta)
 		local camera = workspace.CurrentCamera
 		local cframe = workspace:GetAttribute(CAMERA_ATTRIBUTE)
+		local from = workspace:GetAttribute(FOLLOW_FROM_ATTRIBUTE)
+		local at = workspace:GetAttribute(FOLLOW_AT_ATTRIBUTE)
+		if typeof(from) == "Vector3" and typeof(at) == "Vector3" then
+			local character = Players.LocalPlayer.Character
+			local root = character and character:FindFirstChild("HumanoidRootPart")
+			if root then
+				local here = root.Position
+				followAt = if followAt then followAt:Lerp(here, math.min(1, delta * 25)) else here
+				cframe = CFrame.lookAt(followAt + from, followAt + at)
+			end
+		else
+			followAt = nil
+		end
 		if typeof(cframe) == "CFrame" then
 			camera.CameraType = Enum.CameraType.Scriptable
 			camera.FieldOfView = 70
@@ -293,8 +422,11 @@ if armed and string.sub(armed, 1, 7) == "Motion:" then
 			table.clear(hidden)
 		end
 	end)
-	-- ctx.swing: press the held sword the same way CombatController does for a click.
+	-- The lock is live from here on, so the server may stage. Until this lands, GuiShowcase.stage
+	-- waits: see READY_ATTRIBUTE above.
 	local player = Players.LocalPlayer
+	player:SetAttribute(READY_ATTRIBUTE, true)
+	-- ctx.swing: press the held sword the same way CombatController does for a click.
 	player:GetAttributeChangedSignal(SWING_ATTRIBUTE):Connect(function()
 		if player:GetAttribute(SWING_ATTRIBUTE) == nil then
 			return
@@ -304,6 +436,60 @@ if armed and string.sub(armed, 1, 7) == "Motion:" then
 		if tool then
 			tool:Activate()
 		end
+	end)
+	-- ctx.chain: press the sword `hits` times on the beat, against one absolute clock (see
+	-- ctx.chain on the server side above for why the server cannot do this itself). The press is
+	-- the same tool:Activate() a click makes; the 35 ms is a real player's reaction margin past
+	-- the endlag, inside ComboConfig.PERFECT_TIMING_WINDOW, so the chain is thrown the way a
+	-- player on the beat throws it and the server grants the same perfect-timing bonus.
+	player:GetAttributeChangedSignal(CHAIN_ATTRIBUTE):Connect(function()
+		local ask = player:GetAttribute(CHAIN_ATTRIBUTE)
+		if typeof(ask) ~= "Vector2" then
+			return
+		end
+		task.spawn(function()
+			local ComboConfig = require(script.Parent:WaitForChild("Config"):WaitForChild("ComboConfig"))
+			local MARGIN = 0.035
+			local start = os.clock()
+			local due = 0
+			for index = 1, math.floor(ask.Y) do
+				while os.clock() < start + due do
+					task.wait()
+				end
+				local character = player.Character
+				local tool = character and character:FindFirstChildOfClass("Tool")
+				if not tool then
+					return
+				end
+				tool:Activate()
+				due += (ComboConfig.ENDLAG[index] or 0.25) + MARGIN
+			end
+		end)
+	end)
+	-- ctx.hold: hold the guard pose through the same runtime that plays the swing, so the swing's
+	-- fade-in blends out of the pose it was authored to start from and the stock idle's sway cannot
+	-- be mistaken for the start of the moment being filmed.
+	player:GetAttributeChangedSignal(HOLD_ATTRIBUTE):Connect(function()
+		if player:GetAttribute(HOLD_ATTRIBUTE) == true then
+			local AnimationController = require(script.Parent:WaitForChild("AnimationController"))
+			AnimationController.Play("Sword Guard Hold")
+		end
+	end)
+	-- ctx.heavy: hold the heavy attack's button for a while and let go, through the same two
+	-- calls the R binding makes. Nothing here is a canned playback: the charge is timed by the
+	-- server off the remote it sends, and the release plays the real clip and runs the real hitbox.
+	player:GetAttributeChangedSignal(HEAVY_ATTRIBUTE):Connect(function()
+		local ask = player:GetAttribute(HEAVY_ATTRIBUTE)
+		if typeof(ask) ~= "Vector2" then
+			return
+		end
+		task.spawn(function()
+			local HeavyCharge = require(script.Parent:WaitForChild("HeavyCharge"))
+			if HeavyCharge.press() then
+				task.wait(ask.Y)
+				HeavyCharge.release()
+			end
+		end)
 	end)
 	-- ctx.walkTo: walk the character there on its own legs.
 	player:GetAttributeChangedSignal(WALK_ATTRIBUTE):Connect(function()

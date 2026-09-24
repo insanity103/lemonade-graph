@@ -11,6 +11,10 @@ local REMOTE_NAMES = {
 	"DamageNumber",
 	"EnemyAttack",
 	"GoldGain",
+	"HeavyAttack", -- the charged heavy: client -> server, "press" / "release" / "cancel" and
+	               -- nothing else. The server timestamps both edges on its own clock, so the
+	               -- charge time (and therefore the damage) is never a number a client sends.
+	               -- SwordSystem + ReplicatedStorage/HeavyCharge.
 	"HitlagEffect",
 	"InventoryAction",
 	"InventoryUpdated",
@@ -108,7 +112,17 @@ end
 
 local leather = Color3.fromRGB(92, 66, 50)
 local bronze = Color3.fromRGB(170, 124, 60)
-local steel = Color3.fromRGB(185, 192, 200)
+-- THE BLADE IS DARK, and that is a legibility decision, not a mood one. Round 5's blind read of
+-- the chain said it straight: "the blade is pale against pale sand, white sky and white buildings,
+-- so the arc does not read at speed". Pale steel (185, 192, 200) was within a few points of the
+-- village's sand, its plaster and its sky in every filmed frame, so the one thing a fighting game
+-- has to show -- where the edge is, right now -- washed out at exactly the speeds the swing is
+-- judged at. Deepwoken's greatsword is near-black for the same reason. Blued steel reads as a
+-- dark, hard silhouette against every bright surface in Lemonade, and the sword keeps its identity
+-- in the parts that carry it: the bronze guard and pommel and the lemon ribbon off the tip are
+-- untouched, so the weapon is still a warm, friendly one -- it is only the cutting edge that is
+-- now visible.
+local steel = Color3.fromRGB(56, 64, 78)
 local handle = ensurePart("Handle", "Part", Vector3.new(0.32, 0.32, 1.10), leather, Enum.Material.SmoothPlastic, Enum.PartType.Block)
 local pommel = ensurePart("Pommel", "Part", Vector3.new(0.44, 0.44, 0.44), bronze, Enum.Material.Metal, Enum.PartType.Ball)
 local guard = ensurePart("Guard", "Part", Vector3.new(1.30, 0.26, 0.32), bronze, Enum.Material.Metal, Enum.PartType.Block)
