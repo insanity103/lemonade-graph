@@ -3852,5 +3852,621 @@
       "iou": 0.802,
       "against": "Sword_SnowpackFalchion"
     }
+  },
+  "Sword_ReedCutter": {
+    "name": "Reed Cutter",
+    "key": "Sword_ReedCutter",
+    "pool": "SunkenMarsh",
+    "tier": 1,
+    "concept": "a sickle cutter on a bundled reed grip with a cattail pommel",
+    "file": "Sword_ReedCutter.glb",
+    "bytes": 77140,
+    "triangles": 2738,
+    "vertices": 1389,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "mint": [
+        224,
+        255,
+        244
+      ],
+      "aqua": [
+        48,
+        224,
+        176
+      ],
+      "aqua_blue": [
+        32,
+        160,
+        224
+      ],
+      "lime_yellow": [
+        190,
+        255,
+        96
+      ]
+    },
+    "areaShare": {
+      "mint": 0.565,
+      "aqua": 0.122,
+      "aqua_blue": 0.226,
+      "lime_yellow": 0.088
+    },
+    "calmVivid": {
+      "calm": 0.565,
+      "vivid": 0.435
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.783,
+      "against": "Sword_FerrymansCutlass"
+    }
+  },
+  "Sword_BogironFalchion": {
+    "name": "Bogiron Falchion",
+    "key": "Sword_BogironFalchion",
+    "pool": "SunkenMarsh",
+    "tier": 2,
+    "concept": "a pitted bog-iron falchion",
+    "file": "Sword_BogironFalchion.glb",
+    "bytes": 142792,
+    "triangles": 4620,
+    "vertices": 2330,
+    "meshSize": [
+      0.136,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "aqua_blue": [
+        32,
+        160,
+        224
+      ],
+      "lime_yellow": [
+        190,
+        255,
+        96
+      ],
+      "mint": [
+        224,
+        255,
+        244
+      ],
+      "aqua": [
+        48,
+        224,
+        176
+      ]
+    },
+    "areaShare": {
+      "mint": 0.281,
+      "lime_yellow": 0.125,
+      "aqua_blue": 0.476,
+      "aqua": 0.119
+    },
+    "calmVivid": {
+      "calm": 0.281,
+      "vivid": 0.719
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.841,
+      "against": "Boss_Gorgon"
+    }
+  },
+  "Sword_SiltSabre": {
+    "name": "Silt Sabre",
+    "key": "Sword_SiltSabre",
+    "pool": "SunkenMarsh",
+    "tier": 2,
+    "concept": "a slim sabre banded by wavy silt layers",
+    "file": "Sword_SiltSabre.glb",
+    "bytes": 130312,
+    "triangles": 4800,
+    "vertices": 2428,
+    "meshSize": [
+      0.112,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "aqua": [
+        48,
+        224,
+        176
+      ],
+      "lime_yellow": [
+        190,
+        255,
+        96
+      ],
+      "mint": [
+        224,
+        255,
+        244
+      ],
+      "aqua_blue": [
+        32,
+        160,
+        224
+      ]
+    },
+    "areaShare": {
+      "aqua": 0.301,
+      "lime_yellow": 0.098,
+      "mint": 0.336,
+      "aqua_blue": 0.265
+    },
+    "calmVivid": {
+      "calm": 0.336,
+      "vivid": 0.664
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.838,
+      "against": "SwordMeshTemplate"
+    }
+  },
+  "Sword_MarshlightLongsword": {
+    "name": "Marshlight Longsword",
+    "key": "Sword_MarshlightLongsword",
+    "pool": "SunkenMarsh",
+    "tier": 3,
+    "concept": "a longsword carrying a marshlight orb, with a lantern pommel",
+    "file": "Sword_MarshlightLongsword.glb",
+    "bytes": 132184,
+    "triangles": 4572,
+    "vertices": 2312,
+    "meshSize": [
+      0.112,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "mint": [
+        224,
+        255,
+        244
+      ],
+      "aqua": [
+        48,
+        224,
+        176
+      ],
+      "aqua_blue": [
+        32,
+        160,
+        224
+      ],
+      "lime_yellow": [
+        190,
+        255,
+        96
+      ]
+    },
+    "areaShare": {
+      "aqua": 0.189,
+      "mint": 0.236,
+      "aqua_blue": 0.47,
+      "lime_yellow": 0.106
+    },
+    "calmVivid": {
+      "calm": 0.236,
+      "vivid": 0.764
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.797,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_BellringerBroadsword": {
+    "name": "Bellringer Broadsword",
+    "key": "Sword_BellringerBroadsword",
+    "pool": "SunkenMarsh",
+    "tier": 3,
+    "concept": "a bell-mouthed broadsword with a bell emblem and a yoke guard",
+    "file": "Sword_BellringerBroadsword.glb",
+    "bytes": 108796,
+    "triangles": 3852,
+    "vertices": 1944,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "aqua_blue": [
+        32,
+        160,
+        224
+      ],
+      "mint": [
+        224,
+        255,
+        244
+      ],
+      "lime_yellow": [
+        190,
+        255,
+        96
+      ],
+      "aqua": [
+        48,
+        224,
+        176
+      ]
+    },
+    "areaShare": {
+      "aqua_blue": 0.296,
+      "mint": 0.507,
+      "lime_yellow": 0.126,
+      "aqua": 0.071
+    },
+    "calmVivid": {
+      "calm": 0.507,
+      "vivid": 0.493
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.792,
+      "against": "Sword_FrogsongGreatsword"
+    }
+  },
+  "Sword_FerrymansCutlass": {
+    "name": "Ferryman's Cutlass",
+    "key": "Sword_FerrymansCutlass",
+    "pool": "SunkenMarsh",
+    "tier": 2,
+    "concept": "a broad cutlass over a scallop-shell guard",
+    "file": "Sword_FerrymansCutlass.glb",
+    "bytes": 112168,
+    "triangles": 4230,
+    "vertices": 2135,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "mint": [
+        224,
+        255,
+        244
+      ],
+      "lime_yellow": [
+        190,
+        255,
+        96
+      ],
+      "aqua_blue": [
+        32,
+        160,
+        224
+      ],
+      "aqua": [
+        48,
+        224,
+        176
+      ]
+    },
+    "areaShare": {
+      "mint": 0.48,
+      "lime_yellow": 0.124,
+      "aqua_blue": 0.256,
+      "aqua": 0.14
+    },
+    "calmVivid": {
+      "calm": 0.48,
+      "vivid": 0.52
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.834,
+      "against": "Sword_BogironFalchion"
+    }
+  },
+  "Sword_Oarblade": {
+    "name": "Oarblade",
+    "key": "Sword_Oarblade",
+    "pool": "SunkenMarsh",
+    "tier": 3,
+    "concept": "an oar-shaped blade in an oarlock guard",
+    "file": "Sword_Oarblade.glb",
+    "bytes": 99964,
+    "triangles": 3656,
+    "vertices": 1827,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "aqua": [
+        48,
+        224,
+        176
+      ],
+      "mint": [
+        224,
+        255,
+        244
+      ],
+      "aqua_blue": [
+        32,
+        160,
+        224
+      ]
+    },
+    "areaShare": {
+      "aqua": 0.234,
+      "mint": 0.428,
+      "aqua_blue": 0.338
+    },
+    "calmVivid": {
+      "calm": 0.428,
+      "vivid": 0.572
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.784,
+      "against": "Sword_BellringerBroadsword"
+    }
+  },
+  "Sword_FrogsongGreatsword": {
+    "name": "Frogsong Greatsword",
+    "key": "Sword_FrogsongGreatsword",
+    "pool": "SunkenMarsh",
+    "tier": 4,
+    "concept": "a greatsword with music notes and a frog on lilypads",
+    "file": "Sword_FrogsongGreatsword.glb",
+    "bytes": 154824,
+    "triangles": 5610,
+    "vertices": 2845,
+    "meshSize": [
+      0.1239,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "aqua": [
+        48,
+        224,
+        176
+      ],
+      "lime_yellow": [
+        190,
+        255,
+        96
+      ],
+      "mint": [
+        224,
+        255,
+        244
+      ],
+      "aqua_blue": [
+        32,
+        160,
+        224
+      ]
+    },
+    "areaShare": {
+      "aqua": 0.266,
+      "lime_yellow": 0.301,
+      "mint": 0.23,
+      "aqua_blue": 0.203
+    },
+    "calmVivid": {
+      "calm": 0.23,
+      "vivid": 0.77
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.826,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_RubberDuckRapier": {
+    "name": "Rubber Duck Rapier",
+    "key": "Sword_RubberDuckRapier",
+    "pool": "SunkenMarsh",
+    "tier": 4,
+    "concept": "a thin rapier with a rubber duck riding the guard",
+    "file": "Sword_RubberDuckRapier.glb",
+    "bytes": 118492,
+    "triangles": 4688,
+    "vertices": 2374,
+    "meshSize": [
+      0.09336,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "mint": [
+        224,
+        255,
+        244
+      ],
+      "aqua": [
+        48,
+        224,
+        176
+      ],
+      "aqua_blue": [
+        32,
+        160,
+        224
+      ],
+      "duck": [
+        255,
+        226,
+        80
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ]
+    },
+    "areaShare": {
+      "mint": 0.214,
+      "aqua": 0.205,
+      "aqua_blue": 0.375,
+      "duck": 0.165,
+      "orange": 0.041
+    },
+    "calmVivid": {
+      "calm": 0.214,
+      "vivid": 0.786
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.621,
+      "against": "Sword_SiltSabre"
+    }
+  },
+  "Sword_LilypadLantern": {
+    "name": "Lilypad Lantern",
+    "key": "Sword_LilypadLantern",
+    "pool": "SunkenMarsh",
+    "tier": 4,
+    "concept": "a glowing leaf blade over a lilypad and water lily",
+    "file": "Sword_LilypadLantern.glb",
+    "bytes": 147208,
+    "triangles": 5060,
+    "vertices": 2552,
+    "meshSize": [
+      0.28,
+      0.25924,
+      1.0
+    ],
+    "palette": {
+      "lime_green": [
+        150,
+        255,
+        96
+      ],
+      "mint": [
+        224,
+        255,
+        244
+      ],
+      "lime_yellow": [
+        190,
+        255,
+        96
+      ],
+      "aqua_blue": [
+        32,
+        160,
+        224
+      ],
+      "white": [
+        255,
+        255,
+        255
+      ]
+    },
+    "areaShare": {
+      "lime_green": 0.099,
+      "mint": 0.251,
+      "lime_yellow": 0.175,
+      "aqua_blue": 0.366,
+      "white": 0.11
+    },
+    "calmVivid": {
+      "calm": 0.36,
+      "vivid": 0.64
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        -0.00038
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.784,
+      "against": "RootWarden"
+    }
   }
 }
