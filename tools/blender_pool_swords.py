@@ -73,7 +73,7 @@ P.update({
     "basalt": (226, 80, 52), "amber": (255, 196, 72), "hot_pink": (255, 96, 150), "duck": (255, 226, 80),
     "lemon": (255, 236, 90), "caramel": (255, 160, 60), "pale_sky": (214, 238, 255),
     "pale_peach": (255, 232, 208), "pale_lilac": (250, 226, 255), "lime_green": (150, 255, 96),
-    "mint_bright": (96, 255, 196), "lodestone": (255, 220, 72),
+    "mint_bright": (96, 255, 196), "lodestone": (255, 220, 72), "honey": (255, 204, 72),
 })
 
 PROTRUSION = 0.122
@@ -361,6 +361,351 @@ def design_lodestone_edge(f):
             "calm": ["sky_white"], "vivid": ["lodestone", "coral", "toy_blue", "gold"]}
 
 
+# ----------------------------------------------------------------------------- Briarwood
+# Pale leaf against lime, bright leaf green, timber orange and bloom yellow. Each design owns
+# its outline and guard. Helpers here only build the repeated leaves, ribs and curved branches.
+
+def briar_leaf(f, name, y0, z0, y1, z1, width, colour, half_x=0.012, x=0.0):
+    """A thick, pointed leaf with a lenticular outline, entirely inside its stated endpoints."""
+    dy, dz = y1 - y0, z1 - z0
+    length = math.hypot(dy, dz)
+    ny, nz = -dz / length, dy / length
+    outline = []
+    for t, w in ((0, 0.12), (0.22, 0.78), (0.48, 1), (0.74, 0.68), (1, 0.12),
+                 (0.74, -0.68), (0.48, -1), (0.22, -0.78)):
+        outline.append((y0 + t * dy + w * width * ny, z0 + t * dz + w * width * nz))
+    return f.prism(name, outline, half_x, colour, x_centre=x)
+
+
+def briar_tube(f, name, points, radius, colour, segs=12):
+    """A round branch following a Y-Z path, with X thickness independent of side curvature."""
+    rings = []
+    for i, (y, z) in enumerate(points):
+        a, b = points[max(0, i - 1)], points[min(len(points) - 1, i + 1)]
+        dy, dz = b[0] - a[0], b[1] - a[1]
+        ll = math.hypot(dy, dz)
+        rings.append([(radius * math.cos(2 * math.pi * k / segs),
+                       y - dz / ll * radius * math.sin(2 * math.pi * k / segs),
+                       z + dy / ll * radius * math.sin(2 * math.pi * k / segs)) for k in range(segs)])
+    return f.loft(name, rings, [colour] * segs, colour)
+
+
+def briar_rib(f, name, stations, offset, width, colour, extra=0.008):
+    """A broad raised strip on both faces, following the blade; thickness survives the bevel."""
+    rings = []
+    for y, zb, ze, th in stations:
+        c = (zb + ze) / 2 + offset
+        rings.append([(th + extra, y, c - width), (th + extra, y, c + width),
+                      (-th - extra, y, c + width), (-th - extra, y, c - width)])
+    return f.loft(name, rings, [colour] * 4, colour)
+
+
+def design_thornwood_dirk(f):
+    """Thornwood Dirk -- cut from a thorn trunk. One curved pale thorn with a timber collar,
+    a knotted bark bar, a timber grip with pale bands and a lime leaf pommel. A lime chamfer
+    gives the thorn a readable toy cutting edge. Calm: pale_leaf. Vivid: timber, lime."""
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        c = 0.072 * t * t
+        w = lerp(0.062, 0.007, t ** 0.65)
+        return c - w, c + w, lerp(0.029, 0.013, t)
+    st = stations_from(fn, 24)
+    rings, roles = blade_rings(st, 0.018, True)
+    f.loft("Thorn", rings, ["pale_leaf" if r == "body" else "lime" for r in roles], "pale_leaf")
+    f.lathe("BarkCollar", [(0.0, -0.222), (0.045, -0.222), (0.046, -0.18), (0.0, -0.18)], "timber", segs=16)
+    guard_bar(f, "timber", half_x=0.045, half_y=(-0.255, -0.205))
+    for z in (-0.078, 0.078):
+        f.sphere(f"BarkKnot{z}", (0, -0.218, z), 0.027, "timber", segs=12, rings=6)
+    grip_bands(f, "timber", "pale_leaf", bands=2)
+    # The flat lower face is exactly -0.5; a pointed or rounded end would retreat under bevel.
+    f.prism("LeafPommel", [(-0.5, -0.012), (-0.5, 0.012), (-0.474, 0.039),
+                           (-0.441, 0.028), (-0.43, 0), (-0.441, -0.028), (-0.474, -0.039)], 0.027, "lime")
+    return {"design": "Thornwood Dirk", "concept": "a single curved thorn cut from a bark trunk", "tier": 1,
+            "calm": ["pale_leaf"], "vivid": ["timber", "lime"]}
+
+
+def design_sapwood_falchion(f):
+    """Sapwood Falchion -- a springy branch bent into an S-shaped lime blade. Three pale grain
+    ribs follow the spring, bright leaf prongs form the guard, the timber grip has pale bands,
+    and two leaves sprout from the pommel. Calm: pale_leaf. Vivid: lime, leaf_bright, timber."""
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        c = 0.033 * math.sin(2 * math.pi * t) + 0.028 * t
+        w = lerp(0.047, 0.063, smooth(t / 0.6)) if t < 0.76 else lerp(0.063, 0.008, smooth((t - 0.76) / 0.24))
+        return c - w, c + w, lerp(0.028, 0.014, t)
+    st = stations_from(fn, 34)
+    rings, roles = blade_rings(st, 0.022, False)
+    f.loft("SpringBlade", rings, ["lime" if r == "body" else "leaf_bright" for r in roles], "lime")
+    for k, offset in enumerate((-0.028, 0.0, 0.028)):
+        briar_rib(f, f"Grain{k}", st[2:26 - k * 2], offset, 0.009, "pale_leaf", extra=0.014)
+    for sign in (-1, 1):
+        outline = [(-0.249, 0.015), (-0.25, 0.09), (-0.238, 0.13), (-0.22, 0.13),
+                   (-0.176, 0.078), (-0.184, 0.046), (-0.218, 0.015)]
+        poly = [(y, sign * z) for y, z in outline]
+        f.prism(f"LeafGuard{sign}", poly if sign > 0 else poly[::-1], 0.048, "leaf_bright")
+    grip_bands(f, "timber", "pale_leaf", bands=2)
+    f.lathe("SproutStem", [(0.014, -0.5), (0.014, -0.454), (0.0, -0.444)], "timber", segs=16)
+    for sign in (-1, 1):
+        briar_leaf(f, f"SproutLeaf{sign}", -0.488, 0, -0.438, sign * 0.054, 0.019, "lime", half_x=0.026)
+    return {"design": "Sapwood Falchion", "concept": "a springy S-curved branch with three raised grain ribs", "tier": 2,
+            "calm": ["pale_leaf"], "vivid": ["lime", "leaf_bright", "timber"]}
+
+
+def design_bramblecut_sabre(f):
+    """Bramblecut Sabre -- a sweeping green sabre that clears bramble by the armful. Five
+    timber spine thorns, a broad pale edge, curling timber vine prongs, a pale grip wound with
+    a green vine, and three coral raspberries for the pommel. Calm: pale_leaf.
+    Vivid: leaf_bright, timber, coral (the sanctioned raspberry pop)."""
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        c = 0.052 * t * t
+        w = 0.052 if t < 0.78 else lerp(0.052, 0.007, smooth((t - 0.78) / 0.22))
+        return c - w, c + w, lerp(0.028, 0.014, t)
+    st = stations_from(fn, 28)
+    rings, roles = blade_rings(st, 0.031, False)
+    f.loft("Sabre", rings, ["leaf_bright" if r == "body" else "pale_leaf" for r in roles], "leaf_bright")
+    for k, y in enumerate((-0.08, 0.02, 0.12, 0.22, 0.32)):
+        thorn = f.lathe(f"SpineThorn{k}", [(0.018, 0), (0.018, 0.009), (0.010, 0.031), (0, 0.053)], "timber", segs=12)
+        f.orient(thorn, rot=(math.radians(-133), 0, 0), loc=(0, y, fn(y)[0] + 0.006))
+    guard_bar(f, "timber", half_x=0.048, half_y=(-0.25, -0.217))
+    for sign in (-1, 1):
+        pts = [(-0.225 + 0.063 * math.sin(a), sign * (0.055 + 0.042 * math.cos(a)))
+               for a in [i * math.pi * 1.4 / 14 for i in range(15)]]
+        briar_tube(f, f"VineProng{sign}", pts, 0.012, "timber")
+    grip_bands(f, "pale_leaf", "pale_leaf", bands=0)
+    coils = []
+    for k in range(41):
+        a = 4 * math.pi * k / 40
+        y = -0.442 + 0.166 * k / 40
+        coils.append([((0.041 + 0.008 * math.cos(b)) * math.cos(a), y + 0.008 * math.sin(b),
+                       (0.041 + 0.008 * math.cos(b)) * math.sin(a)) for b in [2 * math.pi * j / 12 for j in range(12)]])
+    f.loft("GripVine", coils, ["leaf_bright"] * 12, "leaf_bright")
+    for k, (y, z) in enumerate(((-0.472, -0.023), (-0.472, 0.023), (-0.438, 0))):
+        f.sphere(f"Raspberry{k}", (0, y, z), 0.028, "coral", segs=12, rings=6)
+    return {"design": "Bramblecut Sabre", "concept": "five bramble thorns and a raspberry cluster on a vine-wrapped sabre", "tier": 2,
+            "calm": ["pale_leaf"], "vivid": ["leaf_bright", "timber", "coral"]}
+
+
+def design_rangers_longblade(f):
+    """Ranger's Longblade -- the grove ranger's clean, narrow straight sword. A pale blade with
+    lime edges and a green boolean fuller on both faces, a timber bow-arc guard, a green grip
+    with pale bands and an acorn pommel. Calm: pale_leaf. Vivid: lime, leaf_bright, timber."""
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        w = lerp(0.052, 0.039, t) if t < 0.82 else lerp(0.0413, 0.006, (t - 0.82) / 0.18)
+        return -w, w, lerp(0.029, 0.014, t)
+    rings, roles = blade_rings(stations_from(fn, 28), 0.015, True)
+    blade = f.loft("Longblade", rings, ["pale_leaf" if r == "body" else "lime" for r in roles], "pale_leaf")
+    slot = [(-0.145, -0.011), (-0.128, -0.018), (0.352, -0.018), (0.378, -0.008),
+            (0.378, 0.008), (0.352, 0.018), (-0.128, 0.018), (-0.145, 0.011)]
+    for side in (-1, 1):
+        cutter = f.prism(f"FullerCutter{side}", slot, 0.025, "leaf_bright", x_centre=side * 0.037)
+        f.sync_materials()
+        f.cut(blade, cutter)
+    zs = [GUARD_HALF_SPAN * (k / 8 - 1) for k in range(17)]
+    top = [(-0.191 - 0.038 * (z / GUARD_HALF_SPAN) ** 2, z) for z in zs]
+    f.prism("BowArc", top + [(y - 0.026, z) for y, z in reversed(top)], 0.048, "timber")
+    # The bow string is a second slender solid strip, visible across the open crescent.
+    f.prism("BowString", [(-0.262, -0.115), (-0.262, 0.115), (-0.247, 0.115), (-0.247, -0.115)], 0.010, "lime")
+    grip_bands(f, "leaf_bright", "pale_leaf", bands=3)
+    f.lathe("AcornNut", [(0.012, -0.5), (0.028, -0.49), (0.038, -0.47),
+                        (0.04, -0.447), (0.03, -0.436), (0, -0.436)], "lime", segs=20)
+    f.lathe("AcornCap", [(0, -0.452), (0.044, -0.452), (0.044, -0.438),
+                        (0.033, -0.427), (0.01, -0.425), (0, -0.425)], "timber", segs=20)
+    return {"design": "Ranger's Longblade", "concept": "a ranger's straight blade with carved fuller, bow guard and acorn", "tier": 3,
+            "calm": ["pale_leaf"], "vivid": ["lime", "leaf_bright", "timber"]}
+
+
+def design_heartwood_broadsword(f):
+    """Heartwood Broadsword -- grown rather than forged. A broad timber blade with green edges,
+    three raised pale growth-ring arcs and two lime shoots; root tendrils curl toward the pale
+    banded grip, above a concentric tree-ring disc pommel. Calm: pale_leaf.
+    Vivid: timber, leaf_bright, lime."""
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        w = 0.092 + 0.006 * math.sin(math.pi * t) if t < 0.83 else lerp(0.095, 0.012, (t - 0.83) / 0.17)
+        return -w, w, lerp(0.03, 0.014, t)
+    rings, roles = blade_rings(stations_from(fn, 26), 0.024, True)
+    f.loft("Heartwood", rings, ["timber" if r == "body" else "leaf_bright" for r in roles], "timber")
+    for k, r in enumerate((0.027, 0.054, 0.081)):
+        angles = [math.radians(-75 + 150 * j / 14) for j in range(15)]
+        outer = [(-0.083 + (r + 0.008) * math.cos(a), (r + 0.008) * math.sin(a)) for a in angles]
+        inner = [(-0.083 + (r - 0.008) * math.cos(a), (r - 0.008) * math.sin(a)) for a in reversed(angles)]
+        f.prism(f"GrowthRing{k}", outer + inner, 0.043, "pale_leaf")
+    for k, y in enumerate((0.15, 0.27)):
+        briar_leaf(f, f"SpineSprout{k}", y, -0.079, y - 0.057, -0.113, 0.017, "lime", half_x=0.02)
+    guard_bar(f, "timber", half_y=(-0.243, -0.218), half_x=0.05)
+    for sign in (-1, 1):
+        pts = [(-0.228 - 0.084 * math.sin(a), sign * (0.065 + 0.038 * math.cos(a)))
+               for a in [j * math.pi * 1.15 / 12 for j in range(13)]]
+        briar_tube(f, f"RootTendril{sign}", pts, 0.014, "timber")
+    grip_bands(f, "pale_leaf", "leaf_bright", bands=2)
+    rim_disc(f, "TreeRingOuter", -0.458, 0.042, 0.026, "timber", segs=24)
+    for side in (-1, 1):
+        for k, (r, hx, col) in enumerate(((0.032, 0.008, "pale_leaf"), (0.020, 0.008, "timber"))):
+            disc = rim_disc(f, f"TreeRing{side}{k}", -0.458, r, hx, col, segs=16)
+            f.orient(disc, loc=(side * (0.026 + k * 0.014), 0, 0))
+    return {"design": "Heartwood Broadsword", "concept": "living heartwood with growth rings, root guard and sprouting leaves", "tier": 3,
+            "calm": ["pale_leaf"], "vivid": ["timber", "leaf_bright", "lime"]}
+
+
+def design_briar_billhook(f):
+    """Briar Billhook -- a hedge tool with a forward beak and a lime inner cutting edge.
+    A timber bar ends in lime leaves; three lime thorn nubs stand on a pale grip with timber
+    bands, ending in a lime thorn pommel. A broad pale sapwood strip along the spine supplements
+    the grip's calm area; the timber face and lime inner edge remain distinct.
+    Calm: pale_leaf. Vivid: timber, lime."""
+    outer = [(-0.21, -0.044), (0.35, -0.044), (0.455, -0.03), (0.5, 0.012),
+             (0.5, 0.044), (0.465, 0.084), (0.376, 0.114), (0.334, 0.102),
+             (0.391, 0.064), (0.41, 0.034), (0.38, 0.012), (-0.21, 0.039)]
+    inner = [(-0.21, -0.043), (0.349, -0.043), (0.45, -0.025), (0.493, 0.014),
+             (0.483, 0.042), (0.452, 0.063), (0.397, 0.083), (0.43, 0.038),
+             (0.391, -0.005), (-0.21, 0.014)]
+    f.prism("HookEdge", outer, 0.024, "lime")
+    f.prism("HookTimber", inner, 0.031, "timber")
+    f.prism("SapwoodSpine", [(-0.208, -0.042), (0.337, -0.042), (0.398, -0.032),
+                             (0.355, -0.004), (-0.208, -0.004)], 0.041, "pale_leaf")
+    guard_bar(f, "timber", half_x=0.048, half_y=(-0.247, -0.212))
+    for sign in (-1, 1):
+        poly = [(-0.242, 0.053), (-0.263, 0.09), (-0.246, 0.13),
+                (-0.222, 0.13), (-0.198, 0.092), (-0.215, 0.057)]
+        poly = [(y, sign * z) for y, z in poly]
+        f.prism(f"LeafEnd{sign}", poly if sign > 0 else poly[::-1], 0.05, "lime")
+    grip_bands(f, "pale_leaf", "timber", bands=2)
+    for k, y in enumerate((-0.302, -0.362, -0.422)):
+        f.prism(f"HiltThorn{k}", [(y + 0.015, -0.032), (y - 0.015, -0.032),
+                                 (y - 0.025, -0.066), (y - 0.003, -0.061)], 0.017, "lime")
+    f.lathe("ThornPommel", [(0.011, -0.5), (0.024, -0.483), (0.038, -0.45),
+                           (0.031, -0.431), (0, -0.431)], "lime", segs=20)
+    return {"design": "Briar Billhook", "concept": "a forward-beaked hedge billhook with a thorn-studded hilt", "tier": 2,
+            "calm": ["pale_leaf"], "vivid": ["timber", "lime"]}
+
+
+def design_hedgehog_hooksword(f):
+    """Hedgehog Hooksword -- a returning J-hook above a bristly little hedgehog. Pale blade,
+    timber edge and twelve short bristles on a domed guard, green grip and a snout pommel with
+    timber eyes and a bloom nose. Bloom grip bands keep the nose colour above 2% surface area.
+    Calm: pale_leaf. Vivid: timber, leaf_bright, bloom."""
+    outer = [(-0.21, -0.053), (0.393, -0.053), (0.462, -0.036), (0.5, 0.007),
+             (0.5, 0.05), (0.47, 0.091), (0.425, 0.113), (0.352, 0.103),
+             (0.311, 0.072), (0.332, 0.049), (0.375, 0.07), (0.405, 0.077),
+             (0.43, 0.059), (0.439, 0.029), (0.417, 0.005), (0.389, -0.006), (-0.21, 0.015)]
+    inner = [(-0.21, -0.037), (0.392, -0.037), (0.452, -0.021), (0.484, 0.014),
+             (0.484, 0.045), (0.458, 0.079), (0.423, 0.096), (0.359, 0.087),
+             (0.328, 0.068), (0.335, 0.065), (0.372, 0.085), (0.408, 0.093),
+             (0.444, 0.068), (0.455, 0.024), (0.425, -0.009), (0.392, -0.022), (-0.21, -0.001)]
+    # Four outline rings give a true painted chamfer, with a tapered thickness along Y.
+    rr = []
+    for poly, sign, factor in ((inner, 1, 1), (outer, 1, 0.28), (outer, -1, 0.28), (inner, -1, 1)):
+        rr.append([(sign * factor * lerp(0.029, 0.014, (y + 0.21) / 0.71), y, z) for y, z in poly])
+    f.loft("JHook", rr, ["timber"] * len(outer), "pale_leaf")
+    guard_bar(f, "timber", half_y=(-0.254, -0.222), half_x=0.055)
+    dome = [(-0.231, -0.092), (-0.231, 0.092)]
+    dome += [(-0.231 + 0.063 * math.sin(a), 0.092 * math.cos(a)) for a in [math.pi * j / 16 for j in range(1, 17)]]
+    f.prism("HedgehogBody", dome, 0.046, "pale_leaf")
+    for k in range(12):
+        a = math.pi * (k + 0.5) / 12
+        pos = Vector((0, -0.232 + 0.062 * math.sin(a), 0.089 * math.cos(a)))
+        direction = Vector((0, math.sin(a), math.cos(a)))
+        spike = f.lathe(f"Bristle{k}", [(0.012, 0), (0.013, 0.008), (0, 0.030)], "timber", segs=12)
+        spike.rotation_mode = "QUATERNION"
+        spike.rotation_quaternion = Vector((0, 1, 0)).rotation_difference(direction)
+        spike.location = pos
+        f.apply_transform(spike)
+    grip_bands(f, "leaf_bright", "bloom", bands=2)
+    f.sphere("SnoutHead", (0, -0.47, 0), 0.03, "pale_leaf", segs=16, rings=8)
+    f.prism("SnoutMuzzle", [(-0.487, 0.01), (-0.458, 0.01), (-0.471, 0.052)], 0.024, "pale_leaf")
+    f.sphere("Nose", (0, -0.471, 0.049), 0.015, "bloom", segs=12, rings=6)
+    for side in (-1, 1):
+        f.sphere(f"Eye{side}", (side * 0.026, -0.457, 0.016), 0.009, "timber", segs=12, rings=6)
+    return {"design": "Hedgehog Hooksword", "concept": "a returning J-hook with a twelve-bristle hedgehog guard and snout", "tier": 3,
+            "calm": ["pale_leaf"], "vivid": ["timber", "leaf_bright", "bloom"]}
+
+
+def design_hollowbough_claymore(f):
+    """Hollowbough Claymore -- the Root Warden's hollow bough, still visited by two bees.
+    A parallel timber claymore with a raised pale core and an oval hollow, two striped bloom
+    bees with thick pale wings, a leafed branch guard, banded timber grip and bloom honey drop.
+    Calm: pale_leaf. Vivid: timber, bloom, lime."""
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        w = 0.072 if t < 0.88 else lerp(0.072, 0.018, (t - 0.88) / 0.12)
+        return -w, w, lerp(0.029, 0.014, t)
+    st = stations_from(fn, 22)
+    rings, roles = blade_rings(st, 0.018, True)
+    blade = f.loft("Bough", rings, ["timber" if r == "body" else "lime" for r in roles], "timber")
+    core = briar_rib(f, "HeartwoodCore", st[:-3], 0, 0.030, "pale_leaf", extra=0.012)
+    for target in (blade, core):
+        c = through_cutter(f, f"Hollow{target.name}", 0, 0, 0.031, "pale_leaf", segs=24)
+        f.orient(c, scale=(1, 3.1, 1), loc=(0, -0.018, 0))
+        f.sync_materials()
+        f.cut(target, c)
+    # Each bee spans the blade, so the same two bees read from either face. Their wings are
+    # thick discs; their bands are geometry, not a texture or hairline paint detail.
+    for k, (y, z) in enumerate(((0.174, -0.021), (0.328, 0.021))):
+        profile = [(0, -0.040), (0.016, -0.034), (0.024, -0.02), (0.024, -0.014),
+                   (0.024, -0.004), (0.024, 0.006), (0.024, 0.016), (0.024, 0.018),
+                   (0.016, 0.031), (0, 0.037)]
+        bee_rings = [[(1.9 * r * math.cos(a), y + by, z + r * math.sin(a))
+                      for a in [2 * math.pi * j / 16 for j in range(16)]] for r, by in profile]
+        f.loft(f"Bee{k}", bee_rings, lambda i, j: "timber" if i in (3, 5) else "bloom", "bloom")
+        for wing in (-1, 1):
+            d = rim_disc(f, f"Wing{k}{wing}", 0, 0.021, 0.042, "pale_leaf", segs=12)
+            f.orient(d, scale=(1, 1.35, 0.85), loc=(0, y + 0.009, z + wing * 0.033))
+    # A forked branch slopes down at the outer ends; broad leaf cuffs distinguish this from
+    # Grovebound Bloom's upward twig stubs and from Sapwood's leaf-shaped whole guard.
+    for sign in (-1, 1):
+        poly = [(-0.239, 0.022), (-0.21, 0.022), (-0.244, 0.13), (-0.272, 0.13)]
+        poly = [(y, sign * z) for y, z in poly]
+        f.prism(f"Branch{sign}", poly if sign > 0 else poly[::-1], 0.052, "timber")
+        briar_leaf(f, f"GuardLeaf{sign}", -0.252, sign * 0.065, -0.188, sign * 0.108, 0.024, "lime", half_x=0.029)
+    grip_bands(f, "timber", "pale_leaf", bands=2)
+    f.lathe("HoneyDrop", [(0.013, -0.5), (0.033, -0.491), (0.041, -0.475),
+                         (0.037, -0.456), (0.022, -0.43), (0.008, -0.412), (0, -0.412)], "bloom", segs=16)
+    return {"design": "Hollowbough Claymore", "concept": "a hollow timber claymore with two striped bees and a honey drop", "tier": 4,
+            "calm": ["pale_leaf"], "vivid": ["timber", "bloom", "lime"]}
+
+
+def design_honeycomb_thorn(f):
+    """Honeycomb Thorn -- a pale thorn the grove bees built a comb around. Five chunky bloom
+    hex cells with shallow honey-coloured recesses wrap the lower blade, with two bloom drips.
+    Lime cutting edges, a honey bar with hex ends, banded timber grip and grooved dipper pommel.
+    Calm: pale_leaf. Vivid: bloom, honey (the original identity colour), lime, timber."""
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        w = 0.072 if t < 0.40 else lerp(0.072, 0.007, ((t - 0.40) / 0.60) ** 0.8)
+        return -w, w, lerp(0.029, 0.013, t)
+    rings, roles = blade_rings(stations_from(fn, 24), 0.017, True)
+    f.loft("Thorn", rings, ["pale_leaf" if r == "body" else "lime" for r in roles], "pale_leaf")
+    cells = [(y, z) for y in (-0.139, -0.067) for z in (-0.032, 0.032)] + [(0.005, 0)]
+    for k, (y, z) in enumerate(cells):
+        poly = [(y + 0.036 * math.cos(a), z + 0.036 * math.sin(a)) for a in [j * math.pi / 3 for j in range(6)]]
+        cell = f.flat(f.prism(f"CombCell{k}", poly, 0.047, "bloom"))
+        for side in (-1, 1):
+            hole = [(y + 0.021 * math.cos(a), z + 0.021 * math.sin(a)) for a in [j * math.pi / 3 for j in range(6)]]
+            cutter = f.prism(f"CellRecess{k}{side}", hole, 0.020, "honey", x_centre=side * 0.047)
+            f.sync_materials()
+            f.cut(cell, cutter)
+    for k, (y, z) in enumerate(((-0.12, -0.080), (-0.025, 0.080))):
+        drip = f.lathe(f"HoneyDrip{k}", [(0.009, -0.035), (0.018, -0.024), (0.017, -0.01),
+                                       (0.008, 0.015), (0.007, 0.035)], "bloom", segs=12)
+        f.orient(drip, loc=(0, y, z))
+    guard_bar(f, "honey", half_x=0.054, half_y=(-0.25, -0.213), span=0.102)
+    radius = 0.036
+    for sign in (-1, 1):
+        z = sign * (GUARD_HALF_SPAN - radius * math.sin(math.pi / 3))
+        poly = [(-0.227 + radius * math.cos(a), z + radius * math.sin(a)) for a in [j * math.pi / 3 for j in range(6)]]
+        f.flat(f.prism(f"HexGuard{sign}", poly, 0.051, "bloom"))
+    grip_bands(f, "timber", "pale_leaf", bands=2)
+    profile = [(0.013, -0.5), (0.031, -0.492), (0.041, -0.481), (0.041, -0.476),
+               (0.031, -0.472), (0.031, -0.466), (0.042, -0.462), (0.042, -0.456),
+               (0.031, -0.452), (0.031, -0.446), (0.036, -0.441), (0.024, -0.429), (0, -0.426)]
+    dipper = [[(r * math.cos(a), y, r * math.sin(a)) for a in [2 * math.pi * j / 16 for j in range(16)]] for r, y in profile]
+    f.loft("HoneyDipper", dipper, lambda i, j: "timber" if i in (4, 8) else "bloom", "bloom")
+    return {"design": "Honeycomb Thorn", "concept": "a thorn wrapped in recessed honeycomb cells with hanging honey drips", "tier": 4,
+            "calm": ["pale_leaf"], "vivid": ["bloom", "honey", "lime", "timber"]}
+
+
 # key: (pool, tier, design)
 DESIGNS = {
     "Sword_QuarryShank": ("IronLowlands", 1, design_quarry_shank),
@@ -369,6 +714,15 @@ DESIGNS = {
     "Sword_RivetsteelBlade": ("IronLowlands", 2, design_rivetsteel_blade),
     "Sword_ForemansLongsword": ("IronLowlands", 3, design_foremans_longsword),
     "Sword_LodestoneEdge": ("IronLowlands", 4, design_lodestone_edge),
+    "Sword_ThornwoodDirk": ("Briarwood", 1, design_thornwood_dirk),
+    "Sword_SapwoodFalchion": ("Briarwood", 2, design_sapwood_falchion),
+    "Sword_BramblecutSabre": ("Briarwood", 2, design_bramblecut_sabre),
+    "Sword_RangersLongblade": ("Briarwood", 3, design_rangers_longblade),
+    "Sword_HeartwoodBroadsword": ("Briarwood", 3, design_heartwood_broadsword),
+    "Sword_BriarBillhook": ("Briarwood", 2, design_briar_billhook),
+    "Sword_HedgehogHooksword": ("Briarwood", 3, design_hedgehog_hooksword),
+    "Sword_HollowboughClaymore": ("Briarwood", 4, design_hollowbough_claymore),
+    "Sword_HoneycombThorn": ("Briarwood", 4, design_honeycomb_thorn),
 }
 
 

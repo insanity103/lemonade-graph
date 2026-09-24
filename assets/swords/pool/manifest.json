@@ -406,5 +406,548 @@
       "iou": 0.823,
       "against": "Sword_RivetsteelBlade"
     }
+  },
+  "Sword_ThornwoodDirk": {
+    "name": "Thornwood Dirk",
+    "key": "Sword_ThornwoodDirk",
+    "pool": "Briarwood",
+    "tier": 1,
+    "concept": "a single curved thorn cut from a bark trunk",
+    "file": "Sword_ThornwoodDirk.glb",
+    "bytes": 79992,
+    "triangles": 2880,
+    "vertices": 1458,
+    "meshSize": [
+      0.09195,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "pale_leaf": [
+        236,
+        255,
+        208
+      ],
+      "lime": [
+        120,
+        236,
+        56
+      ],
+      "timber": [
+        255,
+        158,
+        36
+      ]
+    },
+    "areaShare": {
+      "pale_leaf": 0.218,
+      "lime": 0.275,
+      "timber": 0.507
+    },
+    "calmVivid": {
+      "calm": 0.218,
+      "vivid": 0.782
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.624,
+      "against": "Sword_BramblecutSabre"
+    }
+  },
+  "Sword_SapwoodFalchion": {
+    "name": "Sapwood Falchion",
+    "key": "Sword_SapwoodFalchion",
+    "pool": "Briarwood",
+    "tier": 2,
+    "concept": "a springy S-curved branch with three raised grain ribs",
+    "file": "Sword_SapwoodFalchion.glb",
+    "bytes": 136488,
+    "triangles": 4710,
+    "vertices": 2379,
+    "meshSize": [
+      0.096,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "lime": [
+        120,
+        236,
+        56
+      ],
+      "leaf_bright": [
+        56,
+        224,
+        96
+      ],
+      "pale_leaf": [
+        236,
+        255,
+        208
+      ],
+      "timber": [
+        255,
+        158,
+        36
+      ]
+    },
+    "areaShare": {
+      "lime": 0.268,
+      "leaf_bright": 0.196,
+      "pale_leaf": 0.438,
+      "timber": 0.097
+    },
+    "calmVivid": {
+      "calm": 0.438,
+      "vivid": 0.562
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.73,
+      "against": "TempestWarden"
+    }
+  },
+  "Sword_BramblecutSabre": {
+    "name": "Bramblecut Sabre",
+    "key": "Sword_BramblecutSabre",
+    "pool": "Briarwood",
+    "tier": 2,
+    "concept": "five bramble thorns and a raspberry cluster on a vine-wrapped sabre",
+    "file": "Sword_BramblecutSabre.glb",
+    "bytes": 108972,
+    "triangles": 4210,
+    "vertices": 2133,
+    "meshSize": [
+      0.098,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "leaf_bright": [
+        56,
+        224,
+        96
+      ],
+      "pale_leaf": [
+        236,
+        255,
+        208
+      ],
+      "timber": [
+        255,
+        158,
+        36
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ]
+    },
+    "areaShare": {
+      "leaf_bright": 0.36,
+      "pale_leaf": 0.265,
+      "timber": 0.309,
+      "coral": 0.066
+    },
+    "calmVivid": {
+      "calm": 0.265,
+      "vivid": 0.735
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.716,
+      "against": "SwordMeshTemplate"
+    }
+  },
+  "Sword_RangersLongblade": {
+    "name": "Ranger's Longblade",
+    "key": "Sword_RangersLongblade",
+    "pool": "Briarwood",
+    "tier": 3,
+    "concept": "a ranger's straight blade with carved fuller, bow guard and acorn",
+    "file": "Sword_RangersLongblade.glb",
+    "bytes": 132456,
+    "triangles": 4870,
+    "vertices": 2453,
+    "meshSize": [
+      0.096,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "pale_leaf": [
+        236,
+        255,
+        208
+      ],
+      "lime": [
+        120,
+        236,
+        56
+      ],
+      "leaf_bright": [
+        56,
+        224,
+        96
+      ],
+      "timber": [
+        255,
+        158,
+        36
+      ]
+    },
+    "areaShare": {
+      "lime": 0.272,
+      "leaf_bright": 0.28,
+      "pale_leaf": 0.238,
+      "timber": 0.21
+    },
+    "calmVivid": {
+      "calm": 0.238,
+      "vivid": 0.762
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.71,
+      "against": "Sword_HoneycombThorn"
+    }
+  },
+  "Sword_HeartwoodBroadsword": {
+    "name": "Heartwood Broadsword",
+    "key": "Sword_HeartwoodBroadsword",
+    "pool": "Briarwood",
+    "tier": 3,
+    "concept": "living heartwood with growth rings, root guard and sprouting leaves",
+    "file": "Sword_HeartwoodBroadsword.glb",
+    "bytes": 160796,
+    "triangles": 5692,
+    "vertices": 2880,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "timber": [
+        255,
+        158,
+        36
+      ],
+      "leaf_bright": [
+        56,
+        224,
+        96
+      ],
+      "pale_leaf": [
+        236,
+        255,
+        208
+      ],
+      "lime": [
+        120,
+        236,
+        56
+      ]
+    },
+    "areaShare": {
+      "timber": 0.516,
+      "leaf_bright": 0.201,
+      "pale_leaf": 0.257,
+      "lime": 0.026
+    },
+    "calmVivid": {
+      "calm": 0.257,
+      "vivid": 0.743
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.778,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_BriarBillhook": {
+    "name": "Briar Billhook",
+    "key": "Sword_BriarBillhook",
+    "pool": "Briarwood",
+    "tier": 2,
+    "concept": "a forward-beaked hedge billhook with a thorn-studded hilt",
+    "file": "Sword_BriarBillhook.glb",
+    "bytes": 81628,
+    "triangles": 2678,
+    "vertices": 1365,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "lime": [
+        120,
+        236,
+        56
+      ],
+      "timber": [
+        255,
+        158,
+        36
+      ],
+      "pale_leaf": [
+        236,
+        255,
+        208
+      ]
+    },
+    "areaShare": {
+      "lime": 0.369,
+      "timber": 0.362,
+      "pale_leaf": 0.269
+    },
+    "calmVivid": {
+      "calm": 0.269,
+      "vivid": 0.731
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.689,
+      "against": "Sword_HedgehogHooksword"
+    }
+  },
+  "Sword_HedgehogHooksword": {
+    "name": "Hedgehog Hooksword",
+    "key": "Sword_HedgehogHooksword",
+    "pool": "Briarwood",
+    "tier": 3,
+    "concept": "a returning J-hook with a twelve-bristle hedgehog guard and snout",
+    "file": "Sword_HedgehogHooksword.glb",
+    "bytes": 114348,
+    "triangles": 4256,
+    "vertices": 2174,
+    "meshSize": [
+      0.11,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "timber": [
+        255,
+        158,
+        36
+      ],
+      "pale_leaf": [
+        236,
+        255,
+        208
+      ],
+      "leaf_bright": [
+        56,
+        224,
+        96
+      ],
+      "bloom": [
+        255,
+        236,
+        96
+      ]
+    },
+    "areaShare": {
+      "pale_leaf": 0.274,
+      "timber": 0.498,
+      "leaf_bright": 0.14,
+      "bloom": 0.088
+    },
+    "calmVivid": {
+      "calm": 0.274,
+      "vivid": 0.726
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.689,
+      "against": "Sword_BriarBillhook"
+    }
+  },
+  "Sword_HollowboughClaymore": {
+    "name": "Hollowbough Claymore",
+    "key": "Sword_HollowboughClaymore",
+    "pool": "Briarwood",
+    "tier": 4,
+    "concept": "a hollow timber claymore with two striped bees and a honey drop",
+    "file": "Sword_HollowboughClaymore.glb",
+    "bytes": 184744,
+    "triangles": 6542,
+    "vertices": 3303,
+    "meshSize": [
+      0.104,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "timber": [
+        255,
+        158,
+        36
+      ],
+      "lime": [
+        120,
+        236,
+        56
+      ],
+      "pale_leaf": [
+        236,
+        255,
+        208
+      ],
+      "bloom": [
+        255,
+        236,
+        96
+      ]
+    },
+    "areaShare": {
+      "lime": 0.162,
+      "timber": 0.38,
+      "pale_leaf": 0.392,
+      "bloom": 0.066
+    },
+    "calmVivid": {
+      "calm": 0.392,
+      "vivid": 0.608
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.751,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_HoneycombThorn": {
+    "name": "Honeycomb Thorn",
+    "key": "Sword_HoneycombThorn",
+    "pool": "Briarwood",
+    "tier": 4,
+    "concept": "a thorn wrapped in recessed honeycomb cells with hanging honey drips",
+    "file": "Sword_HoneycombThorn.glb",
+    "bytes": 242560,
+    "triangles": 6610,
+    "vertices": 3323,
+    "meshSize": [
+      0.108,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "pale_leaf": [
+        236,
+        255,
+        208
+      ],
+      "lime": [
+        120,
+        236,
+        56
+      ],
+      "bloom": [
+        255,
+        236,
+        96
+      ],
+      "honey": [
+        255,
+        204,
+        72
+      ],
+      "timber": [
+        255,
+        158,
+        36
+      ]
+    },
+    "areaShare": {
+      "pale_leaf": 0.233,
+      "lime": 0.133,
+      "bloom": 0.36,
+      "honey": 0.172,
+      "timber": 0.102
+    },
+    "calmVivid": {
+      "calm": 0.233,
+      "vivid": 0.767
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.712,
+      "against": "TempestWarden"
+    }
   }
 }

@@ -212,3 +212,38 @@ until it is.
 them in `ServerStorage/BossSwordMeshes`, confirm a plain MeshPart with a TextureID and no
 SurfaceAppearance, MeshSize about (0.09-0.12, 0.26, 1.0). `Motion:SwordGallery` shows them all through
 the real factory (its grid was spaced for thin blades; widen it if tiles overlap).
+
+### Briarwood
+
+Design plan (2026-09-24). Each blade outline and guard has a different construction; none uses
+Grovebound Bloom's broad leaf outline or flower pommel. Area splits are starting targets, to be
+replaced by measured results after the visual review. All grips remain solid and on the hand axis.
+
+| Sword | Mesh key | Tier | Forms |
+|---|---|---|---|
+| Thornwood Dirk | `Sword_ThornwoodDirk` | T1 | a single curved pale thorn with timber collar; knotted bark bar; timber grip with pale bands; lime leaf pommel |
+| Sapwood Falchion | `Sword_SapwoodFalchion` | T2 | an S-curved lime falchion with three raised pale grain ribs; leaf-prong guard; timber grip; two-leaf sprout pommel |
+| Bramblecut Sabre | `Sword_BramblecutSabre` | T2 | a curved green sabre with five timber spine thorns and pale edge; curling vine guard; pale grip with green spiral; coral raspberry pommel |
+| Ranger's Longblade | `Sword_RangersLongblade` | T3 | a narrow straight pale blade with carved green fuller and lime edges; timber bow-arc guard; green grip with pale bands; lime acorn with timber cap |
+| Heartwood Broadsword | `Sword_HeartwoodBroadsword` | T3 | broad timber blade with three pale growth-ring arcs and two leaf sprouts; root tendrils curling toward the grip; pale grip; concentric tree-ring disc pommel |
+| Briar Billhook | `Sword_BriarBillhook` | T2 | a straight timber blade ending in a forward beak, lime inner edge; leaf-ended bar; pale grip with three lime thorn nubs; lime thorn-point pommel |
+| Hedgehog Hooksword | `Sword_HedgehogHooksword` | T3 | a pale blade with a returning J-hook and timber edge; bristly hedgehog dome on a flat-ended bar; green grip; snout pommel with timber eyes and bloom nose |
+| Hollowbough Claymore | `Sword_HollowboughClaymore` | T4 | a broad timber claymore with pale core, oval hollow and two striped bees; leafed branch guard; timber grip; bloom honey-drop pommel |
+| Honeycomb Thorn | `Sword_HoneycombThorn` | T4 | a pale upper thorn over a lower comb of recessed hex cells and two honey drips; hex-ended bar; timber grip; grooved honey-dipper pommel |
+
+Planned surface shares (percent):
+
+| Sword | pale_leaf | timber | lime | leaf_bright | bloom | Other |
+|---|---:|---:|---:|---:|---:|---|
+| Thornwood Dirk | 30 | 50 | 20 | — | — | — |
+| Sapwood Falchion | 25 | 10 | 48 | 17 | — | — |
+| Bramblecut Sabre | 30 | 20 | — | 45 | — | coral 5 |
+| Ranger's Longblade | 42 | 15 | 23 | 20 | — | — |
+| Heartwood Broadsword | 25 | 50 | 8 | 17 | — | — |
+| Briar Billhook | 25 | 50 | 25 | — | — | — |
+| Hedgehog Hooksword | 35 | 30 | — | 30 | 5 | — |
+| Hollowbough Claymore | 25 | 45 | 10 | — | 20 | — |
+| Honeycomb Thorn | 27 | 10 | 15 | — | 30 | honey 18 |
+
+`honey` is the existing Honeycomb Thorn identity colour, RGB (255, 204, 72), specified in
+section 8.7 of the pool brief. Coral is used only for Bramblecut's raspberries.
