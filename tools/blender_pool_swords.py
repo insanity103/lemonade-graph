@@ -565,7 +565,9 @@ def design_briar_billhook(f):
     f.prism("HookTimber", inner, 0.031, "timber")
     f.prism("SapwoodSpine", [(-0.208, -0.042), (0.337, -0.042), (0.398, -0.032),
                              (0.355, -0.004), (-0.208, -0.004)], 0.041, "pale_leaf")
-    guard_bar(f, "timber", half_x=0.048, half_y=(-0.247, -0.212))
+    # the bar stops inside the leaves: coplanar end faces at +-0.13 z-fought into a dark stripe,
+    # so the leaf ends alone carry the flat widest faces
+    guard_bar(f, "timber", half_x=0.048, half_y=(-0.247, -0.212), span=0.118)
     for sign in (-1, 1):
         poly = [(-0.242, 0.053), (-0.263, 0.09), (-0.246, 0.13),
                 (-0.222, 0.13), (-0.198, 0.092), (-0.215, 0.057)]
@@ -582,23 +584,17 @@ def design_briar_billhook(f):
 
 
 def design_hedgehog_hooksword(f):
-    """Hedgehog Hooksword -- a returning J-hook above a bristly little hedgehog. Pale blade,
-    timber edge and twelve short bristles on a domed guard, green grip and a snout pommel with
-    timber eyes and a bloom nose. Bloom grip bands keep the nose colour above 2% surface area.
+    """Hedgehog Hooksword -- a pointed pale blade above a bristly little hedgehog. A straight
+    double-edged pale blade with timber chamfered edges tapering to a normal point, twelve short
+    bristles on a domed guard, green grip and a snout pommel with timber eyes and a bloom nose.
+    (The original returning J-hook was replaced with a normal point at Alex's request.)
     Calm: pale_leaf. Vivid: timber, leaf_bright, bloom."""
-    outer = [(-0.21, -0.053), (0.393, -0.053), (0.462, -0.036), (0.5, 0.007),
-             (0.5, 0.05), (0.47, 0.091), (0.425, 0.113), (0.352, 0.103),
-             (0.311, 0.072), (0.332, 0.049), (0.375, 0.07), (0.405, 0.077),
-             (0.43, 0.059), (0.439, 0.029), (0.417, 0.005), (0.389, -0.006), (-0.21, 0.015)]
-    inner = [(-0.21, -0.037), (0.392, -0.037), (0.452, -0.021), (0.484, 0.014),
-             (0.484, 0.045), (0.458, 0.079), (0.423, 0.096), (0.359, 0.087),
-             (0.328, 0.068), (0.335, 0.065), (0.372, 0.085), (0.408, 0.093),
-             (0.444, 0.068), (0.455, 0.024), (0.425, -0.009), (0.392, -0.022), (-0.21, -0.001)]
-    # Four outline rings give a true painted chamfer, with a tapered thickness along Y.
-    rr = []
-    for poly, sign, factor in ((inner, 1, 1), (outer, 1, 0.28), (outer, -1, 0.28), (inner, -1, 1)):
-        rr.append([(sign * factor * lerp(0.029, 0.014, (y + 0.21) / 0.71), y, z) for y, z in poly])
-    f.loft("JHook", rr, ["timber"] * len(outer), "pale_leaf")
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        w = lerp(0.05, 0.06, smooth(t / 0.5)) if t < 0.75 else lerp(0.06, 0.008, smooth((t - 0.75) / 0.25))
+        return -w, w, lerp(0.028, 0.014, t)
+    rings, roles = blade_rings(stations_from(fn, 26), 0.026, True)
+    f.loft("Blade", rings, ["pale_leaf" if r == "body" else "timber" for r in roles], "pale_leaf")
     guard_bar(f, "timber", half_y=(-0.254, -0.222), half_x=0.055)
     dome = [(-0.231, -0.092), (-0.231, 0.092)]
     dome += [(-0.231 + 0.063 * math.sin(a), 0.092 * math.cos(a)) for a in [math.pi * j / 16 for j in range(1, 17)]]
@@ -618,7 +614,7 @@ def design_hedgehog_hooksword(f):
     f.sphere("Nose", (0, -0.471, 0.049), 0.015, "bloom", segs=12, rings=6)
     for side in (-1, 1):
         f.sphere(f"Eye{side}", (side * 0.026, -0.457, 0.016), 0.009, "timber", segs=12, rings=6)
-    return {"design": "Hedgehog Hooksword", "concept": "a returning J-hook with a twelve-bristle hedgehog guard and snout", "tier": 3,
+    return {"design": "Hedgehog Hooksword", "concept": "a pointed blade over a twelve-bristle hedgehog guard and snout pommel", "tier": 3,
             "calm": ["pale_leaf"], "vivid": ["timber", "leaf_bright", "bloom"]}
 
 

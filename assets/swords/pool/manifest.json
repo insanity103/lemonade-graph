@@ -458,8 +458,8 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.624,
-      "against": "Sword_BramblecutSabre"
+      "iou": 0.627,
+      "against": "Sword_HedgehogHooksword"
     }
   },
   "Sword_SapwoodFalchion": {
@@ -519,8 +519,8 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.73,
-      "against": "TempestWarden"
+      "iou": 0.74,
+      "against": "Sword_HedgehogHooksword"
     }
   },
   "Sword_BramblecutSabre": {
@@ -580,8 +580,8 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.716,
-      "against": "SwordMeshTemplate"
+      "iou": 0.759,
+      "against": "Sword_HedgehogHooksword"
     }
   },
   "Sword_RangersLongblade": {
@@ -641,8 +641,8 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.71,
-      "against": "Sword_HoneycombThorn"
+      "iou": 0.787,
+      "against": "Sword_HedgehogHooksword"
     }
   },
   "Sword_HeartwoodBroadsword": {
@@ -739,13 +739,13 @@
       ]
     },
     "areaShare": {
-      "lime": 0.369,
-      "timber": 0.362,
-      "pale_leaf": 0.269
+      "lime": 0.372,
+      "timber": 0.356,
+      "pale_leaf": 0.272
     },
     "calmVivid": {
-      "calm": 0.269,
-      "vivid": 0.731
+      "calm": 0.272,
+      "vivid": 0.728
     },
     "normalise": {
       "centre_shift": [
@@ -757,8 +757,8 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.689,
-      "against": "Sword_HedgehogHooksword"
+      "iou": 0.671,
+      "against": "Sword_RangersLongblade"
     }
   },
   "Sword_HedgehogHooksword": {
@@ -766,26 +766,26 @@
     "key": "Sword_HedgehogHooksword",
     "pool": "Briarwood",
     "tier": 3,
-    "concept": "a returning J-hook with a twelve-bristle hedgehog guard and snout",
+    "concept": "a pointed blade over a twelve-bristle hedgehog guard and snout pommel",
     "file": "Sword_HedgehogHooksword.glb",
-    "bytes": 114348,
-    "triangles": 4256,
-    "vertices": 2174,
+    "bytes": 129372,
+    "triangles": 4776,
+    "vertices": 2434,
     "meshSize": [
       0.11,
       0.26,
       1.0
     ],
     "palette": {
-      "timber": [
-        255,
-        158,
-        36
-      ],
       "pale_leaf": [
         236,
         255,
         208
+      ],
+      "timber": [
+        255,
+        158,
+        36
       ],
       "leaf_bright": [
         56,
@@ -799,14 +799,14 @@
       ]
     },
     "areaShare": {
-      "pale_leaf": 0.274,
-      "timber": 0.498,
-      "leaf_bright": 0.14,
-      "bloom": 0.088
+      "pale_leaf": 0.339,
+      "timber": 0.451,
+      "leaf_bright": 0.128,
+      "bloom": 0.081
     },
     "calmVivid": {
-      "calm": 0.274,
-      "vivid": 0.726
+      "calm": 0.339,
+      "vivid": 0.661
     },
     "normalise": {
       "centre_shift": [
@@ -818,8 +818,8 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.689,
-      "against": "Sword_BriarBillhook"
+      "iou": 0.787,
+      "against": "Sword_RangersLongblade"
     }
   },
   "Sword_HollowboughClaymore": {
@@ -946,8 +946,8 @@
     },
     "checks": "all passed",
     "maxIoU": {
-      "iou": 0.712,
-      "against": "TempestWarden"
+      "iou": 0.772,
+      "against": "Sword_HedgehogHooksword"
     }
   }
 }
