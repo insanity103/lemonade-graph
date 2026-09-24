@@ -3358,5 +3358,499 @@
       "iou": 0.768,
       "against": "Boss_InfernalColossus"
     }
+  },
+  "Sword_IcicleShiv": {
+    "name": "Icicle Shiv",
+    "key": "Sword_IcicleShiv",
+    "pool": "FrostboundGlacier",
+    "tier": 1,
+    "concept": "a round bulging icicle on a wrapped cloth grip",
+    "file": "Sword_IcicleShiv.glb",
+    "bytes": 81404,
+    "triangles": 2510,
+    "vertices": 1267,
+    "meshSize": [
+      0.10016,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "pale_sky": [
+        214,
+        238,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "deep_blue": [
+        24,
+        140,
+        255
+      ],
+      "ice_white": [
+        236,
+        248,
+        255
+      ]
+    },
+    "areaShare": {
+      "pale_sky": 0.364,
+      "cyan": 0.107,
+      "deep_blue": 0.476,
+      "ice_white": 0.052
+    },
+    "calmVivid": {
+      "calm": 0.416,
+      "vivid": 0.584
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.789,
+      "against": "Sword_IcicleEstoc"
+    }
+  },
+  "Sword_SnowpackFalchion": {
+    "name": "Snowpack Falchion",
+    "key": "Sword_SnowpackFalchion",
+    "pool": "FrostboundGlacier",
+    "tier": 2,
+    "concept": "a falchion of pressed snow layers with a mitten pommel",
+    "file": "Sword_SnowpackFalchion.glb",
+    "bytes": 99976,
+    "triangles": 3612,
+    "vertices": 1830,
+    "meshSize": [
+      0.128,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "snowpack": [
+        236,
+        246,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "white": [
+        255,
+        255,
+        255
+      ],
+      "deep_blue": [
+        24,
+        140,
+        255
+      ]
+    },
+    "areaShare": {
+      "snowpack": 0.319,
+      "cyan": 0.177,
+      "deep_blue": 0.326,
+      "white": 0.179
+    },
+    "calmVivid": {
+      "calm": 0.498,
+      "vivid": 0.502
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.802,
+      "against": "Sword_SnowglobeSabre"
+    }
+  },
+  "Sword_FrostpaneSabre": {
+    "name": "Frostpane Sabre",
+    "key": "Sword_FrostpaneSabre",
+    "pool": "FrostboundGlacier",
+    "tier": 2,
+    "concept": "a cyan sabre framed and barred like a window pane",
+    "file": "Sword_FrostpaneSabre.glb",
+    "bytes": 133908,
+    "triangles": 4666,
+    "vertices": 2359,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "ice_white": [
+        236,
+        248,
+        255
+      ],
+      "deep_blue": [
+        24,
+        140,
+        255
+      ],
+      "white": [
+        255,
+        255,
+        255
+      ]
+    },
+    "areaShare": {
+      "cyan": 0.203,
+      "ice_white": 0.565,
+      "deep_blue": 0.151,
+      "white": 0.081
+    },
+    "calmVivid": {
+      "calm": 0.646,
+      "vivid": 0.354
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.783,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_GlacierrunLongsword": {
+    "name": "Glacierrun Longsword",
+    "key": "Sword_GlacierrunLongsword",
+    "pool": "FrostboundGlacier",
+    "tier": 3,
+    "concept": "a longsword braided with meltwater ribs under a curling wave guard",
+    "file": "Sword_GlacierrunLongsword.glb",
+    "bytes": 155708,
+    "triangles": 5714,
+    "vertices": 2877,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "deep_blue": [
+        24,
+        140,
+        255
+      ],
+      "ice_white": [
+        236,
+        248,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ]
+    },
+    "areaShare": {
+      "deep_blue": 0.212,
+      "ice_white": 0.397,
+      "cyan": 0.391
+    },
+    "calmVivid": {
+      "calm": 0.397,
+      "vivid": 0.603
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.757,
+      "against": "Sword_SnowglobeSabre"
+    }
+  },
+  "Sword_RimecoatBroadsword": {
+    "name": "Rimecoat Broadsword",
+    "key": "Sword_RimecoatBroadsword",
+    "pool": "FrostboundGlacier",
+    "tier": 3,
+    "concept": "a broadsword crusted with rime and a frost fern",
+    "file": "Sword_RimecoatBroadsword.glb",
+    "bytes": 168748,
+    "triangles": 5728,
+    "vertices": 2910,
+    "meshSize": [
+      0.12808,
+      0.26016,
+      1.0
+    ],
+    "palette": {
+      "deep_blue": [
+        24,
+        140,
+        255
+      ],
+      "ice_white": [
+        236,
+        248,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ]
+    },
+    "areaShare": {
+      "deep_blue": 0.293,
+      "ice_white": 0.318,
+      "cyan": 0.389
+    },
+    "calmVivid": {
+      "calm": 0.318,
+      "vivid": 0.682
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.00031,
+        0.0
+      ],
+      "length_scale": 1.00063
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.833,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_BlueHourShard": {
+    "name": "Blue Hour Shard",
+    "key": "Sword_BlueHourShard",
+    "pool": "FrostboundGlacier",
+    "tier": 4,
+    "concept": "a banded crystal shard carrying a crescent moon and stars",
+    "file": "Sword_BlueHourShard.glb",
+    "bytes": 238004,
+    "triangles": 4156,
+    "vertices": 2104,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "deep_blue": [
+        24,
+        140,
+        255
+      ],
+      "ice_white": [
+        236,
+        248,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "blue_hour": [
+        96,
+        226,
+        255
+      ],
+      "white": [
+        255,
+        255,
+        255
+      ]
+    },
+    "areaShare": {
+      "cyan": 0.251,
+      "ice_white": 0.355,
+      "deep_blue": 0.241,
+      "blue_hour": 0.059,
+      "white": 0.094
+    },
+    "calmVivid": {
+      "calm": 0.449,
+      "vivid": 0.551
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.823,
+      "against": "RootWarden"
+    }
+  },
+  "Sword_IcicleEstoc": {
+    "name": "Icicle Estoc",
+    "key": "Sword_IcicleEstoc",
+    "pool": "FrostboundGlacier",
+    "tier": 3,
+    "concept": "a thin dripping icicle thrust from a shallow cup guard",
+    "file": "Sword_IcicleEstoc.glb",
+    "bytes": 121628,
+    "triangles": 4536,
+    "vertices": 2292,
+    "meshSize": [
+      0.10892,
+      0.25943,
+      1.0
+    ],
+    "palette": {
+      "estoc_ice": [
+        200,
+        236,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "ice_white": [
+        236,
+        248,
+        255
+      ],
+      "deep_blue": [
+        24,
+        140,
+        255
+      ]
+    },
+    "areaShare": {
+      "estoc_ice": 0.041,
+      "cyan": 0.457,
+      "deep_blue": 0.263,
+      "ice_white": 0.239
+    },
+    "calmVivid": {
+      "calm": 0.28,
+      "vivid": 0.72
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.789,
+      "against": "Sword_IcicleShiv"
+    }
+  },
+  "Sword_SnowglobeSabre": {
+    "name": "Snowglobe Sabre",
+    "key": "Sword_SnowglobeSabre",
+    "pool": "FrostboundGlacier",
+    "tier": 4,
+    "concept": "a sabre rising out of a snowglobe with a tree and snowman inside",
+    "file": "Sword_SnowglobeSabre.glb",
+    "bytes": 159016,
+    "triangles": 6054,
+    "vertices": 3069,
+    "meshSize": [
+      0.12393,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "ice_white": [
+        236,
+        248,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "white": [
+        255,
+        255,
+        255
+      ],
+      "globe": [
+        220,
+        245,
+        255
+      ],
+      "leaf_bright": [
+        56,
+        224,
+        96
+      ],
+      "deep_blue": [
+        24,
+        140,
+        255
+      ]
+    },
+    "areaShare": {
+      "ice_white": 0.211,
+      "cyan": 0.098,
+      "globe": 0.164,
+      "white": 0.083,
+      "leaf_bright": 0.11,
+      "deep_blue": 0.333
+    },
+    "calmVivid": {
+      "calm": 0.458,
+      "vivid": 0.542
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.802,
+      "against": "Sword_SnowpackFalchion"
+    }
   }
 }
