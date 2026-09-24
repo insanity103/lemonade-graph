@@ -94250,8 +94250,7 @@
    "name": "EntranceBunting0",
    "className": "Model",
    "attributes": {
-    "Bunting": true,
-    "Sway": true
+    "Bunting": true
    },
    "children": [
     {
@@ -104318,8 +104317,7 @@
    "name": "Lookout0",
    "className": "Model",
    "attributes": {
-    "SandDrift": 1.4,
-    "Sway": true
+    "SandDrift": 1.4
    },
    "children": [
     {
@@ -108556,7 +108554,7 @@
       "Material": "SmoothPlastic",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": true,
+      "CanCollide": false,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true
@@ -108716,7 +108714,7 @@
       "Material": "SmoothPlastic",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": true,
+      "CanCollide": false,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true
@@ -108876,7 +108874,7 @@
       "Material": "SmoothPlastic",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": true,
+      "CanCollide": false,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true
@@ -109036,7 +109034,7 @@
       "Material": "SmoothPlastic",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": true,
+      "CanCollide": false,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true
@@ -109196,7 +109194,7 @@
       "Material": "SmoothPlastic",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": true,
+      "CanCollide": false,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true

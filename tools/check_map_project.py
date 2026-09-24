@@ -674,6 +674,7 @@ def check_projects():
                      ("StarterPlayer", "StarterPlayerScripts", "WorldShowcase"),
                      ("StarterPlayer", "StarterPlayerScripts", "WorldHorizon"),
                      ("StarterPlayer", "StarterPlayerScripts", "ZoneAir"),  # each zone's air and ambience beds
+                     ("StarterPlayer", "StarterPlayerScripts", "OasisAmbience"),  # the oasis's wildlife and sway
                      # Studio-only capture stages (all inert outside Studio).
                      ("ServerScriptService", "SwordGalleryStage"),
                      ("ServerScriptService", "EnemyDropStage"),

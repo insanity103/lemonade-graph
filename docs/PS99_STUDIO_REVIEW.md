@@ -18,8 +18,8 @@ section at the end of ART_DIRECTION.md lists exactly what changed.
 - This pass is Colour, Material and visual shape only. Never move spawns, gates, collision proxies
   or anything gameplay reads.
 - Validate before every commit: `rojo build map.project.json -o /tmp/lemonade-map.rbxlx &&
-  python3 tools/check_map_project.py /tmp/lemonade-map.rbxlx` (exactly four floating palm/runnel
-  FAILs already exist; add none) and `rojo build default.project.json -o /tmp/lemonade-gameplay-only.rbxlx
+  python3 tools/check_map_project.py /tmp/lemonade-map.rbxlx` (0 FAILs since the oasis pass
+  of 2026-09-24 fixed the palm/runnel four; add none) and `rojo build default.project.json -o /tmp/lemonade-gameplay-only.rbxlx
   && python3 tools/check_gameplay_project.py /tmp/lemonade-gameplay-only.rbxlx` (PASS).
 - Commit only when Alex asks.
 

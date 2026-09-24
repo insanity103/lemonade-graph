@@ -18,14 +18,15 @@ local SoundService = game:GetService("SoundService")
 
 -- ── Air ─────────────────────────────────────────────────────────────────────────────────────────
 local DESERT_FADE = { 140, 180, 462, 492 } -- [TUNING] camera Z: fade in from..to, fade out from..to
-local SAND_SHARE = 0.85 -- [TUNING] how far the basin's air moves toward the desert values below
--- { Lighting child class/name (nil = Lighting itself), property, desert value }. Bright and warm:
--- the same luminance as the town's shade, moved from sky blue to sun-on-sand cream, never brown.
+local SAND_SHARE = 0.75 -- [TUNING] how far the basin's air moves toward the desert values below
+-- { Lighting child class/name (nil = Lighting itself), property, desert value }. The same luminance
+-- as WorldLook's daylight shade (138/160/192 ambient, 164/190/226 outdoor, stepped down in hub round
+-- 4 against bleaching), only moved from sky blue toward sun-on-sand warmth: the coral cliffs'
+-- shade side reads as a deeper coral instead of mauve-grey, and the sand does not brighten.
 local AIR = { -- [TUNING]
-	{ nil, "Ambient", Color3.fromRGB(184, 168, 158) },
-	{ nil, "OutdoorAmbient", Color3.fromRGB(228, 208, 190) },
-	{ "Atmosphere", "Color", Color3.fromRGB(255, 234, 204) },
-	{ "WorldGrade", "TintColor", Color3.fromRGB(255, 251, 242) },
+	{ nil, "Ambient", Color3.fromRGB(160, 150, 150) },
+	{ nil, "OutdoorAmbient", Color3.fromRGB(194, 180, 172) },
+	{ "Atmosphere", "Color", Color3.fromRGB(250, 226, 200) },
 }
 
 local function desertFade(z: number): number

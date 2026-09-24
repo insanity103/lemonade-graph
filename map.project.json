@@ -172,6 +172,9 @@
         },
         "ZoneAir": {
           "$path": "lemonade-game/Map/ZoneAir.client.luau"
+        },
+        "OasisAmbience": {
+          "$path": "lemonade-game/Map/OasisAmbience.client.luau"
         }
       }
     },

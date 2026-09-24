@@ -692,7 +692,12 @@ local HUB_ROAM = 84
 local beds = {}
 for _, model in ipairs(map:GetDescendants()) do
 	if model:IsA("Model") and model:GetAttribute("FlowerBed") == true then
-		table.insert(beds, Vector3.new(model:GetAttribute("BedX"), model:GetAttribute("BedY"), model:GetAttribute("BedZ")))
+		local bed = Vector3.new(model:GetAttribute("BedX"), model:GetAttribute("BedY"), model:GetAttribute("BedZ"))
+		-- the village's own beds only: the oasis has flower beds too, which OasisAmbience's
+		-- butterflies visit (these never leave the village)
+		if Vector2.new(bed.X, bed.Z).Magnitude <= HUB_ROAM + 20 then
+			table.insert(beds, bed)
+		end
 	end
 end
 -- Tree canopies are the other favourite; butterflies flit round their edges.

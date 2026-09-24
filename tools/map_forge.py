@@ -4733,7 +4733,7 @@ def pennant_line(name, a, b, height, lr, pennants=10):
         kids.append(part(f"Pennant{k}", (1.4, 1.6, 0.08), (ax + dx * seg * t, y + height - 0.82, az + dz * seg * t),
                          (AWNINGS + [AWNING_CREAM])[k % 5], "SmoothPlastic", mul(rot_y(yaw), rot_x(180)), cls="WedgePart",
                          collide=False, query=False, shadow=False, layer="roof"))
-    return model(name, kids, attrs={"Bunting": True, "Sway": True})
+    return model(name, kids, attrs={"Bunting": True})
 
 
 def palisade(name, a, b, lr):
@@ -4781,7 +4781,7 @@ def lookout(name, x, z, lr):
     kids.append(part("FlagPole", (0.3, 4.2, 0.3), (x + 2.9, y + H + 6.0, z + 2.9), VIGA, "SmoothPlastic", collide=False, query=False))
     kids.append(part("Flag", (2.6, 1.6, 0.12), (x + 4.2, y + H + 7.2, z + 2.9), AWNINGS[0], "SmoothPlastic", collide=False, query=False,
                      shadow=False))
-    return model(name, kids, attrs={"SandDrift": 1.4, "Sway": True})
+    return model(name, kids, attrs={"SandDrift": 1.4})
 
 
 def loot_pile(name, x, z, lr):
@@ -4822,7 +4822,7 @@ def adobe_ruin(name, x, z, yaw, length, lr):
 def bandit_banner(name, x, z, color, lr):
     y = floor_at(x, z, None)
     return model(name, [
-        part("Pole", (0.4, 11.0, 0.4), (x, y + 5.3, z), VIGA, "SmoothPlastic"),
+        part("Pole", (0.4, 11.0, 0.4), (x, y + 5.3, z), VIGA, "SmoothPlastic", collide=False),
         part("Finial", (0.8, 0.8, 0.8), (x, y + 11.0, z), LOOT_GOLD, "SmoothPlastic", shape="Ball", collide=False, query=False),
         part("Banner", (0.12, 4.2, 2.2), (x, y + 8.0, z + 1.25), color, "SmoothPlastic", collide=False, query=False, shadow=False),
     ], attrs={"Sway": True})
