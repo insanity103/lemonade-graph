@@ -18,11 +18,30 @@ function CombatUtil.isEnemy(model)
 		or CollectionService:HasTag(model, CombatUtil.ENEMY_TAG)
 end
 
--- Boss blades are textured MeshParts, and Enum.Material.Neon replaces the texture with a
--- flat glow -- which threw away the sword artwork on the three highest boss tiers. A Neon
--- request is honoured as a PointLight instead: the texture survives and the blade still
--- reads as glowing. Any other material is applied as asked.
+-- PS99 pass: every sword reads as matte plastic in the hand. Whatever material a look or an
+-- archetype asks for (Metal, Ice, the block sword's steel) lands as WEAPON_MATERIAL, so a baked
+-- blade texture (TextureID, kept) reads as painted toy plastic instead of PBR steel. Neon is the
+-- one exception: on an untextured blade it stays a flat glow; on a textured MeshPart it would
+-- replace the artwork with a flat colour, so there it is honoured as a PointLight instead and the
+-- part goes plastic like every other. A SurfaceAppearance (the metalness/roughness maps
+-- tools/sword_forge.py bakes into the glTF material) overrides the part material entirely, so one
+-- without its own colour map is dropped; one that carries the colour map is kept, since losing the
+-- paint is worse than a little sheen. The sword GLBs are not regenerated: runtime override only.
+CombatUtil.WEAPON_MATERIAL = Enum.Material.SmoothPlastic
 local GLOW_NAME = "BladeGlow"
+
+local function stripPbr(part)
+	for _, child in ipairs(part:GetChildren()) do
+		if child:IsA("SurfaceAppearance") then
+			local ok, colorMap = pcall(function()
+				return child.ColorMap
+			end)
+			if not (ok and typeof(colorMap) == "string" and colorMap ~= "") then
+				child:Destroy()
+			end
+		end
+	end
+end
 
 function CombatUtil.applyWeaponAppearance(part, color, material)
 	if not (part and part:IsA("BasePart")) then
@@ -31,9 +50,10 @@ function CombatUtil.applyWeaponAppearance(part, color, material)
 	if color then
 		part.Color = color
 	end
+	stripPbr(part)
 	local textured = part:IsA("MeshPart") and part.TextureID ~= ""
 	if material == Enum.Material.Neon and textured then
-		part.Material = Enum.Material.Metal
+		part.Material = CombatUtil.WEAPON_MATERIAL
 		local glow = part:FindFirstChild(GLOW_NAME)
 		if not glow then
 			glow = Instance.new("PointLight")
@@ -44,12 +64,12 @@ function CombatUtil.applyWeaponAppearance(part, color, material)
 		glow.Range = 12
 		glow.Shadows = false
 		glow.Parent = part
-	elseif material then
+	else
 		local glow = part:FindFirstChild(GLOW_NAME)
 		if glow then
 			glow:Destroy()
 		end
-		part.Material = material
+		part.Material = if material == Enum.Material.Neon then Enum.Material.Neon else CombatUtil.WEAPON_MATERIAL
 	end
 end
 

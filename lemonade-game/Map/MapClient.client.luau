@@ -28,16 +28,19 @@ local BANNER_HOLD = 2.6
 local TOAST_HOLD = 2.8
 local CLOSE_ACTION = "CloseTravelMenu"
 
+-- PS99 chrome (PanelChrome.BRIGHT): white panels, ink outline and text, sky-blue buttons, and a
+-- gold accent for the quest guide's diamond and focus outline.
 local COLORS = {
-	panel = Color3.fromRGB(24, 22, 20),
-	stroke = Color3.fromRGB(120, 96, 64),
-	title = Color3.fromRGB(255, 226, 160),
-	text = Color3.fromRGB(236, 230, 218),
-	muted = Color3.fromRGB(140, 134, 124),
-	button = Color3.fromRGB(58, 48, 38),
-	buttonHot = Color3.fromRGB(92, 72, 44),
-	deny = Color3.fromRGB(255, 140, 120),
-	good = Color3.fromRGB(150, 230, 200),
+	panel = Color3.fromRGB(246, 249, 255),
+	stroke = Color3.fromRGB(30, 33, 48),
+	title = Color3.fromRGB(30, 33, 48),
+	text = Color3.fromRGB(56, 62, 84),
+	muted = Color3.fromRGB(128, 136, 158),
+	button = Color3.fromRGB(64, 170, 255),
+	buttonHot = Color3.fromRGB(30, 130, 240),
+	deny = Color3.fromRGB(240, 64, 74),
+	good = Color3.fromRGB(46, 164, 52),
+	accent = Color3.fromRGB(255, 200, 40),
 }
 
 -- ── Marker data ─────────────────────────────────────────────────────────────
@@ -97,12 +100,12 @@ banner.Size = UDim2.fromOffset(460, 70)
 banner.BackgroundTransparency = 1
 banner.Parent = gui
 local bannerTitle = label(banner, {
-	Size = UDim2.new(1, 0, 0, 44), Font = Enum.Font.Fantasy, TextSize = 38, TextColor3 = COLORS.title,
-	TextStrokeTransparency = 0.4, TextTransparency = 1, TextStrokeColor3 = Color3.new(0, 0, 0),
+	Size = UDim2.new(1, 0, 0, 44), Font = Enum.Font.FredokaOne, TextSize = 40, TextColor3 = Color3.new(1, 1, 1),
+	TextStrokeTransparency = 0, TextTransparency = 1, TextStrokeColor3 = COLORS.stroke,
 })
 local bannerSubtitle = label(banner, {
-	Position = UDim2.fromOffset(0, 44), Size = UDim2.new(1, 0, 0, 22), TextSize = 17,
-	TextStrokeTransparency = 0.5, TextTransparency = 1,
+	Position = UDim2.fromOffset(0, 44), Size = UDim2.new(1, 0, 0, 22), TextSize = 17, Font = Enum.Font.GothamBold,
+	TextColor3 = Color3.new(1, 1, 1), TextStrokeColor3 = COLORS.stroke, TextStrokeTransparency = 0.1, TextTransparency = 1,
 })
 
 -- Toast.
@@ -140,6 +143,7 @@ hubButton.Parent = gui
 round(hubButton, 8)
 local hubStroke = Instance.new("UIStroke")
 hubStroke.Color = COLORS.stroke
+hubStroke.Thickness = 2.5
 hubStroke.Parent = hubButton
 
 -- Travel menu.
@@ -156,7 +160,7 @@ panel.Parent = gui
 round(panel, 12)
 local panelStroke = Instance.new("UIStroke")
 panelStroke.Color = COLORS.stroke
-panelStroke.Thickness = 2
+panelStroke.Thickness = 3.5
 panelStroke.Parent = panel
 local padding = Instance.new("UIPadding")
 padding.PaddingTop, padding.PaddingBottom = UDim.new(0, 14), UDim.new(0, 14)
@@ -172,7 +176,7 @@ header.BackgroundTransparency = 1
 header.Size = UDim2.new(1, 0, 0, 34)
 header.LayoutOrder = 0
 header.Parent = panel
-label(header, { Size = UDim2.new(1, -40, 1, 0), Text = "Waystones", Font = Enum.Font.Fantasy, TextSize = 28,
+label(header, { Size = UDim2.new(1, -40, 1, 0), Text = "Waystones", Font = Enum.Font.FredokaOne, TextSize = 28,
 	TextColor3 = COLORS.title, TextXAlignment = Enum.TextXAlignment.Left })
 local closeButton = Instance.new("TextButton")
 closeButton.AnchorPoint = Vector2.new(1, 0)
@@ -199,8 +203,8 @@ local function showBanner(title: string, subtitle: string)
 	bannerToken += 1
 	local token = bannerToken
 	bannerTitle.Text, bannerSubtitle.Text = title, subtitle
-	fade(bannerTitle, { TextTransparency = 0, TextStrokeTransparency = 0.4 })
-	fade(bannerSubtitle, { TextTransparency = 0, TextStrokeTransparency = 0.5 })
+	fade(bannerTitle, { TextTransparency = 0, TextStrokeTransparency = 0 })
+	fade(bannerSubtitle, { TextTransparency = 0, TextStrokeTransparency = 0.1 })
 	task.delay(BANNER_HOLD, function()
 		if token ~= bannerToken then return end
 		fade(bannerTitle, { TextTransparency = 1, TextStrokeTransparency = 1 }, 0.8)
@@ -335,7 +339,7 @@ guideIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 guideIcon.Position = UDim2.new(0.5, 0, 0, 12)
 guideIcon.Size = UDim2.fromOffset(14, 14)
 guideIcon.Rotation = 45
-guideIcon.BackgroundColor3 = COLORS.title
+guideIcon.BackgroundColor3 = COLORS.accent
 guideIcon.BorderSizePixel = 0
 guideIcon.Parent = guide
 local guideIconStroke = Instance.new("UIStroke")
@@ -343,13 +347,13 @@ guideIconStroke.Color = Color3.new(0, 0, 0)
 guideIconStroke.Thickness = 1.5
 guideIconStroke.Parent = guideIcon
 local guideText = label(guide, { Position = UDim2.fromOffset(0, 24), Size = UDim2.new(1, 0, 0, 20), TextSize = 14,
-	TextStrokeTransparency = 0.3, Font = Enum.Font.GothamBold, TextColor3 = COLORS.title })
+	TextStrokeTransparency = 0, Font = Enum.Font.FredokaOne, TextColor3 = Color3.new(1, 1, 1), TextStrokeColor3 = COLORS.stroke })
 
 -- Yellow outline on whatever the guide points at (an NPC or the enemy to fight).
 local focus = Instance.new("Highlight")
 focus.Name = "QuestFocus"
 focus.FillTransparency = 1
-focus.OutlineColor = COLORS.title
+focus.OutlineColor = COLORS.accent
 focus.OutlineTransparency = 0.1
 focus.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 focus.Parent = gui

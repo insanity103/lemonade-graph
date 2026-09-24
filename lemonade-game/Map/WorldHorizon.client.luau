@@ -34,7 +34,11 @@ for _, d in ipairs(horizon:GetDescendants()) do
 		d.CanQuery = false
 	end
 end
-return
+-- (`do return end`, not a bare `return`: Luau only allows `return` as the last statement of a
+-- block, so the bare one left this whole LocalScript failing to compile.)
+do
+	return
+end
 
 local eye = Vector3.new(
 	horizon:GetAttribute("SkyEyeX") or 0,

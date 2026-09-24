@@ -85,6 +85,13 @@ local started = os.clock()
 -- greens are vivid lime, the roads and walks are near-white cream stepping up through peach to a
 -- golden sand, and the rock strata are the warm accents at full colour: a monotonic foot-to-crest
 -- sweep from coral-red through orange to coin gold, never grey, never brown, never a cool colour.
+-- In-engine check (PS99 pass): these are lit by WorldLook's near-neutral daylight and grade, so
+-- what is written here is what shows -- no runtime recolour touches terrain any more. The big
+-- walked surfaces (Cobblestone path, Ground, Sand, Snow, Salt, Concrete) are the pale calm tints
+-- (HSV saturation 0.10-0.35, value >= 0.98); the rock strata and every green are the full-chroma
+-- accents (saturation 0.72-0.80). Terrain's own material textures (Rock, Slate, Basalt, Asphalt)
+-- add relief the SmoothPlastic parts do not have; if that reads rough next to the plastic castle
+-- in Studio, the fix is a material swap per stratum here, not a colour change.
 terrain:SetMaterialColor(M.Slate, Color3.fromRGB(236, 88, 60)) -- the dark foot and the seam: coral-red, the family's deepest step
 terrain:SetMaterialColor(M.Rock, Color3.fromRGB(255, 140, 72)) -- the main cliff face: toy orange
 terrain:SetMaterialColor(M.Limestone, Color3.fromRGB(255, 214, 64)) -- the crest: coin gold
@@ -648,9 +655,11 @@ do
 		terrain:SetMaterialColor(M.Snow, Color3.fromRGB(255, 248, 228)) -- GROUND_PALE: pale drift crests, the near-white step of the sand
 		terrain:SetMaterialColor(M.Salt, Color3.fromRGB(255, 224, 212)) -- the trodden hardpan trail: a pale rosy-cream path, calm against the golden sand
 		terrain:SetMaterialColor(M.Concrete, Color3.fromRGB(250, 214, 160)) -- GROUND_TAN: damp sand at the water's edge, peach, matching the pool beds
-		terrain.WaterColor = Color3.fromRGB(40, 176, 176)
-		terrain.WaterTransparency = 0.45
-		terrain.WaterReflectance = 0.55
+		-- PS99 water: a flat, saturated toy cyan-blue (the sky's own family, not a natural teal),
+		-- barely reflective so it reads as a painted pool rather than a mirror.
+		terrain.WaterColor = Color3.fromRGB(64, 190, 255)
+		terrain.WaterTransparency = 0.35
+		terrain.WaterReflectance = 0.15
 		terrain.WaterWaveSize = 0.05
 		terrain.WaterWaveSpeed = 6
 

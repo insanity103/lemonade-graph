@@ -6,17 +6,22 @@
 -- PanelChrome.build(...).Frame straight into a [Children] table).
 local PanelChrome = {}
 
+-- Base palette (PS99 pass, docs/ART_DIRECTION.md): bright, rounded, bold-outlined. The old
+-- charcoal-and-gold "fantasy gacha" set is gone; the same keys now map onto the bright chrome
+-- below (BRIGHT), so every panel still drawing from COLORS lands in the one system:
+-- white-to-pale-blue panel faces, a dark ink outline and ink text, a sky-blue button with a
+-- deeper blue hover, and the accent trio (gold / tangerine "ember" / green / red) at full chroma.
 PanelChrome.COLORS = {
-	Panel = Color3.fromRGB(18, 18, 22), PanelLight = Color3.fromRGB(26, 26, 32), Dark = Color3.fromRGB(10, 10, 13),
-	Stroke = Color3.fromRGB(45, 45, 55), StrokeBright = Color3.fromRGB(75, 75, 90), Gold = Color3.fromRGB(255, 215, 60),
-	Text = Color3.fromRGB(245, 245, 250), Muted = Color3.fromRGB(160, 160, 175), Button = Color3.fromRGB(35, 35, 45),
-	ButtonHover = Color3.fromRGB(55, 55, 65), Ember = Color3.fromRGB(232, 112, 42), Success = Color3.fromRGB(80, 220, 140),
-	Error = Color3.fromRGB(255, 85, 85),
+	Panel = Color3.fromRGB(246, 249, 255), PanelLight = Color3.fromRGB(232, 238, 248), Dark = Color3.fromRGB(214, 225, 242),
+	Stroke = Color3.fromRGB(30, 33, 48), StrokeBright = Color3.fromRGB(56, 62, 84), Gold = Color3.fromRGB(255, 212, 60),
+	Text = Color3.fromRGB(30, 33, 48), Muted = Color3.fromRGB(128, 136, 158), Button = Color3.fromRGB(64, 170, 255),
+	ButtonHover = Color3.fromRGB(30, 130, 240), Ember = Color3.fromRGB(255, 122, 48), Success = Color3.fromRGB(104, 222, 84),
+	Error = Color3.fromRGB(240, 64, 74),
 }
 
 PanelChrome.RARITY_COLORS = {
-	Common = Color3.fromRGB(180, 180, 180), Uncommon = Color3.fromRGB(80, 200, 120), Rare = Color3.fromRGB(80, 160, 255),
-	Epic = Color3.fromRGB(180, 80, 240), Legendary = Color3.fromRGB(255, 200, 40),
+	Common = Color3.fromRGB(196, 206, 224), Uncommon = Color3.fromRGB(70, 196, 72), Rare = Color3.fromRGB(48, 138, 246),
+	Epic = Color3.fromRGB(150, 70, 232), Legendary = Color3.fromRGB(255, 200, 40),
 }
 
 local function corner(inst, radius)
@@ -27,79 +32,64 @@ local function corner(inst, radius)
 end
 PanelChrome.corner = corner
 
--- Builds a bordered modal shell: background, corner radius, accent stroke, a title banner
--- (title + optional subtitle) with a header divider, and a close button. The frame is
--- returned unparented -- parent it yourself, or hand it to Fusion.
+-- Builds a modal shell in the bright chrome: a white-to-pale-blue rounded face with a thick ink
+-- outline, a chunky white-faced stroked title (plus an optional subtitle), an accent bar under the
+-- header, and a red chunky close button. The frame is returned unparented -- parent it yourself,
+-- or hand it to Fusion. Same return shape as before, so callers built on the dark shell keep
+-- working: { Frame, TitleLabel, SubtitleLabel, CloseButton, HeaderBottom }.
 --
--- props: { name, title, subtitle, accentColor, size }
+-- props: { name, title, subtitle, accentColor, size, titleSize }
 function PanelChrome.build(props)
-	local accent = props.accentColor or PanelChrome.COLORS.Ember
+	local bright = PanelChrome.BRIGHT
+	local accent = props.accentColor or bright.Blue
 
 	local modal = Instance.new("Frame")
 	modal.Name = props.name or "Modal"
 	modal.AnchorPoint = Vector2.new(0.5, 0.5)
 	modal.Position = UDim2.fromScale(0.5, 0.5)
 	modal.Size = props.size or UDim2.fromOffset(800, 600)
-	modal.BackgroundColor3 = PanelChrome.COLORS.Panel
+	modal.BackgroundColor3 = Color3.new(1, 1, 1)
 	modal.BorderSizePixel = 0
-	corner(modal, 14)
+	corner(modal, 22)
+	PanelChrome.gradient(modal, bright.Panel, bright.PanelBottom)
+	PanelChrome.stroke(modal, bright.Outline, 4.5)
 
-	local stroke = Instance.new("UIStroke")
-	stroke.Color = accent
-	stroke.Thickness = 2
-	stroke.Transparency = 0.4
-	stroke.Parent = modal
-
-	local titleLabel = Instance.new("TextLabel")
-	titleLabel.Name = "Title"
-	titleLabel.BackgroundTransparency = 1
-	titleLabel.Position = UDim2.fromOffset(20, 14)
-	titleLabel.Size = UDim2.new(1, -220, 0, 32)
-	titleLabel.Font = Enum.Font.Fantasy
-	titleLabel.TextSize = props.titleSize or 30
-	titleLabel.TextColor3 = accent
-	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-	titleLabel.Text = props.title or ""
-	titleLabel.Parent = modal
+	local titleLabel = PanelChrome.display(modal, {
+		name = "Title", text = props.title or "", size = props.titleSize or 34, stroke = 3.5,
+		xAlign = Enum.TextXAlignment.Left, pos = UDim2.fromOffset(22, 10), size2 = UDim2.new(1, -240, 0, 40),
+	})
 
 	local subtitleLabel
 	if props.subtitle then
 		subtitleLabel = Instance.new("TextLabel")
 		subtitleLabel.Name = "Subtitle"
 		subtitleLabel.BackgroundTransparency = 1
-		subtitleLabel.Position = UDim2.fromOffset(20, 46)
-		subtitleLabel.Size = UDim2.new(1, -220, 0, 20)
-		subtitleLabel.Font = Enum.Font.GothamMedium
-		subtitleLabel.TextSize = 13
-		subtitleLabel.TextColor3 = PanelChrome.COLORS.Muted
+		subtitleLabel.Position = UDim2.fromOffset(24, 52)
+		subtitleLabel.Size = UDim2.new(1, -240, 0, 20)
+		subtitleLabel.Font = Enum.Font.GothamBold
+		subtitleLabel.TextSize = 14
+		subtitleLabel.TextColor3 = bright.InkMuted
 		subtitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 		subtitleLabel.Text = props.subtitle
 		subtitleLabel.Parent = modal
 	end
 
-	local headerBottom = props.subtitle and 74 or 52
+	local headerBottom = props.subtitle and 82 or 60
 
 	local divider = Instance.new("Frame")
 	divider.Name = "HeaderDivider"
 	divider.BackgroundColor3 = accent
-	divider.BackgroundTransparency = 0.7
 	divider.BorderSizePixel = 0
-	divider.Position = UDim2.fromOffset(20, headerBottom - 2)
-	divider.Size = UDim2.new(1, -40, 0, 1)
+	divider.Position = UDim2.fromOffset(22, headerBottom - 6)
+	divider.Size = UDim2.new(1, -44, 0, 4)
 	divider.Parent = modal
+	corner(divider, 2)
 
-	local closeBtn = Instance.new("TextButton")
-	closeBtn.Name = "CloseButton"
-	closeBtn.AnchorPoint = Vector2.new(1, 0)
-	closeBtn.Position = UDim2.new(1, -14, 0, 14)
-	closeBtn.Size = UDim2.fromOffset(34, 34)
-	closeBtn.BackgroundColor3 = PanelChrome.COLORS.Button
-	closeBtn.Text = "X"
-	closeBtn.TextColor3 = PanelChrome.COLORS.Text
-	closeBtn.Font = Enum.Font.GothamBold
-	closeBtn.TextSize = 18
-	closeBtn.Parent = modal
-	corner(closeBtn, 8)
+	local closeBtn = PanelChrome.chunkyButton(modal, {
+		name = "CloseButton", text = "X", color = bright.Red, colorDark = bright.RedDark,
+		size = UDim2.fromOffset(44, 44), anchor = Vector2.new(1, 0), pos = UDim2.new(1, -14, 0, 10),
+		textSize = 26, radius = 12, strokeThickness = 3,
+	})
 
 	return {
 		Frame = modal,
@@ -111,9 +101,8 @@ function PanelChrome.build(props)
 end
 
 -- ═════════════════════════════════════════════════════════════════════════════
---  Bright chrome: light, chunky, thick-outlined panels (the look the Main Menu uses).
---  Everything below is additive; build() above keeps the dark style for panels that
---  have not moved over yet.
+--  Bright chrome: light, chunky, thick-outlined panels (the look the Main Menu uses, and
+--  since the PS99 pass the only look: build() above is drawn from this palette too).
 -- ═════════════════════════════════════════════════════════════════════════════
 PanelChrome.BRIGHT = {
 	Panel = Color3.fromRGB(246, 249, 255), PanelBottom = Color3.fromRGB(214, 225, 242),

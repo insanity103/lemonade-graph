@@ -132,9 +132,10 @@ local function findMesh(look)
 	return nil -- "Blocks", or no mesh in the place: the starter sword's block parts
 end
 
-local function darker(color, k)
-	return Color3.new(color.R * k, color.G * k, color.B * k)
-end
+-- The block sword's toy palette (PS99 pass): shared with RuntimeBootstrap's ClassicSword.
+local BLOCK_GRIP = Color3.fromRGB(255, 96, 80) -- coral grip
+local BLOCK_ACCENT = Color3.fromRGB(255, 200, 48) -- gold guard and pommel
+local BLOCK_BLADE_COLOR = Color3.fromRGB(236, 244, 255) -- near-white blade, a hint of sky blue
 
 -- The starter sword's block parts, built here if the template came without them (StarterPack's
 -- ClassicSword only gets its parts from RuntimeBootstrap at run time), so a "Blocks" sword is
@@ -160,16 +161,19 @@ local function ensureBlockParts(tool)
 		part.Massless = true
 		return part
 	end
-	local leather = Color3.fromRGB(92, 66, 50)
-	local bronze = Color3.fromRGB(170, 124, 60)
-	local steel = Color3.fromRGB(185, 192, 200)
-	local handle = ensurePart("Handle", "Part", Vector3.new(0.32, 0.32, 1.10), leather, Enum.Material.SmoothPlastic, Enum.PartType.Block)
+	-- PS99 toy sword: matte plastic throughout (CombatUtil.WEAPON_MATERIAL), a pale near-white
+	-- blade, a gold guard and pommel, a coral grip -- same three colours as RuntimeBootstrap.
+	local plastic = CombatUtil.WEAPON_MATERIAL
+	local grip = BLOCK_GRIP
+	local gold = BLOCK_ACCENT
+	local blade = BLOCK_BLADE_COLOR
+	local handle = ensurePart("Handle", "Part", Vector3.new(0.32, 0.32, 1.10), grip, plastic, Enum.PartType.Block)
 	if not handle:IsA("MeshPart") then
-		local pommel = ensurePart("Pommel", "Part", Vector3.new(0.44, 0.44, 0.44), bronze, Enum.Material.Metal, Enum.PartType.Ball)
-		local guard = ensurePart("Guard", "Part", Vector3.new(1.30, 0.26, 0.32), bronze, Enum.Material.Metal, Enum.PartType.Block)
-		local blade = ensurePart("Blade", "Part", Vector3.new(0.22, 0.60, 2.60), steel, Enum.Material.Metal, Enum.PartType.Block)
-		local tipUpper = ensurePart("TipUpper", "WedgePart", Vector3.new(0.22, 0.30, 0.50), steel, Enum.Material.Metal)
-		local tipLower = ensurePart("TipLower", "WedgePart", Vector3.new(0.22, 0.30, 0.50), steel, Enum.Material.Metal)
+		local pommel = ensurePart("Pommel", "Part", Vector3.new(0.44, 0.44, 0.44), gold, plastic, Enum.PartType.Ball)
+		local guard = ensurePart("Guard", "Part", Vector3.new(1.30, 0.26, 0.32), gold, plastic, Enum.PartType.Block)
+		local bladePart = ensurePart("Blade", "Part", Vector3.new(0.22, 0.60, 2.60), blade, plastic, Enum.PartType.Block)
+		local tipUpper = ensurePart("TipUpper", "WedgePart", Vector3.new(0.22, 0.30, 0.50), blade, plastic)
+		local tipLower = ensurePart("TipLower", "WedgePart", Vector3.new(0.22, 0.30, 0.50), blade, plastic)
 		local function ensureWeld(name, part1, c0)
 			local weld = handle:FindFirstChild(name)
 			if weld and not weld:IsA("Weld") then weld:Destroy(); weld = nil end
@@ -184,7 +188,7 @@ local function ensureBlockParts(tool)
 		end
 		ensureWeld("WeldPommel", pommel, CFrame.new(0, 0, 0.66))
 		ensureWeld("WeldGuard", guard, CFrame.new(0, 0, -0.66))
-		ensureWeld("WeldBlade", blade, CFrame.new(0, 0, -2.09))
+		ensureWeld("WeldBlade", bladePart, CFrame.new(0, 0, -2.09))
 		ensureWeld("WeldTipUpper", tipUpper, CFrame.new(0, 0.15, -3.64))
 		ensureWeld("WeldTipLower", tipLower, CFrame.new(0, -0.15, -3.64) * CFrame.Angles(0, 0, math.pi))
 	end
@@ -202,11 +206,13 @@ local function restyleBlocks(tool, look)
 	end
 	local blade, guard, pommel = tool:FindFirstChild("Blade"), tool:FindFirstChild("Guard"), tool:FindFirstChild("Pommel")
 	local tipUpper, tipLower = tool:FindFirstChild("TipUpper"), tool:FindFirstChild("TipLower")
-	local accent = look.accent or Color3.fromRGB(170, 124, 60)
+	local accent = look.accent or BLOCK_ACCENT
 	local bladeK, widthK, guardK = look.blade or 1, look.width or 1, look.guard or 1
 	local bladeLen = BLOCK_BLADE_LEN * bladeK
-	handle.Color = darker(accent, 0.45)
-	handle.Material = Enum.Material.SmoothPlastic
+	-- Every part of the block sword is matte plastic (CombatUtil.WEAPON_MATERIAL); the grip keeps
+	-- its own coral rather than a darkened accent, which went muddy brown on a gold guard.
+	handle.Color = BLOCK_GRIP
+	handle.Material = CombatUtil.WEAPON_MATERIAL
 	if blade and blade:IsA("BasePart") then
 		blade.Size = Vector3.new(0.22, 0.60 * widthK, bladeLen)
 		CombatUtil.applyWeaponAppearance(blade, look.color, look.material)
@@ -218,7 +224,7 @@ local function restyleBlocks(tool, look)
 	for _, tip in ipairs({ tipUpper, tipLower }) do
 		if tip and tip:IsA("BasePart") then
 			tip.Size = Vector3.new(0.22, 0.30 * widthK, 0.50)
-			CombatUtil.applyWeaponAppearance(tip, look.color, look.material ~= Enum.Material.Neon and look.material or Enum.Material.Metal)
+			CombatUtil.applyWeaponAppearance(tip, look.color, look.material ~= Enum.Material.Neon and look.material or nil)
 		end
 	end
 	local tipZ = -BLOCK_GUARD_BACK - bladeLen - 0.25
@@ -228,11 +234,11 @@ local function restyleBlocks(tool, look)
 	if guard and guard:IsA("BasePart") then
 		guard.Size = Vector3.new(1.30 * guardK, 0.26, 0.32)
 		guard.Color = accent
-		guard.Material = Enum.Material.Metal
+		guard.Material = CombatUtil.WEAPON_MATERIAL
 	end
 	if pommel and pommel:IsA("BasePart") then
 		pommel.Color = accent
-		pommel.Material = look.material == Enum.Material.Neon and Enum.Material.Neon or Enum.Material.Metal
+		pommel.Material = look.material == Enum.Material.Neon and Enum.Material.Neon or CombatUtil.WEAPON_MATERIAL
 	end
 end
 

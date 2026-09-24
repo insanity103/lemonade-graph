@@ -106,15 +106,18 @@ local function ensurePart(name, className, size, color, material, shape)
 	return part
 end
 
-local leather = Color3.fromRGB(92, 66, 50)
-local bronze = Color3.fromRGB(170, 124, 60)
-local steel = Color3.fromRGB(185, 192, 200)
-local handle = ensurePart("Handle", "Part", Vector3.new(0.32, 0.32, 1.10), leather, Enum.Material.SmoothPlastic, Enum.PartType.Block)
-local pommel = ensurePart("Pommel", "Part", Vector3.new(0.44, 0.44, 0.44), bronze, Enum.Material.Metal, Enum.PartType.Ball)
-local guard = ensurePart("Guard", "Part", Vector3.new(1.30, 0.26, 0.32), bronze, Enum.Material.Metal, Enum.PartType.Block)
-local blade = ensurePart("Blade", "Part", Vector3.new(0.22, 0.60, 2.60), steel, Enum.Material.Metal, Enum.PartType.Block)
-local tipUpper = ensurePart("TipUpper", "WedgePart", Vector3.new(0.22, 0.30, 0.50), steel, Enum.Material.Metal)
-local tipLower = ensurePart("TipLower", "WedgePart", Vector3.new(0.22, 0.30, 0.50), steel, Enum.Material.Metal)
+-- PS99 toy sword (same palette and material as BossSwordFactory's block parts): matte plastic
+-- throughout, a pale near-white blade, gold guard and pommel, a coral grip. Metal is gone.
+local plastic = Enum.Material.SmoothPlastic
+local grip = Color3.fromRGB(255, 96, 80)
+local gold = Color3.fromRGB(255, 200, 48)
+local pale = Color3.fromRGB(236, 244, 255)
+local handle = ensurePart("Handle", "Part", Vector3.new(0.32, 0.32, 1.10), grip, plastic, Enum.PartType.Block)
+local pommel = ensurePart("Pommel", "Part", Vector3.new(0.44, 0.44, 0.44), gold, plastic, Enum.PartType.Ball)
+local guard = ensurePart("Guard", "Part", Vector3.new(1.30, 0.26, 0.32), gold, plastic, Enum.PartType.Block)
+local blade = ensurePart("Blade", "Part", Vector3.new(0.22, 0.60, 2.60), pale, plastic, Enum.PartType.Block)
+local tipUpper = ensurePart("TipUpper", "WedgePart", Vector3.new(0.22, 0.30, 0.50), pale, plastic)
+local tipLower = ensurePart("TipLower", "WedgePart", Vector3.new(0.22, 0.30, 0.50), pale, plastic)
 
 local function ensureWeld(name, part1, c0)
 	local weld = handle:FindFirstChild(name)

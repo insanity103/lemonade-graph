@@ -4,25 +4,33 @@
 -- every accessory is a WeldConstraint child of its body part: Massless, no collision, no query,
 -- so it never bumps the rig or catches raycasts. Sizes and offsets are in unit-rig studs (R6:
 -- torso 2×2×1, head 1.2³, limbs 1×2×1) and are multiplied by the archetype scale.
--- The quarry bandits (IronSquire / IronBerserker / Boss_Gorgon) share rust, leather and rag so
--- they read as one gang; role "elite" picks the "<archetype>_elite" variant when one exists.
+-- The quarry bandits (IronSquire / IronBerserker / Boss_Gorgon) share one kit family so they read
+-- as one gang; role "elite" picks the "<archetype>_elite" variant when one exists.
+--
+-- Palette (PS99 pass, docs/ART_DIRECTION.md): the body under the outfit is the archetype's own
+-- full-chroma plastic (EnemyCombat), so the big cloth pieces here -- tunic, hood, vest, cape --
+-- are pale, calm tints (near-white cream / sky / mint, saturation 0.10-0.20) and only the small
+-- pieces (belts, pauldrons, tool heads, eyes, sigils) carry a second saturated pop. That is the
+-- calm-plus-vivid split PS99 runs on; an all-vivid or all-pastel rig reads flat. Nothing here is
+-- grey, brown or muddy. Every piece is matte SmoothPlastic (see apply); Neon is kept for glows.
 local EnemyOutfits = {}
 
 local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
 local function deg(x, y, z) return CFrame.Angles(math.rad(x), math.rad(y), math.rad(z)) end
 local FLAT = deg(0, 0, 90) -- cylinder axis vertical
 
-local RUST = rgb(150, 82, 44)
-local IRON_DARK = rgb(58, 56, 54)
-local LEATHER = rgb(96, 64, 40)
-local RAG = rgb(110, 96, 80)
-local DARK_CLOTH = rgb(56, 48, 44)
-local SASH_RED = rgb(150, 40, 40)
-local BANNER_RED = rgb(110, 36, 40)
-local BONE = rgb(226, 214, 190)
-local SKIN_TAN = rgb(198, 156, 116)
-local SCAR = rgb(120, 70, 60)
-local LANTERN = rgb(255, 196, 120)
+-- Quarry gang: toy orange "rust" and toy blue "iron" pops over cream and near-white cloth.
+local RUST = rgb(255, 140, 40) -- pick head, pauldrons, chest plate: the map's timber orange
+local IRON_DARK = rgb(64, 144, 255) -- helm, chain, sledge head: the castle's full-chroma blue
+local LEATHER = rgb(255, 238, 210) -- vest, belts, handles: calm cream
+local RAG = rgb(255, 250, 240) -- masks, wraps: near-white
+local DARK_CLOTH = rgb(188, 216, 255) -- hoods, belts, cape: pale sky blue
+local SASH_RED = rgb(255, 64, 64)
+local BANNER_RED = rgb(255, 84, 72)
+local BONE = rgb(255, 255, 250)
+local SKIN_TAN = rgb(255, 214, 170) -- peach
+local SCAR = rgb(255, 120, 140) -- pink
+local LANTERN = rgb(255, 214, 96)
 
 -- Accessory: { part, name, size = Vector3, offset = CFrame in the body part's space (-Z front),
 -- color, material?, shape?, transparency?, light? = {range, brightness} }
@@ -140,137 +148,149 @@ local function addKit(key: string, primary: Color3, secondary: Color3, trim: Col
 end
 
 local p = piece
-local ICE = rgb(130, 207, 231)
-local ICE_DARK = rgb(48, 86, 115)
-local ICE_PALE = rgb(218, 241, 244)
-addKit("FrostImp", ICE_DARK, rgb(74, 131, 164), ICE_PALE, "Ice", 1, {
-	p("Head", "FrostHood", Vector3.new(1.45, .62, 1.4), Vector3.new(0, .52, .12), ICE_DARK),
-	p("Head", "IceBrow", Vector3.new(.86, .17, .26), Vector3.new(0, .3, -.64), ICE, "Ice"),
-	p("Torso", "ScarfTail", Vector3.new(.32, 1.18, .1), Vector3.new(.7, -.18, .65), ICE_PALE),
+-- Frost: cyan body; pale ice cloth, cyan pieces, white glows.
+local FROST_PALE = rgb(232, 246, 255)
+local FROST = rgb(72, 204, 255)
+local FROST_DEEP = rgb(24, 140, 255)
+local FROST_POP = rgb(255, 255, 255)
+addKit("FrostImp", FROST_PALE, FROST, FROST_POP, "Ice", 1, {
+	p("Head", "FrostHood", Vector3.new(1.45, .62, 1.4), Vector3.new(0, .52, .12), FROST_DEEP),
+	p("Head", "IceBrow", Vector3.new(.86, .17, .26), Vector3.new(0, .3, -.64), FROST, "Ice"),
+	p("Torso", "ScarfTail", Vector3.new(.32, 1.18, .1), Vector3.new(.7, -.18, .65), FROST_POP),
 })
-addKit("GlacialGargoyle", ICE_DARK, ICE, ICE_PALE, "Ice", 2, {
-	p("Head", "LeftIceHorn", Vector3.new(.28, .88, .34), Vector3.new(-.46, .89, 0), ICE_PALE, "Ice"),
-	p("Head", "RightIceHorn", Vector3.new(.28, .88, .34), Vector3.new(.46, .89, 0), ICE_PALE, "Ice"),
-	p("Torso", "BackGlacier", Vector3.new(1.36, 1.75, .42), Vector3.new(0, .2, .73), ICE, "Ice"),
+addKit("GlacialGargoyle", FROST_PALE, FROST, FROST_POP, "Ice", 2, {
+	p("Head", "LeftIceHorn", Vector3.new(.28, .88, .34), Vector3.new(-.46, .89, 0), FROST_POP, "Ice"),
+	p("Head", "RightIceHorn", Vector3.new(.28, .88, .34), Vector3.new(.46, .89, 0), FROST_POP, "Ice"),
+	p("Torso", "BackGlacier", Vector3.new(1.36, 1.75, .42), Vector3.new(0, .2, .73), FROST, "Ice"),
 })
-addKit("Boss_FrostRevenant", ICE_DARK, rgb(87, 146, 185), ICE_PALE, "Ice", 3, {
-	p("Head", "LeftAntler", Vector3.new(.18, 1.45, .25), Vector3.new(-.56, 1.13, 0), ICE_PALE, "Ice"),
-	p("Head", "RightAntler", Vector3.new(.18, 1.45, .25), Vector3.new(.56, 1.13, 0), ICE_PALE, "Ice"),
-	p("Torso", "FrostStole", Vector3.new(.3, 1.55, .1), Vector3.new(-.66, -.15, -.68), ICE, "Ice"),
+addKit("Boss_FrostRevenant", FROST_PALE, FROST_DEEP, FROST_POP, "Ice", 3, {
+	p("Head", "LeftAntler", Vector3.new(.18, 1.45, .25), Vector3.new(-.56, 1.13, 0), FROST_POP, "Ice"),
+	p("Head", "RightAntler", Vector3.new(.18, 1.45, .25), Vector3.new(.56, 1.13, 0), FROST_POP, "Ice"),
+	p("Torso", "FrostStole", Vector3.new(.3, 1.55, .1), Vector3.new(-.66, -.15, -.68), FROST, "Ice"),
 })
 
-local EMBER = rgb(244, 111, 44)
-local COAL = rgb(49, 36, 37)
-local ASH = rgb(122, 87, 72)
-addKit("CinderFiend", COAL, ASH, EMBER, "Basalt", 1, {
+-- Cinder: orange body; cream cloth, coral-red pieces, yellow ember glows.
+local CINDER_PALE = rgb(255, 240, 220)
+local CINDER = rgb(255, 96, 48)
+local CINDER_DEEP = rgb(255, 64, 40)
+local EMBER = rgb(255, 224, 64)
+addKit("CinderFiend", CINDER_PALE, CINDER, EMBER, "Basalt", 1, {
 	p("Head", "EmberEyes", Vector3.new(.75, .14, .1), Vector3.new(0, .12, -.66), EMBER, "Neon"),
 	p("Torso", "BurningSeam", Vector3.new(.12, 1.15, .07), Vector3.new(-.52, .15, -.66), EMBER, "Neon"),
-	p("Right Arm", "CinderClaw", Vector3.new(.8, .45, 1.12), Vector3.new(0, -1.03, -.28), ASH, "Basalt"),
+	p("Right Arm", "CinderClaw", Vector3.new(.8, .45, 1.12), Vector3.new(0, -1.03, -.28), CINDER, "Basalt"),
 })
-addKit("MagmaJuggernaut", COAL, ASH, EMBER, "Basalt", 2, {
+addKit("MagmaJuggernaut", CINDER_PALE, CINDER, EMBER, "Basalt", 2, {
 	p("Torso", "FurnaceCore", Vector3.new(.7, .65, .15), Vector3.new(0, .28, -.86), EMBER, "Neon"),
 	p("Left Arm", "LeftLavaRidge", Vector3.new(.23, .75, .1), Vector3.new(0, .42, -.72), EMBER, "Neon"),
 	p("Right Arm", "RightLavaRidge", Vector3.new(.23, .75, .1), Vector3.new(0, .42, -.72), EMBER, "Neon"),
 })
-addKit("Boss_InfernalColossus", COAL, rgb(105, 57, 48), EMBER, "Basalt", 3, {
-	p("Head", "LeftFurnaceHorn", Vector3.new(.34, 1.25, .4), Vector3.new(-.51, 1.04, 0), ASH, "Basalt"),
-	p("Head", "RightFurnaceHorn", Vector3.new(.34, 1.25, .4), Vector3.new(.51, 1.04, 0), ASH, "Basalt"),
+addKit("Boss_InfernalColossus", CINDER_PALE, CINDER_DEEP, EMBER, "Basalt", 3, {
+	p("Head", "LeftFurnaceHorn", Vector3.new(.34, 1.25, .4), Vector3.new(-.51, 1.04, 0), CINDER, "Basalt"),
+	p("Head", "RightFurnaceHorn", Vector3.new(.34, 1.25, .4), Vector3.new(.51, 1.04, 0), CINDER, "Basalt"),
 	p("Torso", "HeartVent", Vector3.new(.68, .9, .18), Vector3.new(0, .21, -.9), EMBER, "Neon"),
 })
 
-local VOID = rgb(42, 29, 64)
-local VIOLET = rgb(121, 68, 170)
-local RIFT = rgb(195, 109, 241)
-addKit("VoidShade", VOID, VIOLET, RIFT, "Slate", 1, {
+-- Void: violet body; pale lavender cloth, deep violet pieces, hot magenta glows.
+local VOID_PALE = rgb(238, 226, 255)
+local VOID = rgb(124, 56, 240)
+local RIFT = rgb(255, 128, 255)
+addKit("VoidShade", VOID_PALE, VOID, RIFT, "Slate", 1, {
 	p("Head", "FacelessVeil", Vector3.new(1.05, .78, .16), Vector3.new(0, -.02, -.62), VOID),
 	p("Head", "RiftEyes", Vector3.new(.62, .12, .07), Vector3.new(0, .1, -.74), RIFT, "Neon"),
-	p("Torso", "SplitCape", Vector3.new(.72, 1.65, .09), Vector3.new(.59, -.62, .65), VIOLET),
+	p("Torso", "SplitCape", Vector3.new(.72, 1.65, .09), Vector3.new(.59, -.62, .65), VOID),
 })
-addKit("AbyssTormentor", VOID, VIOLET, RIFT, "Slate", 2, {
-	p("Head", "LeftVoidSpike", Vector3.new(.3, .96, .34), Vector3.new(-.53, .92, 0), VIOLET, "Slate"),
-	p("Head", "RightVoidSpike", Vector3.new(.3, .96, .34), Vector3.new(.53, .92, 0), VIOLET, "Slate"),
+addKit("AbyssTormentor", VOID_PALE, VOID, RIFT, "Slate", 2, {
+	p("Head", "LeftVoidSpike", Vector3.new(.3, .96, .34), Vector3.new(-.53, .92, 0), VOID, "Slate"),
+	p("Head", "RightVoidSpike", Vector3.new(.3, .96, .34), Vector3.new(.53, .92, 0), VOID, "Slate"),
 	p("Torso", "BindingRune", Vector3.new(.65, .65, .08), Vector3.new(0, .28, -.83), RIFT, "Neon"),
 })
-addKit("Boss_VoidWraith", VOID, VIOLET, RIFT, "Slate", 3, {
+addKit("Boss_VoidWraith", VOID_PALE, VOID, RIFT, "Slate", 3, {
 	p("Head", "VoidHalo", Vector3.new(1.8, .17, 1.8), Vector3.new(0, 1.16, 0), RIFT, "Neon"),
-	p("Torso", "LeftRiftWing", Vector3.new(.27, 2.3, .9), Vector3.new(-1.06, -.35, .9), VIOLET, "Slate"),
-	p("Torso", "RightRiftWing", Vector3.new(.27, 2.3, .9), Vector3.new(1.06, -.35, .9), VIOLET, "Slate"),
+	p("Torso", "LeftRiftWing", Vector3.new(.27, 2.3, .9), Vector3.new(-1.06, -.35, .9), VOID, "Slate"),
+	p("Torso", "RightRiftWing", Vector3.new(.27, 2.3, .9), Vector3.new(1.06, -.35, .9), VOID, "Slate"),
 })
 
-local SUN = rgb(246, 204, 104)
-local IVORY = rgb(227, 219, 191)
-local BRONZE = rgb(127, 98, 55)
-addKit("AstralWisp", IVORY, BRONZE, SUN, "Metal", 1, {
+-- Astral: gold body; ivory cloth, tangerine pieces, sun-yellow glows.
+local ASTRAL_PALE = rgb(255, 252, 240)
+local ASTRAL = rgb(255, 150, 40)
+local ASTRAL_DEEP = rgb(255, 120, 32)
+local SUN = rgb(255, 232, 80)
+addKit("AstralWisp", ASTRAL_PALE, ASTRAL, SUN, "Metal", 1, {
 	p("Head", "StarDiadem", Vector3.new(.68, .3, .15), Vector3.new(0, .65, -.58), SUN, "Neon"),
-	p("Torso", "StarTabard", Vector3.new(.75, 1.3, .11), Vector3.new(0, -.11, -.67), IVORY),
+	p("Torso", "StarTabard", Vector3.new(.75, 1.3, .11), Vector3.new(0, -.11, -.67), ASTRAL_PALE),
 	p("Torso", "StarMark", Vector3.new(.22, .22, .06), Vector3.new(0, .4, -.74), SUN, "Neon"),
 })
-addKit("SolarDominator", BRONZE, rgb(184, 138, 61), SUN, "Metal", 2, {
+addKit("SolarDominator", ASTRAL_PALE, ASTRAL, SUN, "Metal", 2, {
 	p("Head", "SolarCrest", Vector3.new(.32, .96, .5), Vector3.new(0, 1.02, 0), SUN, "Neon"),
 	p("Torso", "SunDisk", Vector3.new(.71, .71, .16), Vector3.new(0, .26, -.84), SUN, "Neon"),
-	p("Torso", "BackStandard", Vector3.new(.23, 2.5, .22), Vector3.new(0, 1.02, .7), BRONZE, "Metal"),
+	p("Torso", "BackStandard", Vector3.new(.23, 2.5, .22), Vector3.new(0, 1.02, .7), ASTRAL, "Metal"),
 })
-addKit("Boss_CelestialTitan", IVORY, BRONZE, SUN, "Metal", 3, {
+addKit("Boss_CelestialTitan", ASTRAL_PALE, ASTRAL_DEEP, SUN, "Metal", 3, {
 	p("Head", "CelestialHalo", Vector3.new(2.2, .22, 2.2), Vector3.new(0, 1.21, 0), SUN, "Neon"),
 	p("Torso", "SolarHeart", Vector3.new(.82, .82, .14), Vector3.new(0, .24, -.9), SUN, "Neon"),
 	p("Torso", "BackSunray", Vector3.new(.3, 2.55, .18), Vector3.new(0, .78, .78), SUN, "Metal"),
 })
 
-local LEAF = rgb(96, 133, 61)
-local BARK = rgb(70, 57, 41)
-local MOSS = rgb(158, 177, 93)
-addKit("ThornStalker", BARK, LEAF, MOSS, "Wood", 1, {
+-- Briarwood: lime body; pale leaf cloth, timber-orange pieces, yellow glows, a leaf-green hood.
+local THORN_PALE = rgb(236, 255, 208)
+local TIMBER = rgb(255, 158, 36)
+local LEAF = rgb(48, 208, 88)
+local THORN_POP = rgb(255, 236, 96)
+addKit("ThornStalker", THORN_PALE, TIMBER, THORN_POP, "Wood", 1, {
 	p("Head", "LeafHood", Vector3.new(1.48, .63, 1.45), Vector3.new(0, .52, .09), LEAF, "Grass"),
-	p("Left Arm", "LeftThorn", Vector3.new(.2, .68, .35), Vector3.new(-.53, .27, -.35), BARK, "Wood"),
-	p("Right Arm", "RightThorn", Vector3.new(.2, .68, .35), Vector3.new(.53, .27, -.35), BARK, "Wood"),
+	p("Left Arm", "LeftThorn", Vector3.new(.2, .68, .35), Vector3.new(-.53, .27, -.35), TIMBER, "Wood"),
+	p("Right Arm", "RightThorn", Vector3.new(.2, .68, .35), Vector3.new(.53, .27, -.35), TIMBER, "Wood"),
 })
-addKit("BriarBrute", BARK, LEAF, MOSS, "Wood", 2, {
-	p("Torso", "BriarSpine", Vector3.new(.48, 1.8, .44), Vector3.new(0, .22, .73), BARK, "Wood"),
-	p("Left Arm", "LeftBriar", Vector3.new(.25, .93, .47), Vector3.new(-.51, .35, .02), BARK, "Wood"),
-	p("Right Arm", "RightBriar", Vector3.new(.25, .93, .47), Vector3.new(.51, .35, .02), BARK, "Wood"),
+addKit("BriarBrute", THORN_PALE, TIMBER, THORN_POP, "Wood", 2, {
+	p("Torso", "BriarSpine", Vector3.new(.48, 1.8, .44), Vector3.new(0, .22, .73), TIMBER, "Wood"),
+	p("Left Arm", "LeftBriar", Vector3.new(.25, .93, .47), Vector3.new(-.51, .35, .02), TIMBER, "Wood"),
+	p("Right Arm", "RightBriar", Vector3.new(.25, .93, .47), Vector3.new(.51, .35, .02), TIMBER, "Wood"),
 })
-addKit("RootWarden", BARK, LEAF, MOSS, "Wood", 3, {
-	p("Head", "LeftBranch", Vector3.new(.28, 1.43, .42), Vector3.new(-.48, 1.15, 0), BARK, "Wood"),
-	p("Head", "RightBranch", Vector3.new(.28, 1.43, .42), Vector3.new(.48, 1.15, 0), BARK, "Wood"),
-	p("Torso", "GroveHeart", Vector3.new(.7, .7, .12), Vector3.new(0, .27, -.85), MOSS, "Neon"),
-})
-
-local BRINE = rgb(71, 111, 104)
-local MUD = rgb(56, 66, 56)
-local VERDIGRIS = rgb(125, 174, 149)
-addKit("BogLurker", MUD, BRINE, VERDIGRIS, "CorrodedMetal", 1, {
-	p("Head", "MarshCowl", Vector3.new(1.45, .57, 1.46), Vector3.new(0, .5, .09), MUD),
-	p("Torso", "ReedStrap", Vector3.new(.22, 1.73, .09), Vector3.new(-.54, .07, -.67), VERDIGRIS, "Grass"),
-	p("Torso", "SiltSatchel", Vector3.new(.62, .56, .36), Vector3.new(.85, -.69, -.53), BRINE),
-})
-addKit("MireHulk", MUD, BRINE, VERDIGRIS, "CorrodedMetal", 2, {
-	p("Torso", "RustedCage", Vector3.new(1.7, .34, .28), Vector3.new(0, .65, -.72), BRINE, "CorrodedMetal"),
-	p("Left Arm", "LeftReedMass", Vector3.new(1.26, .52, 1.23), Vector3.new(0, .77, 0), MUD, "Grass"),
-	p("Right Arm", "RightReedMass", Vector3.new(1.26, .52, 1.23), Vector3.new(0, .77, 0), MUD, "Grass"),
-})
-addKit("DrownedBellwarden", MUD, BRINE, VERDIGRIS, "CorrodedMetal", 3, {
-	p("Head", "BellHelm", Vector3.new(1.56, .92, 1.5), Vector3.new(0, .47, 0), BRINE, "CorrodedMetal"),
-	p("Head", "BellClapper", Vector3.new(.22, .69, .22), Vector3.new(0, -.31, -.65), VERDIGRIS, "Metal"),
-	p("Torso", "BellChain", Vector3.new(.23, 1.4, .18), Vector3.new(.75, -.12, -.76), VERDIGRIS, "CorrodedMetal"),
+addKit("RootWarden", THORN_PALE, TIMBER, THORN_POP, "Wood", 3, {
+	p("Head", "LeftBranch", Vector3.new(.28, 1.43, .42), Vector3.new(-.48, 1.15, 0), TIMBER, "Wood"),
+	p("Head", "RightBranch", Vector3.new(.28, 1.43, .42), Vector3.new(.48, 1.15, 0), TIMBER, "Wood"),
+	p("Torso", "GroveHeart", Vector3.new(.7, .7, .12), Vector3.new(0, .27, -.85), THORN_POP, "Neon"),
 })
 
-local STORM = rgb(69, 83, 117)
-local STEEL = rgb(122, 143, 165)
-local LIGHTNING = rgb(145, 208, 245)
-addKit("Stormcaller", STORM, STEEL, LIGHTNING, "Metal", 1, {
-	p("Head", "StormHood", Vector3.new(1.43, .62, 1.43), Vector3.new(0, .5, .1), STORM),
-	p("Left Arm", "ConductingBracer", Vector3.new(1.13, .7, 1.13), Vector3.new(0, -.54, 0), STEEL, "Metal"),
+-- Sunken Marsh: aqua body; pale mint cloth, deep aqua-blue pieces, lime-yellow reed pops.
+local BOG_PALE = rgb(224, 255, 244)
+local BOG = rgb(32, 160, 224)
+local BOG_POP = rgb(200, 255, 120)
+addKit("BogLurker", BOG_PALE, BOG, BOG_POP, "CorrodedMetal", 1, {
+	p("Head", "MarshCowl", Vector3.new(1.45, .57, 1.46), Vector3.new(0, .5, .09), BOG),
+	p("Torso", "ReedStrap", Vector3.new(.22, 1.73, .09), Vector3.new(-.54, .07, -.67), BOG_POP, "Grass"),
+	p("Torso", "SiltSatchel", Vector3.new(.62, .56, .36), Vector3.new(.85, -.69, -.53), BOG),
+})
+addKit("MireHulk", BOG_PALE, BOG, BOG_POP, "CorrodedMetal", 2, {
+	p("Torso", "RustedCage", Vector3.new(1.7, .34, .28), Vector3.new(0, .65, -.72), BOG, "CorrodedMetal"),
+	p("Left Arm", "LeftReedMass", Vector3.new(1.26, .52, 1.23), Vector3.new(0, .77, 0), BOG_POP, "Grass"),
+	p("Right Arm", "RightReedMass", Vector3.new(1.26, .52, 1.23), Vector3.new(0, .77, 0), BOG_POP, "Grass"),
+})
+addKit("DrownedBellwarden", BOG_PALE, BOG, BOG_POP, "CorrodedMetal", 3, {
+	p("Head", "BellHelm", Vector3.new(1.56, .92, 1.5), Vector3.new(0, .47, 0), BOG, "CorrodedMetal"),
+	p("Head", "BellClapper", Vector3.new(.22, .69, .22), Vector3.new(0, -.31, -.65), BOG_POP, "Metal"),
+	p("Torso", "BellChain", Vector3.new(.23, 1.4, .18), Vector3.new(.75, -.12, -.76), BOG_POP, "CorrodedMetal"),
+})
+
+-- Stormwatch: blue body; pale cloud cloth, gold pieces, deep-blue hood and crest, pale lightning glows.
+local STORM_PALE = rgb(236, 240, 255)
+local STORM_GOLD = rgb(255, 200, 40)
+local STORM_DEEP = rgb(40, 80, 240)
+local LIGHTNING = rgb(255, 248, 140)
+addKit("Stormcaller", STORM_PALE, STORM_GOLD, LIGHTNING, "Metal", 1, {
+	p("Head", "StormHood", Vector3.new(1.43, .62, 1.43), Vector3.new(0, .5, .1), STORM_DEEP),
+	p("Left Arm", "ConductingBracer", Vector3.new(1.13, .7, 1.13), Vector3.new(0, -.54, 0), STORM_GOLD, "Metal"),
 	p("Torso", "StormBolt", Vector3.new(.2, .79, .08), Vector3.new(.3, .17, -.7), LIGHTNING, "Neon"),
 })
-addKit("ThunderConstruct", STORM, STEEL, LIGHTNING, "Metal", 2, {
+addKit("ThunderConstruct", STORM_PALE, STORM_GOLD, LIGHTNING, "Metal", 2, {
 	p("Torso", "PowerCore", Vector3.new(.67, .67, .17), Vector3.new(0, .27, -.85), LIGHTNING, "Neon"),
 	p("Left Arm", "LeftConductor", Vector3.new(.27, 1.17, .25), Vector3.new(0, .11, -.64), LIGHTNING, "Neon"),
 	p("Right Arm", "RightConductor", Vector3.new(.27, 1.17, .25), Vector3.new(0, .11, -.64), LIGHTNING, "Neon"),
 })
-addKit("TempestWarden", STORM, STEEL, LIGHTNING, "Metal", 3, {
-	p("Head", "ObservatoryCrest", Vector3.new(.28, 1.26, .64), Vector3.new(0, 1.09, 0), STEEL, "Metal"),
+addKit("TempestWarden", STORM_PALE, STORM_GOLD, LIGHTNING, "Metal", 3, {
+	p("Head", "ObservatoryCrest", Vector3.new(.28, 1.26, .64), Vector3.new(0, 1.09, 0), STORM_DEEP, "Metal"),
 	p("Torso", "LightningHeart", Vector3.new(.65, .87, .18), Vector3.new(0, .28, -.9), LIGHTNING, "Neon"),
-	p("Torso", "BackAntenna", Vector3.new(.2, 2.27, .2), Vector3.new(0, 1.1, .69), STEEL, "Metal"),
+	p("Torso", "BackAntenna", Vector3.new(.2, 2.27, .2), Vector3.new(0, 1.1, .69), STORM_DEEP, "Metal"),
 })
 
 EnemyOutfits.OUTFITS = OUTFITS
@@ -316,7 +336,11 @@ function EnemyOutfits.apply(model: Model, archetypeKey: string, scale: number, r
 		acc.Name = spec.name
 		acc.Size = spec.size * scale
 		acc.Color = spec.color
-		acc.Material = Enum.Material[spec.material or "SmoothPlastic"]
+		-- PS99 pass: every accessory is matte plastic. A spec's material string is kept as the
+		-- designer's note of what the piece is (ice, wood, metal), but Roblox's Fabric / Wood /
+		-- CorrodedMetal / Ice / Basalt / Slate / Grass / Metal are photoreal textures that fight
+		-- the toy look; only Neon (glows) is honoured.
+		acc.Material = if spec.material == "Neon" then Enum.Material.Neon else Enum.Material.SmoothPlastic
 		if spec.shape then acc.Shape = Enum.PartType[spec.shape] end
 		acc.Transparency = spec.transparency or 0
 		acc.CanCollide, acc.CanQuery, acc.CanTouch, acc.CastShadow = false, false, false, false

@@ -91,3 +91,38 @@ Every piece is judged on two things together, not one: does it beat the named ba
 that it would look at home next to the other three areas. A piece that wins against the bar
 but breaks a rule above (for example, a sword redesign that still bakes a photoreal
 metallic texture) has not actually won.
+
+## Status: the PS99 pass in code (2026-09-24)
+
+What the rules above have been turned into so far, and what is still to be judged. The map
+palette itself (commit `1c412fa`) and everything below were built and checked offline only; the
+first in-Studio play-test is the next step, and its gauntlet (matched shot vs. a real PS99 frame,
+two blind critics, both A/B orders) decides whether any of it stays.
+
+Built:
+
+- **World light** (`lemonade-game/Map/WorldLook.server.luau`, `worldlook-v15`): the three runtime
+  recolours (`recolorHorizon` / `recolorCastle` / `recolorGates`) are gone, so the baked palette is
+  what shows. Daylight is one shared table: near-white sun, cyan-blue shade tint, bright
+  near-neutral fill, a near-neutral grade (saturation +0.12, not +0.55), the Atmosphere is the sky's
+  own cyan-blue so distance fades toward sky, white clouds, soft cast shadows on
+  (`SHADOWS` / `SHADOW_SOFTNESS` at the top of the file are the first two things to A/B). The sky
+  uses Roblox's built-in default cubemap instead of six blank faces.
+- **Terrain** (`WorldTerrain.server.luau`): colours unchanged from the map pass; water is now a
+  flat toy cyan-blue with low reflectance. If the Rock/Slate/Basalt strata read rough next to the
+  plastic castle in Studio, swap materials per stratum; do not change the colours.
+- **Enemies** (`EnemyCombat.server.luau`, `ReplicatedStorage/EnemyOutfits.luau`): every archetype
+  body is a full-chroma plastic; outfit cloth is pale and calm, trims carry a second pop; every
+  accessory is SmoothPlastic (Neon kept for glows); the catalog shirt/pants templates are off
+  (`CLOTHING_TEXTURES`). Measured per-rig saturation spread 0.25-0.33.
+- **Swords** (`CombatUtil.applyWeaponAppearance`): a runtime override makes every held blade
+  SmoothPlastic (Neon honoured as a glow), drops baked PBR `SurfaceAppearance` maps that carry no
+  colour map, and the block/starter sword is a pale blade with a gold guard and coral grip. The
+  sword GLBs are untouched.
+- **GUI** (`PanelChrome.COLORS`, `PanelChrome.build`, `MapClient`): the charcoal-and-gold base
+  palette and the dark modal shell are gone; both draw from the bright chrome (`PanelChrome.BRIGHT`).
+  `MainMenuGui` still keeps its own local dark card palette for a few tabs; that is the next GUI piece.
+
+Not yet done: any in-engine judgement. The first Studio session should capture, in this order,
+the hub at the afternoon showcase clock, an Iron Lowlands fight (enemy + sword in hand), and one
+modal panel, and run each through the gauntlet before touching values.

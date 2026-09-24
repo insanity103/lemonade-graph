@@ -67,6 +67,11 @@ local TEXTURE_SETS = {
 	Golden         = { shirt = 100133588604370, pants = 92015331906060  }, -- Celestial Sanctum
 	Ranger         = { shirt = 12696379800,     pants = 12696385673     }, -- Briarwood
 }
+-- PS99 pass: off. These catalog templates are painted armour/cloth (steel plate, fur, leather)
+-- and read as a different, photoreal material next to plastic bodies and matte plastic swords;
+-- the rig now reads by its plastic body colour and EnemyOutfits' accessory parts alone. The sets
+-- are kept so the switch is one flag.
+local CLOTHING_TEXTURES = false
 local ARCHETYPE_TEXTURE_SET = {
 	IronSquire = "SterlingSilver", IronBerserker = "SterlingSilver", Boss_Gorgon = "SterlingSilver",
 	FrostImp = "Frostbite", GlacialGargoyle = "Frostbite", Boss_FrostRevenant = "Frostbite",
@@ -95,10 +100,16 @@ local playerAttackers = {} -- [player] = { [enemy model] = time of its last swin
 -- 1. ENEMY & BOSS ARCHETYPES CONFIGURATION
 -- ==============================================================================
 local ENEMY_ARCHETYPES = {
+	-- Body colours (PS99 pass): every archetype's `color` is a full-chroma toy plastic -- the one
+	-- vivid accent on the rig -- and ReplicatedStorage.EnemyOutfits lays pale, calm cloth over it
+	-- with a second small pop for trims, so each enemy pairs one calm surface with one or two
+	-- saturated ones instead of reading as a single muted block. Each family keeps its hue
+	-- (coral quarry, cyan frost, orange cinder, violet void, gold astral, lime briar, aqua marsh,
+	-- blue storm); rank steps the same hue deeper, never duller. Nothing here is grey or brown.
 	-- 1. Quarry Bandits (Iron Lowlands, Lv 1-10). Looks: ReplicatedStorage.EnemyOutfits.
 	IronSquire = {
 		name = "Quarry Cutthroat",
-		color = Color3.fromRGB(150, 65, 75),
+		color = Color3.fromRGB(255, 88, 72),
 		scale = 1.05,
 		walkSpeed = 12.5,
 		baseHealth = 120,
@@ -115,7 +126,7 @@ local ENEMY_ARCHETYPES = {
 	},
 	IronBerserker = {
 		name = "Pit Brute",
-		color = Color3.fromRGB(110, 35, 45),
+		color = Color3.fromRGB(255, 64, 56),
 		scale = 1.25,
 		walkSpeed = 10.0,
 		baseHealth = 240,
@@ -134,7 +145,7 @@ local ENEMY_ARCHETYPES = {
 	-- 2. Frost Revenant Minions (North-West Permafrost Glade, Lv 15-20)
 	FrostImp = {
 		name = "Frost Stalker",
-		color = Color3.fromRGB(90, 160, 220),
+		color = Color3.fromRGB(72, 204, 255),
 		scale = 0.95,
 		walkSpeed = 16.0,
 		baseHealth = 450,
@@ -150,7 +161,7 @@ local ENEMY_ARCHETYPES = {
 	},
 	GlacialGargoyle = {
 		name = "Glacial Sentinel",
-		color = Color3.fromRGB(30, 95, 160),
+		color = Color3.fromRGB(36, 160, 255),
 		scale = 1.35,
 		walkSpeed = 11.0,
 		baseHealth = 950,
@@ -168,7 +179,7 @@ local ENEMY_ARCHETYPES = {
 	-- 3. Infernal Colossus Minions (North-East Caldera, Lv 30-38)
 	CinderFiend = {
 		name = "Cinder Fiend",
-		color = Color3.fromRGB(240, 100, 30),
+		color = Color3.fromRGB(255, 132, 32),
 		scale = 1.05,
 		walkSpeed = 15.0,
 		baseHealth = 1800,
@@ -184,7 +195,7 @@ local ENEMY_ARCHETYPES = {
 	},
 	MagmaJuggernaut = {
 		name = "Magma Juggernaut",
-		color = Color3.fromRGB(180, 50, 15),
+		color = Color3.fromRGB(255, 96, 24),
 		scale = 1.45,
 		walkSpeed = 11.5,
 		baseHealth = 3600,
@@ -202,7 +213,7 @@ local ENEMY_ARCHETYPES = {
 	-- 4. Void Archon Minions (South-East Void Spire, Lv 50-60)
 	VoidShade = {
 		name = "Void Shade",
-		color = Color3.fromRGB(130, 50, 190),
+		color = Color3.fromRGB(168, 88, 255),
 		scale = 1.1,
 		walkSpeed = 17.0,
 		baseHealth = 6500,
@@ -218,7 +229,7 @@ local ENEMY_ARCHETYPES = {
 	},
 	AbyssTormentor = {
 		name = "Abyss Tormentor",
-		color = Color3.fromRGB(65, 20, 110),
+		color = Color3.fromRGB(128, 48, 255),
 		scale = 1.55,
 		walkSpeed = 13.0,
 		baseHealth = 13000,
@@ -236,7 +247,7 @@ local ENEMY_ARCHETYPES = {
 	-- 5. Celestial Titan Minions (Far Astral Sanctuary, Lv 75-88)
 	AstralWisp = {
 		name = "Astral Emissary",
-		color = Color3.fromRGB(255, 220, 90),
+		color = Color3.fromRGB(255, 226, 64),
 		scale = 1.15,
 		walkSpeed = 18.0,
 		baseHealth = 22000,
@@ -252,7 +263,7 @@ local ENEMY_ARCHETYPES = {
 	},
 	SolarDominator = {
 		name = "Solar Dominator",
-		color = Color3.fromRGB(220, 160, 30),
+		color = Color3.fromRGB(255, 190, 32),
 		scale = 1.7,
 		walkSpeed = 14.0,
 		baseHealth = 48000,
@@ -272,49 +283,49 @@ local ENEMY_ARCHETYPES = {
 	-- so each one sits between the arena before it and the gate after it. Wardens are
 	-- named elites, not bosses: no weapon, no sword drop.
 	ThornStalker = {
-		name = "Thorn Stalker", color = Color3.fromRGB(120, 150, 60), scale = 1.0, walkSpeed = 15,
+		name = "Thorn Stalker", color = Color3.fromRGB(120, 236, 56), scale = 1.0, walkSpeed = 15,
 		baseHealth = 203, healthGrowth = 1.23, baseDamage = 21, damageGrowth = 1.14, baseXP = 170,
 		aggroRange = 26, attackReach = 6.0, attackCooldown = 1.2, patrolRadius = 14, leashDistance = 38,
 	},
 	BriarBrute = {
-		name = "Briar Brute", color = Color3.fromRGB(85, 105, 45), scale = 1.35, walkSpeed = 11,
+		name = "Briar Brute", color = Color3.fromRGB(80, 216, 48), scale = 1.35, walkSpeed = 11,
 		baseHealth = 377, healthGrowth = 1.23, baseDamage = 32, damageGrowth = 1.14, baseXP = 240,
 		aggroRange = 23, attackReach = 7.5, attackCooldown = 1.7, patrolRadius = 10, leashDistance = 34,
 	},
 	RootWarden = {
-		name = "Rootbound Warden", title = "Keeper of the Grove", color = Color3.fromRGB(60, 80, 35),
+		name = "Rootbound Warden", title = "Keeper of the Grove", color = Color3.fromRGB(48, 192, 56),
 		scale = 1.6, walkSpeed = 11.5, baseHealth = 724, healthGrowth = 1.23, baseDamage = 42,
 		damageGrowth = 1.14, baseXP = 450, aggroRange = 30, attackReach = 9.0, attackCooldown = 1.6,
 		patrolRadius = 10, leashDistance = 45, nameTag = true, tagColor = Color3.fromRGB(170, 220, 90),
 	},
 	BogLurker = {
-		name = "Bog Lurker", color = Color3.fromRGB(80, 110, 90), scale = 1.05, walkSpeed = 14.5,
+		name = "Bog Lurker", color = Color3.fromRGB(48, 224, 176), scale = 1.05, walkSpeed = 14.5,
 		baseHealth = 1030, healthGrowth = 1.26, baseDamage = 50, damageGrowth = 1.17, baseXP = 750,
 		aggroRange = 27, attackReach = 6.5, attackCooldown = 1.2, patrolRadius = 14, leashDistance = 40,
 	},
 	MireHulk = {
-		name = "Mire Hulk", color = Color3.fromRGB(55, 75, 60), scale = 1.45, walkSpeed = 10.5,
+		name = "Mire Hulk", color = Color3.fromRGB(32, 200, 150), scale = 1.45, walkSpeed = 10.5,
 		baseHealth = 1915, healthGrowth = 1.26, baseDamage = 74, damageGrowth = 1.17, baseXP = 950,
 		aggroRange = 24, attackReach = 8.0, attackCooldown = 1.8, patrolRadius = 11, leashDistance = 36,
 	},
 	DrownedBellwarden = {
-		name = "Drowned Bellwarden", title = "Toller of the Sunken Bell", color = Color3.fromRGB(40, 60, 70),
+		name = "Drowned Bellwarden", title = "Toller of the Sunken Bell", color = Color3.fromRGB(24, 176, 144),
 		scale = 1.65, walkSpeed = 12, baseHealth = 3685, healthGrowth = 1.26, baseDamage = 99,
 		damageGrowth = 1.17, baseXP = 1600, aggroRange = 32, attackReach = 9.5, attackCooldown = 1.6,
 		patrolRadius = 10, leashDistance = 48, nameTag = true, tagColor = Color3.fromRGB(120, 210, 170),
 	},
 	Stormcaller = {
-		name = "Stormcaller", color = Color3.fromRGB(110, 130, 175), scale = 1.1, walkSpeed = 17,
+		name = "Stormcaller", color = Color3.fromRGB(88, 156, 255), scale = 1.1, walkSpeed = 17,
 		baseHealth = 2750, healthGrowth = 1.31, baseDamage = 95, damageGrowth = 1.20, baseXP = 2800,
 		aggroRange = 32, attackReach = 7.0, attackCooldown = 1.0, patrolRadius = 16, leashDistance = 44,
 	},
 	ThunderConstruct = {
-		name = "Thunder Construct", color = Color3.fromRGB(70, 85, 120), scale = 1.5, walkSpeed = 12,
+		name = "Thunder Construct", color = Color3.fromRGB(64, 128, 255), scale = 1.5, walkSpeed = 12,
 		baseHealth = 5100, healthGrowth = 1.31, baseDamage = 143, damageGrowth = 1.20, baseXP = 3500,
 		aggroRange = 27, attackReach = 9.0, attackCooldown = 1.6, patrolRadius = 13, leashDistance = 40,
 	},
 	TempestWarden = {
-		name = "Tempest Warden", title = "Keeper of the Observatory", color = Color3.fromRGB(50, 60, 95),
+		name = "Tempest Warden", title = "Keeper of the Observatory", color = Color3.fromRGB(48, 104, 255),
 		scale = 1.7, walkSpeed = 13, baseHealth = 9800, healthGrowth = 1.31, baseDamage = 190,
 		damageGrowth = 1.20, baseXP = 5500, aggroRange = 34, attackReach = 10.0, attackCooldown = 1.5,
 		patrolRadius = 12, leashDistance = 50, nameTag = true, tagColor = Color3.fromRGB(130, 190, 255),
@@ -324,7 +335,7 @@ local ENEMY_ARCHETYPES = {
 	Boss_Gorgon = {
 		name = "Warden of the Pit",
 		title = "Boss of the Quarry Bandits",
-		color = Color3.fromRGB(130, 45, 55),
+		color = Color3.fromRGB(255, 56, 88),
 		scale = 1.5,
 		walkSpeed = 12,
 		baseHealth = 650,
@@ -340,7 +351,7 @@ local ENEMY_ARCHETYPES = {
 		weapon = true,
 		boss = true,
 		uniqueDrop = "Warlord Greatsword",
-		swordColor = Color3.fromRGB(180, 50, 50),
+		swordColor = Color3.fromRGB(255, 72, 72),
 		swordMaterial = Enum.Material.Metal,
 		nameTag = true,
 		tagColor = Color3.fromRGB(255, 90, 90),
@@ -348,7 +359,7 @@ local ENEMY_ARCHETYPES = {
 	Boss_FrostRevenant = {
 		name = "Frost Revenant",
 		title = "Lord of the Permafrost",
-		color = Color3.fromRGB(45, 120, 185),
+		color = Color3.fromRGB(24, 140, 255),
 		scale = 1.7,
 		walkSpeed = 13.5,
 		baseHealth = 1600,
@@ -372,7 +383,7 @@ local ENEMY_ARCHETYPES = {
 	Boss_InfernalColossus = {
 		name = "Infernal Colossus",
 		title = "Scourge of Flame",
-		color = Color3.fromRGB(215, 75, 20),
+		color = Color3.fromRGB(255, 80, 24),
 		scale = 1.9,
 		walkSpeed = 12,
 		baseHealth = 3600,
@@ -396,7 +407,7 @@ local ENEMY_ARCHETYPES = {
 	Boss_VoidWraith = {
 		name = "Void Archon",
 		title = "Herald of Oblivion",
-		color = Color3.fromRGB(90, 35, 145),
+		color = Color3.fromRGB(112, 32, 240),
 		scale = 2.1,
 		walkSpeed = 15,
 		baseHealth = 7200,
@@ -420,7 +431,7 @@ local ENEMY_ARCHETYPES = {
 	Boss_CelestialTitan = {
 		name = "Celestial Titan",
 		title = "God of the Astral Realm",
-		color = Color3.fromRGB(240, 190, 50),
+		color = Color3.fromRGB(255, 176, 32),
 		scale = 2.4,
 		walkSpeed = 14.5,
 		baseHealth = 14500,
@@ -638,7 +649,7 @@ local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 	-- faction instead of a flat-colored block. arch.color still tints the parts
 	-- underneath, so the palette stays consistent even where the texture shows skin.
 	local textureSetName = ARCHETYPE_TEXTURE_SET[archetypeKey]
-	local textureSet = textureSetName and TEXTURE_SETS[textureSetName]
+	local textureSet = CLOTHING_TEXTURES and textureSetName and TEXTURE_SETS[textureSetName]
 	if textureSet then
 		local shirt = Instance.new("Shirt")
 		shirt.Name = "Shirt"
@@ -703,7 +714,9 @@ local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 	humanoid.MaxHealth = maxHp
 	humanoid.Health = maxHp
 
-	-- Boss nameplate & dynamic health bar
+	-- Boss nameplate & dynamic health bar. PS99 chrome: chunky white-faced display type with a
+	-- dark outline, and a white rounded bar with the same outline, so the plate reads on the
+	-- bright world instead of as a charcoal strip.
 	if arch.nameTag then
 		local bb = Instance.new("BillboardGui")
 		bb.Name = "NameTag"
@@ -718,11 +731,11 @@ local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 		lbl.BackgroundTransparency = 1
 		lbl.Size = UDim2.new(1, 0, 0, 24)
 		lbl.Position = UDim2.fromOffset(0, 0)
-		lbl.Font = Enum.Font.GothamBold
-		lbl.TextSize = 16
+		lbl.Font = Enum.Font.FredokaOne
+		lbl.TextSize = 17
 		lbl.TextColor3 = arch.tagColor or Color3.fromRGB(255, 90, 90)
-		lbl.TextStrokeTransparency = 0.2
-		lbl.TextStrokeColor3 = Color3.fromRGB(10, 10, 15)
+		lbl.TextStrokeTransparency = 0
+		lbl.TextStrokeColor3 = Color3.fromRGB(30, 33, 48)
 		lbl.Text = string.format("☠ %s  [Lv %d]", arch.name, level)
 		lbl.Parent = bb
 
@@ -730,14 +743,14 @@ local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 		local hpBg = Instance.new("Frame")
 		hpBg.Size = UDim2.new(1, 0, 0, 10)
 		hpBg.Position = UDim2.fromOffset(0, 26)
-		hpBg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+		hpBg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		hpBg.BorderSizePixel = 0
 		hpBg.Parent = bb
 		local hpCorner = Instance.new("UICorner", hpBg)
 		hpCorner.CornerRadius = UDim.new(0, 5)
 		local hpStroke = Instance.new("UIStroke", hpBg)
-		hpStroke.Color = Color3.fromRGB(45, 45, 55)
-		hpStroke.Thickness = 1
+		hpStroke.Color = Color3.fromRGB(30, 33, 48)
+		hpStroke.Thickness = 2
 
 		-- Health bar fill
 		local hpFill = Instance.new("Frame")
@@ -753,11 +766,11 @@ local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 		hpText.BackgroundTransparency = 1
 		hpText.Size = UDim2.new(1, 0, 0, 14)
 		hpText.Position = UDim2.fromOffset(0, 38)
-		hpText.Font = Enum.Font.GothamMedium
-		hpText.TextSize = 11
-		hpText.TextColor3 = Color3.fromRGB(210, 210, 220)
-		hpText.TextStrokeTransparency = 0.4
-		hpText.TextStrokeColor3 = Color3.fromRGB(10, 10, 15)
+		hpText.Font = Enum.Font.FredokaOne
+		hpText.TextSize = 12
+		hpText.TextColor3 = Color3.fromRGB(255, 255, 255)
+		hpText.TextStrokeTransparency = 0
+		hpText.TextStrokeColor3 = Color3.fromRGB(30, 33, 48)
 		hpText.Text = string.format("%d / %d", humanoid.Health, humanoid.MaxHealth)
 		hpText.Parent = bb
 
@@ -783,24 +796,29 @@ local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 		lbl.Name = "Title"
 		lbl.BackgroundTransparency = 1
 		lbl.Size = UDim2.new(1, 0, 0, 16)
-		lbl.Font = Enum.Font.GothamBold
-		lbl.TextSize = 13
-		lbl.TextColor3 = Color3.fromRGB(240, 120, 110)
-		lbl.TextStrokeTransparency = 0.3
-		lbl.TextStrokeColor3 = Color3.fromRGB(10, 10, 15)
+		lbl.Font = Enum.Font.FredokaOne
+		lbl.TextSize = 14
+		lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+		lbl.TextStrokeTransparency = 0
+		lbl.TextStrokeColor3 = Color3.fromRGB(30, 33, 48)
 		lbl.Text = string.format("%s  Lv %d", arch.name, level)
 		lbl.Parent = bb
 
 		local hpBg = Instance.new("Frame")
 		hpBg.Size = UDim2.new(0.7, 0, 0, 6)
 		hpBg.Position = UDim2.new(0.15, 0, 0, 19)
-		hpBg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+		hpBg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		hpBg.BorderSizePixel = 0
 		hpBg.Parent = bb
+		local hpCorner = Instance.new("UICorner", hpBg)
+		hpCorner.CornerRadius = UDim.new(0, 3)
+		local hpStroke = Instance.new("UIStroke", hpBg)
+		hpStroke.Color = Color3.fromRGB(30, 33, 48)
+		hpStroke.Thickness = 1.5
 
 		local hpFill = Instance.new("Frame")
 		hpFill.Size = UDim2.new(1, 0, 1, 0)
-		hpFill.BackgroundColor3 = Color3.fromRGB(220, 70, 60)
+		hpFill.BackgroundColor3 = Color3.fromRGB(255, 72, 72)
 		hpFill.BorderSizePixel = 0
 		hpFill.Parent = hpBg
 

@@ -615,7 +615,7 @@ end
 -- It is worth nothing at a sale (SellValue) and never shatters on death (SwordDropSystem).
 BossWeapons.STARTER_POOL = "IronLowlands"
 BossWeapons.Starter = sword("Classic Sword", 1.00, 0,
-	{ mesh = "Blocks", color = rgb(185, 192, 200), material = Enum.Material.Metal, accent = rgb(170, 124, 60) },
+	{ mesh = "Blocks", color = rgb(236, 244, 255), material = Enum.Material.SmoothPlastic, accent = rgb(255, 200, 48) },
 	{}, "The sword you came in with. It has a lot left to learn.")
 
 -- Used when an archetype has no pool
