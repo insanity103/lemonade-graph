@@ -378,11 +378,12 @@ infoLabel.TextWrapped = true
 local DEFAULT_INFO = "ONE BLADE \u{2014} ROLLED WHEN YOU PAY, FROM YOUR LEVEL'S POOLS"
 infoLabel.Text = DEFAULT_INFO
 
--- Toast notice for purchase result: a pill riding the panel's bottom edge.
+-- Notice for a refused purchase (not enough gold, too far away): a pill just BELOW the panel. It
+-- used to ride the panel's bottom edge, straight across the buy button (2026-09-24 recording).
 local noticeLabel = Instance.new("TextLabel")
 noticeLabel.Name = "NoticeLabel"
-noticeLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-noticeLabel.Position = UDim2.fromScale(0.5, 1)
+noticeLabel.AnchorPoint = Vector2.new(0.5, 0)
+noticeLabel.Position = UDim2.new(0.5, 0, 1, 14)
 noticeLabel.Size = UDim2.fromOffset(0, 44)
 noticeLabel.AutomaticSize = Enum.AutomaticSize.X
 noticeLabel.BackgroundColor3 = BRIGHT.Green
@@ -622,8 +623,11 @@ local function row(parent, order, left, right, opts)
 	else
 		-- A row with no value on the right (a note, a spacer) gives the label the whole width.
 		local split = (right == nil or right == "") and 1 or 0.55
+		-- The ink goes in as `color`, so PanelChrome.display leaves dark text unoutlined. Set after
+		-- the fact, it drew brown text inside a dark outline, and at this size that is a smudge.
 		local l = PanelChrome.display(frame, {
-			name = "Left", text = left, size = opts.size or 18, stroke = opts.stroke or 2,
+			name = "Left", text = left, size = opts.size or 19, stroke = opts.stroke or 2,
+			color = opts.leftColor or Color3.fromRGB(70, 52, 34),
 			xAlign = Enum.TextXAlignment.Left, yAlign = Enum.TextYAlignment.Center,
 			size2 = UDim2.new(split, -6, 1, 0), zIndex = 56,
 		})
@@ -634,7 +638,8 @@ local function row(parent, order, left, right, opts)
 
 	if right ~= nil and right ~= "" then
 		local r = PanelChrome.display(frame, {
-			name = "Right", text = right, size = opts.size or 18, stroke = opts.stroke or 2,
+			name = "Right", text = right, size = opts.size or 19, stroke = opts.stroke or 2,
+			color = opts.rightColor or Color3.fromRGB(28, 32, 54),
 			xAlign = x >= 0 and Enum.TextXAlignment.Left or Enum.TextXAlignment.Right,
 			yAlign = Enum.TextYAlignment.Center,
 			pos = x >= 0 and UDim2.fromOffset(x, 0) or UDim2.fromScale(0.55, 0),
@@ -880,8 +885,15 @@ MERCHANT_ACTION.OnClientEvent:Connect(function(action, param1, param2, param3)
 	elseif action == "Offer" then
 		applyOffer(param1)
 	elseif action == "PurchaseResult" then
-		showNotice(param2, param1)
 		applyOffer(param3 or offer)
+		if param1 then
+			-- Bought: get out of the way. The reveal (SwordDropToast) draws below modal panels, so with
+			-- the counter left open every sword was rolled, named and graded behind it, and the only
+			-- sign of what you got was a pill over the buy button. E at the counter opens it again.
+			if isOpen then setShopOpen(false) end
+		else
+			showNotice(param2, false)
+		end
 	end
 end)
 

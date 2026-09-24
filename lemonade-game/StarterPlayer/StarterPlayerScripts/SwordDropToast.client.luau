@@ -259,6 +259,10 @@ revealGui.DisplayOrder = 16 -- above the HUD and combat streak, below modal pane
 revealGui.Enabled = false
 revealGui:SetAttribute("GuiShowcaseKeep", true)
 revealGui.Parent = player:WaitForChild("PlayerGui")
+-- QuestGui steps its tracker aside while this is up: the tracker sits over the rarity ladder.
+revealGui:GetPropertyChangedSignal("Enabled"):Connect(function()
+	player:SetAttribute("DropRevealOpen", revealGui.Enabled)
+end)
 
 -- A dim behind the reveal so the sword reads over the world. It takes no input: play goes on.
 local dim = Instance.new("Frame")

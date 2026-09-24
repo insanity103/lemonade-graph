@@ -1230,8 +1230,9 @@ local function updateTracker()
 		return
 	end
 
-	-- Stepped aside while the spin board is up: both live on the right of the screen there.
-	trackerFrame.Visible = player:GetAttribute("SpinBoardOpen") ~= true
+	-- Stepped aside while the spin board or a drop reveal is up: both use the right of the screen
+	-- (the reveal's rarity ladder sat under the tracker in the 2026-09-24 blacksmith recording).
+	trackerFrame.Visible = player:GetAttribute("SpinBoardOpen") ~= true and player:GetAttribute("DropRevealOpen") ~= true
 	questNameLabel.Text = string.format("Quest %d · %s", quest.index, quest.name)
 	questDescLabel.Text = getObjectiveHeadline(quest)
 	local frac, countText = getProgressCounts(quest, progress)
@@ -1515,6 +1516,7 @@ player:GetAttributeChangedSignal("ActiveQuestId"):Connect(syncFromAttributes)
 player:GetAttributeChangedSignal("QuestProgress"):Connect(syncFromAttributes)
 player:GetAttributeChangedSignal("CompletedQuests"):Connect(updateTracker)
 player:GetAttributeChangedSignal("SpinBoardOpen"):Connect(updateTracker)
+player:GetAttributeChangedSignal("DropRevealOpen"):Connect(updateTracker)
 
 -- Initial sync
 syncFromAttributes()
