@@ -1,0 +1,12 @@
+sword,Sword_EmberchipShiv,Sword_SootglassFalchion,Sword_ClinkerSabre,Sword_FurnaceLongsword,Sword_CalderaBroadsword,Sword_FirstSpark,Sword_KilnhookKhopesh,Sword_CinderwaveFlamberge,Sword_AnvilbackChopper,Sword_ToastedMarshmallowBrand,Sword_CarameltClaymore,Boss_Gorgon,Boss_FrostRevenant,Boss_InfernalColossus,Boss_VoidWraith,Boss_CelestialTitan,RootWarden,DrownedBellwarden,TempestWarden,SwordMeshTemplate
+Sword_EmberchipShiv,,0.789,0.833,0.785,0.693,0.63,0.61,0.768,0.646,0.754,0.807,0.701,0.657,0.691,0.665,0.683,0.733,0.673,0.686,0.731
+Sword_SootglassFalchion,0.789,,0.841,0.779,0.74,0.524,0.662,0.738,0.768,0.62,0.81,0.767,0.748,0.759,0.758,0.733,0.773,0.794,0.756,0.751
+Sword_ClinkerSabre,0.833,0.841,,0.782,0.719,0.562,0.668,0.732,0.728,0.683,0.763,0.778,0.748,0.735,0.757,0.671,0.72,0.746,0.743,0.756
+Sword_FurnaceLongsword,0.785,0.779,0.782,,0.815,0.52,0.595,0.755,0.685,0.639,0.828,0.762,0.707,0.801,0.731,0.736,0.785,0.772,0.766,0.72
+Sword_CalderaBroadsword,0.693,0.74,0.719,0.815,,0.456,0.58,0.659,0.7,0.553,0.8,0.775,0.753,0.846,0.751,0.816,0.823,0.784,0.79,0.63
+Sword_FirstSpark,0.63,0.524,0.562,0.52,0.456,,0.513,0.603,0.448,0.726,0.537,0.463,0.424,0.459,0.442,0.443,0.482,0.431,0.48,0.508
+Sword_KilnhookKhopesh,0.61,0.662,0.668,0.595,0.58,0.513,,0.615,0.635,0.548,0.575,0.624,0.557,0.571,0.564,0.525,0.577,0.575,0.593,0.627
+Sword_CinderwaveFlamberge,0.768,0.738,0.732,0.755,0.659,0.603,0.615,,0.657,0.7,0.732,0.648,0.609,0.669,0.618,0.626,0.684,0.652,0.694,0.738
+Sword_AnvilbackChopper,0.646,0.768,0.728,0.685,0.7,0.448,0.635,0.657,,0.523,0.666,0.758,0.693,0.681,0.703,0.637,0.681,0.727,0.672,0.659
+Sword_ToastedMarshmallowBrand,0.754,0.62,0.683,0.639,0.553,0.726,0.548,0.7,0.523,,0.637,0.566,0.524,0.562,0.539,0.524,0.579,0.535,0.581,0.615
+Sword_CarameltClaymore,0.807,0.81,0.763,0.828,0.8,0.537,0.575,0.732,0.666,0.637,,0.733,0.724,0.792,0.739,0.796,0.842,0.763,0.768,0.696

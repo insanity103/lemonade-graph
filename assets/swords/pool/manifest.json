@@ -4468,5 +4468,694 @@
       "iou": 0.784,
       "against": "RootWarden"
     }
+  },
+  "Sword_EmberchipShiv": {
+    "name": "Emberchip Shiv",
+    "key": "Sword_EmberchipShiv",
+    "pool": "InfernalCaldera",
+    "tier": 1,
+    "concept": "an irregular faceted chip of glowing caldera floor",
+    "file": "Sword_EmberchipShiv.glb",
+    "bytes": 91512,
+    "triangles": 1900,
+    "vertices": 962,
+    "meshSize": [
+      0.08688,
+      0.26003,
+      1.0
+    ],
+    "palette": {
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ],
+      "basalt": [
+        226,
+        80,
+        52
+      ]
+    },
+    "areaShare": {
+      "ember_red": 0.26,
+      "cream": 0.428,
+      "ember_yellow": 0.089,
+      "basalt": 0.224
+    },
+    "calmVivid": {
+      "calm": 0.428,
+      "vivid": 0.572
+    },
+    "normalise": {
+      "centre_shift": [
+        0.00044,
+        6e-05,
+        0.0
+      ],
+      "length_scale": 1.00013
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.833,
+      "against": "Sword_ClinkerSabre"
+    }
+  },
+  "Sword_SootglassFalchion": {
+    "name": "Sootglass Falchion",
+    "key": "Sword_SootglassFalchion",
+    "pool": "InfernalCaldera",
+    "tier": 2,
+    "concept": "a smoky-glass falchion with curls of smoke inside",
+    "file": "Sword_SootglassFalchion.glb",
+    "bytes": 138564,
+    "triangles": 4368,
+    "vertices": 2216,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "pale_peach": [
+        255,
+        232,
+        208
+      ]
+    },
+    "areaShare": {
+      "cream": 0.442,
+      "orange": 0.222,
+      "ember_red": 0.233,
+      "pale_peach": 0.104
+    },
+    "calmVivid": {
+      "calm": 0.546,
+      "vivid": 0.454
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.841,
+      "against": "Sword_ClinkerSabre"
+    }
+  },
+  "Sword_ClinkerSabre": {
+    "name": "Clinker Sabre",
+    "key": "Sword_ClinkerSabre",
+    "pool": "InfernalCaldera",
+    "tier": 2,
+    "concept": "a rough flat-shaded clinker sabre with a glowing seam",
+    "file": "Sword_ClinkerSabre.glb",
+    "bytes": 272796,
+    "triangles": 4444,
+    "vertices": 2252,
+    "meshSize": [
+      0.11825,
+      0.2602,
+      1.0
+    ],
+    "palette": {
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ],
+      "basalt": [
+        226,
+        80,
+        52
+      ]
+    },
+    "areaShare": {
+      "orange": 0.344,
+      "cream": 0.218,
+      "ember_yellow": 0.159,
+      "basalt": 0.279
+    },
+    "calmVivid": {
+      "calm": 0.218,
+      "vivid": 0.782
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.00039,
+        0.0
+      ],
+      "length_scale": 1.00078
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.841,
+      "against": "Sword_SootglassFalchion"
+    }
+  },
+  "Sword_FurnaceLongsword": {
+    "name": "Furnace Longsword",
+    "key": "Sword_FurnaceLongsword",
+    "pool": "InfernalCaldera",
+    "tier": 3,
+    "concept": "a heat-banded longsword over a furnace grate, with a bellows pommel",
+    "file": "Sword_FurnaceLongsword.glb",
+    "bytes": 127932,
+    "triangles": 4464,
+    "vertices": 2242,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "furnace": [
+        255,
+        132,
+        48
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ]
+    },
+    "areaShare": {
+      "cream": 0.212,
+      "ember_red": 0.357,
+      "furnace": 0.298,
+      "ember_yellow": 0.132
+    },
+    "calmVivid": {
+      "calm": 0.212,
+      "vivid": 0.788
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.828,
+      "against": "Sword_CarameltClaymore"
+    }
+  },
+  "Sword_CalderaBroadsword": {
+    "name": "Caldera Broadsword",
+    "key": "Sword_CalderaBroadsword",
+    "pool": "InfernalCaldera",
+    "tier": 3,
+    "concept": "a rock-slab broadsword with a lava crater in each face",
+    "file": "Sword_CalderaBroadsword.glb",
+    "bytes": 182712,
+    "triangles": 3628,
+    "vertices": 1832,
+    "meshSize": [
+      0.09601,
+      0.26002,
+      1.0
+    ],
+    "palette": {
+      "basalt": [
+        226,
+        80,
+        52
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ]
+    },
+    "areaShare": {
+      "cream": 0.366,
+      "basalt": 0.488,
+      "ember_yellow": 0.146
+    },
+    "calmVivid": {
+      "calm": 0.366,
+      "vivid": 0.634
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        4e-05,
+        0.0
+      ],
+      "length_scale": 1.00008
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.846,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_FirstSpark": {
+    "name": "First Spark",
+    "key": "Sword_FirstSpark",
+    "pool": "InfernalCaldera",
+    "tier": 4,
+    "concept": "a slender blade holding the caldera's first spark in a window",
+    "file": "Sword_FirstSpark.glb",
+    "bytes": 121200,
+    "triangles": 4378,
+    "vertices": 2211,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ],
+      "spark": [
+        255,
+        196,
+        96
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "basalt": [
+        226,
+        80,
+        52
+      ]
+    },
+    "areaShare": {
+      "ember_red": 0.391,
+      "cream": 0.264,
+      "ember_yellow": 0.045,
+      "spark": 0.052,
+      "orange": 0.139,
+      "basalt": 0.109
+    },
+    "calmVivid": {
+      "calm": 0.264,
+      "vivid": 0.736
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.726,
+      "against": "Sword_ToastedMarshmallowBrand"
+    }
+  },
+  "Sword_KilnhookKhopesh": {
+    "name": "Kilnhook Khopesh",
+    "key": "Sword_KilnhookKhopesh",
+    "pool": "InfernalCaldera",
+    "tier": 3,
+    "concept": "a C-curved khopesh with a tray hook and a kiln-brick guard",
+    "file": "Sword_KilnhookKhopesh.glb",
+    "bytes": 111612,
+    "triangles": 3952,
+    "vertices": 2008,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "pale_peach": [
+        255,
+        232,
+        208
+      ]
+    },
+    "areaShare": {
+      "cream": 0.382,
+      "ember_red": 0.342,
+      "orange": 0.131,
+      "pale_peach": 0.145
+    },
+    "calmVivid": {
+      "calm": 0.527,
+      "vivid": 0.473
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.668,
+      "against": "Sword_ClinkerSabre"
+    }
+  },
+  "Sword_CinderwaveFlamberge": {
+    "name": "Cinderwave Flamberge",
+    "key": "Sword_CinderwaveFlamberge",
+    "pool": "InfernalCaldera",
+    "tier": 3,
+    "concept": "a narrow flamberge rippling like heat haze",
+    "file": "Sword_CinderwaveFlamberge.glb",
+    "bytes": 169920,
+    "triangles": 5784,
+    "vertices": 2914,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ]
+    },
+    "areaShare": {
+      "ember_red": 0.189,
+      "cream": 0.287,
+      "orange": 0.315,
+      "ember_yellow": 0.209
+    },
+    "calmVivid": {
+      "calm": 0.287,
+      "vivid": 0.713
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.768,
+      "against": "Sword_EmberchipShiv"
+    }
+  },
+  "Sword_AnvilbackChopper": {
+    "name": "Anvilback Chopper",
+    "key": "Sword_AnvilbackChopper",
+    "pool": "InfernalCaldera",
+    "tier": 3,
+    "concept": "a square chopper with an anvil built into its spine",
+    "file": "Sword_AnvilbackChopper.glb",
+    "bytes": 102696,
+    "triangles": 3664,
+    "vertices": 1868,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "basalt": [
+        226,
+        80,
+        52
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "basalt": 0.399,
+      "cream": 0.228,
+      "gold": 0.373
+    },
+    "calmVivid": {
+      "calm": 0.228,
+      "vivid": 0.772
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.768,
+      "against": "Sword_SootglassFalchion"
+    }
+  },
+  "Sword_ToastedMarshmallowBrand": {
+    "name": "Toasted Marshmallow Brand",
+    "key": "Sword_ToastedMarshmallowBrand",
+    "pool": "InfernalCaldera",
+    "tier": 4,
+    "concept": "a skewer of four toasted marshmallows over a campfire ring",
+    "file": "Sword_ToastedMarshmallowBrand.glb",
+    "bytes": 122604,
+    "triangles": 4660,
+    "vertices": 2368,
+    "meshSize": [
+      0.132,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "timber": [
+        255,
+        158,
+        36
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "marshmallow": [
+        255,
+        236,
+        208
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ]
+    },
+    "areaShare": {
+      "timber": 0.445,
+      "tangerine": 0.078,
+      "marshmallow": 0.226,
+      "gold": 0.07,
+      "orange": 0.056,
+      "ember_red": 0.101,
+      "ember_yellow": 0.024
+    },
+    "calmVivid": {
+      "calm": 0.226,
+      "vivid": 0.774
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.754,
+      "against": "Sword_EmberchipShiv"
+    }
+  },
+  "Sword_CarameltClaymore": {
+    "name": "Caramelt Claymore",
+    "key": "Sword_CarameltClaymore",
+    "pool": "InfernalCaldera",
+    "tier": 4,
+    "concept": "a dripping caramel claymore on a candy-cane guard",
+    "file": "Sword_CarameltClaymore.glb",
+    "bytes": 175564,
+    "triangles": 6664,
+    "vertices": 3364,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "caramel": [
+        255,
+        160,
+        60
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "pale_peach": [
+        255,
+        232,
+        208
+      ]
+    },
+    "areaShare": {
+      "caramel": 0.399,
+      "cream": 0.376,
+      "ember_red": 0.08,
+      "pale_peach": 0.146
+    },
+    "calmVivid": {
+      "calm": 0.521,
+      "vivid": 0.479
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.842,
+      "against": "RootWarden"
+    }
   }
 }
