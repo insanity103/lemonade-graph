@@ -726,6 +726,12 @@ DESIGNS = {
     "Sword_HoneycombThorn": ("Briarwood", 4, design_honeycomb_thorn),
 }
 
+# The other pools live one file per pool in tools/pool_designs/, run in this module's namespace
+# (so they see every helper above) in name order: _parts.py (the shared part library) first.
+# Each pool file adds its designs with DESIGNS.update({...}).
+for _path in sorted((TOOLS / "pool_designs").glob("*.py")):
+    exec(compile(_path.read_text(), str(_path), "exec"), globals())
+
 
 # ----------------------------------------------------------------------------- checks
 def slot_areas(forge, sword):

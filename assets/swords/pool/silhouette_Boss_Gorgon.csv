@@ -1,0 +1,7 @@
+sword,Sword_PitShiv,Sword_IronjawSaber,Sword_SlagFalchion,Sword_Chainbreaker,Sword_DuneglassEdge,Sword_PitSovereign,Boss_Gorgon,Boss_FrostRevenant,Boss_InfernalColossus,Boss_VoidWraith,Boss_CelestialTitan,RootWarden,DrownedBellwarden,TempestWarden,SwordMeshTemplate
+Sword_PitShiv,,0.715,0.814,0.794,0.823,0.776,0.764,0.702,0.775,0.715,0.732,0.785,0.739,0.76,0.718
+Sword_IronjawSaber,0.715,,0.76,0.673,0.703,0.648,0.71,0.679,0.678,0.684,0.608,0.64,0.7,0.694,0.714
+Sword_SlagFalchion,0.814,0.76,,0.791,0.751,0.699,0.844,0.784,0.773,0.798,0.704,0.77,0.836,0.779,0.725
+Sword_Chainbreaker,0.794,0.673,0.791,,0.76,0.769,0.771,0.746,0.838,0.752,0.772,0.79,0.794,0.782,0.644
+Sword_DuneglassEdge,0.823,0.703,0.751,0.76,,0.835,0.747,0.699,0.771,0.726,0.748,0.797,0.732,0.754,0.711
+Sword_PitSovereign,0.776,0.648,0.699,0.769,0.835,,0.684,0.66,0.732,0.665,0.69,0.716,0.679,0.737,0.642

@@ -949,5 +949,1358 @@
       "iou": 0.779,
       "against": "Sword_HedgehogHooksword"
     }
+  },
+  "Sword_PitShiv": {
+    "name": "Pit Shiv",
+    "key": "Sword_PitShiv",
+    "pool": "Boss_Gorgon",
+    "tier": 1,
+    "concept": "a chisel-ended shiv ground from a shackle",
+    "file": "Sword_PitShiv.glb",
+    "bytes": 85696,
+    "triangles": 3186,
+    "vertices": 1598,
+    "meshSize": [
+      0.192,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "sky_white": [
+        232,
+        240,
+        255
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "toy_blue": [
+        64,
+        144,
+        255
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ]
+    },
+    "areaShare": {
+      "sky_white": 0.317,
+      "orange": 0.151,
+      "toy_blue": 0.344,
+      "cream_grip": 0.115,
+      "coral": 0.073
+    },
+    "calmVivid": {
+      "calm": 0.432,
+      "vivid": 0.568
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.823,
+      "against": "Sword_DuneglassEdge"
+    }
+  },
+  "Sword_IronjawSaber": {
+    "name": "Ironjaw Saber",
+    "key": "Sword_IronjawSaber",
+    "pool": "Boss_Gorgon",
+    "tier": 2,
+    "concept": "a saber with jaw bites out of its edge and a jaw guard",
+    "file": "Sword_IronjawSaber.glb",
+    "bytes": 116972,
+    "triangles": 4294,
+    "vertices": 2165,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "sky_white": [
+        232,
+        240,
+        255
+      ],
+      "toy_blue": [
+        64,
+        144,
+        255
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ]
+    },
+    "areaShare": {
+      "sky_white": 0.35,
+      "toy_blue": 0.324,
+      "coral": 0.15,
+      "cream_grip": 0.139,
+      "orange": 0.037
+    },
+    "calmVivid": {
+      "calm": 0.489,
+      "vivid": 0.511
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.76,
+      "against": "Sword_SlagFalchion"
+    }
+  },
+  "Sword_SlagFalchion": {
+    "name": "Slag Falchion",
+    "key": "Sword_SlagFalchion",
+    "pool": "Boss_Gorgon",
+    "tier": 2,
+    "concept": "a slag chopper with amber drips on its spine",
+    "file": "Sword_SlagFalchion.glb",
+    "bytes": 96476,
+    "triangles": 3060,
+    "vertices": 1552,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "amber": [
+        255,
+        196,
+        72
+      ],
+      "toy_blue": [
+        64,
+        144,
+        255
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ]
+    },
+    "areaShare": {
+      "orange": 0.452,
+      "cream": 0.131,
+      "toy_blue": 0.242,
+      "amber": 0.049,
+      "cream_grip": 0.126
+    },
+    "calmVivid": {
+      "calm": 0.258,
+      "vivid": 0.742
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.844,
+      "against": "Boss_Gorgon"
+    }
+  },
+  "Sword_Chainbreaker": {
+    "name": "Chainbreaker",
+    "key": "Sword_Chainbreaker",
+    "pool": "Boss_Gorgon",
+    "tier": 3,
+    "concept": "a greatsword with broken chain links and a cage-bar guard",
+    "file": "Sword_Chainbreaker.glb",
+    "bytes": 117196,
+    "triangles": 3696,
+    "vertices": 1876,
+    "meshSize": [
+      0.096,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "sky_white": [
+        232,
+        240,
+        255
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ],
+      "toy_blue": [
+        64,
+        144,
+        255
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ]
+    },
+    "areaShare": {
+      "sky_white": 0.303,
+      "coral": 0.207,
+      "toy_blue": 0.347,
+      "cream_grip": 0.108,
+      "orange": 0.035
+    },
+    "calmVivid": {
+      "calm": 0.41,
+      "vivid": 0.59
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.838,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_DuneglassEdge": {
+    "name": "Duneglass Edge",
+    "key": "Sword_DuneglassEdge",
+    "pool": "Boss_Gorgon",
+    "tier": 3,
+    "concept": "a faceted desert-glass blade over a dune guard",
+    "file": "Sword_DuneglassEdge.glb",
+    "bytes": 145512,
+    "triangles": 3464,
+    "vertices": 1756,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "amber": [
+        255,
+        196,
+        72
+      ],
+      "sky_white": [
+        232,
+        240,
+        255
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ]
+    },
+    "areaShare": {
+      "amber": 0.217,
+      "sky_white": 0.221,
+      "cream": 0.43,
+      "orange": 0.133
+    },
+    "calmVivid": {
+      "calm": 0.65,
+      "vivid": 0.35
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.835,
+      "against": "Sword_PitSovereign"
+    }
+  },
+  "Sword_PitSovereign": {
+    "name": "Pit Sovereign",
+    "key": "Sword_PitSovereign",
+    "pool": "Boss_Gorgon",
+    "tier": 4,
+    "concept": "a crowned greatsword with an ember core and banners",
+    "file": "Sword_PitSovereign.glb",
+    "bytes": 139384,
+    "triangles": 5012,
+    "vertices": 2550,
+    "meshSize": [
+      0.122,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "sky_white": [
+        232,
+        240,
+        255
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "ember_orange": [
+        255,
+        92,
+        40
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ],
+      "toy_blue": [
+        64,
+        144,
+        255
+      ]
+    },
+    "areaShare": {
+      "sky_white": 0.186,
+      "gold": 0.454,
+      "ember_orange": 0.17,
+      "cream_grip": 0.099,
+      "coral": 0.064,
+      "toy_blue": 0.027
+    },
+    "calmVivid": {
+      "calm": 0.285,
+      "vivid": 0.715
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.835,
+      "against": "Sword_DuneglassEdge"
+    }
+  },
+  "Sword_RimeguardShortsword": {
+    "name": "Rimeguard Shortsword",
+    "key": "Sword_RimeguardShortsword",
+    "pool": "Boss_FrostRevenant",
+    "tier": 1,
+    "concept": "a short leaf blade rimed with frost nubs",
+    "file": "Sword_RimeguardShortsword.glb",
+    "bytes": 83724,
+    "triangles": 3158,
+    "vertices": 1603,
+    "meshSize": [
+      0.12982,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "pale_sky": [
+        214,
+        238,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "white": [
+        255,
+        255,
+        255
+      ],
+      "deep_blue": [
+        24,
+        140,
+        255
+      ]
+    },
+    "areaShare": {
+      "pale_sky": 0.224,
+      "cyan": 0.239,
+      "deep_blue": 0.354,
+      "white": 0.183
+    },
+    "calmVivid": {
+      "calm": 0.407,
+      "vivid": 0.593
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.802,
+      "against": "RootWarden"
+    }
+  },
+  "Sword_GlacierFalchion": {
+    "name": "Glacier Falchion",
+    "key": "Sword_GlacierFalchion",
+    "pool": "Boss_FrostRevenant",
+    "tier": 2,
+    "concept": "a banded glacier falchion with a clear diamond heart",
+    "file": "Sword_GlacierFalchion.glb",
+    "bytes": 138748,
+    "triangles": 2692,
+    "vertices": 1364,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "ice_white": [
+        236,
+        248,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "deep_blue": [
+        24,
+        140,
+        255
+      ]
+    },
+    "areaShare": {
+      "cyan": 0.35,
+      "ice_white": 0.423,
+      "deep_blue": 0.227
+    },
+    "calmVivid": {
+      "calm": 0.423,
+      "vivid": 0.577
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.808,
+      "against": "DrownedBellwarden"
+    }
+  },
+  "Sword_SnowdriftSaber": {
+    "name": "Snowdrift Saber",
+    "key": "Sword_SnowdriftSaber",
+    "pool": "Boss_FrostRevenant",
+    "tier": 2,
+    "concept": "a packed-snow saber with drifts on its spine and a snowflake guard",
+    "file": "Sword_SnowdriftSaber.glb",
+    "bytes": 101644,
+    "triangles": 3726,
+    "vertices": 1887,
+    "meshSize": [
+      0.104,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "snow": [
+        245,
+        250,
+        255
+      ],
+      "deep_blue": [
+        24,
+        140,
+        255
+      ],
+      "white": [
+        255,
+        255,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ]
+    },
+    "areaShare": {
+      "snow": 0.294,
+      "deep_blue": 0.422,
+      "white": 0.254,
+      "cyan": 0.03
+    },
+    "calmVivid": {
+      "calm": 0.548,
+      "vivid": 0.452
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.801,
+      "against": "Sword_GlacierFalchion"
+    }
+  },
+  "Sword_HoarwindClaymore": {
+    "name": "Hoarwind Claymore",
+    "key": "Sword_HoarwindClaymore",
+    "pool": "Boss_FrostRevenant",
+    "tier": 3,
+    "concept": "a claymore with wind holes and curling gust guards",
+    "file": "Sword_HoarwindClaymore.glb",
+    "bytes": 134968,
+    "triangles": 4996,
+    "vertices": 2512,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "ice_white": [
+        236,
+        248,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "deep_blue": [
+        24,
+        140,
+        255
+      ],
+      "white": [
+        255,
+        255,
+        255
+      ]
+    },
+    "areaShare": {
+      "cyan": 0.283,
+      "ice_white": 0.351,
+      "deep_blue": 0.327,
+      "white": 0.039
+    },
+    "calmVivid": {
+      "calm": 0.39,
+      "vivid": 0.61
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.808,
+      "against": "Sword_PermafrostGreatsword"
+    }
+  },
+  "Sword_PermafrostGreatsword": {
+    "name": "Permafrost Greatsword",
+    "key": "Sword_PermafrostGreatsword",
+    "pool": "Boss_FrostRevenant",
+    "tier": 3,
+    "concept": "a greatsword frozen into a block of permafrost",
+    "file": "Sword_PermafrostGreatsword.glb",
+    "bytes": 111140,
+    "triangles": 3656,
+    "vertices": 1862,
+    "meshSize": [
+      0.104,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "deep_blue": [
+        24,
+        140,
+        255
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "ice_white": [
+        236,
+        248,
+        255
+      ],
+      "white": [
+        255,
+        255,
+        255
+      ]
+    },
+    "areaShare": {
+      "deep_blue": 0.454,
+      "cyan": 0.172,
+      "ice_white": 0.344,
+      "white": 0.03
+    },
+    "calmVivid": {
+      "calm": 0.374,
+      "vivid": 0.626
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.814,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_AuroraGreatblade": {
+    "name": "Aurora Greatblade",
+    "key": "Sword_AuroraGreatblade",
+    "pool": "Boss_FrostRevenant",
+    "tier": 4,
+    "concept": "a greatblade streaked with raised aurora ribbons under an antler crown",
+    "file": "Sword_AuroraGreatblade.glb",
+    "bytes": 165004,
+    "triangles": 4964,
+    "vertices": 2508,
+    "meshSize": [
+      0.096,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "ice_white": [
+        236,
+        248,
+        255
+      ],
+      "aurora": [
+        96,
+        232,
+        255
+      ],
+      "aqua": [
+        48,
+        224,
+        176
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "deep_blue": [
+        24,
+        140,
+        255
+      ],
+      "white": [
+        255,
+        255,
+        255
+      ]
+    },
+    "areaShare": {
+      "ice_white": 0.192,
+      "aurora": 0.31,
+      "aqua": 0.116,
+      "violet": 0.116,
+      "deep_blue": 0.238,
+      "white": 0.028
+    },
+    "calmVivid": {
+      "calm": 0.219,
+      "vivid": 0.781
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.816,
+      "against": "RootWarden"
+    }
+  },
+  "Sword_CinderShortsword": {
+    "name": "Cinder Shortsword",
+    "key": "Sword_CinderShortsword",
+    "pool": "Boss_InfernalColossus",
+    "tier": 1,
+    "concept": "a stubby smouldering blade with a smoke-puff pommel",
+    "file": "Sword_CinderShortsword.glb",
+    "bytes": 77752,
+    "triangles": 2796,
+    "vertices": 1420,
+    "meshSize": [
+      0.09207,
+      0.2602,
+      1.0
+    ],
+    "palette": {
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ]
+    },
+    "areaShare": {
+      "ember_red": 0.225,
+      "ember_yellow": 0.33,
+      "cream": 0.275,
+      "cream_grip": 0.145,
+      "orange": 0.024
+    },
+    "calmVivid": {
+      "calm": 0.421,
+      "vivid": 0.579
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.00038,
+        0.0
+      ],
+      "length_scale": 1.00075
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.814,
+      "against": "Sword_PyroclastGreatsword"
+    }
+  },
+  "Sword_MagmaFalchion": {
+    "name": "Magma Falchion",
+    "key": "Sword_MagmaFalchion",
+    "pool": "Boss_InfernalColossus",
+    "tier": 2,
+    "concept": "a magma falchion dripping off its edge",
+    "file": "Sword_MagmaFalchion.glb",
+    "bytes": 82744,
+    "triangles": 3006,
+    "vertices": 1523,
+    "meshSize": [
+      0.12287,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "magma": [
+        255,
+        104,
+        32
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ]
+    },
+    "areaShare": {
+      "magma": 0.342,
+      "ember_yellow": 0.188,
+      "cream": 0.265,
+      "cream_grip": 0.13,
+      "orange": 0.075
+    },
+    "calmVivid": {
+      "calm": 0.394,
+      "vivid": 0.606
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.808,
+      "against": "Sword_AshenSaber"
+    }
+  },
+  "Sword_SlagheapCleaver": {
+    "name": "Slagheap Cleaver",
+    "key": "Sword_SlagheapCleaver",
+    "pool": "Boss_InfernalColossus",
+    "tier": 2,
+    "concept": "a square cleaver crusted with slag plates",
+    "file": "Sword_SlagheapCleaver.glb",
+    "bytes": 141576,
+    "triangles": 3452,
+    "vertices": 1748,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "basalt": [
+        226,
+        80,
+        52
+      ],
+      "ember_red": [
+        255,
+        96,
+        48
+      ]
+    },
+    "areaShare": {
+      "cream": 0.286,
+      "orange": 0.383,
+      "basalt": 0.261,
+      "ember_red": 0.07
+    },
+    "calmVivid": {
+      "calm": 0.286,
+      "vivid": 0.714
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.781,
+      "against": "Sword_MagmaFalchion"
+    }
+  },
+  "Sword_AshenSaber": {
+    "name": "Ashen Saber",
+    "key": "Sword_AshenSaber",
+    "pool": "Boss_InfernalColossus",
+    "tier": 2,
+    "concept": "an ash saber with a glowing fuller and an S-guard",
+    "file": "Sword_AshenSaber.glb",
+    "bytes": 128828,
+    "triangles": 4686,
+    "vertices": 2363,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "pale_peach": [
+        255,
+        232,
+        208
+      ],
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ]
+    },
+    "areaShare": {
+      "pale_peach": 0.278,
+      "ember_red": 0.399,
+      "ember_yellow": 0.077,
+      "cream": 0.246
+    },
+    "calmVivid": {
+      "calm": 0.524,
+      "vivid": 0.476
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.808,
+      "against": "Sword_MagmaFalchion"
+    }
+  },
+  "Sword_VentSabre": {
+    "name": "Vent Sabre",
+    "key": "Sword_VentSabre",
+    "pool": "Boss_InfernalColossus",
+    "tier": 2,
+    "concept": "a steam-vented sabre with a spine pipe and a valve-wheel pommel",
+    "file": "Sword_VentSabre.glb",
+    "bytes": 122464,
+    "triangles": 4492,
+    "vertices": 2262,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "vent": [
+        255,
+        112,
+        40
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ]
+    },
+    "areaShare": {
+      "vent": 0.346,
+      "ember_yellow": 0.122,
+      "cream": 0.339,
+      "ember_red": 0.058,
+      "cream_grip": 0.136
+    },
+    "calmVivid": {
+      "calm": 0.475,
+      "vivid": 0.525
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.74,
+      "against": "Sword_MagmaFalchion"
+    }
+  },
+  "Sword_EmberplateClaymore": {
+    "name": "Emberplate Claymore",
+    "key": "Sword_EmberplateClaymore",
+    "pool": "Boss_InfernalColossus",
+    "tier": 3,
+    "concept": "a claymore armoured in ember scales",
+    "file": "Sword_EmberplateClaymore.glb",
+    "bytes": 127028,
+    "triangles": 4312,
+    "vertices": 2188,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "ember_red": [
+        255,
+        96,
+        48
+      ]
+    },
+    "areaShare": {
+      "cream": 0.311,
+      "ember_yellow": 0.188,
+      "orange": 0.217,
+      "ember_red": 0.284
+    },
+    "calmVivid": {
+      "calm": 0.311,
+      "vivid": 0.689
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.832,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_BasaltClaymore": {
+    "name": "Basalt Claymore",
+    "key": "Sword_BasaltClaymore",
+    "pool": "Boss_InfernalColossus",
+    "tier": 3,
+    "concept": "a faceted basalt-column claymore with glowing cracks",
+    "file": "Sword_BasaltClaymore.glb",
+    "bytes": 167056,
+    "triangles": 3496,
+    "vertices": 1770,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "basalt": [
+        226,
+        80,
+        52
+      ],
+      "pale_peach": [
+        255,
+        232,
+        208
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ]
+    },
+    "areaShare": {
+      "basalt": 0.524,
+      "pale_peach": 0.186,
+      "cream": 0.134,
+      "ember_yellow": 0.157
+    },
+    "calmVivid": {
+      "calm": 0.32,
+      "vivid": 0.68
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.84,
+      "against": "Sword_ColossusHeart"
+    }
+  },
+  "Sword_PyroclastGreatsword": {
+    "name": "Pyroclast Greatsword",
+    "key": "Sword_PyroclastGreatsword",
+    "pool": "Boss_InfernalColossus",
+    "tier": 3,
+    "concept": "a cracked lava greatsword over a volcano guard",
+    "file": "Sword_PyroclastGreatsword.glb",
+    "bytes": 133048,
+    "triangles": 4614,
+    "vertices": 2343,
+    "meshSize": [
+      0.104,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "lava": [
+        255,
+        80,
+        30
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ],
+      "basalt": [
+        226,
+        80,
+        52
+      ]
+    },
+    "areaShare": {
+      "lava": 0.26,
+      "cream": 0.307,
+      "ember_yellow": 0.214,
+      "basalt": 0.219
+    },
+    "calmVivid": {
+      "calm": 0.307,
+      "vivid": 0.693
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.814,
+      "against": "Sword_CinderShortsword"
+    }
+  },
+  "Sword_ColossusHeart": {
+    "name": "Colossus Heart",
+    "key": "Sword_ColossusHeart",
+    "pool": "Boss_InfernalColossus",
+    "tier": 4,
+    "concept": "a banded greatsword set with a molten heart, horns and a furnace",
+    "file": "Sword_ColossusHeart.glb",
+    "bytes": 126344,
+    "triangles": 4236,
+    "vertices": 2140,
+    "meshSize": [
+      0.096,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "ember_red": [
+        255,
+        96,
+        48
+      ],
+      "ember_yellow": [
+        255,
+        224,
+        64
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "colossus": [
+        255,
+        170,
+        40
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ]
+    },
+    "areaShare": {
+      "ember_red": 0.205,
+      "ember_yellow": 0.218,
+      "orange": 0.101,
+      "cream": 0.299,
+      "colossus": 0.069,
+      "cream_grip": 0.109
+    },
+    "calmVivid": {
+      "calm": 0.408,
+      "vivid": 0.592
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.84,
+      "against": "Sword_BasaltClaymore"
+    }
   }
 }
