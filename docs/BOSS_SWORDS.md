@@ -1,9 +1,10 @@
 # Boss swords: the enemy designs, and a sword for each boss
 
 Status: built 2026-09-24 (`tools/blender_boss_swords.py`, Blender 4.2 headless), judged offline in
-Cycles renders only. The meshes are in `assets/swords/` with a contact sheet in
-`assets/swords/preview.png`. They have not been imported into the place or seen in Studio yet
-(see "Getting them into the game" at the end).
+Cycles renders only. Eight meshes are in `assets/swords/` (the five bosses and the three wardens)
+with a contact sheet in `assets/swords/preview.png`. They have not been imported into the place or
+seen in Studio yet (see "Getting them into the game" at the end). The same day, every pool sword
+colour in `BossWeapons.luau` moved onto the same palette (see "The pool swords").
 
 ## Why the old swords had to go
 
@@ -32,8 +33,11 @@ sword takes from them:
 | Marsh (Sunken Marsh) | aqua | pale mint tunic, deep aqua-blue helm and cage, lime-yellow reeds and bell | Drowned Bellwarden (warden, no sword) | -- |
 | Storm (Stormwatch) | blue | pale cloud tunic, gold bracer and armour, deep-blue hood and crest, pale-lightning glows | Tempest Warden (warden, no sword) | -- |
 
-The three wardens are named elites by design (`EnemyCombat`: "no weapon, no sword drop"), so they
-get no sword here; their motifs (thorn, bell, lightning) are ready if that ever changes.
+The three wardens are named elites, not unique bosses: no unique drop, but each already drops
+from its zone pool (`BossWeapons.NormalDrops`, rank "warden"). So each one now carries its zone's
+Relic -- the pool's Legendary, drawn as the warden's own mesh -- and the sword you see is the sword
+that zone drops. Arming them is visual only (`weapon = true` in `EnemyCombat` welds the mesh with
+the same Grip joint a boss uses; no stat or drop rate moves).
 
 ## The rules every sword follows
 
@@ -97,6 +101,24 @@ blade, a four-point gold star guard (long flat-ended arms, short vertical points
 the hand), an ivory grip with gold bands and a five-point gold star pommel. Calm: ivory. Vivid:
 gold, tangerine -- the Titan's halo and standard.
 
+**Rootbound Warden -- Grovebound Bloom** (`RootWarden.glb`, Briarwood's Relic)
+A leaf blade: pale-leaf body, lime chamfered edges, a raised leaf-green midrib, two timber thorns
+curling back off the spine, a branch guard (hub, two timber prongs, a twig stub each), a timber
+grip with pale bands and the grove heart for a pommel: a fat six-petal yellow bloom with a green
+centre. Calm: pale leaf. Vivid: lime, leaf, timber, bloom -- the Warden's hood, branches and heart.
+
+**Drowned Bellwarden -- Drowned Chime** (`DrownedBellwarden.glb`, Sunken Marsh's Relic)
+A bell cutlass: a wide mint blade with an aqua cutting edge and a soft scallop along the spine, a
+deep aqua-blue bell for a guard (a flared cup round the blade root, its lip the widest point), an
+aqua-blue grip with mint bands and a bell clapper pommel: a lime-yellow ball on a short stem.
+Calm: mint. Vivid: aqua, aqua-blue, lime-yellow -- the Bellwarden's helm, chain and clapper.
+
+**Tempest Warden -- Thunderglass Pane** (`TempestWarden.glb`, Stormwatch's Relic)
+A lightning bolt: a pale cloud slab that zigzags three times to the tip, gold chamfered edges, a
+pale-lightning bolt rib down the middle, a deep-blue observatory-dome guard on a gold rim (its flat
+ends the widest point), a deep-blue grip with gold bands and an antenna pommel: a gold ball on a
+blue mast. Calm: cloud. Vivid: gold, deep blue, lightning -- the Warden's crest, bracer and heart.
+
 Also regenerated in the same palette: the quarry bandits' falchion, `SwordMeshTemplate.glb`
 (`tools/blender_forge_enemy_sword.py`: sky-white blade, toy-blue bar, cream cord, gold pommel,
 matte). It is the most-seen sword in the game (every Cutthroat and Brute carries it, and every
@@ -122,26 +144,42 @@ safe to run there whenever Studio is closed.
 Studio only. Rojo does not carry MeshParts or ServerStorage in the map project, so this is a
 manual import, the same as the original swords:
 
-1. File > Import 3D each `assets/swords/Boss_<archetype>.glb` and `SwordMeshTemplate.glb`. Leave
+1. File > Import 3D each of the eight `assets/swords/<archetype>.glb` and `SwordMeshTemplate.glb`. Leave
    the importer's default orientation (the game already corrects the 180-degree turn about Y).
    The importer should produce a plain MeshPart with a TextureID and **no** SurfaceAppearance; if
    one appears, the material factors were not honoured and `CombatUtil.applyWeaponAppearance`
    will drop it at runtime anyway.
 2. Name each MeshPart exactly `Boss_Gorgon`, `Boss_FrostRevenant`, `Boss_InfernalColossus`,
-   `Boss_VoidWraith`, `Boss_CelestialTitan` and put them in `ServerStorage/BossSwordMeshes`,
-   replacing the old ones; the falchion is `ServerStorage/SwordMeshTemplate`.
+   `Boss_VoidWraith`, `Boss_CelestialTitan`, `RootWarden`, `DrownedBellwarden`, `TempestWarden`
+   and put them in `ServerStorage/BossSwordMeshes`, replacing the old ones; the falchion is
+   `ServerStorage/SwordMeshTemplate`. Until the warden meshes are imported, their Relics and
+   held swords fall back to the falchion template.
 3. `Motion:SwordGallery` (the Studio-only capture stage, `workspace:SetAttribute("GuiShowcase", ...)`)
    shows the whole roster built through the real `BossSwordFactory`; `Motion:EnemyDrops` shows
    every enemy holding its weapon. Judge those two frames against a PS99 frame with the same
    two-critic gauntlet as the rest of the look pass (`docs/PS99_STUDIO_REVIEW.md`).
 
+## The pool swords
+
+The 100-odd lesser, recoloured and spin-relic swords in `BossWeapons.luau` are one flat colour
+each (`textured = false`, or the block sword's `color` + `accent`), so they cannot pair calm and
+vivid on one blade; the pairing is across the pool instead. Every `color` and `accent` is now
+either a calm pale tint or a full-chroma accent from its zone's family -- the same swatches as the
+bodies, outfits, terrain and the meshes above -- and nothing is grey, brown or black any more
+(Chainbreaker iron grey is now sky-white, Basalt Claymore near-black is the terrain's coral basalt,
+Singularity Greatsword near-black is deep violet, the quarry shivs' greys are cream and sky-white
+with orange and coral fittings, and so on: 106 definitions touched). An audit rule guards it:
+saturation <= 0.22 with value >= 0.9, or saturation >= 0.6 with value >= 0.85. Names, bases, weights
+and inherents are untouched, so saved swords still resolve.
+
+Two mesh fixes rode along. Every boss pool's Legendary and its recoloured claymores used the
+`Boss_Gorgon` mesh (the old "generic greatsword"), which with the new meshes would have drawn the
+Titan's own drop as the Warden's cage-bar cleaver; each pool's big swords now wear their own boss's
+silhouette. And the three warden Relics wear the warden meshes, painted.
+
 ## Follow-ups this pass did not take on
 
-- **Pool sword colours.** The lesser and recoloured pool swords in `BossWeapons.luau` reuse these
-  meshes and the template with `textured = false` and their own `color`, and about a third of
-  those colours are still the old muted family (Chainbreaker iron grey, Emberplate brown, Basalt
-  Claymore near-black, Singularity Greatsword near-black, Umbral Falchion dull purple, the
-  `Blocks` shivs' dark greys). A one-file palette pass over that config, in the same calm/vivid
-  rule, is the next step; it touches saved-sword names nowhere.
-- **Wardens.** No sword by design; motifs noted above if that changes.
 - **Studio judgement.** Everything here is offline. The gauntlet is the decision.
+- **Spin-station and gallery framing.** Eight distinct silhouettes at 3.3-5.4k triangles each are
+  well under budget, but the sword gallery stage (`Motion:SwordGallery`) was framed for the old
+  thinner blades; check the grid spacing.

@@ -258,5 +258,178 @@
       "length_scale": 1.00247
     },
     "checks": "all passed"
+  },
+  "RootWarden": {
+    "name": "Grovebound Bloom",
+    "boss": "Rootbound Warden",
+    "file": "RootWarden.glb",
+    "bytes": 147540,
+    "triangles": 5128,
+    "vertices": 2596,
+    "meshSize": [
+      0.08802,
+      0.26005,
+      1.0
+    ],
+    "gripFrac": 0.38,
+    "guardZ": [
+      0.195,
+      0.255
+    ],
+    "handleZ": [
+      0.255,
+      0.46
+    ],
+    "style": "plastic-toy: flat swatch colours, metallic 0, roughness 1, edge bevel",
+    "palette": {
+      "calm": [
+        236,
+        255,
+        208
+      ],
+      "vivid": [
+        [
+          120,
+          236,
+          56
+        ],
+        [
+          48,
+          208,
+          88
+        ],
+        [
+          255,
+          158,
+          36
+        ],
+        [
+          255,
+          236,
+          96
+        ]
+      ]
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0001,
+        0.0
+      ],
+      "length_scale": 1.00021
+    },
+    "checks": "all passed"
+  },
+  "DrownedBellwarden": {
+    "name": "Drowned Chime",
+    "boss": "Drowned Bellwarden",
+    "file": "DrownedBellwarden.glb",
+    "bytes": 101224,
+    "triangles": 3700,
+    "vertices": 1871,
+    "meshSize": [
+      0.1092,
+      0.26,
+      1.0
+    ],
+    "gripFrac": 0.38,
+    "guardZ": [
+      0.195,
+      0.255
+    ],
+    "handleZ": [
+      0.255,
+      0.46
+    ],
+    "style": "plastic-toy: flat swatch colours, metallic 0, roughness 1, edge bevel",
+    "palette": {
+      "calm": [
+        224,
+        255,
+        244
+      ],
+      "vivid": [
+        [
+          48,
+          224,
+          176
+        ],
+        [
+          32,
+          160,
+          224
+        ],
+        [
+          190,
+          255,
+          96
+        ]
+      ]
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed"
+  },
+  "TempestWarden": {
+    "name": "Thunderglass Pane",
+    "boss": "Tempest Warden",
+    "file": "TempestWarden.glb",
+    "bytes": 132120,
+    "triangles": 4676,
+    "vertices": 2358,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "gripFrac": 0.38,
+    "guardZ": [
+      0.195,
+      0.255
+    ],
+    "handleZ": [
+      0.255,
+      0.46
+    ],
+    "style": "plastic-toy: flat swatch colours, metallic 0, roughness 1, edge bevel",
+    "palette": {
+      "calm": [
+        236,
+        240,
+        255
+      ],
+      "vivid": [
+        [
+          255,
+          200,
+          40
+        ],
+        [
+          40,
+          80,
+          240
+        ],
+        [
+          255,
+          244,
+          96
+        ]
+      ]
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed"
   }
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""blender_boss_swords.py -- the five boss swords, modelled in Blender in the game's
-plastic-toy cartoon language (docs/ART_DIRECTION.md, docs/BOSS_SWORDS.md).
+"""blender_boss_swords.py -- the five boss swords and the three wardens' relics, modelled in
+Blender in the game's plastic-toy cartoon language (docs/ART_DIRECTION.md, docs/BOSS_SWORDS.md).
 
 Run with the Blender Python module (pip install "bpy==4.2.*" numpy pillow):
     python3 tools/blender_boss_swords.py [out_dir] [--no-preview] [--only Boss_Gorgon,...]
@@ -84,6 +84,9 @@ P = {
     "ember_red": (255, 96, 48), "ember_yellow": (255, 224, 64),
     "violet": (124, 56, 240), "magenta": (255, 128, 255),
     "gold": (255, 200, 40), "tangerine": (255, 150, 40),
+    "pale_leaf": (236, 255, 208), "lime": (120, 236, 56), "leaf": (48, 208, 88), "timber": (255, 158, 36), "bloom": (255, 236, 96),
+    "mint": (224, 255, 244), "aqua": (48, 224, 176), "aqua_blue": (32, 160, 224), "lime_yellow": (190, 255, 96),
+    "cloud": (236, 240, 255), "storm_blue": (88, 156, 255), "storm_gold": (255, 200, 40), "storm_deep": (40, 80, 240), "lightning": (255, 244, 96),
 }
 
 
@@ -589,12 +592,142 @@ def design_celestial(f):
     return {"design": "Astral Eclipse", "calm": "ivory", "vivid": ["gold", "tangerine"]}
 
 
+def design_root_warden(f):
+    """Rootbound Warden (Briarwood): Grovebound Bloom. A pale-leaf leaf-shaped blade with lime
+    chamfered edges and a raised leaf-green midrib, two timber thorns on the spine, a branch guard
+    (two timber prongs with a stub twig each), a timber grip with pale bands and the grove heart:
+    a fat six-petal yellow bloom for a pommel. Calm: pale leaf. Vivid: lime, leaf, timber, bloom."""
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        w = lerp(0.048, 0.066, smooth(t / 0.25)) if t < 0.25 else (lerp(0.066, 0.098, smooth((t - 0.25) / 0.35)) if t < 0.6 else lerp(0.098, 0.012, smooth((t - 0.6) / 0.4)))
+        th = lerp(0.028, 0.012, t)
+        return -w, w, th
+    st = stations_from(fn, 30)
+    rings, roles = blade_rings(st, 0.028, True)
+    colours = ["pale_leaf" if r == "body" else "lime" for r in roles]
+    f.loft("Blade", rings, colours, "pale_leaf")
+    rib = []
+    for y, zb, ze, th in st[:-4]:
+        hw = min(0.013, (ze - zb) * 0.18)
+        tt = th + 0.005
+        rib.append([(tt, y, -hw), (tt, y, hw), (-tt, y, hw), (-tt, y, -hw)])
+    f.loft("Midrib", rib, ["leaf"] * 4, "leaf")
+    # two thorns curling back off the spine (-Z side), timber
+    for i, yc in enumerate((0.08, 0.26)):
+        w_here = fn(yc)[1]
+        # short enough that the tips stay inside the guard's +-0.13 (the guard must stay widest)
+        prof = [(0.0, -0.01), (0.022, -0.01), (0.024, 0.01), (0.012, 0.032), (0.0, 0.05)]
+        th_ = f.lathe(f"Thorn{i}", prof, "timber", segs=14)
+        th_.rotation_euler = (math.radians(-(90 + 45)), 0, 0)
+        th_.location = (0.0, yc, -w_here + 0.012)
+        f.apply_transform(th_)
+    # branch guard: hub, two prongs, a twig stub on each
+    f.prism("Hub", [(GUARD_Y0, -0.05), (GUARD_Y0, 0.05), (GUARD_Y1 + 0.01, 0.05), (GUARD_Y1 + 0.01, -0.05)], 0.04, "timber")
+    prong_pair(f, "Branch", "timber", 0.04, (GUARD_Y0, GUARD_Y1), (-0.23, -0.19), 0.028, 0.04)
+    for sign in (1, -1):
+        twig = [(-0.215, 0.08), (-0.2, 0.08), (-0.165, 0.095), (-0.18, 0.1)]
+        twig = [(y, sign * z) for y, z in twig]
+        f.prism(f"Twig{sign}", twig if sign > 0 else twig[::-1], 0.016, "timber")
+    grip_bands(f, "timber", "pale_leaf", bands=2)
+    f.lathe("Collar", [(0.0, GRIP_Y0 - 0.012), (0.044, GRIP_Y0 - 0.012), (0.044, GRIP_Y0 + 0.004), (0.0, GRIP_Y0 + 0.004)], "leaf", segs=20)
+    # the grove heart: a six-petal bloom, petals rounded, a leaf-green centre disc
+    petals = chaikin(star(POMMEL_Y + 0.05, 0.0, 6, 0.05, 0.028, rot=math.pi / 2), 2)
+    ymin = min(y for y, _ in petals)
+    petals = [(y - ymin + POMMEL_Y, z) for y, z in petals]
+    f.prism("Bloom", petals, 0.026, "bloom")
+    for side in (1, -1):
+        f.sphere(f"Heart{side}", (side * 0.024, POMMEL_Y + 0.05, 0.0), 0.016, "leaf", segs=14, rings=8)
+    return {"design": "Grovebound Bloom", "calm": "pale_leaf", "vivid": ["lime", "leaf", "timber", "bloom"]}
+
+
+def design_bellwarden(f):
+    """Drowned Bellwarden (Sunken Marsh): Drowned Chime. A wide mint cutlass with an aqua cutting
+    edge and a scalloped wave along the spine, a deep aqua-blue bell for a guard (a flared cup
+    round the blade root, its lip the widest point), an aqua-blue grip with mint bands and a
+    bell clapper pommel: a lime-yellow ball on a short stem. Calm: mint. Vivid: aqua, aqua-blue, lime-yellow."""
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        c = 0.028 * t * t
+        w = lerp(0.055, 0.085, smooth(t / 0.6)) if t < 0.8 else lerp(0.085, 0.014, smooth((t - 0.8) / 0.2))
+        scallop = 0.008 * abs(math.sin(t * math.pi * 4)) * smooth(t / 0.15) * (1 - smooth((t - 0.75) / 0.25))
+        th = lerp(0.028, 0.013, t)
+        return c - w + scallop, c + w, th
+    st = stations_from(fn, 34)
+    rings, roles = blade_rings(st, 0.032, False)
+    colours = ["mint" if r == "body" else "aqua" for r in roles]
+    f.loft("Blade", rings, colours, "mint")
+    # the bell: a lathe cup opening toward the blade, lip at +-0.13 (a flat ring face), on the grip axis
+    # (the lip sits just past the guard band so the widest point still counts as the guard)
+    bell = [(0.0, GUARD_Y0 - 0.01), (0.05, GUARD_Y0 - 0.01), (0.062, GUARD_Y0 + 0.015), (0.092, GUARD_Y1 - 0.012),
+            (GUARD_HALF_SPAN, GUARD_Y1 + 0.006), (GUARD_HALF_SPAN, GUARD_Y1 + 0.028), (0.105, GUARD_Y1 + 0.028),
+            (0.078, GUARD_Y1 - 0.004), (0.052, GUARD_Y0 + 0.028), (0.0, GUARD_Y0 + 0.028)]
+    b = f.lathe("Bell", bell, "aqua_blue", segs=28)
+    # squash the bell flat-ish in X so it stays a sword guard, not a cup wider than the blade is thick
+    b.scale = (0.42, 1.0, 1.0)
+    f.apply_transform(b)
+    grip_bands(f, "aqua_blue", "mint", bands=2)
+    f.lathe("Collar", [(0.0, GRIP_Y0 - 0.012), (0.044, GRIP_Y0 - 0.012), (0.044, GRIP_Y0 + 0.004), (0.0, GRIP_Y0 + 0.004)], "aqua", segs=20)
+    f.lathe("Stem", [(0.0, POMMEL_Y + 0.04), (0.014, POMMEL_Y + 0.04), (0.014, GRIP_Y0), (0.0, GRIP_Y0)], "aqua_blue", segs=12)
+    f.sphere("Clapper", (0.0, POMMEL_Y + 0.04, 0.0), 0.04, "lime_yellow", segs=22, rings=12)
+    return {"design": "Drowned Chime", "calm": "mint", "vivid": ["aqua", "aqua_blue", "lime_yellow"]}
+
+
+def design_tempest_warden(f):
+    """Tempest Warden (Stormwatch): Thunderglass Pane. A lightning-bolt blade: a pale cloud slab
+    that zigzags three times to the tip, gold chamfered edges, a deep-blue observatory-dome guard
+    (a half-disc with a gold rim, its flat ends the widest point), a deep-blue grip with gold
+    bands and an antenna pommel: a gold ball on a blue stem. Calm: cloud. Vivid: gold, deep blue, lightning."""
+    kinks = [(0.0, 0.0), (0.22, 0.045), (0.5, -0.03), (0.78, 0.035), (1.0, 0.0)]
+
+    def zig(t):
+        for (t0, c0), (t1, c1) in zip(kinks, kinks[1:]):
+            if t <= t1:
+                return lerp(c0, c1, (t - t0) / (t1 - t0))
+        return 0.0
+
+    def fn(y):
+        t = (y - BLADE_ROOT_Y) / (TIP_Y - BLADE_ROOT_Y)
+        c = zig(t)
+        w = lerp(0.055, 0.072, smooth(t / 0.3)) if t < 0.8 else lerp(0.072, 0.012, smooth((t - 0.8) / 0.2))
+        th = lerp(0.028, 0.013, t)
+        return c - w, c + w, th
+    st = stations_from(fn, 40)
+    rings, roles = blade_rings(st, 0.026, True)
+    colours = ["cloud" if r == "body" else "storm_gold" for r in roles]
+    f.loft("Blade", rings, colours, "cloud")
+    # a lightning-yellow bolt rib down the middle, proud of both faces
+    rib = []
+    for y, zb, ze, th in st[:-5]:
+        c, hw = (zb + ze) / 2, min(0.012, (ze - zb) * 0.16)
+        tt = th + 0.005
+        rib.append([(tt, y, c - hw), (tt, y, c + hw), (-tt, y, c + hw), (-tt, y, c - hw)])
+    f.loft("Bolt", rib, ["lightning"] * 4, "lightning")
+    # observatory dome guard: a half-disc (axis X) sitting on the guard band, flat ends at +-0.13
+    dome = [(GUARD_Y0, -GUARD_HALF_SPAN), (GUARD_Y0, GUARD_HALF_SPAN), (GUARD_Y0 + 0.022, GUARD_HALF_SPAN)]
+    for k in range(1, 12):
+        a = math.pi * k / 12
+        dome.append((GUARD_Y0 + 0.022 + 0.075 * math.sin(a), GUARD_HALF_SPAN * math.cos(a)))
+    dome.append((GUARD_Y0 + 0.022, -GUARD_HALF_SPAN))
+    f.prism("Dome", dome, 0.036, "storm_deep")
+    rim = [(GUARD_Y0, -GUARD_HALF_SPAN), (GUARD_Y0, GUARD_HALF_SPAN), (GUARD_Y0 + 0.022, GUARD_HALF_SPAN), (GUARD_Y0 + 0.022, -GUARD_HALF_SPAN)]
+    f.prism("Rim", rim, 0.04, "storm_gold")
+    grip_bands(f, "storm_deep", "storm_gold", bands=2)
+    f.lathe("Collar", [(0.0, GRIP_Y0 - 0.012), (0.044, GRIP_Y0 - 0.012), (0.044, GRIP_Y0 + 0.004), (0.0, GRIP_Y0 + 0.004)], "storm_gold", segs=20)
+    f.lathe("Mast", [(0.0, POMMEL_Y + 0.036), (0.012, POMMEL_Y + 0.036), (0.012, GRIP_Y0), (0.0, GRIP_Y0)], "storm_deep", segs=12)
+    f.sphere("Antenna", (0.0, POMMEL_Y + 0.036, 0.0), 0.036, "storm_gold", segs=20, rings=12)
+    return {"design": "Thunderglass Pane", "calm": "cloud", "vivid": ["storm_gold", "storm_deep", "lightning"]}
+
+
 DESIGNS = {
     "Boss_Gorgon": design_gorgon,
     "Boss_FrostRevenant": design_frost,
     "Boss_InfernalColossus": design_infernal,
     "Boss_VoidWraith": design_void,
     "Boss_CelestialTitan": design_celestial,
+    # the three wardens: named elites that carry (and their zones drop) the zone Relic
+    "RootWarden": design_root_warden,
+    "DrownedBellwarden": design_bellwarden,
+    "TempestWarden": design_tempest_warden,
 }
 
 
@@ -712,24 +845,25 @@ def contact_sheet(rows, path):
         side = Image.open(r["side"])
         tq = Image.open(r["three_quarter"])
         tiles.append((r, side, tq))
-    gap, top, chip = 28, 118, 26
+    gap, top, chip, per_row = 28, 118, 26, 4
     tile_w = max(s.width + q.width + 12 for _, s, q in tiles)
     tile_h = max(s.height for _, s, q in tiles)
-    W = gap + len(tiles) * (tile_w + gap)
-    H = top + tile_h + 40
+    rows_n = (len(tiles) + per_row - 1) // per_row
+    W = gap + min(len(tiles), per_row) * (tile_w + gap)
+    H = rows_n * (top + tile_h + 40)
     sheet = Image.new("RGB", (W, H), (96, 180, 255))
     dr = ImageDraw.Draw(sheet)
-    x = gap
-    for r, s, q in tiles:
-        dr.text((x, 14), r["boss"], fill=(30, 33, 48), font=font)
-        dr.text((x, 44), r["design"], fill=(30, 33, 48), font=small)
+    for i, (r, s, q) in enumerate(tiles):
+        x = gap + (i % per_row) * (tile_w + gap)
+        y = (i // per_row) * (top + tile_h + 40)
+        dr.text((x, y + 14), r["boss"], fill=(30, 33, 48), font=font)
+        dr.text((x, y + 44), r["design"], fill=(30, 33, 48), font=small)
         cx = x
         for label, colour in [("body", r["body"])] + [(c, P[c]) for c in [r["calm"]] + r["vivid"]]:
-            dr.rounded_rectangle((cx, 70, cx + chip, 70 + chip), radius=6, fill=colour, outline=(30, 33, 48), width=2)
+            dr.rounded_rectangle((cx, y + 70, cx + chip, y + 70 + chip), radius=6, fill=colour, outline=(30, 33, 48), width=2)
             cx += chip + 8
-        sheet.paste(s, (x, top))
-        sheet.paste(q, (x + s.width + 12, top))
-        x += tile_w + gap
+        sheet.paste(s, (x, y + top))
+        sheet.paste(q, (x + s.width + 12, y + top))
     sheet.save(path)
 
 
@@ -739,6 +873,9 @@ BOSS = {
     "Boss_InfernalColossus": ("Infernal Colossus", (255, 80, 24)),
     "Boss_VoidWraith": ("Void Archon", (112, 32, 240)),
     "Boss_CelestialTitan": ("Celestial Titan", (255, 176, 32)),
+    "RootWarden": ("Rootbound Warden", (48, 192, 56)),
+    "DrownedBellwarden": ("Drowned Bellwarden", (24, 176, 144)),
+    "TempestWarden": ("Tempest Warden", (48, 104, 255)),
 }
 
 

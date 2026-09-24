@@ -281,7 +281,10 @@ local ENEMY_ARCHETYPES = {
 	-- Bridge zones (WorldLayout: Briarwood Lv8, Sunken Marsh Lv23, Stormwatch Lv40). Their
 	-- stats are log-interpolated between the neighbouring zones' curves at the spawn levels,
 	-- so each one sits between the arena before it and the gate after it. Wardens are
-	-- named elites, not bosses: no weapon, no sword drop.
+	-- named elites, not bosses: no unique drop, but each one carries its zone's Relic (the
+	-- Legendary of its NormalPool, drawn as the warden's own mesh: ServerStorage/BossSwordMeshes/
+	-- <archetype>, tools/blender_boss_swords.py) so the sword you see is the sword that zone
+	-- drops. `weapon` is purely visual here: the same weld and Grip joint as a boss, no stats.
 	ThornStalker = {
 		name = "Thorn Stalker", color = Color3.fromRGB(120, 236, 56), scale = 1.0, walkSpeed = 15,
 		baseHealth = 203, healthGrowth = 1.23, baseDamage = 21, damageGrowth = 1.14, baseXP = 170,
@@ -297,6 +300,7 @@ local ENEMY_ARCHETYPES = {
 		scale = 1.6, walkSpeed = 11.5, baseHealth = 724, healthGrowth = 1.23, baseDamage = 42,
 		damageGrowth = 1.14, baseXP = 450, aggroRange = 30, attackReach = 9.0, attackCooldown = 1.6,
 		patrolRadius = 10, leashDistance = 45, nameTag = true, tagColor = Color3.fromRGB(170, 220, 90),
+		weapon = true, swordColor = Color3.fromRGB(150, 255, 100), swordMaterial = Enum.Material.Neon, -- Grovebound Bloom
 	},
 	BogLurker = {
 		name = "Bog Lurker", color = Color3.fromRGB(48, 224, 176), scale = 1.05, walkSpeed = 14.5,
@@ -313,6 +317,7 @@ local ENEMY_ARCHETYPES = {
 		scale = 1.65, walkSpeed = 12, baseHealth = 3685, healthGrowth = 1.26, baseDamage = 99,
 		damageGrowth = 1.17, baseXP = 1600, aggroRange = 32, attackReach = 9.5, attackCooldown = 1.6,
 		patrolRadius = 10, leashDistance = 48, nameTag = true, tagColor = Color3.fromRGB(120, 210, 170),
+		weapon = true, swordColor = Color3.fromRGB(96, 255, 196), swordMaterial = Enum.Material.Neon, -- Drowned Chime
 	},
 	Stormcaller = {
 		name = "Stormcaller", color = Color3.fromRGB(88, 156, 255), scale = 1.1, walkSpeed = 17,
@@ -329,6 +334,7 @@ local ENEMY_ARCHETYPES = {
 		scale = 1.7, walkSpeed = 13, baseHealth = 9800, healthGrowth = 1.31, baseDamage = 190,
 		damageGrowth = 1.20, baseXP = 5500, aggroRange = 34, attackReach = 10.0, attackCooldown = 1.5,
 		patrolRadius = 12, leashDistance = 50, nameTag = true, tagColor = Color3.fromRGB(130, 190, 255),
+		weapon = true, swordColor = Color3.fromRGB(96, 200, 255), swordMaterial = Enum.Material.Neon, -- Thunderglass Pane
 	},
 
 	-- 5 UNIQUE SPREAD-OUT PROGRESSIVE BOSSES (High-Level & High-Stakes)
