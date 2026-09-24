@@ -6523,5 +6523,615 @@
       "iou": 0.807,
       "against": "Sword_HushedFalchion"
     }
+  },
+  "Sword_SunmoteShiv": {
+    "name": "Sunmote Shiv",
+    "key": "Sword_SunmoteShiv",
+    "pool": "CelestialSummit",
+    "tier": 1,
+    "concept": "a leaf shiv with a hot sun mote at its root",
+    "file": "Sword_SunmoteShiv.glb",
+    "bytes": 84000,
+    "triangles": 2990,
+    "vertices": 1521,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "sunmote": [
+        255,
+        240,
+        206
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ]
+    },
+    "areaShare": {
+      "sunmote": 0.249,
+      "gold": 0.666,
+      "tangerine": 0.085
+    },
+    "calmVivid": {
+      "calm": 0.249,
+      "vivid": 0.751
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.739,
+      "against": "Sword_DaybreakLongsword"
+    }
+  },
+  "Sword_CloudcutFalchion": {
+    "name": "Cloudcut Falchion",
+    "key": "Sword_CloudcutFalchion",
+    "pool": "CelestialSummit",
+    "tier": 2,
+    "concept": "a falchion with a scalloped cloud spine",
+    "file": "Sword_CloudcutFalchion.glb",
+    "bytes": 111960,
+    "triangles": 4244,
+    "vertices": 2154,
+    "meshSize": [
+      0.124,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ]
+    },
+    "areaShare": {
+      "cloud": 0.373,
+      "gold": 0.295,
+      "tangerine": 0.13,
+      "ivory": 0.201
+    },
+    "calmVivid": {
+      "calm": 0.575,
+      "vivid": 0.425
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.845,
+      "against": "Sword_ZenithSabre"
+    }
+  },
+  "Sword_ZenithSabre": {
+    "name": "Zenith Sabre",
+    "key": "Sword_ZenithSabre",
+    "pool": "CelestialSummit",
+    "tier": 2,
+    "concept": "a gold sabre with a sundial gnomon fin",
+    "file": "Sword_ZenithSabre.glb",
+    "bytes": 80748,
+    "triangles": 2784,
+    "vertices": 1410,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ]
+    },
+    "areaShare": {
+      "gold": 0.407,
+      "ivory": 0.512,
+      "tangerine": 0.081
+    },
+    "calmVivid": {
+      "calm": 0.512,
+      "vivid": 0.488
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.845,
+      "against": "Sword_CloudcutFalchion"
+    }
+  },
+  "Sword_DaybreakLongsword": {
+    "name": "Daybreak Longsword",
+    "key": "Sword_DaybreakLongsword",
+    "pool": "CelestialSummit",
+    "tier": 3,
+    "concept": "a tangerine longsword with a rising half-sun over a horizon bar",
+    "file": "Sword_DaybreakLongsword.glb",
+    "bytes": 110300,
+    "triangles": 3672,
+    "vertices": 1864,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "tangerine": 0.195,
+      "ivory": 0.448,
+      "gold": 0.357
+    },
+    "calmVivid": {
+      "calm": 0.448,
+      "vivid": 0.552
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.835,
+      "against": "Sword_CloudcutFalchion"
+    }
+  },
+  "Sword_SummitwardBroadsword": {
+    "name": "Summitward Broadsword",
+    "key": "Sword_SummitwardBroadsword",
+    "pool": "CelestialSummit",
+    "tier": 3,
+    "concept": "a broadsword with stair-stepped shoulders",
+    "file": "Sword_SummitwardBroadsword.glb",
+    "bytes": 114448,
+    "triangles": 3952,
+    "vertices": 1990,
+    "meshSize": [
+      0.09203,
+      0.26009,
+      1.0
+    ],
+    "palette": {
+      "summit": [
+        240,
+        244,
+        255
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ]
+    },
+    "areaShare": {
+      "summit": 0.228,
+      "gold": 0.519,
+      "tangerine": 0.15,
+      "ivory": 0.104
+    },
+    "calmVivid": {
+      "calm": 0.332,
+      "vivid": 0.668
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.00018,
+        0.0
+      ],
+      "length_scale": 1.00035
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.839,
+      "against": "Sword_OrigamiCraneBlade"
+    }
+  },
+  "Sword_LittleDawn": {
+    "name": "Little Dawn",
+    "key": "Sword_LittleDawn",
+    "pool": "CelestialSummit",
+    "tier": 4,
+    "concept": "a sunny blade with a small smiling sun at its root",
+    "file": "Sword_LittleDawn.glb",
+    "bytes": 185804,
+    "triangles": 6748,
+    "vertices": 3430,
+    "meshSize": [
+      0.132,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "dawn": [
+        255,
+        232,
+        72
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ]
+    },
+    "areaShare": {
+      "dawn": 0.229,
+      "ivory": 0.347,
+      "tangerine": 0.123,
+      "gold": 0.238,
+      "cloud": 0.063
+    },
+    "calmVivid": {
+      "calm": 0.41,
+      "vivid": 0.59
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.842,
+      "against": "Sword_CloudcutFalchion"
+    }
+  },
+  "Sword_CloudstepKatana": {
+    "name": "Cloudstep Katana",
+    "key": "Sword_CloudstepKatana",
+    "pool": "CelestialSummit",
+    "tier": 3,
+    "concept": "a curved katana with a wavy gold hamon and a cloud-cut tsuba",
+    "file": "Sword_CloudstepKatana.glb",
+    "bytes": 127036,
+    "triangles": 4748,
+    "vertices": 2384,
+    "meshSize": [
+      0.26,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "summit": [
+        240,
+        244,
+        255
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ]
+    },
+    "areaShare": {
+      "summit": 0.245,
+      "gold": 0.262,
+      "tangerine": 0.316,
+      "cloud": 0.021,
+      "ivory": 0.156
+    },
+    "calmVivid": {
+      "calm": 0.422,
+      "vivid": 0.578
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.764,
+      "against": "Sword_HighwindNodachi"
+    }
+  },
+  "Sword_HighwindNodachi": {
+    "name": "Highwind Nodachi",
+    "key": "Sword_HighwindNodachi",
+    "pool": "CelestialSummit",
+    "tier": 3,
+    "concept": "a long nodachi with ribbons streaming up the blade",
+    "file": "Sword_HighwindNodachi.glb",
+    "bytes": 124360,
+    "triangles": 4428,
+    "vertices": 2238,
+    "meshSize": [
+      0.2,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "ivory": 0.348,
+      "tangerine": 0.214,
+      "gold": 0.439
+    },
+    "calmVivid": {
+      "calm": 0.348,
+      "vivid": 0.652
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.764,
+      "against": "Sword_CloudstepKatana"
+    }
+  },
+  "Sword_OrigamiCraneBlade": {
+    "name": "Origami Crane Blade",
+    "key": "Sword_OrigamiCraneBlade",
+    "pool": "CelestialSummit",
+    "tier": 4,
+    "concept": "a folded-paper blade with an origami crane on the guard",
+    "file": "Sword_OrigamiCraneBlade.glb",
+    "bytes": 230488,
+    "triangles": 3828,
+    "vertices": 1922,
+    "meshSize": [
+      0.16786,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "paper": [
+        255,
+        250,
+        235
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ]
+    },
+    "areaShare": {
+      "paper": 0.195,
+      "cloud": 0.179,
+      "tangerine": 0.244,
+      "gold": 0.267,
+      "ivory": 0.114
+    },
+    "calmVivid": {
+      "calm": 0.488,
+      "vivid": 0.512
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.839,
+      "against": "Sword_SummitwardBroadsword"
+    }
+  },
+  "Sword_SunsqueezeBlade": {
+    "name": "Sunsqueeze Blade",
+    "key": "Sword_SunsqueezeBlade",
+    "pool": "CelestialSummit",
+    "tier": 4,
+    "concept": "a lemon blade rising from a halved lemon ringed by sun rays",
+    "file": "Sword_SunsqueezeBlade.glb",
+    "bytes": 166508,
+    "triangles": 5754,
+    "vertices": 2927,
+    "meshSize": [
+      0.21455,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "lemon": [
+        255,
+        236,
+        90
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "lime": [
+        120,
+        236,
+        56
+      ]
+    },
+    "areaShare": {
+      "lemon": 0.371,
+      "ivory": 0.362,
+      "gold": 0.14,
+      "tangerine": 0.099,
+      "lime": 0.028
+    },
+    "calmVivid": {
+      "calm": 0.362,
+      "vivid": 0.638
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.799,
+      "against": "RootWarden"
+    }
   }
 }
