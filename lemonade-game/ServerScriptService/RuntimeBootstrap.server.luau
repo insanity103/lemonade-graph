@@ -11,6 +11,10 @@ local REMOTE_NAMES = {
 	"DamageNumber",
 	"EnemyAttack",
 	"GoldGain",
+	"HeavyAttack", -- the charged heavy: client -> server, "press" / "release" / "cancel" and
+	               -- nothing else. The server timestamps both edges on its own clock, so the
+	               -- charge time (and therefore the damage) is never a number a client sends.
+	               -- SwordSystem + ReplicatedStorage/HeavyCharge.
 	"HitlagEffect",
 	"InventoryAction",
 	"InventoryUpdated",
@@ -106,18 +110,23 @@ local function ensurePart(name, className, size, color, material, shape)
 	return part
 end
 
--- PS99 toy sword (same palette and material as BossSwordFactory's block parts): matte plastic
--- throughout, a pale near-white blade, gold guard and pommel, a coral grip. Metal is gone.
+-- Starter (block) sword palette: PS99 toy plastic throughout (docs/ART_DIRECTION.md), but the
+-- blade is a DEEP, still-saturated blue rather than the look pass's near-white. The sword-combat
+-- pass's round-5 blind read found a pale blade vanishes against pale sand, white sky and white
+-- plaster at swing speed; a deep blue keeps that dark silhouette without the grey steel the art
+-- rules forbid. Gold guard and pommel, coral grip. CombatUtil.applyWeaponAppearance forces every
+-- non-Neon material to SmoothPlastic at equip time, so `metal` is plastic here too.
 local plastic = Enum.Material.SmoothPlastic
+local metal = plastic
 local grip = Color3.fromRGB(255, 96, 80)
 local gold = Color3.fromRGB(255, 200, 48)
-local pale = Color3.fromRGB(236, 244, 255)
+local pale = Color3.fromRGB(40, 72, 200) -- the blade: deep toy blue, dark against the bright map
 local handle = ensurePart("Handle", "Part", Vector3.new(0.32, 0.32, 1.10), grip, plastic, Enum.PartType.Block)
-local pommel = ensurePart("Pommel", "Part", Vector3.new(0.44, 0.44, 0.44), gold, plastic, Enum.PartType.Ball)
-local guard = ensurePart("Guard", "Part", Vector3.new(1.30, 0.26, 0.32), gold, plastic, Enum.PartType.Block)
-local blade = ensurePart("Blade", "Part", Vector3.new(0.22, 0.60, 2.60), pale, plastic, Enum.PartType.Block)
-local tipUpper = ensurePart("TipUpper", "WedgePart", Vector3.new(0.22, 0.30, 0.50), pale, plastic)
-local tipLower = ensurePart("TipLower", "WedgePart", Vector3.new(0.22, 0.30, 0.50), pale, plastic)
+local pommel = ensurePart("Pommel", "Part", Vector3.new(0.44, 0.44, 0.44), gold, metal, Enum.PartType.Ball)
+local guard = ensurePart("Guard", "Part", Vector3.new(1.30, 0.26, 0.32), gold, metal, Enum.PartType.Block)
+local blade = ensurePart("Blade", "Part", Vector3.new(0.22, 0.60, 2.60), pale, metal, Enum.PartType.Block)
+local tipUpper = ensurePart("TipUpper", "WedgePart", Vector3.new(0.22, 0.30, 0.50), pale, metal)
+local tipLower = ensurePart("TipLower", "WedgePart", Vector3.new(0.22, 0.30, 0.50), pale, metal)
 
 local function ensureWeld(name, part1, c0)
 	local weld = handle:FindFirstChild(name)
@@ -174,5 +183,40 @@ Players.PlayerAdded:Connect(function(player)
 	task.defer(repairPlayerSword, player)
 end)
 for _, player in ipairs(Players:GetPlayers()) do repairPlayerSword(player) end
+
+-- Sword meshes the clients can draw. Every sword model lives in ServerStorage/BossSwordMeshes,
+-- which no client can see, so a sword the player does not hold (a spin board's pool, a vault entry)
+-- had no model to preview and every tile drew the same stand-in blade. A copy of each MeshPart goes
+-- to ReplicatedStorage/SwordMeshes for ReplicatedStorage/SwordPreview; only the mesh, its texture
+-- and its size travel, never a script. The server keeps using its own folder.
+do
+	local ServerStorage = game:GetService("ServerStorage")
+	local library = ReplicatedStorage:FindFirstChild("SwordMeshes")
+	if library then library:Destroy() end
+	library = Instance.new("Folder")
+	library.Name = "SwordMeshes"
+	local function publish(mesh: Instance?)
+		if mesh and mesh:IsA("MeshPart") and not library:FindFirstChild(mesh.Name) then
+			local copy = mesh:Clone()
+			for _, d in ipairs(copy:GetDescendants()) do
+				if not d:IsA("SurfaceAppearance") then d:Destroy() end
+			end
+			copy.Anchored = true
+			copy.CanCollide, copy.CanQuery, copy.CanTouch = false, false, false
+			copy.Parent = library
+		end
+	end
+	local folder = ServerStorage:FindFirstChild("BossSwordMeshes")
+	for _, mesh in ipairs(folder and folder:GetChildren() or {}) do
+		publish(mesh)
+	end
+	local template = ServerStorage:FindFirstChild("SwordMeshTemplate")
+	if template and template:IsA("MeshPart") and not library:FindFirstChild("Template") then
+		publish(template)
+		local t = library:FindFirstChild("SwordMeshTemplate")
+		if t then t.Name = "Template" end
+	end
+	library.Parent = ReplicatedStorage
+end
 
 print("[RuntimeBootstrap] Required remotes and starter sword are ready")

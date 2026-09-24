@@ -72,6 +72,50 @@ local VIEWS = {
 		fov = 52,
 		hideEnemies = true, -- the bandits wandering the rim would stand in front of the lens
 	},
+	-- Three more Iron Lowlands angles (Alex, 2026-09-24: "show other angles of the area too"), so a
+	-- round judges the whole zone, not one camp. Same afternoon clock, enemies hidden.
+	-- The basin from the town gate: the trail dropping from the overlook into the pit, the scarp
+	-- and the far mesas closing the view south.
+	WorldBasin = {
+		clock = 15.3,
+		stand = { at = Vector3.new(6, 13.6, 150), face = Vector3.new(0, 13.6, 300) },
+		camera = { at = Vector3.new(-14, 30, 118), look = Vector3.new(4, 14, 330) },
+		fov = 58,
+		hideEnemies = true,
+	},
+	-- The east mesa and the rock towers from the basin floor, the oasis palms at the foot.
+	WorldMesas = {
+		clock = 15.3,
+		stand = { at = Vector3.new(40, 5.6, 330), face = Vector3.new(204, 5.6, 404) },
+		camera = { at = Vector3.new(14, 12, 318), look = Vector3.new(190, 52, 400) },
+		fov = 56,
+		hideEnemies = true,
+	},
+	-- The Warden's pit: the spine and the gap at the south end of the basin, from the trail.
+	WorldPit = {
+		clock = 15.3,
+		stand = { at = Vector3.new(-18, 5.6, 300), face = Vector3.new(0, 5.6, 360) },
+		camera = { at = Vector3.new(-42, 18, 276), look = Vector3.new(8, 8, 372) },
+		fov = 56,
+		hideEnemies = true,
+	},
+	-- The west side: the bandits' hideout passage under its arch (x -165..-110, z 270..330) and the
+	-- west mesa behind, from the basin floor.
+	WorldWest = {
+		clock = 15.3,
+		stand = { at = Vector3.new(-30, 5.6, 300), face = Vector3.new(-160, 5.6, 300) },
+		camera = { at = Vector3.new(-6, 24, 296), look = Vector3.new(-160, 34, 302) }, -- raised over the minecart on the trail
+		fov = 58,
+		hideEnemies = true,
+	},
+	-- Looking back north from the pit to the overlook and the town gate above it.
+	WorldNorth = {
+		clock = 15.3,
+		stand = { at = Vector3.new(14, 5.6, 380), face = Vector3.new(0, 5.6, 110) },
+		camera = { at = Vector3.new(24, 26, 420), look = Vector3.new(0, 30, 110) }, -- pulled back past the pit's props
+		fov = 58,
+		hideEnemies = true,
+	},
 	-- Hearthmere's boundary wall (the castle-wall gauntlet piece), framed from inside the town: a
 	-- lens raised above the plaza's edge, looking north up High Street past the Sword Monument to
 	-- the Ascension Gate, pulled back and up enough to read the whole north wall's height and both

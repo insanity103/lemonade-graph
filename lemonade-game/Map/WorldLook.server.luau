@@ -44,8 +44,11 @@ local LOOK_VERSION = "worldlook-v15"
 -- to the south-west so at golden hour it comes in low over the dipped west ridge; through the
 -- night it eases back.
 local LATITUDE = 30
-local START_CLOCK = 9.5
-local DAY_SECONDS_PER_HOUR = 55 -- 06:00-18:00 lasts 11 minutes
+-- A fresh server opens in the morning and the day lasts half an hour. At 9.5 / 55 the sunset
+-- arrived seven minutes into a first session and turned the desert red-purple while the player
+-- was still learning the first zone (2026-09-24 recording, 6:00 on).
+local START_CLOCK = 8
+local DAY_SECONDS_PER_HOUR = 150 -- 06:00-18:00 lasts 30 minutes
 local NIGHT_SECONDS_PER_HOUR = 25 -- 18:00-06:00 lasts 5 minutes
 local STEP = 0.2 -- seconds between look updates (changes are slow, so this is invisible)
 
@@ -56,7 +59,8 @@ local SHADOWS = true
 local SHADOW_SOFTNESS = 0.55
 
 -- Studio-only fixed clock for world-art captures (see WorldShowcase.client.luau).
-local SHOWCASE_CLOCK = { WorldDay = 15.3, WorldSunset = 17.2, WorldTown = 15.3, WorldOasis = 15.3, WorldForest = 15.3, WorldWall = 15.3 }
+local SHOWCASE_CLOCK = { WorldDay = 15.3, WorldSunset = 17.2, WorldTown = 15.3, WorldOasis = 15.3, WorldForest = 15.3, WorldWall = 15.3,
+	WorldBasin = 15.3, WorldMesas = 15.3, WorldPit = 15.3, WorldWest = 15.3, WorldNorth = 15.3 }
 
 local function rgb(r, g, b)
 	return Color3.fromRGB(r, g, b)
@@ -71,15 +75,20 @@ end
 --   atmoColor / atmoDecay   the clean saturated sky cyan-blue; distance fades toward it
 --   ccTint   almost pure white; ccSat a small lift only (the palette is already full-chroma)
 --   cloudColor   pure white puffs, a PS99 sky is white-on-cyan
+-- Hub round 4 (in Studio, 2026-09-23): half the blind critics named bleaching -- the pale wall
+-- stone, the cream path and the white canopies washing to near-white with weak contact shadows.
+-- So: brightness and exposure a step down, the outdoor fill a step down (the shade side has to
+-- read as a darker version of the colour, not as more light), haze and bloom trimmed. Colours
+-- untouched: the palette is the map pass's.
 local DAYLIGHT = {
-	stars = 0, brightness = 2.2, exposure = 0.05,
+	stars = 0, brightness = 1.8, exposure = -0.05,
 	top = rgb(255, 250, 240), bottom = rgb(118, 176, 255),
-	ambient = rgb(150, 172, 200), outdoor = rgb(184, 206, 236),
+	ambient = rgb(138, 160, 192), outdoor = rgb(164, 190, 226),
 	envDiffuse = 0.35, envSpecular = 0.12,
-	atmoDensity = 0.26, atmoOffset = 0.18, atmoColor = rgb(148, 206, 255), atmoDecay = rgb(92, 166, 255),
-	atmoGlare = 0.12, atmoHaze = 0.45,
-	ccTint = rgb(255, 253, 250), ccSat = 0.12, ccContrast = 0.06, ccBright = 0.0,
-	bloomI = 0.12, bloomSize = 18, bloomTh = 3.2,
+	atmoDensity = 0.22, atmoOffset = 0.18, atmoColor = rgb(148, 206, 255), atmoDecay = rgb(92, 166, 255),
+	atmoGlare = 0.08, atmoHaze = 0.3,
+	ccTint = rgb(255, 253, 250), ccSat = 0.12, ccContrast = 0.08, ccBright = 0.0,
+	bloomI = 0.08, bloomSize = 18, bloomTh = 3.4,
 	raysI = 0.04, raysSpread = 0.4,
 	cloudCover = 0.5, cloudDensity = 0.72, cloudColor = rgb(255, 255, 255),
 }

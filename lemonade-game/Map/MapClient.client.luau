@@ -144,51 +144,31 @@ round(hubButton, 8)
 local hubStroke = Instance.new("UIStroke")
 hubStroke.Color = COLORS.stroke
 hubStroke.Thickness = 2.5
+-- Border mode outlines the button, not the 15 px letters (a 2.5 stroke on those blotted them out).
+hubStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 hubStroke.Parent = hubButton
 
--- Travel menu.
-local panel = Instance.new("Frame")
-panel.Name = "TravelMenu"
-panel.AnchorPoint = Vector2.new(0.5, 0.5)
-panel.Position = UDim2.fromScale(0.5, 0.5)
-panel.Size = UDim2.fromOffset(340, 0)
-panel.AutomaticSize = Enum.AutomaticSize.Y
-panel.BackgroundColor3 = COLORS.panel
-panel.BackgroundTransparency = 0.05
+-- Travel menu: the shared modal shell (the same chrome as every other panel), with one chunky
+-- button per waystone. The old hand-built frame used 16 px stroked text in fixed rows, which
+-- blurred into blobs and ran past the row edge on long names (2026-09-24 recording, 1:18).
+local ROW_HEIGHT = 48 -- [TUNING] pixels per waystone button
+local ROW_GAP = 8
+local PANEL_WIDTH = 420
+local shell = PanelChrome.build({ name = "TravelMenu", title = "Waystones", size = UDim2.fromOffset(PANEL_WIDTH, 200) })
+local panel = shell.Frame
 panel.Visible = false
 panel.Parent = gui
-round(panel, 12)
-local panelStroke = Instance.new("UIStroke")
-panelStroke.Color = COLORS.stroke
-panelStroke.Thickness = 3.5
-panelStroke.Parent = panel
-local padding = Instance.new("UIPadding")
-padding.PaddingTop, padding.PaddingBottom = UDim.new(0, 14), UDim.new(0, 14)
-padding.PaddingLeft, padding.PaddingRight = UDim.new(0, 14), UDim.new(0, 14)
-padding.Parent = panel
+local closeButton = shell.CloseButton
+local body = Instance.new("Frame")
+body.Name = "Rows"
+body.BackgroundTransparency = 1
+body.Position = UDim2.fromOffset(22, shell.HeaderBottom + 6)
+body.Size = UDim2.new(1, -44, 1, -(shell.HeaderBottom + 24))
+body.Parent = panel
 local layout = Instance.new("UIListLayout")
-layout.Padding = UDim.new(0, 8)
+layout.Padding = UDim.new(0, ROW_GAP)
 layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.Parent = panel
-
-local header = Instance.new("Frame")
-header.BackgroundTransparency = 1
-header.Size = UDim2.new(1, 0, 0, 34)
-header.LayoutOrder = 0
-header.Parent = panel
-label(header, { Size = UDim2.new(1, -40, 1, 0), Text = "Waystones", Font = Enum.Font.FredokaOne, TextSize = 28,
-	TextColor3 = COLORS.title, TextXAlignment = Enum.TextXAlignment.Left })
-local closeButton = Instance.new("TextButton")
-closeButton.AnchorPoint = Vector2.new(1, 0)
-closeButton.Position = UDim2.new(1, 0, 0, 0)
-closeButton.Size = UDim2.fromOffset(34, 34)
-closeButton.BackgroundColor3 = COLORS.button
-closeButton.Text = "X"
-closeButton.TextColor3 = COLORS.text
-closeButton.Font = Enum.Font.GothamBold
-closeButton.TextSize = 18
-closeButton.Parent = header
-round(closeButton, 8)
+layout.Parent = body
 
 local rows = {}
 
@@ -248,42 +228,39 @@ local function openMenu(sourceId: string, discovered: { string })
 	end
 	known[HUB_WAYPOINT] = true
 	local firstSelectable
-	for index, part in ipairs(readSorted("Waypoints")) do
+	local bright = PanelChrome.BRIGHT
+	local waypoints = readSorted("Waypoints")
+	for index, part in ipairs(waypoints) do
 		local id = part.Name
-		local button = Instance.new("TextButton")
-		button.Name = id
-		button.LayoutOrder = index
-		button.Size = UDim2.new(1, 0, 0, 46)
-		button.BackgroundColor3 = COLORS.button
-		button.AutoButtonColor = true
-		button.Font = Enum.Font.GothamBold
-		button.TextSize = 16
-		button.TextXAlignment = Enum.TextXAlignment.Left
-		round(button, 8)
-		local inset = Instance.new("UIPadding")
-		inset.PaddingLeft = UDim.new(0, 12)
-		inset.Parent = button
 		local region = markerChild("Regions", part:GetAttribute("Region") or "")
 		local regionText = region and region:GetAttribute("DisplayName") or ""
+		local suffix = if regionText ~= "" then " · " .. regionText else ""
+		local text, usable
 		if id == sourceId then
-			button.Text = displayName(id) .. "   (you are here)"
-			button.TextColor3 = COLORS.muted
-			button.Active, button.AutoButtonColor, button.Selectable = false, false, false
+			text, usable = displayName(id) .. " (you are here)", false
 		elseif known[id] then
-			button.Text = "Travel to " .. displayName(id) .. (regionText ~= "" and ("   |  " .. regionText) or "")
-			button.TextColor3 = COLORS.text
+			text, usable = displayName(id) .. suffix, true
+		else
+			text, usable = "Undiscovered" .. suffix, false
+		end
+		local button = PanelChrome.chunkyButton(body, {
+			name = id, text = text, textSize = 20, radius = 12,
+			color = if usable then bright.Blue else bright.Grey,
+			colorDark = if usable then bright.Blue:Lerp(bright.Outline, 0.25) else bright.GreyDark,
+			size = UDim2.new(1, 0, 0, ROW_HEIGHT), zIndex = 3,
+		})
+		button.LayoutOrder = index
+		if usable then
 			button.Activated:Connect(function()
 				travelRemote:FireServer("Travel", id)
 			end)
 			firstSelectable = firstSelectable or button
 		else
-			button.Text = "Undiscovered waystone" .. (regionText ~= "" and ("   |  " .. regionText) or "")
-			button.TextColor3 = COLORS.muted
-			button.Active, button.AutoButtonColor, button.Selectable = false, false, false
+			button.Active, button.Selectable = false, false
 		end
-		button.Parent = panel
 		table.insert(rows, button)
 	end
+	panel.Size = UDim2.fromOffset(PANEL_WIDTH, shell.HeaderBottom + 30 + #waypoints * (ROW_HEIGHT + ROW_GAP))
 	panel.Visible = true
 	ContextActionService:BindAction(CLOSE_ACTION, function(_, state)
 		if state == Enum.UserInputState.Begin then
@@ -346,8 +323,10 @@ local guideIconStroke = Instance.new("UIStroke")
 guideIconStroke.Color = Color3.new(0, 0, 0)
 guideIconStroke.Thickness = 1.5
 guideIconStroke.Parent = guideIcon
-local guideText = label(guide, { Position = UDim2.fromOffset(0, 24), Size = UDim2.new(1, 0, 0, 20), TextSize = 14,
-	TextStrokeTransparency = 0, Font = Enum.Font.FredokaOne, TextColor3 = Color3.new(1, 1, 1), TextStrokeColor3 = COLORS.stroke })
+-- 16 px under a light outline: at 14 px with a full stroke the "|" and the digits ran together
+-- ("Iron Lowlands gate | 75" in the 2026-09-24 recording).
+local guideText = label(guide, { Position = UDim2.fromOffset(0, 24), Size = UDim2.new(1, 0, 0, 22), TextSize = 16,
+	TextStrokeTransparency = 0.45, Font = Enum.Font.FredokaOne, TextColor3 = Color3.new(1, 1, 1), TextStrokeColor3 = COLORS.stroke })
 
 -- Yellow outline on whatever the guide points at (an NPC or the enemy to fight).
 local focus = Instance.new("Highlight")
@@ -476,7 +455,7 @@ local function updateGuide(root: BasePart, inRegion)
 		return
 	end
 	guideAnchor.Position = target + Vector3.new(0, GUIDE_HEIGHT, 0)
-	guideText.Text = string.format("%s  |  %d", text, math.floor((target - root.Position).Magnitude))
+	guideText.Text = string.format("%s · %dm", text, math.floor((target - root.Position).Magnitude))
 	guide.Enabled = true
 end
 

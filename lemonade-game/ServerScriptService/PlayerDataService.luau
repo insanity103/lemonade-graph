@@ -385,6 +385,20 @@ function PlayerDataService.Save(player, releaseLock)
 			warnedShowcase = true
 			warn("[PlayerDataService] GuiShowcase is staging in Studio: saves are refused for this session")
 		end
+		-- The staged data never goes in, but the session lock this server took at load must still come
+		-- off when the player leaves. Refusing that too left the lock on the record, and every Play for
+		-- the next LOCK_STALE_AFTER seconds loaded "safe defaults" with saving disabled (2026-09-24).
+		if releaseLock and store and not profile.data.__loadFailed then
+			pcall(function()
+				store:UpdateAsync(keyFor(player.UserId), function(old)
+					if typeof(old) == "table" and lockHeldByThisServer(old.__lock) then
+						old.__lock = nil
+						return old
+					end
+					return nil
+				end)
+			end)
+		end
 		return false
 	end
 

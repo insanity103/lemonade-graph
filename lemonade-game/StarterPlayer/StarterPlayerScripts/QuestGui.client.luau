@@ -263,14 +263,6 @@ local function completedSet()
 	return completed
 end
 
-local function nextOfferedQuest()
-	local completed = completedSet()
-	for _, q in ipairs(QuestConfig.QUESTS) do
-		if not completed[q.id] then return q end
-	end
-	return nil
-end
-
 -- The objective as a headline: the quest's own sentence, without its full stop.
 local function getObjectiveHeadline(quest)
 	local text = quest.description or quest.name
@@ -1230,18 +1222,16 @@ local function updateTracker()
 		if quest and activeQuestComplete then
 			hint, hintColor = "Ready! Turn in at the Quest Master", Color3.fromRGB(150, 245, 120)
 		end
-	else
-		-- No quest running: preview the next one in the chain and point at the Quest Master.
-		quest = nextOfferedQuest()
-		progress = 0
-		hint, hintColor = "New quest! Talk to the Quest Master", THEME.QuestGold
 	end
+	-- No quest running: nothing on the tracker. A quest shows once the Quest Master has given it,
+	-- not before (2026-09-24 playtest); the map's guide marker still points new players at him.
 	if not quest then
 		trackerFrame.Visible = false
 		return
 	end
 
-	trackerFrame.Visible = true
+	-- Stepped aside while the spin board is up: both live on the right of the screen there.
+	trackerFrame.Visible = player:GetAttribute("SpinBoardOpen") ~= true
 	questNameLabel.Text = string.format("Quest %d · %s", quest.index, quest.name)
 	questDescLabel.Text = getObjectiveHeadline(quest)
 	local frac, countText = getProgressCounts(quest, progress)
@@ -1524,6 +1514,7 @@ end
 player:GetAttributeChangedSignal("ActiveQuestId"):Connect(syncFromAttributes)
 player:GetAttributeChangedSignal("QuestProgress"):Connect(syncFromAttributes)
 player:GetAttributeChangedSignal("CompletedQuests"):Connect(updateTracker)
+player:GetAttributeChangedSignal("SpinBoardOpen"):Connect(updateTracker)
 
 -- Initial sync
 syncFromAttributes()

@@ -2,8 +2,8 @@
 
 Status: built 2026-09-24 (`tools/blender_boss_swords.py`, Blender 4.2 headless), judged offline in
 Cycles renders only. Eight meshes are in `assets/swords/` (the five bosses and the three wardens)
-with a contact sheet in `assets/swords/preview.png`. They have not been imported into the place or
-seen in Studio yet (see "Getting them into the game" at the end). The same day, every pool sword
+with a contact sheet in `assets/swords/preview.png`. Imported into "rpg backup" and checked in play
+on 2026-09-24; see "In Studio" under "Getting them into the game". The same day, every pool sword
 colour in `BossWeapons.luau` moved onto the same palette (see "The pool swords").
 
 ## Why the old swords had to go
@@ -158,6 +158,46 @@ manual import, the same as the original swords:
    shows the whole roster built through the real `BossSwordFactory`; `Motion:EnemyDrops` shows
    every enemy holding its weapon. Judge those two frames against a PS99 frame with the same
    two-critic gauntlet as the rest of the look pass (`docs/PS99_STUDIO_REVIEW.md`).
+
+### In Studio (2026-09-24, first import)
+
+What was verified in "rpg backup", in play, through the real code:
+
+- **Import.** The importer put all nine MeshParts in Workspace under "Scene" models, not in
+  ServerStorage. They were moved to `ServerStorage/BossSwordMeshes` (eight) and
+  `ServerStorage/SwordMeshTemplate`; the two old meshes they replaced are kept in
+  `ServerStorage/_SupersededSwordMeshes`, not deleted. All nine are plain MeshParts with a
+  TextureID and no SurfaceAppearance, and each MeshSize equals its GLB exactly (no rescale).
+- **Studio's axes.** As imported, a mesh's tip is at local **+Z** and the grip is at
+  **-0.38 x length** (toward -Z). The CombatUtil comment that says "+Z toward the pommel" is the
+  GLB's convention, not Studio's.
+- **Enemy grip: correct.** Every live rig (Warden, Rootbound Warden, both bandit kinds) holds its
+  sword with the hand exactly on the 0.38 grip point and the blade forward. No change.
+- **Player grip: was wrong, fixed.** `BossSwordFactory.fitLook` compounded the grip slide onto the
+  block sword's turned Grip, so on all nine meshes the hand sat mid-blade, 1.82 studs off the
+  blade axis, with the tip pointing backward. It now sets an absolute Grip (`meshGrip`): the
+  block grip turned end for end and moved onto the grip point. Re-measured: hand on the axis at
+  exactly -0.38, tip where the starter sword's tip points, stable when fitLook runs twice.
+- **Pool swords.** All 111 built through `BossSwordFactory.build`: every one on the right mesh,
+  `textured = false` ones flat colour with no texture, painted ones keep their texture, no
+  SurfaceAppearance. `CombatUtil.applyWeaponAppearance` now honours Neon on any sword MeshPart
+  as a PointLight over matte plastic (the five untextured Neon spin relics used to be a flat Neon
+  fill): all 15 Neon swords glow via the light.
+- **Board stages.** `SwordGalleryStage` and `EnemyDropStage` stood every mesh on its tip; both
+  now turn mesh swords end for end. The gallery's labels were narrowed to clear the chunkier
+  blades, and its board is a pale cream card with an ink outline instead of dark navy.
+- **New capture stage.** `ServerScriptService/IronFightStage` (`Motion:IronFight`, Studio-only):
+  a live bandit in the Iron Lowlands, a factory-built sword in the player's hand (default the
+  Warden's Legendary, or `workspace.GuiShowcaseSword = "<pool>/<sword>"`).
+
+Gauntlet (two blind critics, both A/B orders, against PS99 frames): not won yet. Round 1 and
+round 2 went to PS99 on both frames, naming the blades as thin slivers. The Blender pass that
+followed (Studio closed) widened every blade profile 1.30x and thickened it 1.35x in one place
+(`BLADE_WIDTH_K` / `BLADE_THICK_K` in `stations_from`, clamped so the guard stays widest); the
+eight GLBs, manifest and contact sheet were regenerated, re-imported, and passed the layout
+checker. Round 3 still went to PS99, but the named gap moved from thickness to **contrast**: the
+five boss designs' calm near-white blades vanish against the cream desert floor and the cream
+gallery card. See ART_DIRECTION.md's round log for what is left and the decision it needs.
 
 ## The pool swords
 

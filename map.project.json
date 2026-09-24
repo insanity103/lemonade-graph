@@ -75,6 +75,9 @@
       "TradeSystem": {
         "$path": "lemonade-game/ServerScriptService/TradeSystem.server.luau"
       },
+      "IronFightStage": {
+        "$path": "lemonade-game/ServerScriptService/IronFightStage.server.luau"
+      },
       "SwordGalleryStage": {
         "$path": "lemonade-game/ServerScriptService/SwordGalleryStage.server.luau"
       },

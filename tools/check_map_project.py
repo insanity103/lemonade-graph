@@ -432,11 +432,7 @@ def main():
                 break
 
     check_coplanar_tops(visual_parts)
-    # Models tagged OnTerrain (the desert's toy mesas and rock towers, out beyond the basin) stand in
-    # WorldTerrain's sand, which is not in the place file, so they are left out of the support check.
-    on_terrain = {id(d) for m in lemap.descendants() if m.attrs.get("OnTerrain") for d in m.descendants()}
-    check_support([p for p in visual_parts if id(p) not in ground_ids and p not in collision.descendants()
-                   and id(p) not in on_terrain], grounds)
+    check_support([p for p in visual_parts if id(p) not in ground_ids and p not in collision.descendants()], grounds)
 
     travel = navigate(grounds, solids, spawn_location, spawns, waypoints, lemap, markers)
     finish(report_path, travel)
@@ -678,9 +674,10 @@ def check_projects():
                      ("StarterPlayer", "StarterPlayerScripts", "WorldShowcase"),
                      ("StarterPlayer", "StarterPlayerScripts", "WorldHorizon"),
                      ("StarterPlayer", "StarterPlayerScripts", "ZoneAir"),  # each zone's air and ambience beds
-                     # Studio-only capture stages (both inert outside Studio).
+                     # Studio-only capture stages (all inert outside Studio).
                      ("ServerScriptService", "SwordGalleryStage"),
-                     ("ServerScriptService", "EnemyDropStage")}
+                     ("ServerScriptService", "EnemyDropStage"),
+                     ("ServerScriptService", "IronFightStage")}
 
     def walk(d, m, path=()):
         for key, value in d.items():

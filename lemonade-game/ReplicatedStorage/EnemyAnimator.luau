@@ -7,6 +7,10 @@
 --     lands `windup` seconds later (the moment the server applies damage)
 --   * the Humanoid's replicated Health: a drop that leaves it alive is a landed player hit, and
 --     plays the layered hit reaction (flash, knockback stagger, recovery) on top of the pose
+--   * model attributes "HitBlade" (a CFrame: where the blade met this body, facing the way it
+--     was travelling) and "HitStop" (seconds), both set in the same server frame as the damage,
+--     just before it: the impact streak is drawn on the blade rather than at the model's centre,
+--     and the whole rig holds still for HitStop seconds before the stagger starts
 -- Standing rigs near the camera breathe (a small idle) instead of freezing at rest.
 -- Each client poses the joints locally through Motor6D.Transform, every frame, in one shared
 -- PreSimulation loop. Nothing here writes C0 or replicates, so dozens of rigs cost no network.
@@ -24,6 +28,7 @@ local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
 local PanelChrome = require(script.Parent:WaitForChild("PanelChrome")) -- the game's palette only
+local Hitstop = require(script.Parent:WaitForChild("Hitstop")) -- the shared contact-frame hold
 
 local EnemyAnimator = {}
 
@@ -232,11 +237,15 @@ end
 --
 -- Beats, seconds from the hit (on the reaction's own clock, which advances at most one 30 fps
 -- frame per rendered frame, so a hitch at contact delays the stagger instead of skipping it):
+--   (before 0) hitstop: the whole rig -- this reaction, the idle under it, a swing of its own --
+--              is held dead still for as long as the server's "HitStop" says, less the 0.04 the
+--              reaction's own first beat already holds for. Nothing below starts until it ends.
 --   0.00-0.04  impact: the body snaps into a first flinch and shivers (hit-stop) under a white flash
---   0.04-0.12  knockback: the root is thrown ~1.9 studs back along the blow (ease-out), the back
---              foot steps under it and dust kicks up at the feet; the torso whips back ~24 degrees
---              and twists away; the head lags the torso by ~35 ms; the arms fly out and back
---   0.12-0.20  stagger peak, still creeping so it never goes dead; the flash turns red and fades
+--   0.04-0.17  knockback: the root is thrown ~2.5 studs back along the blow (ease-out, most of it
+--              in the first 80 ms), the back foot steps under it and dust kicks up at the feet;
+--              the torso whips back ~22 degrees and twists away; the head SNAPS back 19 degrees
+--              ~20 ms behind the torso; the arms fly out and back
+--   0.17-0.24  stagger peak, still creeping so it never goes dead; the flash turns red and fades
 --   0.20-0.55  recovery, blended: the torso rises through upright to ~5 degrees forward (0.37)
 --              and settles back (0.55) while the knees dip to absorb it; the free arm follows the
 --              torso by ~40 ms and the sword arm by ~70 ms; the front foot drags back under
@@ -265,21 +274,26 @@ end
 
 -- Studs along the blow (root), degrees for angles.
 local HIT = {
-	push = { { 0, 0 }, { HIT_STOP, 0.4, "outCubic" }, { 0.12, 1.85, "outCubic" }, { 0.22, 1.95 },
-		{ 0.6, 1.9 }, { 1.0, 0, "inOutCubic" } },
+	-- The shove: 2.5 studs along the blow, 2.1 of them inside the first 80 ms after the hold
+	-- lets go (it was 1.85 over the same span -- the first strips of it read as a body that
+	-- changed colour and stayed put). Still creeping to 0.24 so the peak never goes dead.
+	push = { { 0, 0 }, { HIT_STOP, 0.4, "outCubic" }, { 0.12, 2.1, "outCubic" }, { 0.17, 2.45, "outCubic" },
+		{ 0.24, 2.55 }, { 0.6, 2.5 }, { 1.0, 0, "inOutCubic" } },
 	-- Hips: dropped by the blow, dipping again as the knees absorb the recovery, then rising.
 	drop = { { 0, -0.05 }, { HIT_STOP, -0.08 }, { 0.12, -0.28, "outCubic" }, { 0.2, -0.31 },
 		{ 0.32, -0.4, "inOutCubic" }, { 0.5, -0.12, "inOutCubic" }, { 0.64, -0.17, "inOutCubic" },
 		{ 0.82, -0.03, "inOutCubic" }, { 1.0, 0, "inOutCubic" } },
-	lean = { { 0, 8 }, { HIT_STOP, 9 }, { 0.12, 23, "outCubic" }, { 0.2, 24.5 },
+	lean = { { 0, 8 }, { HIT_STOP, 9 }, { 0.11, 21, "outCubic" }, { 0.2, 22.5 },
 		{ 0.37, -5, "inOutCubic" }, { 0.55, 0.6, "inOutCubic" }, { 0.72, -1.2, "inOutCubic" },
 		{ 1.0, 0, "inOutCubic" } },
 	twist = { { 0, 3 }, { HIT_STOP, 3.5 }, { 0.12, 10, "outCubic" }, { 0.2, 11 },
 		{ 0.38, -2, "inOutCubic" }, { 0.56, 0, "inOutCubic" } },
-	-- The head trails the torso by ~35 ms, overshoots, and nods forward as the body recovers.
-	headPitch = { { 0, 3 }, { 0.075, 3 }, { 0.155, 13, "outCubic" }, { 0.235, 10.5, "inOutCubic" },
+	-- The head SNAPS: it trails the torso by ~20 ms, whips back 19 degrees in 60 ms (the torso
+	-- takes 70 for its 21), overshoots, and nods forward as the body recovers. It used to trail
+	-- by 35 ms and take 80 ms over 13 degrees, which is a head that follows rather than snaps.
+	headPitch = { { 0, 3 }, { 0.06, 3 }, { 0.12, 19, "outCubic" }, { 0.2, 14, "inOutCubic" },
 		{ 0.41, -6, "inOutCubic" }, { 0.58, 0, "inOutCubic" } },
-	headRoll = { { 0, 2 }, { 0.075, 2 }, { 0.16, 8, "outCubic" }, { 0.42, -2, "inOutCubic" },
+	headRoll = { { 0, 2 }, { 0.06, 2 }, { 0.13, 9, "outCubic" }, { 0.42, -2, "inOutCubic" },
 		{ 0.58, 0, "inOutCubic" } },
 	-- The arms fly out and back (0..1 of the peak fling), lagging the torso: the free arm by
 	-- ~40 ms, the sword arm (heavier, holding the blade) by ~70 ms, each overshooting into guard.
@@ -332,10 +346,13 @@ local FLASH_WHITE = Color3.fromRGB(255, 255, 255)
 local FLASH_RED = Color3.fromRGB(255, 38, 38)
 local function flashAt(t: number): (Color3, number, number)
 	if t < HIT_STOP + 0.01 then
-		return FLASH_WHITE, 0.22, 0
+		-- 0.5, not the 0.22 it was: at 0.22 the white beat was a solid silhouette, and it sat on
+		-- exactly the frames the body starts to recoil in. The flash has to sit ON a body that
+		-- moves, so the body has to show through it.
+		return FLASH_WHITE, 0.5, 0
 	end
 	-- Translucent enough that the stagger's silhouette still reads through the tint.
-	local fill = if t < 0.17 then 0.38 else 0.38 + 0.62 * clamp((t - 0.17) / (HIT_FLASH_END - 0.17), 0, 1)
+	local fill = if t < 0.17 then 0.55 else 0.55 + 0.45 * clamp((t - 0.17) / (HIT_FLASH_END - 0.17), 0, 1)
 	local outline = clamp((t - 0.06) / 0.18, 0, 1)
 	return FLASH_RED, fill, outline
 end
@@ -1225,7 +1242,9 @@ local function noticeMarker(state)
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "NoticeMarker"
 	gui.Size = UDim2.fromScale(3.2 * s, 3.2 * s) -- studs, so it scales with the rig in view
-	gui.StudsOffsetWorldSpace = Vector3.new(0, 2.9 * s, 0)
+	-- Above the name plate (EnemyCombat puts it 2.2 studs over the head): at 2.9 this 3.2-stud marker
+	-- sat right on top of it and hid the name for the whole notice beat (2026-09-24 recording, 2:27).
+	gui.StudsOffsetWorldSpace = Vector3.new(0, 4.8 * s, 0)
 	gui.LightInfluence = 0
 	gui.AlwaysOnTop = true
 	gui.MaxDistance = NOTICE_RANGE
@@ -1464,51 +1483,20 @@ local function findAttacker(position: Vector3): Model?
 end
 
 -- Hit-stop on the attacker's side: the local player's own body holds its pose for a few frames
--- at contact, so the blade visibly bites instead of passing through. Transforms are re-applied
--- after the character's animation runtime writes them, and Animator tracks are paused.
-local ATTACKER_STOP = 0.06 -- [TUNING] seconds
-local attackerFrozen = false
-local function freezeAttacker(character: Model)
-	if attackerFrozen then
-		return
-	end
-	attackerFrozen = true
-	local held = {}
-	for _, d in ipairs(character:GetDescendants()) do
-		if d:IsA("Motor6D") then
-			held[d] = d.Transform
-		end
-	end
-	local paused = {}
-	local humanoid = character:FindFirstChildOfClass("Humanoid")
-	local animator = humanoid and humanoid:FindFirstChildOfClass("Animator")
-	if animator then
-		for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
-			paused[track] = track.Speed
-			track:AdjustSpeed(0)
-		end
-	end
-	local function hold()
-		for motor, cf in pairs(held) do
-			motor.Transform = cf
-		end
-	end
-	local a = RunService.PostSimulation:Connect(hold)
-	local b = RunService.PreRender:Connect(hold)
-	task.delay(ATTACKER_STOP, function()
-		a:Disconnect()
-		b:Disconnect()
-		for track, speed in pairs(paused) do
-			if track.IsPlaying then
-				track:AdjustSpeed(speed)
-			end
-		end
-		attackerFrozen = false
-	end)
+-- at contact, so the blade visibly bites instead of passing through.
+--
+-- The hold itself now lives in ReplicatedStorage/Hitstop, because the attacker's client learns
+-- about the same hit twice -- here, from this rig's replicated Health dropping, and from the
+-- server's HitlagEffect remote (ComboVFX), which is the one that knows the combo index. Hitstop
+-- takes the longer of the two and holds once; whichever arrives first snapshots the pose. It
+-- also stops the swing clip's CLOCK, which this could not: pinning the joints while the clip ran
+-- on handed the blade back a third of the way further round the arc.
+local function freezeAttacker(character: Model, hold: number)
+	Hitstop.freeze(character, hold)
 end
 
--- One bright slash streak across the torso and a burst at the contact point. Local-only parts,
--- tweened and destroyed within a quarter second.
+-- One bright slash streak across the cut and a burst where the steel met the body. Local-only
+-- parts, tweened and destroyed within a quarter second.
 local function fxPart(shape: Enum.PartType, size: Vector3, cf: CFrame, color: Color3, transparency: number): Part
 	local p = Instance.new("Part")
 	p.Shape = shape
@@ -1526,7 +1514,14 @@ local function fxPart(shape: Enum.PartType, size: Vector3, cf: CFrame, color: Co
 	return p
 end
 
-local function slashFx(torso: BasePart, blow: Vector3)
+-- `contact` is the server's own answer to "where did the blade meet this body, and which way was
+-- it going" (SwordSystem publishes it on the model as "HitBlade" in the same frame as the
+-- damage). With it, the streak is laid ON the steel along the line the steel cut; without it --
+-- the unarmed path, or a hit from anything that does not carry a blade -- it falls back to the
+-- diagonal across the torso this used to draw unconditionally. That fallback was the bug: a
+-- burst at the middle of a model reads as the body lighting up, a burst on the blade reads as
+-- the blade biting, and the two are 2 studs apart on an enemy the size of a player.
+local function slashFx(torso: BasePart, blow: Vector3, contact: CFrame?)
 	local up = Vector3.yAxis
 	local side = blow:Cross(up)
 	if side.Magnitude < 1e-3 then
@@ -1537,7 +1532,14 @@ local function slashFx(torso: BasePart, blow: Vector3)
 	-- Diagonal, high on the blade side to low on the far side, tipped along the blow so it still
 	-- reads as a cut from a camera side-on to the fight.
 	local axis = (up * 0.8 + side * 0.45 + blow * 0.55).Unit
-	local cf = CFrame.lookAt(centre, centre + axis)
+	if contact then
+		centre = contact.Position
+		axis = contact.LookVector
+	end
+	-- A cut coming straight down is parallel to lookAt's default up vector, which would make the
+	-- whole streak NaN and leave an invisible part in the world.
+	local cf = CFrame.lookAt(centre, centre + axis,
+		if math.abs(axis.Y) > 0.95 then Vector3.zAxis else up)
 	local core = fxPart(Enum.PartType.Block, Vector3.new(0.14, 0.14, 1.2), cf, Color3.new(1, 1, 1), 0)
 	local glow = fxPart(Enum.PartType.Block, Vector3.new(0.5, 0.5, 1.2), cf, Color3.fromRGB(255, 70, 60), 0.35)
 	local burst = fxPart(Enum.PartType.Ball, Vector3.one * 0.6, CFrame.new(centre), Color3.fromRGB(255, 245, 225), 0.1)
@@ -1592,8 +1594,16 @@ local function clearFlash(state)
 	end
 end
 
+-- How far the shove is bent from "away from the attacker" toward the way the blade was travelling
+-- through the body (the server's "HitBlade"), as a share added to the unit away-vector. Away
+-- stays the larger part: a cut's travel at contact is mostly ACROSS the attacker's front, and a
+-- victim shoved purely sideways reads as stepping out of the way rather than as hit.
+local BLOW_ALONG_BLADE = 0.45 -- [TUNING]
+
 -- The blow's direction: world (flat, unit) and in the rig's own X/Z, plus the attacker, if found.
-local function blowOf(hrp: BasePart): (Vector3, number, number, Model?)
+-- With `contact` (where the blade met the body, facing its travel), the blow is bent toward the
+-- travel, so the body goes the way the steel was going rather than straight back every time.
+local function blowOf(hrp: BasePart, contact: CFrame?): (Vector3, number, number, Model?)
 	local attacker = findAttacker(hrp.Position)
 	local attackerRoot = attacker and attacker:FindFirstChild("HumanoidRootPart")
 	local blow = if attackerRoot then (hrp.Position - attackerRoot.Position) * Vector3.new(1, 0, 1) else Vector3.zero
@@ -1604,6 +1614,12 @@ local function blowOf(hrp: BasePart): (Vector3, number, number, Model?)
 		blow = Vector3.xAxis
 	end
 	blow = blow.Unit
+	if contact then
+		local travel = contact.LookVector * Vector3.new(1, 0, 1)
+		if travel.Magnitude > 1e-3 then
+			blow = (blow + travel.Unit * BLOW_ALONG_BLADE).Unit
+		end
+	end
 	local lx = hrp.CFrame.RightVector:Dot(blow)
 	local lz = -hrp.CFrame.LookVector:Dot(blow) -- rig space: -Z is forward, +Z back
 	local m = math.sqrt(lx * lx + lz * lz)
@@ -1612,6 +1628,11 @@ local function blowOf(hrp: BasePart): (Vector3, number, number, Model?)
 	end
 	return blow, 0, 1, attacker
 end
+
+-- What the server published about this hit on the model itself, in the same frame as the damage
+-- (SwordSystem.publishContact): where the blade met the body and how long everything holds.
+local HIT_BLADE_ATTRIBUTE = "HitBlade"
+local HIT_STOP_ATTRIBUTE = "HitStop"
 
 local function onHit(state)
 	local model, hrp = state.model, state.hrp
@@ -1622,9 +1643,23 @@ local function onHit(state)
 	else
 		state.hitCarry = nil
 	end
-	local blow, px, pz, attacker = blowOf(hrp)
+	local published = model:GetAttribute(HIT_STOP_ATTRIBUTE)
+	local stop = if typeof(published) == "number" then clamp(published, 0, Hitstop.MAX) else Hitstop.duration(1)
+	local contact = model:GetAttribute(HIT_BLADE_ATTRIBUTE)
+	contact = if typeof(contact) == "CFrame" then contact else nil
+
+	local blow, px, pz, attacker = blowOf(hrp, contact)
 	state.hitPX, state.hitPZ = px, pz
 	state.hitT = 0
+
+	-- Hitstop, the victim's half. The whole rig -- the reaction's clock AND whatever it was doing
+	-- underneath, idle breath or a swing of its own -- holds dead still on the frame it was hit.
+	--
+	-- Only the part of the hold the reaction does not already do itself: sampleHit's own first
+	-- beat is a HIT_STOP-long plateau with the impact shiver on it, so holding for the full span
+	-- here as well would hold twice and the stagger would arrive late. Together they come to
+	-- exactly the span the server sent, which is the span the attacker holds for.
+	state.hitHold = math.max(0, stop - HIT_STOP)
 
 	if not state.flash then
 		local flash = Instance.new("Highlight")
@@ -1640,12 +1675,12 @@ local function onHit(state)
 	end
 	local torso = model:FindFirstChild("Torso")
 	if torso and torso:IsA("BasePart") then
-		slashFx(torso, blow)
+		slashFx(torso, blow, contact)
 	end
 	dustFx(hrp, blow, state.scale or 1)
 	local localCharacter = Players.LocalPlayer and Players.LocalPlayer.Character
 	if attacker and attacker == localCharacter then
-		freezeAttacker(attacker)
+		freezeAttacker(attacker, stop)
 	end
 end
 
@@ -1656,13 +1691,14 @@ local function onDeath(state, age: number)
 		return
 	end
 	local model, hrp = state.model, state.hrp
-	local blow, px, pz, attacker = blowOf(hrp)
+	local deathContact = model:GetAttribute(HIT_BLADE_ATTRIBUTE)
+	local blow, px, pz, attacker = blowOf(hrp, if typeof(deathContact) == "CFrame" then deathContact else nil)
 	state.deathT = age
 	state.deathPX, state.deathPZ, state.deathBlow = px, pz, blow
 	state.deathFrom = state.lastTransforms or {}
 	state.deathFired = {}
 	state.deathFade = 0
-	state.hitT, state.hitCarry, state.attackStart = nil, nil, nil
+	state.hitT, state.hitCarry, state.attackStart, state.hitHold = nil, nil, nil, nil
 	state.noticeT, state.alert = nil, false
 	clearMarker(state)
 	if state.trail then
@@ -1699,14 +1735,21 @@ local function onDeath(state, age: number)
 	state.flash = flash
 
 	if age < 0.2 then
+		-- The killing blow gets exactly what a landed hit gets, from the same two attributes the
+		-- server published with the damage: the streak on the steel, and a hold of the same
+		-- length on the attacker. (The body itself is not held -- the death pose takes it over
+		-- and starts with its own recoil.)
+		local published = model:GetAttribute(HIT_STOP_ATTRIBUTE)
+		local stop = if typeof(published) == "number" then clamp(published, 0, Hitstop.MAX) else Hitstop.duration(1)
+		local contact = model:GetAttribute(HIT_BLADE_ATTRIBUTE)
 		local torso = model:FindFirstChild("Torso")
 		if torso and torso:IsA("BasePart") then
-			slashFx(torso, blow)
+			slashFx(torso, blow, if typeof(contact) == "CFrame" then contact else nil)
 		end
 		dustFx(hrp, blow, state.scale or 1)
 		local localCharacter = Players.LocalPlayer and Players.LocalPlayer.Character
 		if attacker and attacker == localCharacter then
-			freezeAttacker(attacker)
+			freezeAttacker(attacker, stop)
 		end
 	end
 end
@@ -2279,6 +2322,22 @@ local function step(dt: number)
 		end
 		local dt = dt + (state.heldDt or 0)
 		state.heldDt = nil
+
+		-- Hitstop, the victim's half: for the first few frames after a blow lands, this rig does
+		-- not animate at all. Not the reaction, not the idle breath under it, not a swing of its
+		-- own that was in flight -- the whole body is caught at the instant it was hit and holds
+		-- there, under the white flash, while the attacker holds too. Then everything lets go at
+		-- once into the stagger, and the release is what reads as force.
+		--
+		-- The pose is simply re-written, so nothing else can creep it, and no time is banked: the
+		-- reaction starts from zero when the hold ends rather than jumping over its first beat.
+		if state.hitHold and state.hitHold > 0 then
+			state.hitHold -= dt
+			if state.lastTransforms then
+				writeTransforms(state, state.lastTransforms)
+			end
+			continue
+		end
 
 		-- The reaction runs on its own clock, capped at one 30 fps frame per rendered frame: a
 		-- hitch at the moment of impact (effects spawning, the damage number) then delays the

@@ -348,13 +348,27 @@ def blade_rings(stations, chamfer, double_edged):
     return rings, roles
 
 
+# Studio round 2 (2026-09-24, docs/ART_DIRECTION.md): every blind critic on both frames named the
+# blades as thin, low-contrast slivers next to PS99's fat toy weapons -- the sword gallery shows
+# them face-on at about 1:6 width to length, PS99's are nearer 1:3. So every design's blade
+# profile is widened and thickened here, in one place, rather than eight designs re-drawn:
+# the profile's width is scaled about its own centreline by BLADE_WIDTH_K and its half-thickness
+# by BLADE_THICK_K, then clamped so the guard stays the widest feature (the layout rule).
+BLADE_WIDTH_K = 1.30
+BLADE_THICK_K = 1.35
+BLADE_MAX_HALF_WIDTH = GUARD_HALF_SPAN - 0.012
+
+
 def stations_from(fn, n, y0=BLADE_ROOT_Y, y1=TIP_Y):
     """fn(y) -> (z_back, z_edge, half_thick); the last station is the tip."""
     out = []
     for i in range(n):
         y = y0 + (y1 - y0) * i / (n - 1)
         zb, ze, t = fn(y)
-        out.append((y, zb, ze, t))
+        mid = (zb + ze) / 2
+        zb = max(-BLADE_MAX_HALF_WIDTH, mid + (zb - mid) * BLADE_WIDTH_K)
+        ze = min(BLADE_MAX_HALF_WIDTH, mid + (ze - mid) * BLADE_WIDTH_K)
+        out.append((y, zb, ze, t * BLADE_THICK_K))
     return out
 
 

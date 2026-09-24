@@ -27,7 +27,9 @@ local function nameplate(head: BasePart, title: string, subtitle: string?)
 		sub.Position = UDim2.fromOffset(0, 20)
 		sub.Size = UDim2.new(1, 0, 0, 16)
 		sub.Font = Enum.Font.Gotham
-		sub.TextSize = 12
+		sub.TextSize = 14
+		-- No outline: at this size a stroke fills the counters and the line reads as a smudge.
+		sub.TextStrokeTransparency = 1
 		sub.TextColor3 = Color3.fromRGB(215, 215, 225)
 		sub.Text = subtitle
 		sub.Parent = gui

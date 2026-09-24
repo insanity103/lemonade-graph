@@ -17,6 +17,7 @@ local rebirthResultRemote = remotes:WaitForChild("RebirthResult")
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 local NumberFormat = require(ReplicatedStorage:WaitForChild("NumberFormat"))
 local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
+local BossWeapons = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("BossWeapons"))
 -- The one sell price in the game, the same module the server pays out of. The button quotes the
 -- number the server will pay, it does not compute a number of its own.
 local SellValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SellValue"))
@@ -639,8 +640,7 @@ local function openInventoryDetail(item)
 	local pillText = PanelChrome.display(pill, { text = string.upper(f.rarity), size = 17, stroke = 2, zIndex = 33 })
 	pillText.Size = UDim2.fromScale(0, 1)
 	pillText.AutomaticSize = Enum.AutomaticSize.X
-	local kind = f.bossDrop and "Boss relic" or "Starter sword"
-	if f.bossDrop and tool:GetAttribute("BossTier") then kind ..= " · tier " .. tostring(tool:GetAttribute("BossTier")) end
+	local kind = BossWeapons.SwordKind(tool)
 	brightText(tagRow, { text = kind, font = Enum.Font.GothamBold, size = 14, color = BRIGHT.InkMuted, xAlign = Enum.TextXAlignment.Right, size2 = UDim2.new(1, 0, 1, 0), zIndex = 32 })
 
 	-- Hero render on the rarity colour.
@@ -658,7 +658,7 @@ local function openInventoryDetail(item)
 	heroView.Position = UDim2.fromOffset(4, 4)
 	heroView.ZIndex = 32
 	heroView.Parent = hero
-	PanelChrome.renderTool(heroView, tool, { tiltDeg = 50, margin = 0.9 })
+	PanelChrome.renderTool(heroView, tool, { tiltDeg = 50, margin = 1.04 })
 	if item.equipped then
 		local b = PanelChrome.checkBadge(hero, 36, 34)
 		b.Position = UDim2.new(1, -18, 0, 18)
@@ -813,11 +813,14 @@ local function buildItemTile(parent, item, order)
 	local view = Instance.new("ViewportFrame")
 	view.Name = "Icon"
 	view.BackgroundTransparency = 1
-	view.Position = UDim2.new(-0.02, 0, -0.2, 0)
-	view.Size = UDim2.new(1.16, 0, 1.02, 0)
+	-- The whole sword, inside the card and above the name strip. It used to be drawn a quarter
+	-- bigger than its frame (margin 0.8) and pushed up past the card's top edge, so the pommel
+	-- and the tip were cut off, and the list's clipping cut the overhang off the top row too.
+	view.Position = UDim2.new(0.03, 0, 0, 4)
+	view.Size = UDim2.new(0.94, 0, 1, -34)
 	view.ZIndex = 26
 	view.Parent = tile
-	PanelChrome.renderTool(view, tool, { tiltDeg = 45, margin = 0.8 })
+	PanelChrome.renderTool(view, tool, { tiltDeg = 45, margin = 1.04 })
 
 	-- Name strip: rim-coloured band across the bottom (square top, rounded bottom).
 	local strip = Instance.new("Frame")
@@ -1283,7 +1286,37 @@ local function buildSkillRow(parent, attr, order, narrow)
 	else
 		up.button.Position = UDim2.new(1, 0, 0.5, 0)
 	end
-	up.button.Activated:Connect(function() spendEvent:FireServer(attr.name) end)
+	-- Tap spends one; press and hold repeats, speeding up (1, 1, 2, 3, 5, 5 ...), so a stack of
+	-- banked points is a second's hold, not a hundred clicks. The server clamps every amount.
+	local holding, repeated = false, false
+	up.button.InputBegan:Connect(function(input)
+		if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then
+			return
+		end
+		holding, repeated = true, false
+		task.delay(0.45, function()
+			local steps = { 1, 1, 2, 3, 5 }
+			local i = 0
+			while holding and (player:GetAttribute("SkillPoints") or 0) > 0 do
+				i += 1
+				repeated = true
+				spendEvent:FireServer(attr.name, steps[math.min(i, #steps)])
+				task.wait(0.15)
+			end
+		end)
+	end)
+	up.button.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			holding = false
+		end
+	end)
+	up.button.Activated:Connect(function()
+		if repeated then
+			repeated = false
+			return -- the hold already spent; the release is not a tap
+		end
+		spendEvent:FireServer(attr.name, 1)
+	end)
 	return { value = level, bar = fill, barText = barText, up = up }
 end
 
@@ -3731,7 +3764,7 @@ tradeRemote.OnClientEvent:Connect(function(kind, a, b)
 	if panelOpen and activeTab == "Trade" then buildTradePanel() end
 end)
 
--- Talking to the Keeper of Renewal at the hub's rebirth pavilion opens this panel on
+-- Talking to the Rebirth Keeper at the hub's rebirth pavilion opens this panel on
 -- the Rebirth tab. It only opens the panel: the existing confirm button and
 -- RebirthSystem keep sole authority over requirements and the rebirth itself.
 task.spawn(function()
@@ -3740,7 +3773,7 @@ task.spawn(function()
 	stationOpen.OnClientEvent:Connect(function()
 		setMenuOpen(true)
 		openTab("Rebirth")
-		headerTitle.Text = "Keeper of Renewal"
+		headerTitle.Text = "Rebirth Keeper"
 	end)
 end)
 

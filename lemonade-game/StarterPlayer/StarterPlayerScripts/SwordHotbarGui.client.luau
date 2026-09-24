@@ -24,6 +24,7 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
 local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwordValue"))
+local BossWeapons = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("BossWeapons"))
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
 local Items = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("Items"))
 
@@ -759,7 +760,6 @@ local function fillTooltip(tool: Tool)
 	local band = bandFor(rarity)
 	local isBossDrop = tool:GetAttribute("BossDrop") == true
 	local damageMult = tool:GetAttribute("DamageMult") or 1
-	local bossTier = tool:GetAttribute("BossTier")
 	local prefixes = tool:GetAttribute("Prefixes") or ""
 
 	-- Header: rarity gradient split across the rounded strip and its square-bottom filler.
@@ -769,9 +769,7 @@ local function fillTooltip(tool: Tool)
 	titleLabel.Text = prettyName(tool.Name)
 	pillGradient.Color = ColorSequence.new(band.tagTop, band.tagBottom)
 	rarityText.Text = string.upper(rarity)
-	local kind = if isBossDrop then "Boss relic" else "Starter sword"
-	if isBossDrop and bossTier then kind ..= string.format("  ·  Tier %d", bossTier) end
-	kindText.Text = kind
+	kindText.Text = BossWeapons.SwordKind(tool)
 
 	local order = 1
 	local info = Items[tool.Name]
@@ -892,22 +890,53 @@ local function refreshEmptyLabel()
 	emptyLabel.Text = if not owned then "No sword" elseif touchFirst then "Hold to draw" else "Press 1"
 end
 
+-- The sword the 1 key would draw: the last one held if it is still in the backpack, else the
+-- backpack's first. Nil only when the player really owns none.
+local function sheathedSword(): Tool?
+	local backpack = player:FindFirstChildOfClass("Backpack")
+	if not backpack then return nil end
+	if lastEquipped and lastEquipped.Parent == backpack then return lastEquipped end
+	return backpack:FindFirstChildOfClass("Tool")
+end
+
+local SHEATHED_FADE = 0.4 -- [TUNING] how much the render dims while the sword is put away
+
+local function setPreviewFade(fade: number)
+	viewport.ImageTransparency = fade
+	for _, v in ipairs(outlineViews) do v.ImageTransparency = fade end
+	shadowView.ImageTransparency = 0.55 + 0.45 * fade
+end
+
 local function applyTool(tool: Tool?)
 	currentTool = tool
 	if tool then lastEquipped = tool end
 	if not tool then
+		-- Nothing in hand. If a sword is owned, the slot still shows it -- dimmed, with no equipped
+		-- ring or check -- so putting it away (the 1 key, a respawn in the hub) no longer looks like
+		-- losing it (recording 2026-09-24: an empty dashed "Press 1" slot at 3:54 and 6:42).
+		local sheathed = sheathedSword()
 		clearPreview()
-		buildFace(nil)
-		refreshEmptyLabel()
-		emptyLabel.Visible = true
 		equippedRing.Visible = false
 		equippedGlow.Visible = false
 		checkBadge.Visible = false
 		tooltipRoot.Visible = false
+		if sheathed then
+			buildFace(sheathed:GetAttribute("Rarity") or "Common")
+			renderPreview(sheathed)
+			setPreviewFade(SHEATHED_FADE)
+			sparkle.Visible = false
+			emptyLabel.Visible = false
+		else
+			buildFace(nil)
+			setPreviewFade(0)
+			refreshEmptyLabel()
+			emptyLabel.Visible = true
+		end
 		return
 	end
 	local rarity = tool:GetAttribute("Rarity") or "Common"
 	buildFace(rarity)
+	setPreviewFade(0)
 	emptyLabel.Visible = false
 	-- The slot only ever shows the sword in hand, so it always wears the equipped ring.
 	local ringColor = EQUIPPED_GREEN
@@ -950,7 +979,7 @@ local function watchCharacter(character: Model)
 		local backpack = player:WaitForChild("Backpack", 10)
 		if not backpack or player.Character ~= character then return end
 		local function onChange()
-			if currentTool == nil then refreshEmptyLabel() end
+			if currentTool == nil then applyTool(nil) end
 		end
 		table.insert(characterConnections, backpack.ChildAdded:Connect(onChange))
 		table.insert(characterConnections, backpack.ChildRemoved:Connect(onChange))

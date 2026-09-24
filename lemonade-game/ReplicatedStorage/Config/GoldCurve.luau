@@ -71,13 +71,16 @@ GoldCurve.ROLE_MULT = {
 --   * A player who has earned nothing since they arrived loses nothing. There is no gold at risk
 --     that they did not put there.
 -- DEATH_PURSE_CAP is the one place the purse still appears, and only as a floor-protection: the
--- player who just emptied their purse at the forge cannot be taken below three quarters of the
+-- player who just emptied their purse at the forge cannot be taken below nine tenths of the
 -- little they have left.
-GoldCurve.DEATH_FREE_MAX_LEVEL = 8    -- at or below this level a death costs nothing at all
+GoldCurve.DEATH_FREE_MAX_LEVEL = 10   -- at or below this level a death costs nothing at all (the whole first zone)
 GoldCurve.DEATH_LOSS_SECONDS = 60     -- a death costs this many seconds of the player's own income
 GoldCurve.DEATH_INCOME_WINDOW = 240   -- seconds of earning the income rate is measured over
 GoldCurve.DEATH_MIN_SAMPLE = 45       -- never divide by a window shorter than this (no spikes)
-GoldCurve.DEATH_PURSE_CAP = 0.25      -- and never more than this share of what is being carried
+-- 0.10, not 0.25: early in a session the income window is short and most of the purse was earned
+-- inside it, so "a minute of income" came out above the cap every time and the cap WAS the rule --
+-- a Lv18 death took 1,005 -> 754 gold (recording 2026-09-24), against ZONES_AND_TIERS' "one minute".
+GoldCurve.DEATH_PURSE_CAP = 0.10      -- and never more than this share of what is being carried
 
 -- The multiplier a kill at this level carries on top of GOLD_BASE x level.
 function GoldCurve.BandMultiplier(level: number?): number

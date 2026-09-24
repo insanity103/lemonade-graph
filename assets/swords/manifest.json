@@ -3,9 +3,9 @@
     "name": "Pit Warden's Cleaver",
     "boss": "Warden of the Pit",
     "file": "Boss_Gorgon.glb",
-    "bytes": 121232,
-    "triangles": 4640,
-    "vertices": 2342,
+    "bytes": 124792,
+    "triangles": 4796,
+    "vertices": 2420,
     "meshSize": [
       0.12515,
       0.26,
@@ -59,9 +59,9 @@
     "name": "Frostfang Cleaver",
     "boss": "Frost Revenant",
     "file": "Boss_FrostRevenant.glb",
-    "bytes": 96224,
-    "triangles": 3292,
-    "vertices": 1674,
+    "bytes": 98336,
+    "triangles": 3388,
+    "vertices": 1722,
     "meshSize": [
       0.09914,
       0.26,
@@ -110,9 +110,9 @@
     "name": "Inferno Edge",
     "boss": "Infernal Colossus",
     "file": "Boss_InfernalColossus.glb",
-    "bytes": 98248,
-    "triangles": 3464,
-    "vertices": 1748,
+    "bytes": 102008,
+    "triangles": 3696,
+    "vertices": 1864,
     "meshSize": [
       0.088,
       0.26,
@@ -161,9 +161,9 @@
     "name": "Voidrend Blade",
     "boss": "Void Archon",
     "file": "Boss_VoidWraith.glb",
-    "bytes": 112124,
-    "triangles": 3960,
-    "vertices": 1998,
+    "bytes": 115284,
+    "triangles": 4092,
+    "vertices": 2064,
     "meshSize": [
       0.088,
       0.26,
@@ -212,12 +212,12 @@
     "name": "Astral Eclipse",
     "boss": "Celestial Titan",
     "file": "Boss_CelestialTitan.glb",
-    "bytes": 148944,
-    "triangles": 5380,
-    "vertices": 2710,
+    "bytes": 153456,
+    "triangles": 5620,
+    "vertices": 2830,
     "meshSize": [
       0.08822,
-      0.26064,
+      0.26065,
       1.0
     ],
     "gripFrac": 0.38,
@@ -252,10 +252,10 @@
     "normalise": {
       "centre_shift": [
         0.0,
-        0.00123,
+        0.00125,
         0.0
       ],
-      "length_scale": 1.00247
+      "length_scale": 1.00251
     },
     "checks": "all passed"
   },
@@ -263,9 +263,9 @@
     "name": "Grovebound Bloom",
     "boss": "Rootbound Warden",
     "file": "RootWarden.glb",
-    "bytes": 147540,
-    "triangles": 5128,
-    "vertices": 2596,
+    "bytes": 153076,
+    "triangles": 5368,
+    "vertices": 2716,
     "meshSize": [
       0.08802,
       0.26005,
@@ -324,9 +324,9 @@
     "name": "Drowned Chime",
     "boss": "Drowned Bellwarden",
     "file": "DrownedBellwarden.glb",
-    "bytes": 101224,
-    "triangles": 3700,
-    "vertices": 1871,
+    "bytes": 104520,
+    "triangles": 3844,
+    "vertices": 1943,
     "meshSize": [
       0.1092,
       0.26,
@@ -380,9 +380,9 @@
     "name": "Thunderglass Pane",
     "boss": "Tempest Warden",
     "file": "TempestWarden.glb",
-    "bytes": 132120,
-    "triangles": 4676,
-    "vertices": 2358,
+    "bytes": 136584,
+    "triangles": 4908,
+    "vertices": 2474,
     "meshSize": [
       0.088,
       0.26,

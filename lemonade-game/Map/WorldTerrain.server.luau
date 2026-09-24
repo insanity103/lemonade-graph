@@ -34,7 +34,47 @@ end
 
 local terrain = workspace.Terrain
 local rng = Random.new(SEED)
-local M = Enum.Material
+-- PS99 in-engine pass, hub capture round 2: four blind critics (both A/B orders) all named the
+-- same gap -- Terrain's photoreal relief (Rock / Slate / Basalt / Asphalt spires, Cobblestone and
+-- Ground paths, grass-blade decoration) next to the SmoothPlastic castle. The roles below keep
+-- their names and colours; only the material each role is drawn with changes, to the smoothest
+-- Terrain materials Roblox has. Roles that no longer have a smooth material of their own fold
+-- into the nearest sibling (Asphalt scree -> the Rock face, Basalt boulders -> the Slate foot,
+-- Mud moss -> LeafyGrass, the desert Salt trail -> the cream PATH, the desert water's edge ->
+-- GROUND_PALE, the Warden arena's Pavement -> GROUND_MID's cream tiles), because a Terrain
+-- material carries exactly one colour. Comparisons only ever test M.Air.
+-- Round 3 found the two smoothest materials unusable: Glacier and Ice keep their own pale
+-- blue-white albedo and ignore most of SetMaterialColor, so the orange spires vanished into
+-- the sky and the coral foot turned to faint ice. The swap below uses only materials whose
+-- fine grain takes a colour at full strength (Concrete, Asphalt, Salt, Pavement, Snow).
+local M = setmetatable({
+	Asphalt = Enum.Material.Concrete, -- (Rock itself is aliased with Sandstone below)
+	Slate = Enum.Material.Asphalt, -- the foot and seams: fine grain, colour-true
+	Basalt = Enum.Material.Asphalt,
+	-- The High Street (PATH cream) and the path edges (GROUND_MID cream) are two creams a few
+	-- points apart, so they share Pavement's flat cream tiles; that frees Salt for the desert.
+	Cobblestone = Enum.Material.Pavement,
+	Ground = Enum.Material.Pavement,
+	Concrete = Enum.Material.Snow, -- the desert water's edge folds into the pale drift crests
+	Mud = Enum.Material.LeafyGrass,
+	-- The desert floor (sword gauntlet round 1: "one flat, washed-out, grainy beige plane"; oasis
+	-- round 1: "blown out to near-white"). Terrain Sand carries a photo grain, Mud reads speckled;
+	-- Salt is fine and flat and takes a colour at full strength, so the floor is Salt in its own
+	-- warm tan (set in the desert block below), between the two failed readings.
+	Sand = Enum.Material.Salt,
+	-- The mesas, the rim scarp and the rock towers (oasis round 1, 4 of 4: "grainy, noisy, faceted
+	-- dune cliffs"). Sandstone's banding and Rock's relief both read as photo texture; Concrete is
+	-- the flattest colour-true material, so both strata roles draw with it in Sandstone's amber, and
+	-- the stripes are amber against Limestone's gold.
+	Sandstone = Enum.Material.Concrete,
+	Rock = Enum.Material.Concrete,
+}, { __index = Enum.Material })
+-- No grass blades: PS99 lawns are flat colour. Guarded, because this Studio build (0.739 under
+-- Wine) rejects the property as "not a valid member" and an unguarded write killed the whole
+-- script (no terrain at all in hub round 3).
+pcall(function()
+	terrain.Decoration = false
+end)
 local started = os.clock()
 
 -- ── Palette ──────────────────────────────────────────────────────────────────
@@ -94,14 +134,14 @@ local started = os.clock()
 -- in Studio, the fix is a material swap per stratum here, not a colour change.
 terrain:SetMaterialColor(M.Slate, Color3.fromRGB(236, 88, 60)) -- the dark foot and the seam: coral-red, the family's deepest step
 terrain:SetMaterialColor(M.Rock, Color3.fromRGB(255, 140, 72)) -- the main cliff face: toy orange
-terrain:SetMaterialColor(M.Limestone, Color3.fromRGB(255, 214, 64)) -- the crest: coin gold
+terrain:SetMaterialColor(M.Limestone, Color3.fromRGB(255, 208, 150)) -- the crest bands: pale peach (oasis round 2: the strata need a light band against the coral, not gold on amber)
 terrain:SetMaterialColor(M.Pavement, Color3.fromRGB(255, 132, 112)) -- the Warden's flagged arena: a coral-pink pop set in the cream path
-terrain:SetMaterialColor(M.Sandstone, Color3.fromRGB(255, 172, 48)) -- bridging orange to gold: amber
-terrain:SetMaterialColor(M.Asphalt, Color3.fromRGB(246, 118, 56)) -- gravel scree: a deeper step of the orange face
-terrain:SetMaterialColor(M.Basalt, Color3.fromRGB(226, 80, 52)) -- fallen boulders: the foot's coral-red, a shade deeper
+terrain:SetMaterialColor(M.Sandstone, Color3.fromRGB(255, 132, 60)) -- the cliff faces (Sandstone and Rock, both Concrete): coral-orange. Oasis round 2, 12 of 12: amber cliffs, amber dunes and tan sand were one mustard mass whose shade side went olive under the sky-blue shade tint; coral shades to mauve and stands off a pale floor
+-- (Asphalt scree and Basalt boulders now draw with the Rock face and the Slate foot respectively;
+-- their colours are those roles', see the M alias table.)
 terrain:SetMaterialColor(M.Grass, Color3.fromRGB(56, 248, 92)) -- GRASS: vivid lime, the hub meadow and open turf
 terrain:SetMaterialColor(M.Ground, Color3.fromRGB(252, 228, 190)) -- GROUND_MID: the cart line, path edges and leaf litter, one step below the road
-terrain:SetMaterialColor(M.Mud, Color3.fromRGB(30, 204, 116)) -- GRASS_DEEP: damp moss at the Mirror Pool shore and mottling the forest paths, never brown
+-- (Mud moss now draws as GRASS_DARK, below.)
 terrain:SetMaterialColor(M.LeafyGrass, Color3.fromRGB(38, 232, 86)) -- GRASS_DARK: leafy cover, the moss on the graves and creeping out of the gutters
 terrain:SetMaterialColor(M.Cobblestone, Color3.fromRGB(255, 238, 208)) -- PATH: the High Street, the same near-white cream as the road slabs
 
@@ -183,9 +223,19 @@ local function waterfallRun(side, t: number): boolean
 	return side.key == "E" and t > 60 and t < 84
 end
 
+-- PS99 in-engine pass, hub round 3 (Alex, 2026-09-23): the rock skirt is scrapped the way the
+-- horizon mountains were. Roblox Terrain has no material that is both smooth and colour-true
+-- (Glacier and Ice ignore SetMaterialColor; everything else carries grain), so the skirt kept
+-- reading as photoreal rock next to the SmoothPlastic castle wall no matter how it was
+-- coloured. The castle wall (tools/map_forge.py) is Hearthmere's boundary on its own; steps 1-4
+-- below are kept for the record behind this switch and their counters still feed the summary.
+local HUB_ROCK_SKIRT = false -- [TUNING]
+local runs, skirts = 0, 0
+local painted = { grass = 0, rock = 0 }
+if HUB_ROCK_SKIRT then
 -- 1. The rock body and its stepped face, run by run (8-15 studs) along each wall, reaching past the
 -- corners so the four walls knit into solid corner massifs.
-local runs = 0
+runs = 0
 for _, side in ipairs(SIDES) do
 	local t = -(LINE + BACK) - rng:NextNumber(0, 6)
 	while t < LINE + BACK do
@@ -308,7 +358,7 @@ local function solid(ix: number, iy: number, iz: number): boolean
 	end
 	return pm[ix][iy][iz] ~= M.Air and po[ix][iy][iz] > 0.3 -- (neighbours may be painted already)
 end
-local painted = { grass = 0, rock = 0 }
+painted = { grass = 0, rock = 0 }
 for ix = 1, nx do
 	for iz = 1, nz do
 		local x, z = x0 + (ix - 0.5) * 4, z0 + (iz - 0.5) * 4
@@ -346,7 +396,7 @@ if markers then
 		end
 	end
 end
-local skirts = 0
+skirts = 0
 for _, side in ipairs(SIDES) do
 	for t = -94, 94, 5 do
 		if math.abs(t) < GATE_HALF + 3 or waterfallRun(side, t) then
@@ -384,6 +434,7 @@ for _, side in ipairs(SIDES) do
 		skirts += 1
 	end
 end
+end -- HUB_ROCK_SKIRT
 
 -- ── The lawn ─────────────────────────────────────────────────────────────────
 -- The flat HubFloor slab becomes a terrain meadow, written voxel column by column (4 x 4 studs)
@@ -401,6 +452,14 @@ end
 --   * everything else, shade included, is one clean grass field with a faint undulation.
 local LAWN = 104 -- the slab spans +-104 (the gate openings reach its edge)
 local VOX = 4
+-- PS99 in-engine pass, hub rounds 3-5: the two sessions where this overlay never ran (the script
+-- had died early) were the frames that read closest to PS99, and the four blind critics' named
+-- gap was exactly what the overlay adds -- Terrain's grass blades (Decoration is not scriptable in
+-- this Studio build) and its worn-earth path edges over the slab's clean lime and cream. So the
+-- meadow overlay is off: the HubFloor slab (tools/map_forge.py, same palette) IS the lawn, and the
+-- terrain in the hub is only the rock skirt behind the castle wall. The passes below still run
+-- (they are cheap and their counts stay in the summary line); only the voxel write is skipped.
+local HUB_LAWN_OVERLAY = false -- [TUNING]
 local COLS = LAWN * 2 // VOX
 local floorPart: BasePart? = nil
 local groundsHub = map:FindFirstChild("Grounds_Hub")
@@ -528,6 +587,9 @@ end
 -- Pass 3: material and surface height per column.
 local counts = { paved = 0, spill = 0, worn = 0, lawn = 0, street = 0 }
 local function write(ix: number, iz: number, mat: Enum.Material, lift: number)
+	if not HUB_LAWN_OVERLAY then
+		return -- the slab stays bare; see HUB_LAWN_OVERLAY
+	end
 	mats[ix][1][iz], occs[ix][1][iz] = mat, 1
 	mats[ix][2][iz], occs[ix][2][iz] = if lift > 0 then mat else M.Air, lift
 end
@@ -592,17 +654,21 @@ for ix = 1, COLS do
 		write(ix, iz, mat, lift)
 	end
 end
-terrain:WriteVoxels(lawnRegion, VOX, mats, occs)
+if HUB_LAWN_OVERLAY then
+	terrain:WriteVoxels(lawnRegion, VOX, mats, occs)
 
--- The slab keeps its collision (and every marker and spawn above it); the meadow is its face now.
-if floorPart then
-	floorPart.Transparency = 1
-	floorPart.CastShadow = false
+	-- The slab keeps its collision (and every marker and spawn above it); the meadow is its face now.
+	if floorPart then
+		floorPart.Transparency = 1
+		floorPart.CastShadow = false
+	end
+	for _, slab in ipairs(streetParts) do
+		slab.Transparency = 1
+		slab.CastShadow = false
+	end
 end
-for _, slab in ipairs(streetParts) do
-	slab.Transparency = 1
-	slab.CastShadow = false
-end
+-- (Overlay off: nothing is written back and the HubFloor and street slabs stay visible as the
+-- lawn and the paths, in the palette they were forged with.)
 
 print(string.format(
 	"[WorldTerrain] canyon walls: %d runs, %d grass tops, %d rock voxels, %d scree skirts; lawn %d worn %d rim-spill %d paved %d street %d in %.2fs",
@@ -631,6 +697,13 @@ print(string.format(
 --   * The cavern: the bandits' hideout passage in the west is entered under a great sandstone arch.
 --   * A low sand-and-rock spine crosses the pit either side of the Warden's gap (its proxies stay).
 local DESERT_HIDE_SLABS = true
+-- Iron Lowlands round 3 (2026-09-24, Alex: "rebuild the mesas as parts"): 28 of 28 blind verdicts
+-- named the terrain rock -- the mesas, the rim scarp, the rock towers and the arches -- as faceted
+-- voxel rock that no material or colour could make read as a rounded toy form. With this on, the
+-- desert's rock is SmoothPlastic parts from tools/map_forge.py (desert_rockforms) and the terrain
+-- here keeps only what terrain does well: the sand floor, the dune bank behind the play space,
+-- the pools and the drifts. Every wall column paints as sand, and the rock fills below are skipped.
+local DESERT_ROCK_PARTS = true -- [TUNING]
 do
 	local dMap = workspace:FindFirstChild("LemonadeMap")
 	local il = dMap and dMap:FindFirstChild("IronLowlands")
@@ -651,14 +724,16 @@ do
 
 		-- Materials the hub does not use carry the desert's own colours; the strata reuse the hub
 		-- canyon's tan sandstone, rust rock and cream limestone, so the two places share one palette.
-		-- The walked sand is the zone's big calm surface, so it sits near the top of its value range:
-		-- a light golden cream (the old deeper gold, 255/214/130, read as dull ochre in shade), with
-		-- the path and the shore one step paler still and the accents (awnings, flowers, cacti) as
-		-- the only full-chroma colour.
-		terrain:SetMaterialColor(M.Sand, Color3.fromRGB(255, 228, 164)) -- the desert floor: light golden toy sand
+		-- GROUND_SAND: the desert floor, as Salt (see the M table). Golden (255, 214, 130) read as
+		-- washed-out beige, the hub's cream read as blown-out white; this is the warm saturated tan
+		-- the oasis critics asked for, so the cream houses and the vivid props sit on colour.
+		-- Round 4 (rock as parts, 9 of 9 so far): the pale sand plus the sand bank behind it filled 60-70% of
+		-- every frame as one near-white sheet. With the cliffs coral, the floor can carry colour again:
+		-- golden peach, saturated but not the cliffs' hue, so the cream houses and the vivid props pop.
+		terrain:SetMaterialColor(M.Sand, Color3.fromRGB(255, 212, 140))
 		terrain:SetMaterialColor(M.Snow, Color3.fromRGB(255, 248, 228)) -- GROUND_PALE: pale drift crests, the near-white step of the sand
-		terrain:SetMaterialColor(M.Salt, Color3.fromRGB(255, 240, 214)) -- the trodden trail and camp: the hub road's cream (PATH)
-		terrain:SetMaterialColor(M.Concrete, Color3.fromRGB(255, 238, 206)) -- damp sand at the water's edge: a clean pale cream, not peach
+		-- The hardpan trail (Salt) and the damp water's edge (Concrete) now share the hub's PATH cream
+		-- and GROUND_MID materials, so their colours are set once with the hub's above.
 		-- PS99 water: a flat, saturated toy cyan-blue (the sky's own family, not a natural teal),
 		-- barely reflective so it reads as a painted pool rather than a mirror.
 		terrain.WaterColor = Color3.fromRGB(64, 190, 255)
@@ -766,6 +841,9 @@ do
 			{ top = math.huge, mat = M.Sandstone },
 		}
 		local function dstratum(y: number, x: number, z: number): Enum.Material
+			if DESERT_ROCK_PARTS then
+				return M.Sand -- the bank is a dune; the rock stands on it as parts
+			end
 			local yy = y + 0.018 * x + 2.4 * noise(x / 53, z / 53, 6.6)
 			for _, band in ipairs(DSTRATA) do
 				if yy < band.top then
@@ -776,10 +854,7 @@ do
 		end
 
 		-- Landmark mesas outside the basin: { x, z, radius x, radius z, yaw, top }. Each steps in
-		-- twice as it rises (the upper tiers narrower), sand heaped round its foot. The first six are
-		-- smooth toy parts now (tools/map_forge.py toy_mesa, PART_MESAS mirrors them): here they
-		-- keep only the sand skirt they stand in. The last two stay rock, carved by the arch.
-		local PART_MESAS = 6
+		-- twice as it rises (the upper tiers narrower), sand heaped round its foot.
 		local MESAS = {
 			{ 204, 404, 40, 56, 18, 86 }, -- east, over the oasis
 			{ 170, 498, 30, 21, -12, 66 }, -- south-east
@@ -794,6 +869,9 @@ do
 		}
 		local function mesaAt(x: number, z: number): number
 			local best = -math.huge
+			if DESERT_ROCK_PARTS then
+				return best -- map_forge's desert_rockforms stands the mesas on the bank
+			end
 			for i, m in ipairs(MESAS) do
 				local dx, dz = x - m[1], z - m[2]
 				local c, s = math.cos(math.rad(m[5])), math.sin(math.rad(m[5]))
@@ -803,7 +881,7 @@ do
 					local a = math.atan2(lz, lx)
 					r *= 1 + 0.1 * noise(math.cos(a) * 1.7 + i * 7.1, math.sin(a) * 1.7, 5.5) + 0.04 * noise(x / 6, z / 6, i)
 					local top = m[6]
-					local tiers = if i <= PART_MESAS then {} else { { top, 0.8 }, { top - 16, 0.9 }, { top - 32, 1.0 } }
+					local tiers = { { top, 0.8 }, { top - 16, 0.9 }, { top - 32, 1.0 } }
 					local h = -math.huge
 					for _, t in ipairs(tiers) do
 						-- a rounded shoulder over the last stud or two of each tier's edge
@@ -820,8 +898,7 @@ do
 			return best
 		end
 
-		-- Stacked rock towers: toy parts now (map_forge rock_stack, PART_TOWERS); here only the talus of
-		-- sand round each foot.
+		-- Stacked rock towers (built after the voxels are written).
 		local TOWERS = {
 			{ 160, 262, 10, 98 },
 			{ 232, 300, 12, 116 },
@@ -1011,8 +1088,10 @@ do
 				if blocked[ix][iz] then
 					h = math.min(h, 0.45) -- props sit a little sunk into the sand
 				end
-				if trailDist(x, z) < 5 then
-					h = math.min(h, 0.3) -- the trail stays clear
+				-- the trail stays clear, out past its kerbs (map_forge lays them 6.6 studs either side,
+				-- 2.2 thick): at 5 the drifts rose under the outer half and the kerbs read as logs
+				if trailDist(x, z) < 8.5 then
+					h = math.min(h, 0.3)
 				end
 				h = math.max(h, step)
 				-- the oasis berm: the ground round the pool stands above the water so it holds it
@@ -1115,9 +1194,13 @@ do
 					elseif slope > 0.9 then
 						topMat = dstratum(s, x, z)
 					elseif h > 2.2 and noise(x / 11, z / 11, 78) > -0.2 then
-						topMat = M.Snow
+						-- pale drift crests -- unless the rock is parts, when on the flattened floor these
+						-- read as white fog blobs lying on the sand (2026-09-24 recording)
+						topMat = if DESERT_ROCK_PARTS then M.Sand else M.Snow
 					elseif g > 0.42 and h < 0.7 then
-						topMat = M.Sandstone -- bedrock showing through
+						-- bedrock showing through -- unless the rock is parts, when these patches were the
+						-- "orange smudges on the sand" the round-3 critics named
+						topMat = if DESERT_ROCK_PARTS then M.Sand else M.Sandstone
 					else
 						topMat = M.Sand
 					end
@@ -1135,7 +1218,7 @@ do
 						elseif c > lowest - 4 or c > s - 6 then
 							mat = dstratum(c, x, z)
 						else
-							mat = M.Sandstone
+							mat = if DESERT_ROCK_PARTS then M.Sand else M.Sandstone
 						end
 						mats[ix][iy][iz], occs[ix][iy][iz] = mat, occ
 					elseif k ~= "add" then
@@ -1147,10 +1230,27 @@ do
 		terrain:WriteVoxels(region, 4, mats, occs)
 
 		-- Stacked rock towers: bulging drums of sandstone with rust and cream bands, a flat cap.
-		for _, t in ipairs(TOWERS) do
-			local tx, tz, r = t[1], t[2], t[3]
-			-- a talus of sand at the foot, blending into the dunes
+		local TOWER_MATS = { M.Sandstone, M.Rock, M.Sandstone, M.Limestone, M.Sandstone, M.Rock }
+		for i, t in ipairs(if DESERT_ROCK_PARTS then {} else TOWERS) do
+			local tx, tz, r, h = t[1], t[2], t[3], t[4]
+			local y = 2
+			local k = i
+			-- a talus of sand and rock at the foot, blending into the dunes
 			terrain:FillBall(Vector3.new(tx, 6, tz), r * 1.9, M.Sand)
+			while y < h do
+				local seg = drng:NextNumber(9, 15)
+				local rr = r * (1 - 0.18 * (y / h)) * drng:NextNumber(0.9, 1.12)
+				local cf = CFrame.new(tx + drng:NextNumber(-1, 1), y + seg / 2, tz + drng:NextNumber(-1, 1))
+				local mat = TOWER_MATS[(k % #TOWER_MATS) + 1]
+				terrain:FillCylinder(cf, seg + 0.5, rr, mat)
+				for _ = 1, 3 do -- knobs that break the drum's circle
+					local a = drng:NextNumber(0, math.pi * 2)
+					terrain:FillBall(cf.Position + Vector3.new(math.cos(a) * rr * 0.55, drng:NextNumber(-2, 2), math.sin(a) * rr * 0.55), rr * 0.6, mat)
+				end
+				y += seg
+				k += 1
+			end
+			terrain:FillCylinder(CFrame.new(tx, y + 1.5, tz), 3, r * 0.75, M.Limestone)
 			stats.towers += 1
 		end
 
@@ -1165,38 +1265,58 @@ do
 			{ 336, 572, 40, 28, 84, 6 },
 			{ 470, 120, 38, 30, 80, -30 },
 		}
-		for _, m in ipairs(FAR_MESAS) do
-			local mx, mz, rx = m[1], m[2], m[3]
-			-- the skirt only: the mesa itself is toy parts (map_forge toy_mesa, PART_FAR_MESAS)
-			terrain:FillBall(Vector3.new(mx, -rx * 0.5, mz), rx * 1.25, M.Sand)
+		for i, m in ipairs(if DESERT_ROCK_PARTS then {} else FAR_MESAS) do
+			local mx, mz, rx, rz, top, yaw = m[1], m[2], m[3], m[4], m[5], m[6]
+			terrain:FillBall(Vector3.new(mx, -rx * 0.5, mz), rx * 1.25, M.Sand) -- the skirt
+			local y = -4
+			while y < top do
+				local u = y / top
+				local w = if u < 0.55 then 1 - 0.08 * u elseif u < 0.8 then 0.78 else 0.6
+				local mat = dstratum(y, mx, mz)
+				for k = 0, 2 do
+					local jitter = 0.86 + 0.14 * noise(i * 3.1, y / 11, k)
+					terrain:FillBlock(
+						CFrame.new(mx, y + 2, mz) * CFrame.Angles(0, math.rad(yaw + k * 31), 0),
+						Vector3.new(rx * 2 * w * jitter, 4.2, rz * 2 * w * (1.02 - 0.1 * k)),
+						mat
+					)
+				end
+				y += 4
+			end
 			stats.towers += 1
 		end
 
 		-- A natural arch over the Briarwood trail, knitting the south rim's two great blocks into one
 		-- massif with a portal through it: banded like the mesas, its underside curved, Y26-38.
-		terrain:FillBlock(CFrame.new(0, 37, 506), Vector3.new(84, 6, 18), M.Sandstone)
-		terrain:FillBlock(CFrame.new(0, 42.5, 506), Vector3.new(84, 5, 18), M.Rock)
-		terrain:FillBlock(CFrame.new(0, 49.5, 506), Vector3.new(84, 9, 18), M.Sandstone)
-		terrain:FillBall(Vector3.new(-12, 53, 505), 9, M.Sandstone)
-		terrain:FillBall(Vector3.new(15, 52, 507), 8, M.Limestone)
+		if not DESERT_ROCK_PARTS then
+			terrain:FillBlock(CFrame.new(0, 37, 506), Vector3.new(84, 6, 18), M.Sandstone)
+			terrain:FillBlock(CFrame.new(0, 42.5, 506), Vector3.new(84, 5, 18), M.Rock)
+			terrain:FillBlock(CFrame.new(0, 49.5, 506), Vector3.new(84, 9, 18), M.Sandstone)
+			terrain:FillBall(Vector3.new(-12, 53, 505), 9, M.Sandstone)
+			terrain:FillBall(Vector3.new(15, 52, 507), 8, M.Limestone)
+		end
 		terrain:FillCylinder(CFrame.new(0, 20, 506) * CFrame.Angles(math.rad(90), 0, 0), 30, 18, M.Air)
 
 		-- The oasis overhang: a sandstone lip reaching out over the pool's east side, a cave mouth
 		-- in the scarp under it where the spring comes out, and water running back into the cave.
-		terrain:FillBlock(CFrame.new(108, 22, 348) * CFrame.Angles(0, 0, math.rad(-6)), Vector3.new(22, 10, 32), M.Sandstone)
-		terrain:FillBall(Vector3.new(101, 21, 340), 6, M.Rock)
-		terrain:FillBall(Vector3.new(102, 21.5, 356), 6.5, M.Sandstone)
-		terrain:FillBall(Vector3.new(112, 28, 348), 10, M.Sandstone)
+		if not DESERT_ROCK_PARTS then
+			terrain:FillBlock(CFrame.new(108, 22, 348) * CFrame.Angles(0, 0, math.rad(-6)), Vector3.new(22, 10, 32), M.Sandstone)
+			terrain:FillBall(Vector3.new(101, 21, 340), 6, M.Rock)
+			terrain:FillBall(Vector3.new(102, 21.5, 356), 6.5, M.Sandstone)
+			terrain:FillBall(Vector3.new(112, 28, 348), 10, M.Sandstone)
+		end
 		terrain:FillBlock(CFrame.new(103, 10.5, 348), Vector3.new(22, 11, 34), M.Air) -- headroom over the water
 		terrain:FillBlock(CFrame.new(118, 9, 348), Vector3.new(14, 10, 16), M.Air) -- the cave mouth
 		terrain:FillBlock(CFrame.new(118, 2, 348), Vector3.new(12, 4, 16), M.Water)
 		terrain:FillBlock(CFrame.new(118, -2, 348), Vector3.new(12, 4, 16), M.Sand)
 		-- The hideout's arch: a thick sandstone span over the passage mouth, its underside Y22.
-		terrain:FillBlock(CFrame.new(-118, 30, 300), Vector3.new(20, 16, 58), M.Sandstone)
-		terrain:FillBall(Vector3.new(-116, 36, 290), 11, M.Sandstone)
-		terrain:FillBall(Vector3.new(-120, 35, 311), 10, M.Rock)
-		terrain:FillBlock(CFrame.new(-118, 25, 283), Vector3.new(22, 4, 6), M.Limestone)
-		terrain:FillBlock(CFrame.new(-118, 25, 317), Vector3.new(22, 4, 6), M.Limestone)
+		if not DESERT_ROCK_PARTS then
+			terrain:FillBlock(CFrame.new(-118, 30, 300), Vector3.new(20, 16, 58), M.Sandstone)
+			terrain:FillBall(Vector3.new(-116, 36, 290), 11, M.Sandstone)
+			terrain:FillBall(Vector3.new(-120, 35, 311), 10, M.Rock)
+			terrain:FillBlock(CFrame.new(-118, 25, 283), Vector3.new(22, 4, 6), M.Limestone)
+			terrain:FillBlock(CFrame.new(-118, 25, 317), Vector3.new(22, 4, 6), M.Limestone)
+		end
 
 		-- The loose rock heaps out on the open sand (SAND_ROCKS): sandstone knobs half-sunk in a
 		-- mound of their own, clear of the trail, the pools and every gameplay marker.
@@ -1232,7 +1352,7 @@ do
 			seated += 1
 		end
 		local SAND_ROCKS = { { -100, 262 }, { -88, 300 }, { -60, 410 }, { 60, 180 }, { -70, 196 } }
-		for _, sr in ipairs(SAND_ROCKS) do
+		for _, sr in ipairs(if DESERT_ROCK_PARTS then {} else SAND_ROCKS) do
 			local s = surfaceAt(sr[1], sr[2])
 			if s then
 				heap(sr[1], sr[2], 4.5, s + 1.2)
@@ -1253,7 +1373,9 @@ do
 		-- Fallen boulders at the scarps' feet (outside the play space).
 		for ix = 1, NX, 1 do
 			for iz = 1, NZ, 1 do
-				if kind[ix][iz] == "wall" and drng:NextNumber() < 0.045 then
+				if kind[ix][iz] == "wall" and drng:NextNumber() < 0.045 and not DESERT_ROCK_PARTS then
+					-- (with the rock as parts these half-buried coral balls were the "orange smudges on the
+					-- sand" the round-3 critics named; map_forge's SandRocks stand in for them)
 					local x, z = ctr(X0, ix), ctr(Z0, iz)
 					local d = playDist(x, z)
 					if d > 2 and d < 9 then
