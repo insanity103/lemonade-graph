@@ -1,0 +1,10 @@
+sword,Sword_StarlightShortsword,Sword_CometFalchion,Sword_CoronaShortsword,Sword_HaloSaber,Sword_MeridianBlade,Sword_ZenithguardBlade,Sword_AurelianClaymore,Sword_SunspireClaymore,Sword_TitanforgedGreatsword,Boss_Gorgon,Boss_FrostRevenant,Boss_InfernalColossus,Boss_VoidWraith,Boss_CelestialTitan,RootWarden,DrownedBellwarden,TempestWarden,SwordMeshTemplate
+Sword_StarlightShortsword,,0.638,0.719,0.597,0.71,0.652,0.566,0.706,0.45,0.543,0.522,0.56,0.529,0.559,0.599,0.552,0.597,0.68
+Sword_CometFalchion,0.638,,0.761,0.823,0.783,0.784,0.726,0.691,0.651,0.769,0.747,0.752,0.749,0.701,0.751,0.816,0.769,0.76
+Sword_CoronaShortsword,0.719,0.761,,0.712,0.844,0.814,0.759,0.776,0.606,0.715,0.675,0.738,0.693,0.709,0.779,0.713,0.75,0.743
+Sword_HaloSaber,0.597,0.823,0.712,,0.736,0.717,0.679,0.699,0.607,0.732,0.714,0.711,0.71,0.64,0.673,0.741,0.709,0.71
+Sword_MeridianBlade,0.71,0.783,0.844,0.736,,0.82,0.78,0.806,0.619,0.732,0.671,0.757,0.686,0.695,0.752,0.723,0.761,0.763
+Sword_ZenithguardBlade,0.652,0.784,0.814,0.717,0.82,,0.742,0.666,0.678,0.742,0.705,0.801,0.708,0.731,0.784,0.757,0.767,0.755
+Sword_AurelianClaymore,0.566,0.726,0.759,0.679,0.78,0.742,,0.681,0.762,0.714,0.697,0.802,0.702,0.766,0.752,0.748,0.773,0.636
+Sword_SunspireClaymore,0.706,0.691,0.776,0.699,0.806,0.666,0.681,,0.55,0.643,0.603,0.645,0.615,0.606,0.665,0.625,0.675,0.669
+Sword_TitanforgedGreatsword,0.45,0.651,0.606,0.607,0.619,0.678,0.762,0.55,,0.749,0.765,0.768,0.74,0.744,0.746,0.753,0.717,0.533

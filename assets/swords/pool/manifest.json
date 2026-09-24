@@ -2302,5 +2302,1061 @@
       "iou": 0.84,
       "against": "Sword_BasaltClaymore"
     }
+  },
+  "Sword_RiftDagger": {
+    "name": "Rift Dagger",
+    "key": "Sword_RiftDagger",
+    "pool": "Boss_VoidWraith",
+    "tier": 1,
+    "concept": "a slim slit dagger over a crescent",
+    "file": "Sword_RiftDagger.glb",
+    "bytes": 89048,
+    "triangles": 2856,
+    "vertices": 1440,
+    "meshSize": [
+      0.08602,
+      0.26005,
+      1.0
+    ],
+    "palette": {
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ]
+    },
+    "areaShare": {
+      "magenta_hot": 0.289,
+      "lavender": 0.262,
+      "violet": 0.449
+    },
+    "calmVivid": {
+      "calm": 0.262,
+      "vivid": 0.738
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        9e-05,
+        0.0
+      ],
+      "length_scale": 1.00018
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.722,
+      "against": "Sword_NightfallKris"
+    }
+  },
+  "Sword_UmbralFalchion": {
+    "name": "Umbral Falchion",
+    "key": "Sword_UmbralFalchion",
+    "pool": "Boss_VoidWraith",
+    "tier": 2,
+    "concept": "a shadow falchion with a hooked spine and crescent moons",
+    "file": "Sword_UmbralFalchion.glb",
+    "bytes": 108652,
+    "triangles": 3672,
+    "vertices": 1858,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "deep_violet": [
+        96,
+        32,
+        224
+      ]
+    },
+    "areaShare": {
+      "violet": 0.323,
+      "lavender": 0.221,
+      "magenta_hot": 0.082,
+      "deep_violet": 0.374
+    },
+    "calmVivid": {
+      "calm": 0.221,
+      "vivid": 0.779
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.812,
+      "against": "Sword_NetherSaber"
+    }
+  },
+  "Sword_NightfallKris": {
+    "name": "Nightfall Kris",
+    "key": "Sword_NightfallKris",
+    "pool": "Boss_VoidWraith",
+    "tier": 2,
+    "concept": "a seven-wave kris with a star at its root",
+    "file": "Sword_NightfallKris.glb",
+    "bytes": 120360,
+    "triangles": 4216,
+    "vertices": 2128,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "deep_violet": [
+        96,
+        32,
+        224
+      ]
+    },
+    "areaShare": {
+      "violet": 0.215,
+      "lavender": 0.361,
+      "magenta_hot": 0.041,
+      "deep_violet": 0.383
+    },
+    "calmVivid": {
+      "calm": 0.361,
+      "vivid": 0.639
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.812,
+      "against": "Sword_StarlessSabre"
+    }
+  },
+  "Sword_NetherSaber": {
+    "name": "Nether Saber",
+    "key": "Sword_NetherSaber",
+    "pool": "Boss_VoidWraith",
+    "tier": 2,
+    "concept": "a light-drinking saber with three holes and a clawed orb",
+    "file": "Sword_NetherSaber.glb",
+    "bytes": 106216,
+    "triangles": 3940,
+    "vertices": 1982,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "deep_violet": [
+        96,
+        32,
+        224
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ]
+    },
+    "areaShare": {
+      "deep_violet": 0.322,
+      "lavender": 0.204,
+      "magenta_hot": 0.065,
+      "violet": 0.409
+    },
+    "calmVivid": {
+      "calm": 0.204,
+      "vivid": 0.796
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.812,
+      "against": "Sword_UmbralFalchion"
+    }
+  },
+  "Sword_StarlessSabre": {
+    "name": "Starless Sabre",
+    "key": "Sword_StarlessSabre",
+    "pool": "Boss_VoidWraith",
+    "tier": 2,
+    "concept": "a sabre with empty star-shaped holes",
+    "file": "Sword_StarlessSabre.glb",
+    "bytes": 131232,
+    "triangles": 4016,
+    "vertices": 2018,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ]
+    },
+    "areaShare": {
+      "lavender": 0.382,
+      "violet": 0.532,
+      "magenta_hot": 0.086
+    },
+    "calmVivid": {
+      "calm": 0.382,
+      "vivid": 0.618
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.812,
+      "against": "Sword_NightfallKris"
+    }
+  },
+  "Sword_CollapseClaymore": {
+    "name": "Collapse Claymore",
+    "key": "Sword_CollapseClaymore",
+    "pool": "Boss_VoidWraith",
+    "tier": 3,
+    "concept": "a pinched claymore with a collapse at its waist",
+    "file": "Sword_CollapseClaymore.glb",
+    "bytes": 111412,
+    "triangles": 3752,
+    "vertices": 1894,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "deep_violet": [
+        96,
+        32,
+        224
+      ]
+    },
+    "areaShare": {
+      "violet": 0.319,
+      "lavender": 0.303,
+      "deep_violet": 0.344,
+      "magenta_hot": 0.034
+    },
+    "calmVivid": {
+      "calm": 0.303,
+      "vivid": 0.697
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.828,
+      "against": "Sword_ArchonsVerdict"
+    }
+  },
+  "Sword_EventideClaymore": {
+    "name": "Eventide Claymore",
+    "key": "Sword_EventideClaymore",
+    "pool": "Boss_VoidWraith",
+    "tier": 3,
+    "concept": "a sunset-banded claymore with a setting sun",
+    "file": "Sword_EventideClaymore.glb",
+    "bytes": 106432,
+    "triangles": 3600,
+    "vertices": 1820,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "deep_violet": [
+        96,
+        32,
+        224
+      ]
+    },
+    "areaShare": {
+      "violet": 0.302,
+      "lavender": 0.489,
+      "magenta_hot": 0.177,
+      "deep_violet": 0.031
+    },
+    "calmVivid": {
+      "calm": 0.489,
+      "vivid": 0.511
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.833,
+      "against": "Sword_ArchonsVerdict"
+    }
+  },
+  "Sword_SingularityGreatsword": {
+    "name": "Singularity Greatsword",
+    "key": "Sword_SingularityGreatsword",
+    "pool": "Boss_VoidWraith",
+    "tier": 3,
+    "concept": "a greatsword with a suspended singularity in a hole",
+    "file": "Sword_SingularityGreatsword.glb",
+    "bytes": 132116,
+    "triangles": 5098,
+    "vertices": 2563,
+    "meshSize": [
+      0.092,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "deep_violet": [
+        96,
+        32,
+        224
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ]
+    },
+    "areaShare": {
+      "lavender": 0.345,
+      "deep_violet": 0.226,
+      "violet": 0.387,
+      "magenta_hot": 0.042
+    },
+    "calmVivid": {
+      "calm": 0.345,
+      "vivid": 0.655
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.814,
+      "against": "Sword_EventideClaymore"
+    }
+  },
+  "Sword_ArchonsVerdict": {
+    "name": "Archon's Verdict",
+    "key": "Sword_ArchonsVerdict",
+    "pool": "Boss_VoidWraith",
+    "tier": 4,
+    "concept": "a square-tipped verdict blade under a halo, winged, with an eye",
+    "file": "Sword_ArchonsVerdict.glb",
+    "bytes": 138788,
+    "triangles": 4956,
+    "vertices": 2495,
+    "meshSize": [
+      0.21,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "verdict": [
+        220,
+        96,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ]
+    },
+    "areaShare": {
+      "lavender": 0.287,
+      "verdict": 0.182,
+      "violet": 0.405,
+      "magenta_hot": 0.127
+    },
+    "calmVivid": {
+      "calm": 0.287,
+      "vivid": 0.713
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.833,
+      "against": "Sword_EventideClaymore"
+    }
+  },
+  "Sword_StarlightShortsword": {
+    "name": "Starlight Shortsword",
+    "key": "Sword_StarlightShortsword",
+    "pool": "Boss_CelestialTitan",
+    "tier": 1,
+    "concept": "a starlight needle over a four-point star guard",
+    "file": "Sword_StarlightShortsword.glb",
+    "bytes": 79512,
+    "triangles": 2728,
+    "vertices": 1380,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "starlight": [
+        240,
+        240,
+        255
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ]
+    },
+    "areaShare": {
+      "starlight": 0.163,
+      "gold": 0.605,
+      "tangerine": 0.054,
+      "ivory": 0.178
+    },
+    "calmVivid": {
+      "calm": 0.341,
+      "vivid": 0.659
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.719,
+      "against": "Sword_CoronaShortsword"
+    }
+  },
+  "Sword_CometFalchion": {
+    "name": "Comet Falchion",
+    "key": "Sword_CometFalchion",
+    "pool": "Boss_CelestialTitan",
+    "tier": 2,
+    "concept": "a falchion with a comet and its tail along the blade",
+    "file": "Sword_CometFalchion.glb",
+    "bytes": 116064,
+    "triangles": 4114,
+    "vertices": 2081,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "comet": [
+        200,
+        225,
+        255
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ]
+    },
+    "areaShare": {
+      "comet": 0.254,
+      "gold": 0.338,
+      "tangerine": 0.255,
+      "ivory": 0.153
+    },
+    "calmVivid": {
+      "calm": 0.407,
+      "vivid": 0.593
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.823,
+      "against": "Sword_HaloSaber"
+    }
+  },
+  "Sword_CoronaShortsword": {
+    "name": "Corona Shortsword",
+    "key": "Sword_CoronaShortsword",
+    "pool": "Boss_CelestialTitan",
+    "tier": 1,
+    "concept": "a diamond shortsword ringed with a beaded corona",
+    "file": "Sword_CoronaShortsword.glb",
+    "bytes": 86800,
+    "triangles": 3138,
+    "vertices": 1584,
+    "meshSize": [
+      0.152,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "tangerine": 0.242,
+      "ivory": 0.478,
+      "gold": 0.28
+    },
+    "calmVivid": {
+      "calm": 0.478,
+      "vivid": 0.522
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.844,
+      "against": "Sword_MeridianBlade"
+    }
+  },
+  "Sword_HaloSaber": {
+    "name": "Halo Saber",
+    "key": "Sword_HaloSaber",
+    "pool": "Boss_CelestialTitan",
+    "tier": 2,
+    "concept": "a curved saber ringed by a floating halo",
+    "file": "Sword_HaloSaber.glb",
+    "bytes": 107060,
+    "triangles": 3938,
+    "vertices": 1970,
+    "meshSize": [
+      0.192,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ]
+    },
+    "areaShare": {
+      "gold": 0.426,
+      "ivory": 0.469,
+      "tangerine": 0.105
+    },
+    "calmVivid": {
+      "calm": 0.469,
+      "vivid": 0.531
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.823,
+      "against": "Sword_CometFalchion"
+    }
+  },
+  "Sword_MeridianBlade": {
+    "name": "Meridian Blade",
+    "key": "Sword_MeridianBlade",
+    "pool": "Boss_CelestialTitan",
+    "tier": 3,
+    "concept": "a straight blade with a meridian ridge and an armillary guard",
+    "file": "Sword_MeridianBlade.glb",
+    "bytes": 133488,
+    "triangles": 5156,
+    "vertices": 2575,
+    "meshSize": [
+      0.154,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ]
+    },
+    "areaShare": {
+      "gold": 0.382,
+      "ivory": 0.48,
+      "tangerine": 0.138
+    },
+    "calmVivid": {
+      "calm": 0.48,
+      "vivid": 0.52
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.844,
+      "against": "Sword_CoronaShortsword"
+    }
+  },
+  "Sword_ZenithguardBlade": {
+    "name": "Zenithguard Blade",
+    "key": "Sword_ZenithguardBlade",
+    "pool": "Boss_CelestialTitan",
+    "tier": 2,
+    "concept": "a blade flaring toward its tip with a sun emblem and shield guard",
+    "file": "Sword_ZenithguardBlade.glb",
+    "bytes": 95040,
+    "triangles": 3296,
+    "vertices": 1668,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ]
+    },
+    "areaShare": {
+      "ivory": 0.325,
+      "gold": 0.425,
+      "tangerine": 0.249
+    },
+    "calmVivid": {
+      "calm": 0.325,
+      "vivid": 0.675
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.82,
+      "against": "Sword_MeridianBlade"
+    }
+  },
+  "Sword_AurelianClaymore": {
+    "name": "Aurelian Claymore",
+    "key": "Sword_AurelianClaymore",
+    "pool": "Boss_CelestialTitan",
+    "tier": 3,
+    "concept": "a gold-leafed claymore with a stair guard and ziggurat",
+    "file": "Sword_AurelianClaymore.glb",
+    "bytes": 121720,
+    "triangles": 3560,
+    "vertices": 1806,
+    "meshSize": [
+      0.09123,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "tangerine": 0.328,
+      "ivory": 0.327,
+      "gold": 0.345
+    },
+    "calmVivid": {
+      "calm": 0.327,
+      "vivid": 0.673
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.802,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_SunspireClaymore": {
+    "name": "Sunspire Claymore",
+    "key": "Sword_SunspireClaymore",
+    "pool": "Boss_CelestialTitan",
+    "tier": 3,
+    "concept": "a tall spire claymore ringed with collars",
+    "file": "Sword_SunspireClaymore.glb",
+    "bytes": 132844,
+    "triangles": 5112,
+    "vertices": 2528,
+    "meshSize": [
+      0.16501,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "spire": [
+        255,
+        200,
+        60
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ]
+    },
+    "areaShare": {
+      "spire": 0.143,
+      "ivory": 0.72,
+      "gold": 0.112,
+      "tangerine": 0.025
+    },
+    "calmVivid": {
+      "calm": 0.72,
+      "vivid": 0.28
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.806,
+      "against": "Sword_MeridianBlade"
+    }
+  },
+  "Sword_TitanforgedGreatsword": {
+    "name": "Titanforged Greatsword",
+    "key": "Sword_TitanforgedGreatsword",
+    "pool": "Boss_CelestialTitan",
+    "tier": 3,
+    "concept": "a hammered broadsword with rivet bands and an anvil guard",
+    "file": "Sword_TitanforgedGreatsword.glb",
+    "bytes": 152500,
+    "triangles": 4032,
+    "vertices": 2056,
+    "meshSize": [
+      0.1,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "titan": [
+        240,
+        244,
+        255
+      ],
+      "tangerine": [
+        255,
+        150,
+        40
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "ivory": [
+        255,
+        252,
+        240
+      ]
+    },
+    "areaShare": {
+      "titan": 0.319,
+      "tangerine": 0.312,
+      "gold": 0.315,
+      "ivory": 0.054
+    },
+    "calmVivid": {
+      "calm": 0.372,
+      "vivid": 0.628
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.768,
+      "against": "Boss_InfernalColossus"
+    }
   }
 }
