@@ -46,6 +46,7 @@ local ENEMY_HIT_INTERVAL_PER_PLAYER = 0.02 -- only stops two hits landing on the
 local ATTACK_COOLDOWN = 0.4
 local RESPAWN_DELAY = 5
 local DROP_RESPAWN_DELAY = 1.5 -- [TUNING] a rig that just paid a sword is back this fast
+local BOSS_RESPAWN_DELAY = 90 -- [TUNING] a boss is an event, not a farm: it was back in 5 s
 -- Enemy swings telegraph before they land: damage resolves when the blade comes down, and only
 -- if the target is still within reach (+ grace for movement during the swing). Heavy hitters
 -- (slow attack cycles) wind up longer. Archetypes may override with `windup`.
@@ -348,7 +349,11 @@ local ENEMY_ARCHETYPES = {
 		healthGrowth = 1.32,
 		baseDamage = 32,
 		damageGrowth = 1.16,
-		baseXP = 600,
+		-- 70, not 600: at its level 10 that was 6,000 XP a kill, 1.4 times the whole 1-10 band, and
+		-- with the 5 s respawn a fresh profile went Lv1 -> Lv18 in about four minutes inside a
+		-- Lv1-10 zone (recording 2026-09-24; FIRST_SLICE.md had predicted "Lv 24 after its XP").
+		-- 700 XP is about a level and a half at Lv10.
+		baseXP = 70,
 		aggroRange = 34,
 		attackReach = 9.0,
 		attackCooldown = 1.8,
@@ -730,7 +735,7 @@ local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 		bb.StudsOffsetWorldSpace = Vector3.new(0, 3.2 * s, 0)
 		-- Depth-tested so boss tags no longer show through hills and arena walls map-wide.
 		bb.AlwaysOnTop = false
-		bb.MaxDistance = 120
+		bb.MaxDistance = 70 -- [TUNING] the arena and its approach; at 120 it read from across the zone
 		bb.Parent = head
 
 		local lbl = Instance.new("TextLabel")
@@ -795,7 +800,9 @@ local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 		bb.Size = UDim2.fromOffset(150, 30)
 		bb.StudsOffsetWorldSpace = Vector3.new(0, 2.2 * s, 0)
 		bb.AlwaysOnTop = false
-		bb.MaxDistance = 60 -- [TUNING]
+		-- [TUNING] Fighting distance. At 60 every plate in the Lowlands basin showed at once and the
+		-- field read as a wall of labels (2026-09-24 recording, 5:45).
+		bb.MaxDistance = 30
 		bb.Parent = head
 
 		local lbl = Instance.new("TextLabel")
@@ -1090,6 +1097,35 @@ local function commandMove(state, humanoid, destination, now)
 	end
 end
 
+-- Chasers used to walk to their slot with no idea where their packmates stood, so a pack that
+-- converged from one side piled into one body and into the player (2026-09-24 recording, 5:57 and
+-- 6:21). Nudge the destination away from every other rig closer than SEPARATION_RADIUS (per unit of
+-- this rig's scale), capped so it only spreads them and never walks one out of its reach.
+local SEPARATION_RADIUS = 3 -- [TUNING] studs, times the archetype's scale
+local SEPARATION_MAX_PUSH = 3 -- [TUNING] studs
+local FLAT = Vector3.new(1, 0, 1)
+local function separated(model, hrp: BasePart, destination: Vector3, scale: number): Vector3
+	local radius = SEPARATION_RADIUS * scale
+	local push = Vector3.zero
+	for other in pairs(activeEnemies) do
+		local otherRoot = other ~= model and other.PrimaryPart
+		if otherRoot then
+			local away = (hrp.Position - otherRoot.Position) * FLAT
+			local gap = away.Magnitude
+			if gap < radius then
+				-- Two rigs on the exact same spot have no "away" (and share a name): any side will do.
+				local a = math.random() * math.pi * 2
+				local dir = if gap > 1e-3 then away / gap else Vector3.new(math.cos(a), 0, math.sin(a))
+				push += dir * (radius - gap)
+			end
+		end
+	end
+	if push.Magnitude > SEPARATION_MAX_PUSH then
+		push = push.Unit * SEPARATION_MAX_PUSH
+	end
+	return destination + push
+end
+
 task.spawn(function()
 	while true do
 		local now = tick()
@@ -1150,12 +1186,16 @@ task.spawn(function()
 					-- already on its spot turns to face the target. Bosses stand their ground.
 					local spot = if arch.boss then nil else slotPoint(state, targetHrp.Position, arch)
 					local flat = (targetHrp.Position - hrp.Position) * Vector3.new(1, 0, 1)
+					local scale = arch.scale or 1
 					if spot and ((spot - hrp.Position) * Vector3.new(1, 0, 1)).Magnitude > 1.6 and not state.windingUp then
-						commandMove(state, humanoid, spot, now)
+						commandMove(state, humanoid, separated(model, hrp, spot, scale), now)
 					elseif flat.Magnitude > 0.1 and hrp.CFrame.LookVector:Dot(flat.Unit) < 0.85 then
 						commandMove(state, humanoid, hrp.Position + flat.Unit * 0.3, now)
-					else
+					elseif arch.boss or state.windingUp then
 						commandMove(state, humanoid, hrp.Position, now)
+					else
+						-- On its spot and facing in: stand, unless a packmate is standing in it too.
+						commandMove(state, humanoid, separated(model, hrp, hrp.Position, scale), now)
 					end
 					if now - state.lastAttackTime >= getAttackCooldown(arch) + state.nextSwingGap and not state.windingUp then
 						state.lastAttackTime = now
@@ -1181,7 +1221,7 @@ task.spawn(function()
 				else
 					-- Run in toward the rig's own slot, so a pack fans out around the player.
 					local spot = if arch.boss or targetDist > arch.attackReach * 2.5 then targetHrp.Position
-						else slotPoint(state, targetHrp.Position, arch)
+						else separated(model, hrp, slotPoint(state, targetHrp.Position, arch), arch.scale or 1)
 					commandMove(state, humanoid, spot, now)
 				end
 			end
@@ -1254,7 +1294,8 @@ local function spawnEnemy(config)
 		-- a beat after this Died handler runs, so the flag is read after a short look-again.
 		task.delay(0.25, function()
 			local paid = model and model:GetAttribute("DropPaid") == true
-			task.delay(math.max((paid and DROP_RESPAWN_DELAY or RESPAWN_DELAY) - 0.25, 0), function()
+			local wait = if arch.boss then BOSS_RESPAWN_DELAY elseif paid then DROP_RESPAWN_DELAY else RESPAWN_DELAY
+			task.delay(math.max(wait - 0.25, 0), function()
 				spawnEnemy(config)
 			end)
 		end)
@@ -1279,6 +1320,11 @@ local function attackEnemy(player, enemyModel)
 	creatorTag.Value = player
 
 	local damage, isCrit = getPlayerAttackDamage(player)
+	-- A fist has no blade, so there is no point on one to draw the impact at: clear whatever the
+	-- last sword hit left on this rig, or the streak would be drawn where a sword was several
+	-- hits ago. Cleared BEFORE the damage, in the same frame, exactly as SwordSystem publishes.
+	enemyModel:SetAttribute("HitBlade", nil)
+	enemyModel:SetAttribute("HitStop", ComboConfig.HITLAG_DURATION[1] + ComboConfig.HITSTOP_EXTRA)
 	humanoid:TakeDamage(damage)
 
 	-- Apply hitlag for unarmed attacks (use combo hit 1 duration)
@@ -1288,7 +1334,7 @@ local function attackEnemy(player, enemyModel)
 	end
 	local hitlagRemote = ReplicatedStorage:WaitForChild("RemoteEvents"):FindFirstChild("HitlagEffect")
 	if hitlagRemote then
-		hitlagRemote:FireClient(player, ComboConfig.HITLAG_DURATION[1])
+		hitlagRemote:FireClient(player, ComboConfig.HITLAG_DURATION[1], nil, nil, nil, nil, damage)
 	end
 
 	local char = player.Character
@@ -1503,6 +1549,101 @@ GuiShowcase.stage("EnemyHit", function(ctx)
 	ctx.clapper()
 	ctx.swing()
 	task.wait(4)
+end)
+
+-- ── Contact: the hitstop, the camera kick and the impact ────────────────────────────────────
+-- The moment the blade lands, framed on the moment rather than on the swing. A real enemy rig
+-- (not a dummy: the flinch, the flash and the stagger are EnemyAnimator's, and only a real rig
+-- has them) is stood exactly where the blade passes on the contact frame, derived from the swing
+-- clip through SwingBlade, so the hit is on the steel and cannot miss. Its health is raised well
+-- above one hit, so it survives: nothing dies, so no XP, gold, drop or quest credit.
+--
+-- The swing is pressed through ctx.swing() -- tool:Activate() on the client, the real click path
+-- -- so the real clip, the real server hitbox, the real HitlagEffect and every real effect run.
+--
+-- ── Why the swing starts UNDER the clapperboard ─────────────────────────────────────────────
+-- gx.py starts the filmstrip at the first frame after the flash that differs from the one before
+-- it, and reads eight frames from there. The moment being judged here is 250 ms wide -- contact
+-- plus the hold plus the first beats of the stagger -- so the frames have to be ~33 ms apart, and
+-- eight of those only cover 230 ms in total. Start the strip at the start of the SWING and
+-- contact falls off the end of it; the windup and the arc have their own pieces and their own
+-- strips. So the swing is fired SWING_LEAD into the quarter-second the clapperboard is on
+-- screen: the windup happens behind the flash, and the first frame the strip can see is the
+-- blade two hundredths of a second from the target.
+local SWING_LEAD = 0.13 -- [TUNING] seconds after the clapperboard goes up that the swing fires
+
+GuiShowcase.stage("SwingHit", function(ctx)
+	local SwingBlade = require(ReplicatedStorage:WaitForChild("SwingBlade"))
+	local SwingClip = require(ReplicatedStorage:WaitForChild("Animations"):WaitForChild("Sword Attack Animation"))
+
+	local stage = stageEnemy(ctx, DEFAULT_ARCHETYPE)
+	local health = math.max(stage.humanoid.MaxHealth, math.ceil(showcaseHitBound(ctx.player) * 10))
+	stage.humanoid.MaxHealth = health
+	stage.humanoid.Health = health
+
+	-- The sword has to be welded to the hand before the blade can be derived from it: SwingBlade
+	-- walks the clip's pose down the arm and out through the grip weld, and the weld is made by
+	-- the engine when the client equips.
+	local tool = ctx.equipSword()
+	local blade = nil
+	for _ = 1, 40 do
+		blade = tool and SwingBlade.contact(ctx.character, tool, SwingClip)
+		if blade then
+			break
+		end
+		task.wait(0.1)
+	end
+
+	-- Stand the enemy on the blade: its root goes where the middle of the blade is on the contact
+	-- frame, flattened to the ground it is standing on. That is the same geometry the server's
+	-- hitbox uses, so the swing lands on it by construction however the swing is re-timed.
+	local rootCF = ctx.root.CFrame
+	if blade then
+		local seg = blade.Segments[2] or blade.Segments[1]
+		-- The root goes 0.15 studs short of the TIP, so on the contact frame the point of the
+		-- blade is about half a stud inside the torso (R6 torso, 1 stud deep, root at its
+		-- centre) and stops there for the hold. It stood at 68% before, with the tip out the far
+		-- side of the body: a blade already through and past a body is a blade nothing resisted,
+		-- which is what the first hitstop strips were marked down for. The hit still lands by
+		-- construction -- the root is 0.15 studs from the segment against a 2.3-stud radius.
+		local point = seg.B + (seg.A - seg.B).Unit * 0.15
+		print(string.format("[SwingHit] contact blade guard=(%.2f, %.2f, %.2f) tip=(%.2f, %.2f, %.2f)",
+			seg.A.X, seg.A.Y, seg.A.Z, seg.B.X, seg.B.Y, seg.B.Z))
+		local world = rootCF * Vector3.new(point.X, 0, point.Z)
+		local y = stage.hrp.Position.Y
+		stage.model:PivotTo(CFrame.lookAt(
+			Vector3.new(world.X, y, world.Z),
+			Vector3.new(ctx.root.Position.X, y, ctx.root.Position.Z)))
+		print(string.format("[SwingHit] enemy stood at (%.2f, 0, %.2f) in character space", point.X, point.Z))
+	else
+		warn("[SwingHit] no blade could be derived; the enemy is where stageEnemy put it")
+	end
+
+	-- Third person, side-on from the player's SWORD side (the character faces world -X, so its
+	-- right shoulder -- where the blade is cocked and where the cut starts -- faces world -Z),
+	-- and pulled a little toward the enemy so the cut runs across the frame rather than into it.
+	-- 6.3 studs out at FOV 70 puts a character at about three fifths of the frame height, with
+	-- both fighters and the whole knockback still inside it.
+	local mid = (ctx.root.Position + stage.hrp.Position) * 0.5
+	local focus = Vector3.new(mid.X, ctx.root.Position.Y + 0.4, mid.Z)
+	ctx.camera(CFrame.lookAt(focus + Vector3.new(-1.4, 2.0, -5.8), focus))
+
+	task.wait(2.5) -- rig, sword and camera settle
+	-- Dead still before the flash, so nothing but the hit can start the strip's clock.
+	ctx.hold()
+	task.wait(0.7)
+	task.delay(SWING_LEAD, ctx.swing) -- fires while the clapperboard is still up; see above
+	ctx.clapper()
+
+	-- Proof, well after the captured moment: the rig took damage, and what it was told about the
+	-- contact. If "HitBlade" is missing the impact streak fell back to the torso centre, and the
+	-- strip is not showing what it is supposed to be showing.
+	task.wait(1.5)
+	local connected = stage.humanoid.Health < stage.humanoid.MaxHealth
+	print(string.format("[SwingHit] hit connected: %s  HitStop=%s  HitBlade=%s",
+		tostring(connected), tostring(stage.model:GetAttribute("HitStop")),
+		tostring(stage.model:GetAttribute("HitBlade"))))
+	task.wait(1.5)
 end)
 
 -- Enemy death: the player's real sword swing lands on a staged enemy with low remaining health,

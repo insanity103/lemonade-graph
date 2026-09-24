@@ -218,10 +218,18 @@ local function buildPriceLadder()
 	return ladder
 end
 
+-- ...and never more than PRICE_KILLS_CAP of this level's own kills. The band price is set for the
+-- band's middle and fitted against zone-hour income, so at the bottom of band 1 it asked 7,770
+-- gold of a level-1 player earning 5 a kill -- about 1,550 kills (recording 2026-09-24). The cap
+-- only bites low in a band; min() of two non-decreasing curves never falls, so the running-maximum
+-- promise above still holds.
+MerchantConfig.PRICE_KILLS_CAP = 180 -- [TUNING]
 function MerchantConfig.PriceForLevel(level: number?): number
 	priceByBand = priceByBand or buildPriceLadder()
 	local _, index = MerchantConfig.BandForLevel(level)
-	return math.max(10, priceByBand[index] or 10)
+	local band = priceByBand[index] or 10
+	local cap = math.floor(MerchantConfig.PRICE_KILLS_CAP * GoldCurve.PerKill(level) / 10 + 0.5) * 10
+	return math.max(10, math.min(band, cap))
 end
 
 -- ---------------------------------------------------------------- the offer the player is shown

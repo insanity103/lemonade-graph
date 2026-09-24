@@ -134,3 +134,106 @@ Built:
 Not yet done: any in-engine judgement. The first Studio session should capture, in this order,
 the hub at the afternoon showcase clock, an Iron Lowlands fight (enemy + sword in hand), and one
 modal panel, and run each through the gauntlet before touching values.
+
+### Studio round log: hub, afternoon clock (2026-09-23, first in-engine session)
+
+Setup: branch `claude/magical-dirac-kww440` merged with `claude/adoring-khayyam-85d49c` (combat,
+swing and outfit work), served with `rojo serve map.project.json --port 34873` into "rpg backup".
+Reference: `ps99_t048` (grass, path, buildings, sky). Two fresh critics per round, both A/B orders.
+
+| Round | Change | Verdict | Named gap |
+|---|---|---|---|
+| 1-2 | as synced | 4-0 PS99 | Terrain reads real: grass-blade decoration, photo-textured sand/dirt path edges, gritty Rock/Slate spires |
+| 3-4 | Rock/Asphalt -> Glacier, Slate/Basalt -> Ice | (script died on `Terrain.Decoration`, no terrain at all) | the accidental no-terrain frames were the closest to PS99 yet |
+| 5 | Glacier/Ice replaced (they ignore SetMaterialColor): Rock -> Concrete, Slate -> Asphalt, Cobblestone -> Salt, Ground -> Pavement, desert Concrete -> Snow; Decoration write guarded | not judged | spires back and colour-true; grass blades back with the meadow |
+| 6-7 | `HUB_LAWN_OVERLAY = false`: the meadow overlay is skipped, the HubFloor slab is the lawn | 4-0 PS99 | the lawn is a flat, empty, evenly lit plane: no hex/tile pattern, no contact shading, no pickups or props; second, the Concrete/Asphalt rock skirt still reads grainy next to the plastic wall |
+
+What the critics consistently credit: the castle towers with red domes, the striped stall, the
+orange zone gate, the puffy-ball trees and the sky.
+
+Open decisions for the owner:
+- The rock skirt. No Terrain material is both smooth and colour-true, so the terrain rock will
+  always carry grain. Either accept it, or scrap it the way the horizon mountains were and let
+  the castle wall stand alone on the slab.
+- The lawn. The remaining gap is content, not colour: PS99's ground is a tiled two-tone lawn
+  strewn with pickups. A hex/stud pattern on the HubFloor slab and prop clusters along the path
+  are `tools/map_forge.py` work.
+- `Workspace.Terrain.Decoration` is not scriptable in this Studio build; untick it by hand in
+  Properties if grass blades show anywhere terrain grass remains (Briarwood, desert edges).
+| 8 | `HUB_ROCK_SKIRT = false` (Alex: scrap it like the mountains) | 4-0 PS99 | bleaching (pale wall stone, canopies and path washing to near-white, weak contact shadows) x2; empty lawn x2; the faceted orange rock towers over the wall are the Iron Lowlands desert mesas (terrain), not the skirt |
+| 9 | daylight a step down: brightness 2.2 -> 1.8, exposure 0.05 -> -0.05, fill and haze trimmed | 4-0 PS99 | stock photographic cloud cubemap x2; walls still near-white and flat-lit x3; empty lawn x3; desert mesas faceted x2 |
+
+After nine rounds the hub is judged on things this pass does not own: the lawn's emptiness
+and pattern (map_forge content), the wall stone's paleness (map_forge palette, measured offline
+against PS99 but bleached in engine), and the desert mesas showing over the wall. The one
+in-engine lever left is the sky: the default cubemap reads as "a default Roblox place" to two of
+four critics; a flat gradient sky (six blank faces under the Atmosphere) is the alternative the
+look pass had moved away from.
+
+### Studio round log: boss swords (2026-09-24)
+
+Frames: an Iron Lowlands fight with the Warden's Legendary in hand (`Motion:IronFight`, against
+`ps99_t138`) and the sword gallery (`Motion:SwordGallery`, against `ps99_t100`). Two critics, both
+A/B orders, 4 verdicts per frame per round. Saturation spread of the frames (cards.py's measure,
+over pixels): fight 0.21, gallery 0.21; PS99 frames 0.25-0.30.
+
+| Round | Frame | Verdict | Named gap (biggest, by count) | Fix |
+|---|---|---|---|---|
+| 1 | fight | 4-0 PS99 | desert floor one flat, washed-out, grainy beige plane (4) | floor: Terrain Sand -> Salt, the hub PATH cream |
+| 1 | gallery | 4-0 PS99 | dark navy "spreadsheet" board (4) | pale cream card, ink outline, pale bands, ink text |
+| 2 | fight | 4-0 PS99 | held blade a thin washed pink sliver (2); floor now blown out near-white, cliffs streaky (2) | not yet |
+| 2 | gallery | 4-0 PS99 | no rounded outlined card per row / title plaque (3); blades thin, white-on-white (1, and second gap in all 4) | Blender pass: every blade profile 1.30x wider, 1.35x thicker (`BLADE_WIDTH_K` / `BLADE_THICK_K`, clamped under the guard span), eight GLBs regenerated and re-imported; Neon PointLight 2.5/12 -> 1.0/8; gallery: outlined pale-blue item tile per sword, scale 1.3 |
+| 3 | fight | 4-0 PS99 | held blade still reads flat and pale: sky-white blade against the cream floor (4); mesas grainy/faceted (4, second) | not yet |
+| 3 | gallery | 4-0 PS99 | thin navy hairline tiles and small grey stat text read as a spreadsheet (3); pale blades on pale tiles (1, second in all) | not yet |
+
+Not won after three rounds on each frame. The meshes are now ~1:3 width to length (measured on
+the GLBs; they were 1:5 to 1:6) and every one was re-measured in play with the hand on the grip.
+What the critics still name is not thickness any more: (1) **contrast** -- the calm sky-white /
+ice-white / ivory blades of the five boss designs vanish against the cream desert floor and the
+cream gallery card, which are the same "calm" tint. One of the two has to give: either the boss
+blades take a mid-value body colour (a design change to `tools/blender_boss_swords.py`'s palettes,
+against the "one calm surface" rule in docs/BOSS_SWORDS.md) or the surfaces they are seen against
+stay mid-value; (2) the gallery's chrome (stat text, hairline frames, no title plate) -- a UI
+rebuild, not a colour tweak; (3) the Iron Lowlands mesa strata (Terrain Sandstone/Limestone)
+still read grainy, the same finding as the hub rounds. Known tooling fault: the
+Motion camera lock (`GuiShowcase`) never binds on the client this session ("client camera lock
+never reported ready"), so the fight frame is the follow camera; the gallery's framing is
+unaffected because its stage parks the character behind its own eye point.
+
+### Studio round log: Iron Lowlands (2026-09-24)
+
+Six showcase angles now exist for the zone (`WorldShowcase.client.luau`: WorldOasis, WorldBasin,
+WorldMesas, WorldPit, WorldWest, WorldNorth; clocks in `WorldLook`). Judged: oasis, basin, west.
+Two critics, both A/B orders, against `ps99_t048` / `ps99_t138`.
+
+| Round | Change | Verdict | Named gap (biggest, by count) |
+|---|---|---|---|
+| 1 (oasis) | as synced: Salt floor in the hub's cream, Sandstone/Limestone/Rock strata | 4-0 PS99 | sand and sky blown to near-white under a yellow haze, no shadows (3); grainy, faceted dune cliffs (1, second in all) |
+| 2 (oasis, basin, west) | floor Salt in its own warm tan (255,198,104), Sandstone and Rock strata -> Concrete in amber, PATH merged into Pavement | 12-0 PS99 | one mustard mass: floor, dunes and cliffs the same hue, shade side olive under the sky-blue shade tint (12); faceted low-poly rock (12, second) |
+| 3 (oasis, basin, west) | hue separation: floor pale warm sand (255,232,186), cliff faces coral-orange (255,132,60), crest bands pale peach (255,208,150) | 12-0 PS99 | the mesas are faceted terrain rock with dark crevices, not rounded soft-shaded forms (9 of 9 so far); the sand plane empty, and half the critics now want it a touch more saturated than pale |
+
+What the critics credit every round: the cream stucco houses with their yellow, pink, cyan and
+orange trims, the striped tents, the chunky cacti, the palm arch, the sky.
+
+Where it stands: colour and material are as far as the engine can take them. Every named gap
+left is geometry or content. (1) **The mesas, the rim scarp and the rock towers are Roblox
+Terrain**, and voxel terrain cannot be rounded or bevelled; the critics want "a few large smooth
+rounded masses", which is what the castle wall already is -- SmoothPlastic parts from
+`tools/map_forge.py`. The precedent is the hub: its terrain skirt was scrapped for the wall.
+(2) **The tent frames, lamp posts and stall props read spindly** next to the chunky houses.
+(3) **Nothing on the sand to run to**: pickups, crates, breakables, the same content note as the hub.
+| 4 | the rock as parts: `tools/map_forge.py` `desert_rockforms()` (8 mesas, 5 far mesas, 7 hoodoos, the trail arch, the hideout arch, 5 sand boulders; 324 SmoothPlastic parts, coral body, peach bands, domed tops) and `WorldTerrain` `DESERT_ROCK_PARTS` (terrain keeps sand, pools, drifts; every wall column paints as sand; rock fills and foot boulders skipped) | 12-0 PS99 | the rock is no longer named. The sand floor plus the sand bank is "one flat near-white plane filling 60-70% of the frame" (12); nothing on it to run to (12, second) |
+| 5 | sand golden peach (255, 212, 140) now the cliffs carry the coral; the floor's "bedrock showing through" patches and the deep body fill routed to sand (they were the last "orange smudges"; the sand bank's foot boulders too) | not judged | |
+
+The mesa rebuild closed its own gap: from round 4 on, no critic names the rock, and several credit
+"the banded orange mesas and hoodoos" as the frame's silhouette. What every verdict names now is
+the ground plane and what stands on it: a warmer sand (done, round 5), value steps in the dune bank,
+and props and pickups within 20-40 studs of the camera -- content, `tools/map_forge.py`.
+| 6 | dressing the sand: `desert_sand_dressing()` in `tools/map_forge.py` -- a round peach kerb along both edges of every trail segment, and 19 clusters beside the trail (coral boulders, barrel cacti, short saguaros, crate stacks, sand mounds, flower pads), placed by a clearance rule off the trail, every spawn, pool, marker, the arena and every standing prop | 12-0 PS99 | the sand plane itself: "one flat beige with no shading or value steps" (12); the kerbs read as thin pipes (4); props still sparse and thin (6). Three critics ask for saturated ground fields -- grass patches, turquoise water -- which is a theme change for a desert |
+
+Six rounds. The rock is solved, the floor is coloured, the trail is dressed, and the verdict is
+still 12-0 because a PS99 frame is a lawn full of coins and the Iron Lowlands is a desert. What is
+left is either more of the same (denser prop clusters, fatter kerbs, a tiled floor pattern on the
+sand) or a decision to give the basin saturated ground fields that are not sand -- turf and water
+around the oasis and the camp -- which changes what the zone is. The owner's call.
+

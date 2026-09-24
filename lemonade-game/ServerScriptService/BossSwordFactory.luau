@@ -242,6 +242,19 @@ local function restyleBlocks(tool, look)
 	end
 end
 
+-- Tool.Grip for a mesh Handle. The block Handle's own origin IS the grip and its blade runs
+-- along its -Z, held by BLOCK_TOOL_GRIP. A sword mesh (as Studio imports it) is centred on the whole
+-- sword with its tip at +Z and the hand SWORD_GRIP_FRAC of its length from centre toward -Z (the
+-- same point EnemyCombat welds to an enemy's hand). So: the block grip, turned end for end about
+-- Y (tip onto the block blade's -Z), and moved onto that grip point. Absolute, not compounded on
+-- the tool's current Grip, so re-running fitLook (rebuild, a length change) can never drift it.
+-- Measured in play (2026-09-24): the old compounded form put the hand mid-blade, 1.82 studs off
+-- the blade axis, with the tip pointing backward, on every one of the nine meshes.
+local BLOCK_TOOL_GRIP = CFrame.Angles(-math.pi / 2, 0, 0) -- ClassicSword / RuntimeBootstrap
+local function meshGrip(length)
+	return CFrame.new(0, 0, -CombatUtil.SWORD_GRIP_FRAC * length) * CFrame.Angles(0, math.pi, 0) * BLOCK_TOOL_GRIP
+end
+
 -- Give the tool this look: swap the Handle for the mesh the look names (or its fallback), sized
 -- to the look's length, or restyle the block parts when the look is "Blocks" / no mesh exists.
 -- Idempotent: rebuild re-runs it on every sword.
@@ -266,6 +279,7 @@ local function fitLook(tool, look)
 		CombatUtil.sizeSwordMesh(old, length)
 		if stripTexture then old.TextureID = "" end
 		CombatUtil.applyWeaponAppearance(old, look.color, look.material)
+		tool.Grip = meshGrip(length)
 		return
 	end
 	local handle = mesh:Clone()
@@ -290,14 +304,8 @@ local function fitLook(tool, look)
 	end
 	handle.Parent = tool
 	CombatUtil.applyWeaponAppearance(handle, look.color, look.material)
-	-- Tool.Grip was set up for the block Handle, whose local origin already IS the grip. A
-	-- mesh is the whole sword centred on the blade, so slide the grip point back toward the
-	-- pommel by the same fraction EnemyCombat uses to place a mesh in an enemy's hand. Guarded
-	-- so a sword forged before this fix self-heals once and never shifts twice.
-	if not tool:GetAttribute("MeshGripFixed") then
-		tool.Grip = tool.Grip * CFrame.new(0, 0, -CombatUtil.SWORD_GRIP_FRAC * length)
-		tool:SetAttribute("MeshGripFixed", true)
-	end
+	tool.Grip = meshGrip(length)
+	tool:SetAttribute("MeshGripFixed", true)
 end
 BossSwordFactory.fitLook = fitLook
 

@@ -232,7 +232,7 @@ BossWeapons.Pools = {
 --   * swords    five lesser swords, dropping at Common / Uncommon / Rare / Epic (RarityStep).
 --   * legendary the zone's RELIC: the pool's Legendary slot, one per zone, the chase a player
 --               farming normal enemies is actually farming for.
--- Bases are capped under the pool of the boss the zone leads to (IronLowlands x0.90-x1.20 under
+-- Bases are capped under the pool of the boss the zone leads to (IronLowlands x1.03-x1.27 under
 -- the Warden of the Pit's x1.30 floor; Briarwood and the Glacier under the Frost Revenant's x1.90;
 -- the Summit's x9.90-x12.16 under the Titan's best regular x13.38 -- the Summit's normals are
 -- Lv 80-92, so capping them under the Titan's FLOOR would pay the hardest ordinary enemy in the
@@ -245,17 +245,19 @@ BossWeapons.Pools = {
 -- ladder never runs backwards across a border.
 BossWeapons.NormalPools = {
 	IronLowlands = { -- Quarry Bandits, Lv 1-3
+		-- Every base beats the starter's x1.00: it used to open at x0.90, so 67% of a new player's
+		-- first spins handed back a sword worse than the one in their hand (recording 2026-09-24).
 		lesser = true, inherentBonusDmg = 0.05,
 		swords = {
-			sword("Quarry Shank", 0.90, 30, { mesh = "Sword_QuarryShank", color = rgb(255, 238, 210), material = Enum.Material.Metal, length = 3.2 },
+			sword("Quarry Shank", 1.03, 30, { mesh = "Sword_QuarryShank", color = rgb(255, 238, 210), material = Enum.Material.Metal, length = 3.2 },
 				{ inherentRange = 0.5 }, "Pit tool reground into a blade between shifts"),
-			sword("Toolhouse Cleaver", 0.97, 24, { mesh = "Sword_ToolhouseCleaver", color = rgb(255, 140, 40), material = Enum.Material.Metal, length = 3.5 },
+			sword("Toolhouse Cleaver", 1.07, 24, { mesh = "Sword_ToolhouseCleaver", color = rgb(255, 140, 40), material = Enum.Material.Metal, length = 3.5 },
 				{ inherentKnockback = 8 }, "Heavy chopper off the toolhouse wall"),
-			sword("Bandit's Machete", 1.04, 18, { mesh = "Sword_BanditsMachete", color = rgb(232, 240, 255), material = Enum.Material.Metal, length = 3.9 },
+			sword("Bandit's Machete", 1.12, 18, { mesh = "Sword_BanditsMachete", color = rgb(232, 240, 255), material = Enum.Material.Metal, length = 3.9 },
 				{ inherentRange = 0.8 }, "Long camp machete, the quarry's first real sword"),
-			sword("Rivetsteel Blade", 1.12, 13, { mesh = "Sword_RivetsteelBlade", color = rgb(232, 240, 255), material = Enum.Material.Metal, length = 3.8 },
+			sword("Rivetsteel Blade", 1.19, 13, { mesh = "Sword_RivetsteelBlade", color = rgb(232, 240, 255), material = Enum.Material.Metal, length = 3.8 },
 				{ inherentCrit = 0.03 }, "Straight blade riveted from cart plate"),
-			sword("Foreman's Longsword", 1.20, 9, { mesh = "Sword_ForemansLongsword", color = rgb(64, 144, 255), material = Enum.Material.Metal, length = 4.1 },
+			sword("Foreman's Longsword", 1.27, 9, { mesh = "Sword_ForemansLongsword", color = rgb(64, 144, 255), material = Enum.Material.Metal, length = 4.1 },
 				{ inherentRange = 1.0, inherentKnockback = 10 }, "The old foreman's own sword, kept sharp out of spite"),
 		},
 		legendary = sword("Lodestone Edge", 1.95, 0, { mesh = "Sword_LodestoneEdge", color = rgb(255, 220, 72), material = Enum.Material.Neon, length = 4.2 },
@@ -610,6 +612,27 @@ BossWeapons.ZoneNames = {
 }
 function BossWeapons.PoolName(key)
 	return BossWeapons.BossNames[key] or BossWeapons.ZoneNames[key] or key
+end
+
+-- The one-line "what is this sword" the Inventory card and the hotbar tooltip print, read from
+-- the attributes BossSwordFactory / RuntimeBootstrap stamp on the Tool. BossDrop is set on every
+-- factory sword -- zone and spin swords included -- so it cannot tell a boss's relic from a zone
+-- sword on its own (recording 2026-09-24: a spin-wheel "Sharp Quarry Shank" read "Boss relic ·
+-- tier 1"). Starter first, then Lesser (zone pools), then a real boss pool.
+function BossWeapons.SwordKind(tool)
+	if tool:GetAttribute("Starter") == true or tool.Name == "ClassicSword" then
+		return "Starter sword"
+	end
+	local poolKey = tool:GetAttribute("PoolKey")
+	if tool:GetAttribute("Lesser") == true then
+		return if typeof(poolKey) == "string" then "Zone sword · " .. BossWeapons.PoolName(poolKey) else "Zone sword"
+	end
+	if tool:GetAttribute("BossDrop") == true then
+		return if typeof(poolKey) == "string" and BossWeapons.BossNames[poolKey]
+			then "Boss relic · " .. BossWeapons.BossNames[poolKey]
+			else "Boss relic"
+	end
+	return "Sword"
 end
 
 -- THE STARTER. The ClassicSword every profile begins with is a real sword to the rest of the

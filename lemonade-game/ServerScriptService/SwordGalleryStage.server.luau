@@ -27,11 +27,16 @@ local HOLD = 240 -- [TUNING] seconds the wall stays up for the capture before th
 local ORIGIN = Vector3.new(0, 600, 0) -- high above the map so nothing built there is in shot
 local COL_STEP, ROW_STEP = 23, 6.6
 local ROWS = 7 -- swords per pool: the Legendary on top, then the six regular swords, best first
-local SWORD_SCALE, SWORD_TILT = 1.4, math.rad(-12) -- a held sword is 3.3-5.0 studs; scaled up so it reads from the camera
+local SWORD_SCALE, SWORD_TILT = 1.3, math.rad(-12) -- a held sword is 3.3-5.0 studs; 1.3 fills a 6.6-stud row (1.8 overflowed it)
 local BOSS_LEVELS = { 10, 25, 45, 70, 100 } -- WorldLayout.ZONES, by boss tier
-local BACKDROP = Color3.fromRGB(26, 28, 44)
-local LEMON = Color3.fromRGB(255, 244, 120)
-local DIM = Color3.fromRGB(200, 200, 215)
+-- PS99 chrome (sword gauntlet round 1, 2026-09-24: four blind critics out of four named the dark
+-- navy "spreadsheet" board): a pale cream card with a thick dark ink outline, pale row bands, dark
+-- ink text, and saturated colour only on the swords and the rarity accents.
+local BACKDROP = Color3.fromRGB(252, 248, 238) -- cream card
+local OUTLINE = Color3.fromRGB(44, 48, 86) -- ink
+local LEMON = Color3.fromRGB(255, 120, 40) -- headings: the timber orange accent
+local DIM = Color3.fromRGB(86, 92, 128) -- body text: soft ink
+local INK = Color3.fromRGB(34, 38, 70) -- sword names
 local FONT = Enum.Font.GothamBold
 local RARITY_HEX = {}
 for rarity, color in pairs(PanelChrome.RARITY_COLORS) do
@@ -72,9 +77,9 @@ local function label(folder, position, lines, widthPx, heightPx, align)
 		text.Size = UDim2.new(1, 0, 0, line.px)
 		text.Font = FONT
 		text.TextSize = line.px - 4
-		text.TextColor3 = line.color or Color3.new(1, 1, 1)
-		text.TextStrokeColor3 = Color3.fromRGB(10, 10, 20)
-		text.TextStrokeTransparency = 0.35
+		text.TextColor3 = line.color or INK
+		text.TextStrokeColor3 = Color3.new(1, 1, 1)
+		text.TextStrokeTransparency = 0.55
 		text.RichText = line.rich == true
 		text.Text = line.text
 		text.TextXAlignment = align or Enum.TextXAlignment.Center
@@ -130,10 +135,12 @@ GuiShowcase.stage("SwordGallery", function(ctx)
 	-- Wall, floor and a little fill light so unlit materials still read at any world clock.
 	local wallCenter = ORIGIN + Vector3.new(-2, 3.0, -3)
 	part(folder, Vector3.new(COL_STEP * 5 + 14, ROW_STEP * ROWS + 20, 1), CFrame.new(wallCenter), BACKDROP)
+	-- The thick ink outline: a slightly larger ink slab just behind the card.
+	part(folder, Vector3.new(COL_STEP * 5 + 15.6, ROW_STEP * ROWS + 21.6, 1), CFrame.new(wallCenter + Vector3.new(0, 0, -0.6)), OUTLINE)
 	for _, x in ipairs({ -40, 0, 40 }) do
 		local lamp = part(folder, Vector3.new(0.2, 0.2, 0.2), CFrame.new(ORIGIN + Vector3.new(x, 4, 16)), BACKDROP, nil, 1)
 		local light = Instance.new("PointLight")
-		light.Brightness = 1.2
+		light.Brightness = 0.5 -- a pale card needs far less fill than the old dark wall
 		light.Range = 70
 		light.Shadows = false
 		light.Parent = lamp
@@ -159,11 +166,11 @@ GuiShowcase.stage("SwordGallery", function(ctx)
 		}, 300, 42)
 	end
 
-	-- Row bands: gold for the Legendary row, alternating dark for the regular swords.
+	-- Row bands: gold for the Legendary row, alternating pale sky and pale lavender for the rest.
 	for row = 1, ROWS do
 		local y = (4 - row) * ROW_STEP
-		local color = row == 1 and PanelChrome.RARITY_COLORS.Legendary or (row % 2 == 0 and Color3.fromRGB(70, 74, 100) or Color3.fromRGB(52, 56, 82))
-		part(folder, Vector3.new(COL_STEP * 5 + 4, ROW_STEP - 0.5, 0.3), CFrame.new(ORIGIN + Vector3.new(-2, y, -1.5)), color, nil, row == 1 and 0.8 or 0.55)
+		local color = row == 1 and PanelChrome.RARITY_COLORS.Legendary or (row % 2 == 0 and Color3.fromRGB(226, 238, 255) or Color3.fromRGB(240, 234, 255))
+		part(folder, Vector3.new(COL_STEP * 5 + 4, ROW_STEP - 0.5, 0.3), CFrame.new(ORIGIN + Vector3.new(-2, y, -1.5)), color, nil, row == 1 and 0.55 or 0)
 	end
 
 	-- The roster itself: one real build per pool sword, straight from BossSwordFactory.
@@ -189,10 +196,22 @@ GuiShowcase.stage("SwordGallery", function(ctx)
 				-- Stand it up: tip (-Z in the sword's own space) up, broad face (X) toward the camera.
 				local upright = CFrame.new(center) * CFrame.Angles(0, 0, SWORD_TILT)
 					* CFrame.fromMatrix(Vector3.zero, Vector3.new(0, 0, 1), Vector3.new(-1, 0, 0), Vector3.new(0, -1, 0))
+				-- A sword MeshPart as Studio imports it has its tip at +Z (the block sword's is at -Z), so
+				-- turn a mesh end for end, or it stands on its tip (Studio check, 2026-09-24).
+				if model.PrimaryPart and model.PrimaryPart:IsA("MeshPart") then
+					upright = upright * CFrame.Angles(0, math.pi, 0)
+				end
 				model:PivotTo(upright)
 				model:ScaleTo(SWORD_SCALE)
 				local box = model:GetBoundingBox()
 				model:PivotTo(model:GetPivot() + (center + Vector3.new(-10.3, 0, 0) - box.Position))
+				-- The item tile (sword gauntlet round 2: "no outlined tile per row", and white blades lost on
+				-- the cream card): a pale sky-blue slot with an ink outline behind each sword, gold-tinted
+				-- on the Legendary row, so every pale blade has a colour to stand against.
+				local tile = center + Vector3.new(-10.3, 0, -0.7)
+				part(folder, Vector3.new(5.6, ROW_STEP - 1.0, 0.2), CFrame.new(tile + Vector3.new(0, 0, -0.15)), OUTLINE)
+				part(folder, Vector3.new(5.0, ROW_STEP - 1.6, 0.2), CFrame.new(tile),
+					row == 1 and Color3.fromRGB(255, 226, 150) or Color3.fromRGB(190, 222, 255))
 				placed += 1
 			else
 				table.insert(missing, entry.name)
@@ -207,14 +226,16 @@ GuiShowcase.stage("SwordGallery", function(ctx)
 			else
 				local r = entry.rarities
 				lines = {
-					{ text = entry.name, px = 21, color = Color3.new(1, 1, 1) },
+					{ text = entry.name, px = 21, color = INK },
 					{ text = string.format('<font color="%s">C %.2f</font>  <font color="%s">U %.2f</font>  <font color="%s">R %.2f</font>  <font color="%s">E %.2f</font>',
 						RARITY_HEX.Common, r.Common, RARITY_HEX.Uncommon, r.Uncommon, RARITY_HEX.Rare, r.Rare, RARITY_HEX.Epic, r.Epic), px = 17, rich = true },
 					{ text = string.format("weight %d of 100 regular drops", entry.weight), px = 15, color = DIM },
 				}
 			end
-			-- A 290 px billboard is ~19.6 studs wide from this camera; anchored so its left edge clears the blade.
-			label(folder, center + Vector3.new(1.2, 0, 0.6), lines, 290, 58, Enum.TextXAlignment.Left)
+			-- A 245 px billboard is ~16.6 studs wide from this camera, so its left edge sits ~5.7 studs left of centre.
+			-- Narrower and a little right of centre so the text clears the sword: the new blades are
+			-- chunkier than the ones this board was spaced for (Studio check, 2026-09-24).
+			label(folder, center + Vector3.new(3.6, 0, 0.6), lines, 235, 58, Enum.TextXAlignment.Left)
 		end
 	end
 	print(string.format("[SwordGalleryStage] placed %d of %d swords%s", placed, BossWeapons.CountSwords(),

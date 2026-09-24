@@ -1241,7 +1241,8 @@ local function updateTracker()
 		return
 	end
 
-	trackerFrame.Visible = true
+	-- Stepped aside while the spin board is up: both live on the right of the screen there.
+	trackerFrame.Visible = player:GetAttribute("SpinBoardOpen") ~= true
 	questNameLabel.Text = string.format("Quest %d · %s", quest.index, quest.name)
 	questDescLabel.Text = getObjectiveHeadline(quest)
 	local frac, countText = getProgressCounts(quest, progress)
@@ -1524,6 +1525,7 @@ end
 player:GetAttributeChangedSignal("ActiveQuestId"):Connect(syncFromAttributes)
 player:GetAttributeChangedSignal("QuestProgress"):Connect(syncFromAttributes)
 player:GetAttributeChangedSignal("CompletedQuests"):Connect(updateTracker)
+player:GetAttributeChangedSignal("SpinBoardOpen"):Connect(updateTracker)
 
 -- Initial sync
 syncFromAttributes()

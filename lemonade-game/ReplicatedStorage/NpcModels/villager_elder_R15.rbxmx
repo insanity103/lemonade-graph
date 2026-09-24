@@ -3263,154 +3263,6 @@
         </Properties>
       </Item>
     </Item>
-    <Item class="Part" referent="P_shawl">
-      <Properties>
-        <string name="Name">shawl</string>
-        <bool name="Anchored">false</bool>
-        <bool name="CanCollide">false</bool>
-        <bool name="CanTouch">false</bool>
-        <bool name="Massless">true</bool>
-        <int name="RootPriority">0</int>
-        <float name="Transparency">0</float>
-        <token name="shape">1</token>
-        <token name="Material">272</token>
-        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
-        <Vector3 name="size">
-          <X>1.9928</X>
-          <Y>0.47</Y>
-          <Z>1.0152</Z>
-        </Vector3>
-        <CoordinateFrame name="CFrame">
-          <X>0</X>
-          <Y>3.4498</Y>
-          <Z>-0</Z>
-          <R00>1</R00>
-          <R01>0</R01>
-          <R02>0</R02>
-          <R10>0</R10>
-          <R11>1</R11>
-          <R12>0</R12>
-          <R20>0</R20>
-          <R21>0</R21>
-          <R22>1</R22>
-        </CoordinateFrame>
-        <token name="TopSurface">0</token>
-        <token name="BottomSurface">0</token>
-        <token name="LeftSurface">0</token>
-        <token name="RightSurface">0</token>
-        <token name="FrontSurface">0</token>
-        <token name="BackSurface">0</token>
-      </Properties>
-      <Item class="Weld" referent="W_shawl">
-        <Properties>
-          <string name="Name">OutfitWeld</string>
-          <Ref name="Part0">P_UpperTorso</Ref>
-          <Ref name="Part1">P_shawl</Ref>
-          <CoordinateFrame name="C0">
-            <X>0</X>
-            <Y>0.3008</Y>
-            <Z>-0</Z>
-            <R00>1</R00>
-            <R01>0</R01>
-            <R02>0</R02>
-            <R10>0</R10>
-            <R11>1</R11>
-            <R12>0</R12>
-            <R20>0</R20>
-            <R21>0</R21>
-            <R22>1</R22>
-          </CoordinateFrame>
-          <CoordinateFrame name="C1">
-            <X>0</X>
-            <Y>0</Y>
-            <Z>0</Z>
-            <R00>1</R00>
-            <R01>0</R01>
-            <R02>0</R02>
-            <R10>0</R10>
-            <R11>1</R11>
-            <R12>0</R12>
-            <R20>0</R20>
-            <R21>0</R21>
-            <R22>1</R22>
-          </CoordinateFrame>
-        </Properties>
-      </Item>
-    </Item>
-    <Item class="Part" referent="P_shawl_back">
-      <Properties>
-        <string name="Name">shawl_back</string>
-        <bool name="Anchored">false</bool>
-        <bool name="CanCollide">false</bool>
-        <bool name="CanTouch">false</bool>
-        <bool name="Massless">true</bool>
-        <int name="RootPriority">0</int>
-        <float name="Transparency">0</float>
-        <token name="shape">1</token>
-        <token name="Material">272</token>
-        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
-        <Vector3 name="size">
-          <X>1.9364</X>
-          <Y>1.1562</Y>
-          <Z>0.1128</Z>
-        </Vector3>
-        <CoordinateFrame name="CFrame">
-          <X>0</X>
-          <Y>2.9986</Y>
-          <Z>0.5546</Z>
-          <R00>1</R00>
-          <R01>0</R01>
-          <R02>0</R02>
-          <R10>0</R10>
-          <R11>1</R11>
-          <R12>0</R12>
-          <R20>0</R20>
-          <R21>0</R21>
-          <R22>1</R22>
-        </CoordinateFrame>
-        <token name="TopSurface">0</token>
-        <token name="BottomSurface">0</token>
-        <token name="LeftSurface">0</token>
-        <token name="RightSurface">0</token>
-        <token name="FrontSurface">0</token>
-        <token name="BackSurface">0</token>
-      </Properties>
-      <Item class="Weld" referent="W_shawl_back">
-        <Properties>
-          <string name="Name">OutfitWeld</string>
-          <Ref name="Part0">P_UpperTorso</Ref>
-          <Ref name="Part1">P_shawl_back</Ref>
-          <CoordinateFrame name="C0">
-            <X>0</X>
-            <Y>-0.1504</Y>
-            <Z>0.5546</Z>
-            <R00>1</R00>
-            <R01>0</R01>
-            <R02>0</R02>
-            <R10>0</R10>
-            <R11>1</R11>
-            <R12>0</R12>
-            <R20>0</R20>
-            <R21>0</R21>
-            <R22>1</R22>
-          </CoordinateFrame>
-          <CoordinateFrame name="C1">
-            <X>0</X>
-            <Y>0</Y>
-            <Z>0</Z>
-            <R00>1</R00>
-            <R01>0</R01>
-            <R02>0</R02>
-            <R10>0</R10>
-            <R11>1</R11>
-            <R12>0</R12>
-            <R20>0</R20>
-            <R21>0</R21>
-            <R22>1</R22>
-          </CoordinateFrame>
-        </Properties>
-      </Item>
-    </Item>
     <Item class="Part" referent="P_cap">
       <Properties>
         <string name="Name">cap</string>
@@ -3722,6 +3574,3177 @@
       <Item class="Animator" referent="ANIMATOR">
         <Properties>
           <string name="Name">Animator</string>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_boot_shaft_Left">
+      <Properties>
+        <string name="Name">GL_boot_shaft_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4282724383</Color3uint8>
+        <Vector3 name="size">
+          <X>0.9024</X>
+          <Y>0.6016</Y>
+          <Z>0.893</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.47</X>
+          <Y>0.658</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_boot_shaft_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_LeftLowerLeg</Ref>
+          <Ref name="Part1">P_GL_boot_shaft_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.0235</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_boot_cuff_Left">
+      <Properties>
+        <string name="Name">GL_boot_cuff_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.9541</X>
+          <Y>0.1316</Y>
+          <Z>0.94</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.47</X>
+          <Y>0.9494</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_boot_cuff_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_LeftLowerLeg</Ref>
+          <Ref name="Part1">P_GL_boot_cuff_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.2679</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_boot_sole_Left">
+      <Properties>
+        <string name="Name">GL_boot_sole_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4281017120</Color3uint8>
+        <Vector3 name="size">
+          <X>0.94</X>
+          <Y>0.0846</Y>
+          <Z>1.1562</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.47</X>
+          <Y>0.0329</Y>
+          <Z>-0.094</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_boot_sole_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_LeftFoot</Ref>
+          <Ref name="Part1">P_GL_boot_sole_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.1081</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_boot_toe_Left">
+      <Properties>
+        <string name="Name">GL_boot_toe_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4282724383</Color3uint8>
+        <Vector3 name="size">
+          <X>0.9024</X>
+          <Y>0.141</Y>
+          <Z>0.5264</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.47</X>
+          <Y>0.2068</Y>
+          <Z>-0.4136</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_boot_toe_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_LeftFoot</Ref>
+          <Ref name="Part1">P_GL_boot_toe_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.0658</Y>
+            <Z>-0.3196</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_boot_shaft_Right">
+      <Properties>
+        <string name="Name">GL_boot_shaft_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4282724383</Color3uint8>
+        <Vector3 name="size">
+          <X>0.9024</X>
+          <Y>0.6016</Y>
+          <Z>0.893</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.47</X>
+          <Y>0.658</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_boot_shaft_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_RightLowerLeg</Ref>
+          <Ref name="Part1">P_GL_boot_shaft_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.0235</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_boot_cuff_Right">
+      <Properties>
+        <string name="Name">GL_boot_cuff_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.9541</X>
+          <Y>0.1316</Y>
+          <Z>0.94</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.47</X>
+          <Y>0.9494</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_boot_cuff_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_RightLowerLeg</Ref>
+          <Ref name="Part1">P_GL_boot_cuff_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.2679</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_boot_sole_Right">
+      <Properties>
+        <string name="Name">GL_boot_sole_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4281017120</Color3uint8>
+        <Vector3 name="size">
+          <X>0.94</X>
+          <Y>0.0846</Y>
+          <Z>1.1562</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.47</X>
+          <Y>0.0329</Y>
+          <Z>-0.094</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_boot_sole_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_RightFoot</Ref>
+          <Ref name="Part1">P_GL_boot_sole_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.1081</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_boot_toe_Right">
+      <Properties>
+        <string name="Name">GL_boot_toe_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4282724383</Color3uint8>
+        <Vector3 name="size">
+          <X>0.9024</X>
+          <Y>0.141</Y>
+          <Z>0.5264</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.47</X>
+          <Y>0.2068</Y>
+          <Z>-0.4136</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_boot_toe_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_RightFoot</Ref>
+          <Ref name="Part1">P_GL_boot_toe_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.0658</Y>
+            <Z>-0.3196</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_sleeve_binding_Left">
+      <Properties>
+        <string name="Name">GL_sleeve_binding_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.8742</X>
+          <Y>0.1222</Y>
+          <Z>0.9024</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-1.3912</X>
+          <Y>2.9328</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_sleeve_binding_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_LeftUpperArm</Ref>
+          <Ref name="Part1">P_GL_sleeve_binding_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.3572</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_wrist_binding_Left">
+      <Properties>
+        <string name="Name">GL_wrist_binding_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.846</X>
+          <Y>0.1222</Y>
+          <Z>0.8554</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-1.3912</X>
+          <Y>2.2372</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_wrist_binding_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_LeftLowerArm</Ref>
+          <Ref name="Part1">P_GL_wrist_binding_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.2773</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_sleeve_binding_Right">
+      <Properties>
+        <string name="Name">GL_sleeve_binding_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.8742</X>
+          <Y>0.1222</Y>
+          <Z>0.9024</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.3912</X>
+          <Y>2.9328</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_sleeve_binding_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_RightUpperArm</Ref>
+          <Ref name="Part1">P_GL_sleeve_binding_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.3572</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_wrist_binding_Right">
+      <Properties>
+        <string name="Name">GL_wrist_binding_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.846</X>
+          <Y>0.1222</Y>
+          <Z>0.8554</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.3912</X>
+          <Y>2.2372</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_wrist_binding_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_RightLowerArm</Ref>
+          <Ref name="Part1">P_GL_wrist_binding_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.2773</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_collar_back">
+      <Properties>
+        <string name="Name">GL_collar_back</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>1.1468</X>
+          <Y>0.2444</Y>
+          <Z>0.1504</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>3.6848</Y>
+          <Z>0.4042</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_collar_back">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_collar_back</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.5358</Y>
+            <Z>0.4042</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_collar_-1">
+      <Properties>
+        <string name="Name">GL_collar_-1</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.0752</X>
+          <Y>0.3102</Y>
+          <Z>0.423</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.2726</X>
+          <Y>3.572</Y>
+          <Z>-0.5358</Z>
+          <R00>0</R00>
+          <R01>0</R01>
+          <R02>1</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>-1</R20>
+          <R21>0</R21>
+          <R22>0</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_collar_-1">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_collar_-1</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.2726</X>
+            <Y>0.423</Y>
+            <Z>-0.5358</Z>
+            <R00>0</R00>
+            <R01>0</R01>
+            <R02>1</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>-1</R20>
+            <R21>0</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="SpecialMesh" referent="M_GL_collar_-1">
+        <Properties>
+          <string name="Name">TailoredWedge</string>
+          <token name="MeshType">2</token>
+          <Vector3 name="Scale">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_collar_1">
+      <Properties>
+        <string name="Name">GL_collar_1</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.0752</X>
+          <Y>0.3102</Y>
+          <Z>0.423</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.2726</X>
+          <Y>3.572</Y>
+          <Z>-0.5358</Z>
+          <R00>0</R00>
+          <R01>0</R01>
+          <R02>-1</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>1</R20>
+          <R21>0</R21>
+          <R22>0</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_collar_1">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_collar_1</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.2726</X>
+            <Y>0.423</Y>
+            <Z>-0.5358</Z>
+            <R00>0</R00>
+            <R01>0</R01>
+            <R02>-1</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>1</R20>
+            <R21>0</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="SpecialMesh" referent="M_GL_collar_1">
+        <Properties>
+          <string name="Name">TailoredWedge</string>
+          <token name="MeshType">2</token>
+          <Vector3 name="Scale">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_coat_front_Left">
+      <Properties>
+        <string name="Name">GL_coat_front_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.6016</X>
+          <Y>1.034</Y>
+          <Z>0.094</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.5922</X>
+          <Y>3.0268</Y>
+          <Z>-0.50948</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_coat_front_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_coat_front_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.5922</X>
+            <Y>-0.1222</Y>
+            <Z>-0.50948</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_lapel_Left">
+      <Properties>
+        <string name="Name">GL_lapel_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>0.0752</X>
+          <Y>0.611</Y>
+          <Z>0.3572</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.3666</X>
+          <Y>3.3746</Y>
+          <Z>-0.58468</Z>
+          <R00>0</R00>
+          <R01>0</R01>
+          <R02>1</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>-1</R20>
+          <R21>0</R21>
+          <R22>0</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_lapel_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_lapel_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.3666</X>
+            <Y>0.2256</Y>
+            <Z>-0.58468</Z>
+            <R00>0</R00>
+            <R01>0</R01>
+            <R02>1</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>-1</R20>
+            <R21>0</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="SpecialMesh" referent="M_GL_lapel_Left">
+        <Properties>
+          <string name="Name">TailoredWedge</string>
+          <token name="MeshType">2</token>
+          <Vector3 name="Scale">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_lapel_piping_Left">
+      <Properties>
+        <string name="Name">GL_lapel_piping_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4291404604</Color3uint8>
+        <Vector3 name="size">
+          <X>0.03572</X>
+          <Y>0.62726954</Y>
+          <Z>0.0423</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.3807</X>
+          <Y>3.3746</Y>
+          <Z>-0.6298</Z>
+          <R00>-0.86916383</R00>
+          <R01>-0.49452425</R01>
+          <R02>0</R02>
+          <R10>0.49452425</R10>
+          <R11>-0.86916383</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_lapel_piping_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_lapel_piping_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.3807</X>
+            <Y>0.2256</Y>
+            <Z>-0.6298</Z>
+            <R00>-0.86916383</R00>
+            <R01>-0.49452425</R01>
+            <R02>0</R02>
+            <R10>0.49452425</R10>
+            <R11>-0.86916383</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_coat_side_Left">
+      <Properties>
+        <string name="Name">GL_coat_side_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.1316</X>
+          <Y>1.0528</Y>
+          <Z>0.9212</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.9212</X>
+          <Y>2.9986</Y>
+          <Z>0.0564</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_coat_side_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_coat_side_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.9212</X>
+            <Y>-0.1504</Y>
+            <Z>0.0564</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_coat_skirt_Left">
+      <Properties>
+        <string name="Name">GL_coat_skirt_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.8366</X>
+          <Y>0.7614</Y>
+          <Z>0.9682</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.5922</X>
+          <Y>1.6638</Y>
+          <Z>0.235</Z>
+          <R00>0.9945219</R00>
+          <R01>0.10452846</R01>
+          <R02>0</R02>
+          <R10>-0.10452846</R10>
+          <R11>0.9945219</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_coat_skirt_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_LeftUpperLeg</Ref>
+          <Ref name="Part1">P_GL_coat_skirt_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.1222</X>
+            <Y>0.1128</Y>
+            <Z>0.235</Z>
+            <R00>0.9945219</R00>
+            <R01>0.10452846</R01>
+            <R02>0</R02>
+            <R10>-0.10452846</R10>
+            <R11>0.9945219</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_skirt_front_Left">
+      <Properties>
+        <string name="Name">GL_skirt_front_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>0.564</X>
+          <Y>0.7144</Y>
+          <Z>0.094</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.7238</X>
+          <Y>1.6826</Y>
+          <Z>-0.5311</Z>
+          <R00>0.9945219</R00>
+          <R01>0.10452846</R01>
+          <R02>0</R02>
+          <R10>-0.10452846</R10>
+          <R11>0.9945219</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_skirt_front_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_LeftUpperLeg</Ref>
+          <Ref name="Part1">P_GL_skirt_front_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.2538</X>
+            <Y>0.1316</Y>
+            <Z>-0.5311</Z>
+            <R00>0.9945219</R00>
+            <R01>0.10452846</R01>
+            <R02>0</R02>
+            <R10>-0.10452846</R10>
+            <R11>0.9945219</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_skirt_edge_Left">
+      <Properties>
+        <string name="Name">GL_skirt_edge_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4291404604</Color3uint8>
+        <Vector3 name="size">
+          <X>0.0376</X>
+          <Y>0.67536236</Y>
+          <Z>0.0423</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.5499</X>
+          <Y>1.6685</Y>
+          <Z>-0.5969</Z>
+          <R00>-0.98821024</R00>
+          <R01>-0.15310299</R01>
+          <R02>0</R02>
+          <R10>0.15310299</R10>
+          <R11>-0.98821024</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_skirt_edge_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_LeftUpperLeg</Ref>
+          <Ref name="Part1">P_GL_skirt_edge_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.0799</X>
+            <Y>0.1175</Y>
+            <Z>-0.5969</Z>
+            <R00>-0.98821024</R00>
+            <R01>-0.15310299</R01>
+            <R02>0</R02>
+            <R10>0.15310299</R10>
+            <R11>-0.98821024</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_skirt_tail_Left">
+      <Properties>
+        <string name="Name">GL_skirt_tail_Left</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>0.0752</X>
+          <Y>0.2256</Y>
+          <Z>0.4794</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.8178</X>
+          <Y>1.2878</Y>
+          <Z>-0.5311</Z>
+          <R00>0</R00>
+          <R01>0</R01>
+          <R02>1</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>-1</R20>
+          <R21>0</R21>
+          <R22>0</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_skirt_tail_Left">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_LeftUpperLeg</Ref>
+          <Ref name="Part1">P_GL_skirt_tail_Left</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.3478</X>
+            <Y>-0.2632</Y>
+            <Z>-0.5311</Z>
+            <R00>0</R00>
+            <R01>0</R01>
+            <R02>1</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>-1</R20>
+            <R21>0</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="SpecialMesh" referent="M_GL_skirt_tail_Left">
+        <Properties>
+          <string name="Name">TailoredWedge</string>
+          <token name="MeshType">2</token>
+          <Vector3 name="Scale">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_coat_front_Right">
+      <Properties>
+        <string name="Name">GL_coat_front_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.6016</X>
+          <Y>1.034</Y>
+          <Z>0.094</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.5922</X>
+          <Y>3.0268</Y>
+          <Z>-0.50948</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_coat_front_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_coat_front_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.5922</X>
+            <Y>-0.1222</Y>
+            <Z>-0.50948</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_lapel_Right">
+      <Properties>
+        <string name="Name">GL_lapel_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>0.0752</X>
+          <Y>0.611</Y>
+          <Z>0.3572</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.3666</X>
+          <Y>3.3746</Y>
+          <Z>-0.58468</Z>
+          <R00>0</R00>
+          <R01>0</R01>
+          <R02>-1</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>1</R20>
+          <R21>0</R21>
+          <R22>0</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_lapel_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_lapel_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.3666</X>
+            <Y>0.2256</Y>
+            <Z>-0.58468</Z>
+            <R00>0</R00>
+            <R01>0</R01>
+            <R02>-1</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>1</R20>
+            <R21>0</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="SpecialMesh" referent="M_GL_lapel_Right">
+        <Properties>
+          <string name="Name">TailoredWedge</string>
+          <token name="MeshType">2</token>
+          <Vector3 name="Scale">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_lapel_piping_Right">
+      <Properties>
+        <string name="Name">GL_lapel_piping_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4291404604</Color3uint8>
+        <Vector3 name="size">
+          <X>0.03572</X>
+          <Y>0.62726954</Y>
+          <Z>0.0423</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.3807</X>
+          <Y>3.3746</Y>
+          <Z>-0.6298</Z>
+          <R00>-0.86916383</R00>
+          <R01>0.49452425</R01>
+          <R02>0</R02>
+          <R10>-0.49452425</R10>
+          <R11>-0.86916383</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_lapel_piping_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_lapel_piping_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.3807</X>
+            <Y>0.2256</Y>
+            <Z>-0.6298</Z>
+            <R00>-0.86916383</R00>
+            <R01>0.49452425</R01>
+            <R02>0</R02>
+            <R10>-0.49452425</R10>
+            <R11>-0.86916383</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_coat_side_Right">
+      <Properties>
+        <string name="Name">GL_coat_side_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.1316</X>
+          <Y>1.0528</Y>
+          <Z>0.9212</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.9212</X>
+          <Y>2.9986</Y>
+          <Z>0.0564</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_coat_side_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_coat_side_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.9212</X>
+            <Y>-0.1504</Y>
+            <Z>0.0564</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_coat_skirt_Right">
+      <Properties>
+        <string name="Name">GL_coat_skirt_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>0.8366</X>
+          <Y>0.7614</Y>
+          <Z>0.9682</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.5922</X>
+          <Y>1.6638</Y>
+          <Z>0.235</Z>
+          <R00>0.9945219</R00>
+          <R01>-0.10452846</R01>
+          <R02>0</R02>
+          <R10>0.10452846</R10>
+          <R11>0.9945219</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_coat_skirt_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_RightUpperLeg</Ref>
+          <Ref name="Part1">P_GL_coat_skirt_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.1222</X>
+            <Y>0.1128</Y>
+            <Z>0.235</Z>
+            <R00>0.9945219</R00>
+            <R01>-0.10452846</R01>
+            <R02>0</R02>
+            <R10>0.10452846</R10>
+            <R11>0.9945219</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_skirt_front_Right">
+      <Properties>
+        <string name="Name">GL_skirt_front_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>0.564</X>
+          <Y>0.7144</Y>
+          <Z>0.094</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.7238</X>
+          <Y>1.6826</Y>
+          <Z>-0.5311</Z>
+          <R00>0.9945219</R00>
+          <R01>-0.10452846</R01>
+          <R02>0</R02>
+          <R10>0.10452846</R10>
+          <R11>0.9945219</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_skirt_front_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_RightUpperLeg</Ref>
+          <Ref name="Part1">P_GL_skirt_front_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.2538</X>
+            <Y>0.1316</Y>
+            <Z>-0.5311</Z>
+            <R00>0.9945219</R00>
+            <R01>-0.10452846</R01>
+            <R02>0</R02>
+            <R10>0.10452846</R10>
+            <R11>0.9945219</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_skirt_edge_Right">
+      <Properties>
+        <string name="Name">GL_skirt_edge_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4291404604</Color3uint8>
+        <Vector3 name="size">
+          <X>0.0376</X>
+          <Y>0.67536236</Y>
+          <Z>0.0423</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.5499</X>
+          <Y>1.6685</Y>
+          <Z>-0.5969</Z>
+          <R00>-0.98821024</R00>
+          <R01>0.15310299</R01>
+          <R02>0</R02>
+          <R10>-0.15310299</R10>
+          <R11>-0.98821024</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_skirt_edge_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_RightUpperLeg</Ref>
+          <Ref name="Part1">P_GL_skirt_edge_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.0799</X>
+            <Y>0.1175</Y>
+            <Z>-0.5969</Z>
+            <R00>-0.98821024</R00>
+            <R01>0.15310299</R01>
+            <R02>0</R02>
+            <R10>-0.15310299</R10>
+            <R11>-0.98821024</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_skirt_tail_Right">
+      <Properties>
+        <string name="Name">GL_skirt_tail_Right</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>0.0752</X>
+          <Y>0.2256</Y>
+          <Z>0.4794</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.8178</X>
+          <Y>1.2878</Y>
+          <Z>-0.5311</Z>
+          <R00>0</R00>
+          <R01>0</R01>
+          <R02>-1</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>1</R20>
+          <R21>0</R21>
+          <R22>0</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_skirt_tail_Right">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_RightUpperLeg</Ref>
+          <Ref name="Part1">P_GL_skirt_tail_Right</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.3478</X>
+            <Y>-0.2632</Y>
+            <Z>-0.5311</Z>
+            <R00>0</R00>
+            <R01>0</R01>
+            <R02>-1</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>1</R20>
+            <R21>0</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+      <Item class="SpecialMesh" referent="M_GL_skirt_tail_Right">
+        <Properties>
+          <string name="Name">TailoredWedge</string>
+          <token name="MeshType">2</token>
+          <Vector3 name="Scale">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_coat_back">
+      <Properties>
+        <string name="Name">GL_coat_back</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4285352752</Color3uint8>
+        <Vector3 name="size">
+          <X>1.8612</X>
+          <Y>1.0998</Y>
+          <Z>0.1034</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2.9986</Y>
+          <Z>0.5076</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_coat_back">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_coat_back</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.1504</Y>
+            <Z>0.5076</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_back_waist_seam">
+      <Properties>
+        <string name="Name">GL_back_waist_seam</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>1.6732</X>
+          <Y>0.0423</Y>
+          <Z>0.0423</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2.6132</Y>
+          <Z>0.57622</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_back_waist_seam">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_back_waist_seam</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-0.5358</Y>
+            <Z>0.57622</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_shawl_shoulder_-1">
+      <Properties>
+        <string name="Name">GL_shawl_shoulder_-1</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>0.6016</X>
+          <Y>0.235</Y>
+          <Z>1.081</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.8366</X>
+          <Y>3.6096</Y>
+          <Z>0.0094</Z>
+          <R00>0.97437006</R00>
+          <R01>0.22495105</R01>
+          <R02>0</R02>
+          <R10>-0.22495105</R10>
+          <R11>0.97437006</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_shawl_shoulder_-1">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_shawl_shoulder_-1</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.8366</X>
+            <Y>0.4606</Y>
+            <Z>0.0094</Z>
+            <R00>0.97437006</R00>
+            <R01>0.22495105</R01>
+            <R02>0</R02>
+            <R10>-0.22495105</R10>
+            <R11>0.97437006</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_shawl_front_-1">
+      <Properties>
+        <string name="Name">GL_shawl_front_-1</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>0.4418</X>
+          <Y>1.0152</Y>
+          <Z>0.094</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.6486</X>
+          <Y>3.149</Y>
+          <Z>-0.611</Z>
+          <R00>0.9781476</R00>
+          <R01>0.20791169</R01>
+          <R02>0</R02>
+          <R10>-0.20791169</R10>
+          <R11>0.9781476</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_shawl_front_-1">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_shawl_front_-1</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.6486</X>
+            <Y>0</Y>
+            <Z>-0.611</Z>
+            <R00>0.9781476</R00>
+            <R01>0.20791169</R01>
+            <R02>0</R02>
+            <R10>-0.20791169</R10>
+            <R11>0.9781476</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_shawl_edge_-1">
+      <Properties>
+        <string name="Name">GL_shawl_edge_-1</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4288389500</Color3uint8>
+        <Vector3 name="size">
+          <X>0.04512</X>
+          <Y>0.94412694</Y>
+          <Z>0.0423</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.4606</X>
+          <Y>3.1396</Y>
+          <Z>-0.68056</Z>
+          <R00>-0.97571625</R00>
+          <R01>-0.21903834</R01>
+          <R02>0</R02>
+          <R10>0.21903834</R10>
+          <R11>-0.97571625</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_shawl_edge_-1">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_shawl_edge_-1</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.4606</X>
+            <Y>-0.0094</Y>
+            <Z>-0.68056</Z>
+            <R00>-0.97571625</R00>
+            <R01>-0.21903834</R01>
+            <R02>0</R02>
+            <R10>0.21903834</R10>
+            <R11>-0.97571625</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_shawl_shoulder_1">
+      <Properties>
+        <string name="Name">GL_shawl_shoulder_1</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>0.6016</X>
+          <Y>0.235</Y>
+          <Z>1.081</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.8366</X>
+          <Y>3.6096</Y>
+          <Z>0.0094</Z>
+          <R00>0.97437006</R00>
+          <R01>-0.22495105</R01>
+          <R02>0</R02>
+          <R10>0.22495105</R10>
+          <R11>0.97437006</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_shawl_shoulder_1">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_shawl_shoulder_1</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.8366</X>
+            <Y>0.4606</Y>
+            <Z>0.0094</Z>
+            <R00>0.97437006</R00>
+            <R01>-0.22495105</R01>
+            <R02>0</R02>
+            <R10>0.22495105</R10>
+            <R11>0.97437006</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_shawl_front_1">
+      <Properties>
+        <string name="Name">GL_shawl_front_1</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>0.4418</X>
+          <Y>1.0152</Y>
+          <Z>0.094</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.6486</X>
+          <Y>3.149</Y>
+          <Z>-0.611</Z>
+          <R00>0.9781476</R00>
+          <R01>-0.20791169</R01>
+          <R02>0</R02>
+          <R10>0.20791169</R10>
+          <R11>0.9781476</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_shawl_front_1">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_shawl_front_1</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.6486</X>
+            <Y>0</Y>
+            <Z>-0.611</Z>
+            <R00>0.9781476</R00>
+            <R01>-0.20791169</R01>
+            <R02>0</R02>
+            <R10>0.20791169</R10>
+            <R11>0.9781476</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_shawl_edge_1">
+      <Properties>
+        <string name="Name">GL_shawl_edge_1</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4288389500</Color3uint8>
+        <Vector3 name="size">
+          <X>0.04512</X>
+          <Y>0.94412694</Y>
+          <Z>0.0423</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0.4606</X>
+          <Y>3.1396</Y>
+          <Z>-0.68056</Z>
+          <R00>-0.97571625</R00>
+          <R01>0.21903834</R01>
+          <R02>0</R02>
+          <R10>-0.21903834</R10>
+          <R11>-0.97571625</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_shawl_edge_1">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_shawl_edge_1</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.4606</X>
+            <Y>-0.0094</Y>
+            <Z>-0.68056</Z>
+            <R00>-0.97571625</R00>
+            <R01>0.21903834</R01>
+            <R02>0</R02>
+            <R10>-0.21903834</R10>
+            <R11>-0.97571625</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_shawl_back">
+      <Properties>
+        <string name="Name">GL_shawl_back</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">256</token>
+        <Color3uint8 name="Color3uint8">4284313926</Color3uint8>
+        <Vector3 name="size">
+          <X>1.9928</X>
+          <Y>0.8648</Y>
+          <Z>0.141</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>3.2524</Y>
+          <Z>0.611</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_shawl_back">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_shawl_back</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.1034</Y>
+            <Z>0.611</Z>
+            <R00>1</R00>
+            <R01>-0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="P_GL_shawl_brooch">
+      <Properties>
+        <string name="Name">GL_shawl_brooch</string>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <int name="RootPriority">0</int>
+        <float name="Transparency">0</float>
+        <token name="shape">1</token>
+        <token name="Material">1088</token>
+        <Color3uint8 name="Color3uint8">4291404604</Color3uint8>
+        <Vector3 name="size">
+          <X>0.1692</X>
+          <Y>0.2162</Y>
+          <Z>0.0611</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-0.5076</X>
+          <Y>3.2806</Y>
+          <Z>-0.7144</Z>
+          <R00>0.70710678</R00>
+          <R01>-0.70710678</R01>
+          <R02>0</R02>
+          <R10>0.70710678</R10>
+          <R11>0.70710678</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+      </Properties>
+      <Item class="Weld" referent="W_GL_shawl_brooch">
+        <Properties>
+          <string name="Name">TailoringWeld</string>
+          <Ref name="Part0">P_UpperTorso</Ref>
+          <Ref name="Part1">P_GL_shawl_brooch</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.5076</X>
+            <Y>0.1316</Y>
+            <Z>-0.7144</Z>
+            <R00>0.70710678</R00>
+            <R01>-0.70710678</R01>
+            <R02>0</R02>
+            <R10>0.70710678</R10>
+            <R11>0.70710678</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
         </Properties>
       </Item>
     </Item>

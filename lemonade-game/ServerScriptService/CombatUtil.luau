@@ -20,10 +20,10 @@ end
 
 -- PS99 pass: every sword reads as matte plastic in the hand. Whatever material a look or an
 -- archetype asks for (Metal, Ice, the block sword's steel) lands as WEAPON_MATERIAL, so a baked
--- blade texture (TextureID, kept) reads as painted toy plastic instead of PBR steel. Neon is the
--- one exception: on an untextured blade it stays a flat glow; on a textured MeshPart it would
--- replace the artwork with a flat colour, so there it is honoured as a PointLight instead and the
--- part goes plastic like every other. A SurfaceAppearance (the metalness/roughness maps
+-- blade texture (TextureID, kept) reads as painted toy plastic instead of PBR steel. Neon on a
+-- sword MeshPart is honoured as a PointLight and the part goes plastic like every other (a Neon
+-- fill would replace a painted texture, and blow an untextured blade out to a shapeless glow);
+-- only the block sword's parts can still be Neon as a material. A SurfaceAppearance (the metalness/roughness maps
 -- tools/sword_forge.py bakes into the glTF material) overrides the part material entirely, so one
 -- without its own colour map is dropped; one that carries the colour map is kept, since losing the
 -- paint is worse than a little sheen. The sword GLBs are not regenerated: runtime override only.
@@ -51,8 +51,12 @@ function CombatUtil.applyWeaponAppearance(part, color, material)
 		part.Color = color
 	end
 	stripPbr(part)
-	local textured = part:IsA("MeshPart") and part.TextureID ~= ""
-	if material == Enum.Material.Neon and textured then
+	-- Neon on a sword MeshPart is always a PointLight over matte plastic, textured or not: a flat
+	-- Neon fill blows the untextured spin relics (Lodestone Edge, Blue Hour Shard, First Spark,
+	-- Quiet Star, Little Dawn) out to one shapeless glow (Studio check, 2026-09-24). Block-sword
+	-- parts keep Neon as a material; no block look uses it today.
+	local glows = part:IsA("MeshPart")
+	if material == Enum.Material.Neon and glows then
 		part.Material = CombatUtil.WEAPON_MATERIAL
 		local glow = part:FindFirstChild(GLOW_NAME)
 		if not glow then
@@ -60,8 +64,11 @@ function CombatUtil.applyWeaponAppearance(part, color, material)
 			glow.Name = GLOW_NAME
 		end
 		glow.Color = color or part.Color
-		glow.Brightness = 2.5
-		glow.Range = 12
+		-- Round 2 of the sword gauntlet: at 2.5 / 12 the Legendary's coral light tinted its own
+		-- sky-white blade pink from a hand's length away, and the critics read "a washed pink
+		-- sliver". A glow, not a floodlight.
+		glow.Brightness = 1.0
+		glow.Range = 8
 		glow.Shadows = false
 		glow.Parent = part
 	else
@@ -127,10 +134,16 @@ function CombatUtil.sizeSwordMesh(part, length)
 	end
 end
 
--- Hitlag: freeze both attacker and victim briefly on hit.
--- Research: "20-50ms freeze frames — biggest feel-good factor most Roblox sword games miss"
--- This pauses the animation timeline (not just a visual effect) by temporarily
--- setting WalkSpeed to 0 and freezing Motor6D transforms.
+-- Hitlag: the GAMEPLAY half of contact. Both fighters' WalkSpeed goes to zero for `duration`, so
+-- neither can walk out of the moment the blade lands. Authoritative, and nothing else.
+--
+-- It does NOT pause any animation, and used to claim it did. The animation half of contact --
+-- the attacker's swing clip and the victim's rig both held dead still on the contact frame -- is
+-- client work, because that is where the clip's clock and the rig's joints are:
+-- ReplicatedStorage/Hitstop holds the attacker (told by fireHitlagToClient below), and
+-- EnemyAnimator holds the victim (told by the "HitStop" attribute SwordSystem publishes). The
+-- scale pulse that used to be stubbed out here is gone with it; see ComboConfig.HITLAG_SCALE_MULT
+-- for why an R6 enemy rig cannot be scaled without lifting its feet off the ground.
 function CombatUtil.applyHitlag(attackerModel, victimModel, duration)
 	if duration <= 0 then return end
 	duration = math.clamp(duration, 0.010, 0.080) -- safety clamp
@@ -146,17 +159,10 @@ function CombatUtil.applyHitlag(attackerModel, victimModel, duration)
 
 	-- Freeze victim
 	local victimHumanoid = victimModel and victimModel:FindFirstChildOfClass("Humanoid")
-	local victimRoot = victimModel and (victimModel.PrimaryPart or victimModel:FindFirstChild("HumanoidRootPart"))
 	local origVictimSpeed = 0
 	if victimHumanoid then
 		origVictimSpeed = victimHumanoid.WalkSpeed
 		victimHumanoid.WalkSpeed = 0
-	end
-
-	-- Brief scale pulse on victim for visual feedback
-	if victimRoot then
-		local origSize = victimRoot.Size
-		-- Scale pulse would require all parts, skip for now
 	end
 
 	-- Restore after duration
@@ -170,12 +176,26 @@ function CombatUtil.applyHitlag(attackerModel, victimModel, duration)
 	end)
 end
 
--- Notify client of hitlag for screen effects (duration + comboIndex for shake scaling)
-function CombatUtil.fireHitlagToClient(player, duration, comboIndex)
+-- The one message that tells an attacker's client a hit landed. Everything the client does at
+-- contact hangs off it, so a whiff -- which never reaches here -- can never produce any of it.
+--
+--   duration    the gameplay hitlag, for the existing hit flash (CombatController)
+--   comboIndex  scales the camera kick, the shake and the hold (ComboVFX)
+--   contact     where the blade met the body, facing the way the blade was travelling; the
+--               camera is punched along it. nil for the unarmed path, which has no blade.
+--   hold        how long to hold this client's own swing animation. Sent rather than recomputed
+--               so the attacker and the victim let go on the same frame.
+--   kick        { deg, studs, fov } for the camera punch, or nil to use the combo index's own
+--               row of ComboConfig. Only the heavy sends it: its payoff scales with a charge the
+--               client cannot see the server's measurement of, and it is bigger than anything
+--               in the combo table (7.2 degrees at a full charge against the finisher's 5.0).
+--   damage      what this hit took off the target, so the attacker's HitStreakGui can total its
+--               own landed hits (the DamageNumber remote goes to every player, so it cannot).
+function CombatUtil.fireHitlagToClient(player, duration, comboIndex, contact, hold, kick, damage)
 	local RS = game:GetService("ReplicatedStorage")
 	local remote = RS:WaitForChild("RemoteEvents"):FindFirstChild("HitlagEffect")
 	if remote then
-		remote:FireClient(player, duration, comboIndex or 1)
+		remote:FireClient(player, duration, comboIndex or 1, contact, hold, kick, damage)
 	end
 end
 

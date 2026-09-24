@@ -166,7 +166,26 @@ function PanelChrome.display(parent, props)
 		c.MinTextSize = props.minSize or 9
 		c.Parent = label
 	end
-	PanelChrome.stroke(label, props.strokeColor or BRIGHT.Outline, props.stroke or 2.5)
+	-- The outline is sized to the type, not fixed. A 2-2.5 px dark outline round 15-18 px letters
+	-- fills the counters and the text turns to blobs -- the Relic Blacksmith's stat rows, "Return to
+	-- Hub" (recording 2026-09-24). Small type gets a hairline, and dark ink gets none: an outline in
+	-- the same dark as the letters only ever thickens them; the rule is for white display text.
+	local size = props.size or 20
+	local strokeWidth = props.stroke or 2.5
+	local ink = props.color
+	local darkInk = ink ~= nil and (0.299 * ink.R + 0.587 * ink.G + 0.114 * ink.B) < 0.5
+		and props.strokeColor == nil
+	if darkInk then
+		strokeWidth = 0
+	elseif size <= 18 then
+		strokeWidth = math.min(strokeWidth, 1)
+	elseif size < 24 then
+		strokeWidth = math.min(strokeWidth, 1.5)
+	end
+	-- Always created (callers reach for label:FindFirstChildOfClass("UIStroke") to recolour it),
+	-- only switched off when the rule above says none.
+	local s = PanelChrome.stroke(label, props.strokeColor or BRIGHT.Outline, math.max(strokeWidth, 1))
+	if s and strokeWidth <= 0 then s.Enabled = false end
 	label.Parent = parent
 	return label
 end

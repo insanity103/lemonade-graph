@@ -1,8 +1,12 @@
 -- StarterPlayerScripts/HitStreakGui.client.luau
 -- Escalating on-screen hit-streak banner: "{N} HITS" + a tier callout (GREAT, SAVAGE,
--- BRUTAL, GODLIKE) and a running total-damage readout. This counts every landed swing
+-- BRUTAL, GODLIKE) and a running total-damage readout. This counts every landed hit
 -- without wrapping, unlike SwordSystem's 5-hit endlag/damage-mult cycle -- it exists
 -- purely to make a long run of hits feel escalating on screen.
+-- It counts on HitlagEffect, the one message the server sends only for a hit that landed, and
+-- only to the attacker (with that hit's damage). It used to count ComboUpdate, which fires on
+-- every swing, so cutting air in the safe hub read "3 HITS / TOTAL DAMAGE: 0", and it totalled
+-- DamageNumber, which goes to every player, so a friend's hits were added to yours.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -13,7 +17,7 @@ local playerGui = player:WaitForChild("PlayerGui")
 local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
 local remotes = ReplicatedStorage:WaitForChild("RemoteEvents")
 local comboRemote = remotes:FindFirstChild("ComboUpdate")
-local damageEvent = remotes:WaitForChild("DamageNumber")
+local hitlagRemote = remotes:WaitForChild("HitlagEffect")
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "HitStreakGui"
@@ -21,10 +25,12 @@ screenGui.ResetOnSpawn = false
 screenGui.DisplayOrder = 15
 screenGui.Parent = playerGui
 
--- Sits left of the right-edge nav rail (see MainMenuGui's NavRail), vertically centered.
+-- Just left of the crosshair, vertically centred. It used to sit left of the right-edge nav rail,
+-- which is where the quest tracker hangs (QuestGui, top-right, down to ~y 400), so a long streak
+-- drew its "27 HITS / SAVAGE" straight over the quest text (recording 2026-09-24, 0:03 and 3:39).
 local holder = Instance.new("Frame")
 holder.AnchorPoint = Vector2.new(1, 0.5)
-holder.Position = UDim2.new(1, -100, 0.5, -60)
+holder.Position = UDim2.new(0.5, -90, 0.5, -60)
 holder.Size = UDim2.fromOffset(340, 120)
 holder.BackgroundTransparency = 1
 holder.Visible = false
@@ -108,6 +114,9 @@ local function scheduleHide()
 end
 
 local function refresh()
+	if totalDamage <= 0 then
+		return -- nothing has landed yet: no banner for air
+	end
 	local tier = currentTier()
 	countLabel.Text = string.format("%d HITS", streak)
 	countLabel.TextColor3 = tier.color
@@ -121,30 +130,29 @@ local function refresh()
 	scheduleHide()
 end
 
+-- ComboUpdate is kept for one thing: the server's reset. It sends (0, 0) on death; a heavy
+-- release also sends a 0 count but with its endlag as the second value, and must not wipe a run.
 if comboRemote then
-	comboRemote.OnClientEvent:Connect(function(count)
-		local now = tick()
-		if not count or count <= 0 then
+	comboRemote.OnClientEvent:Connect(function(count, endlag)
+		if (not count or count <= 0) and (not endlag or endlag <= 0) then
 			streak, totalDamage = 0, 0
 			holder.Visible = false
-			return
-		end
-		if now - lastHitAt > ComboConfig.COMBO_RESET_TIME then
-			streak, totalDamage = 0, 0
-		end
-		lastHitAt = now
-		streak += 1
-		if streak >= ComboConfig.STREAK_MIN_DISPLAY then
-			refresh()
 		end
 	end)
 end
 
-damageEvent.OnClientEvent:Connect(function(_position, amount, kind)
-	if kind == "incoming" then return end
-	totalDamage += amount
+hitlagRemote.OnClientEvent:Connect(function(_duration, _comboIndex, _contact, _hold, _kick, damage)
+	local now = tick()
+	if now - lastHitAt > ComboConfig.COMBO_RESET_TIME then
+		streak, totalDamage = 0, 0
+	end
+	lastHitAt = now
+	streak += 1
+	if typeof(damage) == "number" then
+		totalDamage += damage
+	end
 	if streak >= ComboConfig.STREAK_MIN_DISPLAY then
-		totalLabel.Text = "TOTAL DAMAGE: " .. tostring(math.floor(totalDamage + 0.5))
+		refresh()
 	end
 end)
 

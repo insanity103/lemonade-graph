@@ -3385,6 +3385,26 @@ def throne(name, x, z, yaw):
     return model(name, kids)
 
 
+def standing_stone(name, x, z, h, rng, lean=True):
+    """A round menhir: a stout cylinder up out of the pit floor under a domed cap, leaning a touch.
+    It replaced a 4.5 x 3 slab that read as a paper card edge-on (2026-09-24 recording). The three
+    that carry manacles stand straight, so the cuffs stay pinned to the face 1.55 studs out."""
+    diam = 3.4
+    base = (x, PIT_Y - 0.6, z)
+    dx, dz = (rng.uniform(-0.45, 0.45), rng.uniform(-0.45, 0.45)) if lean else (0.0, 0.0)
+    top = (x + dx, PIT_Y + h - 0.9, z + dz)
+    cap_rot = mul(rot_x(math.degrees(math.atan2(dz, h))), rot_z(-math.degrees(math.atan2(dx, h))))
+    return model(name, [
+        cyl("Body", base, top, diam, STONE_PEACH, layer="rock"),
+        ellipsoid("Cap", (diam * 1.08, 2.4, diam * 1.08), top, STONE_CAP, rot=mul(cap_rot, rot_y(rng.uniform(0, 90))),
+                  layer="rock"),
+    ])
+
+
+STONE_PEACH = (240, 184, 120)  # recoloured to the basin's pale peach in the desert pass below
+STONE_CAP = (250, 206, 150)
+
+
 def manacles(name, x, y, z, yaw):
     """Empty iron cuffs on a short chain, pinned to a rock face at (x, y, z) facing `yaw`."""
     r = rot_y(yaw)
@@ -3848,8 +3868,8 @@ def quarry_layout(rng):
             continue
         x, z = math.sin(a) * 42, 424 - math.cos(a) * 42
         h = rng.uniform(10, 15)
-        visual.append(part(f"StandingStone{k:02d}", (4.5, h, 3), (x, PIT_Y + h / 2, z), (240, 184, 120), "SmoothPlastic",
-                           rot_y(-math.degrees(a)), layer="rock"))
+        # own seed per stone: drawing its lean from `rng` would reshuffle every region built after the pit
+        visual.append(standing_stone(f"StandingStone{k:02d}", x, z, h, random.Random(0x5701 + k), lean=k not in (3, 5, 10)))
     for k, (x, z) in enumerate(((-22, 390), (22, 390), (-42, 440), (42, 440))):
         visual.append(brazier(f"PitBrazier{k}", x, 0, z))
     # The Warden's throne behind the arena, gang banners, empty manacles on three standing stones.
@@ -4441,6 +4461,317 @@ def _register_tree(node):
         _register_tree(c)
 
 
+# ── The desert's rock, as parts ──────────────────────────────────────────────
+# Iron Lowlands look gauntlet, round 3 (2026-09-24): 28 of 28 blind verdicts named the zone's
+# terrain rock -- the mesas, the rim's scarp, the stacked towers, the arches -- as faceted voxel
+# rock "with dark crevices", and asked for "a few large smooth rounded masses with bevelled
+# edges". Voxel terrain cannot be that; the castle wall already is (SmoothPlastic parts), so the
+# rock moves here and WorldTerrain keeps only sand (DESERT_ROCK_PARTS). Same positions and heights
+# as the terrain had, so every collision proxy, spawn and marker stands where it did.
+# Palette: the coral cliff face and the peach crest bands the round-3 hue split settled on; the
+# floor's sand is WorldTerrain's (255, 232, 186).
+MESA_BODY = (255, 132, 60)   # the cliff face: coral-orange, full chroma
+MESA_BAND = (255, 208, 150)  # the crest and tier bands: pale peach, the calm step
+MESA_DOME = (255, 176, 96)   # the domed tops: between the two
+# { x, z, radius x, radius z, yaw, top } -- WorldTerrain's MESAS, verbatim.
+DESERT_MESAS = [
+    (204, 404, 40, 56, 18, 86), (170, 498, 30, 21, -12, 66), (-226, 420, 36, 48, -8, 76),
+    (-214, 198, 32, 26, 24, 60), (-164, 498, 36, 19, 6, 74), (214, 196, 30, 24, -20, 64),
+    (68, 494, 47, 22, 2, 80), (-70, 494, 49, 22, -2, 74),
+]
+# { x, z, radius x, radius z, top, yaw } -- WorldTerrain's FAR_MESAS, verbatim.
+DESERT_FAR_MESAS = [
+    (430, 236, 44, 30, 96, 12), (452, 352, 62, 38, 128, -18), (404, 468, 48, 34, 110, 28),
+    (336, 572, 40, 28, 84, 6), (470, 120, 38, 30, 80, -30),
+]
+# { x, z, radius, height } -- WorldTerrain's TOWERS, verbatim.
+DESERT_TOWERS = [
+    (160, 262, 10, 98), (232, 300, 12, 116), (146, 446, 9, 82), (-198, 318, 10, 90),
+    (-130, 505, 8, 76), (150, 168, 8, 72), (-236, 262, 9, 84),
+]
+DESERT_SAND_ROCKS = [(-100, 262), (-88, 300), (-60, 410), (60, 180), (-70, 196)]
+
+
+def drum(name, x, y0, y1, z, rx, rz, color, yaw=0.0, **kw):
+    """A vertical elliptical drum: a Cylinder part stood on end (axis X -> world Y), rx along the
+    yawed X, rz along the yawed Z. Decorative: no collision, no query (the proxies hold players)."""
+    kw.setdefault("collide", False)
+    kw.setdefault("query", False)
+    kw.setdefault("layer", "rock")
+    return part(name, (y1 - y0, rx * 2, rz * 2), (x, (y0 + y1) / 2, z), color, "SmoothPlastic",
+                mul(rot_y(yaw), rot_z(90)), shape="Cylinder", **kw)
+
+
+def mesa(name, x, z, rx, rz, yaw, top, rng, base=-6.0):
+    """A flat-topped mesa as three stepped drums, each narrower than the one below, a peach band
+    at every tier's lip and a shallow dome on the crest: a few big rounded masses, no facets."""
+    tiers = [(top - 30, 1.0), (top - 14, 0.84), (top, 0.66)]
+    kids = []
+    y = base
+    for k, (ty, w) in enumerate(tiers):
+        j = rng.uniform(0.97, 1.03)
+        kids.append(drum(f"{name}_Tier{k}", x, y, ty, z, rx * w * j, rz * w * j, MESA_BODY, yaw))
+        # the lip: a slightly wider, thin band in peach, so every tier reads as a step
+        kids.append(drum(f"{name}_Band{k}", x, ty - 2.2, ty + 0.4, z, rx * w * j * 1.035, rz * w * j * 1.035,
+                         MESA_BAND, yaw, shadow=False))
+        y = ty
+    w = tiers[-1][1]
+    kids.append(ellipsoid(f"{name}_Dome", (rx * w * 2.0, 7.0, rz * w * 2.0), (x, top - 0.6, z), MESA_DOME,
+                          rot=mul(rot_y(yaw), rot_x(1.5)), layer="rock", shadow=False))
+    return model(name, kids, attrs={"DesertRock": True})
+
+
+def rock_tower(name, x, z, r, h, rng, base=0.0):
+    """A stacked hoodoo: bulging drums of falling radius, a peach band between every pair, a round
+    cap. The old terrain tower's own recipe (segments 9-15 studs, radius easing to 0.82), in parts."""
+    kids = []
+    y = base
+    k = 0
+    while y < h:
+        seg = rng.uniform(9, 15)
+        rr = r * (1 - 0.18 * (y / h)) * rng.uniform(0.9, 1.12)
+        kids.append(drum(f"{name}_Drum{k}", x + rng.uniform(-0.8, 0.8), y, y + seg + 0.5, z + rng.uniform(-0.8, 0.8),
+                         rr, rr * rng.uniform(0.94, 1.06), MESA_BODY, rng.uniform(0, 180)))
+        kids.append(drum(f"{name}_Band{k}", x, y + seg - 1.4, y + seg + 0.9, z, rr * 1.06, rr * 1.06, MESA_BAND,
+                         shadow=False))
+        y += seg
+        k += 1
+    cap = r * 0.8
+    kids.append(part(f"{name}_Cap", (cap * 2, cap * 1.6, cap * 2), (x, y + cap * 0.6, z), MESA_DOME, "SmoothPlastic",
+                     shape="Ball", collide=False, query=False, shadow=False, layer="rock"))
+    return model(name, kids, attrs={"DesertRock": True})
+
+
+def rock_arch(name, x, z, span, along_x, y_under, thick, pillar_r, base, rng):
+    """A natural arch: two drums and a round lintel laid across them, its underside at y_under."""
+    kids = []
+    half = span / 2
+    for sgn, tag in ((-1, "A"), (1, "B")):
+        px = x + sgn * half if along_x else x
+        pz = z if along_x else z + sgn * half
+        kids.append(drum(f"{name}_Pillar{tag}", px, base, y_under + thick * 0.35, pz, pillar_r, pillar_r * 0.9,
+                         MESA_BODY, rng.uniform(0, 90)))
+        kids.append(part(f"{name}_Knob{tag}", (pillar_r * 1.9, pillar_r * 1.5, pillar_r * 1.9),
+                         (px, y_under + thick * 0.35 + pillar_r * 0.5, pz), MESA_BAND, "SmoothPlastic",
+                         shape="Ball", collide=False, query=False, shadow=False, layer="rock"))
+    length = span + pillar_r * 2
+    rot = None if along_x else rot_y(90)
+    kids.append(part(f"{name}_Lintel", (length, thick, thick), (x, y_under + thick / 2, z), MESA_BODY,
+                     "SmoothPlastic", rot, shape="Cylinder", collide=False, query=False, layer="rock"))
+    kids.append(part(f"{name}_LintelBand", (length * 0.98, thick * 0.5, thick * 1.06), (x, y_under + thick * 0.72, z),
+                     MESA_BAND, "SmoothPlastic", rot, shape="Cylinder", collide=False, query=False, shadow=False,
+                     layer="rock"))
+    return model(name, kids, attrs={"DesertRock": True})
+
+
+def desert_rockforms():
+    """The Iron Lowlands' rock as SmoothPlastic: mesas, far mesas, towers, the two arches and the
+    loose boulders on the sand. Its own seed, so the shared rng and every other prop stay put."""
+    rr = random.Random(0x40C5)
+    out = []
+    for i, (x, z, rx, rz, yaw, top) in enumerate(DESERT_MESAS):
+        out.append(mesa(f"Mesa{i}", x, z, rx, rz, yaw, top, rr))
+    for i, (x, z, rx, rz, top, yaw) in enumerate(DESERT_FAR_MESAS):
+        out.append(mesa(f"FarMesa{i}", x, z, rx, rz, yaw, top, rr, base=-10.0))
+    for i, (x, z, r, h) in enumerate(DESERT_TOWERS):
+        out.append(rock_tower(f"Hoodoo{i}", x, z, r, h, rr))
+    # the arch over the Briarwood trail (portal under y 35, the old terrain arch's underside was 26-38)
+    out.append(rock_arch("TrailArch", 0, 506, 68, True, 35.0, 22.0, 12.0, -4.0, rr))
+    # the bandits' hideout arch over the passage mouth (its underside was y 22)
+    out.append(rock_arch("HideoutArch", -118, 300, 52, False, 23.0, 16.0, 6.5, 2.0, rr))
+    # the loose boulders out on the open sand, where the terrain heaped its knobs
+    for i, (x, z) in enumerate(DESERT_SAND_ROCKS):
+        y = floor_at(x, z, QUARRY_Y)
+        w, h, d = rr.uniform(7, 10), rr.uniform(4.5, 6.5), rr.uniform(6, 9)
+        out.append(model(f"SandRock{i}", [
+            ellipsoid("Body", (w, h, d), (x, y + h * 0.32, z), MESA_BODY, rot=tilt(rr, 4, 12), layer="rock"),
+            ellipsoid("Cap", (w * 0.55, h * 0.5, d * 0.55), (x + w * 0.12, y + h * 0.62, z - d * 0.1), MESA_BAND,
+                      rot=tilt(rr, 4, 12), layer="rock", shadow=False),
+        ], attrs={"DesertRock": True}))
+    return out
+
+
+# ── Dressing the sand ────────────────────────────────────────────────────────
+# Iron Lowlands look gauntlet, rounds 4-5 (2026-09-24): with the rock as parts, every verdict named
+# the sand plane -- "60-70% of the frame, flat, nothing on it to run to". This lines the trail with
+# chunky rounded things at the player's scale: a peach kerb along both edges of every trail segment,
+# and a cluster every few studs to either side (coral boulders, barrel cacti, short saguaros, crate
+# stacks, sand mounds, flower pads). Everything sits off the trail, off every spawn, pool, marker
+# and the Warden's arena, and off the props already standing (REGISTRY clearance), so nothing that
+# gameplay reads moves. Decorative: no collision, no query.
+SAND_TRAIL = [(0, 136), (0, 196), (20, 224), (20, 300), (-22, 310), (-22, 360), (0, 372), (0, 470)]
+SAND_KERB = (255, 208, 150)      # the trail's kerb: the mesas' peach band
+SAND_MOUND = (255, 196, 116)     # a dune mound: the floor's gold, one step deeper
+BLOOM_PAD = (120, 232, 96)       # a flower pad: the cactus lime
+BLOOM_HEADS = [(255, 96, 160), (72, 204, 255), (255, 220, 64), (200, 120, 255)]
+SAND_KEEP_OUT = [  # (x, z, radius): spawns, arrivals, the pools, the arena, the camp fire
+    (18, 152, 12), (0, 358, 12), (0, 424, 40), (94, 348, 26), (73, 284, 22), (-66, 272, 14),
+] + [(sp[4][0], sp[4][1], 9) for sp in ENEMY_SPAWNS]
+
+
+def _trail_point(t):
+    """Point t studs along SAND_TRAIL, its unit direction and its left normal (in xz)."""
+    acc = 0.0
+    for (ax, az), (bx, bz) in zip(SAND_TRAIL, SAND_TRAIL[1:]):
+        seg = math.hypot(bx - ax, bz - az)
+        if acc + seg >= t:
+            u = (t - acc) / seg
+            dx, dz = (bx - ax) / seg, (bz - az) / seg
+            return (ax + dx * (t - acc), az + dz * (t - acc)), (dx, dz), (-dz, dx)
+        acc += seg
+    return None, None, None
+
+
+def _sand_clear(x, z, radius):
+    for kx, kz, kr in SAND_KEEP_OUT:
+        if math.hypot(x - kx, z - kz) < kr + radius:
+            return False
+    for (ax, az), (bx, bz) in zip(SAND_TRAIL, SAND_TRAIL[1:]):
+        seg = math.hypot(bx - ax, bz - az)
+        u = max(0.0, min(1.0, ((x - ax) * (bx - ax) + (z - az) * (bz - az)) / (seg * seg)))
+        if math.hypot(x - (ax + (bx - ax) * u), z - (az + (bz - az) * u)) < 7.0 + radius:
+            return False
+    for e in REGISTRY:
+        if e["layer"] in ("ground", "proxy", "volume", "marker", "decal", "vista"):
+            continue
+        if e["name"].startswith("TrailKerb"):  # the trail band above already keeps clear of the kerbs
+            continue
+        w = max(e["size"][0], e["size"][2])
+        if w > 24:  # the mesas and arches: their footprints are far bigger than their contact
+            continue
+        ex, _, ez = e["pos"]
+        if math.hypot(x - ex, z - ez) < radius + w * 0.5 + 0.5:
+            return False
+    return True
+
+
+def sand_boulders(name, x, z, rng):
+    y = floor_at(x, z, QUARRY_Y)
+    kids = []
+    for i in range(rng.randint(2, 3)):
+        w, h, d = rng.uniform(4, 7), rng.uniform(2.6, 4.2), rng.uniform(3.5, 6)
+        ox, oz = rng.uniform(-2.5, 2.5), rng.uniform(-2.5, 2.5)
+        kids.append(ellipsoid(f"Rock{i}", (w, h, d), (x + ox, y + h * 0.34, z + oz), MESA_BODY,
+                              rot=tilt(rng, 4, 14), layer="rock"))
+    kids.append(ellipsoid("Cap", (2.6, 1.8, 2.4), (x + 0.4, y + 3.2, z - 0.3), MESA_BAND, rot=tilt(rng, 4, 14),
+                          layer="rock", shadow=False))
+    return model(name, kids)
+
+
+def sand_mound(name, x, z, rng):
+    y = floor_at(x, z, QUARRY_Y)
+    w, d = rng.uniform(9, 14), rng.uniform(7, 11)
+    return model(name, [
+        ellipsoid("Mound", (w, rng.uniform(2.2, 3.2), d), (x, y + 0.5, z), SAND_MOUND, rot=rot_y(rng.uniform(0, 180)),
+                  layer="rock"),
+        ellipsoid("Crest", (w * 0.55, 1.6, d * 0.5), (x + w * 0.1, y + 1.7, z), (255, 224, 170),
+                  rot=rot_y(rng.uniform(0, 180)), layer="rock", shadow=False),
+    ])
+
+
+def bloom_pad(name, x, z, rng):
+    y = floor_at(x, z, QUARRY_Y)
+    kids = [ellipsoid("Pad", (rng.uniform(5, 7), 1.4, rng.uniform(4, 6)), (x, y + 0.3, z), BLOOM_PAD,
+                      rot=rot_y(rng.uniform(0, 180)), layer="rock")]
+    for i in range(rng.randint(3, 5)):
+        a = rng.uniform(0, math.tau)
+        r = rng.uniform(0.6, 2.2)
+        kids.append(part(f"Bloom{i}", (1.5, 1.5, 1.5), (x + math.cos(a) * r, y + 1.6, z + math.sin(a) * r),
+                         rng.choice(BLOOM_HEADS), "SmoothPlastic", shape="Ball", collide=False, query=False,
+                         shadow=False, layer="rock"))
+    return model(name, kids)
+
+
+KERB_OFFSET = 6.6   # studs from the trail's centre line to each kerb
+KERB_PIECE = 10.0   # studs per straight kerb piece
+KERB_DIAM = 2.2
+
+
+def _kerb_line(side):
+    """The trail's centre line offset KERB_OFFSET to one side, mitred at every bend. One offset per
+    segment (the old kerb) left a gap on the outside of each bend and crossed the trail on the
+    inside (2026-09-24 recording, 3:39); a mitre meets both neighbours at one point, and the clamp
+    keeps a sharp bend's inner point from shooting across the trail."""
+    pts = SAND_TRAIL
+    normals = []
+    for (ax, az), (bx, bz) in zip(pts, pts[1:]):
+        seg = math.hypot(bx - ax, bz - az)
+        normals.append((-(bz - az) / seg, (bx - ax) / seg))
+    line = []
+    for i, (px, pz) in enumerate(pts):
+        n0 = normals[max(0, i - 1)]
+        n1 = normals[min(len(normals) - 1, i)]
+        mx, mz = n0[0] + n1[0], n0[1] + n1[1]
+        ml = math.hypot(mx, mz)
+        mx, mz = mx / ml, mz / ml
+        cos_half = max(1e-3, mx * n1[0] + mz * n1[1])
+        reach = min(KERB_OFFSET / cos_half, 2 * KERB_OFFSET)
+        line.append((px + mx * reach * side, pz + mz * reach * side))
+    return line
+
+
+def trail_kerbs():
+    """A round peach kerb along each edge of the trail: ~10-stud straight pieces, each following
+    the floor at its own ends, with a ball at every joint so the pieces read as one curb."""
+    out = []
+    for side, tag in ((-1, "L"), (1, "R")):
+        line = _kerb_line(side)
+        joints = [line[0]]
+        for (ax, az), (bx, bz) in zip(line, line[1:]):
+            seg = math.hypot(bx - ax, bz - az)
+            steps = max(1, round(seg / KERB_PIECE))
+            joints += [(ax + (bx - ax) * j / steps, az + (bz - az) * j / steps) for j in range(1, steps + 1)]
+        for j, ((ax, az), (bx, bz)) in enumerate(zip(joints, joints[1:])):
+            lift = 0.8 + 0.07 * (j % 2)  # neighbours a hair apart, so the overlap inside a joint never z-fights
+            a3 = (ax, floor_at(ax, az, QUARRY_Y) + lift, az)
+            b3 = (bx, floor_at(bx, bz, QUARRY_Y) + lift, bz)
+            out.append(cyl(f"TrailKerb{tag}{j:02d}", a3, b3, KERB_DIAM, SAND_KERB, collide=False, query=False,
+                           layer="rock"))
+        for j, (jx, jz) in enumerate(joints):
+            y = floor_at(jx, jz, QUARRY_Y) + 0.835
+            out.append(part(f"TrailKerbJoint{tag}{j:02d}", (KERB_DIAM + 0.25,) * 3, (jx, y, jz), SAND_KERB,
+                            shape="Ball", collide=False, query=False, layer="rock"))
+    return out
+
+
+def desert_sand_dressing():
+    """Kerbs along the trail and prop clusters beside it (see the note above). Own seed."""
+    rr = random.Random(0x5A9D)
+    out = []
+    out += trail_kerbs()
+    # the clusters: every 16 studs along the trail, alternating sides, a type in rotation
+    kinds = ["boulders", "barrel", "mound", "bloom", "saguaro", "crates", "boulders", "bloom"]
+    t, k = 20.0, 0
+    slots = []
+    while True:
+        pt, _, nrm = _trail_point(t)
+        if pt is None:
+            break
+        for side in (1, -1):  # both sides of every slot: the frame needs density, not a picket line
+            slots.append((pt, nrm, side))
+        t += 12.0
+    for pt, nrm, side in slots:
+        off = rr.uniform(9.5, 15.0) * side
+        x, z = pt[0] + nrm[0] * off, pt[1] + nrm[1] * off
+        kind = kinds[k % len(kinds)]
+        if _sand_clear(x, z, 4.5):
+            name = f"Sand{kind.capitalize()}{k}"
+            if kind == "boulders":
+                out.append(sand_boulders(name, x, z, rr))
+            elif kind == "barrel":
+                out.append(barrel_cactus(name, x, z, rr))
+            elif kind == "mound":
+                out.append(sand_mound(name, x, z, rr))
+            elif kind == "bloom":
+                out.append(bloom_pad(name, x, z, rr))
+            elif kind == "saguaro":
+                out.append(saguaro(name, x, z, rr.uniform(7, 10), rr, arms=rr.choice((1, 2))))
+            elif kind == "crates":
+                out.append(crate_stack(name, x, QUARRY_Y, z, rr))
+            k += 1
+    return out
+
+
 def build_iron_lowlands(rng):
     mark = len(REGISTRY)
     ground, legacy, proxies = quarry_layout(rng)
@@ -4455,8 +4786,8 @@ def build_iron_lowlands(rng):
                 c["properties"]["Color"] = [_r(v / 255) for v in color]
     for n in visual:
         if n["name"].startswith("StandingStone"):  # the arena's ring, re-cut in the basin's peach sandstone (toy plastic)
-            n["properties"]["Material"] = "SmoothPlastic"
-            n["properties"]["Color"] = [_r(c / 255) for c in hsv(32, 0.2, 1.0)]  # calm pale peach tint
+            resurface(n, r"^Body$", hsv(32, 0.2, 1.0))  # calm pale peach tint
+            resurface(n, r"^Cap$", hsv(32, 0.12, 1.0))  # its dome a step paler, so the top reads round
         elif n["name"] == "GateBriarwood":  # the gate's pillars in the adobe's apricot, capped in terracotta
             resurface(n, r"^Pillar-?1$", ADOBE_WALLS[0])
             resurface(n, r"^PillarCap", ADOBE_PLINTH)
@@ -4470,6 +4801,8 @@ def build_iron_lowlands(rng):
     global AUTO_GROUND
     AUTO_GROUND = True
     visual += desert_dressing()
+    visual += desert_rockforms()
+    visual += desert_sand_dressing()
     return ground, visual, proxies
 
 

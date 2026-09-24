@@ -18,6 +18,7 @@ local CREATOR_TAG_NAME = "creator"
 local XP_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("XPGain")
 local SPEND_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("SpendSkillPoint")
 local LEVELUP_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("LevelUpBurst")
+local NOTIFY_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("Notify")
 local COMBAT_END_DELAY = 3 -- seconds without a kill before the combat session ends
 local SKILL_SPEND_COOLDOWN = 0.1
 local lastSkillSpendAt = {}
@@ -339,6 +340,9 @@ local function awardExperience(player, amount)
 		player:SetAttribute("SkillPoints", newPoints)
 		print(string.format("[LevelingSystem] %s reached level %d and gained %d skill points (total %d)",
 			player.Name, level.Value, SKILL_POINTS_PER_LEVEL * levelsGained, newPoints))
+		-- The Skills badge alone let 88 points pile up unspent; say it once per level-up.
+		NOTIFY_EVENT:FireClient(player, string.format("Level %d!  %d skill points to spend in Skills",
+			level.Value, newPoints), "success")
 
 		-- Burst of colored balls from the player on level up.
 		local root = player.Character and (player.Character.PrimaryPart or player.Character:FindFirstChild("HumanoidRootPart"))
@@ -449,7 +453,9 @@ local function inspect(instance)
 end
 
 -- Spend one skill point on an attribute. Authoritative on the server.
-SPEND_EVENT.OnServerEvent:Connect(function(player, attributeName)
+-- `amount` (optional, default 1) lets the Skills panel's press-and-hold spend several at once: at
+-- 8 points a level a Lv18 player had 88 banked and one click per point (recording 2026-09-24).
+SPEND_EVENT.OnServerEvent:Connect(function(player, attributeName, amount)
 	if player:GetAttribute("DataLoaded") ~= true
 		or typeof(attributeName) ~= "string"
 		or not table.find(ATTRIBUTE_NAMES, attributeName) then
@@ -464,10 +470,11 @@ SPEND_EVENT.OnServerEvent:Connect(function(player, attributeName)
 	if points <= 0 then
 		return
 	end
-	player:SetAttribute("SkillPoints", points - 1)
-	player:SetAttribute(attributeName, (player:GetAttribute(attributeName) or 0) + 1)
-	print(string.format("[LevelingSystem] %s spent a skill point on %s (now %d, %d remaining)",
-		player.Name, attributeName, player:GetAttribute(attributeName), player:GetAttribute("SkillPoints")))
+	local spend = if typeof(amount) == "number" and amount == amount then math.clamp(math.floor(amount), 1, points) else 1
+	player:SetAttribute("SkillPoints", points - spend)
+	player:SetAttribute(attributeName, (player:GetAttribute(attributeName) or 0) + spend)
+	print(string.format("[LevelingSystem] %s spent %d skill point(s) on %s (now %d, %d remaining)",
+		player.Name, spend, attributeName, player:GetAttribute(attributeName), player:GetAttribute("SkillPoints")))
 	if attributeName == "Health" then
 		applyHealth(player, player:GetAttribute("Health"))
 	end

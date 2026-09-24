@@ -836,6 +836,10 @@ local function run()
 	local function showBoard(on: boolean)
 		if on == boardShown then return end
 		boardShown = on
+		-- The board stands on the customer's right, which on screen is where the quest tracker
+		-- sits (2026-09-24 recording, 4:12). The other side of the wheel is the upgrade stall, so
+		-- the board stays put and QuestGui steps the tracker aside while this is set.
+		player:SetAttribute("SpinBoardOpen", on)
 		if boardTween then boardTween:Cancel() end
 		if on then
 			refreshBoard()

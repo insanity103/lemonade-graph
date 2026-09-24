@@ -309,6 +309,11 @@ GuiShowcase.stage("EnemyDrops", function(ctx)
 					model.Parent = folder
 					local upright = CFrame.new(center) * CFrame.Angles(0, 0, SWORD_TILT)
 						* CFrame.fromMatrix(Vector3.zero, Vector3.new(0, 0, 1), Vector3.new(-1, 0, 0), Vector3.new(0, -1, 0))
+					-- A sword MeshPart as Studio imports it has its tip at +Z (the block sword's is at -Z), so
+					-- turn a mesh end for end, or it stands on its tip (Studio check, 2026-09-24).
+					if model.PrimaryPart and model.PrimaryPart:IsA("MeshPart") then
+						upright = upright * CFrame.Angles(0, math.pi, 0)
+					end
 					model:PivotTo(upright)
 					model:ScaleTo(SWORD_SCALE)
 					local box = model:GetBoundingBox()
