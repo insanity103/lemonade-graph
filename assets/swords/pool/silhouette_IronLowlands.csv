@@ -1,0 +1,7 @@
+sword,Sword_QuarryShank,Sword_ToolhouseCleaver,Sword_BanditsMachete,Sword_RivetsteelBlade,Sword_ForemansLongsword,Sword_LodestoneEdge,Boss_Gorgon,Boss_FrostRevenant,Boss_InfernalColossus,Boss_VoidWraith,Boss_CelestialTitan,RootWarden,DrownedBellwarden,TempestWarden,SwordMeshTemplate
+Sword_QuarryShank,,0.564,0.705,0.606,0.69,0.634,0.56,0.539,0.573,0.541,0.552,0.59,0.555,0.583,0.68
+Sword_ToolhouseCleaver,0.564,,0.744,0.603,0.642,0.536,0.793,0.664,0.629,0.675,0.577,0.628,0.666,0.647,0.677
+Sword_BanditsMachete,0.705,0.744,,0.739,0.801,0.671,0.736,0.699,0.728,0.708,0.676,0.731,0.728,0.749,0.823
+Sword_RivetsteelBlade,0.606,0.603,0.739,,0.802,0.823,0.743,0.701,0.811,0.721,0.765,0.776,0.742,0.791,0.676
+Sword_ForemansLongsword,0.69,0.642,0.801,0.802,,0.725,0.764,0.721,0.773,0.737,0.714,0.745,0.762,0.752,0.754
+Sword_LodestoneEdge,0.634,0.536,0.671,0.823,0.725,,0.665,0.651,0.705,0.66,0.686,0.703,0.665,0.711,0.617

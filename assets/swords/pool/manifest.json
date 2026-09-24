@@ -1,0 +1,410 @@
+{
+  "Sword_QuarryShank": {
+    "name": "Quarry Shank",
+    "key": "Sword_QuarryShank",
+    "pool": "IronLowlands",
+    "tier": 1,
+    "concept": "a pickaxe spike reground into a blade",
+    "file": "Sword_QuarryShank.glb",
+    "bytes": 76156,
+    "triangles": 2724,
+    "vertices": 1380,
+    "meshSize": [
+      0.10008,
+      0.2602,
+      1.0
+    ],
+    "palette": {
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ],
+      "toy_blue": [
+        64,
+        144,
+        255
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ]
+    },
+    "areaShare": {
+      "orange": 0.265,
+      "cream": 0.374,
+      "cream_grip": 0.143,
+      "toy_blue": 0.162,
+      "coral": 0.056
+    },
+    "calmVivid": {
+      "calm": 0.516,
+      "vivid": 0.484
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.00038,
+        0.0
+      ],
+      "length_scale": 1.00075
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.705,
+      "against": "Sword_BanditsMachete"
+    }
+  },
+  "Sword_ToolhouseCleaver": {
+    "name": "Toolhouse Cleaver",
+    "key": "Sword_ToolhouseCleaver",
+    "pool": "IronLowlands",
+    "tier": 2,
+    "concept": "a hatchet-headed chopper off the toolhouse wall",
+    "file": "Sword_ToolhouseCleaver.glb",
+    "bytes": 93188,
+    "triangles": 3440,
+    "vertices": 1737,
+    "meshSize": [
+      0.104,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "sky_white": [
+        232,
+        240,
+        255
+      ],
+      "toy_blue": [
+        64,
+        144,
+        255
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ]
+    },
+    "areaShare": {
+      "orange": 0.352,
+      "sky_white": 0.121,
+      "toy_blue": 0.408,
+      "cream_grip": 0.119
+    },
+    "calmVivid": {
+      "calm": 0.24,
+      "vivid": 0.76
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.793,
+      "against": "Boss_Gorgon"
+    }
+  },
+  "Sword_BanditsMachete": {
+    "name": "Bandit's Machete",
+    "key": "Sword_BanditsMachete",
+    "pool": "IronLowlands",
+    "tier": 2,
+    "concept": "a camp machete with the bandit's bandana tied on",
+    "file": "Sword_BanditsMachete.glb",
+    "bytes": 109556,
+    "triangles": 3104,
+    "vertices": 1575,
+    "meshSize": [
+      0.116,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "sky_white": [
+        232,
+        240,
+        255
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ],
+      "toy_blue": [
+        64,
+        144,
+        255
+      ]
+    },
+    "areaShare": {
+      "sky_white": 0.306,
+      "coral": 0.235,
+      "orange": 0.209,
+      "cream_grip": 0.132,
+      "toy_blue": 0.118
+    },
+    "calmVivid": {
+      "calm": 0.438,
+      "vivid": 0.562
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.823,
+      "against": "SwordMeshTemplate"
+    }
+  },
+  "Sword_RivetsteelBlade": {
+    "name": "Rivetsteel Blade",
+    "key": "Sword_RivetsteelBlade",
+    "pool": "IronLowlands",
+    "tier": 2,
+    "concept": "a blade riveted together from three cart plates",
+    "file": "Sword_RivetsteelBlade.glb",
+    "bytes": 130844,
+    "triangles": 4578,
+    "vertices": 2289,
+    "meshSize": [
+      0.116,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "sky_white": [
+        232,
+        240,
+        255
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ],
+      "toy_blue": [
+        64,
+        144,
+        255
+      ],
+      "cream_grip": [
+        255,
+        238,
+        210
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ]
+    },
+    "areaShare": {
+      "sky_white": 0.327,
+      "coral": 0.216,
+      "toy_blue": 0.263,
+      "gold": 0.037,
+      "cream_grip": 0.125,
+      "orange": 0.032
+    },
+    "calmVivid": {
+      "calm": 0.452,
+      "vivid": 0.548
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.823,
+      "against": "Sword_LodestoneEdge"
+    }
+  },
+  "Sword_ForemansLongsword": {
+    "name": "Foreman's Longsword",
+    "key": "Sword_ForemansLongsword",
+    "pool": "IronLowlands",
+    "tier": 3,
+    "concept": "the foreman's longsword with a ruler fuller and a pocket watch",
+    "file": "Sword_ForemansLongsword.glb",
+    "bytes": 158176,
+    "triangles": 5336,
+    "vertices": 2692,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "toy_blue": [
+        64,
+        144,
+        255
+      ],
+      "sky_white": [
+        232,
+        240,
+        255
+      ],
+      "cream": [
+        255,
+        240,
+        220
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "toy_blue": 0.211,
+      "sky_white": 0.19,
+      "cream": 0.207,
+      "orange": 0.272,
+      "coral": 0.097,
+      "gold": 0.024
+    },
+    "calmVivid": {
+      "calm": 0.397,
+      "vivid": 0.603
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.802,
+      "against": "Sword_RivetsteelBlade"
+    }
+  },
+  "Sword_LodestoneEdge": {
+    "name": "Lodestone Edge",
+    "key": "Sword_LodestoneEdge",
+    "pool": "IronLowlands",
+    "tier": 4,
+    "concept": "a singing lodestone crystal set in a horseshoe magnet",
+    "file": "Sword_LodestoneEdge.glb",
+    "bytes": 147292,
+    "triangles": 4136,
+    "vertices": 2080,
+    "meshSize": [
+      0.08809,
+      0.26026,
+      1.0
+    ],
+    "palette": {
+      "sky_white": [
+        232,
+        240,
+        255
+      ],
+      "lodestone": [
+        255,
+        220,
+        72
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ],
+      "toy_blue": [
+        64,
+        144,
+        255
+      ],
+      "gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "lodestone": 0.2,
+      "sky_white": 0.306,
+      "coral": 0.172,
+      "toy_blue": 0.179,
+      "gold": 0.143
+    },
+    "calmVivid": {
+      "calm": 0.306,
+      "vivid": 0.694
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0005,
+        0.0
+      ],
+      "length_scale": 1.001
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.823,
+      "against": "Sword_RivetsteelBlade"
+    }
+  }
+}

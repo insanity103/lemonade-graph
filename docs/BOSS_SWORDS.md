@@ -183,3 +183,32 @@ silhouette. And the three warden Relics wear the warden meshes, painted.
 - **Spin-station and gallery framing.** Eight distinct silhouettes at 3.3-5.4k triangles each are
   well under budget, but the sword gallery stage (`Motion:SwordGallery`) was framed for the old
   thinner blades; check the grid spacing.
+
+## Pool swords (one unique mesh per sword)
+
+Every other sword in `BossWeapons.luau` used to reuse one of four shapes (the starter's block parts,
+the bandit falchion, or a boss mesh flattened to one colour). Each is getting its own mesh, built by
+`tools/blender_pool_swords.py` to the brief in `docs/prompts/pool_swords_blender.md`, pool by pool.
+Meshes, the per-pool contact sheet and the silhouette table are in `assets/swords/pool/`.
+
+### Iron Lowlands (done 2026-09-24)
+
+| Sword | Mesh key | Tier | Forms |
+|---|---|---|---|
+| Quarry Shank | `Sword_QuarryShank` | T1 | a rectangular-section cream pickaxe spike with an orange tip cap; a curved orange pick-head guard; cream grip taped toy-blue; a coral cloth-knot pommel |
+| Toolhouse Cleaver | `Sword_ToolhouseCleaver` | T2 | a narrow neck flaring into a tall squared orange chopping head, sky-white edge, toy-blue spine cap, hang hole; toy-blue bar; cream grip with orange rivets; hook-ring pommel |
+| Bandit's Machete | `Sword_BanditsMachete` | T2 | a long sky-white belly-curved machete, coral edge; a coral bandana knotted round the grip top with tails on each face; orange bar; toy-blue bird's-head pommel with an orange beak |
+| Rivetsteel Blade | `Sword_RivetsteelBlade` | T2 | three cart plates stepping narrower and thinner up the blade, gold rivets at each joint, coral edges; riveted toy-blue guard; orange cart-wheel pommel |
+| Foreman's Longsword | `Sword_ForemansLongsword` | T3 | a parallel toy-blue longsword with a chisel tip, sky-white edges, a raised cream ruler fuller with notched ticks; orange set-square guard; orange grip, coral wrap; gold pocket-watch pommel |
+| Lodestone Edge (Relic) | `Sword_LodestoneEdge` | T4 | a faceted lodestone-gold crystal splinter widest near the root, sky-white facet chamfers, two raised toy-blue music notes; a coral horseshoe-magnet guard with sky-white poles; a floating faceted stone in a gold ring |
+
+Every one passes the layout checks, the HSV colour rule, the calm/vivid area shares (calm 24-52 %),
+the post-bevel tier budget, and silhouette IoU <= 0.85 against the pool, the eight signature swords
+and the template (worst 0.82). Their `look` in the config now names the mesh; `BossSwordFactory.fitLook`
+strips the template's texture when a named mesh is not imported yet, so the sword keeps its own colour
+until it is.
+
+**Import:** File > Import 3D each `assets/swords/pool/*.glb`, name each MeshPart exactly its key, put
+them in `ServerStorage/BossSwordMeshes`, confirm a plain MeshPart with a TextureID and no
+SurfaceAppearance, MeshSize about (0.09-0.12, 0.26, 1.0). `Motion:SwordGallery` shows them all through
+the real factory (its grid was spaced for thin blades; widen it if tiles overlap).

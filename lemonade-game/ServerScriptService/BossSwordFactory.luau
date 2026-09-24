@@ -249,6 +249,11 @@ local function fitLook(tool, look)
 	look = look or BossWeapons.Fallback.look
 	local mesh = findMesh(look)
 	local length = look.length or DEFAULT_SWORD_LENGTH
+	-- A named mesh that is not imported yet falls back to the shared template; that template's
+	-- painted texture would hide this sword's own colour, so strip it like a textured = false look.
+	local fellBack = mesh ~= nil and look.mesh ~= nil and look.mesh ~= "Template" and look.mesh ~= "Blocks"
+		and mesh.Name ~= look.mesh
+	local stripTexture = look.textured == false or fellBack
 	if not mesh then
 		if not tool:GetAttribute("MeshGripFixed") then
 			ensureBlockParts(tool)
@@ -259,13 +264,13 @@ local function fitLook(tool, look)
 	local old = tool:FindFirstChild("Handle")
 	if old and old:IsA("MeshPart") and old.MeshId == mesh.MeshId then
 		CombatUtil.sizeSwordMesh(old, length)
-		if look.textured == false then old.TextureID = "" end
+		if stripTexture then old.TextureID = "" end
 		CombatUtil.applyWeaponAppearance(old, look.color, look.material)
 		return
 	end
 	local handle = mesh:Clone()
 	handle.Name = "Handle"
-	if look.textured == false then
+	if stripTexture then
 		handle.TextureID = "" -- a painted texture would hide the colour this variant is built on
 	end
 	handle.Anchored = false

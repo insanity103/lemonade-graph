@@ -90,8 +90,9 @@ local Metal, Neon, Glass, Ice, Slate, Basalt = Enum.Material.Metal, Enum.Materia
 local rgb = Color3.fromRGB
 
 -- look.mesh: "Boss_Gorgon" .. "Boss_CelestialTitan" and the three wardens "RootWarden" /
--- "DrownedBellwarden" / "TempestWarden" (ServerStorage/BossSwordMeshes/<name>, built by
--- tools/blender_boss_swords.py), "Template" (ServerStorage/SwordMeshTemplate) or "Blocks" (the starter
+-- "DrownedBellwarden" / "TempestWarden" (built by tools/blender_boss_swords.py), a pool sword's own
+-- "Sword_<Name>" mesh (tools/blender_pool_swords.py; one per sword, being rolled out pool by pool --
+-- docs/prompts/pool_swords_blender.md) -- all in ServerStorage/BossSwordMeshes/<name> -- "Template" (ServerStorage/SwordMeshTemplate) or "Blocks" (the starter
 -- sword's block parts, restyled: blade/guard/width/length below). Missing meshes fall back down
 -- that list. length = held length in studs; blade/width/guard scale the block sword's parts.
 -- textured = false strips the mesh's painted texture so the sword's own colour and material show
@@ -246,18 +247,18 @@ BossWeapons.NormalPools = {
 	IronLowlands = { -- Quarry Bandits, Lv 1-3
 		lesser = true, inherentBonusDmg = 0.05,
 		swords = {
-			sword("Quarry Shank", 0.90, 30, { mesh = "Blocks", color = rgb(255, 238, 210), material = Enum.Material.Metal, accent = rgb(255, 140, 40), length = 3.2, blade = 0.7, width = 0.8, guard = 0.8 },
+			sword("Quarry Shank", 0.90, 30, { mesh = "Sword_QuarryShank", color = rgb(255, 238, 210), material = Enum.Material.Metal, length = 3.2 },
 				{ inherentRange = 0.5 }, "Pit tool reground into a blade between shifts"),
-			sword("Toolhouse Cleaver", 0.97, 24, { mesh = "Blocks", color = rgb(255, 140, 40), material = Enum.Material.Metal, accent = rgb(64, 144, 255), length = 3.5, blade = 0.85, width = 1.2, guard = 0.9 },
+			sword("Toolhouse Cleaver", 0.97, 24, { mesh = "Sword_ToolhouseCleaver", color = rgb(255, 140, 40), material = Enum.Material.Metal, length = 3.5 },
 				{ inherentKnockback = 8 }, "Heavy chopper off the toolhouse wall"),
-			sword("Bandit's Machete", 1.04, 18, { mesh = "Template", textured = false, color = rgb(232, 240, 255), material = Enum.Material.Metal, length = 3.9 },
+			sword("Bandit's Machete", 1.04, 18, { mesh = "Sword_BanditsMachete", color = rgb(232, 240, 255), material = Enum.Material.Metal, length = 3.9 },
 				{ inherentRange = 0.8 }, "Long camp machete, the quarry's first real sword"),
-			sword("Rivetsteel Blade", 1.12, 13, { mesh = "Blocks", color = rgb(232, 240, 255), material = Enum.Material.Metal, accent = rgb(255, 72, 72), length = 3.8, blade = 1.0, width = 1.0, guard = 1.0 },
+			sword("Rivetsteel Blade", 1.12, 13, { mesh = "Sword_RivetsteelBlade", color = rgb(232, 240, 255), material = Enum.Material.Metal, length = 3.8 },
 				{ inherentCrit = 0.03 }, "Straight blade riveted from cart plate"),
-			sword("Foreman's Longsword", 1.20, 9, { mesh = "Template", textured = false, color = rgb(64, 144, 255), material = Enum.Material.Metal, length = 4.1 },
+			sword("Foreman's Longsword", 1.20, 9, { mesh = "Sword_ForemansLongsword", color = rgb(64, 144, 255), material = Enum.Material.Metal, length = 4.1 },
 				{ inherentRange = 1.0, inherentKnockback = 10 }, "The old foreman's own sword, kept sharp out of spite"),
 		},
-		legendary = sword("Lodestone Edge", 1.95, 0, { mesh = "Template", textured = false, color = rgb(255, 220, 72), material = Enum.Material.Neon, length = 4.2 },
+		legendary = sword("Lodestone Edge", 1.95, 0, { mesh = "Sword_LodestoneEdge", color = rgb(255, 220, 72), material = Enum.Material.Neon, length = 4.2 },
 			{ inherentCrit = 0.05, inherentRange = 1.0 }, "A splinter of the quarry's singing lodestone, edged in gold"),
 	},
 	Briarwood = { -- Briarwood, Lv 9-14

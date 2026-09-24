@@ -181,15 +181,22 @@ Every sword must pass ALL of these. Your script enforces the measurable ones and
    identifiable. You verify this by looking at the sheet (section 10).
 5. **Tiers.** Complexity follows the sword's place in its pool's ladder. Use these budgets:
 
-| Tier | Which swords | Motif forms | Triangles |
+| Tier | Which swords | Motif forms | Triangles (after the bevel) |
 |---|---|---|---|
-| T1 | shivs, dirks, daggers, tantos, the pool's cheapest short swords (weight 27-30) | 1 | 1,200-2,200 |
-| T2 | falchions, sabres, cutters, mid swords | 1-2 | 1,800-3,200 |
-| T3 | longswords, broadswords, claymores, greatswords, estoc, katana, nodachi, rapiers | 2-3 | 2,600-4,200 |
-| T4 | Legendaries, Relics, spin relics, warden epics | 3-4 | 3,400-5,000 |
+| T1 | shivs, dirks, daggers, tantos, the pool's cheapest short swords (weight 27-30) | 1 | 1,800-3,200 |
+| T2 | falchions, sabres, cutters, mid swords | 1-2 | 2,600-4,800 |
+| T3 | longswords, broadswords, claymores, greatswords, estoc, katana, nodachi, rapiers | 2-3 | 3,400-6,000 |
+| T4 | Legendaries, Relics, spin relics, warden epics | 3-4 | 3,800-7,000 |
 
-   T4 swords are the richest pool swords but must stay visually below the eight signature swords
-   (3,292-5,380 triangles, 5-8 forms). If a T4 design starts to outshine its boss's sword, simplify.
+   Counts are measured on the finished mesh: `finish()`'s bevel roughly triples a part's raw
+   triangle count (the eight signature swords land at 3,292-5,380 through the same bevel).
+   **Low-poly curved parts cost MORE, not less:** the bevel rounds every edge whose faces meet at
+   more than 32 deg, so a sphere, ring or cylinder with fewer than 12 segments around gets every
+   edge bevelled (~3x). Build curved parts at >= 12 segments around and >= 6 rings (spheres 12 x 6,
+   torus tubes >= 12) so the bevel skips them; spend the savings on silhouette.
+   T4 swords are the richest pool swords but must stay *visually* below the eight signature swords
+   -- judge that on the contact sheet, not by triangle count. If a T4 design starts to outshine its
+   boss's sword, simplify.
 6. **Weapon type reads.** `length` in the config sets the held size (3.0-5.0 studs); the mesh is
    always 1.0 long with a fixed grip band, so weapon type must read through blade width, profile
    and taper: a shiv is short-looking because its blade is wide at the root and tapers fast to a
@@ -261,15 +268,22 @@ pip install "bpy==4.2.*" numpy pillow      # Blender as a Python module; CPU Cyc
 python3 tools/blender_boss_swords.py --help  # sanity: the existing forge runs
 ```
 A Draco "library not found" message from the exporter is harmless (compression is not used).
+The `bpy` module segfaults while tearing down at interpreter exit, after all work is written; the
+pool forge therefore leaves through `os._exit()` with its own status (0 all checks passed, 1 a check
+failed, 2 a crash). **Never re-run `tools/blender_boss_swords.py`**: its output is not
+byte-stable, so a rebuild rewrites the eight committed signature GLBs with reordered bytes. If you
+do by accident, `git checkout -- assets/swords/` before anything else.
 **Never run Blender while Roblox Studio is open on this machine** (16 GB RAM; the pair filled
 swap before).
 
 ### 7.2 Files you create
-- `tools/blender_pool_swords.py` -- the pool forge. Imports `Forge`, `P`, the layout constants and
-  every helper from `tools/blender_boss_swords.py` (import it as a module; if needed, refactor the
-  shared parts of the boss forge into `tools/sword_forge_lib.py` and make both forges import it --
-  but the boss forge's output must stay byte-for-byte identical: rebuild the eight and confirm
-  `git diff --stat assets/swords/*.glb` is empty).
+- `tools/blender_pool_swords.py` -- the pool forge. **It already exists**: the Iron Lowlands pool
+  (six swords) was built with it first as the reference implementation. It imports the boss forge
+  as a module and adds `PoolForge` (with `flat()` for faceted parts and `orient()`), `rim_disc()`,
+  `rod()`, `through_cutter()`, every pool check in this document, the silhouette IoU pass and the
+  per-pool contact sheets. Add your pool's design functions and `DESIGNS` entries to it; study the
+  six Iron Lowlands designs and `assets/swords/pool/preview_IronLowlands.png` first -- they are the
+  worked examples of this brief. Do not change the Iron Lowlands designs or the shared checks.
 - `assets/swords/pool/<MeshKey>.glb` -- one per sword.
 - `assets/swords/pool/manifest.json` -- per sword: name, mesh key, pool, tier, design name,
   concept one-liner, triangles, vertices, meshSize, palette (slot -> rgb), area share per slot,
@@ -1055,8 +1069,9 @@ Do not generate all 115 in one unverified pass. For each of the 13 pools, in the
 5. **Commit nothing**; move to the next pool.
 
 After all 13 pools: rebuild everything from clean (`rm -rf assets/swords/pool && python3
-tools/blender_pool_swords.py`) and confirm the output is deterministic (rebuild again; the GLBs must
-be byte-identical -- no random seeds without fixing them).
+tools/blender_pool_swords.py`) and confirm the output is deterministic in *geometry*: rebuild again
+and compare each GLB's sorted triangle corner positions (rounded to 1e-5). Bytes are NOT stable
+between runs -- Blender's exporter/bevel can reorder vertices -- so do not compare file hashes.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -1064,7 +1079,7 @@ be byte-identical -- no random seeds without fixing them).
 
 ```
 python3 tools/check_sword_glb.py assets/swords/*.glb assets/swords/pool/*.glb     # every file ok
-python3 tools/blender_boss_swords.py --no-preview && git diff --stat assets/swords/*.glb   # signatures unchanged
+git status --short assets/swords/*.glb assets/swords/manifest.json   # signatures untouched: must print nothing
 tools/install_lune.sh && tests/run.sh --quick                                    # 44+ passed, 0 failed
 rojo build map.project.json -o /tmp/map.rbxlx && python3 tools/check_map_project.py /tmp/map.rbxlx
     # only the four existing floating palm/runnel FAILs
