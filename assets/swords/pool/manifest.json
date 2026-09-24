@@ -5157,5 +5157,834 @@
       "iou": 0.842,
       "against": "RootWarden"
     }
+  },
+  "Sword_SparkwireShiv": {
+    "name": "Sparkwire Shiv",
+    "key": "Sword_SparkwireShiv",
+    "pool": "Stormwatch",
+    "tier": 1,
+    "concept": "a leaf blade wound in a coil of sparkwire",
+    "file": "Sword_SparkwireShiv.glb",
+    "bytes": 88036,
+    "triangles": 3032,
+    "vertices": 1528,
+    "meshSize": [
+      0.12565,
+      0.26008,
+      1.0
+    ],
+    "palette": {
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "storm_gold": [
+        255,
+        200,
+        40
+      ],
+      "storm_deep": [
+        40,
+        80,
+        240
+      ],
+      "lightning": [
+        255,
+        244,
+        96
+      ]
+    },
+    "areaShare": {
+      "cloud": 0.236,
+      "storm_gold": 0.325,
+      "storm_deep": 0.398,
+      "lightning": 0.042
+    },
+    "calmVivid": {
+      "calm": 0.236,
+      "vivid": 0.764
+    },
+    "normalise": {
+      "centre_shift": [
+        0.00069,
+        0.00015,
+        0.0
+      ],
+      "length_scale": 1.0003
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.823,
+      "against": "Sword_RodsteelLongsword"
+    }
+  },
+  "Sword_CoppervaneFalchion": {
+    "name": "Coppervane Falchion",
+    "key": "Sword_CoppervaneFalchion",
+    "pool": "Stormwatch",
+    "tier": 2,
+    "concept": "a falchion flaring into a notched weathervane fin",
+    "file": "Sword_CoppervaneFalchion.glb",
+    "bytes": 105444,
+    "triangles": 3732,
+    "vertices": 1886,
+    "meshSize": [
+      0.12812,
+      0.26025,
+      1.0
+    ],
+    "palette": {
+      "storm_gold": [
+        255,
+        200,
+        40
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "storm_deep": [
+        40,
+        80,
+        240
+      ]
+    },
+    "areaShare": {
+      "storm_gold": 0.387,
+      "cloud": 0.275,
+      "storm_deep": 0.339
+    },
+    "calmVivid": {
+      "calm": 0.275,
+      "vivid": 0.725
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.00049,
+        0.0
+      ],
+      "length_scale": 1.00098
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.813,
+      "against": "Boss_Gorgon"
+    }
+  },
+  "Sword_WeathervaneSabre": {
+    "name": "Weathervane Sabre",
+    "key": "Sword_WeathervaneSabre",
+    "pool": "Stormwatch",
+    "tier": 2,
+    "concept": "a sabre with an arrow cutout over a vane-arrow guard",
+    "file": "Sword_WeathervaneSabre.glb",
+    "bytes": 107160,
+    "triangles": 3640,
+    "vertices": 1829,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "storm_blue": [
+        88,
+        156,
+        255
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "storm_gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "storm_blue": 0.465,
+      "cloud": 0.321,
+      "storm_gold": 0.214
+    },
+    "calmVivid": {
+      "calm": 0.321,
+      "vivid": 0.679
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.801,
+      "against": "Sword_CoppervaneFalchion"
+    }
+  },
+  "Sword_RodsteelLongsword": {
+    "name": "Rodsteel Longsword",
+    "key": "Sword_RodsteelLongsword",
+    "pool": "Stormwatch",
+    "tier": 3,
+    "concept": "a lightning-rod longsword with scorch marks and insulator discs",
+    "file": "Sword_RodsteelLongsword.glb",
+    "bytes": 158032,
+    "triangles": 4856,
+    "vertices": 2450,
+    "meshSize": [
+      0.148,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "storm_gold": [
+        255,
+        200,
+        40
+      ],
+      "lightning": [
+        255,
+        244,
+        96
+      ],
+      "storm_deep": [
+        40,
+        80,
+        240
+      ],
+      "storm_blue": [
+        88,
+        156,
+        255
+      ]
+    },
+    "areaShare": {
+      "cloud": 0.237,
+      "storm_gold": 0.171,
+      "lightning": 0.115,
+      "storm_deep": 0.296,
+      "storm_blue": 0.182
+    },
+    "calmVivid": {
+      "calm": 0.237,
+      "vivid": 0.763
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.823,
+      "against": "Sword_SparkwireShiv"
+    }
+  },
+  "Sword_ObservatoryBroadsword": {
+    "name": "Observatory Broadsword",
+    "key": "Sword_ObservatoryBroadsword",
+    "pool": "Stormwatch",
+    "tier": 3,
+    "concept": "a broadsword with a raised constellation over a telescope crossbar",
+    "file": "Sword_ObservatoryBroadsword.glb",
+    "bytes": 157528,
+    "triangles": 5712,
+    "vertices": 2886,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "storm_deep": [
+        40,
+        80,
+        240
+      ],
+      "lightning": [
+        255,
+        244,
+        96
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "storm_gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "storm_deep": 0.328,
+      "lightning": 0.214,
+      "cloud": 0.33,
+      "storm_gold": 0.127
+    },
+    "calmVivid": {
+      "calm": 0.33,
+      "vivid": 0.67
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.843,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_BarometerRapier": {
+    "name": "Barometer Rapier",
+    "key": "Sword_BarometerRapier",
+    "pool": "Stormwatch",
+    "tier": 3,
+    "concept": "a needle rapier over a round barometer dial",
+    "file": "Sword_BarometerRapier.glb",
+    "bytes": 118100,
+    "triangles": 4302,
+    "vertices": 2177,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "storm_blue": [
+        88,
+        156,
+        255
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "storm_gold": [
+        255,
+        200,
+        40
+      ],
+      "storm_deep": [
+        40,
+        80,
+        240
+      ]
+    },
+    "areaShare": {
+      "storm_blue": 0.113,
+      "cloud": 0.332,
+      "storm_deep": 0.041,
+      "storm_gold": 0.513
+    },
+    "calmVivid": {
+      "calm": 0.332,
+      "vivid": 0.668
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.842,
+      "against": "Sword_WeathercockEpee"
+    }
+  },
+  "Sword_GustcutterGladius": {
+    "name": "Gustcutter Gladius",
+    "key": "Sword_GustcutterGladius",
+    "pool": "Stormwatch",
+    "tier": 2,
+    "concept": "a leaf gladius swept with gust swooshes",
+    "file": "Sword_GustcutterGladius.glb",
+    "bytes": 116412,
+    "triangles": 4190,
+    "vertices": 2111,
+    "meshSize": [
+      0.096,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "storm_blue": [
+        88,
+        156,
+        255
+      ],
+      "storm_deep": [
+        40,
+        80,
+        240
+      ],
+      "storm_gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "cloud": 0.294,
+      "storm_blue": 0.456,
+      "storm_deep": 0.211,
+      "storm_gold": 0.038
+    },
+    "calmVivid": {
+      "calm": 0.294,
+      "vivid": 0.706
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.842,
+      "against": "RootWarden"
+    }
+  },
+  "Sword_WeathercockEpee": {
+    "name": "Weathercock Epee",
+    "key": "Sword_WeathercockEpee",
+    "pool": "Stormwatch",
+    "tier": 3,
+    "concept": "a thin gold epee under a rooster weathervane",
+    "file": "Sword_WeathercockEpee.glb",
+    "bytes": 99392,
+    "triangles": 3536,
+    "vertices": 1794,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "epee_gold": [
+        255,
+        190,
+        48
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "lightning": [
+        255,
+        244,
+        96
+      ],
+      "storm_deep": [
+        40,
+        80,
+        240
+      ]
+    },
+    "areaShare": {
+      "epee_gold": 0.219,
+      "cloud": 0.309,
+      "lightning": 0.032,
+      "storm_deep": 0.44
+    },
+    "calmVivid": {
+      "calm": 0.309,
+      "vivid": 0.691
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.842,
+      "against": "Sword_BarometerRapier"
+    }
+  },
+  "Sword_StormbellTulwar": {
+    "name": "Stormbell Tulwar",
+    "key": "Sword_StormbellTulwar",
+    "pool": "Stormwatch",
+    "tier": 3,
+    "concept": "a tulwar with a cloud emblem and a storm bell on its pommel",
+    "file": "Sword_StormbellTulwar.glb",
+    "bytes": 136988,
+    "triangles": 4704,
+    "vertices": 2384,
+    "meshSize": [
+      0.13,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "storm_blue": [
+        88,
+        156,
+        255
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "lightning": [
+        255,
+        244,
+        96
+      ],
+      "storm_gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "storm_blue": 0.351,
+      "cloud": 0.346,
+      "lightning": 0.062,
+      "storm_gold": 0.241
+    },
+    "calmVivid": {
+      "calm": 0.346,
+      "vivid": 0.654
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.784,
+      "against": "Sword_CoppervaneFalchion"
+    }
+  },
+  "Sword_PinwheelClaymore": {
+    "name": "Pinwheel Claymore",
+    "key": "Sword_PinwheelClaymore",
+    "pool": "Stormwatch",
+    "tier": 4,
+    "concept": "a claymore with a four-vane pinwheel spinning at its root",
+    "file": "Sword_PinwheelClaymore.glb",
+    "bytes": 113440,
+    "triangles": 4150,
+    "vertices": 2089,
+    "meshSize": [
+      0.088,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "hot_pink": [
+        255,
+        96,
+        150
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "lightning": [
+        255,
+        244,
+        96
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "storm_gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "hot_pink": 0.289,
+      "cyan": 0.254,
+      "lightning": 0.057,
+      "cloud": 0.34,
+      "storm_gold": 0.06
+    },
+    "calmVivid": {
+      "calm": 0.34,
+      "vivid": 0.66
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.83,
+      "against": "Sword_GustcutterGladius"
+    }
+  },
+  "Sword_BottledLightning": {
+    "name": "Bottled Lightning",
+    "key": "Sword_BottledLightning",
+    "pool": "Stormwatch",
+    "tier": 4,
+    "concept": "a fat lightning bolt escaping a lemonade jar",
+    "file": "Sword_BottledLightning.glb",
+    "bytes": 133048,
+    "triangles": 4384,
+    "vertices": 2218,
+    "meshSize": [
+      0.16216,
+      0.26025,
+      1.0
+    ],
+    "palette": {
+      "lightning": [
+        255,
+        244,
+        96
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "storm_blue": [
+        88,
+        156,
+        255
+      ],
+      "storm_gold": [
+        255,
+        200,
+        40
+      ],
+      "storm_deep": [
+        40,
+        80,
+        240
+      ]
+    },
+    "areaShare": {
+      "lightning": 0.328,
+      "cloud": 0.253,
+      "storm_blue": 0.108,
+      "storm_gold": 0.052,
+      "storm_deep": 0.259
+    },
+    "calmVivid": {
+      "calm": 0.253,
+      "vivid": 0.747
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        -0.00048,
+        0.0
+      ],
+      "length_scale": 1.00096
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.759,
+      "against": "Sword_PinwheelClaymore"
+    }
+  },
+  "Sword_KitestringRapier": {
+    "name": "Kitestring Rapier",
+    "key": "Sword_KitestringRapier",
+    "pool": "Stormwatch",
+    "tier": 4,
+    "concept": "a rapier with a diamond kite near the tip and its string wound down the blade",
+    "file": "Sword_KitestringRapier.glb",
+    "bytes": 151216,
+    "triangles": 5524,
+    "vertices": 2774,
+    "meshSize": [
+      0.11602,
+      0.26004,
+      1.0
+    ],
+    "palette": {
+      "kite": [
+        200,
+        236,
+        255
+      ],
+      "storm_blue": [
+        88,
+        156,
+        255
+      ],
+      "lightning": [
+        255,
+        244,
+        96
+      ],
+      "hot_pink": [
+        255,
+        96,
+        150
+      ],
+      "storm_gold": [
+        255,
+        200,
+        40
+      ]
+    },
+    "areaShare": {
+      "kite": 0.202,
+      "storm_blue": 0.467,
+      "lightning": 0.052,
+      "hot_pink": 0.099,
+      "storm_gold": 0.181
+    },
+    "calmVivid": {
+      "calm": 0.202,
+      "vivid": 0.798
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        8e-05,
+        0.0
+      ],
+      "length_scale": 1.00016
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.739,
+      "against": "Sword_SparkwireShiv"
+    }
+  },
+  "Sword_DoubleRainbow": {
+    "name": "Double Rainbow",
+    "key": "Sword_DoubleRainbow",
+    "pool": "Stormwatch",
+    "tier": 4,
+    "concept": "a rainbow blade under a second rainbow arch",
+    "file": "Sword_DoubleRainbow.glb",
+    "bytes": 175436,
+    "triangles": 6820,
+    "vertices": 3452,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "cyan": [
+        72,
+        204,
+        255
+      ],
+      "lime": [
+        120,
+        236,
+        56
+      ],
+      "lightning": [
+        255,
+        244,
+        96
+      ],
+      "orange": [
+        255,
+        140,
+        40
+      ],
+      "coral": [
+        255,
+        72,
+        72
+      ],
+      "cloud": [
+        236,
+        240,
+        255
+      ],
+      "rainbow_pink": [
+        255,
+        96,
+        216
+      ]
+    },
+    "areaShare": {
+      "cloud": 0.361,
+      "lime": 0.09,
+      "lightning": 0.093,
+      "orange": 0.095,
+      "coral": 0.091,
+      "cyan": 0.087,
+      "violet": 0.083,
+      "rainbow_pink": 0.1
+    },
+    "calmVivid": {
+      "calm": 0.361,
+      "vivid": 0.639
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.816,
+      "against": "Boss_Gorgon"
+    }
   }
 }

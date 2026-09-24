@@ -103,6 +103,23 @@ def helix(f, name, y0, y1, turns, R, r, colour, segs=12, steps=None):
     return f.loft(name, rings, [colour] * segs, colour)
 
 
+def ellipse_helix(f, name, y0, y1, turns, R, r, colour, sx=0.5, segs=12, steps=None):
+    """A helix on an elliptical path (x squeezed by sx to hug a flat blade) whose tube stays round,
+    so it never picks up the bevel the way a scaled helix does."""
+    steps = steps or int(14 * turns) + 1
+    rings = []
+    for k in range(steps):
+        a = 2 * _m.pi * turns * k / (steps - 1)
+        y = y0 + (y1 - y0) * k / (steps - 1)
+        cx, cz = sx * R * _m.cos(a), R * _m.sin(a)
+        nx, nz = _m.cos(a) / sx, _m.sin(a)
+        ll = _m.hypot(nx, nz)
+        nx, nz = nx / ll, nz / ll
+        rings.append([(cx + r * _m.cos(b) * nx, y + r * _m.sin(b), cz + r * _m.cos(b) * nz)
+                      for b in [2 * _m.pi * j / segs for j in range(segs)]])
+    return f.loft(name, rings, [colour] * segs, colour)
+
+
 def striped(f, name, profile, paint, segs=16, flat=False):
     """A lathe as a loft so each ring band can take its own colour: paint(i) -> colour."""
     rings = [[(r * _m.cos(a), y, r * _m.sin(a)) for a in [2 * _m.pi * j / segs for j in range(segs)]] for r, y in profile]
