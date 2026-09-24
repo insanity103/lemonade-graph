@@ -651,10 +651,14 @@ do
 
 		-- Materials the hub does not use carry the desert's own colours; the strata reuse the hub
 		-- canyon's tan sandstone, rust rock and cream limestone, so the two places share one palette.
-		terrain:SetMaterialColor(M.Sand, Color3.fromRGB(255, 214, 130)) -- GROUND_SAND: the desert floor, golden toy sand matching the pit slab
+		-- The walked sand is the zone's big calm surface, so it sits near the top of its value range:
+		-- a light golden cream (the old deeper gold, 255/214/130, read as dull ochre in shade), with
+		-- the path and the shore one step paler still and the accents (awnings, flowers, cacti) as
+		-- the only full-chroma colour.
+		terrain:SetMaterialColor(M.Sand, Color3.fromRGB(255, 228, 164)) -- the desert floor: light golden toy sand
 		terrain:SetMaterialColor(M.Snow, Color3.fromRGB(255, 248, 228)) -- GROUND_PALE: pale drift crests, the near-white step of the sand
-		terrain:SetMaterialColor(M.Salt, Color3.fromRGB(255, 224, 212)) -- the trodden hardpan trail: a pale rosy-cream path, calm against the golden sand
-		terrain:SetMaterialColor(M.Concrete, Color3.fromRGB(250, 214, 160)) -- GROUND_TAN: damp sand at the water's edge, peach, matching the pool beds
+		terrain:SetMaterialColor(M.Salt, Color3.fromRGB(255, 240, 214)) -- the trodden trail and camp: the hub road's cream (PATH)
+		terrain:SetMaterialColor(M.Concrete, Color3.fromRGB(255, 238, 206)) -- damp sand at the water's edge: a clean pale cream, not peach
 		-- PS99 water: a flat, saturated toy cyan-blue (the sky's own family, not a natural teal),
 		-- barely reflective so it reads as a painted pool rather than a mirror.
 		terrain.WaterColor = Color3.fromRGB(64, 190, 255)
@@ -772,7 +776,10 @@ do
 		end
 
 		-- Landmark mesas outside the basin: { x, z, radius x, radius z, yaw, top }. Each steps in
-		-- twice as it rises (the upper tiers narrower), sand heaped round its foot.
+		-- twice as it rises (the upper tiers narrower), sand heaped round its foot. The first six are
+		-- smooth toy parts now (tools/map_forge.py toy_mesa, PART_MESAS mirrors them): here they
+		-- keep only the sand skirt they stand in. The last two stay rock, carved by the arch.
+		local PART_MESAS = 6
 		local MESAS = {
 			{ 204, 404, 40, 56, 18, 86 }, -- east, over the oasis
 			{ 170, 498, 30, 21, -12, 66 }, -- south-east
@@ -796,7 +803,7 @@ do
 					local a = math.atan2(lz, lx)
 					r *= 1 + 0.1 * noise(math.cos(a) * 1.7 + i * 7.1, math.sin(a) * 1.7, 5.5) + 0.04 * noise(x / 6, z / 6, i)
 					local top = m[6]
-					local tiers = { { top, 0.8 }, { top - 16, 0.9 }, { top - 32, 1.0 } }
+					local tiers = if i <= PART_MESAS then {} else { { top, 0.8 }, { top - 16, 0.9 }, { top - 32, 1.0 } }
 					local h = -math.huge
 					for _, t in ipairs(tiers) do
 						-- a rounded shoulder over the last stud or two of each tier's edge
@@ -813,7 +820,8 @@ do
 			return best
 		end
 
-		-- Stacked rock towers (built after the voxels are written).
+		-- Stacked rock towers: toy parts now (map_forge rock_stack, PART_TOWERS); here only the talus of
+		-- sand round each foot.
 		local TOWERS = {
 			{ 160, 262, 10, 98 },
 			{ 232, 300, 12, 116 },
@@ -1139,27 +1147,10 @@ do
 		terrain:WriteVoxels(region, 4, mats, occs)
 
 		-- Stacked rock towers: bulging drums of sandstone with rust and cream bands, a flat cap.
-		local TOWER_MATS = { M.Sandstone, M.Rock, M.Sandstone, M.Limestone, M.Sandstone, M.Rock }
-		for i, t in ipairs(TOWERS) do
-			local tx, tz, r, h = t[1], t[2], t[3], t[4]
-			local y = 2
-			local k = i
-			-- a talus of sand and rock at the foot, blending into the dunes
+		for _, t in ipairs(TOWERS) do
+			local tx, tz, r = t[1], t[2], t[3]
+			-- a talus of sand at the foot, blending into the dunes
 			terrain:FillBall(Vector3.new(tx, 6, tz), r * 1.9, M.Sand)
-			while y < h do
-				local seg = drng:NextNumber(9, 15)
-				local rr = r * (1 - 0.18 * (y / h)) * drng:NextNumber(0.9, 1.12)
-				local cf = CFrame.new(tx + drng:NextNumber(-1, 1), y + seg / 2, tz + drng:NextNumber(-1, 1))
-				local mat = TOWER_MATS[(k % #TOWER_MATS) + 1]
-				terrain:FillCylinder(cf, seg + 0.5, rr, mat)
-				for _ = 1, 3 do -- knobs that break the drum's circle
-					local a = drng:NextNumber(0, math.pi * 2)
-					terrain:FillBall(cf.Position + Vector3.new(math.cos(a) * rr * 0.55, drng:NextNumber(-2, 2), math.sin(a) * rr * 0.55), rr * 0.6, mat)
-				end
-				y += seg
-				k += 1
-			end
-			terrain:FillCylinder(CFrame.new(tx, y + 1.5, tz), 3, r * 0.75, M.Limestone)
 			stats.towers += 1
 		end
 
@@ -1174,24 +1165,10 @@ do
 			{ 336, 572, 40, 28, 84, 6 },
 			{ 470, 120, 38, 30, 80, -30 },
 		}
-		for i, m in ipairs(FAR_MESAS) do
-			local mx, mz, rx, rz, top, yaw = m[1], m[2], m[3], m[4], m[5], m[6]
-			terrain:FillBall(Vector3.new(mx, -rx * 0.5, mz), rx * 1.25, M.Sand) -- the skirt
-			local y = -4
-			while y < top do
-				local u = y / top
-				local w = if u < 0.55 then 1 - 0.08 * u elseif u < 0.8 then 0.78 else 0.6
-				local mat = dstratum(y, mx, mz)
-				for k = 0, 2 do
-					local jitter = 0.86 + 0.14 * noise(i * 3.1, y / 11, k)
-					terrain:FillBlock(
-						CFrame.new(mx, y + 2, mz) * CFrame.Angles(0, math.rad(yaw + k * 31), 0),
-						Vector3.new(rx * 2 * w * jitter, 4.2, rz * 2 * w * (1.02 - 0.1 * k)),
-						mat
-					)
-				end
-				y += 4
-			end
+		for _, m in ipairs(FAR_MESAS) do
+			local mx, mz, rx = m[1], m[2], m[3]
+			-- the skirt only: the mesa itself is toy parts (map_forge toy_mesa, PART_FAR_MESAS)
+			terrain:FillBall(Vector3.new(mx, -rx * 0.5, mz), rx * 1.25, M.Sand)
 			stats.towers += 1
 		end
 

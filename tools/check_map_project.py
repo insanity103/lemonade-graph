@@ -432,7 +432,11 @@ def main():
                 break
 
     check_coplanar_tops(visual_parts)
-    check_support([p for p in visual_parts if id(p) not in ground_ids and p not in collision.descendants()], grounds)
+    # Models tagged OnTerrain (the desert's toy mesas and rock towers, out beyond the basin) stand in
+    # WorldTerrain's sand, which is not in the place file, so they are left out of the support check.
+    on_terrain = {id(d) for m in lemap.descendants() if m.attrs.get("OnTerrain") for d in m.descendants()}
+    check_support([p for p in visual_parts if id(p) not in ground_ids and p not in collision.descendants()
+                   and id(p) not in on_terrain], grounds)
 
     travel = navigate(grounds, solids, spawn_location, spawns, waypoints, lemap, markers)
     finish(report_path, travel)
@@ -497,7 +501,9 @@ def check_support(parts, grounds, tol_float=0.4):
                     qb = q.box
                     if qb[0] > x1 + 0.5 or qb[1] < x0 - 0.5 or qb[4] > z1 + 0.5 or qb[5] < z0 - 0.5:
                         continue
-                    if qb[3] < bottom - 0.5 or qb[2] > top + 0.5:
+                    # (against p's whole height, not just its centre column's: a drooping frond tip or
+                    # a leaning post is joined at its end, well above or below its centre)
+                    if qb[3] < ymin - 0.5 or qb[2] > p.box[3] + 0.5:
                         continue
                     qt = top_at(q, cx, cz)
                     if qt is not None and abs(bottom - qt) <= tol_float:
@@ -671,6 +677,7 @@ def check_projects():
                      ("ServerScriptService", "WorldLook"), ("ServerScriptService", "WorldTerrain"),
                      ("StarterPlayer", "StarterPlayerScripts", "WorldShowcase"),
                      ("StarterPlayer", "StarterPlayerScripts", "WorldHorizon"),
+                     ("StarterPlayer", "StarterPlayerScripts", "ZoneAir"),  # each zone's air and ambience beds
                      # Studio-only capture stages (both inert outside Studio).
                      ("ServerScriptService", "SwordGalleryStage"),
                      ("ServerScriptService", "EnemyDropStage")}

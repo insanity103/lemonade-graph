@@ -166,6 +166,9 @@
         },
         "WorldHorizon": {
           "$path": "lemonade-game/Map/WorldHorizon.client.luau"
+        },
+        "ZoneAir": {
+          "$path": "lemonade-game/Map/ZoneAir.client.luau"
         }
       }
     },
