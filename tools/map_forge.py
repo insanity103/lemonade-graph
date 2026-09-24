@@ -4228,60 +4228,110 @@ def barrel_cactus(name, x, z, rng):
     ])
 
 
-def palm(name, x, z, rng, height=17.0, lean=(1.0, 0.0), y=None):
-    """A date palm: a ringed trunk curving away from `lean`'s opposite, a crown of arching fronds,
-    a few dates. Nothing but the trunk collides."""
+# Palm variety. Every palm draws its layout from the shared `rng` exactly as the old single design
+# did (so nothing placed after it moves), and takes its character from its own stream seeded by its
+# name: its kind, its trunk's curve and colours, its frond family, count, length and droop, its fruit.
+PALM_KINDS = {  # curve: how much the trunk bows; droop: added to every frond's hang; reach: frond length
+    "date": dict(curve=0.55, droop=8, reach=1.0, extra=(2, 3), segs=6, fruit="dates"),
+    "coconut": dict(curve=1.7, droop=16, reach=1.2, extra=(0, 1), segs=5, fruit="coconuts"),
+    "young": dict(curve=0.35, droop=-16, reach=0.75, extra=(2, 4), segs=4, fruit=None),
+}
+PALM_TRUNKS = [(hsv(38, 0.24, 1.0), hsv(34, 0.36, 0.98)), (hsv(32, 0.3, 1.0), hsv(26, 0.42, 0.97)),
+               (hsv(44, 0.2, 1.0), hsv(40, 0.3, 0.99))]
+PALM_RINGS = [hsv(28, 0.86, 0.96), hsv(36, 0.8, 1.0), hsv(14, 0.72, 0.98)]
+PALM_FAMILIES = [  # (body, deep, highlight): lime, leaf green, yellow-green
+    [hsv(104, 0.82, 0.96), hsv(112, 0.88, 0.84), hsv(96, 0.34, 1.0)],
+    [hsv(134, 0.78, 0.86), hsv(140, 0.84, 0.74), hsv(128, 0.42, 0.98)],
+    [hsv(84, 0.8, 0.96), hsv(90, 0.86, 0.86), hsv(76, 0.4, 1.0)],
+]
+
+
+def palm(name, x, z, rng, height=17.0, lean=(1.0, 0.0), y=None, kind=None):
+    """A palm: a ringed trunk bowing away from `lean`'s opposite under a crown of arching fronds.
+    `kind` (date / coconut / young, else picked from the name's own stream) sets its character: a
+    tall straight date palm with a full drooping crown and dates, a bowed coconut palm with long
+    hanging fronds and coconuts, or a short bushy young palm with its fronds held up. Nothing but the
+    trunk's foot collides."""
+    vr = random.Random(zlib.crc32(name.encode()))
+    kind = kind or vr.choice(("date", "date", "coconut", "coconut", "young"))
+    K = PALM_KINDS[kind]
+    if kind == "young":
+        height *= vr.uniform(0.38, 0.5)
+    else:
+        height *= vr.uniform(0.85, 1.2)
+    trunk, trunk_alt = vr.choice(PALM_TRUNKS)
+    ring = vr.choice(PALM_RINGS)
+    fam = vr.choice(PALM_FAMILIES)
+    reach = K["reach"] * vr.uniform(0.9, 1.15)
+    fat = vr.uniform(0.9, 1.15) * (1.25 if kind == "young" else 1.0)
     y = floor_at(x, z, y) - 0.4
     lx, lz = lean
     n = math.hypot(lx, lz)
     lx, lz = lx / n, lz / n
-    seg = height / 5
+    segs = K["segs"]
+    seg = height / segs
     tilt0 = rng.uniform(12, 20)
     p = (x, y, z)
     kids = []
-    for k in range(5):
-        th = math.radians(tilt0 * (k + 1) / 5 + 4 * k)
+    for k in range(segs):
+        f = k / (segs - 1)
+        th = math.radians((tilt0 * (f + 0.2) + 20 * f * f) * K["curve"])
         q = (p[0] + math.sin(th) * lx * seg, p[1] + math.cos(th) * seg, p[2] + math.sin(th) * lz * seg)
         # every segment above the first runs a little way back down inside the thicker one below
         # it, so the joint holds however big the palm is grown (hidden under the ring)
         back = seg * 0.3 if k else 0.0
         u = tuple((q[i] - p[i]) / seg for i in range(3))
         mid = tuple((p[i] + q[i]) / 2 - u[i] * back / 2 for i in range(3))
-        rad = 1.5 - k * 0.12
-        kids.append(part(f"Trunk{k}", (seg + 0.35 + back, rad, rad), mid, PALM_TRUNK if k % 2 == 0 else PALM_TRUNK_ALT, "SmoothPlastic",
+        rad = (1.5 - f * 0.5) * fat
+        kids.append(part(f"Trunk{k}", (seg + 0.35 + back, rad, rad), mid, trunk if k % 2 == 0 else trunk_alt, "SmoothPlastic",
                          mul(beam_rot(p, q), rot_z(90)), shape="Cylinder", collide=(k == 0)))
-        if k < 4:  # the knobbly ring where each year's growth meets the next
-            kids.append(part(f"Ring{k}", (rad + 0.25, rad + 0.25, rad + 0.25), q, PALM_RING, "SmoothPlastic", shape="Ball",
+        if k < segs - 1:  # the knobbly ring where each year's growth meets the next
+            kids.append(part(f"Ring{k}", (rad + 0.25, rad + 0.25, rad + 0.25), q, ring, "SmoothPlastic", shape="Ball",
                              collide=False, query=False))
         p = q
-    kids.append(part("Heart", (1.6, 1.4, 1.6), (p[0], p[1] + 0.2, p[2]), PALM_RING, "SmoothPlastic", shape="Ball", collide=False))
+    kids.append(part("Heart", (1.6 * fat, 1.4 * fat, 1.6 * fat), (p[0], p[1] + 0.2, p[2]), ring, "SmoothPlastic", shape="Ball",
+                     collide=False))
+    # The crown: the shared draws lay out the main ring of fronds; the palm's own stream adds an
+    # upper tier of shorter, steeper ones between them, so crowns differ in fullness too.
     fronds = rng.randint(7, 8)
+    plan = []
     for k in range(fronds):
-        a = k / fronds * 360 + rng.uniform(-12, 12)
-        droop = rng.uniform(8, 22)
-        c = rng.choice(PALM_LEAF)
+        plan.append((k / fronds * 360 + rng.uniform(-12, 12), rng.uniform(8, 22), rng.choice(PALM_LEAF),
+                     rng.uniform(4.2, 5.2), rng.uniform(3.8, 4.8), 1.0))
+    extra = vr.randint(*K["extra"])
+    for k in range(extra):
+        plan.append((vr.uniform(0, 360), vr.uniform(-6, 8), None, vr.uniform(3.4, 4.2), vr.uniform(3.0, 3.8), 0.8))
+    for k, (a, droop, c, l1, l2, w) in enumerate(plan):
+        droop += K["droop"] * w + vr.uniform(-5, 5)
+        c = fam[k % 3] if vr.random() < 0.75 else fam[vr.randrange(3)]
+        l1, l2 = l1 * reach, l2 * reach
         r1 = mul(rot_y(a), rot_x(droop - 30))
         d1 = apply(r1, (0, 0, 1))
-        l1 = rng.uniform(4.2, 5.2)
-        c1 = (p[0] + d1[0] * l1 / 2, p[1] + 0.3 + d1[1] * l1 / 2, p[2] + d1[2] * l1 / 2)
-        kids.append(part(f"Frond{k}a", (2.0, 0.22, l1), c1, c, "SmoothPlastic", r1, collide=False, query=False))
-        e1 = (p[0] + d1[0] * l1, p[1] + 0.3 + d1[1] * l1, p[2] + d1[2] * l1)
+        lift = 0.3 + 0.045 * k  # each frond's root a hair above the last, so no two share a face plane
+        c1 = (p[0] + d1[0] * l1 / 2, p[1] + lift + d1[1] * l1 / 2, p[2] + d1[2] * l1 / 2)
+        kids.append(part(f"Frond{k}a", (2.0 * w * vr.uniform(0.9, 1.15), 0.22, l1), c1, c, "SmoothPlastic", r1, collide=False,
+                         query=False))
+        e1 = (p[0] + d1[0] * l1, p[1] + lift + d1[1] * l1, p[2] + d1[2] * l1)
         r2 = mul(rot_y(a), rot_x(droop + 26))
         d2 = apply(r2, (0, 0, 1))
-        l2 = rng.uniform(3.8, 4.8)
         # the tip tapers to a point: a wedge laid flat, its thin edge running out along the frond. Its
         # root is set back half a stud inside the frond's first leaf (on that leaf's own centre line,
         # not along the bent tip's), so the two stay joined whatever the droop and however big the
         # palm is grown.
         j = (e1[0] - d1[0] * 0.5, e1[1] - d1[1] * 0.5, e1[2] - d1[2] * 0.5)
-        kids.append(part(f"Frond{k}b", (0.2, 1.5, l2), (j[0] + d2[0] * l2 / 2, j[1] + d2[1] * l2 / 2, j[2] + d2[2] * l2 / 2),
+        kids.append(part(f"Frond{k}b", (0.2, 1.5 * w, l2), (j[0] + d2[0] * l2 / 2, j[1] + d2[1] * l2 / 2, j[2] + d2[2] * l2 / 2),
                          c, "SmoothPlastic", mul(r2, ((0, 1, 0), (1, 0, 0), (0, 0, -1))), cls="WedgePart", collide=False,
                          query=False, shadow=False))
-    for k in range(2):
-        a = rng.uniform(0, math.tau)
-        kids.append(part(f"Dates{k}", (0.8, 0.9, 0.8), (p[0] + math.cos(a) * 0.9, p[1] - 0.6, p[2] + math.sin(a) * 0.9),
-                         (240, 150, 60), "SmoothPlastic", shape="Ball", collide=False, query=False, shadow=False))
-    return model(name, kids)
+    fruit_at = [rng.uniform(0, math.tau) for _ in range(2)]
+    if K["fruit"] == "dates":
+        for k, a in enumerate(fruit_at + [a + 2.4 for a in fruit_at]):
+            kids.append(part(f"Dates{k}", (0.8, 1.0, 0.8), (p[0] + math.cos(a) * 0.9, p[1] - 0.6, p[2] + math.sin(a) * 0.9),
+                             (240, 150, 60), "SmoothPlastic", shape="Ball", collide=False, query=False, shadow=False))
+    elif K["fruit"] == "coconuts":
+        for k, a in enumerate(fruit_at + [fruit_at[0] + 1.3]):
+            kids.append(part(f"Coconut{k}", (1.2, 1.2, 1.2), (p[0] + math.cos(a) * 0.95, p[1] - 0.55, p[2] + math.sin(a) * 0.95),
+                             (236, 176, 96), "SmoothPlastic", shape="Ball", collide=False, query=False, shadow=False))
+    return model(name, kids, attrs={"Species": kind.capitalize() + "Palm", "Sway": True})
 
 
 def oasis_reeds(name, x, z, rng, n=7):
@@ -4421,16 +4471,7 @@ def desert_dressing():
     out.append(grown(S_RUBBLE_CAMP, 64, 334, lambda: rubble("OasisRubble", 64, 334, lr, n=6, spread=4)))
     out.append(quarry_fall("SpringFall", 111.5, 348.0, 14.5, WATER_TOP_Y, width=5.0))
 
-    # Cacti scattered over the sand, clear of the trail, the spawns and the houses.
-    cacti = [(58, 176, 9), (-66, 174, 8), (-104, 244, 10), (62, 242, 7), (-82, 318, 9), (-102, 398, 11),
-             (-72, 452, 8), (58, 460, 9), (-30, 176, 6), (54, 322, 0), (-100, 344, 7), (30, 452, 0)]
-    for k, (x, z, h) in enumerate(cacti):
-        if h:
-            out.append(grown(S_SAGUARO, x, z, lambda: saguaro(f"Saguaro{k}", x, z, h * S_SAGUARO_H, lr, arms=1 + (k % 2))))
-        else:
-            out.append(grown(S_BARREL, x, z, lambda: barrel_cactus(f"BarrelCactus{k}", x, z, lr)))
-    for k, (x, z) in enumerate(((64, 170), (-60, 180), (-90, 322), (-93, 403), (80, 468), (-40, 466), (108, 236))):
-        out.append(grown(S_BARREL, x, z, lambda: barrel_cactus(f"BarrelCactusB{k}", x, z, lr)))
+    # (The loose cacti that stood about the sand are gathered into oasis_life's cactus gardens.)
 
     # A camp of the bandits' own in the pit's west, and the path into their hideout.
     out.append(grown(S_TENT, -92, 418, lambda: a_tent("BanditTentA", -92, 418, 30, TENT_CLOTH[1], stripe=AWNINGS[0]),
@@ -4441,58 +4482,6 @@ def desert_dressing():
     out.append(grown(S_RUBBLE_CAMP, -78, 432, lambda: rubble("BanditRubble", -78, 432, lr, n=8, spread=5)))
     out.append(skull_sign("TurnBackSign", 38, 258, yaw_facing(0, -1), "TURN BACK", "Dune Bandits"))
     # (the loose heaps out on the open sand are terrain now: WorldTerrain's SAND_ROCKS)
-    return out
-
-
-# ── Toy boulders at the scarp foot ───────────────────────────────────────────
-def scarp_boulders(mark):
-    """Toy boulders heaped along the basin's edge where the sand meets the scarp: two or three
-    tipped, rounded stones per heap, sunk into the sand at the floor's edge (their centres over the
-    floor, so they stand on it), collision off (the invisible proxies hold players). Skips anything
-    already standing there (houses, the pools, the hideout's mouth, the gate)."""
-    lr = random.Random(0xDE5EA)
-    occupied = [e for e in REGISTRY[mark:] if e["layer"] not in ("ground", "proxy")]
-
-    def clear(x, z, r):
-        for e in occupied:
-            ex, _, ez = e["pos"]
-            reach = max(e["size"][0], e["size"][2]) / 2 + r + 2.5
-            if abs(ex - x) < reach and abs(ez - z) < reach:
-                return False
-        return True
-
-    runs = [  # (x0, z0, x1, z1): lines just inside the floor's edge
-        (107.5, 172, 107.5, 324), (107.5, 372, 107.5, 468),  # east, broken by the oasis pool
-        (-107.5, 172, -107.5, 258), (-107.5, 342, -107.5, 468),  # west, broken by the hideout's mouth
-        (-106, 170.5, -46, 170.5), (46, 170.5, 106, 170.5),  # the rim's north edge, either side of the overlook
-        (-106, 469.5, -26, 469.5), (26, 469.5, 106, 469.5),  # the pit's south edge, either side of the gate
-    ]
-    out = []
-    n = 0
-    for x0, z0, x1, z1 in runs:
-        length = math.dist((x0, z0), (x1, z1))
-        steps = int(length / 9)
-        for i in range(steps + 1):
-            t = i / max(1, steps)
-            x = x0 + (x1 - x0) * t + lr.uniform(-1.2, 1.2)
-            z = z0 + (z1 - z0) * t + lr.uniform(-1.2, 1.2)
-            r = lr.uniform(2.8, 5.2)
-            if lr.random() < 0.18 or not clear(x, z, r):
-                continue
-            y = floor_at(x, z, None)
-            if y is None:
-                continue
-            kids = []
-            for s in range(lr.randint(2, 3)):
-                rr = r * (1.0 if s == 0 else lr.uniform(0.45, 0.7))
-                a = lr.uniform(0, math.tau)
-                off = 0 if s == 0 else r * 0.9
-                kids.append(ellipsoid(f"Stone{s}", (2 * rr * lr.uniform(1.0, 1.3), 1.6 * rr, 2 * rr),
-                                      (x + math.cos(a) * off, y + rr * 0.35, z + math.sin(a) * off),
-                                      MESA_BAND if s else MESA_BODY,
-                                      rot=tilt(lr, 4, 12), layer="rock"))
-            out.append(model(f"ScarpRocks{n}", kids, attrs={"SandDrift": 1.2}))
-            n += 1
     return out
 
 
@@ -4519,9 +4508,17 @@ class OasisPlacer:
     """Where the oasis dressing may stand. Tracks what it has placed, so nothing lands on anything."""
 
     def __init__(self, mark):
-        self.taken = [(e["pos"][0], e["pos"][2], max(e["size"][0], e["size"][2]) / 2)
-                      for e in REGISTRY[mark:] if e["layer"] not in ("ground", "proxy") and abs(e["pos"][0]) < 130
-                      and 90 < e["pos"][2] < 480]
+        # what stands on the ground: a palm's crown or an awning overhead does not stop a flower bed
+        # or a fern going under it, so only parts reaching down to within 3 studs of the floor count
+        self.taken = []
+        for e in REGISTRY[mark:]:
+            if e["layer"] in ("ground", "proxy") or not (abs(e["pos"][0]) < 130 and 90 < e["pos"][2] < 480):
+                continue
+            ext = [sum(abs(e["rot"][i][j]) * e["size"][j] / 2 for j in range(3)) for i in range(3)]
+            fy = floor_at(e["pos"][0], e["pos"][2], None)
+            if fy is not None and e["pos"][1] - ext[1] > fy + 3:
+                continue
+            self.taken.append((e["pos"][0], e["pos"][2], max(ext[0], ext[2])))
         self.spawns = [(x, z) for _, _, _, _, (x, z), _ in ENEMY_SPAWNS]
         self.points = [(18, 152), (0, 358), (31, 145), (12, 352), (0, 470), (0, 100)]  # arrivals, waystones, gates
         # the validator's camera-clearance points: spawns (12 studs round) and arrivals (8)
@@ -4566,25 +4563,33 @@ class OasisPlacer:
         self.taken.append((x, z, r))
 
 
-def desert_bed(name, x, z, w, d, yaw, lr):
-    """A raised adobe planter of desert flowers: cream coping, a lime mound, candy blooms. Tagged
-    FlowerBed, so HubAmbience's butterflies visit it."""
+def desert_bed(name, x, z, w, d, yaw, lr, round_=False, colors=None):
+    """A raised adobe planter of desert flowers: cream coping, a lime mound, blooms in one or two
+    colours (a bed of everything reads as confetti). Round or oblong. Tagged FlowerBed, so the
+    butterflies visit it."""
     y = floor_at(x, z, None)
     r, at = local_frame(x, y, z, yaw)
-    kids = [part("Box", (w, 1.3, d), at(0, 0.45, 0), ADOBE_WALLS[lr.randrange(4)], "SmoothPlastic", r, collide=False),
-            part("Coping", (w + 0.5, 0.35, d + 0.5), at(0, 1.2, 0), ADOBE_TRIM, "SmoothPlastic", r, collide=False, query=False)]
+    colors = colors or lr.sample(BLOOMS[:4], 2)
+    wall = lr.choice((ADOBE_WALLS[0], ADOBE_WALLS[1], ADOBE_TRIM))
+    if round_:
+        d = w
+        kids = [drum("Box", x, y - 0.2, y + 1.1, z, w / 2, w / 2, wall, layer="prop"),
+                drum("Coping", x, y + 1.1, y + 1.45, z, w / 2 + 0.25, w / 2 + 0.25, ADOBE_TRIM, layer="prop")]
+    else:
+        kids = [part("Box", (w, 1.3, d), at(0, 0.45, 0), wall, "SmoothPlastic", r, collide=False),
+                part("Coping", (w + 0.5, 0.35, d + 0.5), at(0, 1.2, 0), ADOBE_TRIM, "SmoothPlastic", r, collide=False, query=False)]
     for k in range(2):
-        s = 0.9 if k == 0 else 0.6
-        kids.append(ellipsoid(f"Mound{k}", (w * s, 1.6 + k * 0.5, d * s), at((k - 0.5) * w * 0.15, 1.4 + k * 0.2, 0),
+        sc = 0.9 if k == 0 else 0.6
+        kids.append(ellipsoid(f"Mound{k}", (w * sc, 1.6 + k * 0.5, d * sc), at((k - 0.5) * w * 0.15, 1.4 + k * 0.2, 0),
                               DESERT_GREENS[k], rot=tilt(lr, 2, 5), shadow=False, layer="prop"))
     n = max(4, int(w * d / 2.2))
     for k in range(n):
         # on the big mound's surface: sat into it, so every bloom is held
         a, q = lr.uniform(0, math.tau), math.sqrt(lr.random()) * 0.8
         lx, lz = math.cos(a) * q * 0.45 * w, math.sin(a) * q * 0.45 * d
-        s = lr.uniform(0.7, 1.05)
-        kids.append(part(f"Bloom{k}", (s, s * 0.8, s), at(lx - 0.075 * w, 1.4 + 0.8 * math.sqrt(1 - q * q), lz), lr.choice(BLOOMS),
-                         "SmoothPlastic", shape="Ball", collide=False, query=False, shadow=False))
+        sz = lr.uniform(0.7, 1.05)
+        kids.append(part(f"Bloom{k}", (sz, sz * 0.8, sz), at(lx - 0.075 * w, 1.4 + 0.8 * math.sqrt(1 - q * q), lz),
+                         colors[0] if k % 3 else colors[-1], "SmoothPlastic", shape="Ball", collide=False, query=False, shadow=False))
     return model(name, kids, attrs={"FlowerBed": True, "BedX": x, "BedY": y + 3.0, "BedZ": z, "SandDrift": 0.8})
 
 
@@ -4828,25 +4833,81 @@ def bandit_banner(name, x, z, color, lr):
     ], attrs={"Sway": True})
 
 
+def cactus_garden(name, x, z, lr):
+    """A composed cactus garden: a tall flowering saguaro at the back, a shorter one beside it, prickly
+    pears and agaves in front, a barrel cactus and two rounded rocks, on a low sand mound, all in a
+    crescent opening one way, so it reads as one planted place rather than loose plants."""
+    y = floor_at(x, z, None)
+    face = lr.uniform(0, math.tau)
+    fx, fz = math.cos(face), math.sin(face)  # the side it opens toward
+    sx, sz = -fz, fx
+
+    def at(u, v):  # u along the opening direction (negative = the back), v across it
+        return x + fx * u + sx * v, z + fz * u + sz * v
+
+    kids = [ellipsoid("Mound", (15, 1.6, 12), (x, y + 0.1, z), SAND_MOUND, rot=mul(rot_y(math.degrees(-face)), rot_x(1.5)),
+                      layer="prop")]
+    for k, (u, v, h, arms) in enumerate(((-3.5, -1.0, lr.uniform(12, 14), 2), (-2.0, 3.8, lr.uniform(7, 9), 1))):
+        px, pz = at(u, v)
+        start = len(REGISTRY)
+        node = scaled(blooming(saguaro(f"Saguaro{k}", px, pz, h, lr, arms=arms), lr), 1.35, (px, y, pz), start)
+        kids.append(node)
+    for k, (u, v) in enumerate(((1.2, -3.8), (2.6, 2.4))):
+        px, pz = at(u, v)
+        kids.append(prickly_pear(f"Pear{k}", px, pz, lr))
+    for k, (u, v, sc) in enumerate(((3.6, -0.6, 1.2), (-0.4, -5.6, 0.9))):
+        px, pz = at(u, v)
+        kids.append(agave(f"Agave{k}", px, pz, lr, s=sc))
+    px, pz = at(1.0, 5.4)
+    kids.append(barrel_cactus("Barrel", px, pz, lr))
+    for k, (u, v, w) in enumerate(((-1.0, 6.4, 3.2), (-4.6, -5.0, 2.4))):
+        px, pz = at(u, v)
+        kids.append(ellipsoid(f"Rock{k}", (w * 1.3, w, w * 1.1), (px, y + w * 0.3, pz), MESA_BODY if k else MESA_BAND,
+                              rot=tilt(lr, 4, 12), layer="rock"))
+    return model(name, kids, attrs={"SandDrift": 1.0})
+
+
+def rock_outcrop(name, x, z, lr, size=1.0):
+    """A landmark heap of big rounded rocks in the mesas' coral, one standing tall, the others
+    leaning on it, peach caps on the top ones."""
+    y = floor_at(x, z, None)
+    kids = []
+    big = (lr.uniform(8, 10) * size, lr.uniform(9, 12) * size, lr.uniform(7, 9) * size)
+    kids.append(ellipsoid("Tall", big, (x, y + big[1] * 0.38, z), MESA_BODY, rot=tilt(lr, 3, 8), layer="rock"))
+    kids.append(ellipsoid("TallCap", (big[0] * 0.6, big[1] * 0.3, big[2] * 0.6), (x, y + big[1] * 0.8, z), MESA_BAND,
+                          rot=tilt(lr, 3, 8), layer="rock", shadow=False))
+    a0 = lr.uniform(0, math.tau)
+    for k in range(lr.randint(2, 3)):
+        a = a0 + k * lr.uniform(1.8, 2.4)
+        w = lr.uniform(0.45, 0.65)
+        d = big[0] * 0.55
+        dims = (big[0] * w * 1.2, big[1] * w * 0.8, big[2] * w)
+        kids.append(ellipsoid(f"Side{k}", dims, (x + math.cos(a) * d, y + dims[1] * 0.3, z + math.sin(a) * d),
+                              MESA_DOME if k % 2 else MESA_BODY, rot=tilt(lr, 6, 16), layer="rock"))
+    return model(name, kids, attrs={"SandDrift": 1.6})
+
+
 def oasis_life(mark):
-    """The second dressing pass (see the section comment above). A private seed. The set pieces are
-    placed first, each at its spot or the nearest free spot within `near` studs; then the gardens
-    round the pools and groves; then the scattered plants and ground detail fill what is left."""
+    """The basin's dressing, composed: a handful of themed places, each dense and planted with some
+    care, at the edges of the play space and round the water, and open sand between them where the
+    fighting is. A private seed; every place still goes through OasisPlacer (off the trail and lanes,
+    clear of spawns, arrivals, the arena and the ridge, off anything standing, and tall pieces kept
+    out of the camera's headroom over spawns)."""
     lr = random.Random(0xDE5E8)
     P = OasisPlacer(mark)
     out = []
     counts = {}
 
-    def put(kind, x, z, r, build, tall=False, water=False, force=False, s=1.0, gap=1.5, near=0.0):
+    def put(kind, x, z, r, build, tall=False, water=False, force=False, s=1.0, gap=1.0, near=0.0):
         spots = [(x, z)]
         if near:
-            spots += [(x + math.cos(a) * d, z + math.sin(a) * d) for d in (2, 4, 6, 8, 10)[:int(near / 2)]
+            spots += [(x + math.cos(a) * d, z + math.sin(a) * d) for d in (1.5, 3, 4.5, 6, 8)[:int(near / 1.5)]
                       for a in [k * math.tau / 8 for k in range(8)]]
         for sx, sz in spots:
             if force or P.ok(sx, sz, r, tall=tall, water=water, gap=gap):
                 break
         else:
-            if DEBUG_OASIS and kind not in SCATTER:
+            if DEBUG_OASIS:
                 print("  skip", kind, (round(x), round(z)), P.why(x, z, r, tall, water, gap))
             return None
         n = counts.get(kind, 0)
@@ -4858,86 +4919,102 @@ def oasis_life(mark):
         if tall and not clearance_ok(start, P.guard):  # a crown over a spawn's camera: not here after all
             del REGISTRY[start:]
             counts[kind] = n
+            if DEBUG_OASIS:
+                print("  skip", kind, (round(x), round(z)), "camera clearance")
             return None
         out.append(node)
         P.take(sx, sz, r)
         return sx, sz
 
-    # ── set pieces: the bazaar lane and the lemonade stand ──
-    put("LemonadeStand", -38, 184, 5.5, lambda nm, x, z: lemonade_stand(nm, x, z, (0, -1), lr), near=10)
-    for x, z, yaw in [(-62, 186, 10), (-80, 206, -20), (-42, 250, 30), (-72, 288, 0), (58, 244, 90)]:
-        at = put("ShadeSail", x, z, 5.5, lambda nm, x, z: shade_sail(nm, x, z, yaw, lr), near=8)
-        if at:  # a bench in its shade
-            bx, bz = at[0] + math.cos(math.radians(yaw)) * 0.5, at[1] + 1.4
-            put("Bench", bx, bz, 2.8, lambda nm, x, z: bench(nm, x, floor_at(x, z, None), z, yaw + 180), force=True)
-    put("EntranceBunting", 0, 173, 1.0, lambda nm, x, z: pennant_line(nm, (-15, 173), (15, 173), 9.5, lr, pennants=12), force=True)
-    for x, z in [(-34, 190), (-18, 186), (-50, 200), (-66, 198), (-86, 222), (-32, 262), (-14, 258), (46, 236), (-56, 298),
-                 (-96, 304), (-16, 176), (16, 180)]:
-        put("FlowerPot", x, z, 1.4, lambda nm, x, z: model(nm, [clay_pot("Pot", x, z, lr, lr.uniform(0.9, 1.2)),
-                                                                 bush_clump("Flowers", x, z, lr, s=0.35, y=floor_at(x, z, None) + 1.6)]),
-            near=4)
-    for x, z, yaw in [(-48, 176, 20), (-90, 252, -30), (-98, 284, 80)]:
-        put("HandCart", x, z, 3.0, lambda nm, x, z: hand_cart(nm, x, floor_at(x, z, None), z, yaw), near=6)
-    for x, z in [(-70, 180), (-84, 194), (-58, 264), (-100, 270), (-94, 296)]:
-        put("Barrel", x, z, 1.3, lambda nm, x, z: barrel(nm, x, floor_at(x, z, None), z, lr), near=6)
-
-    # ── set pieces: the bandits' quarter in the pit's west ──
-    put("Palisade", -56, 401, 1.0, lambda nm, x, z: palisade(nm, (-56, 390), (-56, 412), lr), force=True)
-    put("Palisade", -80, 462, 1.0, lambda nm, x, z: palisade(nm, (-100, 462), (-60, 462), lr), force=True)
-    put("Lookout", -92, 398, 4.5, lambda nm, x, z: lookout(nm, x, z, lr), tall=True, near=8)
-    for x, z in [(-64, 440), (-98, 460), (-80, 402), (-66, 424)]:
-        put("LootPile", x, z, 3.0, lambda nm, x, z: loot_pile(nm, x, z, lr), near=6)
-    for x, z, yaw, L in [(-94, 344, 80, 10), (-66, 452, 20, 9), (-72, 392, -10, 8), (56, 410, 60, 8), (-100, 424, 90, 7),
-                         (84, 244, 0, 8)]:
-        put("RuinWall", x, z, L / 2 + 0.5, lambda nm, x, z: adobe_ruin(nm, x, z, yaw, L, lr), near=6)
-    for k, (x, z) in enumerate([(-62, 396), (-86, 456), (-104, 410), (-60, 430), (-96, 392)]):
-        put("BanditBanner", x, z, 1.0, lambda nm, x, z: bandit_banner(nm, x, z, AWNINGS[k % 4], lr), near=6)
-
-    # ── gardens: palm groves, flower beds, lemon bushes and ferns round the pools and in the open middles ──
-    gardens = [(90, 396, 12), (64, 350, 8), (100, 314, 8), (-82, 248, 14), (-44, 186, 12), (-64, 322, 10), (-28, 250, 10),
-               (60, 446, 10), (84, 460, 8), (-92, 352, 8), (48, 246, 8), (-96, 194, 8), (-40, 454, 8)]
-    for gx, gz, gr in gardens:
-        for _ in range(2):
-            h = lr.uniform(14, 20)
-            lean = (lr.uniform(-1, 1) or 1.0, lr.uniform(-1, 1))
-            node = put("GrovePalm", gx + lr.uniform(-gr, gr), gz + lr.uniform(-gr, gr), 2.5,
-                       lambda nm, x, z: palm(nm, x, z, lr, height=h, lean=lean), tall=True, s=1.8, near=6)
-            if node:
+    def palms(group):
+        """A natural group: (x, z, kind, height, lean). Tagged Sway."""
+        for x, z, kind, h, lean in group:
+            s = lr.uniform(1.6, 1.95)
+            if put("Palm", x, z, 2.2, lambda nm, x, z: palm(nm, x, z, lr, height=h, lean=lean, kind=kind), tall=True, s=s, near=4):
                 out[-1].setdefault("attributes", {})["Sway"] = True
-        for kind, r, n, build in (
-                ("DesertBed", 3.8, 2, lambda nm, x, z: desert_bed(nm, x, z, lr.uniform(4.5, 7.0), lr.uniform(2.6, 3.6), lr.uniform(0, 180), lr)),
-                ("LemonBush", 2.8, 2, lambda nm, x, z: bush_clump(nm, x, z, lr, s=0.85, lemon=True, y=floor_at(x, z, None))),
-                ("OasisFern", 3.0, 2, lambda nm, x, z: fern_clump(nm, x, z, lr, s=1.1, y=floor_at(x, z, None)))):
-            for _ in range(n):
-                put(kind, gx + lr.uniform(-gr, gr), gz + lr.uniform(-gr, gr), r, build, near=6)
 
-    # ── flowering desert plants and ground detail across every floor, in patches ──
-    # Each patch is one anchor plant (a prickly pear, an agave or a flowering saguaro) with dune grass
-    # and pebbles gathered round it, so the sand reads as clumps with open ground between, not an
-    # even sprinkle.
-    anchors = [("PricklyPear", 2.6, lambda nm, x, z: prickly_pear(nm, x, z, lr), 1.0, False),
-               ("Agave", 2.4, lambda nm, x, z: agave(nm, x, z, lr, s=lr.uniform(0.9, 1.3)), 1.0, False),
-               ("BloomSaguaro", 3.0, lambda nm, x, z: blooming(saguaro(nm, x, z, lr.uniform(8, 12) * 1.27, lr, arms=1 + lr.randrange(2)), lr),
-                1.5, True)]
-    fill = [("DuneGrass", 1.6, lambda nm, x, z: dune_grass(nm, x, z, lr)), ("Pebbles", 1.8, lambda nm, x, z: pebbles(nm, x, z, lr)),
-            ("Agave", 2.0, lambda nm, x, z: agave(nm, x, z, lr, s=lr.uniform(0.6, 0.8)))]
-    patches, tries = 0, 0
-    while patches < 64 and tries < 3000:
-        tries += 1
-        cx, cz = lr.uniform(-104, 104), lr.uniform(172, 466)
-        kind, r, build, s, tall = anchors[0 if lr.random() < 0.42 else 1 if lr.random() < 0.8 else 2]
-        if not put(kind, cx, cz, r, build, tall=tall, s=s):
-            continue
-        patches += 1
-        for _ in range(lr.randint(3, 6)):
-            fk, fr, fb = fill[0 if lr.random() < 0.5 else 1 if lr.random() < 0.7 else 2]
-            a, d = lr.uniform(0, math.tau), lr.uniform(r + 1.5, r + 7)
-            put(fk, cx + math.cos(a) * d, cz + math.sin(a) * d, fr, fb, gap=0.6)
+    def bed(x, z, w, d, yaw, colors, round_=False, near=4):
+        put("FlowerBed", x, z, max(w, d) / 2 + 0.4,
+            lambda nm, x, z: desert_bed(nm, x, z, w, d, yaw, lr, round_=round_, colors=colors), near=near)
+
+    def edge_detail(cx, cz, radius, n):
+        """A few tufts of dune grass and pebbles round a place's edge, tying it into the sand."""
+        for k in range(n):
+            a = lr.uniform(0, math.tau)
+            d = radius * lr.uniform(0.85, 1.25)
+            x, z = cx + math.cos(a) * d, cz + math.sin(a) * d
+            if k % 3 == 2:
+                put("Pebbles", x, z, 1.8, lambda nm, x, z: pebbles(nm, x, z, lr), gap=0.6)
+            else:
+                put("DuneGrass", x, z, 1.4, lambda nm, x, z: dune_grass(nm, x, z, lr), gap=0.6)
+
+    PINK, LEMON_, ORANGE, VIOLET = BLOOMS[:4]
+
+    # 1. Lemonade Corner, on the rim just below the overlook: the first thing the eye lands on.
+    put("LemonadeStand", -50, 178, 5.5, lambda nm, x, z: lemonade_stand(nm, x, z, (0, -1), lr), near=6)
+    at = put("ShadeSail", -68, 186, 5.0, lambda nm, x, z: shade_sail(nm, x, z, 10, lr), near=6)
+    if at:
+        put("Bench", at[0], at[1] + 1.4, 2.8, lambda nm, x, z: bench(nm, x, floor_at(x, z, None), z, 190), force=True)
+    palms([(-34, 175, "coconut", 18, (-1, 0.3)), (-62, 173, "young", 18, (1, 0)), (-80, 176, "date", 20, (0.3, 1))])
+    bed(-57, 197, 5.5, 5.5, 0, [PINK, LEMON_], round_=True)
+    put("LemonCrate", -42, 186, 2.0, lambda nm, x, z: lemon_crate(nm, x, z, 15, lr), near=4)
+    put("Barrel", -60, 185, 1.3, lambda nm, x, z: barrel(nm, x, floor_at(x, z, None), z, lr), near=4)
+    edge_detail(-54, 186, 16, 5)
+    put("EntranceBunting", 0, 173, 1.0, lambda nm, x, z: pennant_line(nm, (-15, 173), (15, 173), 9.5, lr, pennants=12), force=True)
+
+    # 2. The west rim's house gardens: a palm and a long bed before the two houses.
+    palms([(-84, 199, "date", 21, (1, 0.2)), (-85, 228, "young", 18, (1, -0.4))])
+    bed(-84, 206, 7.5, 3.0, 90, [ORANGE, LEMON_])
+
+    # 3. The date grove on the mid bench's west: palms of every age with undergrowth and a bed.
+    palms([(-98, 244, "date", 22, (0.6, 1)), (-90, 257, "coconut", 18, (1, 0.4)), (-78, 242, "young", 18, (-0.4, 1)),
+           (-104, 238, "young", 18, (1, 0)), (-74, 255, "date", 19, (1, -0.5))])
+    for x, z in ((-92, 249), (-82, 251)):
+        put("Fern", x, z, 2.8, lambda nm, x, z: fern_clump(nm, x, z, lr, s=1.2, y=floor_at(x, z, None)), near=3)
+    for x, z in ((-70, 246), (-104, 250)):
+        put("LemonBush", x, z, 2.6, lambda nm, x, z: bush_clump(nm, x, z, lr, s=0.9, lemon=True, y=floor_at(x, z, None)), near=3)
+    bed(-86, 239, 5.0, 5.0, 0, [ORANGE, LEMON_], round_=True)
+    edge_detail(-88, 250, 18, 6)
+
+    # 4. The town spring: flowers at its corners (its palms and reeds are desert_dressing's).
+    bed(64, 262, 4.6, 4.6, 0, [VIOLET, PINK], round_=True)
+    bed(62, 304, 6.0, 2.8, 20, [VIOLET, PINK])
+    put("Fern", 88, 296, 2.8, lambda nm, x, z: fern_clump(nm, x, z, lr, s=1.1, y=floor_at(x, z, None)), near=3)
+
+    # 5. The oasis's west shore: the lushest ground in the basin, beds and ferns under its palms.
+    bed(58, 338, 7.0, 3.0, 90, [PINK, LEMON_])
+    bed(60, 355, 5.2, 5.2, 0, [LEMON_, ORANGE], round_=True)
+    for x, z in ((70, 347), (64, 336)):
+        put("Fern", x, z, 2.8, lambda nm, x, z: fern_clump(nm, x, z, lr, s=1.25, y=floor_at(x, z, None)), near=3)
+    put("LemonBush", 64, 360, 2.6, lambda nm, x, z: bush_clump(nm, x, z, lr, s=1.0, lemon=True, y=floor_at(x, z, None)), near=3)
+
+    # 6. The bandits' quarter round their camp in the pit's west: a stake enclosure opening toward the
+    # arena, a lookout in its far corner, the haul between the tents, banners at the gap.
+    put("Palisade", -58, 409, 1.0, lambda nm, x, z: palisade(nm, (-58, 398), (-58, 418), lr), force=True)
+    put("Palisade", -58, 448, 1.0, lambda nm, x, z: palisade(nm, (-58, 438), (-58, 458), lr), force=True)
+    put("Palisade", -80, 394, 1.0, lambda nm, x, z: palisade(nm, (-100, 394), (-62, 394), lr), force=True)
+    put("Lookout", -100, 404, 4.5, lambda nm, x, z: lookout(nm, x, z, lr), tall=True, near=6)
+    for x, z in ((-96, 432), (-72, 452)):
+        put("LootPile", x, z, 3.0, lambda nm, x, z: loot_pile(nm, x, z, lr), near=6)
+    for k, (x, z) in enumerate(((-61, 422), (-61, 435))):
+        put("BanditBanner", x, z, 1.0, lambda nm, x, z: bandit_banner(nm, x, z, AWNINGS[0] if k == 0 else AWNINGS[3], lr), near=3)
+    put("RuinWall", -98, 462, 4.5, lambda nm, x, z: adobe_ruin(nm, x, z, 0, 9, lr), near=4)
+    put("Outcrop", -104, 466, 5.0, lambda nm, x, z: rock_outcrop(nm, x, z, lr, 1.0), force=True)
+
+    # 7. A palm and a bed between the pit's two houses.
+    palms([(86, 438, "coconut", 17, (-1, 0.2))])
+    bed(88, 445, 5.0, 2.8, 90, [PINK, ORANGE], near=6)
+
+    # 8. Cactus gardens, one to each quarter of open sand.
+    for x, z in ((52, 238), (-72, 304), (-54, 458), (60, 456)):
+        put("CactusGarden", x, z, 8.0, lambda nm, x, z: cactus_garden(nm, x, z, lr), tall=True, near=6)
+
+    # 9. Rock outcrops framing the Briarwood gate and marking the pit's east.
+    for x, z, sz in ((-32, 465, 0.9), (32, 465, 0.9), (104, 396, 1.1)):
+        put("Outcrop", x, z, 5.0 * sz, lambda nm, x, z: rock_outcrop(nm, x, z, lr, sz), near=4)
+
     print("[map_forge] oasis life:", dict(sorted(counts.items())))
     return out
-
-
-SCATTER = ("PricklyPear", "Agave", "BloomSaguaro", "DuneGrass", "Pebbles", "GrovePalm", "DesertBed", "LemonBush", "OasisFern")
 
 
 # The legacy quarry pieces the desert keeps: gameplay (waystones, the Briarwood gate), the Warden's
@@ -5185,7 +5262,7 @@ def bloom_pad(name, x, z, rng):
 
 KERB_OFFSET = 6.6   # studs from the trail's centre line to each kerb
 KERB_PIECE = 10.0   # studs per straight kerb piece
-KERB_DIAM = 2.2
+KERB_DIAM = 1.4  # a slim lip, mostly sunk: at 2.2 and sat on the sand the kerbs read as logs lying down the trail
 
 
 def _kerb_line(side):
@@ -5223,57 +5300,25 @@ def trail_kerbs():
             steps = max(1, round(seg / KERB_PIECE))
             joints += [(ax + (bx - ax) * j / steps, az + (bz - az) * j / steps) for j in range(1, steps + 1)]
         for j, ((ax, az), (bx, bz)) in enumerate(zip(joints, joints[1:])):
-            lift = 0.8 + 0.07 * (j % 2)  # neighbours a hair apart, so the overlap inside a joint never z-fights
+            lift = 0.3 + 0.07 * (j % 2)  # neighbours a hair apart, so the overlap inside a joint never z-fights
             a3 = (ax, floor_at(ax, az, QUARRY_Y) + lift, az)
             b3 = (bx, floor_at(bx, bz, QUARRY_Y) + lift, bz)
             out.append(cyl(f"TrailKerb{tag}{j:02d}", a3, b3, KERB_DIAM, SAND_KERB, collide=False, query=False,
                            layer="rock"))
         for j, (jx, jz) in enumerate(joints):
-            y = floor_at(jx, jz, QUARRY_Y) + 0.835
+            y = floor_at(jx, jz, QUARRY_Y) + 0.335
             out.append(part(f"TrailKerbJoint{tag}{j:02d}", (KERB_DIAM + 0.25,) * 3, (jx, y, jz), SAND_KERB,
                             shape="Ball", collide=False, query=False, layer="rock"))
     return out
 
 
 def desert_sand_dressing():
-    """Kerbs along the trail and prop clusters beside it (see the note above). Own seed."""
-    rr = random.Random(0x5A9D)
+    """The kerbs along the trail."""
     out = []
     out += trail_kerbs()
-    # the clusters: every 16 studs along the trail, alternating sides, a type in rotation
-    kinds = ["boulders", "barrel", "mound", "bloom", "saguaro", "crates", "boulders", "bloom"]
-    t, k = 20.0, 0
-    slots = []
-    while True:
-        pt, _, nrm = _trail_point(t)
-        if pt is None:
-            break
-        for side in (1, -1):  # both sides of every slot: the frame needs density, not a picket line
-            slots.append((pt, nrm, side))
-        t += 12.0
-    for pt, nrm, side in slots:
-        off = rr.uniform(9.5, 15.0) * side
-        x, z = pt[0] + nrm[0] * off, pt[1] + nrm[1] * off
-        kind = kinds[k % len(kinds)]
-        if _sand_clear(x, z, 4.5):
-            name = f"Sand{kind.capitalize()}{k}"
-            if kind == "boulders":
-                out.append(sand_boulders(name, x, z, rr))
-            elif kind == "barrel":
-                out.append(barrel_cactus(name, x, z, rr))
-            elif kind == "mound":
-                out.append(sand_mound(name, x, z, rr))
-            elif kind == "bloom":
-                out.append(bloom_pad(name, x, z, rr))
-            elif kind == "saguaro":
-                node = saguaro(name, x, z, rr.uniform(7, 10), rr, arms=rr.choice((1, 2)))
-                for c in node["children"]:  # trailside decoration: never a collidable trunk in a lane
-                    c["properties"]["CanCollide"] = False
-                    c["properties"]["CanQuery"] = False
-                out.append(node)
-            elif kind == "crates":
-                out.append(crate_stack(name, x, QUARRY_Y, z, rr))
-            k += 1
+    # (The clusters that used to stand every 12 studs down both sides of the trail are gone: with a
+    # prop every few studs the whole basin read as clutter. Its dressing is composed in oasis_life:
+    # themed places at the edges, open sand where the fighting is.)
     return out
 
 
@@ -5311,7 +5356,6 @@ def build_iron_lowlands(rng):
     visual += desert_dressing()
     visual += desert_rockforms()
     visual += desert_sand_dressing()
-    visual += scarp_boulders(mark)
     visual += oasis_life(mark)
     return ground, visual, proxies
 

@@ -10,21 +10,35 @@ It sits on top of the other session's Iron Lowlands look pass (rock as SmoothPla
 `desert_rockforms`, the Salt/Concrete terrain, trail kerbs and trailside clusters in
 `desert_sand_dressing`), which it keeps as it is.
 
-## What was added
+## What was added (round 2: composed, not scattered)
 
-| Where | What | Code |
+Alex's round-1 verdict: "a bunch of random stuff all over the place ... crowded", and the palms
+"copy and pasted everywhere". So the basin is now composed like a PS99 area: the fighting ground
+round the trail and the spawns is open sand, and the dressing is gathered into a handful of themed
+places at its edges and round the water. Everything scattered was removed: the round-1 patches of
+plants and pebbles, the uniform boulders along the scarp, the loose saguaros, and the clusters that
+stood every 12 studs down both sides of the trail. The trail's kerbs are a slim sunk lip now (they
+read as logs). ![preview](oasis_preview.png)
+
+| Place | What | Where |
 |---|---|---|
-| Round both pools and in the open middles | 13 garden patches: palm groves (grown x1.8, tagged `Sway`), raised adobe flower beds (tagged `FlowerBed`), lemon bushes, ferns | `oasis_life`, `desert_bed` |
-| The rim and mid bench | a bazaar lane: the lemonade stand facing the overlook, striped shade sails with benches, a pennant line over the trail's start, flower pots, hand carts, barrels | `lemonade_stand`, `shade_sail`, `pennant_line` |
-| The pit's west | the bandits' quarter: two stake palisades, a lookout tower, loot piles, broken adobe walls, banners (tagged `Sway`) | `palisade`, `lookout`, `loot_pile`, `adobe_ruin`, `bandit_banner` |
-| Every floor | 64 patches of flowering desert plants: a prickly pear, agave or blooming saguaro with dune grass and candy pebbles round it | `prickly_pear`, `agave`, `blooming`, `dune_grass`, `pebbles` |
-| The basin's edge | toy boulders in the rock palette at the scarp's foot | `scarp_boulders` |
+| Lemonade Corner | the lemonade stand facing the overlook, a shade sail with a bench, a coconut, a young and a date palm, a round flower bed, crates and a barrel; pennants over the trail's start | rim, north-west |
+| House gardens | a palm and a long bed before the two west houses | rim, west |
+| The date grove | five palms of every age, ferns, lemon bushes, a round bed | mid bench, west |
+| The town spring | flower beds at its corners, a fern | mid bench, east |
+| The oasis shore | beds, ferns and a lemon bush under the oasis palms | pit, east |
+| The bandits' quarter | a stake enclosure round their camp opening toward the arena, a lookout, the haul between the tents, banners at the gap, a broken wall, a rock outcrop | pit, west |
+| Cactus gardens (4) | a flowering saguaro, a shorter one, prickly pears, agaves, a barrel cactus and rocks on a sand mound, in a crescent | one to each quarter of open sand |
+| Rock outcrops | big rounded coral rocks framing the Briarwood gate and marking the pit's east | pit |
 
-All of it is placed by `OasisPlacer` (tools/map_forge.py), which keeps every piece off the trail
-(its centre line + 5), out of `audit_map.py`'s lanes, 9 studs from spawns and markers (tall pieces
-are also run through `clearance_ok`, the validator's camera-headroom rule), off the Warden's arena
-and the ridge across the pit, off bench steps, out of the pools, and off anything already standing.
-Its seeds are private (`0xDE5E8`, `0xDE5EA`), so the Hub and Briarwood regenerate byte-identical.
+Each bed has one colour story (two bloom colours) instead of every colour at once.
+
+**Palms** (`palm`, `PALM_KINDS`): three kinds (a tall straight **date** palm with a full drooping
+crown and dates, a bowed **coconut** palm with long hanging fronds and coconuts, a short bushy
+**young** palm with its fronds held up), and every palm takes its own trunk curve, trunk and ring
+colours, frond family (lime, leaf green, yellow-green), frond count, length and droop from a stream
+seeded by its name. The layout draws are the old ones, so no palm moved. They are planted in groups
+of mixed kinds and heights, and all of them sway.
 
 **Runtime, client-only** (`lemonade-game/Map`, map project only):
 
@@ -47,12 +61,11 @@ Its seeds are private (`0xDE5E8`, `0xDE5EA`), so the Hub and Briarwood regenerat
   `floor_at` saw phantom floors; only the floors actually written stay now.
 - `check_support` looked for neighbours against a part's centre column only; it now uses the
   part's full height (a drooping tip or leaning post joins at its end).
-- Two trailside saguaros stood collidable inside a main lane; they are decoration now.
 
 ## Numbers
 
-Iron Lowlands: about 3,750 parts (from about 1,280 before the look passes), 11 PointLights (budget
-20). Whole map: 9,590 parts.
+Iron Lowlands: about 2,630 parts (3,750 after round 1; about 1,280 before the look passes),
+11 PointLights (budget 20).
 
 ## Checking it
 

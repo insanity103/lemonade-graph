@@ -175,10 +175,10 @@ end
 local rayParams = RaycastParams.new()
 rayParams.FilterType = Enum.RaycastFilterType.Include
 rayParams.FilterDescendantsInstances = { workspace.Terrain }
-local LANES = { -- [TUNING] { from, to }: open stretches of sand, west to east (the wind's way)
-	{ Vector2.new(-104, 404), Vector2.new(-46, 452) },
-	{ Vector2.new(-100, 250), Vector2.new(-30, 240) },
-	{ Vector2.new(-60, 196), Vector2.new(-24, 214) },
+local LANES = { -- [TUNING] { from, to }: the open sand between the oasis's places, west to east (the wind's way)
+	{ Vector2.new(-44, 232), Vector2.new(12, 266) }, -- the mid bench, between the date grove and the trail
+	{ Vector2.new(-30, 196), Vector2.new(46, 214) }, -- across the rim below the overlook
+	{ Vector2.new(-46, 330), Vector2.new(40, 344) }, -- the top of the pit, over the trail
 }
 local weeds = {}
 for k, lane in ipairs(LANES) do
