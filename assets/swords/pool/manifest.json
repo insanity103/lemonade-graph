@@ -5986,5 +5986,542 @@
       "iou": 0.816,
       "against": "Boss_Gorgon"
     }
+  },
+  "Sword_Riftsliver": {
+    "name": "Riftsliver",
+    "key": "Sword_Riftsliver",
+    "pool": "VoidRift",
+    "tier": 1,
+    "concept": "a thin rhombus shard with shard guards",
+    "file": "Sword_Riftsliver.glb",
+    "bytes": 96656,
+    "triangles": 1932,
+    "vertices": 982,
+    "meshSize": [
+      0.08601,
+      0.26004,
+      1.0
+    ],
+    "palette": {
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "deep_violet": [
+        96,
+        32,
+        224
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ]
+    },
+    "areaShare": {
+      "lavender": 0.248,
+      "violet": 0.53,
+      "deep_violet": 0.192,
+      "magenta_hot": 0.031
+    },
+    "calmVivid": {
+      "calm": 0.248,
+      "vivid": 0.752
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        8e-05,
+        0.0
+      ],
+      "length_scale": 1.00016
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.782,
+      "against": "Sword_GloamTanto"
+    }
+  },
+  "Sword_HushedFalchion": {
+    "name": "Hushed Falchion",
+    "key": "Sword_HushedFalchion",
+    "pool": "VoidRift",
+    "tier": 2,
+    "concept": "a falchion muffled at the root with soft cloth bands",
+    "file": "Sword_HushedFalchion.glb",
+    "bytes": 98272,
+    "triangles": 3596,
+    "vertices": 1814,
+    "meshSize": [
+      0.096,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "pale_lilac": [
+        250,
+        226,
+        255
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ]
+    },
+    "areaShare": {
+      "violet": 0.455,
+      "lavender": 0.388,
+      "pale_lilac": 0.112,
+      "magenta_hot": 0.045
+    },
+    "calmVivid": {
+      "calm": 0.5,
+      "vivid": 0.5
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.807,
+      "against": "Sword_WishboneComet"
+    }
+  },
+  "Sword_GloamsteelSabre": {
+    "name": "Gloamsteel Sabre",
+    "key": "Sword_GloamsteelSabre",
+    "pool": "VoidRift",
+    "tier": 2,
+    "concept": "a sabre half-poured in dripping lavender gloam",
+    "file": "Sword_GloamsteelSabre.glb",
+    "bytes": 110312,
+    "triangles": 3830,
+    "vertices": 1933,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "deep_violet": [
+        96,
+        32,
+        224
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ]
+    },
+    "areaShare": {
+      "deep_violet": 0.343,
+      "magenta_hot": 0.29,
+      "lavender": 0.368
+    },
+    "calmVivid": {
+      "calm": 0.368,
+      "vivid": 0.632
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.77,
+      "against": "Sword_HushedFalchion"
+    }
+  },
+  "Sword_NullbrandLongsword": {
+    "name": "Nullbrand Longsword",
+    "key": "Sword_NullbrandLongsword",
+    "pool": "VoidRift",
+    "tier": 3,
+    "concept": "a longsword branded with a null ring and slash",
+    "file": "Sword_NullbrandLongsword.glb",
+    "bytes": 136492,
+    "triangles": 4420,
+    "vertices": 2194,
+    "meshSize": [
+      0.086,
+      0.2629,
+      1.0
+    ],
+    "palette": {
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ]
+    },
+    "areaShare": {
+      "lavender": 0.22,
+      "violet": 0.647,
+      "magenta_hot": 0.133
+    },
+    "calmVivid": {
+      "calm": 0.22,
+      "vivid": 0.78
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        -0.00025
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.816,
+      "against": "Sword_QuietStar"
+    }
+  },
+  "Sword_RiftwalkerBroadsword": {
+    "name": "Riftwalker Broadsword",
+    "key": "Sword_RiftwalkerBroadsword",
+    "pool": "VoidRift",
+    "tier": 3,
+    "concept": "a faceted rift-glass door of a broadsword",
+    "file": "Sword_RiftwalkerBroadsword.glb",
+    "bytes": 174912,
+    "triangles": 4460,
+    "vertices": 2242,
+    "meshSize": [
+      0.12,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "deep_violet": [
+        96,
+        32,
+        224
+      ]
+    },
+    "areaShare": {
+      "violet": 0.239,
+      "lavender": 0.569,
+      "magenta_hot": 0.065,
+      "deep_violet": 0.127
+    },
+    "calmVivid": {
+      "calm": 0.569,
+      "vivid": 0.431
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.818,
+      "against": "Boss_InfernalColossus"
+    }
+  },
+  "Sword_QuietStar": {
+    "name": "Quiet Star",
+    "key": "Sword_QuietStar",
+    "pool": "VoidRift",
+    "tier": 4,
+    "concept": "a sleepy fallen star at the root of a violet blade",
+    "file": "Sword_QuietStar.glb",
+    "bytes": 149328,
+    "triangles": 5204,
+    "vertices": 2626,
+    "meshSize": [
+      0.08804,
+      0.26013,
+      1.0
+    ],
+    "palette": {
+      "quiet_star": [
+        230,
+        100,
+        255
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "deep_violet": [
+        96,
+        32,
+        224
+      ]
+    },
+    "areaShare": {
+      "quiet_star": 0.178,
+      "lavender": 0.433,
+      "magenta_hot": 0.094,
+      "violet": 0.182,
+      "deep_violet": 0.112
+    },
+    "calmVivid": {
+      "calm": 0.433,
+      "vivid": 0.567
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.00026,
+        0.0
+      ],
+      "length_scale": 1.00051
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.816,
+      "against": "Sword_NullbrandLongsword"
+    }
+  },
+  "Sword_HushfangKris": {
+    "name": "Hushfang Kris",
+    "key": "Sword_HushfangKris",
+    "pool": "VoidRift",
+    "tier": 2,
+    "concept": "a five-wave kris with a curved fang tip",
+    "file": "Sword_HushfangKris.glb",
+    "bytes": 106744,
+    "triangles": 3776,
+    "vertices": 1904,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "violet": [
+        124,
+        56,
+        240
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ]
+    },
+    "areaShare": {
+      "violet": 0.277,
+      "magenta_hot": 0.515,
+      "lavender": 0.208
+    },
+    "calmVivid": {
+      "calm": 0.208,
+      "vivid": 0.792
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.745,
+      "against": "Sword_WishboneComet"
+    }
+  },
+  "Sword_GloamTanto": {
+    "name": "Gloam Tanto",
+    "key": "Sword_GloamTanto",
+    "pool": "VoidRift",
+    "tier": 1,
+    "concept": "a chisel-tipped tanto with a crescent-cut tsuba",
+    "file": "Sword_GloamTanto.glb",
+    "bytes": 122820,
+    "triangles": 3188,
+    "vertices": 1602,
+    "meshSize": [
+      0.26,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "deep_violet": [
+        96,
+        32,
+        224
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ]
+    },
+    "areaShare": {
+      "deep_violet": 0.29,
+      "lavender": 0.284,
+      "magenta_hot": 0.3,
+      "violet": 0.126
+    },
+    "calmVivid": {
+      "calm": 0.284,
+      "vivid": 0.716
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.782,
+      "against": "Sword_Riftsliver"
+    }
+  },
+  "Sword_WishboneComet": {
+    "name": "Wishbone Comet",
+    "key": "Sword_WishboneComet",
+    "pool": "VoidRift",
+    "tier": 4,
+    "concept": "a blade forked like a wishbone with a comet at the fork",
+    "file": "Sword_WishboneComet.glb",
+    "bytes": 125412,
+    "triangles": 4536,
+    "vertices": 2296,
+    "meshSize": [
+      0.086,
+      0.26,
+      1.0
+    ],
+    "palette": {
+      "pale_lilac": [
+        250,
+        226,
+        255
+      ],
+      "magenta_hot": [
+        255,
+        96,
+        255
+      ],
+      "lavender": [
+        238,
+        226,
+        255
+      ],
+      "violet": [
+        124,
+        56,
+        240
+      ]
+    },
+    "areaShare": {
+      "pale_lilac": 0.168,
+      "magenta_hot": 0.337,
+      "lavender": 0.216,
+      "violet": 0.28
+    },
+    "calmVivid": {
+      "calm": 0.384,
+      "vivid": 0.616
+    },
+    "normalise": {
+      "centre_shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "length_scale": 1.0
+    },
+    "checks": "all passed",
+    "maxIoU": {
+      "iou": 0.807,
+      "against": "Sword_HushedFalchion"
+    }
   }
 }
