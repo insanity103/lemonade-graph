@@ -187,8 +187,9 @@ silhouette. And the three warden Relics wear the warden meshes, painted.
 ## Pool swords (one unique mesh per sword)
 
 Every other sword in `BossWeapons.luau` used to reuse one of four shapes (the starter's block parts,
-the bandit falchion, or a boss mesh flattened to one colour). Each is getting its own mesh, built by
-`tools/blender_pool_swords.py` to the brief in `docs/prompts/pool_swords_blender.md`, pool by pool.
+the bandit falchion, or a boss mesh flattened to one colour). All 115 now have their own mesh, built by
+`tools/blender_pool_swords.py` (designs in `tools/pool_designs/`) to the brief in
+`docs/prompts/pool_swords_blender.md`.
 Meshes, the per-pool contact sheet and the silhouette table are in `assets/swords/pool/`.
 
 ### Iron Lowlands (done 2026-09-24)
@@ -251,3 +252,177 @@ Planned surface shares (percent; Astra's plan -- the measured shares are in `ass
 
 `honey` is the existing Honeycomb Thorn identity colour, RGB (255, 204, 72), specified in
 section 8.7 of the pool brief. Coral is used only for Bramblecut's raspberries.
+
+### The other 100 (done 2026-09-24)
+
+Built here after reviewing Astra's Briarwood work, taking its lessons into a shared part library
+(`tools/pool_designs/_parts.py`): carry the motif as real objects in several places (blade, guard and
+pommel), give guards shaped ends rather than a plain bar, paint stripes on lofted lathes, run tubes
+and helices along paths for vines, wires, strings and ribbons, and pass raised emblems through the
+blade so they read the same from either side. Each pool is one file in `tools/pool_designs/`, loaded
+by the forge; the design docstrings say what every part is.
+
+Every sword passes the layout checks, the HSV colour rule, the calm/vivid area shares, the
+post-bevel tier budget and silhouette IoU <= 0.85 against its pool, the eight signature swords and
+the template, and `check_sword_glb.py`. Their `look` in the config names their mesh. Import them
+the same way as Iron Lowlands (above).
+
+Traps met on the way, now noted in `_parts.py`: tubes, spheres and helices need >= 12 segments
+round (and a squeezed helix must keep a round tube, `ellipse_helix`) or the 32-degree bevel triples
+them; two parts sharing a face plane z-fight black, so frame bars stop where the cross bars start;
+a flat part thinner than the blade is hidden inside it (the frog, the crane).
+
+#### Warden of the Pit pool (boss) (`tools/pool_designs/boss_gorgon.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Pit Shiv | `Sword_PitShiv` | T1 | a chisel-ended shiv ground from a shackle | 43 % | 0.82 |
+| Ironjaw Saber | `Sword_IronjawSaber` | T2 | a saber with jaw bites out of its edge and a jaw guard | 49 % | 0.76 |
+| Slag Falchion | `Sword_SlagFalchion` | T2 | a slag chopper with amber drips on its spine | 26 % | 0.84 |
+| Chainbreaker | `Sword_Chainbreaker` | T3 | a greatsword with broken chain links and a cage-bar guard | 41 % | 0.84 |
+| Duneglass Edge | `Sword_DuneglassEdge` | T3 | a faceted desert-glass blade over a dune guard | 65 % | 0.83 |
+| Pit Sovereign | `Sword_PitSovereign` | T4 | a crowned greatsword with an ember core and banners | 28 % | 0.83 |
+
+#### Frost Revenant pool (boss) (`tools/pool_designs/boss_frost.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Rimeguard Shortsword | `Sword_RimeguardShortsword` | T1 | a short leaf blade rimed with frost nubs | 41 % | 0.80 |
+| Glacier Falchion | `Sword_GlacierFalchion` | T2 | a banded glacier falchion with a clear diamond heart | 42 % | 0.81 |
+| Snowdrift Saber | `Sword_SnowdriftSaber` | T2 | a packed-snow saber with drifts on its spine and a snowflake guard | 55 % | 0.80 |
+| Hoarwind Claymore | `Sword_HoarwindClaymore` | T3 | a claymore with wind holes and curling gust guards | 39 % | 0.81 |
+| Permafrost Greatsword | `Sword_PermafrostGreatsword` | T3 | a greatsword frozen into a block of permafrost | 37 % | 0.81 |
+| Aurora Greatblade | `Sword_AuroraGreatblade` | T4 | a greatblade streaked with raised aurora ribbons under an antler crown | 22 % | 0.82 |
+
+#### Infernal Colossus pool (boss) (`tools/pool_designs/boss_infernal.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Cinder Shortsword | `Sword_CinderShortsword` | T1 | a stubby smouldering blade with a smoke-puff pommel | 42 % | 0.81 |
+| Magma Falchion | `Sword_MagmaFalchion` | T2 | a magma falchion dripping off its edge | 39 % | 0.81 |
+| Slagheap Cleaver | `Sword_SlagheapCleaver` | T2 | a square cleaver crusted with slag plates | 29 % | 0.78 |
+| Ashen Saber | `Sword_AshenSaber` | T2 | an ash saber with a glowing fuller and an S-guard | 52 % | 0.81 |
+| Vent Sabre | `Sword_VentSabre` | T2 | a steam-vented sabre with a spine pipe and a valve-wheel pommel | 48 % | 0.74 |
+| Emberplate Claymore | `Sword_EmberplateClaymore` | T3 | a claymore armoured in ember scales | 31 % | 0.83 |
+| Basalt Claymore | `Sword_BasaltClaymore` | T3 | a faceted basalt-column claymore with glowing cracks | 32 % | 0.84 |
+| Pyroclast Greatsword | `Sword_PyroclastGreatsword` | T3 | a cracked lava greatsword over a volcano guard | 31 % | 0.81 |
+| Colossus Heart | `Sword_ColossusHeart` | T4 | a banded greatsword set with a molten heart, horns and a furnace | 41 % | 0.84 |
+
+#### Void Archon pool (boss) (`tools/pool_designs/boss_void.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Rift Dagger | `Sword_RiftDagger` | T1 | a slim slit dagger over a crescent | 26 % | 0.72 |
+| Umbral Falchion | `Sword_UmbralFalchion` | T2 | a shadow falchion with a hooked spine and crescent moons | 22 % | 0.81 |
+| Nightfall Kris | `Sword_NightfallKris` | T2 | a seven-wave kris with a star at its root | 36 % | 0.81 |
+| Nether Saber | `Sword_NetherSaber` | T2 | a light-drinking saber with three holes and a clawed orb | 20 % | 0.81 |
+| Starless Sabre | `Sword_StarlessSabre` | T2 | a sabre with empty star-shaped holes | 38 % | 0.81 |
+| Collapse Claymore | `Sword_CollapseClaymore` | T3 | a pinched claymore with a collapse at its waist | 30 % | 0.83 |
+| Eventide Claymore | `Sword_EventideClaymore` | T3 | a sunset-banded claymore with a setting sun | 49 % | 0.83 |
+| Singularity Greatsword | `Sword_SingularityGreatsword` | T3 | a greatsword with a suspended singularity in a hole | 34 % | 0.81 |
+| Archon's Verdict | `Sword_ArchonsVerdict` | T4 | a square-tipped verdict blade under a halo, winged, with an eye | 29 % | 0.83 |
+
+#### Celestial Titan pool (boss) (`tools/pool_designs/boss_celestial.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Starlight Shortsword | `Sword_StarlightShortsword` | T1 | a starlight needle over a four-point star guard | 34 % | 0.72 |
+| Comet Falchion | `Sword_CometFalchion` | T2 | a falchion with a comet and its tail along the blade | 41 % | 0.82 |
+| Corona Shortsword | `Sword_CoronaShortsword` | T1 | a diamond shortsword ringed with a beaded corona | 48 % | 0.84 |
+| Halo Saber | `Sword_HaloSaber` | T2 | a curved saber ringed by a floating halo | 47 % | 0.82 |
+| Meridian Blade | `Sword_MeridianBlade` | T3 | a straight blade with a meridian ridge and an armillary guard | 48 % | 0.84 |
+| Zenithguard Blade | `Sword_ZenithguardBlade` | T2 | a blade flaring toward its tip with a sun emblem and shield guard | 32 % | 0.82 |
+| Aurelian Claymore | `Sword_AurelianClaymore` | T3 | a gold-leafed claymore with a stair guard and ziggurat | 33 % | 0.80 |
+| Sunspire Claymore | `Sword_SunspireClaymore` | T3 | a tall spire claymore ringed with collars | 72 % | 0.81 |
+| Titanforged Greatsword | `Sword_TitanforgedGreatsword` | T3 | a hammered broadsword with rivet bands and an anvil guard | 37 % | 0.77 |
+
+#### Frostbound Glacier (`tools/pool_designs/zone_glacier.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Icicle Shiv | `Sword_IcicleShiv` | T1 | a round bulging icicle on a wrapped cloth grip | 42 % | 0.79 |
+| Snowpack Falchion | `Sword_SnowpackFalchion` | T2 | a falchion of pressed snow layers with a mitten pommel | 50 % | 0.80 |
+| Frostpane Sabre | `Sword_FrostpaneSabre` | T2 | a cyan sabre framed and barred like a window pane | 65 % | 0.78 |
+| Glacierrun Longsword | `Sword_GlacierrunLongsword` | T3 | a longsword braided with meltwater ribs under a curling wave guard | 40 % | 0.76 |
+| Rimecoat Broadsword | `Sword_RimecoatBroadsword` | T3 | a broadsword crusted with rime and a frost fern | 32 % | 0.83 |
+| Blue Hour Shard | `Sword_BlueHourShard` | T4 | a banded crystal shard carrying a crescent moon and stars | 45 % | 0.82 |
+| Icicle Estoc | `Sword_IcicleEstoc` | T3 | a thin dripping icicle thrust from a shallow cup guard | 28 % | 0.79 |
+| Snowglobe Sabre | `Sword_SnowglobeSabre` | T4 | a sabre rising out of a snowglobe with a tree and snowman inside | 46 % | 0.80 |
+
+#### Sunken Marsh (`tools/pool_designs/zone_marsh.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Reed Cutter | `Sword_ReedCutter` | T1 | a sickle cutter on a bundled reed grip with a cattail pommel | 56 % | 0.78 |
+| Bogiron Falchion | `Sword_BogironFalchion` | T2 | a pitted bog-iron falchion | 28 % | 0.84 |
+| Silt Sabre | `Sword_SiltSabre` | T2 | a slim sabre banded by wavy silt layers | 34 % | 0.84 |
+| Marshlight Longsword | `Sword_MarshlightLongsword` | T3 | a longsword carrying a marshlight orb, with a lantern pommel | 24 % | 0.80 |
+| Bellringer Broadsword | `Sword_BellringerBroadsword` | T3 | a bell-mouthed broadsword with a bell emblem and a yoke guard | 51 % | 0.79 |
+| Ferryman's Cutlass | `Sword_FerrymansCutlass` | T2 | a broad cutlass over a scallop-shell guard | 48 % | 0.83 |
+| Oarblade | `Sword_Oarblade` | T3 | an oar-shaped blade in an oarlock guard | 43 % | 0.78 |
+| Frogsong Greatsword | `Sword_FrogsongGreatsword` | T4 | a greatsword with music notes and a frog on lilypads | 23 % | 0.83 |
+| Rubber Duck Rapier | `Sword_RubberDuckRapier` | T4 | a thin rapier with a rubber duck riding the guard | 21 % | 0.62 |
+| Lilypad Lantern | `Sword_LilypadLantern` | T4 | a glowing leaf blade over a lilypad and water lily | 36 % | 0.78 |
+
+#### Infernal Caldera (`tools/pool_designs/zone_caldera.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Emberchip Shiv | `Sword_EmberchipShiv` | T1 | an irregular faceted chip of glowing caldera floor | 43 % | 0.83 |
+| Sootglass Falchion | `Sword_SootglassFalchion` | T2 | a smoky-glass falchion with curls of smoke inside | 55 % | 0.84 |
+| Clinker Sabre | `Sword_ClinkerSabre` | T2 | a rough flat-shaded clinker sabre with a glowing seam | 22 % | 0.84 |
+| Furnace Longsword | `Sword_FurnaceLongsword` | T3 | a heat-banded longsword over a furnace grate, with a bellows pommel | 21 % | 0.83 |
+| Caldera Broadsword | `Sword_CalderaBroadsword` | T3 | a rock-slab broadsword with a lava crater in each face | 37 % | 0.85 |
+| First Spark | `Sword_FirstSpark` | T4 | a slender blade holding the caldera's first spark in a window | 26 % | 0.73 |
+| Kilnhook Khopesh | `Sword_KilnhookKhopesh` | T3 | a C-curved khopesh with a tray hook and a kiln-brick guard | 53 % | 0.67 |
+| Cinderwave Flamberge | `Sword_CinderwaveFlamberge` | T3 | a narrow flamberge rippling like heat haze | 29 % | 0.77 |
+| Anvilback Chopper | `Sword_AnvilbackChopper` | T3 | a square chopper with an anvil built into its spine | 23 % | 0.77 |
+| Toasted Marshmallow Brand | `Sword_ToastedMarshmallowBrand` | T4 | a skewer of four toasted marshmallows over a campfire ring | 23 % | 0.75 |
+| Caramelt Claymore | `Sword_CarameltClaymore` | T4 | a dripping caramel claymore on a candy-cane guard | 52 % | 0.84 |
+
+#### Stormwatch (`tools/pool_designs/zone_storm.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Sparkwire Shiv | `Sword_SparkwireShiv` | T1 | a leaf blade wound in a coil of sparkwire | 24 % | 0.82 |
+| Coppervane Falchion | `Sword_CoppervaneFalchion` | T2 | a falchion flaring into a notched weathervane fin | 28 % | 0.81 |
+| Weathervane Sabre | `Sword_WeathervaneSabre` | T2 | a sabre with an arrow cutout over a vane-arrow guard | 32 % | 0.80 |
+| Rodsteel Longsword | `Sword_RodsteelLongsword` | T3 | a lightning-rod longsword with scorch marks and insulator discs | 24 % | 0.82 |
+| Observatory Broadsword | `Sword_ObservatoryBroadsword` | T3 | a broadsword with a raised constellation over a telescope crossbar | 33 % | 0.84 |
+| Barometer Rapier | `Sword_BarometerRapier` | T3 | a needle rapier over a round barometer dial | 33 % | 0.84 |
+| Gustcutter Gladius | `Sword_GustcutterGladius` | T2 | a leaf gladius swept with gust swooshes | 29 % | 0.84 |
+| Weathercock Epee | `Sword_WeathercockEpee` | T3 | a thin gold epee under a rooster weathervane | 31 % | 0.84 |
+| Stormbell Tulwar | `Sword_StormbellTulwar` | T3 | a tulwar with a cloud emblem and a storm bell on its pommel | 35 % | 0.78 |
+| Pinwheel Claymore | `Sword_PinwheelClaymore` | T4 | a claymore with a four-vane pinwheel spinning at its root | 34 % | 0.83 |
+| Bottled Lightning | `Sword_BottledLightning` | T4 | a fat lightning bolt escaping a lemonade jar | 25 % | 0.76 |
+| Kitestring Rapier | `Sword_KitestringRapier` | T4 | a rapier with a diamond kite near the tip and its string wound down the blade | 20 % | 0.74 |
+| Double Rainbow | `Sword_DoubleRainbow` | T4 | a rainbow blade under a second rainbow arch | 36 % | 0.82 |
+
+#### Void Rift (`tools/pool_designs/zone_voidrift.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Riftsliver | `Sword_Riftsliver` | T1 | a thin rhombus shard with shard guards | 25 % | 0.78 |
+| Hushed Falchion | `Sword_HushedFalchion` | T2 | a falchion muffled at the root with soft cloth bands | 50 % | 0.81 |
+| Gloamsteel Sabre | `Sword_GloamsteelSabre` | T2 | a sabre half-poured in dripping lavender gloam | 37 % | 0.77 |
+| Nullbrand Longsword | `Sword_NullbrandLongsword` | T3 | a longsword branded with a null ring and slash | 22 % | 0.82 |
+| Riftwalker Broadsword | `Sword_RiftwalkerBroadsword` | T3 | a faceted rift-glass door of a broadsword | 57 % | 0.82 |
+| Quiet Star | `Sword_QuietStar` | T4 | a sleepy fallen star at the root of a violet blade | 43 % | 0.82 |
+| Hushfang Kris | `Sword_HushfangKris` | T2 | a five-wave kris with a curved fang tip | 21 % | 0.74 |
+| Gloam Tanto | `Sword_GloamTanto` | T1 | a chisel-tipped tanto with a crescent-cut tsuba | 28 % | 0.78 |
+| Wishbone Comet | `Sword_WishboneComet` | T4 | a blade forked like a wishbone with a comet at the fork | 38 % | 0.81 |
+
+#### Celestial Summit (`tools/pool_designs/zone_summit.py`)
+
+| Sword | Mesh key | Tier | Concept | Calm | Worst IoU |
+|---|---|---|---|---:|---:|
+| Sunmote Shiv | `Sword_SunmoteShiv` | T1 | a leaf shiv with a hot sun mote at its root | 25 % | 0.74 |
+| Cloudcut Falchion | `Sword_CloudcutFalchion` | T2 | a falchion with a scalloped cloud spine | 57 % | 0.84 |
+| Zenith Sabre | `Sword_ZenithSabre` | T2 | a gold sabre with a sundial gnomon fin | 51 % | 0.84 |
+| Daybreak Longsword | `Sword_DaybreakLongsword` | T3 | a tangerine longsword with a rising half-sun over a horizon bar | 45 % | 0.83 |
+| Summitward Broadsword | `Sword_SummitwardBroadsword` | T3 | a broadsword with stair-stepped shoulders | 33 % | 0.84 |
+| Little Dawn | `Sword_LittleDawn` | T4 | a sunny blade with a small smiling sun at its root | 41 % | 0.84 |
+| Cloudstep Katana | `Sword_CloudstepKatana` | T3 | a curved katana with a wavy gold hamon and a cloud-cut tsuba | 42 % | 0.76 |
+| Highwind Nodachi | `Sword_HighwindNodachi` | T3 | a long nodachi with ribbons streaming up the blade | 35 % | 0.76 |
+| Origami Crane Blade | `Sword_OrigamiCraneBlade` | T4 | a folded-paper blade with an origami crane on the guard | 49 % | 0.84 |
+| Sunsqueeze Blade | `Sword_SunsqueezeBlade` | T4 | a lemon blade rising from a halved lemon ringed by sun rays | 36 % | 0.80 |

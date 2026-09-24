@@ -13,6 +13,11 @@
 #   * never a concave outline with an acute inner corner as a flat prism cap (it folds black under the
 #     bevel -- the Hedgehog's J-hook), never two parts sharing a face at the same plane (z-fighting --
 #     the Billhook's guard ends), and pommels big enough to read
+#   * learned building the other 100: anything round (tubes, spheres, helices, lathes) needs >= 12
+#     segments or finish()'s 32-degree bevel catches every edge and triples its triangles -- and a
+#     helix squeezed flat must keep a round tube (ellipse_helix), not be scaled; a flat part thinner
+#     than the blade vanishes inside it (make a frog or a crane thicker than the blade); frame bars
+#     stop where the cross bars begin rather than overlapping them
 import math as _m
 
 P.update({
