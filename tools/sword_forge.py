@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""sword_forge.py -- procedurally builds the five unique boss sword meshes.
+"""sword_forge.py -- LEGACY: the earlier PBR boss sword forge (metal, baked noise/crack/sparkle
+textures). Superseded on 2026-09-24 by tools/blender_boss_swords.py, which builds the five boss
+swords in Blender in the game's plastic-toy cartoon language (docs/BOSS_SWORDS.md). Kept for the
+geometry helpers and as the record of the layout rules below; it refuses to run without
+--legacy-pbr so it can never overwrite the cartoon meshes in assets/swords by accident.
+
+Original description: procedurally builds the five unique boss sword meshes.
 
 Every sword follows the rules the original imported boss sword established, so the
 game's existing placement maths (BossSwordTool.Grip, EnemyCombat's boss weld,
@@ -745,4 +751,8 @@ def main():
 
 
 if __name__ == "__main__":
+    if "--legacy-pbr" not in sys.argv:
+        raise SystemExit("sword_forge.py is the legacy PBR forge; the boss swords are built by "
+                         "tools/blender_boss_swords.py now. Pass --legacy-pbr to run it anyway.")
+    sys.argv.remove("--legacy-pbr")
     main()

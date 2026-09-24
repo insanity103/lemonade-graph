@@ -117,8 +117,14 @@ Built:
   (`CLOTHING_TEXTURES`). Measured per-rig saturation spread 0.25-0.33.
 - **Swords** (`CombatUtil.applyWeaponAppearance`): a runtime override makes every held blade
   SmoothPlastic (Neon honoured as a glow), drops baked PBR `SurfaceAppearance` maps that carry no
-  colour map, and the block/starter sword is a pale blade with a gold guard and coral grip. The
-  sword GLBs are untouched.
+  colour map, and the block/starter sword is a pale blade with a gold guard and coral grip.
+- **Boss sword meshes** (`tools/blender_boss_swords.py`, `docs/BOSS_SWORDS.md`, 2026-09-24): the
+  five PBR boss swords are replaced by Blender-built plastic-toy swords -- chunky slabs, thick
+  grips, oversized pommels, flat swatch colours (metallic 0, roughness 1), every detail as carved
+  geometry or a two-tone paint split, each pairing one calm pale surface with its boss's vivid
+  family. The bandit falchion template gets the same palette. Same mesh layout as before, so
+  no weld or Grip changes. Judged in Cycles renders only; they need importing into
+  `ServerStorage/BossSwordMeshes` and a Studio look.
 - **GUI** (`PanelChrome.COLORS`, `PanelChrome.build`, `MapClient`): the charcoal-and-gold base
   palette and the dark modal shell are gone; both draw from the bright chrome (`PanelChrome.BRIGHT`).
   `MainMenuGui` still keeps its own local dark card palette for a few tabs; that is the next GUI piece.

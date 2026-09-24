@@ -4,7 +4,10 @@ Run:  blender --background --factory-startup --python tools/blender_forge_enemy_
           <out.glb> [preview.png]
 
 A crude quarry-gang falchion: a wide single-edged blade with a clipped point and a carved
-fuller, a plain iron crossbar, a cord-wrapped grip and a round iron pommel. Built to the
+fuller, a plain crossbar, a cord-wrapped grip and a round pommel. PS99 pass: the palette is
+the toy box every enemy and boss sword now shares (pale sky-white blade, toy-blue bar, cream
+cord, gold pommel; see tools/blender_boss_swords.py) and the material is matte (metallic 0,
+roughness 1), so Studio imports a plain textured MeshPart with no SurfaceAppearance. Built to the
 boss-sword mesh layout the game's weld maths expects (EnemyCombat / CombatUtil): one mesh,
 one material (flat colours baked into a swatch atlas), length normalised to 1.0 along Z with
 the tip at z = -0.5 and the pommel at z = +0.5, bounding box centred, width along Y,
@@ -21,7 +24,7 @@ import bpy
 import bmesh
 from mathutils import Vector
 
-argv = sys.argv[sys.argv.index("--") + 1:]
+argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]
 out_path = argv[0]
 preview_path = argv[1] if len(argv) > 1 else None
 
@@ -35,11 +38,12 @@ BLADE_ROOT_Y = -0.21                  # blade root tucked inside the guard
 THICK = 0.009                         # blade half-thickness at the spine
 GUARD_HALF_SPAN = 0.12                # under the 0.13 cap so it stays in proportion
 
+# sRGB bytes / 255 (Blender stores byte-image pixels as written, no transfer applied)
 COLOURS = {
-    "iron":    (0.55, 0.56, 0.60),
-    "dark":    (0.26, 0.26, 0.30),
-    "leather": (0.30, 0.19, 0.12),
-    "brass":   (0.62, 0.47, 0.22),
+    "iron":    (232 / 255, 240 / 255, 255 / 255),   # pale sky-white blade (calm)
+    "dark":    (64 / 255, 144 / 255, 255 / 255),    # toy-blue bar and collar (vivid)
+    "leather": (255 / 255, 238 / 255, 210 / 255),   # cream cord grip (calm)
+    "brass":   (255 / 255, 200 / 255, 48 / 255),    # gold pommel (vivid)
 }
 SLOT = {name: i for i, name in enumerate(COLOURS)}
 # One placeholder material per colour, added to every part's mesh in the same order, so a
@@ -180,8 +184,8 @@ tex = mat.node_tree.nodes.new("ShaderNodeTexImage")
 tex.image = atlas
 tex.interpolation = "Closest"
 mat.node_tree.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
-bsdf.inputs["Metallic"].default_value = 0.3
-bsdf.inputs["Roughness"].default_value = 0.55
+bsdf.inputs["Metallic"].default_value = 0.0
+bsdf.inputs["Roughness"].default_value = 1.0
 
 # Per-face UVs point at the swatch of the material slot the face was built with, then the
 # whole mesh collapses onto the one atlas material.
@@ -227,23 +231,34 @@ bpy.ops.export_scene.gltf(filepath=out_path, export_format="GLB", export_yup=Tru
                           export_materials="EXPORT", export_image_format="AUTO", use_selection=True)
 print(f"tris={sum(len(p.vertices) - 2 for p in mesh.polygons)} verts={len(mesh.vertices)} wrote {out_path}")
 
-# ── Preview render (Workbench: no GPU needed) ────────────────────────────────
+# ── Preview render (Cycles on the CPU: no GPU needed) ───────────────────────
 if preview_path:
     scene = bpy.context.scene
-    scene.render.engine = "BLENDER_WORKBENCH"
-    scene.display.shading.light = "STUDIO"
-    scene.display.shading.color_type = "TEXTURE"
-    scene.render.resolution_x, scene.render.resolution_y = 520, 1100
-    scene.render.film_transparent = False
+    scene.render.engine = "CYCLES"
+    scene.cycles.device = "CPU"
+    scene.cycles.samples = 48
+    scene.cycles.use_denoising = True
+    scene.view_settings.view_transform = "Standard"
+    scene.render.resolution_x, scene.render.resolution_y = 440, 960
     world = bpy.data.worlds.new("World"); scene.world = world
-    world.color = (0.10, 0.10, 0.12)
-    cam_data = bpy.data.cameras.new("Cam"); cam_data.type = "ORTHO"; cam_data.ortho_scale = 1.15
+    world.use_nodes = True
+    nodes, links = world.node_tree.nodes, world.node_tree.links
+    nodes.clear()
+    out = nodes.new("ShaderNodeOutputWorld")
+    light_bg = nodes.new("ShaderNodeBackground"); light_bg.inputs["Color"].default_value = (0.9, 0.92, 1.0, 1.0); light_bg.inputs["Strength"].default_value = 0.85
+    cam_bg = nodes.new("ShaderNodeBackground"); cam_bg.inputs["Color"].default_value = (0.13, 0.46, 1.0, 1.0)
+    mix = nodes.new("ShaderNodeMixShader"); path = nodes.new("ShaderNodeLightPath")
+    links.new(path.outputs["Is Camera Ray"], mix.inputs["Fac"]); links.new(light_bg.outputs["Background"], mix.inputs[1])
+    links.new(cam_bg.outputs["Background"], mix.inputs[2]); links.new(mix.outputs["Shader"], out.inputs["Surface"])
+    sun_data = bpy.data.lights.new("Sun", "SUN"); sun_data.energy = 2.6; sun_data.angle = math.radians(12)
+    sun = bpy.data.objects.new("Sun", sun_data); scene.collection.objects.link(sun)
+    sun.rotation_euler = (math.radians(-50), math.radians(-30), math.radians(30))
+    cam_data = bpy.data.cameras.new("Cam"); cam_data.type = "ORTHO"; cam_data.ortho_scale = 1.12
     cam = bpy.data.objects.new("Cam", cam_data); scene.collection.objects.link(cam)
     # Look along -X at the flat of the blade with the length (Y) running up the frame.
     cam.location = (3.0, 0.0, 0.0)
     cam.rotation_euler = (0.0, math.radians(90), 0.0)
     scene.camera = cam
-    mat.node_tree.nodes.active = tex  # Workbench "TEXTURE" colouring reads the active image node
     scene.render.filepath = preview_path
     bpy.ops.render.render(write_still=True)
     print(f"preview {preview_path}")
