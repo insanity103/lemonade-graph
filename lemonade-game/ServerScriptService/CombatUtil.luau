@@ -144,36 +144,51 @@ end
 -- EnemyAnimator holds the victim (told by the "HitStop" attribute SwordSystem publishes). The
 -- scale pulse that used to be stubbed out here is gone with it; see ComboConfig.HITLAG_SCALE_MULT
 -- for why an R6 enemy rig cannot be scaled without lifting its feet off the ground.
+-- One freeze per humanoid, however many hits land on it at once. The old version saved WalkSpeed,
+-- set 0 and restored the saved value after `duration`, per call. One swing through two enemies calls
+-- it twice in the same instant: the second call saved the 0 the first had just written, and its
+-- restore -- which runs last -- put the 0 back. The player stood frozen until sprint wrote a new
+-- speed (2026-09-24 playtest: "the player gets stuck and can only get unstuck by using sprint").
+-- Now the first freeze remembers the real speed, later ones only push the end time out, and the
+-- one whose end is the latest restores it, once.
+--
+-- "The real speed" skips a swing's step-in brake (SwordSystem): while it holds the character at a
+-- fraction of its speed it leaves the full value in SPEED_BEFORE_BRAKE, and a freeze that starts
+-- inside the brake restores that rather than the braked fraction.
+CombatUtil.SPEED_BEFORE_BRAKE = "SpeedBeforeBrake"
+local frozen = setmetatable({}, { __mode = "k" })
+
+local function freeze(humanoid: Humanoid?, duration: number)
+	if not humanoid or humanoid.Health <= 0 then
+		return
+	end
+	local f = frozen[humanoid]
+	if not f then
+		local speed = humanoid:GetAttribute(CombatUtil.SPEED_BEFORE_BRAKE) or humanoid.WalkSpeed
+		if typeof(speed) ~= "number" or speed <= 0 then
+			speed = game:GetService("StarterPlayer").CharacterWalkSpeed
+		end
+		f = { speed = speed, endsAt = 0 }
+		frozen[humanoid] = f
+	end
+	f.endsAt = math.max(f.endsAt, os.clock() + duration)
+	humanoid.WalkSpeed = 0
+	task.delay(duration, function()
+		if frozen[humanoid] ~= f or os.clock() < f.endsAt - 0.005 then
+			return -- a later hit extended the freeze; its own timer restores
+		end
+		frozen[humanoid] = nil
+		if humanoid.Parent and humanoid.WalkSpeed == 0 then
+			humanoid.WalkSpeed = f.speed
+		end
+	end)
+end
+
 function CombatUtil.applyHitlag(attackerModel, victimModel, duration)
 	if duration <= 0 then return end
 	duration = math.clamp(duration, 0.010, 0.080) -- safety clamp
-
-	-- Freeze attacker
-	local attackerHumanoid = attackerModel and attackerModel:FindFirstChildOfClass("Humanoid")
-	local attackerRoot = attackerModel and (attackerModel.PrimaryPart or attackerModel:FindFirstChild("HumanoidRootPart"))
-	local origAttackerSpeed = 0
-	if attackerHumanoid then
-		origAttackerSpeed = attackerHumanoid.WalkSpeed
-		attackerHumanoid.WalkSpeed = 0
-	end
-
-	-- Freeze victim
-	local victimHumanoid = victimModel and victimModel:FindFirstChildOfClass("Humanoid")
-	local origVictimSpeed = 0
-	if victimHumanoid then
-		origVictimSpeed = victimHumanoid.WalkSpeed
-		victimHumanoid.WalkSpeed = 0
-	end
-
-	-- Restore after duration
-	task.delay(duration, function()
-		if attackerHumanoid and attackerHumanoid.Parent then
-			attackerHumanoid.WalkSpeed = origAttackerSpeed
-		end
-		if victimHumanoid and victimHumanoid.Parent then
-			victimHumanoid.WalkSpeed = origVictimSpeed
-		end
-	end)
+	freeze(attackerModel and attackerModel:FindFirstChildOfClass("Humanoid"), duration)
+	freeze(victimModel and victimModel:FindFirstChildOfClass("Humanoid"), duration)
 end
 
 -- The one message that tells an attacker's client a hit landed. Everything the client does at

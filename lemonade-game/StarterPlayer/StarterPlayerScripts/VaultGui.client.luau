@@ -21,6 +21,7 @@ local VaultConfig = require(Config:WaitForChild("VaultConfig"))
 local WealthLadder = require(Config:WaitForChild("WealthLadder"))
 local BossWeapons = require(Config:WaitForChild("BossWeapons"))
 local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
+local SwordPreview = require(ReplicatedStorage:WaitForChild("SwordPreview"))
 local GuiShowcase = require(ReplicatedStorage:WaitForChild("GuiShowcase"))
 
 local BRIGHT = PanelChrome.BRIGHT
@@ -208,6 +209,10 @@ local function toolFor(info, carried)
 			if tool.Name == info.toolName then return tool, false end
 		end
 	end
+	-- stored, not carried: draw the sword's own model. Borrowing a carried sword of the same tier
+	-- (the old fallback, from before clients could see the models) drew some other blade entirely.
+	local preview = SwordPreview.forSword(info.baseName, info.poolKey)
+	if preview then return preview, true end
 	for _, tool in ipairs(carried) do
 		if tool:GetAttribute("BossDrop") == true and tonumber(tool:GetAttribute("BossTier")) == tonumber(info.tier) then
 			return tool, false
@@ -896,12 +901,15 @@ local function buildTile(parent, order, info, carried, paneKey, key)
 	local view = Instance.new("ViewportFrame")
 	view.Name = "SwordRender"
 	view.BackgroundTransparency = 1
-	view.Position = UDim2.new(-0.02, 0, -0.2, 0)
-	view.Size = UDim2.new(1.16, 0, 1.02, 0)
+	-- The whole sword, inside the card and above the name strip. It used to be drawn a quarter
+	-- bigger than its frame (margin 0.8) and pushed up past the card's top edge, so the pommel
+	-- and the tip were cut off, and the list's clipping cut the overhang off the top row too.
+	view.Position = UDim2.new(0.03, 0, 0, 4)
+	view.Size = UDim2.new(0.94, 0, 1, -34)
 	view.ZIndex = 8
 	view.Parent = tile
 	local tool, standIn = toolFor(info, carried)
-	PanelChrome.renderTool(view, tool, { tiltDeg = 45, margin = 0.8 })
+	PanelChrome.renderTool(view, tool, { tiltDeg = 45, margin = 1.04 })
 	if standIn then tool:Destroy() end
 
 	-- Name strip: rim-coloured band across the bottom (square top, rounded bottom).

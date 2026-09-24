@@ -54,6 +54,18 @@ local ENEMY_WINDUP = 0.32 -- [TUNING] seconds from raise to impact for ordinary 
 local HEAVY_WINDUP = 0.5 -- [TUNING] attackCooldown >= HEAVY_COOLDOWN
 local HEAVY_COOLDOWN = 1.6
 local HIT_GRACE = 1.5 -- [TUNING] studs beyond attackReach that still count at impact
+-- [TUNING] How far to either side of straight ahead an enemy's chop still lands, in degrees.
+-- Its swing is a forward arc; the players it misses are the ones it is not facing.
+local HIT_ARC_DEG = 75
+local HIT_ARC_COS = math.cos(math.rad(HIT_ARC_DEG))
+local function inFrontOf(root: BasePart, position: Vector3): boolean
+	local flat = (position - root.Position) * Vector3.new(1, 0, 1)
+	if flat.Magnitude < 2.5 then
+		return true -- close enough to be inside the swing whatever way it faces
+	end
+	local look = root.CFrame.LookVector * Vector3.new(1, 0, 1)
+	return look.Magnitude < 1e-3 or look.Unit:Dot(flat.Unit) >= HIT_ARC_COS
+end
 local DEFAULT_ARCHETYPE = "IronSquire"
 
 -- Classic Shirt/Pants texture pairs per boss family, so every archetype in a zone
@@ -1212,8 +1224,12 @@ task.spawn(function()
 							state.windingUp = false
 							local root = model.PrimaryPart
 							local targetRoot = target and target:FindFirstChild("HumanoidRootPart")
+							-- In reach AND in front of the blade. Reach alone let a chop land on a player
+							-- standing behind or beside the enemy, whose swing visibly went the other way
+							-- (2026-09-24 playtest: "hits on the player are very inconsistent").
 							if humanoid.Health > 0 and model.Parent and root and targetRoot
-								and (targetRoot.Position - root.Position).Magnitude <= arch.attackReach + HIT_GRACE then
+								and (targetRoot.Position - root.Position).Magnitude <= arch.attackReach + HIT_GRACE
+								and inFrontOf(root, targetRoot.Position) then
 								applyEnemyDamageToPlayer(model, target, arch, level)
 							end
 						end)

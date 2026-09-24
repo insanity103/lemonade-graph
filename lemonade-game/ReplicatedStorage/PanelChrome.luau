@@ -542,6 +542,11 @@ function PanelChrome.renderTool(viewport, tool, opts)
 	-- show a blade whose flat faces the Handle's local X rather than Y.
 	local pose = CFrame.Angles(0, math.rad(opts.yawDeg or 18), 0) * CFrame.Angles(0, 0, math.rad(-(opts.tiltDeg or 45))) * ICON_POSE
 		* CFrame.Angles(0, 0, math.rad(opts.rollDeg or 0))
+	-- A sword mesh has its tip at its own +Z (BossSwordFactory.meshGrip), the block sword along -Z;
+	-- turn a mesh end for end so every icon points its tip the same way, up and to the right.
+	if handle:IsA("MeshPart") then
+		pose *= CFrame.Angles(0, math.pi, 0)
+	end
 	-- Welded parts are placed from their weld's C0/C1: a freshly equipped sword may not have
 	-- had its welds simulated yet, so its current CFrames can't be trusted.
 	local transform = pose * handle.CFrame:Inverse()

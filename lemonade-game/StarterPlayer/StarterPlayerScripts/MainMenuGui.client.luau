@@ -658,7 +658,7 @@ local function openInventoryDetail(item)
 	heroView.Position = UDim2.fromOffset(4, 4)
 	heroView.ZIndex = 32
 	heroView.Parent = hero
-	PanelChrome.renderTool(heroView, tool, { tiltDeg = 50, margin = 0.9 })
+	PanelChrome.renderTool(heroView, tool, { tiltDeg = 50, margin = 1.04 })
 	if item.equipped then
 		local b = PanelChrome.checkBadge(hero, 36, 34)
 		b.Position = UDim2.new(1, -18, 0, 18)
@@ -813,11 +813,14 @@ local function buildItemTile(parent, item, order)
 	local view = Instance.new("ViewportFrame")
 	view.Name = "Icon"
 	view.BackgroundTransparency = 1
-	view.Position = UDim2.new(-0.02, 0, -0.2, 0)
-	view.Size = UDim2.new(1.16, 0, 1.02, 0)
+	-- The whole sword, inside the card and above the name strip. It used to be drawn a quarter
+	-- bigger than its frame (margin 0.8) and pushed up past the card's top edge, so the pommel
+	-- and the tip were cut off, and the list's clipping cut the overhang off the top row too.
+	view.Position = UDim2.new(0.03, 0, 0, 4)
+	view.Size = UDim2.new(0.94, 0, 1, -34)
 	view.ZIndex = 26
 	view.Parent = tile
-	PanelChrome.renderTool(view, tool, { tiltDeg = 45, margin = 0.8 })
+	PanelChrome.renderTool(view, tool, { tiltDeg = 45, margin = 1.04 })
 
 	-- Name strip: rim-coloured band across the bottom (square top, rounded bottom).
 	local strip = Instance.new("Frame")

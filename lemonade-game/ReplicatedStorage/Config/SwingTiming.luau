@@ -146,4 +146,10 @@ return {
 	-- overall, reaching 7.9 studs along the blade's own line against 7.6 and giving up the
 	-- corners the old box had out to either side of the player. The blade decides now.
 	BLADE_RADIUS = 2.3,
+
+	-- How close the blade must come to an enemy's BODY -- any of its parts, measured to that part's
+	-- real box -- to cut it, across the whole swing (SwingBlade.sweep). The blade's own half-width
+	-- plus a little grace for the server seeing the enemy a frame behind the client. BLADE_RADIUS
+	-- above now only pads the broad-phase box and the capture stages' contact-frame geometry.
+	BLADE_TOUCH = 1.2,
 }

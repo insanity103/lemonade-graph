@@ -184,4 +184,39 @@ Players.PlayerAdded:Connect(function(player)
 end)
 for _, player in ipairs(Players:GetPlayers()) do repairPlayerSword(player) end
 
+-- Sword meshes the clients can draw. Every sword model lives in ServerStorage/BossSwordMeshes,
+-- which no client can see, so a sword the player does not hold (a spin board's pool, a vault entry)
+-- had no model to preview and every tile drew the same stand-in blade. A copy of each MeshPart goes
+-- to ReplicatedStorage/SwordMeshes for ReplicatedStorage/SwordPreview; only the mesh, its texture
+-- and its size travel, never a script. The server keeps using its own folder.
+do
+	local ServerStorage = game:GetService("ServerStorage")
+	local library = ReplicatedStorage:FindFirstChild("SwordMeshes")
+	if library then library:Destroy() end
+	library = Instance.new("Folder")
+	library.Name = "SwordMeshes"
+	local function publish(mesh: Instance?)
+		if mesh and mesh:IsA("MeshPart") and not library:FindFirstChild(mesh.Name) then
+			local copy = mesh:Clone()
+			for _, d in ipairs(copy:GetDescendants()) do
+				if not d:IsA("SurfaceAppearance") then d:Destroy() end
+			end
+			copy.Anchored = true
+			copy.CanCollide, copy.CanQuery, copy.CanTouch = false, false, false
+			copy.Parent = library
+		end
+	end
+	local folder = ServerStorage:FindFirstChild("BossSwordMeshes")
+	for _, mesh in ipairs(folder and folder:GetChildren() or {}) do
+		publish(mesh)
+	end
+	local template = ServerStorage:FindFirstChild("SwordMeshTemplate")
+	if template and template:IsA("MeshPart") and not library:FindFirstChild("Template") then
+		publish(template)
+		local t = library:FindFirstChild("SwordMeshTemplate")
+		if t then t.Name = "Template" end
+	end
+	library.Parent = ReplicatedStorage
+end
+
 print("[RuntimeBootstrap] Required remotes and starter sword are ready")

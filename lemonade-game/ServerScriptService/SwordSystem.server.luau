@@ -218,11 +218,14 @@ local function performSwingWithCombo(player, character, tool, comboIndex, perfec
 	local rangeBonus = (player:GetAttribute("SwordRangeBonus") or (tool and tool:GetAttribute("RangeBonus") or 0))
 		+ (player:GetAttribute("RebirthExtraRange") or 0)
 
-	-- A longer blade reaches further along its own length and bites a little wider, exactly as
-	-- the range bonus used to widen the old box and push it forward.
-	local reach = blade.Radius + rangeBonus * 0.5
+	-- The whole cut, from the end of the wind-up to the end of the follow-through. The contact
+	-- frame alone is ~11 ms of a blade that visibly cuts for 200-300 ms, so an enemy the blade went
+	-- through before or after it -- to one side, or under the arc -- took nothing (2026-09-24
+	-- playtest: "you only do damage when your cursor is on the enemy").
+	local sweep = SwingBlade.sweep(character, tool, clip, timing.WINDUP or 0, timing.SWING_END or timing.CONTACT)
+		or blade
 	local blades = {}
-	for _, seg in ipairs(blade.Segments) do
+	for _, seg in ipairs(sweep.Segments) do
 		local a = rootPart.CFrame * seg.A
 		local b = rootPart.CFrame * (seg.B + (seg.B - seg.A).Unit * rangeBonus)
 		table.insert(blades, { a = a, ab = b - a })
@@ -232,12 +235,10 @@ local function performSwingWithCombo(player, character, tool, comboIndex, perfec
 	params.FilterDescendantsInstances = { character }
 	params.FilterType = Enum.RaycastFilterType.Exclude
 
-	-- Broad phase only: a box, oriented along the blade, around every one of those segments.
-	-- At 300 studs a second even this box is mostly empty corner, so everything it returns is
-	-- still measured against the segments below.
+	-- Broad phase only: one box, in the character's frame, around the whole arc.
 	local parts = Workspace:GetPartBoundsInBox(
-		rootPart.CFrame * blade.BoxCFrame,
-		blade.BoxSize + Vector3.new(rangeBonus, rangeBonus, rangeBonus * 2),
+		rootPart.CFrame * sweep.BoxCFrame,
+		sweep.BoxSize + Vector3.new(rangeBonus, rangeBonus, rangeBonus) * 2,
 		params
 	)
 
@@ -253,39 +254,61 @@ local function performSwingWithCombo(player, character, tool, comboIndex, perfec
 		travel = rootPart.CFrame.LookVector
 	end
 
-	-- Narrow phase: the blade itself. A target counts as cut when its root passes within reach
-	-- of one of the segments -- one dot product and a clamp each. The winning point on the blade
-	-- comes back with it: that is where the steel met the body, and where the impact is drawn.
-	local function bladeCuts(position: Vector3): Vector3?
-		local best, bestDistance = nil, math.huge
+	-- Narrow phase: does the blade touch the body? Points along every sampled blade are measured
+	-- to each of the enemy's own parts (their real boxes, so a limb, a big rig or a boss counts the
+	-- same as a torso). The old test measured only to the enemy's root, the centre of its torso, so
+	-- a cut through a shoulder, an arm or the far side of a large rig missed. The winning surface
+	-- point is where the steel met the body, and where the impact is drawn.
+	local touch = SwingTiming.BLADE_TOUCH + rangeBonus * 0.5
+	local POINTS = 6
+	local function bladeTouches(part: BasePart): (number?, Vector3?)
+		local best, bestSurface = nil, nil
+		local cf, half = part.CFrame, part.Size * 0.5
 		for _, seg in ipairs(blades) do
-			local t = math.clamp((position - seg.a):Dot(seg.ab) / seg.ab:Dot(seg.ab), 0, 1)
-			local onBlade = seg.a + seg.ab * t
-			local distance = (position - onBlade).Magnitude
-			if distance <= reach and distance < bestDistance then
-				best, bestDistance = onBlade, distance
+			for k = 0, POINTS do
+				local point = seg.a + seg.ab * (k / POINTS)
+				local rel = cf:PointToObjectSpace(point)
+				local clamped = Vector3.new(
+					math.clamp(rel.X, -half.X, half.X),
+					math.clamp(rel.Y, -half.Y, half.Y),
+					math.clamp(rel.Z, -half.Z, half.Z)
+				)
+				local distance = (rel - clamped).Magnitude
+				if distance <= touch and (best == nil or distance < best) then
+					best, bestSurface = distance, cf * clamped
+				end
 			end
 		end
-		return best
+		return best, bestSurface
 	end
 
-	local damaged = {}
-	local rejected = {}
+	-- Every enemy the blade touched, keeping the closest touch per enemy.
+	local touched = {}
 	for _, part in parts do
 		local model = part:FindFirstAncestorOfClass("Model")
-		local enemyRoot = model and (model.PrimaryPart or model:FindFirstChild("HumanoidRootPart"))
-		if model and enemyRoot and isEnemy(model) and not damaged[model] and not rejected[model] then
-			local onBlade = bladeCuts(enemyRoot.Position)
-			if not onBlade then
-				rejected[model] = true -- in the broad-phase box, but not on the blade
-			elseif CombatUtil.hasLineOfSight(rootPart.Position, enemyRoot.Position, { character, model }) then
-				damaged[model] = true
-				-- The contact point is pulled a little out of the blade toward the body it cut,
-				-- so the burst sits on the surface being struck rather than inside it.
-				local into = (enemyRoot.Position - onBlade)
-				local surface = if into.Magnitude > 0.1 then onBlade + into.Unit * math.min(0.6, into.Magnitude * 0.5) else onBlade
-					applyDamage(model, player, tool, rootPart, comboIndex, character, lookAlong(surface, travel), perfect, heavy)
+		-- an accessory or a held weapon sits in a nested model; the enemy is the one with a Humanoid
+		while model and not model:FindFirstChildOfClass("Humanoid") do
+			model = model.Parent and model.Parent:FindFirstAncestorOfClass("Model")
+		end
+		if model and isEnemy(model) and part:IsA("BasePart") then
+			local distance, surface = bladeTouches(part)
+			if distance and (not touched[model] or distance < touched[model].distance) then
+				touched[model] = { distance = distance, surface = surface }
 			end
+		end
+	end
+
+	-- Walls and locked doors still stop the blade, but the enemies this same swing touched do not
+	-- shield each other: the one at the front of a pack used to block the line to the one behind
+	-- it, so a cut through both only ever landed on the first.
+	local sightIgnore = { character }
+	for model in pairs(touched) do
+		table.insert(sightIgnore, model)
+	end
+	for model, hit in pairs(touched) do
+		local enemyRoot = model.PrimaryPart or model:FindFirstChild("HumanoidRootPart")
+		if enemyRoot and CombatUtil.hasLineOfSight(rootPart.Position, enemyRoot.Position, sightIgnore) then
+			applyDamage(model, player, tool, rootPart, comboIndex, character, lookAlong(hit.surface, travel), perfect, heavy)
 		end
 	end
 end
@@ -400,6 +423,8 @@ local function performComboSwing(player, character, tool)
 					return
 				end
 				humanoid.WalkSpeed = full * brake.KEEP
+				-- A hitlag that lands inside the brake restores this, not the braked fraction.
+				humanoid:SetAttribute(CombatUtil.SPEED_BEFORE_BRAKE, full)
 				task.delay(brake.LENGTH, function()
 					-- Only the swing that braked may restore, and only if nothing else has
 					-- taken the speed in the meantime (hitlag sets it to 0 and owns it).
@@ -409,6 +434,7 @@ local function performComboSwing(player, character, tool)
 					end
 					if brakeToken[character] == token then
 						brakeToken[character] = nil
+						humanoid:SetAttribute(CombatUtil.SPEED_BEFORE_BRAKE, nil)
 					end
 				end)
 			end)

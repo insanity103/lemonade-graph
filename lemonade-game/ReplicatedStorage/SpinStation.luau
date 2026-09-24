@@ -37,6 +37,7 @@ local function run()
 	local SpinPools = require(Config:WaitForChild("SpinPools"))
 	local WeaponModifiers = require(Config:WaitForChild("WeaponModifiers"))
 	local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
+	local SwordPreview = require(ReplicatedStorage:WaitForChild("SwordPreview"))
 	local WheelGeometry = require(ReplicatedStorage:WaitForChild("WheelGeometry"))
 	local TokenDrops = require(ReplicatedStorage:WaitForChild("TokenDrops"))
 	local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
@@ -645,7 +646,7 @@ local function run()
 
 	local chaseSpinners = {} -- UIGradients behind chase tiles, turned every frame
 
-	local function buildTile(row, order)
+	local function buildTile(row, order, zone)
 		local t = RARITY_TILE[row.rarity] or RARITY_TILE.Common
 		local chase = row.tag == "Chase"
 		-- an unpulled chase is a mystery ("??"); once this player has pulled it, it shows its name
@@ -712,7 +713,9 @@ local function run()
 		vp.Size = UDim2.fromScale(1, 1)
 		vp.ZIndex = 6
 		vp.Parent = tile
-		local sword = standInSword(row.rarity)
+		-- the sword's own model (ReplicatedStorage/SwordPreview); the rarity-tinted block blade only
+		-- stands in for a sword whose mesh is not in the place yet
+		local sword = SwordPreview.forSword(row.sword, zone) or standInSword(row.rarity)
 		PanelChrome.renderTool(vp, sword, SWORD_POSE)
 		sword:Destroy()
 		if hidden then
@@ -782,7 +785,7 @@ local function run()
 			table.clear(chaseSpinners)
 			for i, row in ipairs(rows or {}) do
 				if i > 5 then break end
-				buildTile(row, i)
+				buildTile(row, i, zone)
 			end
 		end
 		local have = tokens()

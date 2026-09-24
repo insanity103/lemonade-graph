@@ -56,10 +56,19 @@ local BLADE_NEAR, BLADE_FAR = 0.12, 1.00
 
 local cache = setmetatable({}, { __mode = "k" })
 
--- How far the tool reaches along the handle's -Z, over every welded part of it. Measured rather
--- than assumed so a boss sword with a longer MeshPart blade gets a longer segment.
-local function bladeReach(tool: Tool, handle: BasePart): number
-	local far = -1.2
+-- Where the blade is in the Handle's own space: the grip point it starts from, the way it points,
+-- and how far it reaches, measured over every part of the tool so a longer blade gets a longer
+-- segment. The block sword's Handle origin IS the grip and its blade runs down the Handle's -Z.
+-- A sword MESH is the other way round (BossSwordFactory.meshGrip): centred on the whole sword,
+-- tip at its own +Z, hand SWORD_GRIP_FRAC of its length back toward -Z -- which Tool.Grip's
+-- translation carries. Measuring every sword down -Z from the Handle's centre put a mesh sword's
+-- hitbox from mid-blade back through the fist to the pommel, so every spin, zone and boss sword
+-- reached ~3.6 studs from the hand where the starter reached 5.8 (2026-09-24 playtest: "hits only
+-- land when the cursor is on the enemy").
+local function bladeAxis(tool: Tool, handle: BasePart): (Vector3, Vector3, number)
+	local origin = if handle:IsA("MeshPart") then tool.Grip.Position else Vector3.zero
+	local dir = if handle:IsA("MeshPart") then Vector3.new(0, 0, 1) else Vector3.new(0, 0, -1)
+	local reach = 1.2
 	local inverse = handle.CFrame:Inverse()
 	for _, part in ipairs(tool:GetDescendants()) do
 		if part:IsA("BasePart") then
@@ -68,13 +77,14 @@ local function bladeReach(tool: Tool, handle: BasePart): number
 			for _, sx in ipairs({ -1, 1 }) do
 				for _, sy in ipairs({ -1, 1 }) do
 					for _, sz in ipairs({ -1, 1 }) do
-						far = math.min(far, (cf * Vector3.new(half.X * sx, half.Y * sy, half.Z * sz)).Z)
+						local corner = cf * Vector3.new(half.X * sx, half.Y * sy, half.Z * sz)
+						reach = math.max(reach, (corner - origin):Dot(dir))
 					end
 				end
 			end
 		end
 	end
-	return far
+	return origin, dir, reach
 end
 
 -- ── Two kinds of joint ──────────────────────────────────────────────────────────────────
@@ -212,7 +222,7 @@ function SwingBlade.contact(character: Model, tool: Tool, clip, contactTime: num
 	end
 
 	local joints = jointsOf(character)
-	local reach = bladeReach(tool, handle)
+	local origin, dir, reach = bladeAxis(tool, handle)
 
 	local segments = {}
 	for _, offset in ipairs(SwingTiming.CONTACT_SAMPLES) do
@@ -222,8 +232,8 @@ function SwingBlade.contact(character: Model, tool: Tool, clip, contactTime: num
 			return nil
 		end
 		table.insert(segments, {
-			A = cframe * Vector3.new(0, 0, reach * BLADE_NEAR),
-			B = cframe * Vector3.new(0, 0, reach * BLADE_FAR),
+			A = cframe * (origin + dir * (reach * BLADE_NEAR)),
+			B = cframe * (origin + dir * (reach * BLADE_FAR)),
 		})
 	end
 
@@ -239,6 +249,70 @@ function SwingBlade.contact(character: Model, tool: Tool, clip, contactTime: num
 		cache[character] = entry
 	end
 	entry.byClip[clip] = hit
+	return hit
+end
+
+-- The blade across the WHOLE cut, not just the contact frame: every SWEEP_STEP from `fromTime`
+-- (the end of the wind-up) to `toTime` (the end of the follow-through). The contact samples above
+-- cover about 11 ms of a swing whose blade is visibly cutting for 200-300 ms, so anything the
+-- blade went through before or after that sliver -- off to one side, or under the arc -- took no
+-- damage, and only a target square in front of the player at the contact frame could be hit.
+-- Same shape as contact() (Segments / BoxCFrame / BoxSize), cached the same way.
+local SWEEP_STEP = 1 / 120 -- [TUNING] seconds between blade samples; the tip moves ~2.5 studs per step at its fastest
+function SwingBlade.sweep(character: Model, tool: Tool, clip, fromTime: number, toTime: number)
+	local entry = cache[character]
+	if entry and entry.tool ~= tool then
+		entry = nil
+	end
+	local key = string.format("%.3f:%.3f", fromTime, toTime)
+	local byClip = entry and entry.sweeps and entry.sweeps[clip]
+	if byClip and byClip[key] then
+		return byClip[key]
+	end
+
+	local hand = character:FindFirstChild("RightHand")
+	local grip = hand and hand:FindFirstChild("RightGrip")
+	local handle = tool and tool:FindFirstChild("Handle")
+	if not (grip and grip:IsA("Weld") and handle and handle:IsA("BasePart")) then
+		return nil
+	end
+	local joints = jointsOf(character)
+	local origin, dir, reach = bladeAxis(tool, handle)
+	local segments = {}
+	local steps = math.max(1, math.ceil((toTime - fromTime) / SWEEP_STEP))
+	for i = 0, steps do
+		local pose = AnimationController.SampleClip(clip, fromTime + (toTime - fromTime) * i / steps)
+		local cframe = handleAt(joints, grip, pose)
+		if not cframe then
+			return nil
+		end
+		table.insert(segments, {
+			A = cframe * (origin + dir * (reach * BLADE_NEAR)),
+			B = cframe * (origin + dir * (reach * BLADE_FAR)),
+		})
+	end
+	-- One box around the whole arc: it is only the broad phase.
+	local lo, hi
+	for _, seg in ipairs(segments) do
+		for _, p in ipairs({ seg.A, seg.B }) do
+			lo = if lo then lo:Min(p) else p
+			hi = if hi then hi:Max(p) else p
+		end
+	end
+	local pad = Vector3.one * (SwingTiming.BLADE_RADIUS * 2)
+	local hit = {
+		Segments = segments,
+		Radius = SwingTiming.BLADE_RADIUS,
+		BoxCFrame = CFrame.new((lo + hi) / 2),
+		BoxSize = (hi - lo) + pad,
+	}
+	if not entry then
+		entry = { tool = tool, byClip = {} }
+		cache[character] = entry
+	end
+	entry.sweeps = entry.sweeps or {}
+	entry.sweeps[clip] = entry.sweeps[clip] or {}
+	entry.sweeps[clip][key] = hit
 	return hit
 end
 

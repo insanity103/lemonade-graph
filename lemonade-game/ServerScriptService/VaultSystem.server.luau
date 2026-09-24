@@ -51,6 +51,9 @@ local function describe(entry)
 		damageMult = attrs.DamageMult or 1,
 		tier = attrs.BossTier or 1,
 		rating = SwordValue.rateAttrs(attrs),
+		-- which sword this is, so the client can draw its own model (ReplicatedStorage/SwordPreview)
+		baseName = attrs.BaseWeaponName,
+		poolKey = attrs.PoolKey,
 	}
 end
 
