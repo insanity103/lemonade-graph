@@ -181,6 +181,9 @@ iconSlot.Position = UDim2.new(0, 0, 0.5, 0)
 iconSlot.Size = UDim2.fromOffset(ICON_PX, ICON_PX)
 iconSlot.BackgroundTransparency = 1
 iconSlot.Rotation = -10
+-- Above the pill (ZIndex 6): the gui sorts siblings by ZIndex, so the lemon's own high ZIndexes only
+-- order it within this slot, and at the default 1 the whole slot drew behind the pill.
+iconSlot.ZIndex = 8
 iconSlot.Parent = chip
 tokenIcon(iconSlot, ICON_PX, 8)
 
