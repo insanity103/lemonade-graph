@@ -115,6 +115,8 @@ Until this is done the Glacier plays and looks complete in parts. Nothing depend
 
 ## Open
 
+The Studio session's plan (import, play-test, and ideas that need the real renderer): `GLACIER_STUDIO_PLAN.md`.
+
 - Import the meshes (above), then judge the zone in Studio in play: frame rate at the forecourt,
   the snowfall's density, the aurora from the lake.
 - Pick SoundIds for `GlacierWind`.
