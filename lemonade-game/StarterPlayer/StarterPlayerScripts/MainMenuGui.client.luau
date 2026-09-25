@@ -551,10 +551,10 @@ end
 
 local buildInventoryPanel
 
-local function detailStatRow(parent, order, icon, labelText, valueText, valueColor)
+local function detailStatRow(parent, order, icon, labelText, valueText, valueColor, rowH)
 	local row = Instance.new("Frame")
 	row.Name = "Stat_" .. labelText
-	row.Size = UDim2.new(1, 0, 0, 40)
+	row.Size = UDim2.new(1, 0, 0, rowH or 40)
 	row.BackgroundColor3 = BRIGHT.Row
 	row.LayoutOrder = order
 	row.ZIndex = 32
@@ -643,10 +643,40 @@ local function openInventoryDetail(item)
 	local kind = BossWeapons.SwordKind(tool)
 	brightText(tagRow, { text = kind, font = Enum.Font.GothamBold, size = 14, color = BRIGHT.InkMuted, xAlign = Enum.TextXAlignment.Right, size2 = UDim2.new(1, 0, 1, 0), zIndex = 32 })
 
+	-- The stats, gathered first: how many there are decides how big the hero render and the rows
+	-- can be, so the card always fits the panel with its buttons on it.
+	local stats = {}
+	local function stat(icon, label, value, color)
+		table.insert(stats, { icon, label, value, color })
+	end
+	stat(ICONS.Sword, "Damage", string.format("x%.2f", f.damageMult), Color3.fromRGB(255, 255, 255))
+	if f.bossDrop then
+		stat(ICONS.Trophy, "Rating", SwordValue.short(SwordValue.rateTool(tool)), BRIGHT.Gold)
+	end
+	if f.bonusDmg > 0 then stat(ICONS.Sword, "Bonus damage", string.format("+%d%%", math.round(f.bonusDmg * 100)), Color3.fromRGB(255, 120, 100)) end
+	if f.critChance > 0 then stat(ICONS.Target, "Crit chance", string.format("+%d%%", math.round(f.critChance * 100)), Color3.fromRGB(255, 190, 70)) end
+	if f.rangeBonus > 0 then stat(ICONS.Lighting, "Reach", string.format("+%s", tostring(f.rangeBonus)), Color3.fromRGB(120, 205, 255)) end
+	if f.knockbackBonus > 0 then stat(ICONS.Shield, "Knockback", string.format("+%d", f.knockbackBonus), Color3.fromRGB(150, 240, 140)) end
+	if f.bossDrop and tool:GetAttribute("Starter") ~= true then
+		local dormant = math.max(f.storedCount - f.prefixCount, 0)
+		stat(ICONS.Star, "Prefix slots", string.format("%d / %d%s", f.prefixCount, f.slots,
+			dormant > 0 and string.format(" (+%d dormant)", dormant) or ""), BRIGHT.Gold)
+	end
+	local crowded = #stats > 3
+	local heroH = if crowded then (narrow and 96 or 110) else (narrow and 118 or 150)
+	local rowH, rowGap = if crowded then 36 else 40, if crowded then 6 else 8
+	-- The card's height budget in panel units: on wide screens it hangs from y 74 and may run a
+	-- little past the panel's foot (the fit leaves 44 spare below it); on phones it stands on the
+	-- panel's foot and must stay under the title bar. Everything but the stats is fixed height.
+	local maxCard = if narrow then layout.H - 70 else layout.H - 34
+	local fixed = 28 + 34 + 28 + heroH + (layout.touch + 6) + 5 * 8 + 4 -- (+4: the stats box's padding)
+	local rowsH = #stats * rowH + math.max(#stats - 1, 0) * rowGap
+	local statsH = math.max(math.min(rowsH, maxCard - fixed), math.min(rowsH, rowH * 2 + rowGap))
+
 	-- Hero render on the rarity colour.
 	local hero = Instance.new("Frame")
 	hero.Name = "Hero"
-	hero.Size = UDim2.new(1, 0, 0, narrow and 118 or 150)
+	hero.Size = UDim2.new(1, 0, 0, heroH)
 	hero.LayoutOrder = 3
 	hero.ZIndex = 31
 	hero.Parent = card
@@ -664,24 +694,31 @@ local function openInventoryDetail(item)
 		b.Position = UDim2.new(1, -18, 0, 18)
 	end
 
-	-- Stats: big outlined numbers, one row each.
-	local order = 10
-	local function stat(icon, label, value, color)
-		detailStatRow(card, order, icon, label, value, color)
-		order += 1
-	end
-	stat(ICONS.Sword, "Damage", string.format("x%.2f", f.damageMult), Color3.fromRGB(255, 255, 255))
-	if f.bossDrop then
-		stat(ICONS.Trophy, "Rating", SwordValue.short(SwordValue.rateTool(tool)), BRIGHT.Gold)
-	end
-	if f.bonusDmg > 0 then stat(ICONS.Sword, "Bonus damage", string.format("+%d%%", math.round(f.bonusDmg * 100)), Color3.fromRGB(255, 120, 100)) end
-	if f.critChance > 0 then stat(ICONS.Target, "Crit chance", string.format("+%d%%", math.round(f.critChance * 100)), Color3.fromRGB(255, 190, 70)) end
-	if f.rangeBonus > 0 then stat(ICONS.Lighting, "Reach", string.format("+%s", tostring(f.rangeBonus)), Color3.fromRGB(120, 205, 255)) end
-	if f.knockbackBonus > 0 then stat(ICONS.Shield, "Knockback", string.format("+%d", f.knockbackBonus), Color3.fromRGB(150, 240, 140)) end
-	if f.bossDrop and tool:GetAttribute("Starter") ~= true then
-		local dormant = math.max(f.storedCount - f.prefixCount, 0)
-		stat(ICONS.Star, "Prefix slots", string.format("%d / %d%s", f.prefixCount, f.slots,
-			dormant > 0 and string.format(" (+%d dormant)", dormant) or ""), BRIGHT.Gold)
+	-- Stats: big outlined numbers, one row each, in a box that scrolls when a sword has more rows
+	-- than the card has room for (a boss drop with every bonus rolled), so EQUIP and SELL below
+	-- always stay on the card instead of being pushed off the bottom of the screen.
+	local scrolls = rowsH > statsH
+	local statsBox = Instance.new("ScrollingFrame")
+	statsBox.Name = "Stats"
+	statsBox.BackgroundTransparency = 1
+	statsBox.BorderSizePixel = 0
+	statsBox.Size = UDim2.new(1, 0, 0, statsH + 4)
+	statsBox.CanvasSize = UDim2.new()
+	statsBox.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	statsBox.ScrollingDirection = Enum.ScrollingDirection.Y
+	statsBox.ScrollBarThickness = if scrolls then 6 else 0
+	statsBox.ScrollBarImageColor3 = BRIGHT.Outline
+	statsBox.ScrollingEnabled = scrolls
+	statsBox.LayoutOrder = 10
+	statsBox.ZIndex = 31
+	statsBox.Parent = card
+	addPadding(statsBox, 2, if scrolls then 10 else 2, 2, 2) -- room for the rows' strokes and the bar
+	local statsList = Instance.new("UIListLayout")
+	statsList.Padding = UDim.new(0, rowGap)
+	statsList.SortOrder = Enum.SortOrder.LayoutOrder
+	statsList.Parent = statsBox
+	for i, st in ipairs(stats) do
+		detailStatRow(statsBox, i, st[1], st[2], st[3], st[4], rowH)
 	end
 
 	-- Actions: EQUIP (any backpack sword) and SELL (unequipped boss drops), same as before.
