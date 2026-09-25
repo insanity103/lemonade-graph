@@ -16,8 +16,9 @@ Branch `claude/magical-dirac-kww440`, commit `1a1fa7f` and after.
 - After any Rojo reconnect, check for duplicated scripts: every name once in ServerScriptService,
   StarterPlayerScripts and ReplicatedStorage. The new ones are `MeshSlots`, `GlacierAmbience`
   and `ZoneAir`.
-- The machine has 16 GB: **never run Blender while Studio is open**. Close Studio for any
-  `blender_glacier_kit.py` run and reopen it afterwards; ask Alex first.
+- **Blender is allowed at any time, Studio open or not** (Alex, 2026-09-25). This replaces the older
+  "no Blender while Studio is open" rule for this work, so don't close Studio for a kit export. Use
+  Blender freely: exports, Cycles renders, new pieces, quick iterations.
 - Another session may be editing combat, swing, outfit, NPC-model and animation files. Don't touch
   or commit its work. Run `git status` before you start.
 - Never hand-edit `lemonade-map/LemonadeMap/*`: it's generated. Every map change goes into
@@ -85,7 +86,7 @@ What to verify, because none of it has been tested:
 - **Parts versus mesh.** Capture the five views again and compare them with the baseline. Wherever
   the mesh looks *worse* than the parts (it can happen: an over-lumpy rock, a heavy bevel on
   distant cliffs), say so. The fix goes in `tools/glacier_kit.py` or `tools/blender_glacier_kit.py`,
-  re-exported with Studio closed.
+  then goes through the Blender-to-Studio loop below.
 - **Performance.** There are 123 MeshSlots (44 of them cliffs, 27 firs), each under 10k triangles.
   Check the MicroProfiler and frame rate at the forecourt and from the lake looking west, the
   worst views. Levers:
@@ -124,6 +125,29 @@ first with the parts version and then with the meshes. Things only Studio can te
   - from the hub looking west through the gate.
 - **Streaming.** If StreamingEnabled is on, check the far pieces (peaks, spire, colossus) don't pop.
   Kit models may want `ModelStreamingMode = Atomic`, like the hub.
+
+## The Blender-to-Studio loop
+
+Blender runs alongside Studio, so iterate on the kit piece by piece, with the real renderer as judge:
+
+1. Change the piece in `tools/glacier_kit.py` (its shape, which both builds share) or in
+   `tools/blender_glacier_kit.py` (how the mesh is modelled: bevels, facets, scallops, lumps).
+2. Export just that piece:
+   `python3 tools/blender_glacier_kit.py --only=IceArch --no-preview`. That writes the GLB and
+   updates its kit.json entry. Drop `--no-preview` for a Cycles side-by-side. An `--only` run
+   rewrites the contact sheet with only those pieces, so run everything once at the end to
+   refresh `docs/map/glacier_kit.png`. Then run `python3 tools/check_glacier_glb.py`.
+3. If the parts version or its footprint changed, run `python3 tools/map_forge.py`. Rojo syncs
+   the new slot, and its centre comes from the fresh kit.json.
+4. In Studio, re-import that GLB, replace the MeshPart of the same name in `ServerStorage/MapMeshes`,
+   press Play, and capture the Glacier view it's in with the view that came before.
+5. Keep what reads better in the real frame. Blender renders are for fast exploring; the Studio
+   capture decides.
+
+Blender can also do new pieces the walk-through shows are missing: add a builder to
+`glacier_kit.py`, place it with `kit_piece()` in `build_frostbound_glacier()`, export, import. And it
+can do concept renders of alternatives (two arch designs, three colossus poses) to show Alex before
+any of them reach the map.
 
 ## Phase 3: ideas to make it better (these need Studio's eyes)
 
@@ -182,7 +206,7 @@ renderer, real lighting and a real character. Pick with Alex; not all are wanted
   ascent arch frame the lake? If not, move the arch (−236, 0) or grow the colossus.
 - The seam at the gate: the hub's castle wall back face against the glacier cliffs.
 
-**The kit in Blender** (Studio closed; ask Alex before closing it)
+**The kit in Blender** (any time, through the loop below)
 - Anything Phase 1 showed as weak. Likely candidates:
   - the ice arch's snow reads as blobs;
   - the spire tiers still read as stacked boxes;

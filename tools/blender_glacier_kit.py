@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """blender_glacier_kit.py -- the Frostbound Glacier's hero kit, modelled in Blender.
 
-Run with the Blender Python module (pip install "bpy==4.2.*" numpy pillow), Studio closed:
-    python3 tools/blender_glacier_kit.py [--no-preview] [--only IceCliffA,SnowFirA]
+Run with the Blender Python module (pip install "bpy==4.2.*" numpy pillow); fine with Studio open:
+    python3 tools/blender_glacier_kit.py [--no-preview] [--only=IceCliffA,SnowFirA]
+(--only updates just those pieces' GLBs and kit.json entries, but the contact sheet it writes shows
+only them: run without it to refresh the full sheet.)
 Writes assets/glacier/<Key>.glb, assets/glacier/kit.json (each mesh's size, centre, triangles) and
 docs/map/glacier_kit.png (the contact sheet: every mesh beside the parts version map_forge builds
 from the same spec).

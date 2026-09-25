@@ -63,7 +63,7 @@ Two builders read the same list:
   Then the swords' toy finish: joined, a small round bevel, smooth by angle, one swatch-atlas
   material (metallic 0, roughness 1). Output is `assets/glacier/<Key>.glb` plus `kit.json`, which
   records each mesh's measured size and centre. The contact sheet at the top of this page shows
-  every mesh beside its parts version. Run it with Studio closed:
+  every mesh beside its parts version. Run it any time, Studio open or not:
   `python3 tools/blender_glacier_kit.py`. Check the output with
   `python3 tools/check_glacier_glb.py` (one mesh / material / image, matte plastic, under 10,000
   triangles, size and centre match kit.json).
