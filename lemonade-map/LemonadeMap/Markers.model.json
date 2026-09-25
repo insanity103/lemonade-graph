@@ -430,6 +430,60 @@
      "attributes": {
       "Region": "Briarwood"
      }
+    },
+    {
+     "name": "FrostHollow",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       80.0,
+       90.0,
+       112.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -144.0,
+         45.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.0,
+       1.0,
+       0.4706
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Region": "FrostboundGlacier"
+     }
     }
    ]
   },
@@ -603,6 +657,62 @@
       "DisplayName": "Briarwood",
       "Subtitle": "Recommended Lv 9 - 14",
       "Order": 2
+     }
+    },
+    {
+     "name": "FrostboundGlacier",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       380.0,
+       140.0,
+       246.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -294.0,
+         70.0,
+         -31.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.0,
+       1.0,
+       0.4706
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "DisplayName": "Frostbound Glacier",
+      "Subtitle": "Recommended Lv 18 - 25",
+      "Order": 3
      }
     }
    ]
@@ -2793,6 +2903,537 @@
       "Region": "Briarwood",
       "LeashRadius": 50
      }
+    },
+    {
+     "name": "FG_I1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -256.0,
+         20.0,
+         18.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "FrostImp",
+      "Level": 18,
+      "Role": "minion",
+      "Zone": "FrostboundGlacier",
+      "Region": "FrostboundGlacier",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "FG_I2",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -278.0,
+         20.3,
+         -18.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "FrostImp",
+      "Level": 18,
+      "Role": "minion",
+      "Zone": "FrostboundGlacier",
+      "Region": "FrostboundGlacier",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "FG_I3",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -302.0,
+         20.0,
+         40.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "FrostImp",
+      "Level": 19,
+      "Role": "minion",
+      "Zone": "FrostboundGlacier",
+      "Region": "FrostboundGlacier",
+      "LeashRadius": 20
+     }
+    },
+    {
+     "name": "FG_I4",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -318.0,
+         20.0,
+         -36.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "FrostImp",
+      "Level": 19,
+      "Role": "minion",
+      "Zone": "FrostboundGlacier",
+      "Region": "FrostboundGlacier",
+      "LeashRadius": 18
+     }
+    },
+    {
+     "name": "FG_G1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -380.0,
+         30.0,
+         -114.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "GlacialGargoyle",
+      "Level": 21,
+      "Role": "minion",
+      "Zone": "FrostboundGlacier",
+      "Region": "FrostboundGlacier",
+      "LeashRadius": 18
+     }
+    },
+    {
+     "name": "FG_G2",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -414.0,
+         30.0,
+         -94.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "GlacialGargoyle",
+      "Level": 22,
+      "Role": "minion",
+      "Zone": "FrostboundGlacier",
+      "Region": "FrostboundGlacier",
+      "LeashRadius": 18
+     }
+    },
+    {
+     "name": "FG_G3",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -428.0,
+         30.0,
+         -52.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "GlacialGargoyle",
+      "Level": 22,
+      "Role": "minion",
+      "Zone": "FrostboundGlacier",
+      "Region": "FrostboundGlacier",
+      "LeashRadius": 16
+     }
+    },
+    {
+     "name": "FG_E1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -398.0,
+         30.0,
+         -70.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "GlacialGargoyle",
+      "Level": 23,
+      "Role": "elite",
+      "Zone": "FrostboundGlacier",
+      "Region": "FrostboundGlacier",
+      "LeashRadius": 16
+     }
+    },
+    {
+     "name": "FG_BOSS",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -394.0,
+         30.3,
+         44.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "Archetype": "Boss_FrostRevenant",
+      "Level": 25,
+      "Role": "boss",
+      "Zone": "FrostboundGlacier",
+      "Region": "FrostboundGlacier",
+      "LeashRadius": 30
+     }
     }
    ]
   },
@@ -3084,6 +3725,120 @@
       "Order": 5,
       "DiscoverRadius": 18
      }
+    },
+    {
+     "name": "FrostHollow",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -142.0,
+         10.0,
+         14.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "DisplayName": "Frost Hollow",
+      "Region": "FrostboundGlacier",
+      "Order": 6,
+      "DiscoverRadius": 18
+     }
+    },
+    {
+     "name": "GargoyleRidge",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -366.0,
+         30.0,
+         -44.0
+        ],
+        "orientation": [
+         [
+          -0.9285,
+          0.0,
+          0.3714
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.3714,
+          0.0,
+          -0.9285
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.8627,
+       0.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Transparency": 1.0
+     },
+     "attributes": {
+      "DisplayName": "Gargoyle Ridge",
+      "Region": "FrostboundGlacier",
+      "Order": 7,
+      "DiscoverRadius": 18
+     }
     }
    ]
   },
@@ -3201,7 +3956,7 @@
      "attributes": {
       "DisplayName": "Frostbound Glacier",
       "Region": "FrostboundGlacier",
-      "Sealed": true,
+      "Sealed": false,
       "RequiredLevel": 18
      }
     },

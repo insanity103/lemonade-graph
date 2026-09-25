@@ -1,0 +1,607 @@
+{
+ "className": "Model",
+ "children": [
+  {
+   "name": "GlacierApron",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     496.0,
+     0.5,
+     352.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -352.0,
+       0.25,
+       -84.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.8706,
+     0.9176,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "FrostHollowFloor",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     96.0,
+     10.0,
+     152.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -152.0,
+       5.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9647,
+     0.9804,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "AscentFloor",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     28.0,
+     10.0,
+     112.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -214.0,
+       5.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9647,
+     0.9804,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GreatAscent",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     43.5741,
+     12.0,
+     56.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -208.3897,
+       9.1632,
+       0.0
+      ],
+      "orientation": [
+       [
+        0.9728,
+        0.2316,
+        0.0
+       ],
+       [
+        -0.2316,
+        0.9728,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9098,
+     0.9255,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "LakeTerrace",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     122.0,
+     20.0,
+     208.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -289.0,
+       10.0,
+       -20.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9647,
+     0.9804,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GargoyleStair",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     33.9261,
+     14.0,
+     40.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -336.0879,
+       18.3186,
+       -80.0
+      ],
+      "orientation": [
+       [
+        0.9545,
+        0.2983,
+        0.0
+       ],
+       [
+        -0.2983,
+        0.9545,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9098,
+     0.9255,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "GargoyleRidge",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     110.0,
+     30.0,
+     128.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -405.0,
+       15.0,
+       -88.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9647,
+     0.9804,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "Forecourt",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     132.0,
+     30.0,
+     112.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -416.0,
+       15.0,
+       52.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9647,
+     0.9804,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "CrevasseFloor",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     110.0,
+     3.0,
+     20.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -405.0,
+       1.5,
+       -14.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.251,
+     0.651,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "IceBridgeDeck",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     16.0,
+     1.2,
+     24.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -390.0,
+       29.8,
+       -14.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.8078,
+     0.949,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "FrozenLake",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.8,
+     60.0,
+     60.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -278.0,
+       19.9,
+       -18.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.5882,
+     0.8706,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true,
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "ForecourtPlaza",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     0.8,
+     64.0,
+     64.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -394.0,
+       29.9,
+       42.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9255,
+     0.9569,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true,
+    "Shape": "Cylinder"
+   }
+  }
+ ]
+}

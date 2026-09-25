@@ -33,7 +33,7 @@ whenever `MapMarkers` and `Workspace.LemonadeMap/Markers` are both present.
 
 | Area | Extent | Floor top | Contents |
 | --- | --- | --- | --- |
-| Hearthmere hub | x −100..100, z −100..100 | 10 | spawn (0,−40) facing the south gate; plaza + sword monument; Sword Shop (W), Skill Trainer yard (E), Rebirth Shrine (SE), Quest Master in a striped market stall beside the south road (15,50); sealed gates W/E/N and Void Rift portal (NE) with visible vistas |
+| Hearthmere hub | x −100..100, z −100..100 | 10 | spawn (0,−40) facing the south gate; plaza + sword monument; Sword Shop (W), Skill Trainer yard (E), Rebirth Shrine (SE), Quest Master in a striped market stall beside the south road (15,50); the west gate open to the Frostbound Glacier (docs/map/GLACIER.md); sealed gates E/N and Void Rift portal (NE) with visible vistas |
 | Pass | x −14..14, z 104..140 | 10 | canyon pass from the hub gate |
 | Quarry Overlook | x −40..40, z 140..168 | 10 | safe staging area, waystone; opens straight onto the rim bench |
 | Rim bench | x −112..112, z 168..232 | 10 | Squires Lv 1–2 (S1–S3); smithy lean-to ruin, collapsed scaffold, broken and stolen carts, spoil heap, drill-hole row on the west face, ladder; haul ramp 1 at x 6..34 (10.3°) |

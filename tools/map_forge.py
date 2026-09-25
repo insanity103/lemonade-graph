@@ -19,8 +19,12 @@ import math
 import random
 import re
 import shutil
+import sys
 import zlib
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import glacier_kit as GK  # noqa: E402  (the Frostbound Glacier's kit: tools/glacier_kit.py)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "lemonade-map" / "LemonadeMap"
@@ -1885,6 +1889,8 @@ WAYPOINTS = [
     ("WarlordGate", "Warlord's Gate", "IronLowlands", (0, QUARRY_Y, 358), 180.0, 3),
     ("BriarGate", "Briarwood Gate", "Briarwood", (0, QUARRY_Y, 500), 180.0, 4),
     ("GroveEdge", "Grove's Edge", "Briarwood", (10, QUARRY_Y, 782), 180.0, 5),
+    ("FrostHollow", "Frost Hollow", "FrostboundGlacier", (-142, HUB_Y, 14), yaw_facing(-1, 0), 6),
+    ("GargoyleRidge", "Gargoyle Ridge", "FrostboundGlacier", (-366, 30.0, -44), yaw_facing(-0.4, 1), 7),
 ]
 
 
@@ -1900,6 +1906,7 @@ def build_markers():
         volume("Hub", -100, 100, 0, 90, -100, 100, attrs={"Region": "Hub"}),
         volume("IronOverlook", -40, 40, 0, 90, 100, 168, attrs={"Region": "IronLowlands"}),
         volume("BriarGate", -20, 20, 0, 90, 472, 528, attrs={"Region": "Briarwood"}),
+        volume("FrostHollow", -184, -104, 0, 90, -56, 56, attrs={"Region": "FrostboundGlacier"}),
     ], cls="Folder")
     regions = model("Regions", [
         volume("Hub", -100, 100, 0, 120, -100, 100,
@@ -1908,9 +1915,11 @@ def build_markers():
                attrs={"DisplayName": "Iron Lowlands", "Subtitle": "Recommended Lv 1 - 10", "Order": 1}),
         volume("Briarwood", -140, 140, 0, 120, 472, 942,
                attrs={"DisplayName": "Briarwood", "Subtitle": "Recommended Lv 9 - 14", "Order": 2}),
+        volume("FrostboundGlacier", -484, -104, 0, 140, -154, 92,
+               attrs={"DisplayName": "Frostbound Glacier", "Subtitle": "Recommended Lv 18 - 25", "Order": 3}),
     ], cls="Folder")
     spawns = []
-    for zone, table in (("IronLowlands", ENEMY_SPAWNS), ("Briarwood", BRIAR_SPAWNS)):
+    for zone, table in (("IronLowlands", ENEMY_SPAWNS), ("Briarwood", BRIAR_SPAWNS), ("FrostboundGlacier", GLACIER_SPAWNS)):
         for sid, arch, level, role, (x, z), leash in table:
             spawns.append(marker(sid, (x, floor_at(x, z, QUARRY_Y), z), 0, attrs={
                 "Archetype": arch, "Level": level, "Role": role, "Zone": zone,
@@ -1930,7 +1939,7 @@ def build_markers():
     })
     gates = model("Gates", [
         marker("IronLowlands", (0, HUB_Y, 100), 0, attrs={"DisplayName": "Iron Lowlands", "Region": "IronLowlands", "Sealed": False, "RequiredLevel": 1}),
-        marker("FrostboundGlacier", (-100, HUB_Y, 0), 0, attrs={"DisplayName": "Frostbound Glacier", "Region": "FrostboundGlacier", "Sealed": True, "RequiredLevel": 18}),
+        marker("FrostboundGlacier", (-100, HUB_Y, 0), 0, attrs={"DisplayName": "Frostbound Glacier", "Region": "FrostboundGlacier", "Sealed": False, "RequiredLevel": 18}),
         marker("InfernalCaldera", (100, HUB_Y, 0), 0, attrs={"DisplayName": "Infernal Caldera", "Region": "InfernalCaldera", "Sealed": True, "RequiredLevel": 34}),
         marker("CelestialSummit", (0, HUB_Y, -100), 0, attrs={"DisplayName": "Celestial Summit", "Region": "CelestialSummit", "Sealed": True, "RequiredLevel": 80}),
         marker("VoidRift", (68, HUB_Y, -72), 0, attrs={"DisplayName": "Void Rift", "Region": "VoidRift", "Sealed": True, "RequiredLevel": 55}),
@@ -2414,8 +2423,8 @@ def build_hub(rng):
     # Sealed destinations: visible milestones through barred gates.
     visual.append(gate("GateIronLowlands", 0, HUB_Y, 100, 0, 24, 22, "Iron Lowlands", "Lv 1 - 10  |  Open",
                        sealed=False, region="IronLowlands", required_level=1))
-    visual.append(gate("GateFrostbound", -100, HUB_Y, 0, -90, 24, 22, "Frostbound Glacier", "Lv 18+  |  Coming soon",
-                       sealed=True, accent=(110, 180, 250), region="FrostboundGlacier", required_level=18))
+    visual.append(gate("GateFrostbound", -100, HUB_Y, 0, -90, 24, 22, "Frostbound Glacier", "Lv 18 - 25  |  Open",
+                       sealed=False, accent=(110, 180, 250), region="FrostboundGlacier", required_level=18))
     visual.append(gate("GateCaldera", 100, HUB_Y, 0, 90, 24, 22, "Infernal Caldera", "Lv 34+  |  Coming soon",
                        sealed=True, accent=(250, 120, 50), region="InfernalCaldera", required_level=34))
     visual.append(gate("GateAscension", 0, HUB_Y, -100, 180, 24, 26, "Ascension Gate", "Celestial Summit  |  Coming soon",
@@ -2430,10 +2439,6 @@ def build_hub(rng):
             visual.append(part(f"AscensionColumn{side}{k}", (3, 22 + k * 4, 3),
                                (side * 11, HUB_Y + 11 + k * 6, -112 - k * 14), CELESTIAL, "SmoothPlastic", collide=False,
                                layer="vista"))
-    visual.append(box("FrostVista", -150, -104, 0, HUB_Y + 2, -14, 14, FROST, "SmoothPlastic", layer="vista"))
-    for k in range(4):
-        visual.append(part(f"FrostRock{k}", (10, 18 + k * 5, 12), (-118 - k * 9, HUB_Y + 8 + k * 2, -8 + k * 5),
-                           FROST, "SmoothPlastic", rot_y(20 * k), collide=False, layer="vista"))
     visual.append(box("CalderaVista", 104, 150, 0, HUB_Y, -14, 14, CALDERA, "SmoothPlastic", layer="vista"))
     visual.append(part("CalderaGlow", (3, 10, 20), (140, HUB_Y + 5, 0), EMBER, "Neon", collide=False, query=False,
                        transparency=0.35, layer="vista", children=[light(40, 2.0, (255, 120, 50))]))
@@ -6619,6 +6624,504 @@ def build_briarwood(rng):
 WRITTEN: set[str] = set()
 
 
+# ── Frostbound Glacier: west of the hub's Frostbound gate ─────────────────────
+# No voxel terrain: every floor is a Grounds_FrostboundGlacier slab and everything seen is parts.
+# The big pieces (ice cliffs, firs, rocks, crystals, the temple, the colossus, the frozen fall, the
+# peaks) come from the kit in tools/glacier_kit.py, which tools/blender_glacier_kit.py also models
+# as meshes; each is a `MeshSlot` model that MeshSlots.server.luau upgrades to its mesh once the GLBs
+# are imported into ServerStorage.MapMeshes (docs/map/GLACIER.md). The route, west from the gate:
+#   Frost Hollow (Y10, safe camp, waystone 6) -> the Great Ascent (a broad snow ramp under an ice
+#   arch) -> the Frozen Lake terrace (Y20, frost imps) -> the Gargoyle Stair -> Gargoyle Ridge (Y30,
+#   gargoyles, the half-sunk Frozen Colossus, waystone 7) -> the ice bridge over the Blue Crevasse
+#   -> the Revenant's Forecourt before the frozen temple (Y30, the Frost Revenant).
+
+GL_HOLLOW_Y = HUB_Y  # 10: level with the hub, straight through the gate
+GL_LAKE_Y = 20.0
+GL_RIDGE_Y = 30.0
+GL_LAKE = (-278.0, -18.0, 30.0)  # frozen lake centre x, z and radius
+GL_PLAZA = (-394.0, 42.0, 32.0)  # the Revenant's round forecourt
+GL_BRIDGE = (-398.0, -382.0)     # the bridge deck's x span over the crevasse
+GL_CREVASSE = (-24.0, -4.0)      # the crevasse's z span, between the ridge and the forecourt
+GL_KIT = {}
+try:
+    GL_KIT = json.loads((ROOT / "assets" / "glacier" / "kit.json").read_text())
+except FileNotFoundError:
+    pass
+# Play-area outline (x, z), walked round; the V -> A closing edge is the gate corridor (the hub's
+# own proxies hold its sides).
+GL_OUTLINE = [(-116, -19.5), (-116, -56), (-184, -56), (-184, -36), (-228, -36), (-228, -104), (-350, -104),
+              (-350, -132), (-440, -132), (-440, 18), (-462, 18), (-462, 62), (-440, 62), (-440, 88), (-350, 88),
+              (-350, 64), (-228, 64), (-228, 36), (-184, 36), (-184, 56), (-116, 56), (-116, 19.5)]
+GL_TRAIL = [(-104, 0), (-150, 4), (-186, 0), (-228, 0), (-254, 34), (-300, 36), (-318, 6), (-312, -44), (-318, -80),
+            (-350, -80), (-362, -62), (-388, -34), (-390, -2), (-394, 10)]
+GLACIER_SPAWNS = [
+    # id, archetype, level, role, (x, z), leash. The Frozen Lake (Y20): imp packs, two of them out on
+    # the ice. Gargoyle Ridge (Y30): the gargoyles and their elite. The Forecourt: the Revenant. [TUNING]
+    ("FG_I1", "FrostImp", 18, "minion", (-256, 18), 20),
+    ("FG_I2", "FrostImp", 18, "minion", (-278, -18), 20),
+    ("FG_I3", "FrostImp", 19, "minion", (-302, 40), 20),
+    ("FG_I4", "FrostImp", 19, "minion", (-318, -36), 18),
+    ("FG_G1", "GlacialGargoyle", 21, "minion", (-380, -114), 18),
+    ("FG_G2", "GlacialGargoyle", 22, "minion", (-414, -94), 18),
+    ("FG_G3", "GlacialGargoyle", 22, "minion", (-428, -52), 16),
+    ("FG_E1", "GlacialGargoyle", 23, "elite", (-398, -70), 16),
+    ("FG_BOSS", "Boss_FrostRevenant", 25, "boss", (GL_PLAZA[0], GL_PLAZA[1] + 2), 30),
+]
+GLACIER_ARRIVALS = {"FrostHollow": (-142, 14), "GargoyleRidge": (-366, -44)}
+
+
+def kit_piece(key, name, x, z, yaw, s=1.0, y=None, layer="rock", attrs=None, light_on=None):
+    """One kit piece from tools/glacier_kit.py, built from parts: standing at (x, y, z) (y = the floor
+    there), turned so its front (local -Z) faces `yaw`, grown by `s`. The model carries the MeshSlot
+    attributes MeshSlots.server.luau needs to swap in the imported mesh: its key, the mesh's world
+    centre (kit.json's measured centre, turned and grown the same way), yaw and scale. `light_on`
+    names a glow part that gets a PointLight."""
+    y = floor_at(x, z, 0.0) if y is None else y
+    R = rot_y(yaw)
+    kids = []
+    for pt in GK.lofi(GK.build(key)):
+        off = apply(R, tuple(v * s for v in pt["pos"]))
+        pos = (x + off[0], y + off[1], z + off[2])
+        size = tuple(v * s for v in pt["size"])
+        rot = mul(R, pt["rot"])
+        kw = dict(collide=False, query=False, layer=layer)
+        if pt["glow"]:
+            kw.update(shadow=False, attrs={"MeshGlow": True})
+            if light_on == pt["name"]:
+                kw["children"] = [light(min(60, 22 * s), 1.4, GK.GLOW)]
+        mat = "Neon" if pt["glow"] else "SmoothPlastic"
+        if pt["kind"] == "ball":
+            kids.append(ellipsoid(pt["name"], size, pos, pt["color"], mat, rot, **kw))
+        elif pt["kind"] == "cyl":
+            kids.append(part(pt["name"], size, pos, pt["color"], mat, rot, shape="Cylinder", **kw))
+        elif pt["kind"] == "wedge":
+            kids.append(part(pt["name"], size, pos, pt["color"], mat, rot, cls="WedgePart", **kw))
+        else:
+            kids.append(part(pt["name"], size, pos, pt["color"], mat, rot, **kw))
+    info = GL_KIT.get(key)
+    centre = info["centre"] if info else (0.0, 0.0, 0.0)
+    c = apply(R, tuple(v * s for v in centre))
+    a = {"MeshSlot": True, "MeshKey": key, "SlotX": _r(x + c[0]), "SlotY": _r(y + c[1]), "SlotZ": _r(z + c[2]),
+         "SlotYaw": _r(yaw), "SlotScale": _r(s)}
+    a.update(attrs or {})
+    return model(name, kids, attrs=a)
+
+
+def ramp_x(name, x0, x1, z0, z1, y_at_x0, y_at_x1, color, thickness=12.0):
+    """A ramp along X: a thick tilted slab whose top runs from y_at_x0 (at x0) to y_at_x1 (at x1).
+    Thick, so its sides read as a snow embankment rather than a plank, its foot sunk in the floor."""
+    if x1 < x0:  # build it running east, so the slab's up is up
+        x0, x1, y_at_x0, y_at_x1 = x1, x0, y_at_x1, y_at_x0
+    dx, dy = x1 - x0, y_at_x1 - y_at_x0
+    length = math.hypot(dx, dy)
+    r = rot_z(math.degrees(math.atan2(dy, dx)))
+    up = apply(r, (0, 1, 0))
+    mid = ((x0 + x1) / 2, (y_at_x0 + y_at_x1) / 2, (z0 + z1) / 2)
+    centre = tuple(mid[i] - up[i] * thickness / 2 for i in range(3))
+    return part(name, (length + 0.4, thickness, z1 - z0), centre, color, "SmoothPlastic", r, layer="ground")
+
+
+def _inside_outline(x, z, pts=GL_OUTLINE):
+    inside = False
+    n = len(pts)
+    for i in range(n):
+        (ax, az), (bx, bz) = pts[i], pts[(i + 1) % n]
+        if (az > z) != (bz > z) and x < ax + (z - az) * (bx - ax) / (bz - az):
+            inside = not inside
+    return inside
+
+
+def gl_proxy(name, a, b, out, y0=0.0):
+    """An invisible wall on segment a -> b, 6 thick on its `out` side, to PROXY_TOP."""
+    (ax, az), (bx, bz) = a, b
+    seg = math.hypot(bx - ax, bz - az)
+    yaw = math.degrees(math.atan2(-(bz - az), bx - ax))
+    return part(name, (seg + 1.0, PROXY_TOP - y0, 6), ((ax + bx) / 2 + out[0] * 3, (y0 + PROXY_TOP) / 2,
+                (az + bz) / 2 + out[1] * 3), (255, 0, 255), "SmoothPlastic", rot_y(yaw), transparency=1,
+                query=False, shadow=False, layer="proxy")
+
+
+def snow_drift(name, x, z, sx, sz, rng, h=2.6, y=None, color=GK.SNOW_SHADE):
+    y = floor_at(x, z, 0.0) if y is None else y
+    return ellipsoid(name, (sx, h, sz), (x, y + h * 0.18, z), color, rot=tilt(rng, 1.5, 4), layer="rock", shadow=False)
+
+
+def snowman(name, x, z, yaw, rng):
+    y = floor_at(x, z, 0.0)
+    r, at = local_frame(x, y, z, yaw)
+    kids = [part("Base", (4.6, 4.6, 4.6), at(0, 2.0, 0), GK.SNOW, shape="Ball", collide=False, query=False),
+            part("Middle", (3.5, 3.5, 3.5), at(0, 5.2, 0), GK.SNOW, shape="Ball", collide=False, query=False),
+            part("Head", (2.6, 2.6, 2.6), at(0, 7.7, 0), GK.SNOW, shape="Ball", collide=False, query=False),
+            part("Nose", (1.4, 0.5, 0.5), at(0, 7.7, -1.5), (255, 140, 40), "SmoothPlastic",
+                 mul(r, rot_y(90)), shape="Cylinder", collide=False, query=False),
+            part("Scarf", (3.0, 0.7, 3.0), at(0, 6.7, 0), LEMON, "SmoothPlastic", mul(r, rot_z(90)),
+                 shape="Cylinder", collide=False, query=False),
+            part("ScarfTail", (0.8, 2.2, 0.35), at(0.9, 5.8, -1.3), LEMON, "SmoothPlastic", mul(r, rot_z(-10)),
+                 collide=False, query=False),
+            part("HatBrim", (0.3, 3.0, 3.0), at(0, 8.9, 0), GK.TEMPLE_NIGHT, "SmoothPlastic", mul(r, rot_z(90)),
+                 shape="Cylinder", collide=False, query=False),
+            part("Hat", (1.9, 1.9, 1.9), at(0, 9.95, 0), GK.TEMPLE_NIGHT, "SmoothPlastic", mul(r, rot_z(90)),
+                 shape="Cylinder", collide=False, query=False),
+            part("HatBand", (0.5, 2.0, 2.0), at(0, 9.3, 0), (255, 84, 64), "SmoothPlastic", mul(r, rot_z(90)),
+                 shape="Cylinder", collide=False, query=False)]
+    for k, lx in enumerate((-0.5, 0.5)):
+        kids.append(part(f"Eye{k}", (0.35, 0.35, 0.35), at(lx, 8.1, -1.2), GK.TEMPLE_NIGHT, shape="Ball",
+                         collide=False, query=False))
+    for side in (-1, 1):
+        kids.append(cyl(f"Arm{side}", at(side * 1.4, 5.6, 0), at(side * 3.6, 7.4, -0.3), 0.35, BARK, collide=False,
+                        query=False, layer="prop"))
+    return model(name, kids)
+
+
+def frost_cabin(name, x, z, yaw, rng):
+    """The expedition's timber cabin: crate-orange walls, a coral roof under a thick snow blanket, a
+    warm window and a smoking chimney. Front (the door) faces `yaw`."""
+    y = floor_at(x, z, 0.0)
+    r, at = local_frame(x, y, z, yaw)
+    w, d, h = 14.0, 10.0, 7.0
+    kids = [part("Plinth", (w + 1.2, 1.0, d + 1.2), at(0, 0.4, 0), GK.ROCK_DEEP, rot=r),
+            part("Walls", (w, h, d), at(0, 0.9 + h / 2, 0), TIMBER, rot=r)]
+    for k in range(3):  # log courses
+        kids.append(part(f"Course{k}", (w + 0.5, 0.5, d + 0.5), at(0, 1.9 + k * 2.2, 0), BEAM, rot=r, collide=False))
+    kids.append(part("Door", (3.2, 5.2, 0.5), at(0, 3.5, -d / 2 - 0.15), (40, 196, 214), rot=r, collide=False))
+    kids.append(part("DoorFrame", (4.0, 6.0, 0.3), at(0, 3.9, -d / 2 - 0.05), BEAM, rot=r, collide=False))
+    for side in (-1, 1):
+        kids.append(part(f"Window{side}", (2.6, 2.2, 0.3), at(side * 4.3, 4.6, -d / 2 - 0.2), (255, 214, 140), "Neon",
+                         r, collide=False, query=False, shadow=False))
+        kids.append(part(f"Sill{side}", (3.2, 0.4, 0.8), at(side * 4.3, 3.3, -d / 2 - 0.4), GK.SNOW, rot=r,
+                         collide=False))
+    pitch = 30.0
+    run = d / 2 + 1.2
+    for side in (-1, 1):  # the roof: coral under a thick snow blanket
+        rr = mul(r, rot_x(side * -pitch))
+        kids.append(part(f"Roof{side}", (w + 2.4, 0.8, run / math.cos(math.radians(pitch))),
+                         at(0, h + 0.9 + math.tan(math.radians(pitch)) * run / 2, side * run / 2), (255, 84, 64), rot=rr,
+                         collide=False))
+        kids.append(part(f"RoofSnow{side}", (w + 2.0, 1.3, run / math.cos(math.radians(pitch)) - 0.2),
+                         at(0, h + 1.9 + math.tan(math.radians(pitch)) * run / 2, side * (run / 2 - 0.2)), GK.SNOW,
+                         rot=rr, collide=False))
+    ridge_y = h + 0.9 + math.tan(math.radians(pitch)) * run
+    kids.append(ellipsoid("RidgeSnow", (w + 2.6, 1.8, 2.4), at(0, ridge_y + 0.9, 0), GK.SNOW, rot=mul(r, rot_z(2)),
+                          layer="prop"))
+    kids.append(part("Gable", (w, 3.4, 0.4), at(0, h + 2.4, 0), TIMBER, rot=r, collide=False))
+    kids.append(part("Chimney", (2.2, 7.0, 2.2), at(4.2, h + 4.6, 2.0), GK.ROCK_DEEP, rot=r, collide=False,
+                     children=[smoke(3.0, 0.25, 2.5, (236, 244, 255))]))
+    kids.append(part("ChimneyCap", (2.8, 0.8, 2.8), at(4.2, h + 8.4, 2.0), GK.SNOW, rot=r, collide=False))
+    kids.append(part("DoorLamp", (0.8, 1.1, 0.8), at(2.6, 6.0, -d / 2 - 0.6), (255, 208, 132), "Neon", r,
+                     collide=False, query=False, shadow=False, children=[light(20, 1.2, LANTERN)]))
+    return model(name, kids)
+
+
+def sled(name, x, z, yaw, rng):
+    y = floor_at(x, z, 0.0)
+    r, at = local_frame(x, y, z, yaw)
+    kids = []
+    for side in (-1, 1):
+        kids.append(part(f"Runner{side}", (0.4, 0.5, 7.4), at(side * 1.6, 0.25, 0), (255, 84, 64), rot=r, collide=False))
+        kids.append(part(f"RunnerTip{side}", (0.4, 1.4, 0.5), at(side * 1.6, 0.8, -3.8), (255, 84, 64),
+                         rot=mul(r, rot_x(-20)), collide=False))
+        for k, lz in enumerate((-2.2, 2.2)):
+            kids.append(part(f"Strut{side}{k}", (0.35, 0.9, 0.35), at(side * 1.6, 0.9, lz), BEAM, rot=r, collide=False))
+    kids.append(part("Deck", (4.0, 0.4, 6.4), at(0, 1.5, 0), TIMBER, rot=r, collide=False))
+    kids.append(part("Crate0", (2.4, 2.2, 2.4), at(-0.5, 2.8, 1.4), TIMBER, rot=mul(r, rot_y(8)), collide=False))
+    kids.append(part("Crate1", (2.0, 1.8, 2.0), at(0.5, 2.6, -1.3), (255, 206, 24), rot=mul(r, rot_y(-12)), collide=False))
+    kids.append(ellipsoid("Bedroll", (3.4, 1.4, 1.4), at(0.2, 4.4, 1.3), (60, 196, 245), rot=mul(r, rot_z(3)),
+                          layer="prop"))
+    return model(name, kids)
+
+
+def frost_brazier(name, x, z, rng, lit=True):
+    """The temple's cold fire: a trim-blue stand, a bowl, a crown of glowing ice shards."""
+    y = floor_at(x, z, 0.0)
+    kids = [drum("Stand", x, y - 0.2, y + 3.6, z, 1.1, 1.1, GK.TEMPLE_TRIM),
+            drum("Foot", x, y - 0.2, y + 0.9, z, 1.9, 1.9, GK.TEMPLE),
+            drum("Bowl", x, y + 3.5, y + 4.7, z, 2.2, 2.2, GK.TEMPLE)]
+    for k in range(3):
+        a = k * 120 + 20
+        tip = mul(rot_y(a), rot_z(14))
+        kids.append(part(f"Flame{k}", (0.9, 3.2, 0.9), (x + math.cos(math.radians(a)) * 0.5, y + 6.1,
+                                                          z + math.sin(math.radians(a)) * 0.5), GK.GLOW, "Neon", tip,
+                         collide=False, query=False, shadow=False, transparency=0.1,
+                         children=[light(26, 1.5, GK.GLOW)] if lit and k == 0 else None))
+    return model(name, kids)
+
+
+def frost_banner(name, x, z, yaw, rng, h=12.0):
+    y = floor_at(x, z, 0.0)
+    r, at = local_frame(x, y, z, yaw)
+    return model(name, [
+        drum("Pole", x, y - 0.2, y + h, z, 0.35, 0.35, GK.TEMPLE_TRIM),
+        part("Finial", (1.0, 1.0, 1.0), at(0, h + 0.4, 0), GK.GLOW, "Neon", mul(r, mul(rot_x(45), rot_z(45))),
+             collide=False, query=False, shadow=False),
+        part("Bar", (4.6, 0.4, 0.4), at(0, h - 0.8, -0.4), GK.TEMPLE_TRIM, rot=r, collide=False),
+        part("Cloth", (4.0, 7.0, 0.25), at(0, h - 4.6, -0.5), GK.TEMPLE_NIGHT, rot=r, collide=False),
+        part("Stripe", (0.8, 6.2, 0.1), at(0, h - 4.8, -0.68), GK.GLOW, rot=r, collide=False, shadow=False),
+        part("Tail", (2.8, 2.8, 0.25), at(0, h - 8.1, -0.5), GK.TEMPLE_NIGHT, rot=mul(r, rot_z(45)), collide=False),
+    ])
+
+
+def ice_chunk(name, x, z, rng, s=1.0, y=None):
+    y = floor_at(x, z, 0.0) if y is None else y
+    w, h = rng.uniform(2.4, 4.2) * s, rng.uniform(3.2, 6.0) * s
+    return part(name, (w, h, w * rng.uniform(0.3, 0.5)), (x, y + h * 0.3, z), rng.choice((GK.ICE, GK.ICE_PALE)),
+                rot=mul(rot_y(rng.uniform(0, 180)), mul(rot_x(rng.uniform(18, 34)), rot_z(rng.uniform(-10, 10)))),
+                collide=False, query=False, layer="rock")
+
+
+def glacier_walls(rng):
+    """Ice cliffs all round the outline (standing on the floors, which run out under them) and an
+    invisible proxy along every edge. Each cliff is grown so its crest stands ~46 studs over the
+    floor it faces: at the default zoom cap no view reaches over it."""
+    visual, proxies = [], []
+    keys = ("IceCliffA", "IceCliffB", "IceCliffC")
+    pts = GL_OUTLINE
+    for i in range(len(pts) - 1):
+        (ax, az), (bx, bz) = pts[i], pts[i + 1]
+        seg = math.hypot(bx - ax, bz - az)
+        dx, dz = (bx - ax) / seg, (bz - az) / seg
+        out = (dz, -dx)
+        mx, mz = (ax + bx) / 2, (az + bz) / 2
+        if _inside_outline(mx + out[0], mz + out[1]):
+            out = (-out[0], -out[1])
+        proxies.append(gl_proxy(f"GlacierWall{i:02d}_Proxy", (ax, az), (bx, bz), out))
+        if ax == bx == -116:  # against the hub's castle wall: its back is the wall here
+            continue
+        inner = floor_at(mx - out[0] * 3, mz - out[1] * 3, GL_HOLLOW_Y)
+        n = max(1, math.ceil(seg / 34.0))
+        for k in range(n):
+            t = (k + 0.5) / n
+            px, pz = ax + (bx - ax) * t + out[0] * 7, az + (bz - az) * t + out[1] * 7
+            # where the floor outside is the lower one (a terrace's own edge), the cliff stands on the
+            # terrace: its snow drift lies on the floor it faces, not buried in it
+            foot = max(floor_at(px, pz, inner), inner)
+            s = max(1.1, min(1.9, (inner + 46 - foot) / 36.0)) * rng.uniform(0.96, 1.06)
+            key = keys[(i * 2 + k) % 3]
+            yaw = yaw_facing(-out[0], -out[1]) + rng.uniform(-5, 5)
+            visual.append(kit_piece(key, f"GlacierCliff{i:02d}_{k}", px, pz, yaw, s, y=foot - 0.4, layer="cliff"))
+    return visual, proxies
+
+
+def build_frostbound_glacier():
+    global AUTO_GROUND
+    AUTO_GROUND = True
+    rng = random.Random(0x61AC1E5)
+    Y0, Y1, Y2 = GL_HOLLOW_Y, GL_LAKE_Y, GL_RIDGE_Y
+    lx, lz, lr = GL_LAKE
+    px_, pz_, pr = GL_PLAZA
+    b0, b1 = GL_BRIDGE
+    c0, c1 = GL_CREVASSE
+    # Floors. The slabs run out past the outline so the cliffs stand on them; the apron is the
+    # snowfield under everything, out to the vista peaks, so no view ends on the bare baseplate.
+    ground = [
+        slab("GlacierApron", -600, -104, -260, 92, 0.5, GK.SNOW_SHADE, "SmoothPlastic"),
+        slab("FrostHollowFloor", -200, -104, -76, 76, Y0, GK.SNOW, "SmoothPlastic"),
+        slab("AscentFloor", -228, -200, -56, 56, Y0, GK.SNOW, "SmoothPlastic"),
+        ramp_x("GreatAscent", -186, -228, -28, 28, Y0, Y1, GK.SNOW_PATH),
+        slab("LakeTerrace", -350, -228, -124, 84, Y1, GK.SNOW, "SmoothPlastic"),
+        ramp_x("GargoyleStair", -318, -350, -100, -60, Y1, Y2, GK.SNOW_PATH, thickness=14.0),
+        slab("GargoyleRidge", -460, -350, -152, c0, Y2, GK.SNOW, "SmoothPlastic"),
+        slab("Forecourt", -482, -350, c1, 108, Y2, GK.SNOW, "SmoothPlastic"),
+        slab("CrevasseFloor", -460, -350, c0, c1, 3.0, GK.ICE_DEEP, "SmoothPlastic"),
+        box("IceBridgeDeck", b0, b1, Y2 - 0.8, Y2 + 0.4, c0 - 2, c1 + 2, GK.ICE_PALE, layer="ground"),
+    ]
+    ground += disc("FrozenLake", lx, lz, lr, Y1 + 0.3, 0.8, GK.ICE, "SmoothPlastic")
+    ground += disc("ForecourtPlaza", px_, pz_, pr, Y2 + 0.3, 0.8, GK.TEMPLE, "SmoothPlastic")
+
+    visual, proxies = glacier_walls(rng)
+    # Proxies inside the outline: the crevasse's lips (the bridge is the one crossing), the bridge's
+    # rails, the crevasse mouth on the lake terrace, and the temple (its steps are for looking at: the
+    # Revenant's plaza ends at them).
+    for tag, zz, out in (("N", c0, (0, 1)), ("S", c1, (0, -1))):
+        proxies.append(gl_proxy(f"CrevasseLip{tag}W", (-440, zz), (b0, zz), out, Y2 - 30))
+        proxies.append(gl_proxy(f"CrevasseLip{tag}E", (b1, zz), (-350, zz), out, Y2 - 30))
+    proxies.append(gl_proxy("BridgeRailW", (b0, c0), (b0, c1), (1, 0), Y2 - 30))
+    proxies.append(gl_proxy("BridgeRailE", (b1, c0), (b1, c1), (-1, 0), Y2 - 30))
+    proxies.append(gl_proxy("CrevasseMouth", (-350, c0), (-350, c1), (-1, 0)))
+    proxies.append(box("TempleProxy", -466, -440, Y2, PROXY_TOP, 17, 63, (255, 0, 255), transparency=1,
+                       query=False, shadow=False, layer="proxy"))
+
+    spawns = [(x, z) for *_, (x, z), _ in GLACIER_SPAWNS]
+    arrivals = list(GLACIER_ARRIVALS.values())
+
+    def clear(x, z, r_spawn=20.0, r_arrive=14.0, r_trail=5.0):
+        if any(math.hypot(x - sx, z - sz) < r_spawn for sx, sz in spawns):
+            return False
+        if any(math.hypot(x - ax, z - az) < r_arrive for ax, az in arrivals):
+            return False
+        return all(seg_dist(x, z, GL_TRAIL[i], GL_TRAIL[i + 1]) >= r_trail for i in range(len(GL_TRAIL) - 1))
+
+    # The trail: packed-snow strips, alternate legs a hair higher so their overlaps never z-fight.
+    for i in range(len(GL_TRAIL) - 1):
+        (ax, az), (bx, bz) = GL_TRAIL[i], GL_TRAIL[i + 1]
+        if ax > -186 or not (-186 >= ax >= -228 and -186 >= bx >= -228):
+            ya, yb = floor_at(ax, az, Y0), floor_at(bx, bz, Y0)
+            if abs(ya - yb) > 0.5 or (-318 >= ax >= -350 and -318 >= bx >= -350):
+                continue  # ramps carry their own paler surface
+            seg = math.hypot(bx - ax, bz - az)
+            yaw = math.degrees(math.atan2(-(bz - az), bx - ax))
+            top = max(ya, yb) + (0.12 if i % 2 else 0.2)
+            visual.append(part(f"GlacierTrail{i:02d}", (seg + 7, 0.3, 7), ((ax + bx) / 2, top - 0.15, (az + bz) / 2),
+                               GK.SNOW_PATH, rot=rot_y(yaw), collide=False, query=False, layer="decal"))
+
+    # ── Frost Hollow: the expedition's camp, safe inside the gate ──
+    visual.append(hanging_sign("GlacierSign", -112, -13, yaw_facing(-1, 0), "Frostbound Glacier", "Lv 18 - 25"))
+    for k, z in enumerate((-11.5, 11.5)):
+        visual.append(lantern_post(f"GateLantern{k}", -121, z, yaw_facing(0, -z), rng))
+    visual.append(waystone("FrostHollowWaystone", "FrostHollow", -152, Y0, 26, glow=GK.GLOW))
+    visual.append(frost_cabin("ExpeditionCabin", -158, -40, yaw_facing(0, 1), rng))
+    visual.append(desert_fire("CampFire", -140, -20, rng))
+    for k, (x, z, yaw) in enumerate(((-140, -26.5, 0), (-146.6, -20, 90), (-133.4, -20, 90))):
+        visual.append(log_bench(f"CampLog{k}", x, z, yaw, 6.0))
+    visual.append(a_tent("CampTent0", -124, -42, 20, TENT_CLOTH[0], rng=rng))
+    visual.append(a_tent("CampTent1", -176, -20, 80, TENT_CLOTH[2], rng=rng))
+    visual.append(sled("SupplySled", -170, -34, 150, rng))
+    visual.append(crate_stack("CampCrates", -134, Y0, -44, rng))
+    visual.append(barrel("CampBarrel", -129, Y0, -47, rng))
+    visual.append(snowman("Snowman", -128, 34, yaw_facing(1, -0.4), rng))
+    visual.append(toy_finish(fingerpost("HollowPost", -178, Y0, 17, [("Frozen Lake", yaw_facing(-1, 0), 7.2),
+                                                                     ("Hearthmere", yaw_facing(1, 0), 6.4)])))
+    for k, (key, x, z, s) in enumerate((("SnowFirA", -178, -48, 1.1), ("SnowFirB", -170, -50, 0.9),
+                                        ("SnowFirC", -124, 48, 1.0), ("SnowFirB", -134, 50, 0.85),
+                                        ("SnowFirA", -178, 48, 1.15), ("SnowFirC", -168, 50, 0.95),
+                                        ("SnowFirB", -122, -52, 0.8))):
+        visual.append(kit_piece(key, f"HollowFir{k}", x, z, rng.uniform(0, 360), s, layer="tree"))
+    for k, (key, x, z, s) in enumerate((("SnowRockA", -120, 26, 0.9), ("SnowRockC", -120, -28, 1.0),
+                                        ("SnowRockB", -182, 30, 0.9), ("SnowRockC", -160, 50, 1.0))):
+        visual.append(kit_piece(key, f"HollowRock{k}", x, z, rng.uniform(0, 360), s))
+    for k, (x, z, sx, sz) in enumerate(((-150, 52, 22, 7), (-120, 40, 6, 14), (-180, -2, 5, 16), (-146, -52, 16, 6))):
+        visual.append(snow_drift(f"HollowDrift{k}", x, z, sx, sz, rng))
+
+    # ── The Great Ascent: a broad snow ramp between fir-lined banks, under an ice arch ──
+    for side in (-1, 1):
+        for k, x in enumerate((-194, -214)):
+            if k == 0:
+                visual.append(lantern_post(f"AscentLantern{side}", x, side * 26, yaw_facing(0, -side), rng))
+        for k, (key, x, s) in enumerate((("SnowFirB", -192, 0.8), ("SnowFirA", -206, 0.95), ("SnowFirC", -220, 0.9))):
+            visual.append(kit_piece(key, f"AscentFir{side}{k}", x, side * 32.5, rng.uniform(0, 360), s, layer="tree"))
+    visual.append(kit_piece("IceArch", "AscentArch", -236, 0, yaw_facing(1, 0), 1.3, layer="rock",
+                            attrs={"Landmark": "AscentArch"}))
+
+    # ── The Frozen Lake terrace ──
+    visual.append(kit_piece("FrozenFall", "FrozenFall", -282, -100, yaw_facing(0, 1), 1.3, layer="rock"))
+    crack_rng = random.Random(0xC4AC)
+    for k in range(7):  # cracks: short zigzag polylines out from near the middle
+        a = k / 7 * math.tau + crack_rng.uniform(-0.3, 0.3)
+        r0 = crack_rng.uniform(2, 8)
+        x, z = lx + math.cos(a) * r0, lz + math.sin(a) * r0
+        for j in range(3):
+            a2 = a + crack_rng.uniform(-0.5, 0.5)
+            ln = crack_rng.uniform(4, 7)
+            nx_, nz_ = x + math.cos(a2) * ln, z + math.sin(a2) * ln
+            if math.hypot(nx_ - lx, nz_ - lz) > lr - 2:
+                break
+            visual.append(part(f"LakeCrack{k}_{j}", (ln + 0.3, 0.12, 0.35), ((x + nx_) / 2, Y1 + 0.36, (z + nz_) / 2),
+                               GK.ICE_DEEP, rot=rot_y(math.degrees(math.atan2(-(nz_ - z), nx_ - x))), collide=False,
+                               query=False, shadow=False, layer="decal"))
+            x, z = nx_, nz_
+    for k in range(14):  # a snow rim round the ice and a few plates of ice heaved up at its edge
+        a = k / 14 * math.tau + rng.uniform(-0.12, 0.12)
+        x, z = lx + math.cos(a) * (lr + 2.2), lz + math.sin(a) * (lr + 2.2)
+        if clear(x, z, 12, 12, 4):
+            visual.append(snow_drift(f"LakeRim{k}", x, z, rng.uniform(7, 11), rng.uniform(3.5, 5), rng, h=2.2,
+                                     y=Y1, color=GK.SNOW))
+        if k % 3 == 0:
+            x, z = lx + math.cos(a + 0.2) * (lr - 1.5), lz + math.sin(a + 0.2) * (lr - 1.5)
+            if clear(x, z, 10, 12, 3):
+                visual.append(ice_chunk(f"LakeIce{k}", x, z, rng, 1.2, y=Y1 + 0.3))
+    fx, fz = lx + 12, lz + 13  # an ice-fishing hole, the expedition's only trace out on the lake
+    visual.append(disc("FishingHole", fx, fz, 1.6, Y1 + 0.42, 0.2, GK.TEMPLE_NIGHT, "SmoothPlastic", collide=False,
+                       layer="decal")[0])
+    visual.append(barrel("FishingBucket", fx + 2.8, Y1 + 0.3, fz + 1.0, rng))
+    for k, (key, x, z, s) in enumerate((("CrystalClusterA", -240, -84, 1.2), ("CrystalClusterB", -236, -70, 1.0),
+                                        ("CrystalClusterA", -338, 52, 1.1), ("CrystalClusterB", -262, 54, 1.0),
+                                        ("CrystalClusterC", -332, -88, 1.0))):
+        visual.append(kit_piece(key, f"LakeCrystal{k}", x, z, rng.uniform(0, 360), s,
+                                light_on=None))
+    for k, (key, x, z, s) in enumerate((("SnowFirA", -238, -96, 1.2), ("SnowFirC", -250, -98, 1.1),
+                                        ("SnowFirB", -262, -94, 0.9), ("SnowFirA", -236, 56, 1.1),
+                                        ("SnowFirC", -248, 58, 1.0), ("SnowFirB", -326, 58, 0.9),
+                                        ("SnowFirA", -340, 38, 1.1), ("SnowFirC", -304, -96, 1.0),
+                                        ("SnowFirB", -318, 58, 0.8))):
+        if clear(x, z, 22, 20, 6):
+            visual.append(kit_piece(key, f"LakeFir{k}", x, z, rng.uniform(0, 360), s, layer="tree"))
+    for k, (key, x, z, s) in enumerate((("SnowRockA", -234, 30, 1.0), ("SnowRockB", -296, -92, 1.0),
+                                        ("SnowRockC", -266, 58, 1.1), ("SnowRockA", -326, 12, 0.9),
+                                        ("SnowRockC", -232, -46, 1.0), ("SnowRockB", -344, -48, 0.9))):
+        if clear(x, z, 14, 14, 5):
+            visual.append(kit_piece(key, f"LakeRock{k}", x, z, rng.uniform(0, 360), s))
+    # the ridge's cliff face over the lake terrace, and the crevasse mouth
+    for k, z in enumerate((-50, -34, 10, 30, 50)):
+        visual.append(kit_piece(("IceCliffB", "IceCliffC", "IceCliffA")[k % 3], f"RidgeFace{k}", -345, z,
+                                yaw_facing(1, 0) + rng.uniform(-4, 4), 0.46, y=Y1 - 0.3, layer="cliff"))
+    for side, z in (("S", -60), ("N", -104)):
+        visual.append(kit_piece("TempleColumnBroken", f"StairColumn{side}", -322, z + (2 if side == "S" else 2), 0, 1.1))
+    visual.append(kit_piece("TempleColumn", "StairColumnTop", -346, -58, 0, 1.0))
+
+    # ── Gargoyle Ridge ──
+    visual.append(kit_piece("FrozenColossus", "FrozenColossus", -430, -122, yaw_facing(1, 0.8), 1.25,
+                            y=Y2 - 1.0, attrs={"Landmark": "FrozenColossus"}))
+    visual.append(waystone("GargoyleRidgeWaystone", "GargoyleRidge", -356, Y2, -34, glow=GK.GLOW))
+    for k, (key, x, z, s, lit) in enumerate((("CrystalClusterC", -360, -124, 1.2, True),
+                                             ("CrystalClusterC", -436, -80, 1.0, False),
+                                             ("CrystalClusterA", -404, -128, 1.1, False),
+                                             ("CrystalClusterB", -366, -92, 1.0, False),
+                                             ("CrystalClusterA", -436, -30, 1.0, False),
+                                             ("CrystalClusterC", -358, -56, 0.8, False))):
+        if clear(x, z, 16, 10, 5):
+            visual.append(kit_piece(key, f"RidgeCrystal{k}", x, z, rng.uniform(0, 360), s))
+    for k, (key, x, z, s) in enumerate((("SnowRockB", -384, -130, 1.0), ("SnowRockA", -438, -104, 1.0),
+                                        ("SnowRockC", -372, -30, 1.0), ("SnowRockA", -410, -30, 0.9))):
+        if clear(x, z, 14, 10, 5):
+            visual.append(kit_piece(key, f"RidgeRock{k}", x, z, rng.uniform(0, 360), s))
+    for k, x in enumerate((b0 - 4, b1 + 4)):  # the bridgehead: two columns and a pair of braziers
+        visual.append(kit_piece("TempleColumn", f"BridgeheadColumn{k}", x, c0 - 5, 0, 1.0))
+    visual.append(kit_piece("IceBridge", "IceBridge", (b0 + b1) / 2, (c0 + c1) / 2, 0, 1.0, y=Y2 + 0.4))
+    for k, x in enumerate((-356, -372, -416, -432)):  # ice columns lining the crevasse walls
+        for side, zz in ((0, c0 + 0.6), (1, c1 - 0.6)):
+            h = rng.uniform(18, 25)
+            visual.append(part(f"CrevasseIce{k}{side}", (rng.uniform(4, 7), h, 1.4), (x + rng.uniform(-3, 3), 3 + h / 2, zz),
+                               rng.choice((GK.ICE, GK.ICE_PALE, GK.ICE_DEEP)), rot=rot_y(rng.uniform(-6, 6)),
+                               collide=False, query=False, layer="rock"))
+    for k, x in enumerate((-366, -414, -436)):
+        visual.append(kit_piece("CrystalClusterC", f"CrevasseCrystal{k}", x, (c0 + c1) / 2 + rng.uniform(-3, 3),
+                                rng.uniform(0, 360), 0.9, y=3.0))
+
+    # ── The Revenant's Forecourt and the frozen temple ──
+    visual.append(kit_piece("TempleFacade", "FrozenTemple", -451, 40, yaw_facing(1, 0), 1.0, y=Y2,
+                            light_on="DoorGlow", attrs={"Landmark": "FrozenTemple"}))
+    visual.append(kit_piece("TempleSpire", "FrozenSpire", -474, 40, 0, 1.0, y=Y2, light_on="Tip"))
+    for k, (x, z) in enumerate(((px_ + pr - 2, pz_), (px_, pz_ - pr + 2), (px_, pz_ + pr - 2), (px_ - pr + 4, pz_ - 20))):
+        visual.append(frost_brazier(f"ForecourtBrazier{k}", x, z, rng))
+    for k, (x, z) in enumerate(((-372, 6), (-416, 6), (-356, 60), (-432, 76))):
+        visual.append(frost_banner(f"ForecourtBanner{k}", x, z, yaw_facing(px_ - x, pz_ - z), rng))
+    for k, z in enumerate((70, 12)):  # the temple colonnade flanking the plaza's west edge
+        visual.append(kit_piece("TempleColumn", f"PlazaColumn{k}", -432, z, 0, 1.0))
+    for k, (key, x, z, s) in enumerate((("SnowFirA", -358, 80, 1.1), ("SnowFirC", -370, 82, 1.0),
+                                        ("SnowFirB", -432, 84, 0.9), ("SnowFirA", -358, 12, 0.9),
+                                        ("SnowFirC", -436, 2, 1.0))):
+        if clear(x, z, 22, 12, 5):
+            visual.append(kit_piece(key, f"ForecourtFir{k}", x, z, rng.uniform(0, 360), s, layer="tree"))
+    for k, (key, x, z, s) in enumerate((("CrystalClusterA", -356, 36, 1.0), ("CrystalClusterB", -420, 84, 1.0),
+                                        ("SnowRockA", -400, 84, 1.0), ("SnowRockC", -436, 30, 0.8))):
+        if clear(x, z, 14, 10, 4):
+            visual.append(kit_piece(key, f"ForecourtRock{k}", x, z, rng.uniform(0, 360), s))
+    for k in range(12):  # the plaza's inlaid ring
+        a = k / 12 * math.tau
+        visual.append(part(f"PlazaRing{k}", (5.4, 0.12, 1.2), (px_ + math.cos(a) * (pr - 5), Y2 + 0.36,
+                                                                pz_ + math.sin(a) * (pr - 5)), GK.TEMPLE_TRIM,
+                           rot=rot_y(90 - math.degrees(a)), collide=False, query=False, shadow=False, layer="decal"))
+
+    # ── Vista: snow peaks on the snowfield beyond the walls ──
+    for k, (key, x, z, s) in enumerate((("SnowPeakA", -200, -150, 1.0), ("SnowPeakB", -290, -176, 1.2),
+                                        ("SnowPeakA", -400, -200, 1.3), ("SnowPeakB", -520, -150, 1.2),
+                                        ("SnowPeakA", -548, -40, 1.25), ("SnowPeakB", -540, 60, 1.1),
+                                        ("SnowPeakA", -140, -140, 0.8), ("SnowPeakB", -470, 130, 0.9))):
+        if k == 7:
+            continue  # south of the wall lies the desert; no peak there
+        visual.append(kit_piece(key, f"VistaPeak{k}", x, z, rng.uniform(0, 360), s, y=0.3, layer="vista"))
+    return ground, visual, proxies
+
+
 def write_text(path: Path, text: str):
     """Rewrite a file only when its contents change. A connected Rojo session sees a deleted and
     recreated file as a new instance and leaves the old one in Studio, so the map is never wiped
@@ -6641,6 +7144,7 @@ def main():
     hub_ground, hub_visual, hub_proxies = build_hub(rng)
     il_ground, il_visual, il_proxies = build_iron_lowlands(rng)
     bw_ground, bw_visual, bw_proxies = build_briarwood(rng)
+    gl_ground, gl_visual, gl_proxies = build_frostbound_glacier()  # its own seed: nothing above moves
     markers = build_markers()
     global AUTO_GROUND
     AUTO_GROUND = False
@@ -6654,12 +7158,15 @@ def main():
     write_model(OUT / "Grounds_Hub.model.json", model("Grounds_Hub", hub_ground))
     write_model(OUT / "Grounds_IronLowlands.model.json", model("Grounds_IronLowlands", il_ground))
     write_model(OUT / "Grounds_Briarwood.model.json", model("Grounds_Briarwood", bw_ground))
-    write_model(OUT / "Collision.model.json", model("Collision", hub_proxies + il_proxies + bw_proxies))
+    write_model(OUT / "Grounds_FrostboundGlacier.model.json", model("Grounds_FrostboundGlacier", gl_ground))
+    write_model(OUT / "Collision.model.json", model("Collision", hub_proxies + il_proxies + bw_proxies + gl_proxies))
     hub_model = model("Hub", hub_visual, attrs={"Region": "Hub"})
     hub_model["properties"] = {"ModelStreamingMode": "Atomic"}  # arrives complete, so HubAmbience finds everything
     write_model(OUT / "Hub.model.json", hub_model)
     write_model(OUT / "IronLowlands.model.json", model("IronLowlands", il_visual, attrs={"Region": "IronLowlands"}))
     write_model(OUT / "Briarwood.model.json", model("Briarwood", bw_visual, attrs={"Region": "Briarwood"}))
+    write_model(OUT / "FrostboundGlacier.model.json", model("FrostboundGlacier", gl_visual,
+                                                           attrs={"Region": "FrostboundGlacier"}))
     write_model(OUT / "Markers.model.json", markers)
     write_model(OUT / "Horizon.model.json", build_horizon())
     for stale in OUT.iterdir():  # a model this build no longer makes
@@ -6680,7 +7187,7 @@ def main():
 def render_topdown(path: Path):
     from PIL import Image, ImageDraw, ImageFont
 
-    x_min, x_max, z_min, z_max = -190, 150, -160, 950
+    x_min, x_max, z_min, z_max = -500, 150, -270, 950
     scale = 2.2
     pad = 60
     w = int((x_max - x_min) * scale) + pad * 2
@@ -6718,21 +7225,22 @@ def render_topdown(path: Path):
             draw.polygon(corners, fill=(*e["color"], alpha))
 
     # Grid + axis labels every 50 studs.
-    for x in range(-150, 151, 50):
+    for x in range(-500, 151, 50):
         draw.line([px(x, z_min), px(x, z_max)], fill=(255, 255, 255, 30))
         draw.text((px(x, z_min)[0] - 12, 8), f"x{x}", fill=(200, 200, 200), font=font)
-    for z in range(-150, 501, 50):
+    for z in range(-250, 951, 50):
         draw.line([px(x_min, z), px(x_max, z)], fill=(255, 255, 255, 30))
         draw.text((6, px(x_min, z)[1] - 7), f"z{z}", fill=(200, 200, 200), font=font)
 
     # Safe zones, spawns, NPCs, waypoints.
     for (x0, x1, z0, z1, name) in ((-100, 100, -100, 100, "SAFE: Hub"), (-40, 40, 100, 168, "SAFE: Overlook"),
-                                   (-20, 20, 472, 528, "SAFE: Briar Gate")):
+                                   (-20, 20, 472, 528, "SAFE: Briar Gate"), (-184, -104, -56, 56, "SAFE: Frost Hollow")):
         draw.rectangle([px(x0, z0), px(x1, z1)], outline=(80, 255, 140, 220), width=2)
         draw.text((px(x0, z0)[0] + 4, px(x0, z0)[1] + 4), name, fill=(120, 255, 170), font=font)
     arch_color = {"IronSquire": (255, 210, 90), "IronBerserker": (255, 130, 60), "Boss_Gorgon": (255, 60, 60),
-                  "ThornStalker": (170, 230, 90), "BriarBrute": (110, 170, 60), "RootWarden": (255, 60, 60)}
-    for sid, arch, level, role, (x, z), leash in ENEMY_SPAWNS + BRIAR_SPAWNS:
+                  "ThornStalker": (170, 230, 90), "BriarBrute": (110, 170, 60), "RootWarden": (255, 60, 60),
+                  "FrostImp": (150, 232, 255), "GlacialGargoyle": (72, 160, 255), "Boss_FrostRevenant": (255, 60, 60)}
+    for sid, arch, level, role, (x, z), leash in ENEMY_SPAWNS + BRIAR_SPAWNS + GLACIER_SPAWNS:
         cx, cz = px(x, z)
         rr = leash * scale
         draw.ellipse([cx - rr, cz - rr, cx + rr, cz + rr], outline=(*arch_color[arch], 90))
@@ -6759,7 +7267,8 @@ def render_topdown(path: Path):
     dim((-100, -100), (100, -100), "Hub 200 × 200", -22)
     dim((-110, 472), (110, 472), "Quarry 220 × 304: rim Y10 / mid Y6 / pit Y2", 26)
     dim((-118, 940), (118, 940), "Briarwood 236 × 468 at Y2", 26)
-    draw.text((pad, h - pad + 18), "Hearthmere + Iron Lowlands + Briarwood — map_forge top-down (1 grid = 50 studs, +Z down)",
+    dim((-462, -132), (-116, -132), "Frostbound Glacier: hollow Y10 / lake Y20 / ridge + forecourt Y30", -22)
+    draw.text((pad, h - pad + 18), "Hearthmere + Iron Lowlands + Briarwood + Frostbound Glacier — map_forge top-down (1 grid = 50 studs, +Z down)",
               fill=(230, 230, 230), font=font_b)
     path.parent.mkdir(parents=True, exist_ok=True)
     img.save(path)

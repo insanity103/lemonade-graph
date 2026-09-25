@@ -1,0 +1,366 @@
+{
+ "CrystalClusterA": {
+  "centre": [
+   0.077,
+   5.341,
+   0.513
+  ],
+  "file": "CrystalClusterA.glb",
+  "glows": [],
+  "size": [
+   9.043,
+   12.077,
+   7.907
+  ],
+  "triangles": 1262,
+  "vertices": 643
+ },
+ "CrystalClusterB": {
+  "centre": [
+   -0.272,
+   3.908,
+   0.496
+  ],
+  "file": "CrystalClusterB.glb",
+  "glows": [],
+  "size": [
+   7.004,
+   8.834,
+   6.384
+  ],
+  "triangles": 1104,
+  "vertices": 562
+ },
+ "CrystalClusterC": {
+  "centre": [
+   0.087,
+   8.205,
+   0.515
+  ],
+  "file": "CrystalClusterC.glb",
+  "glows": [],
+  "size": [
+   13.451,
+   18.638,
+   12.358
+  ],
+  "triangles": 1784,
+  "vertices": 906
+ },
+ "FrozenColossus": {
+  "centre": [
+   0.687,
+   25.718,
+   -0.116
+  ],
+  "file": "FrozenColossus.glb",
+  "glows": [
+   "VisorGlow",
+   "Fuller"
+  ],
+  "size": [
+   32.826,
+   58.1,
+   24.87
+  ],
+  "triangles": 5204,
+  "vertices": 2632
+ },
+ "FrozenFall": {
+  "centre": [
+   0.0,
+   17.492,
+   -2.707
+  ],
+  "file": "FrozenFall.glb",
+  "glows": [],
+  "size": [
+   31.904,
+   38.382,
+   17.377
+  ],
+  "triangles": 7706,
+  "vertices": 3891
+ },
+ "IceArch": {
+  "centre": [
+   0.049,
+   13.444,
+   -0.485
+  ],
+  "file": "IceArch.glb",
+  "glows": [
+   "Keystone"
+  ],
+  "size": [
+   42.312,
+   29.711,
+   8.97
+  ],
+  "triangles": 8268,
+  "vertices": 4186
+ },
+ "IceBridge": {
+  "centre": [
+   0.0,
+   -1.891,
+   -0.0
+  ],
+  "file": "IceBridge.glb",
+  "glows": [],
+  "size": [
+   19.0,
+   12.078,
+   25.895
+  ],
+  "triangles": 8680,
+  "vertices": 4412
+ },
+ "IceCliffA": {
+  "centre": [
+   -0.102,
+   18.521,
+   -2.069
+  ],
+  "file": "IceCliffA.glb",
+  "glows": [],
+  "size": [
+   30.674,
+   42.127,
+   18.282
+  ],
+  "triangles": 6972,
+  "vertices": 3528
+ },
+ "IceCliffB": {
+  "centre": [
+   0.135,
+   17.975,
+   -1.706
+  ],
+  "file": "IceCliffB.glb",
+  "glows": [],
+  "size": [
+   29.98,
+   41.084,
+   18.69
+  ],
+  "triangles": 5668,
+  "vertices": 2866
+ },
+ "IceCliffC": {
+  "centre": [
+   0.03,
+   18.966,
+   -1.878
+  ],
+  "file": "IceCliffC.glb",
+  "glows": [],
+  "size": [
+   30.699,
+   43.098,
+   18.125
+  ],
+  "triangles": 8316,
+  "vertices": 4210
+ },
+ "SnowFirA": {
+  "centre": [
+   0.0,
+   10.959,
+   -0.0
+  ],
+  "file": "SnowFirA.glb",
+  "glows": [],
+  "size": [
+   13.918,
+   22.717,
+   13.918
+  ],
+  "triangles": 6212,
+  "vertices": 3126
+ },
+ "SnowFirB": {
+  "centre": [
+   0.0,
+   7.704,
+   -0.0
+  ],
+  "file": "SnowFirB.glb",
+  "glows": [],
+  "size": [
+   10.937,
+   16.208,
+   10.937
+  ],
+  "triangles": 4516,
+  "vertices": 2274
+ },
+ "SnowFirC": {
+  "centre": [
+   0.0,
+   13.748,
+   -0.0
+  ],
+  "file": "SnowFirC.glb",
+  "glows": [],
+  "size": [
+   11.13,
+   28.296,
+   11.13
+  ],
+  "triangles": 9540,
+  "vertices": 4794
+ },
+ "SnowPeakA": {
+  "centre": [
+   2.851,
+   55.403,
+   -0.09
+  ],
+  "file": "SnowPeakA.glb",
+  "glows": [],
+  "size": [
+   95.768,
+   113.581,
+   94.308
+  ],
+  "triangles": 2836,
+  "vertices": 1424
+ },
+ "SnowPeakB": {
+  "centre": [
+   2.194,
+   39.963,
+   0.188
+  ],
+  "file": "SnowPeakB.glb",
+  "glows": [],
+  "size": [
+   87.917,
+   83.245,
+   77.469
+  ],
+  "triangles": 2836,
+  "vertices": 1424
+ },
+ "SnowRockA": {
+  "centre": [
+   0.057,
+   3.419,
+   -0.284
+  ],
+  "file": "SnowRockA.glb",
+  "glows": [],
+  "size": [
+   15.383,
+   8.791,
+   11.452
+  ],
+  "triangles": 1812,
+  "vertices": 914
+ },
+ "SnowRockB": {
+  "centre": [
+   0.116,
+   6.392,
+   -0.794
+  ],
+  "file": "SnowRockB.glb",
+  "glows": [],
+  "size": [
+   9.598,
+   14.239,
+   10.319
+  ],
+  "triangles": 2224,
+  "vertices": 1122
+ },
+ "SnowRockC": {
+  "centre": [
+   0.734,
+   1.969,
+   0.305
+  ],
+  "file": "SnowRockC.glb",
+  "glows": [],
+  "size": [
+   11.078,
+   5.058,
+   6.03
+  ],
+  "triangles": 2336,
+  "vertices": 1178
+ },
+ "TempleColumn": {
+  "centre": [
+   0.0,
+   10.359,
+   -0.0
+  ],
+  "file": "TempleColumn.glb",
+  "glows": [],
+  "size": [
+   6.161,
+   21.118,
+   5.957
+  ],
+  "triangles": 2240,
+  "vertices": 1138
+ },
+ "TempleColumnBroken": {
+  "centre": [
+   0.0,
+   5.155,
+   -0.0
+  ],
+  "file": "TempleColumnBroken.glb",
+  "glows": [],
+  "size": [
+   5.4,
+   10.709,
+   5.4
+  ],
+  "triangles": 1196,
+  "vertices": 606
+ },
+ "TempleFacade": {
+  "centre": [
+   0.0,
+   17.314,
+   1.0
+  ],
+  "file": "TempleFacade.glb",
+  "glows": [
+   "DoorGlow",
+   "Crest0",
+   "Crest1",
+   "Crest2"
+  ],
+  "size": [
+   46.0,
+   35.428,
+   24.0
+  ],
+  "triangles": 6252,
+  "vertices": 3186
+ },
+ "TempleSpire": {
+  "centre": [
+   0.0,
+   34.602,
+   -0.0
+  ],
+  "file": "TempleSpire.glb",
+  "glows": [
+   "Tip"
+  ],
+  "size": [
+   16.71,
+   69.204,
+   18.392
+  ],
+  "triangles": 3854,
+  "vertices": 1947
+ }
+}

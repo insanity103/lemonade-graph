@@ -12,6 +12,10 @@
 -- (This blend used to live in WorldHorizon.client.luau, which now exits early since the far ranges
 -- were scrapped, so it never ran. Only the desert half is revived here; Briarwood keeps the town's
 -- air, as it looks today.)
+--
+-- The Frostbound Glacier, west of the hub's Frostbound gate, gets its own air the same way: a
+-- cool, high-key ice blue that keeps the snow bright white and its shade a clean lavender-blue,
+-- never grey.
 local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
@@ -24,25 +28,29 @@ local Players = game:GetService("Players")
 -- banks still fill the view; anywhere else the place's own limit applies again.
 local BASIN_ZOOM = 42 -- [TUNING] studs
 local BASIN_Z = { 136, 474 } -- the basin, from the pass to the Briarwood gate
+-- The Glacier is walled by ice cliffs ~46 studs over each floor; the cap keeps the camera under
+-- their crests, so the view never runs out over the snowfield to the edge of the map.
+local GLACIER_ZOOM = 44 -- [TUNING] studs
+local function inGlacier(p: Vector3): boolean
+	return p.X < -106 and p.Z < 94
+end
 local player = Players.LocalPlayer
 local baseZoom = player.CameraMaxZoomDistance
-local zoomCapped = false
+local zoomCap = nil -- the cap in force, or nil
 local function stepZoom()
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	if not root then
 		return
 	end
-	local z = (root :: BasePart).Position.Z
-	local inBasin = z > BASIN_Z[1] and z < BASIN_Z[2]
-	if inBasin ~= zoomCapped then
-		zoomCapped = inBasin
-		if inBasin then
+	local at = (root :: BasePart).Position
+	local cap = if inGlacier(at) then GLACIER_ZOOM elseif at.Z > BASIN_Z[1] and at.Z < BASIN_Z[2] then BASIN_ZOOM else nil
+	if cap ~= zoomCap then
+		if cap and not zoomCap then
 			baseZoom = player.CameraMaxZoomDistance
-			player.CameraMaxZoomDistance = math.min(baseZoom, BASIN_ZOOM)
-		else
-			player.CameraMaxZoomDistance = baseZoom
 		end
+		zoomCap = cap
+		player.CameraMaxZoomDistance = if cap then math.min(baseZoom, cap) else baseZoom
 	end
 end
 
@@ -59,6 +67,19 @@ local AIR = { -- [TUNING]
 	{ "Atmosphere", "Color", Color3.fromRGB(250, 226, 200) },
 }
 
+-- The Glacier's air: the same luminance family as the town's daylight shade, moved toward the ice.
+local FROST_FADE = { -104, -150 } -- [TUNING] camera X: fade in from..to (going west), south of z 96
+local FROST_SHARE = 0.6 -- [TUNING]
+local FROST_AIR = { -- [TUNING] the same three entries as AIR, in the same order
+	Color3.fromRGB(150, 168, 214),
+	Color3.fromRGB(184, 206, 244),
+	Color3.fromRGB(218, 238, 255),
+}
+local function frostFade(p: Vector3): number
+	local f = FROST_FADE
+	return math.clamp((p.X - f[1]) / (f[2] - f[1]), 0, 1) * math.clamp((96 - p.Z) / 20, 0, 1)
+end
+
 local function desertFade(z: number): number
 	local f = DESERT_FADE
 	return math.clamp((z - f[1]) / (f[2] - f[1]), 0, 1) * (1 - math.clamp((z - f[3]) / (f[4] - f[3]), 0, 1))
@@ -74,8 +95,10 @@ local function target(class: string?): Instance?
 end
 
 local airBase, airWrote = {}, {}
-local function stepAir(z: number)
-	local w = SAND_SHARE * desertFade(z) * daylight(Lighting.ClockTime)
+local function stepAir(at: Vector3)
+	local day = daylight(Lighting.ClockTime)
+	local w = SAND_SHARE * desertFade(at.Z) * day
+	local wf = FROST_SHARE * frostFade(at) * day
 	for i, entry in ipairs(AIR) do
 		local inst = target(entry[1])
 		if not inst then
@@ -86,6 +109,9 @@ local function stepAir(z: number)
 			airBase[i] = now -- a value WorldLook wrote (or the first read)
 		end
 		local want = if w > 0 then airBase[i]:Lerp(entry[3], w) else airBase[i]
+		if wf > 0 then
+			want = want:Lerp(FROST_AIR[i], wf)
+		end
 		if want ~= now then
 			(inst :: any)[entry[2]] = want
 		end
@@ -111,6 +137,12 @@ local BEDS = { -- [TUNING] { name, SoundId, volume, zone test (camera position -
 			local a = (Vector2.new(p.X, p.Z) - Vector2.new(94, 348)).Magnitude
 			local b = (Vector2.new(p.X, p.Z) - Vector2.new(73, 284)).Magnitude
 			return math.clamp(1 - (math.min(a, b) - 20) / 50, 0, 1)
+		end,
+	},
+	{
+		"GlacierWind", "", 0.35,
+		function(p: Vector3) -- a cold wind over the ice, all through the Glacier
+			return frostFade(p)
 		end,
 	},
 	{
@@ -148,7 +180,7 @@ RunService:BindToRenderStep("ZoneAir", Enum.RenderPriority.Camera.Value + 3, fun
 		return
 	end
 	local at = camera.CFrame.Position
-	stepAir(at.Z)
+	stepAir(at)
 	stepZoom()
 	if #beds > 0 then
 		stepSound(at, dt)

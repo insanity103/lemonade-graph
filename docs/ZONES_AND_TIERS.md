@@ -14,7 +14,7 @@ matters.** A tier that saves us art but costs a player a confusing minute is a b
 | Region | Zones (native levels) | Art |
 |---|---|---|
 | Iron Lowlands | Iron Lowlands 1-3, Briarwood 9-14 | built (desert oasis, forest) |
-| Frostbound | Glacier 18-23, Sunken Marsh 24-29 | to build |
+| Frostbound | Glacier 18-23, Sunken Marsh 24-29 | Glacier built (parts now, Blender meshes on import: docs/map/GLACIER.md); Marsh to build |
 | Infernal | Caldera 34-41, Stormwatch 41-48 | to build |
 | Celestial Summit | Void Rift 55-70, Summit 80-100 | to build (Void Rift is the Summit's underside) |
 

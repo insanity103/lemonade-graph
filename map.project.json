@@ -95,6 +95,9 @@
       },
       "WorldTerrain": {
         "$path": "lemonade-game/Map/WorldTerrain.server.luau"
+      },
+      "MeshSlots": {
+        "$path": "lemonade-game/Map/MeshSlots.server.luau"
       }
     },
     "StarterPack": {
@@ -175,6 +178,9 @@
         },
         "OasisAmbience": {
           "$path": "lemonade-game/Map/OasisAmbience.client.luau"
+        },
+        "GlacierAmbience": {
+          "$path": "lemonade-game/Map/GlacierAmbience.client.luau"
         }
       }
     },

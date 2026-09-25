@@ -2499,6 +2499,1485 @@
     "CastShadow": false,
     "Transparency": 1.0
    }
+  },
+  {
+   "name": "GlacierWall00_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     37.5,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -113.0,
+       55.0,
+       -37.75
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall01_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     69.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -150.0,
+       55.0,
+       -59.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall02_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     21.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -187.0,
+       55.0,
+       -46.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall03_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     45.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -206.0,
+       55.0,
+       -39.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall04_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     69.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -225.0,
+       55.0,
+       -70.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall05_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     123.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -289.0,
+       55.0,
+       -107.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall06_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     29.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -347.0,
+       55.0,
+       -118.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall07_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     91.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -395.0,
+       55.0,
+       -135.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall08_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     151.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -443.0,
+       55.0,
+       -57.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall09_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     23.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -451.0,
+       55.0,
+       15.0
+      ],
+      "orientation": [
+       [
+        -1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        -1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall10_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     45.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -465.0,
+       55.0,
+       40.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall11_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     23.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -451.0,
+       55.0,
+       65.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall12_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     27.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -443.0,
+       55.0,
+       75.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall13_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     91.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -395.0,
+       55.0,
+       91.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall14_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     25.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -347.0,
+       55.0,
+       76.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall15_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     123.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -289.0,
+       55.0,
+       67.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall16_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     29.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -225.0,
+       55.0,
+       50.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall17_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     45.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -206.0,
+       55.0,
+       39.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall18_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     21.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -187.0,
+       55.0,
+       46.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall19_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     69.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -150.0,
+       55.0,
+       59.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "GlacierWall20_Proxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     37.5,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -113.0,
+       55.0,
+       37.75
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "CrevasseLipNW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     43.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -419.0,
+       55.0,
+       -21.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "CrevasseLipNE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     33.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -366.0,
+       55.0,
+       -21.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "CrevasseLipSW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     43.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -419.0,
+       55.0,
+       -7.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "CrevasseLipSE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     33.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -366.0,
+       55.0,
+       -7.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        -0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BridgeRailW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     21.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -395.0,
+       55.0,
+       -14.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "BridgeRailE",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     21.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -385.0,
+       55.0,
+       -14.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "CrevasseMouth",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     21.0,
+     110.0,
+     6.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -353.0,
+       55.0,
+       -14.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
+  },
+  {
+   "name": "TempleProxy",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     26.0,
+     80.0,
+     46.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -453.0,
+       70.0,
+       40.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     1.0,
+     0.0,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "Transparency": 1.0
+   }
   }
  ]
 }

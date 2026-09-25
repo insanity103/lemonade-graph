@@ -565,7 +565,7 @@ def check_coplanar_tops(parts):
 
 def navigate(grounds, solids, spawn_location, spawns, waypoints, lemap, markers):
     """2-stud grid: walkable where a floor exists and no solid occupies body height above it."""
-    x0, x1, z0, z1 = -176, 150, -104, 960
+    x0, x1, z0, z1 = -490, 150, -170, 960  # the Frostbound Glacier runs west to x -462
     nx, nz = int((x1 - x0) / CELL), int((z1 - z0) / CELL)
     height = [[None] * nz for _ in range(nx)]
     for g in grounds:
@@ -675,6 +675,8 @@ def check_projects():
                      ("StarterPlayer", "StarterPlayerScripts", "WorldHorizon"),
                      ("StarterPlayer", "StarterPlayerScripts", "ZoneAir"),  # each zone's air and ambience beds
                      ("StarterPlayer", "StarterPlayerScripts", "OasisAmbience"),  # the oasis's wildlife and sway
+                     ("StarterPlayer", "StarterPlayerScripts", "GlacierAmbience"),  # the glacier's snow and aurora
+                     ("ServerScriptService", "MeshSlots"),  # swaps the glacier kit's parts for imported meshes
                      # Studio-only capture stages (all inert outside Studio).
                      ("ServerScriptService", "SwordGalleryStage"),
                      ("ServerScriptService", "EnemyDropStage"),

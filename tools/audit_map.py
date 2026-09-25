@@ -25,6 +25,11 @@ LANES = {  # region → (x0, x1, z0, z1) corridors that must stay clear of colli
     "IronLowlands": [(-12, 12, 104, 222), (-12, 32, 222, 231), (8, 32, 231, 262), (19, 32, 262, 296),
                      (-30, 30, 309, 317), (-32, -12, 316, 352), (-32, -12, 352, 362), (-30, 10, 362, 366),
                      (-12, 12, 366, 386)],
+    # the trail from the gate through Frost Hollow, up the Great Ascent, round the Frozen Lake, up the
+    # Gargoyle Stair and across the ridge to the ice bridge and the Revenant's plaza
+    "FrostboundGlacier": [(-186, -104, -8, 10), (-228, -186, -10, 10), (-258, -228, -4, 38), (-302, -254, 28, 42),
+                          (-322, -300, -46, 40), (-352, -310, -88, -72), (-366, -350, -86, -58),
+                          (-392, -362, -62, -30), (-396, -384, -30, 12)],
 }
 
 
