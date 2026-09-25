@@ -1582,10 +1582,12 @@ def chest(name, x, y, z, yaw, open_lid=False, rng=None):
     return model(name, kids)
 
 
-def storage_shack(name, x0, x1, z0, z1, y, rng):
+def storage_shack(name, x0, x1, z0, z1, y, rng, turn=0.0):
     """The Vaultkeeper's shack: stacked-log walls on a stone base, plank roof, open doorway on
     the south side, chests and shelves inside. Attribute VaultShack marks it for docs/tools.
+    `turn` (degrees) turns the finished shack about its centre: 90 puts the doorway on the east.
     """
+    start = len(REGISTRY)
     cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
     wall_h = 9.0
     base_top = y + 0.4
@@ -1661,7 +1663,8 @@ def storage_shack(name, x0, x1, z0, z1, y, rng):
                      collide=False, children=[label_gui("Front", "Vault", "", (255, 232, 170), px=60),
                                               label_gui("Back", "Vault", "", (255, 232, 170), px=60)]))
     kids.append(lamp_post("DoorLamp", cx - door_w / 2 - 2.4, y, z1 + 2.6, yaw_facing(1, 0)))
-    return model(name, kids, attrs={"VaultShack": True, "InsideX": cx - 1.0, "InsideY": fl, "InsideZ": z1 - 6.0})
+    shack = model(name, kids, attrs={"VaultShack": True, "InsideX": cx - 1.0, "InsideY": fl, "InsideZ": z1 - 6.0})
+    return turned(shack, turn, (cx, cz), start) if turn else shack
 
 
 def campfire(name, x, y, z, rng):
@@ -1900,7 +1903,11 @@ def build_markers():
         marker("Merchant", (-63, HUB_Y + 0.2, -24.6), yaw_facing(0, 1)),
         marker("SkillTrainer", (58, HUB_Y, -12), yaw_facing(0, 1)),
         marker("RebirthKeeper", (64, HUB_Y, 22), yaw_facing(0, -1)),
-        marker("Vaultkeeper", (30, HUB_Y + 0.52, -84), yaw_facing(0, 1)),
+        # the Vault faces the south road, across it from the Quest Master (its doorway on the east)
+        marker("Vaultkeeper", (-20, HUB_Y + 0.52, 49), yaw_facing(1, 0)),
+        # the town spin wheel (WorldLayout reads this; the Upgrade Stall stands 17 studs to its
+        # right, north toward the plaza): on the south road's east side, beside the Quest Master
+        marker("SpinWheel", (22, HUB_Y, 30), yaw_facing(-1, 0)),
     ], cls="Folder")
     safe = model("SafeZones", [
         volume("Hub", -100, 100, 0, 90, -100, 100, attrs={"Region": "Hub"}),
@@ -2372,7 +2379,8 @@ def build_hub(rng):
     visual.append(timber_house("HouseSE", 46, 68, 76, 94, HUB_Y, 10, "W", rng, wall_color=PEACH_WASH,
                                roof_color=(255, 160, 56), door=True))
     visual.append(barrel("BarrelSE", 70, HUB_Y, 92, rng))
-    visual.append(storage_shack("VaultShack", 22, 40, -94, -78, HUB_Y, rng))
+    # the Vault: on the south road's west side, opposite the Quest Master, its door to the road
+    visual.append(storage_shack("VaultShack", -31, -13, 41, 57, HUB_Y, rng, turn=90))
     visual.append(woodpile("WoodpileNW", -58, HUB_Y, -84, 0, rng))
     visual.append(crate_stack("CratesNW", 16, HUB_Y, -79.5, rng))  # in the Vault lane, clear of the High Street
     visual.append(barrel("BarrelNW1", -52, HUB_Y, -66, rng))
@@ -2390,7 +2398,7 @@ def build_hub(rng):
         a = math.radians(22.5 + 45 * k)
         visual.append(flower_bed(f"PlazaBloom{k}", math.cos(a) * 9.5, HUB_Y + 0.3, math.sin(a) * 9.5, 3.2, 1.6,
                                  -math.degrees(a), rng))
-    for k, (x, z, w, d) in enumerate(((-24, -34, 8, 3.2), (24, -34, 8, 3.2), (-24, 34, 8, 3.2), (24, 34, 8, 3.2),
+    for k, (x, z, w, d) in enumerate(((-24, -34, 8, 3.2), (24, -34, 8, 3.2), (-24, 34, 8, 3.2), (36, 40, 8, 3.2),
                                       (-36, -22, 3.2, 8), (36, 22, 3.2, 8))):
         visual.append(flower_bed(f"Bed{k}", x, HUB_Y, z, w, d, 0, rng))
     # Market corner by the well: produce stall, gathering fire with log seats.
@@ -2466,7 +2474,7 @@ def build_hub(rng):
     tree_spots = [(-88, -54), (-70, -58), (-36, -58), (-34, -96), (36, -48),
                   (48, -62), (86, -64), (24, -28), (-28, 24),
                   (-70, 30), (-34, 66), (-18, 86), (-88, 46), (36, 86),
-                  (40, 70), (86, 16), (30, 26), (-88, 12), (-40, 90)]
+                  (40, 70), (86, 16), (36, -88), (-88, 12), (-40, 90)]  # (36, -88): where the Vault stood
     for k, (x, z) in enumerate(tree_spots):
         visual.append(tree(f"Tree{k:02d}", x, HUB_Y, z, rng))
     lamps = [(11, 78), (-90, 11), (78, 11)]  # one per road (the High Street has its own); more crowded the plaza
@@ -3481,6 +3489,38 @@ def scaled(node, s, anchor, start, drift=None):
     for e in REGISTRY[start:]:
         e["pos"] = tuple(a + (v - a) * s for v, a in zip(e["pos"], (ax, ay, az)))
         e["size"] = tuple(v * s for v in e["size"])
+    return node
+
+
+def turned(node, yaw, pivot, start):
+    """Turn a just-built model by `yaw` degrees about the vertical line through pivot (x, z): every
+    part's position and orientation, its REGISTRY entries (those from index `start` on) and any
+    X/Z attribute pair (InsideX/InsideZ), so the preview and the validator see it as written."""
+    r = rot_y(yaw)
+    px, pz = pivot
+
+    def spin(x, z):
+        d = apply(r, (x - px, 0, z - pz))
+        return px + d[0], pz + d[2]
+
+    def walk(n):
+        cf = n.get("properties", {}).get("CFrame")
+        if cf:
+            f = cf["CFrame"]
+            x, z = spin(f["position"][0], f["position"][2])
+            f["position"][0], f["position"][2] = _r(x), _r(z)
+            f["orientation"] = [[_r(v) for v in row] for row in mul(r, f["orientation"])]
+        for c in n.get("children", ()):
+            walk(c)
+    walk(node)
+    attrs = node.get("attributes", {})
+    for key in [k for k in attrs if k.endswith("X") and k[:-1] + "Z" in attrs]:
+        x, z = spin(attrs[key], attrs[key[:-1] + "Z"])
+        attrs[key], attrs[key[:-1] + "Z"] = _r(x), _r(z)
+    for e in REGISTRY[start:]:
+        x, z = spin(e["pos"][0], e["pos"][2])
+        e["pos"] = (x, e["pos"][1], z)
+        e["rot"] = mul(r, e["rot"])
     return node
 
 
@@ -7249,7 +7289,7 @@ def render_topdown(path: Path):
         draw.text((cx + 9, cz - 7), f"{arch.replace('Iron', '').replace('Boss_', '').replace('Root', 'Root ')} L{level}",
                   fill=(255, 255, 255), font=font)
     for name, (x, z) in (("Quest Master", (15, 50)), ("Merchant", (-63, -24.6)), ("Skill Trainer", (58, -12)),
-                         ("Rebirth", (64, 22)), ("Vaultkeeper", (30, -84)), ("Travel board", (-16, -40))):
+                         ("Rebirth", (64, 22)), ("Vaultkeeper", (-20, 49)), ("Spin Wheel", (22, 30)), ("Travel board", (-16, -40))):
         cx, cz = px(x, z)
         draw.rectangle([cx - 5, cz - 5, cx + 5, cz + 5], fill=(90, 170, 255), outline=(0, 0, 0))
         draw.text((cx + 8, cz - 7), name, fill=(170, 210, 255), font=font)

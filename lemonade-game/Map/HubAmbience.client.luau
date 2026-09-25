@@ -349,8 +349,8 @@ local TRIPS_BEFORE_HOME = { 2, 4 }
 local VILLAGER_SPEED = 7
 local VILLAGER_SPOTS = { -- [TUNING] x, z on grass or paving, clear of props
 	Vector3.new(-30, 0, -22), Vector3.new(-12, 0, -26), Vector3.new(22, 0, -20), Vector3.new(30, 0, 12),
-	Vector3.new(18, 0, 30), Vector3.new(-18, 0, 30), Vector3.new(-44, 0, 40), Vector3.new(-30, 0, 58),
-	Vector3.new(-16, 0, 60), Vector3.new(-56, 0, 14), Vector3.new(56, 0, 10), Vector3.new(-30, 0, -60),
+	Vector3.new(34, 0, 30), Vector3.new(-18, 0, 30), Vector3.new(-44, 0, 40), Vector3.new(-38, 0, 36),
+	Vector3.new(-14, 0, 64), Vector3.new(-56, 0, 14), Vector3.new(56, 0, 10), Vector3.new(-30, 0, -60),
 	Vector3.new(30, 0, -60), Vector3.new(-6, 0, 24), Vector3.new(8, 0, -18),
 }
 local CHATTER = {
