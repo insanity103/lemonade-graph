@@ -7331,7 +7331,7 @@ def blue_crevasse(rng):
     haze, each paler and denser than the last, so the far end fades; one huge lit crystal field
     stands before it as the landmark under a warm-gold shaft of sun let in by the sky slit (the
     shaft carries the light the north geode used to), and a pink cluster glows unlit in a niche on
-    each wall. The floor is a packed-snow path between big white drifts and chunky deep-blue rocks.
+    each wall. The floor is white snow between big white drifts and chunky deep-blue rocks.
     All of it is decoration (collide=False): the lips' proxies keep everyone on the bridge."""
     FLOOR = 3.0
     Y2 = GL_RIDGE_Y
@@ -7343,13 +7343,15 @@ def blue_crevasse(rng):
     out = []
     # the proud rank's strata, bottom to top: (top Y, tone, base proudness). NAVY is one tall
     # unbroken block; the ICE block stands prouder than the COBALT under it, so it overhangs the floor.
-    proud_bands = ((12.2, GK.NAVY, 4.2), (17.6, GK.COBALT, 1.6), (23.6, GK.ICE, 5.2), (27.0, GK.ICE_PALE, 1.8),
-                   (LIP, GK.SNOW_SHADE, 3.0))
+    proud_bands = ((12.2, GK.NAVY, 4.2), (17.0, GK.COBALT, 1.6), (22.2, GK.ICE, 5.2), (26.0, GK.SNOW_SHADE, 1.8),
+                   (LIP, GK.SNOW, 3.0))  # the top 30 % of the slot's wall is white: the rim reads white over navy
+    ALT = {GK.COBALT: GK.ICE_DEEP, GK.SNOW: GK.SNOW_WARM}  # every other proud column: no two neighbours the same tone
     # the recessed rank behind it: one tone paler at every height, near flush with the slab's face
-    back_bands = ((10.4, GK.NAVY), (16.2, GK.COBALT), (21.8, GK.ICE), (25.6, GK.ICE_PALE), (LIP - 0.4, GK.SNOW))  # its top
+    back_bands = ((10.4, GK.NAVY), (15.6, GK.COBALT), (20.6, GK.ICE), (24.2, GK.ICE_PALE), (LIP - 0.4, GK.SNOW))  # its top
     # a hair under the proud rim's and the towers' feet (no two near-level tops at one height: the validator)
     # the towers above the lip, bottom to top: share of the height, tones (alternating by column), stagger
-    tiers = ((0.36, (GK.ICE_PALE, GK.ICE), 1.6), (0.30, (GK.SNOW_SHADE, GK.ICE_PALE), 0.6), (0.34, (GK.SNOW, GK.SNOW_WARM), -0.3))
+    tiers = ((0.36, (GK.SNOW_SHADE, GK.ICE_PALE), 1.6), (0.30, (GK.SNOW, GK.SNOW_SHADE), 0.6), (0.34, (GK.SNOW_WARM, GK.SNOW), -0.3))
+    # near-white all the way up: the towers are the palest rank, the blue is the strata below the lip
 
     def ends(x):  # the slot funnels into the cleft in the west and chokes a little at the mouth
         return max(0.0, (-440 - x) * 0.45) + max(0.0, (x + 356) * 0.3)
@@ -7456,7 +7458,7 @@ def blue_crevasse(rng):
             for k, (y_top, tone, base) in enumerate(proud_bands):
                 h = y_top - y
                 pr = min(10.0, max(1.8, base + col + rng.uniform(-0.6, 0.6) + ends(cx)))
-                profile.append((y, h, pr, tone))
+                profile.append((y, h, pr, ALT.get(tone, tone) if i % 2 else tone))
                 y = y_top
             for k, (y0, h, pr, tone) in enumerate(profile):
                 depth = pr + 0.8  # its back inside the recessed rank, its front (and its centre) in the slot
@@ -7464,6 +7466,10 @@ def blue_crevasse(rng):
                 out.append(part(f"Stratum{side}_{i}_{k}", (seg + rng.uniform(-0.6, 0.6), h + 0.3, depth),
                                 (cx, y0 + h / 2, z_face + d * (pr - depth / 2)), tone, rot=pitch(d, lean),
                                 collide=False, query=False, layer="rock"))
+                if k == 2 and rng.random() < 0.6:  # a dark flush band across the overhanging ICE block
+                    out.append(part(f"ProudBand{side}_{i}", (seg * rng.uniform(0.4, 0.7), rng.uniform(1.0, 1.6), 0.5),
+                                    (off_x(cx, rng.uniform(-seg * 0.12, seg * 0.12)), y0 + h * rng.uniform(0.3, 0.65), z_face + d * (pr + 0.25)),
+                                    GK.NAVY, rot=pitch(d, lean), collide=False, query=False, shadow=False, layer="rock"))
                 above = profile[k + 1][2] if k + 1 < len(profile) else pr - 3.0
                 if pr > above + 0.9:  # a ledge: white on the block's top
                     snow_cap(f"Ledge{side}_{i}_{k}", cx, seg * 0.98, y0 + h, z_face, d, pr, above,
@@ -7544,26 +7550,9 @@ def blue_crevasse(rng):
             out.append(kit_piece("CrystalClusterC", name, cx, z + d * 2.6, yaw_facing(0, d) + rng.uniform(-20, 20), 0.85,
                                  y=y - 0.6, recolor=PINK))
 
-    # the floor: a packed-snow path down the middle (tilted a hair, leg by leg, so no two tops are
-    # coplanar), big white drifts and chunky deep-blue rocks along the feet of the walls
-    xs = [-352.0]
-    while xs[-1] > -446:
-        xs.append(max(-450.0, xs[-1] - rng.uniform(10.0, 14.0)))
-    for i in range(len(xs) - 1):
-        xa, xb = xs[i], xs[i + 1]
-        if xa > b1 + 1 > xb:  # the legs stop short of the deck's shadow and pick up past it
-            xb = b1 + 1
-        elif xa > b0 - 1 > xb:
-            xa = b0 - 1
-        elif b0 - 1 <= xa <= b1 + 1:
-            continue
-        za, zb = zm + 2.4 * math.sin(i * 1.1), zm + 2.4 * math.sin((i + 1) * 1.1)
-        L = math.hypot(xb - xa, zb - za)
-        yaw = math.degrees(math.atan2(-(zb - za), xb - xa))
-        out.append(part(f"SnowPath{i}", (L + 1.0, 0.12, 8.0), ((xa + xb) / 2, FLOOR + (0.13 if i % 2 else 0.05), (za + zb) / 2),
-                        GK.SNOW_PATH, rot=mul(rot_y(yaw), rot_x(1.4 * (1 if i % 2 else -1))), collide=False, query=False,
-                        shadow=False, layer="decal"))  # alternate legs a step higher and barely tilted: their overlaps
-        # never z-fight, and no edge lifts off the floor like a sheet of card
+    # the floor: the slab's own white snow (a packed-snow path in loose 8-wide legs read as sheets of card
+    # lying on it, and nobody walks down here), big white drifts and chunky deep-blue rocks along the feet of
+    # the walls
     k = 0
     for x in range(-452, -352, 8):
         x = x + rng.uniform(-2.0, 2.0)
@@ -7618,9 +7607,12 @@ def blue_crevasse(rng):
     out.append(part("CleftGlow", (0.8, 40.0, 10.0), (-454.2, FLOOR + 20.5, zm), (255, 206, 150), "Neon",
                     rot=rot_y(3), collide=False, query=False, shadow=False, layer="rock"))  # Neon glows unlit: the
     # region's 20 PointLights are spent (the hamlet's lantern strings took the last)
-    for k, (x, tr, tone) in enumerate(((-441.5, 0.78, GK.ICE_PALE), (-445.5, 0.65, (226, 246, 255)),
-                                       (-449.5, 0.5, (240, 250, 255)), (-453.2, 0.36, (250, 253, 255)))):  # all beyond
-        # the landmark, which stays crisp: the cleft behind it fades toward white
+    for k, (x, tr, tone) in enumerate(((-409.0, 0.9, (200, 240, 255)), (-420.0, 0.84, (208, 242, 255)),  # two faint cyan
+                                       # panes down the canyon: each rank of wall beyond them a step paler, the landmark
+                                       # still crisp through them
+                                       (-441.5, 0.78, GK.ICE_PALE), (-445.5, 0.65, (226, 246, 255)),
+                                       (-449.5, 0.5, (240, 250, 255)), (-453.2, 0.36, (250, 253, 255)))):  # the rest beyond
+        # the landmark: the cleft behind it fades toward white
         hz = Y2 + 6 - FLOOR  # mist lying in the slot, up to just over the lips: the towers and sky stay crisp above it
         out.append(part(f"Haze{k}", (0.6, hz, c1 - c0 + 6), (x, FLOOR + hz / 2 - 0.2, zm), tone, rot=rot_z(3.0),
                         collide=False, query=False, shadow=False, transparency=tr, layer="rock"))
