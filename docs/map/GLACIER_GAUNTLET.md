@@ -8,7 +8,7 @@ unlabelled and picks one.
 | --- | --- | --- | --- | --- |
 | Ice walls and the range | glacier_valley | 2 | **ours** (on style only) | Won because the photo is off-style, not because ours is a great glacier: still a wall of similar blue boxes with little sky, no valley corridor; snow discs hover and fissure sticks read as bugs. Round 3: a corridor with sky and a pale range at its end, a few huge spires, ground the discs, receding lighter ranks. |
 | Crevasse canyon and crystals | ice_canyon | 2 building | (round 1: photo) | Reads as a blue hallway: flat slabs in one mid-blue, no sky, no height. Wants walls 2-3x taller with an open sky slot, shading from white rim to navy floor, staggered ledges in three ice colours with snow caps, and deliberate crystal landmarks instead of a tumble. |
-| Frost Hollow village | snow_village | 2 built, judging | (round 1: photo) | Round 1's gap was lighting: noon-bright, windows flat white. Round 2 lit it as dusk (in game and in the render), amber panes and pools, pond and fire ring in the foreground, smoke, figures, rows behind the front row, the arch deep with a glow rim. |
+| Frost Hollow village | snow_village | 2 | **ours** | Won on merit: "built like a stage", warm-cold contrast, a clear path to the glowing arch. Weak spot: the lower-centre foreground is an empty snow field with a dead igloo mound; fill it or pull the camera forward. Polish only. |
 | Frozen river field | glacier_valley | 0 | (not judged yet) | |
 
 ## Log
@@ -24,3 +24,4 @@ unlabelled and picks one.
 - Round 2, walls: builder made deep-blue slab walls with navy fissures, seracs, giant crags, nine hazed peaks, a notch, rubble and the frozen river (3,269 parts, 0 FAILs). Judging.
 - Round 2, walls: critic picked OURS, on style (the photo fails the toy brief). Its own list for ours: open a valley corridor with sky and a pale range at the vanishing point; a few huge spires instead of dozens of mid boxes; delete or ground the floating snow discs and dark stick lines; 2-3 receding ranks lighter with distance. Round 3 launched for those.
 - Round 2, village: merged onto the walls and canyon (one rubble chunk under the new corner shelves dropped; the canyon's sunset light gave up its PointLight to stay at 20). 0 FAILs, 3,558 parts. Judging.
+- Round 2, village: critic picked OURS on merit (the photo is a murky voxel cave with no focal point). Done bar a polish of the empty foreground field.
