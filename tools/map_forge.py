@@ -7319,43 +7319,49 @@ def glacier_walls(rng):
 
 def blue_crevasse(rng):
     """The Blue Crevasse: the canyon of layered ice under the bridge (docs/map/glacier_refs/
-    ice_canyon.png). Each wall is strata: horizontal bands of ICE / ICE_PALE / ICE_DEEP, pitched
-    into the slot, that step out as they rise so the walls lean in and overhang; two of the bands
-    stand proud as ledges, snow on every one, crystal geodes growing out of them and gems set into
-    the walls; brows bulging under the lips; a rim of ice rising above each lip under a snow
-    cornice, icicle curtains hanging beneath; a floor of tumbled blocks and drifts round a frozen
-    meltwater pool; and the canyon closing at both ends: in the west a dark cleft lit by a sunset
-    glow, in the east a crystal-lit choke at the mouth over the lake. All of it is decoration
-    (collide=False): the lips' proxies keep everyone on the bridge."""
+    ice_canyon.png). Each wall is a stack of staggered ledges that climbs from navy at the floor
+    through cobalt and deep ice to frosted ice at the lip, every proud band under a thick rounded
+    snow cap; above each lip the wall goes on as ice towers standing on the ridge and forecourt
+    slabs (ICE, then frosted, then near-white, a snow cap on top), leaning in a little and leaving
+    a slot of sky over the canyon's middle. Icicle curtains hang from the lips. Toward the west the
+    canyon closes on a dark cleft lit by a sunset glow, with three panes of haze across it so the
+    far end fades toward white; one big lit crystal field stands before it as the landmark, and two
+    geodes grow from ledges. The floor is a packed-snow path down the middle between navy chunks and
+    drifts at the walls' feet. All of it is decoration (collide=False): the lips' proxies keep
+    everyone on the bridge."""
     FLOOR = 3.0
     Y2 = GL_RIDGE_Y
     c0, c1 = GL_CREVASSE
     b0, b1 = GL_BRIDGE
+    zm = (c0 + c1) / 2
     x_w, x_e = -458.0, -350.0
     out = []
-    # bottom to top: height, tone, how far the band stands proud of the trend (ledges at 2 and 4)
-    bands = ((3.6, GK.ICE_DEEP, 0.0), (5.2, GK.ICE, 0.3), (3.4, GK.ICE_PALE, 1.7), (4.6, GK.ICE, 0.0),
-             (2.8, GK.ICE_DEEP, 2.0), (4.2, GK.ICE_PALE, 0.2), (3.0, GK.ICE, 0.9))  # 26.8: the lip's 0.2 above
+    # the strata, bottom to top: height, tone, stagger. A band with a positive stagger stands proud
+    # of the one above it, so it is a ledge and wears snow. 27.2 from FLOOR - 0.6: the top meets the lip.
+    bands = ((4.6, GK.NAVY, 1.3), (4.4, GK.COBALT, -0.4), (4.4, GK.ICE, 1.6), (4.0, GK.COBALT, -0.3),
+             (4.8, GK.ICE_PALE, 1.4), (5.0, GK.SNOW_SHADE, -0.2))
     nb = len(bands)
+    # the towers above the lip, bottom to top: share of the height, tone, stagger
+    tiers = ((0.40, GK.ICE_PALE, 1.4), (0.34, GK.SNOW_SHADE, 0.2), (0.26, GK.SNOW, 1.2))
+    TOWER_DEPTH = 9.0
 
-    def lean(k):  # how far a band steps out into the slot, by height: the walls overhang
-        f = (k + 0.5) / nb
-        return 0.4 + 2.8 * f ** 1.5 + bands[k][2]
+    def ends(x):  # the canyon narrows to a cleft in the west and chokes at the mouth in the east
+        return max(0.0, (-440 - x) * 0.3) + max(0.0, (x + 356) * 0.35)
 
-    def ends(x):  # the canyon narrows to a cleft in the west, chokes at the mouth in the east
-        return max(0.0, (-438 - x) * 0.4) + max(0.0, (x + 358) * 0.42)
+    def tower_h(x):  # the ice above the lip: lowest beside the bridge, tallest toward the cleft
+        return 20 + 20 * min(1.0, min(abs(x - b0), abs(x - b1)) / 44.0)
 
-    def cornice(name, xa, xb, z_face, d, top_pr, y_top):
-        """A snow bank along the lip from xa to xb: round lumps shoulder to shoulder, each a little
-        different, overhanging the rim's top band by a stud or so."""
-        n = max(1, round((xb - xa) / 7.5))
-        w = (xb - xa) / n
-        for i in range(n):
-            L = top_pr + rng.uniform(2.4, 3.4)
-            h = rng.uniform(2.0, 2.9)
-            out.append(ellipsoid(f"{name}_{i}", (w * 1.25, h, L), (xa + w * (i + 0.5) + rng.uniform(-0.6, 0.6), y_top + h * 0.26,
-                                                                  z_face + d * (top_pr + 0.9 - L / 2)),
-                                 GK.SNOW, rot=tilt(rng, 2, 5), layer="rock", shadow=False))
+    def lie(rng):  # a snow cap's tilt: never level (the validator), never yawed (its length lies along the wall)
+        return mul(rot_x(rng.uniform(3.0, 5.0) * rng.choice((-1, 1))), rot_z(rng.uniform(-3.0, 3.0)))
+
+    def pitch(d):  # pitched into the slot, never level, so equal-height neighbours are never coplanar
+        return mul(rot_y(rng.uniform(-2.5, 2.5)), mul(rot_x(d * rng.uniform(3.0, 4.5)), rot_z(rng.uniform(-1.5, 1.5))))
+
+    def snow_ledge(name, xm, w, y_top, z_face, d, pr, above, tall=2.4, color=GK.SNOW):
+        """A thick rounded snow cap on a ledge: the band's top stands `pr` into the slot, the one above it `above`."""
+        L = pr - above + 1.4
+        out.append(ellipsoid(name, (w, tall, L), (xm, y_top + tall * 0.22, z_face + d * (pr + 0.3 - L / 2)),
+                             color, rot=lie(rng), layer="rock", shadow=False))
 
     def icicles(tag, xa, xb, z, y_root, d):
         j = 0
@@ -7372,7 +7378,7 @@ def blue_crevasse(rng):
             ix += rng.uniform(2.2, 3.4)
             j += 1
 
-    ledges = []  # (x, y, z, dir, seg): every ledge that a geode could grow from
+    ledges = []  # (x, y, z, dir): every ledge that a geode could grow from
     for side, (z_face, d) in enumerate(((c0, 1.0), (c1, -1.0))):  # d: into the slot
         x = x_w
         seg_i = 0
@@ -7383,146 +7389,120 @@ def blue_crevasse(rng):
                     seg = bnd - x
                     break
             cx = x + seg / 2
-            col = rng.uniform(-1.0, 1.0)  # this column stands proud, or back
+            col = rng.uniform(-0.6, 0.6)  # this column stands proud, or back
             profile = []
             y = FLOOR - 0.6
-            for k, (h, tone, _proud) in enumerate(bands):
-                pr = min(9.0, max(1.4, lean(k) + col + rng.uniform(-0.4, 0.4) + ends(cx)))
+            for k, (h, tone, stag) in enumerate(bands):
+                pr = min(9.0, max(0.8, 1.0 + stag + col + rng.uniform(-0.3, 0.3) + ends(cx)))
                 profile.append((y, h, pr, tone))
                 y += h
             for k, (y0, h, pr, tone) in enumerate(profile):
-                depth = pr + 1.0  # its back a stud inside the slab behind, its centre in the slot
-                zc = z_face + d * (pr - 1.0) / 2
-                yc = y0 + h / 2
-                # pitched into the slot: the band leans in (and its top is never level, so the
-                # neighbouring columns' equal-height bands never count as coplanar)
-                r = mul(rot_y(rng.uniform(-2.5, 2.5)), mul(rot_x(d * rng.uniform(3.0, 5.0)), rot_z(rng.uniform(-1.5, 1.5))))
-                out.append(part(f"Stratum{side}_{seg_i}_{k}", (seg + 0.6, h + 0.3, depth), (cx, yc, zc), tone, rot=r,
-                                collide=False, query=False, layer="rock"))
+                depth = pr + 0.5  # its back half a stud inside the slab behind, its centre in the slot
+                out.append(part(f"Stratum{side}_{seg_i}_{k}", (seg + 0.6, h + 0.3, depth), (cx, y0 + h / 2, z_face + d * (pr - 0.5) / 2),
+                                tone, rot=pitch(d), collide=False, query=False, layer="rock"))
                 above = profile[k + 1][2] if k + 1 < nb else pr + 1.5
-                if k + 1 < nb and pr > above + 0.9 and not (b0 - 3 < cx < b1 + 3 and y0 + h > Y2 - 8):
-                    # a ledge: this band stands out under the next, snow lies on it
-                    w = pr - above + 1.0
-                    zl = z_face + d * (pr - w / 2 - 0.1)
-                    out.append(ellipsoid(f"Ledge{side}_{seg_i}_{k}", (seg * 0.96, 1.9, w), (cx, y0 + h + 0.3, zl),
-                                         GK.SNOW, rot=tilt(rng, 1.5, 4), layer="rock", shadow=False))
+                if k + 1 < nb and pr > above + 0.9:
+                    snow_ledge(f"Ledge{side}_{seg_i}_{k}", cx, seg * 0.96, y0 + h, z_face, d, pr, above)
                     if k >= 1:
-                        ledges.append((cx, y0 + h + 0.3, z_face + d * pr, d, seg))
-            # gems set into the strata: a small turned crystal, lit from within
-            for _ in range(rng.choice((0, 1, 1, 2))):
-                k = rng.randrange(1, nb - 1)
-                y0, h, pr, _t = profile[k]
-                gx = cx + rng.uniform(-seg * 0.3, seg * 0.3)
-                gw = rng.uniform(1.0, 1.8)
-                if b0 - 1 < gx < b1 + 1:
-                    continue
-                gl = gw * rng.uniform(2.2, 3.2)
-                gc = rng.choice((GK.CRYSTAL, GK.CRYSTAL_VIOLET, GK.CRYSTAL))
-                # rooted in the band, the shard points out of the wall and up
-                gr = mul(rot_y(rng.uniform(-20, 20)), mul(rot_x(d * rng.uniform(40, 65)), rot_z(rng.uniform(-15, 15))))
-                gy = y0 + h * rng.uniform(0.3, 0.7)
-                root = (gx, gy, z_face + d * (pr - 0.8))
-                axis = apply(gr, (0, 1, 0))
-                mid = tuple(root[i] + axis[i] * gl * 0.5 for i in range(3))
-                tip = tuple(root[i] + axis[i] * (gl + gw * 0.05) for i in range(3))
-                out.append(part(f"Gem{side}_{seg_i}_{k}", (gw, gl, gw), mid, gc, "Neon", gr, collide=False, query=False,
-                                shadow=False, layer="rock", attrs={"MeshGlow": True}))
-                out.append(part(f"GemTip{side}_{seg_i}_{k}", (gw * 0.72,) * 3, tip, gc, "Neon",
-                                mul(gr, mul(rot_x(45), rot_z(45))), collide=False, query=False, shadow=False, layer="rock",
-                                attrs={"MeshGlow": True}))
-            # the rim: a band or two of ice rising above the lip, receding from it, under the snow
-            # cornice, with icicles hanging from the lip beneath; none where the bridge's deck lands
+                        ledges.append((cx, y0 + h + 0.4, z_face + d * pr, d))
             top_pr = profile[-1][2]
+            # the tower above the lip: none where the bridge lands, so the deck is a pass between two
             spans = [(x, x + seg)]
-            if x < b1 + 2.5 and x + seg > b0 - 2.5:
-                spans = [(x, min(x + seg, b0 - 2.5)), (max(x, b1 + 2.5), x + seg)]
-            for xa, xb in spans:
+            if x < b1 + 8.0 and x + seg > b0 - 8.0:
+                spans = [(x, min(x + seg, b0 - 8.0)), (max(x, b1 + 8.0), x + seg)]
+            for si, (xa, xb) in enumerate(spans):
                 if xb - xa < 4.0:
                     continue
-                xm = (xa + xb) / 2
-                y_rim = Y2 - 0.4
-                pr_rim = top_pr
-                n_rim = 1 if rng.random() < 0.45 else 2
-                for j in range(n_rim):
-                    h = rng.uniform(2.6, 4.6) if j == 0 else rng.uniform(1.6, 2.8)
-                    pr_rim = max(1.0, pr_rim - rng.uniform(1.0, 1.8))
-                    r = mul(rot_y(rng.uniform(-2.5, 2.5)), mul(rot_x(d * rng.uniform(3.0, 5.0)), rot_z(rng.uniform(-1.5, 1.5))))
-                    out.append(part(f"Rim{side}_{seg_i}_{j}", (xb - xa + 0.6, h, pr_rim + 1.0),
-                                    (xm, y_rim + h / 2, z_face + d * (pr_rim - 1.0) / 2), (GK.ICE_PALE, GK.ICE)[(seg_i + j) % 2],
-                                    rot=r, collide=False, query=False, layer="rock"))
-                    y_rim += h
-                cornice(f"Cornice{side}_{seg_i}_{len(spans) - spans.index((xa, xb))}", xa, xb, z_face, d, pr_rim, y_rim - 0.4)
-                icicles(f"{side}_{seg_i}_{spans.index((xa, xb))}", xa, xb, z_face + d * (top_pr + 0.5), Y2 - 0.7, d)
-            # a brow: a rounded mass bulging out under the lip, snow on top
-            if seg_i % 3 == 1 and not (b0 - 8 < cx < b1 + 8):
-                bw, bh, bd = seg * 0.85, rng.uniform(4.5, 6.5), rng.uniform(6.0, 8.0)
-                pr5 = profile[-2][2]
-                zb = z_face + d * (pr5 + bd / 2 - 3.0)
-                out.append(ellipsoid(f"Brow{side}_{seg_i}", (bw, bh, bd), (cx, Y2 - 6.0, zb), GK.ICE_PALE,
-                                     rot=tilt(rng, 2, 5), layer="rock"))
-                out.append(ellipsoid(f"BrowSnow{side}_{seg_i}", (bw * 0.8, 1.6, bd * 0.6), (cx, Y2 - 6.0 + bh * 0.42, zb + d * 0.6),
-                                     GK.SNOW, rot=tilt(rng, 1.5, 4), layer="rock", shadow=False))
+                xm, w = (xa + xb) / 2, xb - xa
+                H = tower_h(xm) * rng.uniform(0.9, 1.1)
+                yt = Y2 - 0.3
+                prs = []
+                for j, (f, tone, stag) in enumerate(tiers):
+                    h = H * f
+                    pr = max(0.3, min(3.4, stag + col * 1.2 + rng.uniform(-0.4, 0.4) + ends(xm) * 0.4))
+                    prs.append((yt + h, pr))
+                    out.append(part(f"Tower{side}_{seg_i}_{si}_{j}", (w + 0.6, h + 0.4, TOWER_DEPTH),
+                                    (xm, yt + h / 2, z_face + d * (pr - TOWER_DEPTH / 2)), tone, rot=pitch(d),
+                                    collide=False, query=False, layer="rock"))
+                    yt += h
+                for j in range(len(tiers) - 1):
+                    (y_top, pr), (_, above) = prs[j], prs[j + 1]
+                    if pr > above + 0.7:
+                        snow_ledge(f"TowerLedge{side}_{seg_i}_{si}_{j}", xm, w * 0.95, y_top, z_face, d, pr, above, tall=2.8)
+                y_top, pr = prs[-1]  # the cap: a thick round of snow over the whole top, the sun on it
+                L = TOWER_DEPTH * 0.9
+                out.append(ellipsoid(f"TowerCap{side}_{seg_i}_{si}", (w * 1.12, rng.uniform(4.4, 5.6), L),
+                                     (xm, y_top + 1.0, z_face + d * (pr + 1.0 - L / 2)), GK.SNOW_WARM,
+                                     rot=lie(rng), layer="rock", shadow=False))
+                icicles(f"{side}_{seg_i}_{si}", xa, xb, z_face + d * (top_pr + 0.5), Y2 - 0.7, d)
             x += seg
             seg_i += 1
 
-    # geodes growing out of the walls' ledges, two of them lit
-    rng.shuffle(ledges)
-    placed = []
-    lit = 0
-    for cx, y, z, d, seg in ledges:
-        if not (-442 < cx < -358) or b0 - 16 < cx < b1 + 16 or y > Y2 - 7 or y < FLOOR + 4:
+    # two geodes on ledges: a lit one high on the north wall mid-canyon, a violet one on the south
+    # wall high over the landmark (nothing centred under the deck: the validator reads that as buried)
+    for name, key, want_d, tx, lo, hi, lit in (("LedgeGeodeN", "CrystalGeodeA", 1.0, -424, FLOOR + 10, FLOOR + 20, True),
+                                              ("LedgeGeodeS", "CrystalGeodeB", -1.0, -438, FLOOR + 18, Y2 - 3, False)):
+        pick = [l for l in ledges if l[3] == want_d and lo < l[1] < hi and abs(l[0] - tx) < 12 and not (b0 - 5 < l[0] < b1 + 5)]
+        if not pick:
             continue
-        if any(abs(cx - px) < 16 and pd == d for px, pd in placed):
-            continue
-        key = "CrystalGeodeA" if lit < 2 else "CrystalGeodeB"
-        out.append(kit_piece(key, f"WallGeode{len(placed)}", cx + rng.uniform(-1.5, 1.5), z - d * 1.2,
-                             yaw_facing(0, d) + rng.uniform(-25, 25), rng.uniform(0.8, 1.0), y=y - 0.7,
-                             light_on="Core" if lit < 2 else None))
-        placed.append((cx, d))
-        lit += 1
-        if len(placed) >= 6:
-            break
+        cx, y, z, d = min(pick, key=lambda l: abs(l[0] - tx))
+        out.append(kit_piece(key, name, cx, z - d * 1.2, yaw_facing(0, d) + rng.uniform(-15, 15), 0.75, y=y - 0.7,
+                             light_on="Core" if lit else None))
 
-    # the floor: a frozen meltwater pool, tumbled blocks, drifts along the feet of the walls
-    px_, pz_ = -406.0, (c0 + c1) / 2
-    out += disc("MeltPool", px_, pz_, 8.5, FLOOR + 0.2, 0.5, GK.ICE_DEEP, "SmoothPlastic", collide=False, layer="decal")
-    for k in range(5):  # cracks across the pool's ice
-        a = k / 5 * math.tau + rng.uniform(-0.3, 0.3)
-        ln = rng.uniform(4, 7)
-        cxk, czk = px_ + math.cos(a) * ln * 0.6, pz_ + math.sin(a) * ln * 0.6
-        out.append(part(f"PoolCrack{k}", (ln, 0.1, 0.18), (cxk, FLOOR + 0.3, czk), GK.ICE_PALE,
-                        rot=rot_y(math.degrees(a) + rng.uniform(-30, 30)), collide=False, query=False, shadow=False,
-                        layer="decal"))
-    for k, (x, z, s) in enumerate(((-432, -17, 1.0), (-375, -9, 1.1), (-364, -18, 0.9), (-418, -8, 0.8),
-                                    (-362, -8, 0.7), (-446, -12, 0.9))):
-        out.append(kit_piece("IceBlockPile", f"FloorBlocks{k}", x, z, rng.uniform(0, 360), s, y=FLOOR))
-    for k in range(16):
-        x = rng.uniform(-452, -352)
-        z = rng.uniform(c0 + 3, c1 - 3)
-        if math.hypot(x - px_, z - pz_) < 10 or b0 - 1 < x < b1 + 1:
+    # the floor: a packed-snow path down the middle (tilted a hair, leg by leg, so no two tops are
+    # coplanar), navy and cobalt chunks and drifts along the feet of the walls
+    xs = [-352.0]
+    while xs[-1] > -446:
+        xs.append(max(-450.0, xs[-1] - rng.uniform(10.0, 14.0)))
+    for i in range(len(xs) - 1):
+        xa, xb = xs[i], xs[i + 1]
+        if xa > b1 + 1 > xb:  # the legs stop short of the deck's shadow and pick up past it
+            xb = b1 + 1
+        elif xa > b0 - 1 > xb:
+            xa = b0 - 1
+        elif b0 - 1 <= xa <= b1 + 1:
             continue
-        w, h = rng.uniform(2.0, 4.5), rng.uniform(1.6, 4.0)
-        out.append(part(f"FloorIce{k}", (w, h, w * rng.uniform(0.6, 1.0)), (x, FLOOR + h * 0.3, z),
-                        rng.choice((GK.ICE, GK.ICE_PALE, GK.ICE_DEEP)),
-                        rot=mul(rot_y(rng.uniform(0, 180)), mul(rot_x(rng.uniform(8, 30)), rot_z(rng.uniform(-12, 12)))),
-                        collide=False, query=False, layer="rock"))
-    for k in range(12):
-        x = rng.uniform(-450, -354)
-        if b0 - 1 < x < b1 + 1:
+        za, zb = zm + 1.6 * math.sin(i * 1.1), zm + 1.6 * math.sin((i + 1) * 1.1)
+        L = math.hypot(xb - xa, zb - za)
+        yaw = math.degrees(math.atan2(-(zb - za), xb - xa))
+        out.append(part(f"SnowPath{i}", (L + 1.0, 0.3, 6.4), ((xa + xb) / 2, FLOOR + 0.2, (za + zb) / 2), GK.SNOW_PATH,
+                        rot=mul(rot_y(yaw), rot_x(3.4 * (1 if i % 2 else -1))), collide=False, query=False, shadow=False,
+                        layer="decal"))
+    for k in range(20):
+        x = -454 + k * 5.4 + rng.uniform(-1.5, 1.5)
+        if b0 - 2 < x < b1 + 2:
             continue
         side = k % 2
-        z = (c0 + 2.6) if side == 0 else (c1 - 2.6)
-        out.append(ellipsoid(f"FloorDrift{k}", (rng.uniform(8, 14), 2.4, rng.uniform(3.5, 5.5)), (x, FLOOR + 0.5, z),
-                             GK.SNOW_SHADE, rot=tilt(rng, 1.5, 4), layer="rock", shadow=False))
+        z = (c0 + rng.uniform(1.2, 3.2)) if side == 0 else (c1 - rng.uniform(1.2, 3.2))
+        w, h = rng.uniform(2.2, 4.8), rng.uniform(1.8, 4.4)
+        out.append(part(f"FootIce{k}", (w, h, w * rng.uniform(0.6, 1.0)), (x, FLOOR + h * 0.3, z),
+                        GK.COBALT if k % 3 == 1 else GK.NAVY,
+                        rot=mul(rot_y(rng.uniform(0, 180)), mul(rot_x(rng.uniform(8, 30)), rot_z(rng.uniform(-12, 12)))),
+                        collide=False, query=False, layer="rock"))
+    for k in range(10):
+        x = -448 + k * 10.6 + rng.uniform(-2, 2)
+        if b0 - 2 < x < b1 + 2:
+            continue
+        side = k % 2
+        z = (c0 + 2.4) if side == 0 else (c1 - 2.4)
+        out.append(ellipsoid(f"FloorDrift{k}", (rng.uniform(8, 13), 2.4, rng.uniform(3.2, 4.8)), (x, FLOOR + 0.5, z),
+                             GK.SNOW_SHADE, rot=lie(rng), layer="rock", shadow=False))
+    for k, (x, z) in enumerate(((-428, c0 + 4.6), (-372, c1 - 4.6))):
+        out.append(kit_piece("IceBlockPile", f"FloorBlocks{k}", x, z, rng.uniform(0, 360), 0.8, y=FLOOR))
 
-    # the west end: the cleft closes on a wall of deep ice, a sunset glowing through it
-    out.append(part("CleftEnd", (5.0, Y2 + 0.6, c1 - c0 + 6), (-457.0, Y2 / 2 - 0.4, (c0 + c1) / 2), GK.TEMPLE_NIGHT,
+    # the west end: the landmark, a big lit crystal field before the cleft; the cleft closing on a
+    # wall of deep ice with a sunset glowing through it; and three panes of haze, each paler and
+    # fainter than the last, so the far end fades toward white
+    out.append(kit_piece("CrystalFieldA", "CleftCrystal", -437, zm, 30, 1.4, y=FLOOR, light_on="Core"))  # yaw 30: every shard in the slot
+    out.append(part("CleftEnd", (5.0, Y2 + 30, c1 - c0 + 8), (-457.0, (Y2 + 30) / 2 - 0.4, zm), GK.TEMPLE_NIGHT,
                     rot=rot_y(3), collide=False, query=False, layer="rock"))
-    out.append(part("CleftGlow", (0.8, 24.0, 8.0), (-454.2, FLOOR + 12.5, (c0 + c1) / 2), (255, 206, 150), "Neon",
+    out.append(part("CleftGlow", (0.8, 36.0, 9.0), (-454.2, FLOOR + 18.5, zm), (255, 206, 150), "Neon",
                     rot=rot_y(3), collide=False, query=False, shadow=False, layer="rock"))  # Neon glows unlit: the
     # region's 20 PointLights are spent (the hamlet's lantern strings took the last)
-    # the mouth: a big lit field of crystal where the canyon opens over the lake
-    out.append(kit_piece("CrystalFieldB", "MouthCrystal", -356, (c0 + c1) / 2 + 1, yaw_facing(1, 0), 0.75, y=FLOOR))
+    for k, (x, tr, tone) in enumerate(((-416.0, 0.82, GK.ICE_PALE), (-447.0, 0.7, GK.ICE_PALE), (-452.5, 0.55, (240, 250, 255)))):
+        hz = Y2 + 6 - FLOOR  # mist lying in the slot, up to just over the lips: the towers and sky stay crisp above it
+        out.append(part(f"Haze{k}", (0.6, hz, c1 - c0 + 6), (x, FLOOR + hz / 2 - 0.2, zm), tone, rot=rot_z(3.0),
+                        collide=False, query=False, shadow=False, transparency=tr, layer="rock"))
     return out
 
 
@@ -7872,7 +7852,7 @@ def build_frostbound_glacier():
                                              ("CrystalFieldB", -436, -80, 1.2, True),
                                              ("CrystalFieldA", -404, -128, 1.0, False),
                                              ("CrystalClusterC", -366, -92, 1.2, False),
-                                             ("CrystalFieldB", -436, -30, 1.0, False),
+                                             ("CrystalFieldB", -440, -33, 1.0, False),
                                              ("CrystalClusterC", -358, -56, 0.9, False),
                                              ("CrystalClusterC", -446, -112, 1.1, False),
                                              ("CrystalClusterA", -420, -118, 1.2, False))):
@@ -7880,7 +7860,7 @@ def build_frostbound_glacier():
             visual.append(kit_piece(key, f"RidgeCrystal{k}", x, z, rng.uniform(0, 360), s,
                                     light_on="Core" if lit else None))
     for k, (key, x, z, s) in enumerate((("SnowRockB", -374, -131, 1.0), ("SnowRockA", -438, -104, 1.0),
-                                        ("SnowRockC", -372, -30, 1.0), ("SnowRockA", -410, -30, 0.9))):
+                                        ("SnowRockC", -372, -36, 1.0), ("SnowRockA", -410, -36, 0.9))):
         if clear(x, z, 14, 10, 5):
             visual.append(kit_piece(key, f"RidgeRock{k}", x, z, rng.uniform(0, 360), s))
     for k, x in enumerate((b0 - 4, b1 + 4)):  # the bridgehead: two columns and a pair of braziers
