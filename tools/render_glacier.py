@@ -143,6 +143,8 @@ VIEWS = {  # name: (eye, target) in Roblox coords
     "g_bridge": ((-370, 42, -60), (-392, 32, 20)),
     "g_court": ((-360, 44, 70), (-450, 40, 36)),
     "g_aerial": ((-150, 260, 140), (-300, 10, -20)),
+    "g_canyon": ((-363, 16, -9), (-445, 9, -15)),
+    "g_bridge_down": ((-388, 43, -12), (-448, 8, -14)),
 }
 if len(sys.argv) > 2:
     VIEWS = {k: v for k, v in VIEWS.items() if k in sys.argv[2].split(",")}
