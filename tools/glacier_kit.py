@@ -53,8 +53,8 @@ ICE_WALL_LIT = (46, 116, 224)   # the wall's lit slabs: one step lighter, still 
 ICE_CRAG = (108, 160, 240)      # the crags behind: a big step paler, the first breath of haze
 ICE_CRAG_LIT = (128, 176, 246)  # their lit blocks
 NAVY = (11, 42, 107)            # crevasse slots cut into the walls (#0B2A6B)
-RANGE = (146, 188, 250)         # the far range, hazed: paler and bluer than anything nearer
-RANGE_DEEP = (116, 164, 242)    # its shaded ridges
+RANGE = (184, 210, 252)         # the far range, hazed: paler than anything nearer, even its shaded east faces
+RANGE_DEEP = (150, 186, 248)    # its shaded ridges
 COBALT = (48, 110, 235)         # mid cobalt: the crevasse's middle strata
 SNOW_WARM = (255, 247, 232)     # the sun on the highest caps: warm top light over the blue slot
 ROCK = (200, 204, 255)          # pale periwinkle stone
@@ -252,6 +252,75 @@ def ice_cliff_c():
     return _ice_wall(3, ((52, 56, 11, 4), (34, 40, 16, -7)))
 
 
+# ── Ice tiers: the corridor's flanking walls, rounded and stacked (round 4) ──
+ICE_FLOOR = (168, 236, 255)     # the Frozen Lake terrace: a pale turquoise ice-river floor
+RIVER = (72, 196, 255)          # open water in the frozen river: saturated cyan, never navy
+MIST = (196, 244, 255)          # the fog banks between the ranks: light cyan
+NAVY_FAR = (52, 96, 176)        # crevasse slots in the hazed far rank
+
+
+def _ice_tier(seed, h, w, n, lean, mirror):
+    """A glacier wall after docs/map/glacier_refs/glacier_valley.png, round 4: no boxes. `n` fat
+    rounded tiers of deep-blue ice (ellipsoids, ICE_WALL and ICE_WALL_LIT by turns) stacked ~h
+    tall at scale 1 and w wide at the foot, each tier narrower than the one under it, sunk a
+    little into it, set a few studs back and turned a few degrees, the whole stack leaning
+    `lean` degrees forward (local -Z, over the floor it faces) so a row of them funnels a
+    corridor; a thick pure-white snow cap sunk into every tier's top (a white ledge between the
+    blue tiers, seen along the wall), a snow dome on the summit, one or two two-tone crevasse
+    slots (NAVY in ICE_DEEP) flush in the belly of each tier, a rounded foot and a drift.
+    map_forge grows the near flanks and cuts the far ones so the walls step down toward the
+    vanishing point. Front local -Z."""
+    rng = random.Random(seed)
+    m = -1 if mirror else 1
+    D = w * 0.34
+    out = [prim("ball", "Foot", (w * 1.12, h * 0.16, D * 1.15), (m * w * 0.02, h * 0.045, -D * 0.06), ICE_WALL,
+                (m * 3, 4, m * 2), lumpy=0.05)]
+    slope = math.tan(math.radians(lean))
+    base = h * 0.02
+    for k in range(n):
+        f = k / max(1, n - 1)
+        th = h * (0.27 - 0.02 * k)  # 0.27 .. 0.19 of h: the tiers thin a little going up
+        tw = w * (1.0 - 0.12 * k)
+        td = D * (1.0 - 0.05 * k)
+        cy = base + th / 2
+        cz = -slope * cy + 2.6 * k + rng.uniform(-1.0, 1.0)  # leaning forward, each tier a ledge back
+        r = (rng.uniform(-3, 3) + m * 2.5 * k, -lean + rng.uniform(-2.0, 2.0), m * rng.uniform(-1.5, 3.0))
+        p = (m * (w * 0.02 * k) + rng.uniform(-2, 2), cy, cz)
+        tone = ICE_WALL if k % 2 == 0 else ICE_WALL_LIT
+        out.append(prim("ball", f"Tier{k}", (tw, th, td), p, tone, r, lumpy=0.04))
+        # the snow cap sunk into the tier's top: wider than the tier above, so it shows as a white
+        # ledge round its foot; the summit gets a dome
+        if k < n - 1:
+            ch = th * 0.26
+            out.append(prim("ball", f"Cap{k}", (tw * 0.96, ch, td * 0.7), _on(p, r, (0, th / 2 - ch * 0.42, -td * 0.02)),
+                            SNOW, (r[0], r[1] + 1.5, r[2]), lumpy=0.05))
+        else:
+            ch = th * 0.5
+            out.append(prim("ball", "Dome", (tw * 0.8, ch, td * 0.85), _on(p, r, (m * tw * 0.04, th / 2 - ch * 0.3, 0)), SNOW,
+                            (r[0] + m * 6, r[1] + 2, r[2] - m * 3), lumpy=0.06))
+        # one wide crevasse in the belly, a second narrow one on the odd tiers
+        fx = m * rng.uniform(-0.12, 0.24) * tw
+        _slot(out, f"Slot{k}", p, r, (fx, -th * 0.02), tw * rng.uniform(0.05, 0.07), th * 0.44,
+              m * rng.uniform(2, 6), td + 1.6)
+        if k % 2 == 1:
+            _slot(out, f"Slit{k}", p, r, (-fx * 0.8 - m * tw * 0.12, th * 0.04), tw * 0.035, th * 0.32,
+                  -m * rng.uniform(3, 8), td + 1.4)
+        base += th * 0.86  # the next tier sinks into this one
+    out.append(prim("ball", "Drift", (w * 0.9, h * 0.04, D * 0.6), (0, h * 0.006, -D * 0.5), SNOW_SHADE, (0, 3, 0),
+                    lumpy=0.03))
+    return out
+
+
+@piece
+def ice_tier_a():
+    return _ice_tier(61, 200.0, 110.0, 5, 9.0, False)
+
+
+@piece
+def ice_tier_b():
+    return _ice_tier(62, 175.0, 96.0, 4, 7.0, True)
+
+
 # ── Ice spires: the giants, one huge leaning shard at each corner of the valley ──
 def _ice_spire(seed, h, w, lean, mirror):
     """One enormous shard of deep-blue ice leaning back `lean` degrees: three tiers of block,
@@ -352,27 +421,27 @@ def ice_crag_b():
 # ── The ridge's broken lip over the lake ───────────────────────────────────────
 @piece
 def ice_ledge():
-    """A broken ice terrace edge: four chunky faceted blocks 12-16 tall of deep-blue ice, split by
-    NAVY slots, short shards and a snow cornice on top, snow banked and a fallen chunk at the foot.
-    40 wide, front -Z."""
+    """A broken ice terrace edge, rounded like the tiers (round 4): four fat lumps 12-16 tall of
+    deep-blue ice, a NAVY fissure flush in each face, short pale shards, a snow cornice sunk into
+    every top, snow banked and a fallen lump at the foot. 40 wide, front -Z."""
     rng = random.Random(31)
     out = []
     for i, cx in enumerate((-14, -4, 6, 15)):
-        w, h = rng.uniform(9, 12), rng.uniform(12, 16)
-        r = (rng.uniform(-8, 8), rng.uniform(4, 12), rng.uniform(-8, 8))
-        c = (ICE_WALL, ICE_WALL, ICE_DEEP, ICE_WALL)[i]
-        p = (cx, h / 2 - 0.4, rng.uniform(-1, 1))
-        out.append(prim("block", f"Block{i}", (w, h, 10), p, c, r, facet=True))
-        out.append(prim("block", f"Fissure{i}", (1.6, h * 0.7, 1.2),
-                        _on(p, r, (rng.uniform(-w * 0.3, w * 0.3), -h * 0.1, -4.7)),
-                        NAVY, (r[0], r[1], r[2] + rng.uniform(-22, 22))))
+        w, h = rng.uniform(11, 14), rng.uniform(12, 16)
+        r = (rng.uniform(-8, 8), -rng.uniform(2, 6), rng.uniform(-6, 6))
+        c = (ICE_WALL, ICE_WALL_LIT, ICE_WALL, ICE_WALL_LIT)[i]
+        p = (cx, h * 0.46, rng.uniform(-1, 1))
+        out.append(prim("ball", f"Block{i}", (w, h, 11), p, c, r, lumpy=0.05))
+        out.append(prim("block", f"Fissure{i}", (1.4, h * 0.5, 1.2),
+                        _on(p, r, (rng.uniform(-w * 0.2, w * 0.2), -h * 0.05, -5.6)),
+                        NAVY, (r[0], r[1], r[2] + rng.uniform(-18, 18))))
         if i % 2 == 0:
-            out.append(prim("shard", f"Shard{i}", (4, rng.uniform(5, 9), 3.6), (cx + rng.uniform(-2, 2), h - 1.5, 0),
+            out.append(prim("shard", f"Shard{i}", (4, rng.uniform(5, 8), 3.6), (cx + rng.uniform(-2, 2), h * 0.8, 0),
                             ICE_PALE, (rng.uniform(-40, 40), rng.uniform(-6, 6), rng.uniform(-16, 16))))
-        out.append(prim("ball", f"Cornice{i}", (w * 1.15, 3.0, 9), (cx, h + 0.2, -1.5), SNOW,
-                        (0, rng.uniform(-4, 4), rng.uniform(-4, 4)), lumpy=0.04))
+        out.append(prim("ball", f"Cornice{i}", (w * 0.95, 3.6, 8.5), _on(p, r, (0, h / 2 - 1.2, -0.5)), SNOW,
+                        (r[0], r[1] + 2, r[2]), lumpy=0.04))
     out.append(prim("ball", "Drift", (38, 4.6, 8), (0, 0.5, -7), SNOW_SHADE, (0, 3, 0), lumpy=0.03))
-    out.append(prim("block", "Chunk", (5, 5, 5), (10, 1.7, -9), ICE_PALE, (20, 45, 42)))
+    out.append(prim("ball", "Chunk", (5.6, 3.4, 4.6), (10, 1.2, -9), ICE_PALE, (20, 5, 8), lumpy=0.04))
     return out
 
 
@@ -694,6 +763,11 @@ def snow_peak_a():
 @piece
 def snow_peak_b():
     return _peak(200.0, 125.0, 22)
+
+
+@piece
+def snow_peak_c():  # a broad massif: chunky, for the notch's vanishing point
+    return _peak(210.0, 230.0, 23)
 
 
 # ── The parts version ──────────────────────────────────────────────────────────
