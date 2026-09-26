@@ -71,11 +71,11 @@ local AIR = { -- [TUNING]
 -- shade and still saturated (never grey), so the hamlet's amber windows and fires read as pools of
 -- warm light on blue-shadowed snow (gauntlet round 2, after glacier_refs/snow_village.png).
 local FROST_FADE = { -104, -150 } -- [TUNING] camera X: fade in from..to (going west), south of z 96
-local FROST_SHARE = 0.85 -- [TUNING]
+local FROST_SHARE = 0.7 -- [TUNING]
 local FROST_AIR = { -- [TUNING] the same three entries as AIR, in the same order
-	Color3.fromRGB(84, 104, 172),
-	Color3.fromRGB(108, 136, 204),
-	Color3.fromRGB(156, 188, 240),
+	Color3.fromRGB(104, 124, 190),
+	Color3.fromRGB(132, 160, 220),
+	Color3.fromRGB(176, 206, 248),
 }
 local function frostFade(p: Vector3): number
 	local f = FROST_FADE

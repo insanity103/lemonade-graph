@@ -128,10 +128,10 @@ scene.world = world
 world.use_nodes = True
 # Dusk under the ice: a deep, saturated blue world (the sky stays blue, never black) and a low warm
 # sun 25 degrees up in the west, so the snow is blue in shadow and the sunlit faces barely warm.
-world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.07, 0.16, 0.48, 1)
-world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.33
+world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.16, 0.34, 0.80, 1)  # late-afternoon sky: blue, not night
+world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.6
 sun = bpy.data.objects.new("sun", bpy.data.lights.new("sun", "SUN"))
-sun.data.energy = 1.6
+sun.data.energy = 2.4
 sun.data.color = (1.0, 0.86, 0.70)
 sun.data.angle = math.radians(3)
 # a sun points down its -Z; tilted (90 - elevation) about X it shines toward +Y, and -90 about Z
@@ -157,7 +157,7 @@ if os.environ.get("QUICK"):
     scene.cycles.samples = 12
     scene.render.resolution_x, scene.render.resolution_y = 960, 540
 scene.view_settings.view_transform = "Standard"
-scene.view_settings.exposure = -1.25  # dusk: the snow sits below white, the Neon and the pools above it
+scene.view_settings.exposure = -0.6  # late afternoon: snow just under white, Neon and lamp pools above it
 
 
 def snowfall(cam_obj, eye, tgt, count=170, seed=7):
@@ -212,7 +212,6 @@ VIEWS = {  # name: (eye, target) in Roblox coords
     "g_river": ((-244, 25, -6), (-395, 88, -128)),  # eye height, the lake's east shore: along the river to the notch
     "g_skyline": ((-262, 25, 24), (-300, 110, -180)),  # from the lake's south shore, up over the fall to the range
     "g_corridor": ((-232, 25, 4), (-340, 30, -70)),  # eye height at the ascent's top: west along the river to the stair and the notch
-    "g_canyon_up": ((-391, 5, -14), (-445, 50, -14)),  # from under the bridge, up at the west towers and the sky slot
 }
 if len(sys.argv) > 2:
     VIEWS = {k: v for k, v in VIEWS.items() if k in sys.argv[2].split(",")}
