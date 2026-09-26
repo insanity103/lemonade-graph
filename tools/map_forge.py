@@ -6909,11 +6909,15 @@ def ice_chunk(name, x, z, rng, s=1.0, y=None):
 
 
 def glacier_walls(rng):
-    """Ice cliffs all round the outline (standing on the floors, which run out under them) and an
-    invisible proxy along every edge. Each cliff is grown so its crest stands ~46 studs over the
-    floor it faces: at the default zoom cap no view reaches over it."""
+    """Ice cliffs all round the outline (standing on the floors, which run out under them), an
+    invisible proxy along every edge, and a second rank of crags stepping back and up behind the
+    walls where the snowfield apron lies. Each cliff is grown so its columns stand ~72 studs over
+    the floor it faces (its crest higher): at the default zoom cap no view reaches over it. The
+    cliff with the fallen slab only stands well away from spawns and arrivals."""
     visual, proxies = [], []
     keys = ("IceCliffA", "IceCliffB", "IceCliffC")
+    crags = ("IceCragA", "IceCragB")
+    marks = [xz for *_, xz, _ in GLACIER_SPAWNS] + list(GLACIER_ARRIVALS.values())
     pts = GL_OUTLINE
     for i in range(len(pts) - 1):
         (ax, az), (bx, bz) = pts[i], pts[i + 1]
@@ -6927,17 +6931,45 @@ def glacier_walls(rng):
         if ax == bx == -116:  # against the hub's castle wall: its back is the wall here
             continue
         inner = floor_at(mx - out[0] * 3, mz - out[1] * 3, GL_HOLLOW_Y)
-        n = max(1, math.ceil(seg / 34.0))
+        n = max(1, math.ceil(seg / 46.0))
         for k in range(n):
             t = (k + 0.5) / n
-            px, pz = ax + (bx - ax) * t + out[0] * 7, az + (bz - az) * t + out[1] * 7
+            px, pz = ax + (bx - ax) * t + out[0] * 8, az + (bz - az) * t + out[1] * 8
             # where the floor outside is the lower one (a terrace's own edge), the cliff stands on the
             # terrace: its snow drift lies on the floor it faces, not buried in it
             foot = max(floor_at(px, pz, inner), inner)
-            s = max(1.1, min(1.9, (inner + 46 - foot) / 36.0)) * rng.uniform(0.96, 1.06)
-            key = keys[(i * 2 + k) % 3]
+            s = max(1.15, min(1.6, (inner + 72 - foot) / 60.0)) * rng.uniform(0.97, 1.08)
+            key = "IceCliffC" if i in (3, 17) else keys[(i * 2 + k) % 3]  # the ascent: the finer columns
+            if key == "IceCliffA":  # its fallen slab needs a flat floor in front, clear of the markers
+                fx, fz = px - out[0] * 16, pz - out[1] * 16
+                flat = all(abs(floor_at(fx + dx * u, fz + dz * u, inner) - foot) < 0.5 for u in (-22, 0, 22))
+                if not flat or any(math.hypot(px - qx, pz - qz) < 40 for qx, qz in marks):
+                    key = "IceCliffB"
             yaw = yaw_facing(-out[0], -out[1]) + rng.uniform(-5, 5)
             visual.append(kit_piece(key, f"GlacierCliff{i:02d}_{k}", px, pz, yaw, s, y=foot - 0.4, layer="cliff"))
+        # the second rank: crags on the apron behind the wall, their crests ~110 over the floor inside
+        m = max(1, math.ceil(seg / 80.0))
+        for k in range(m):
+            t = (k + 0.5) / m
+            s = max(1.0, min(1.9, (inner + 112 - 0.5) / 100.0)) * rng.uniform(0.94, 1.08)
+            # far enough out that its drift (23 * s in front of its centre) clears the floor slab,
+            # which runs 20 past the outline (further past the forecourt's alcove: step out until clear)
+            jx, jz = rng.uniform(-5, 5), rng.uniform(-5, 5)
+            for d in (24 + 24 * s, 36 + 24 * s, 48 + 24 * s):
+                qx = ax + (bx - ax) * t + out[0] * d + jx
+                qz = az + (bz - az) * t + out[1] * d + jz
+                if floor_at(qx - out[0] * 24 * s, qz - out[1] * 24 * s, 0.5) <= 1.0:
+                    break
+            else:
+                continue
+            if not (-596 < qx < -108 and -256 < qz < 90):
+                continue  # off the snowfield apron: the hub east, the desert south
+            foot = floor_at(qx, qz, 0.5)
+            if foot > 1.0:
+                continue
+            yaw = yaw_facing(-out[0], -out[1]) + rng.uniform(-14, 14)
+            visual.append(kit_piece(crags[(i + k) % 2], f"GlacierCrag{i:02d}_{k}", qx, qz, yaw, s, y=foot - 0.4,
+                                    layer="vista"))
     return visual, proxies
 
 
@@ -7090,9 +7122,9 @@ def build_frostbound_glacier():
         if clear(x, z, 14, 14, 5):
             visual.append(kit_piece(key, f"LakeRock{k}", x, z, rng.uniform(0, 360), s))
     # the ridge's cliff face over the lake terrace, and the crevasse mouth
-    for k, z in enumerate((-50, -34, 10, 30, 50)):
-        visual.append(kit_piece(("IceCliffB", "IceCliffC", "IceCliffA")[k % 3], f"RidgeFace{k}", -345, z,
-                                yaw_facing(1, 0) + rng.uniform(-4, 4), 0.46, y=Y1 - 0.3, layer="cliff"))
+    for k, z in enumerate((-42, 14, 46)):
+        visual.append(kit_piece("IceLedge", f"RidgeFace{k}", -345, z, yaw_facing(1, 0) + rng.uniform(-4, 4), 0.9,
+                                y=Y1 - 0.3, layer="cliff"))
     for side, z in (("S", -60), ("N", -104)):
         visual.append(kit_piece("TempleColumnBroken", f"StairColumn{side}", -322, z + (2 if side == "S" else 2), 0, 1.1))
     visual.append(kit_piece("TempleColumn", "StairColumnTop", -346, -58, 0, 1.0))
@@ -7152,12 +7184,12 @@ def build_frostbound_glacier():
                            rot=rot_y(90 - math.degrees(a)), collide=False, query=False, shadow=False, layer="decal"))
 
     # ── Vista: snow peaks on the snowfield beyond the walls ──
-    for k, (key, x, z, s) in enumerate((("SnowPeakA", -200, -150, 1.0), ("SnowPeakB", -290, -176, 1.2),
-                                        ("SnowPeakA", -400, -200, 1.3), ("SnowPeakB", -520, -150, 1.2),
-                                        ("SnowPeakA", -548, -40, 1.25), ("SnowPeakB", -540, 60, 1.1),
-                                        ("SnowPeakA", -140, -140, 0.8), ("SnowPeakB", -470, 130, 0.9))):
-        if k == 7:
-            continue  # south of the wall lies the desert; no peak there
+    # (a third rank behind the crags: a range along the north and the west; south lies the desert)
+    for k, (key, x, z, s) in enumerate((("SnowPeakA", -190, -200, 0.9), ("SnowPeakB", -270, -218, 1.0),
+                                        ("SnowPeakB", -322, -196, 0.72), ("SnowPeakA", -372, -226, 1.15),
+                                        ("SnowPeakB", -470, -212, 1.0), ("SnowPeakA", -556, -172, 1.1),
+                                        ("SnowPeakB", -522, -118, 0.8), ("SnowPeakB", -574, -66, 1.0),
+                                        ("SnowPeakA", -570, 34, 1.05), ("SnowPeakB", -142, -168, 0.7))):
         visual.append(kit_piece(key, f"VistaPeak{k}", x, z, rng.uniform(0, 360), s, y=0.3, layer="vista"))
     return ground, visual, proxies
 

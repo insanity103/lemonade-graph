@@ -155,44 +155,186 @@ def snow_rock_c():  # a cluster of three small stones: scatter along paths
 
 
 # ── Ice cliffs ─────────────────────────────────────────────────────────────────
-def _ice_cliff(seed, heights, widths):
-    """Tall ice columns shoulder to shoulder, each under an overhanging snow cornice, icicles along
-    the front lip, a snow drift banked at the foot. The front is local -Z."""
+def _on(host_p, host_r, local):
+    """A point in a host primitive's frame (its centre, its rotation) as a piece-frame point."""
+    return _add(host_p, _apply(rotation(host_r), local))
+
+
+CLIFF_D = 16.0  # a cliff column's depth
+
+
+def _ice_cliff(seed, heights, widths, slab_at=None):
+    """Towering ice, after docs/map/glacier_refs/glacier_valley.png. Each column is a faceted base
+    mass that leans back a touch under a brow that overhangs forward, so a ledge of snow lies on the
+    seam and the crest juts over the foot. Dark ICE_DEEP fissures and pale streaks split the faces
+    from the ground up; a jagged shard crest and a snow cornice top each column; snow banks along
+    the whole foot, and (slab_at) a great cracked slab leans on the wall. Heights are the columns'
+    own; the crests add 6-17 more. The front is local -Z."""
     rng = random.Random(seed)
     total = sum(widths)
     x = -total / 2
     out = []
-    tones = (ICE, ICE_PALE, ICE, ICE_DEEP)
+    tones = (ICE, ICE_PALE, ICE, ICE_PALE, ICE_DEEP)
+    D = CLIFF_D
+    cols = []
     for i, (h, w) in enumerate(zip(heights, widths)):
         cx = x + w / 2
         x += w
-        yaw = rng.uniform(-7, 7)
-        dz = rng.uniform(-1.2, 1.2)
-        out.append(prim("block", f"Col{i}", (w + 0.8, h, 12), (cx, h / 2 - 0.5, dz), tones[(i + seed) % 4],
-                        (yaw, 0, rng.uniform(-2, 2)), facet=True))
-        out.append(prim("ball", f"Cornice{i}", (w * 1.3, 5.4, 14), (cx, h - 0.2, dz - 0.6), SNOW,
-                        (yaw, rng.uniform(-4, 4), rng.uniform(-4, 4)), lumpy=0.04))
-        for j in range(3):  # icicles under the cornice's front lip (mesh only)
-            ix = cx + (j - 1) * w * 0.28 + rng.uniform(-0.6, 0.6)
-            out.append(prim("icicle", f"Icicle{i}_{j}", (1.3, rng.uniform(3.0, 6.0), 1.3), (ix, h - 2.0, dz - 6.4),
-                            ICE_PALE, hifi=True))
-    out.append(prim("ball", "Drift", (total * 1.02, 7, 9), (0, 1.0, -6.5), SNOW_SHADE, (0, 3, 0), lumpy=0.03))
+        yaw = rng.uniform(-6, 6)
+        dz = rng.uniform(-4.0, 4.0)
+        tone = tones[(i + seed) % 5]
+        pale = ICE_PALE if tone != ICE_PALE else ICE
+        # the base mass
+        hb = h * 0.6
+        rb = (yaw, rng.uniform(1.5, 4.0), rng.uniform(-2.5, 2.5))
+        pb = (cx, hb / 2 - 0.5, dz)
+        out.append(prim("block", f"Base{i}", (w + 0.8, hb, D), pb, tone, rb, facet=True))
+        # the brow: set back at its foot, jutting at its top
+        hu = h - hb + 2.0
+        ru = (yaw + rng.uniform(-4, 4), -rng.uniform(10, 16), rng.uniform(-4, 4))
+        pu = (cx + rng.uniform(-1, 1), hb - 2.0 + hu / 2, dz + 0.5)
+        out.append(prim("block", f"Brow{i}", (w * 0.94 + 0.8, hu, D * 0.9), pu, pale, ru,
+                        facet=True))
+        top_y = hb - 2.0 + hu
+        # a fissure from the ground up the base, and a streak or a second fissure up the brow
+        fw, fh = rng.uniform(1.3, 2.6), hb * rng.uniform(0.55, 0.92)
+        fx = rng.uniform(-w * 0.32, w * 0.32)
+        out.append(prim("block", f"Fissure{i}", (fw, fh, 1.0),
+                        _on(pb, rb, (fx, -hb / 2 + fh / 2 + rng.uniform(0, 1.5), -D / 2 + 0.3)),
+                        pale if tone == ICE_DEEP else ICE_DEEP, (rb[0], rb[1], rb[2] + rng.uniform(-5, 5))))
+        sw, sh = rng.uniform(0.8, 1.6), hu * rng.uniform(0.5, 0.85)
+        sx = -fx * 0.6 + rng.uniform(-w * 0.1, w * 0.1)
+        if i % 2 == 1:  # a buttress standing proud of the face, from the ground
+            bh = hb * rng.uniform(0.45, 0.72)
+            out.append(prim("block", f"Buttress{i}", (w * 0.55, bh, 6.0),
+                            (cx + rng.uniform(-w * 0.2, w * 0.2), bh / 2 - 0.5, dz - D / 2 - 2.2), pale,
+                            (yaw + rng.uniform(-8, 8), rng.uniform(1, 5), rng.uniform(-4, 4)), facet=True))
+        else:
+            out.append(prim("block", f"Streak{i}", (sw, sh, 1.0),
+                            _on(pu, ru, (sx, rng.uniform(-hu * 0.1, hu * 0.08), -D * 0.45 + 0.3)),
+                            pale if tone == ICE_DEEP else ICE_DEEP, (ru[0], ru[1], ru[2] + rng.uniform(-4, 4))))
+        # the snow ledge on the seam, under the brow
+        out.append(prim("ball", f"Ledge{i}", (w * 1.1, 3.6, 9.0), (cx, hb + 0.6, dz - D / 2 + 3.0), SNOW,
+                        (yaw, 2.5, rng.uniform(-4, 4)), lumpy=0.04))
+        # the crest: a leaning shard, a second spike on every other column, snow round their feet
+        crest_x = cx + rng.uniform(-w * 0.2, w * 0.2)
+        ch = rng.uniform(12, 22)
+        out.append(prim("shard", f"Crest{i}", (w * 0.6, ch, w * 0.5), (crest_x, top_y - 2.5, dz - 2.0), pale,
+                        (yaw + rng.uniform(-25, 25), rng.uniform(-8, 4), rng.uniform(-14, 14))))
+        if i % 2 == 0:
+            side = 1 if crest_x < cx else -1
+            out.append(prim("shard", f"Spike{i}", (w * 0.3, rng.uniform(6, 11), w * 0.28),
+                            (crest_x + side * w * 0.3, top_y - 2.0, dz - 1.0), ICE if tone == ICE_PALE else ICE_PALE,
+                            (yaw + rng.uniform(-40, 40), rng.uniform(-6, 6), side * rng.uniform(10, 24))))
+        out.append(prim("ball", f"Cornice{i}", (w * 1.25, 5.6, D * 0.95), (cx, top_y + 0.4, dz - 4.0), SNOW,
+                        (yaw, rng.uniform(-5, 5), rng.uniform(-4, 4)), lumpy=0.04))
+        for j in range(3):  # icicles under the brow's lip (mesh only)
+            ix = (j - 1) * w * 0.28 + rng.uniform(-0.6, 0.6)
+            out.append(prim("icicle", f"Icicle{i}_{j}", (1.3, rng.uniform(3.0, 6.0), 1.3),
+                            _on(pu, ru, (ix, -hu / 2 + 0.6, -D * 0.45 + 0.6)), ICE_PALE, hifi=True))
+        cols.append((cx, w, h, dz, yaw))
+    out.append(prim("ball", "Drift", (total * 1.05, 8.4, 14), (0, 1.0, -D / 2 - 3.0), SNOW_SHADE, (0, 3, 0), lumpy=0.03))
+    if slab_at is not None:  # a cracked slab fallen against the wall, its foot on the floor
+        cx, w, h, dz, yaw = cols[slab_at]
+        L, sw, a = h * 0.42, w * 0.85, 26.0
+        front = dz - D / 2
+        r = (yaw + 8, a, 3)
+        pc = (cx + w * 0.15, math.cos(math.radians(a)) * L / 2 + 0.2,
+              front + 1.2 - math.sin(math.radians(a)) * L / 2)
+        out.append(prim("block", "Slab", (sw, L, 2.8), pc, ICE_PALE, r, facet=True))
+        out.append(prim("block", "SlabCrack", (0.9, L * 0.7, 1.0), _on(pc, r, (sw * 0.12, L * 0.05, -1.7)), ICE_DEEP,
+                        (r[0], r[1], r[2] + 7)))
+        out.append(prim("ball", "SlabSnow", (sw * 0.8, 1.8, L * 0.32), _on(pc, r, (0, L * 0.22, -1.9)), SNOW, r,
+                        lumpy=0.03))
+        out.append(prim("block", "Chunk", (w * 0.36,) * 3, (cx - w * 0.36, w * 0.13, front - 6.0), ICE,
+                        (rng.uniform(0, 90), 45, 42)))
     return out
 
 
 @piece
 def ice_cliff_a():
-    return _ice_cliff(1, (32, 37, 30, 35), (7.5, 7.0, 7.5, 6.5))
+    return _ice_cliff(1, (44, 68, 56), (13, 14, 12), slab_at=2)
 
 
 @piece
 def ice_cliff_b():
-    return _ice_cliff(2, (36, 30, 34), (9.0, 8.5, 9.5))
+    return _ice_cliff(2, (62, 40, 70), (12, 15, 12))
 
 
 @piece
 def ice_cliff_c():
-    return _ice_cliff(3, (28, 33, 38, 31, 29), (5.5, 6.0, 6.5, 5.5, 5.5))
+    return _ice_cliff(3, (38, 72, 50, 60), (10, 11, 10, 9))
+
+
+# ── Ice crags: the second rank, stepping back and up behind the walls ─────────
+def _ice_crag(seed, mirror):
+    """A huge faceted mass with a higher block leaning over it and a lower shoulder beside it, three
+    shard crests, fissures up its face, snow on every shelf. ~100 tall at scale 1, 120 with the
+    crest. Front local -Z."""
+    rng = random.Random(seed)
+    m = -1 if mirror else 1
+    D = 26.0
+    out = []
+    r1 = (rng.uniform(-5, 5), 3.0, m * 2.0)
+    p1 = (0, 32.5, 0)
+    out.append(prim("block", "Mass", (36, 66, D), p1, ICE, r1, facet=True))
+    r2 = (m * 10, -8.0, m * 5.0)
+    p2 = (m * 6, 78, 1.0)
+    out.append(prim("block", "Upper", (26, 44, D * 0.85), p2, ICE_PALE, r2, facet=True))
+    r3 = (-m * 15, 2.0, -m * 8.0)
+    p3 = (-m * 12, 67, 0)
+    out.append(prim("block", "Shoulder", (18, 30, 20), p3, ICE, r3, facet=True))
+    out.append(prim("shard", "Crest", (12, 24, 11), (m * 6, 97, -1), ICE_PALE, (rng.uniform(-30, 30), -4, m * 8)))
+    out.append(prim("shard", "Spike", (8, 16, 8), (m * 13, 95, 2), ICE, (rng.uniform(-30, 30), 3, m * 20)))
+    out.append(prim("shard", "ShoulderSpike", (7, 12, 7), (-m * 13, 79, 0), ICE_PALE,
+                    (rng.uniform(-30, 30), -3, -m * 12)))
+    out.append(prim("block", "Fissure0", (2.4, 50, 1.0), _on(p1, r1, (-m * 6, -4, -D / 2 + 0.3)), ICE_DEEP,
+                    (r1[0], r1[1], r1[2] + m * 4)))
+    out.append(prim("block", "Fissure1", (1.5, 36, 1.0), _on(p1, r1, (m * 10, -11, -D / 2 + 0.3)), ICE_DEEP,
+                    (r1[0], r1[1], r1[2] - m * 3)))
+    out.append(prim("block", "Fissure2", (1.7, 30, 1.0), _on(p2, r2, (m * 2, -2, -D * 0.425 + 0.3)), ICE_DEEP,
+                    (r2[0], r2[1], r2[2] + 5)))
+    out.append(prim("ball", "Cap", (29, 5.2, 21), (m * 6, 100.8, -1), SNOW, (0, -4, m * 3), lumpy=0.04))
+    out.append(prim("ball", "ShoulderSnow", (20, 4.6, 19), (-m * 12, 82.4, 0), SNOW, (0, 3, -m * 4), lumpy=0.04))
+    out.append(prim("ball", "Ledge", (30, 3.8, 9), (-m * 2, 66.4, -D / 2 + 4.5), SNOW, (0, 3, m * 2), lumpy=0.04))
+    out.append(prim("ball", "Drift", (46, 8, 14), (0, 1.0, -D / 2 - 3), SNOW_SHADE, (0, 3, 0), lumpy=0.03))
+    return out
+
+
+@piece
+def ice_crag_a():
+    return _ice_crag(41, False)
+
+
+@piece
+def ice_crag_b():
+    return _ice_crag(42, True)
+
+
+# ── The ridge's broken lip over the lake ───────────────────────────────────────
+@piece
+def ice_ledge():
+    """A broken ice terrace edge: four chunky faceted blocks 12-16 tall, split by fissures, short
+    shards and a snow cornice on top, snow banked and a fallen chunk at the foot. 40 wide, front -Z."""
+    rng = random.Random(31)
+    out = []
+    for i, cx in enumerate((-14, -4, 6, 15)):
+        w, h = rng.uniform(9, 12), rng.uniform(12, 16)
+        r = (rng.uniform(-8, 8), rng.uniform(1, 5), rng.uniform(-5, 5))
+        c = (ICE, ICE_PALE, ICE, ICE_DEEP)[i]
+        p = (cx, h / 2 - 0.4, rng.uniform(-1, 1))
+        out.append(prim("block", f"Block{i}", (w, h, 10), p, c, r, facet=True))
+        out.append(prim("block", f"Fissure{i}", (1.4, h * 0.7, 1.0),
+                        _on(p, r, (rng.uniform(-w * 0.3, w * 0.3), -h * 0.1, -4.7)),
+                        ICE_PALE if c == ICE_DEEP else ICE_DEEP, (r[0], r[1], r[2] + rng.uniform(-6, 6))))
+        if i % 2 == 0:
+            out.append(prim("shard", f"Shard{i}", (4, rng.uniform(5, 9), 3.6), (cx + rng.uniform(-2, 2), h - 1.5, 0),
+                            ICE_PALE, (rng.uniform(-40, 40), rng.uniform(-6, 6), rng.uniform(-16, 16))))
+        out.append(prim("ball", f"Cornice{i}", (w * 1.15, 3.0, 9), (cx, h + 0.2, -1.5), SNOW,
+                        (0, rng.uniform(-4, 4), rng.uniform(-4, 4)), lumpy=0.04))
+    out.append(prim("ball", "Drift", (38, 4.6, 8), (0, 0.5, -7), SNOW_SHADE, (0, 3, 0), lumpy=0.03))
+    out.append(prim("block", "Chunk", (5, 5, 5), (10, 1.7, -9), ICE_PALE, (20, 45, 42)))
+    return out
 
 
 # ── Crystals ───────────────────────────────────────────────────────────────────
@@ -406,26 +548,44 @@ def frozen_fall():
 
 
 # ── Vista peaks (outside the walls) ────────────────────────────────────────────
+def _ridge(out, n, cx, cz, yaw, W, H, Dh, y0, c):
+    """A ridge prism: two wedges back to back along local X, crest at y0 + H over (cx, cz)."""
+    R = rotation((yaw, 0, 0))
+    for k, sgn in enumerate((1, -1)):
+        off = _apply(R, (0, 0, sgn * Dh / 2))
+        out.append(prim("wedge", f"{n}{k}", (W, H, Dh), (cx + off[0], y0 + H / 2, cz + off[2]), c,
+                        (yaw + (180 if sgn > 0 else 0), 0, 0)))
+
+
 def _peak(h, w, seed):
+    """A snow mountain: a rounded mass with two crossed sharp ridges rising out of it, snow prisms
+    riding their upper slopes, and a shoulder summit to one side."""
     rng = random.Random(seed)
-    lean = rng.uniform(-3, 3)
-    return [
-        prim("cone", "Body", (w, h, w * 0.92), (0, 0, 0), ROCK, (rng.uniform(0, 90), lean, 0), top=0.08),
-        prim("cone", "Shoulder", (w * 0.62, h * 0.58, w * 0.56), (w * 0.24, 0, w * 0.1), ROCK_DEEP,
-             (rng.uniform(0, 90), 0, 0), top=0.1),
-        prim("cone", "Snow", (w * 0.56, h * 0.52, w * 0.52), (0, h * 0.5, 0), SNOW, (0, lean, 0), top=0.08,
-             scallop=9),
-    ]
+    yaw = rng.uniform(-25, 25)
+    out = [prim("cone", "Body", (w, h * 0.7, w * 0.92), (0, 0, 0), SNOW_SHADE, (rng.uniform(0, 90), 0, 0), top=0.1,
+                scallop=9)]
+    _ridge(out, "Ridge", 0, 0, yaw, w * 0.8, h, w * 0.3, 0, ICE_PALE)
+    cross = yaw + 90 + rng.uniform(-15, 15)
+    _ridge(out, "Cross", w * 0.04, w * 0.03, cross, w * 0.6, h * 0.8, w * 0.25, 0, ICE_PALE)
+    _ridge(out, "Snow", 0, 0, yaw, w * 0.78, h * 0.6, w * 0.2, h * 0.45, SNOW)
+    _ridge(out, "CrossSnow", w * 0.04, w * 0.03, cross, w * 0.58, h * 0.45, w * 0.17, h * 0.4, SNOW)
+    sx, sz = w * 0.34, w * 0.1
+    out.append(prim("cone", "Shoulder", (w * 0.6, h * 0.42, w * 0.56), (sx, 0, sz), SNOW_SHADE,
+                    (rng.uniform(0, 90), 0, 0), top=0.1))
+    sy = yaw + rng.uniform(20, 50)
+    _ridge(out, "ShoulderRidge", sx, sz, sy, w * 0.42, h * 0.58, w * 0.16, 0, ICE_PALE)
+    _ridge(out, "ShoulderSnow", sx, sz, sy, w * 0.4, h * 0.34, w * 0.11, h * 0.27, SNOW)
+    return out
 
 
 @piece
 def snow_peak_a():
-    return _peak(110.0, 96.0, 21)
+    return _peak(150.0, 130.0, 21)
 
 
 @piece
 def snow_peak_b():
-    return _peak(80.0, 84.0, 22)
+    return _peak(120.0, 110.0, 22)
 
 
 # ── The parts version ──────────────────────────────────────────────────────────
