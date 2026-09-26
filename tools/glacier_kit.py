@@ -53,8 +53,8 @@ ICE_WALL_LIT = (46, 116, 224)   # the wall's lit slabs: one step lighter, still 
 ICE_CRAG = (108, 160, 240)      # the crags behind: a big step paler, the first breath of haze
 ICE_CRAG_LIT = (128, 176, 246)  # their lit blocks
 NAVY = (11, 42, 107)            # crevasse slots cut into the walls (#0B2A6B)
-RANGE = (184, 210, 252)         # the far range, hazed: paler than anything nearer, even its shaded east faces
-RANGE_DEEP = (150, 186, 248)    # its shaded ridges
+RANGE = (166, 200, 250)         # the far range, hazed: paler than the crags, a hair deeper than the sky at 15 degrees
+RANGE_DEEP = (136, 174, 244)    # its shaded ridges (round 5: the range was lost against the sky when it matched it)
 COBALT = (48, 110, 235)         # mid cobalt: the crevasse's middle strata
 SNOW_WARM = (255, 247, 232)     # the sun on the highest caps: warm top light over the blue slot
 ROCK = (200, 204, 255)          # pale periwinkle stone
@@ -306,6 +306,23 @@ def _ice_tier(seed, h, w, n, lean, mirror):
             _slot(out, f"Slit{k}", p, r, (-fx * 0.8 - m * tw * 0.12, th * 0.04), tw * 0.035, th * 0.32,
                   -m * rng.uniform(3, 8), td + 1.4)
         base += th * 0.86  # the next tier sinks into this one
+    # Round 5: buttresses. Four tall narrow blocks of the wall's own blue standing against the
+    # stack's front, each spanning two tiers and leaning with it, a snow cap sunk into every top:
+    # vertical flutes across the horizontal banding, so the stack reads as one fluted cliff face
+    # and not a pile of drums; the two nearest the middle stand proudest.
+    for j in range(4):
+        bx = m * (-0.33 + 0.22 * j + rng.uniform(-0.03, 0.03)) * w
+        bh = h * rng.uniform(0.34, 0.6) * (1.0 if 1 <= j <= 2 else 0.8)
+        bw = w * rng.uniform(0.09, 0.13)
+        bd = D * 0.5
+        proud = D * (0.34 if 1 <= j <= 2 else 0.24)
+        edge = 1 - (bx / (w * 0.5)) ** 2  # the tier's rounded face recedes toward its ends
+        bz = -slope * (bh / 2) - D * 0.5 * math.sqrt(max(0.3, edge)) - proud + bd * 0.5
+        rb = (m * rng.uniform(-4, 4), -lean + rng.uniform(-2, 1), m * rng.uniform(-3, 3))
+        pb = (bx, bh / 2 - 1.0, bz)
+        out.append(prim("block", f"Buttress{j}", (bw, bh, bd), pb, (ICE_WALL_LIT, ICE_WALL)[j % 2], rb, facet=True))
+        out.append(prim("ball", f"ButtressCap{j}", (bw * 1.1, bw * 0.4, bd * 0.9), _on(pb, rb, (0, bh / 2 - bw * 0.12, 0)),
+                        SNOW, (rb[0], rb[1] + 2, rb[2]), lumpy=0.05))
     out.append(prim("ball", "Drift", (w * 0.9, h * 0.04, D * 0.6), (0, h * 0.006, -D * 0.5), SNOW_SHADE, (0, 3, 0),
                     lumpy=0.03))
     return out
@@ -313,12 +330,12 @@ def _ice_tier(seed, h, w, n, lean, mirror):
 
 @piece
 def ice_tier_a():
-    return _ice_tier(61, 200.0, 110.0, 5, 9.0, False)
+    return _ice_tier(61, 200.0, 110.0, 5, 11.0, False)
 
 
 @piece
 def ice_tier_b():
-    return _ice_tier(62, 175.0, 96.0, 4, 7.0, True)
+    return _ice_tier(62, 175.0, 96.0, 4, 9.0, True)
 
 
 # ── Ice spires: the giants, one huge leaning shard at each corner of the valley ──
