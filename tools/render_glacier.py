@@ -129,8 +129,21 @@ world.use_nodes = True
 # A bright afternoon under a saturated blue sky: one strong, slightly warm sun low in the west, so
 # every sunlit face goes near-white and every shaded face a deep ultramarine (the critic's ask:
 # walls only read as walls with a light direction). The hamlet's Neon and lamp pools still carry.
-world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.42, 0.62, 0.98, 1)  # a paler sky: the fill in shade stays cool but snow reads white
-world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.9
+# The sky is a gradient (deep saturated blue at the zenith, pale cyan at the horizon), and the
+# world light comes from it, so shade stays cool while snow reads white.
+_wn, _wl = world.node_tree.nodes, world.node_tree.links
+_bg = _wn["Background"]
+_bg.inputs["Strength"].default_value = 0.9
+_tex = _wn.new("ShaderNodeTexCoord")
+_map = _wn.new("ShaderNodeSeparateXYZ")
+_ramp = _wn.new("ShaderNodeValToRGB")
+_ramp.color_ramp.elements[0].position = 0.0
+_ramp.color_ramp.elements[0].color = (0.62, 0.86, 1.0, 1)   # horizon: pale cyan
+_ramp.color_ramp.elements[1].position = 0.55
+_ramp.color_ramp.elements[1].color = (0.08, 0.32, 0.95, 1)  # zenith: deep blue
+_wl.new(_tex.outputs["Generated"], _map.inputs["Vector"])
+_wl.new(_map.outputs["Z"], _ramp.inputs["Fac"])
+_wl.new(_ramp.outputs["Color"], _bg.inputs["Color"])
 sun = bpy.data.objects.new("sun", bpy.data.lights.new("sun", "SUN"))
 sun.data.energy = 4.2
 sun.data.color = (1.0, 0.94, 0.86)
