@@ -145,6 +145,8 @@ VIEWS = {  # name: (eye, target) in Roblox coords
     "g_aerial": ((-150, 260, 140), (-300, 10, -20)),
     "g_canyon": ((-363, 16, -9), (-445, 9, -15)),
     "g_bridge_down": ((-388, 43, -12), (-448, 8, -14)),
+    "g_river": ((-244, 25, -6), (-395, 88, -128)),  # eye height, the lake's east shore: along the river to the notch
+    "g_skyline": ((-262, 25, 24), (-300, 110, -180)),  # from the lake's south shore, up over the fall to the range
 }
 if len(sys.argv) > 2:
     VIEWS = {k: v for k, v in VIEWS.items() if k in sys.argv[2].split(",")}

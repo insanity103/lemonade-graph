@@ -25,9 +25,33 @@ Aerial, ascent, lake, ridge, bridge and forecourt, rendered from the parts versi
 | Ice bridge / Blue Crevasse | bridge x −398..−382 over z −24..−4 | 30 (floor of the crevasse 3) | The one crossing. Invisible rails and lips make the crevasse impossible to fall into. Below: a canyon of layered blue ice (`blue_crevasse`, after `glacier_refs/ice_canyon.png`): strata of ICE / ICE_PALE / ICE_DEEP pitched into the slot and stepping out as they rise, snow on every ledge, crystal geodes glowing out of the walls and gems set into them, brows under the lips, a rim of ice and snow above each lip with icicle curtains beneath, tumbled blocks and drifts round a frozen meltwater pool, and the canyon closing at both ends: a dark cleft lit by a sunset glow in the west, a crystal-lit choke at the mouth over the lake. |
 | The Revenant's Forecourt | −440..−350, −4..88 | 30 | A round plaza (r 32) with an inlaid ring, four cold-fire braziers, frost banners, and a colonnade before the **Frozen Temple** (glowing doorway and snowflake crest) and its **Frozen Spire**. Boss_FrostRevenant L25, leash 30. |
 
-Around it all: ice cliffs grown so their crests stand ~46 studs over the floor they face, an
-invisible proxy on every edge, a snowfield apron to x −600 / z −260, and snow peaks on it. No view
-at the capped zoom ends on the bare baseplate.
+Around it all, three ranks of ice stepping up, after `glacier_refs/glacier_valley.png`, so that a
+player on the floor (camera at most 44 studs out) sees a skyline, not a fence: rubble, wall, crag,
+peak, sky.
+- **Rubble.** Knee-to-shoulder chunks of broken ice tumbled on the snow at every wall's foot
+  (`wall_rubble`, laid on whatever floor is there, clear of markers and lanes).
+- **The walls.** One kit piece (IceCliffA/B/C) per ~64 studs of edge, standing 15 studs outside the
+  outline on the floors, which run out under them; crests ~55 over the floor they face. Each is two
+  or three fat slabs of deep saturated blue (`ICE_WALL` #1E5FD0, alternating with `ICE_WALL_LIT`)
+  leaning back 8-20°, a rounded bulge at each foot, long `NAVY` (#0B2A6B) crevasse slots down the
+  faces (one vertical, one diagonal per slab), a pale serac overhanging 15-30° forward off each
+  crest, snow mounds sunk into the seam and the serac top, a drift along the foot. An invisible
+  proxy runs along every edge. The ridge's edge over the lake is the **IceLedge**, in the same blue.
+- **The crags.** Giants (IceCragA/B, ~170-200 to the crest) on the snowfield apron (to x −600 /
+  z −260) behind the walls, a step paler (`ICE_CRAG`): a huge mass leaning back, a higher block
+  over it, a shoulder, a serac, four long navy crevasses, snow on every shelf.
+- **The range.** Nine peaks 220-290 tall (SnowPeakA/B) on the apron's rim along the north and
+  west, hazed pale blue (`RANGE`, `RANGE_DEEP`) under snow: a rounded mass with a fat sharp ridge
+  and a crossing spur.
+- **The notch.** The ridge's north wall (z −132) opens between x −432 and −366 (`GL_NOTCH`): a
+  broken low lip instead of a wall, a crag at each jamb, and a peak square behind it. From the
+  lake, the frozen river leads the eye to it.
+- **The frozen river.** A winding strip of navy water under broken floes (tilted blocks and
+  ellipsoids in ICE / ICE_PALE / ICE_DEEP, none collidable), from the ascent's top round the
+  lake's north shore toward the Gargoyle Stair, fed by a run from the Frozen Fall; snow banks
+  along both edges.
+
+No view at the capped zoom ends on the bare baseplate.
 
 Beyond the handoff brief (Alex asked for creative choices), I added:
 - the frozen lake, as the lower terrace;
@@ -108,8 +132,9 @@ Until this is done the Glacier plays and looks complete in parts. Nothing depend
 
 - Seed `0x61AC1E5`, private: the hub, Iron Lowlands and Briarwood regenerate byte-identical, apart
   from the hub's gate (unsealed, "Lv 18 - 25 | Open") and its removed placeholder vista.
-- About 1,900 parts in `FrostboundGlacier` (19 collidable; the Blue Crevasse alone is ~600) and 12 floors.
-- 19 PointLights (budget 20): the crevasse's sunset cleft and two wall geodes, the ridge's two big fields.
+- About 3,270 parts in `FrostboundGlacier` (42 collidable; the walls, rubble, crags and range are
+  ~1,300, the Blue Crevasse ~600) and 12 floors.
+- 20 PointLights (budget 20): the crevasse's sunset cleft and two wall geodes, the ridge's two big fields.
 - `check_map_project.py`: 0 FAILs. The nav grid now spans x −490..150, z −170..960.
 - `audit_map.py FrostboundGlacier`: the trail lanes are clear, and nothing collidable is within 4
   studs of a spawn.
