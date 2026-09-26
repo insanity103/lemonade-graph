@@ -21,3 +21,4 @@ unlabelled and picks one.
 - Round 2, village: builder launched (dusk-blue air, amber windows, smoke, second row of roofs, pond and fire in the foreground; also the render script's lighting).
 - Round 1, canyon: builder made layered leaning strata walls, geodes, an ice-block floor and a sunset cleft. Critic picked the photo. Gap: no height or tonal range. Round 2 builder launched.
 - Round 2, walls: builder made deep-blue slab walls with navy fissures, seracs, giant crags, nine hazed peaks, a notch, rubble and the frozen river (3,269 parts, 0 FAILs). Judging.
+- Round 2, walls: critic picked OURS, on style (the photo fails the toy brief). Its own list for ours: open a valley corridor with sky and a pale range at the vanishing point; a few huge spires instead of dozens of mid boxes; delete or ground the floating snow discs and dark stick lines; 2-3 receding ranks lighter with distance. Round 3 launched for those.
