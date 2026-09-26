@@ -210,6 +210,7 @@ VIEWS = {  # name: (eye, target) in Roblox coords
     "g_aerial": ((-150, 260, 140), (-300, 10, -20)),
     "g_canyon": ((-363, 16, -9), (-445, 9, -15)),
     "g_bridge_down": ((-388, 43, -12), (-448, 8, -14)),
+    "g_canyon_up": ((-391, 5, -14), (-445, 50, -14)),  # from under the bridge, up at the west towers and the sky slot
     "g_river": ((-244, 25, -6), (-395, 88, -128)),  # eye height, the lake's east shore: along the river to the notch
     "g_skyline": ((-262, 25, 24), (-300, 110, -180)),  # from the lake's south shore, up over the fall to the range
     "g_corridor": ((-232, 25, 4), (-340, 30, -70)),  # eye height at the ascent's top: west along the river to the stair and the notch
