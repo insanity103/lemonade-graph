@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 # Render the Frostbound Glacier (LemonadeMap model.json parts) in Blender Cycles, for judging the
-# zone against docs/map/glacier_refs without Studio. Parts only: what map_forge writes, lit by a
-# sun and a sky-blue world; no Roblox atmosphere. Fine with Studio open.
+# zone against docs/map/glacier_refs without Studio. Parts only: what map_forge writes, lit the way
+# the game lights the Glacier: a deep dusk-blue world (ZoneAir's FROST_AIR), a low warm sun from the
+# west, Neon parts glowing, and a warm point light wherever the map carries a PointLight, so the
+# hamlet's windows and fires throw amber pools onto blue-shadowed snow. No Roblox atmosphere. Fine
+# with Studio open.
 #   python3 tools/render_glacier.py OUTPREFIX [view,view,...]
-# writes OUTPREFIX_<view>.png for each view (all of VIEWS by default).
+# writes OUTPREFIX_<view>.png for each view (all of VIEWS by default). QUICK=1 in the environment
+# renders small and noisy for iteration.
 import json, math, os, sys
 import bpy, bmesh
 
@@ -16,6 +20,7 @@ bpy.ops.wm.read_factory_settings(use_empty=True)
 scene = bpy.context.scene
 verts, faces, fmat = [], [], []
 mats = {}
+lights = []  # (world pos, colour, range, brightness) for every PointLight the map carries
 
 
 def P(v):  # Roblox (x, y, z) -> Blender (x, -z, y)
@@ -33,7 +38,7 @@ def mat_index(color, tr, neon):
         bsdf.inputs["Roughness"].default_value = 0.6
         if neon:
             bsdf.inputs["Emission Color"].default_value = (*lin, 1)
-            bsdf.inputs["Emission Strength"].default_value = 3.0
+            bsdf.inputs["Emission Strength"].default_value = 6.0
         if tr > 0.01:
             bsdf.inputs["Alpha"].default_value = max(0.05, 1 - tr)
             m.blend_method = "BLEND"
@@ -97,6 +102,10 @@ def walk(n, sand=False):
                 add(CYL_V, CYL_F, (size[0], d, d), pos, rot, mi)
             else:
                 add(CUBE_V, CUBE_F, size, pos, rot, mi)
+            for c in n.get("children", []):
+                if c.get("className") == "PointLight":
+                    lp = c.get("properties", {})
+                    lights.append((P(pos), lp.get("Color", [1, 0.75, 0.25]), lp.get("Range", 16), lp.get("Brightness", 1.2)))
     for c in n.get("children", []):
         walk(c, sand)
 
@@ -117,26 +126,81 @@ scene.collection.objects.link(obj)
 world = bpy.data.worlds.new("w")
 scene.world = world
 world.use_nodes = True
-world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.35, 0.62, 1.0, 1)
-world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.9
+# Dusk under the ice: a deep, saturated blue world (the sky stays blue, never black) and a low warm
+# sun 25 degrees up in the west, so the snow is blue in shadow and the sunlit faces barely warm.
+world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.07, 0.16, 0.48, 1)
+world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.33
 sun = bpy.data.objects.new("sun", bpy.data.lights.new("sun", "SUN"))
-sun.data.energy = 3.5
-sun.rotation_euler = (math.radians(50), 0, math.radians(-40))
+sun.data.energy = 1.6
+sun.data.color = (1.0, 0.86, 0.70)
+sun.data.angle = math.radians(3)
+# a sun points down its -Z; tilted (90 - elevation) about X it shines toward +Y, and -90 about Z
+# turns that to shine toward +X: from the west (Roblox -X is Blender -X)
+sun.rotation_euler = (math.radians(90 - 25), 0, math.radians(-90))
 scene.collection.objects.link(sun)
+# the map's own PointLights: warm pools on the snow at the lodge door, the fires, the string lights
+for k, (pos, col, rng_, br) in enumerate(lights):
+    lamp = bpy.data.lights.new(f"pl{k}", "POINT")
+    lamp.energy = 80.0 * rng_ * br
+    lamp.color = tuple(col[:3])
+    lamp.shadow_soft_size = 1.0
+    o = bpy.data.objects.new(f"pl{k}", lamp)
+    o.location = pos
+    scene.collection.objects.link(o)
 
 scene.render.engine = "CYCLES"
 scene.cycles.device = "CPU"
 scene.cycles.samples = 24
 scene.cycles.use_denoising = True
 scene.render.resolution_x, scene.render.resolution_y = 1280, 720
+if os.environ.get("QUICK"):
+    scene.cycles.samples = 12
+    scene.render.resolution_x, scene.render.resolution_y = 960, 540
 scene.view_settings.view_transform = "Standard"
+scene.view_settings.exposure = -1.25  # dusk: the snow sits below white, the Neon and the pools above it
+
+
+def snowfall(cam_obj, eye, tgt, count=170, seed=7):
+    """Falling snow between the camera and the houses: small pale flakes scattered 6-40 studs ahead
+    of the eye, inside its view. Returns the object, to delete after the view is rendered."""
+    import random as _r
+    from mathutils import Matrix, Vector
+    rnd = _r.Random(seed)
+    e, t = Vector(P(eye)), Vector(P(tgt))
+    f = (t - e).normalized()
+    up = Vector((0, 0, 1))
+    right = f.cross(up).normalized()
+    up2 = right.cross(f).normalized()
+    bm = bmesh.new()
+    for _ in range(count):
+        d = rnd.uniform(6, 40)
+        w = d * 0.9  # a little wider than the 18 mm lens' half-width
+        c = e + f * d + right * rnd.uniform(-w, w) + up2 * rnd.uniform(-w * 0.6, w * 0.6)
+        r = rnd.uniform(0.05, 0.11) * (d / 12) ** 0.5
+        bmesh.ops.create_icosphere(bm, subdivisions=1, radius=r, matrix=Matrix.Translation(c))
+    me_ = bpy.data.meshes.new("snow")
+    bm.to_mesh(me_)
+    bm.free()
+    m = bpy.data.materials.new("snowflake")
+    m.use_nodes = True
+    b = m.node_tree.nodes["Principled BSDF"]
+    b.inputs["Base Color"].default_value = (0.9, 0.95, 1.0, 1)
+    b.inputs["Emission Color"].default_value = (0.9, 0.95, 1.0, 1)
+    b.inputs["Emission Strength"].default_value = 0.25
+    b.inputs["Alpha"].default_value = 0.6
+    m.blend_method = "BLEND"
+    me_.materials.append(m)
+    o = bpy.data.objects.new("snow", me_)
+    scene.collection.objects.link(o)
+    return o
 
 VIEWS = {  # name: (eye, target) in Roblox coords
     "g_gate": ((-60, 26, 0), (-160, 14, 0)),
     "g_hollow": ((-112, 22, 40), (-170, 12, -20)),
-    "g_village": ((-118, 16, 8), (-170, 16, -30)),  # up the street from the gate, toward the lodge
+    "g_village": ((-97, 19, 5), (-172, 13, 3), 17, True),  # up the street from the gate's arch: the pond and the
+    # skaters' fire lower-left, the lodge right, the ice arch and the far roofs beyond (wide lens, snow falling)
     "g_pond": ((-114, 17, 12), (-150, 11, 46)),  # from the fingerpost, across the pond and the south cabins
-    "g_ceiling": ((-128, 14, 20), (-168, 34, -40)),  # from the pond, up at the lodge and the ice overhead
+    "g_ceiling": ((-122, 15, 12), (-168, 34, -40)),  # from the pond's edge, up at the lodge and the ice overhead
     "g_ascent": ((-160, 24, 6), (-260, 22, -10)),
     "g_lake": ((-236, 34, 40), (-300, 20, -40)),
     "g_ridge": ((-340, 44, -40), (-420, 34, -110)),
@@ -150,10 +214,12 @@ VIEWS = {  # name: (eye, target) in Roblox coords
 }
 if len(sys.argv) > 2:
     VIEWS = {k: v for k, v in VIEWS.items() if k in sys.argv[2].split(",")}
-for name, (eye, tgt) in VIEWS.items():
+for name, spec in VIEWS.items():
+    eye, tgt = spec[0], spec[1]
     cam = bpy.data.objects.new(name, bpy.data.cameras.new(name))
-    cam.data.lens = 22
+    cam.data.lens = spec[2] if len(spec) > 2 else 22
     cam.data.clip_end = 3000
+    flakes = snowfall(cam, eye, tgt) if len(spec) > 3 and spec[3] else None
     scene.collection.objects.link(cam)
     from mathutils import Vector
     e, t = Vector(P(eye)), Vector(P(tgt))
@@ -163,4 +229,6 @@ for name, (eye, tgt) in VIEWS.items():
     scene.render.filepath = f"{OUT}_{name}.png"
     bpy.ops.render.render(write_still=True)
     print("wrote", scene.render.filepath, flush=True)
+    if flakes:
+        bpy.data.objects.remove(flakes, do_unlink=True)
 os._exit(0)
