@@ -21,9 +21,9 @@ Aerial, ascent, lake, ridge, bridge and forecourt, rendered from the parts versi
 | The Great Ascent | −228..−186, −28..28 | 10 → 20 | A 56-wide snow ramp between fir-lined banks, two lanterns, under the **Ice Arch**. |
 | Frozen Lake terrace | −350..−228, −104..64 | 20 | A cracked ice lake (r 30) with an ice-fishing hole, the **Frozen Fall** pouring off the north cliff, fir groves, crystal clusters. Four FrostImp packs (L18, L18, L19, L19), one out on the ice. |
 | Gargoyle Stair | −350..−318, −100..−60 | 20 → 30 | A ramp up the ridge's ice face between temple ruins. |
-| Gargoyle Ridge | −440..−350, −132..−24 | 30 | The **Frozen Colossus**: a giant ice knight half-sunk in the glacier, raising his sword. It's the milestone, seen from the lake. Big crystal fields; GlacialGargoyle L21/L22/L22 and the L23 elite. **Waystone 7 "Gargoyle Ridge"** (arrival −366, −44), just before the bridge, for short boss retries. |
-| Ice bridge / Blue Crevasse | bridge x −398..−382 over z −24..−4 | 30 (floor of the crevasse 3) | The one crossing. Invisible rails and lips make the crevasse impossible to fall into. Below: the **Blue Crevasse** (`blue_crevasse`, after `glacier_refs/ice_canyon.png`): each wall is a stack of staggered ledges climbing from NAVY at the floor through COBALT and ICE to frosted ice at the lip, every proud band under a thick snow cap; above each lip ice towers 20-40 tall stand on the ridge and forecourt slabs (frosted, then near-white, a sun-warmed snow cap on top), leaning in and leaving a slot of sky over the middle, with a gap at the bridge so the deck is a pass between them; icicle curtains under the lips. West it closes on a dark cleft with a sunset glow, three translucent panes of mist across the far end, one big lit crystal field (`CrystalFieldA` x1.4) as the landmark before it and a geode on a ledge above; a lit geode mid-canyon on the north wall. The floor is a packed-snow path between navy and cobalt chunks and drifts at the walls' feet. |
-| The Revenant's Forecourt | −440..−350, −4..88 | 30 | A round plaza (r 32) with an inlaid ring, four cold-fire braziers, frost banners, and a colonnade before the **Frozen Temple** (glowing doorway and snowflake crest) and its **Frozen Spire**. Boss_FrostRevenant L25, leash 30. |
+| Gargoyle Ridge | −440..−350, −132..−27 | 30 | The **Frozen Colossus**: a giant ice knight half-sunk in the glacier, raising his sword. It's the milestone, seen from the lake. Big crystal fields; GlacialGargoyle L21/L22/L22 and the L23 elite. **Waystone 7 "Gargoyle Ridge"** (arrival −366, −44), just before the bridge, for short boss retries. |
+| Ice bridge / Blue Crevasse | bridge x −398..−382 over z −27..8 | 30 (floor of the crevasse 3) | The one crossing. Invisible rails and lips make the crevasse impossible to fall into. Below: the **Blue Crevasse** (`blue_crevasse`, after `glacier_refs/ice_canyon.png`), a slot 35 wide open to the sky. Each wall is three ranks in plan: a proud rank of big blocks of varied width (6-18) standing 2-8 studs into the slot, one tall unbroken NAVY band at the floor, COBALT, an ICE block overhanging the floor, ICE_PALE and a frosted rim, every ledge under a thick white cap; a recessed rank behind it one tone paler at every height, with dark flush bands and fissures; and ice towers 26-54 tall on the ridge and forecourt slabs above the lips (frosted, near-white, sun-warmed snow on top; every other one's middle tier overhangs its foot), stepping back and leaning out so the sky slit is wide from the floor, with a gap at the bridge so the deck is a pass between them; icicle curtains under the lips. West it funnels into a dark cleft with a sunset glow behind four panes of mist, each paler and denser, so the far end fades; before them one big lit crystal field (`CrystalFieldA` x1.5) is the landmark under two crossed sheets of warm-gold sun (Neon, translucent; one carries a PointLight) let in by the slit; a pink crystal cluster glows unlit in a niche on each wall, and two geodes grow from ledges. The floor is a packed-snow path between big white drifts and chunky deep-blue rocks at the walls' feet. |
+| The Revenant's Forecourt | −440..−350, 8..88 | 30 | A round plaza (r 32) with an inlaid ring, four cold-fire braziers, frost banners, and a colonnade before the **Frozen Temple** (glowing doorway and snowflake crest) and its **Frozen Spire**. Boss_FrostRevenant L25, leash 30. |
 
 Around it all, three ranks of ice stepping up and back, after `glacier_refs/glacier_valley.png`,
 so that a player on the floor (camera at most 44 studs out) sees a valley, not a fence: rubble, wall,
@@ -87,7 +87,7 @@ imps 10-13 s, Gargoyle Ridge 15 s, the Revenant 19 s.
 wedge, cone, shard, icicle) in the piece's own frame:
 - the ice cliffs (3), ice spires (2), snowy firs (3), snow rocks (3) and crystal clusters (3);
 - the crystal geodes (2, growing out of the crevasse walls), the crystal fields (2, the ridge) and the tumbled ice-block pile;
-- the ice arch and the ice bridge;
+- the ice arch and the ice bridge (16 x 36 since the crevasse widened: its GLB is stale until re-exported);
 - the temple column (intact and broken), the temple facade and the spire;
 - the Frozen Colossus, the Frozen Fall, and snow peaks (2).
 
@@ -154,9 +154,9 @@ Until this is done the Glacier plays and looks complete in parts. Nothing depend
 
 - Seed `0x61AC1E5`, private: the hub, Iron Lowlands and Briarwood regenerate byte-identical, apart
   from the hub's gate (unsealed, "Lv 18 - 25 | Open") and its removed placeholder vista.
-- About 3,300 parts in `FrostboundGlacier` (42 collidable; the walls, rubble, spires, crags, mist
-  and range are ~1,100, the Blue Crevasse ~500) and 12 floors.
-- 20 PointLights (budget 20): Neon carries every window and lantern; lights sit at the gate, the waystones, the lodge door, the fires and the pond's lantern string, the temple, the braziers, two crevasse geodes and the ridge's two big crystal fields (the sunset cleft glows unlit).
+- About 3,360 parts in `FrostboundGlacier` (47 collidable; the walls, rubble, spires, crags, mist
+  and range are ~1,100, the Blue Crevasse ~450) and 14 floors.
+- 20 PointLights (budget 20): Neon carries every window and lantern; lights sit at the gate, the waystones, the lodge door, the fires and the pond's lantern string, the temple, the braziers, the crevasse's landmark crystal field and its sun shaft, and the ridge's two big crystal fields (the sunset cleft, the geodes and the pink clusters glow unlit).
 - `check_map_project.py`: 0 FAILs. The nav grid now spans x −490..150, z −170..960.
 - `audit_map.py FrostboundGlacier`: the trail lanes are clear, and nothing collidable is within 4
   studs of a spawn.
