@@ -129,7 +129,7 @@ world.use_nodes = True
 # A bright afternoon under a saturated blue sky: one strong, slightly warm sun low in the west, so
 # every sunlit face goes near-white and every shaded face a deep ultramarine (the critic's ask:
 # walls only read as walls with a light direction). The hamlet's Neon and lamp pools still carry.
-world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.10, 0.36, 0.95, 1)
+world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.42, 0.62, 0.98, 1)  # a paler sky: the fill in shade stays cool but snow reads white
 world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.9
 sun = bpy.data.objects.new("sun", bpy.data.lights.new("sun", "SUN"))
 sun.data.energy = 4.2
