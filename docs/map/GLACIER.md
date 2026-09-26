@@ -25,19 +25,48 @@ Aerial, ascent, lake, ridge, bridge and forecourt, rendered from the parts versi
 | Ice bridge / Blue Crevasse | bridge x −398..−382 over z −24..−4 | 30 (floor of the crevasse 3) | The one crossing. Invisible rails and lips make the crevasse impossible to fall into. Crystals and ice columns glow at its bottom. |
 | The Revenant's Forecourt | −440..−350, −4..88 | 30 | A round plaza (r 32) with an inlaid ring, four cold-fire braziers, frost banners, and a colonnade before the **Frozen Temple** (glowing doorway and snowflake crest) and its **Frozen Spire**. Boss_FrostRevenant L25, leash 30. |
 
-Around it all, three ranks of ice, after `glacier_refs/glacier_valley.png`:
-- **The walls.** Ice cliffs on every edge of the outline, grown so their columns stand ~72 studs
-  over the floor they face (their crests higher). Each column is a faceted base mass leaning back
-  under a brow that overhangs forward, with a snow ledge on the seam, a dark ICE_DEEP fissure and a
-  pale streak up the face, a buttress standing proud of every other column, a leaning shard crest
-  and a snow cornice; snow banks along the whole foot and, well away from spawns, a cracked slab
-  leans on the wall. An invisible proxy runs along every edge. The ridge's edge over the lake is
-  the same idea in small: the broken **IceLedge**.
-- **The crags.** A second rank on the snowfield apron (to x −600 / z −260) behind the north and
-  west walls, ~110 studs over the floor inside: a huge mass with a higher block leaning over it, a
-  shoulder, three shard crests, fissures, snow on every shelf.
-- **The range.** Snow peaks 120-170 tall on the apron beyond the crags: a rounded mass with two
-  crossed sharp ridges (wedge prisms) rising out of it, snow riding their upper slopes.
+Around it all, three ranks of ice stepping up and back, after `glacier_refs/glacier_valley.png`,
+so that a player on the floor (camera at most 44 studs out) sees a valley, not a fence: rubble, wall,
+spire, crag, mist, range, sky. The lake terrace is the valley's corridor: from the ascent's top
+looking west along the frozen river to the Gargoyle Stair, the walls stand tall on the near
+flanks, step down on the ridge at the far end, and the far range shows pale in the notch at the
+vanishing point under open sky (render view `g_corridor`).
+- **Rubble.** Knee-to-shoulder chunks of broken ice tumbled on the snow at every wall's foot
+  (`wall_rubble`, laid on whatever floor is there, clear of markers and lanes).
+- **The walls.** One kit piece (IceCliffA/B/C) per ~110 studs of edge, standing 15 studs outside
+  the outline on the floors, which run out under them. Each is two fat slabs of deep saturated blue
+  (`ICE_WALL` #1E5FD0 and `ICE_WALL_LIT`) leaning back 9-16°, 3-5 chunky shapes apiece: a rounded
+  bulge at one foot, one wide two-tone crevasse (a `NAVY` strip inside an `ICE_DEEP` strip, both
+  lying in the slab's own frame so they stay flush however it leans), a pale serac leaning out over
+  one crest with its snow cap sunk into it, a pale shard off the other, a snow shelf sunk into each
+  top, a drift along the foot. The terrace's and the hollow's walls (the corridor's near flanks)
+  are grown 1.08, the ridge's (its far end) 0.78, so they crest ~65 and ~48 over the floor they
+  face. An invisible proxy runs along every edge. The ridge's edge over the lake is the
+  **IceLedge**, in the same blue.
+- **The spires.** Five giants (IceSpireA/B, 150-200 tall, 34-48 wide): one enormous leaning shard
+  each, three tiers of block narrowing and turning to a pale turned tip, a buttress leaning the
+  other way, a rounded foot, two-tone crevasses, snow sunk into the top. They stand at the
+  valley's corners, placed by hand so none is in the corridor's sight line: over Frost Hollow's
+  north wall, on the terrace's north flank, at the notch's two jambs, over the ridge's west wall.
+- **The crags.** Four (IceCragA/B, ~170-200 to the crest) on the snowfield apron well behind the
+  walls, a big step paler (`ICE_CRAG`, `ICE_CRAG_LIT`), off the sight line: a huge mass leaning
+  back, a higher block over it, a shoulder, a serac, wide two-tone crevasses, snow sunk into every
+  shelf.
+- **The mist.** Seven flat translucent lenses of pale ice (transparency 0.55) lying on the
+  snowfield between the ranks, so the feet of the crags and the range dissolve and each rank
+  reads a step hazier; no straight edge against the sky.
+- **The range.** Nine peaks 130-260 tall (SnowPeakA/B) far out on the apron's rim (250-450
+  studs from the floor, so they sit low on the horizon), hazed pale blue (`RANGE`, `RANGE_DEEP`,
+  a shade darker than the sky) under snow: a rounded mass with a fat sharp ridge and a crossing
+  spur. Two stand square in the corridor's vanishing point, north-west through the notch.
+- **The notch.** The ridge's north wall (z −132) opens from its north-west corner to x −366
+  (`GL_NOTCH`): a broken low lip instead of a wall, a spire at each jamb, and the range behind.
+  From the lake, the frozen river leads the eye to it.
+- **The frozen river.** A winding strip of navy water under broken floes (tilted blocks and
+  ellipsoids in ICE / ICE_PALE / ICE_DEEP, none collidable), from the ascent's top round the
+  lake's north shore toward the Gargoyle Stair, fed by a run from the Frozen Fall; snow banks
+  along both edges; a leaning ice pillar (a spire at toy scale) at its far end by the stair's
+  mouth, the landmark the floes lead to.
 
 No view at the capped zoom ends on the bare baseplate; nothing here collides (the proxies do).
 
@@ -54,10 +83,10 @@ imps 10-13 s, Gargoyle Ridge 15 s, the Revenant 19 s.
 
 ## The kit: one spec, two builds
 
-`tools/glacier_kit.py` describes each of the 25 pieces once, as primitives (ball, drum, block,
+`tools/glacier_kit.py` describes each of the 29 pieces once, as primitives (ball, drum, block,
 wedge, cone, shard, icicle) in the piece's own frame:
-- the ice cliffs (3), the ice crags (2), the ice ledge, snowy firs (3), snow rocks (3) and crystal
-  clusters (3);
+- the ice cliffs (3), ice spires (2), snowy firs (3), snow rocks (3) and crystal clusters (3);
+- the crystal geodes (2, growing out of the crevasse walls), the crystal fields (2, the ridge) and the tumbled ice-block pile;
 - the ice arch and the ice bridge;
 - the temple column (intact and broken), the temple facade and the spire;
 - the Frozen Colossus, the Frozen Fall, and snow peaks (2).
@@ -125,8 +154,9 @@ Until this is done the Glacier plays and looks complete in parts. Nothing depend
 
 - Seed `0x61AC1E5`, private: the hub, Iron Lowlands and Briarwood regenerate byte-identical, apart
   from the hub's gate (unsealed, "Lv 18 - 25 | Open") and its removed placeholder vista.
-- About 3,365 parts in `FrostboundGlacier` (47 collidable; the walls, crags and range are ~1,500 of them, the hamlet ~1,000) and 14 floors.
-- 16 PointLights (budget 20): Neon carries every window and lantern; lights sit only at the gate, the waystones, the lodge door, the two fires, the pond strings' hub, and the temple.
+- About 3,110 parts in `FrostboundGlacier` (42 collidable; the walls, rubble, spires, crags, mist
+  and range are ~1,100, the Blue Crevasse ~600) and 12 floors.
+- 20 PointLights (budget 20): Neon carries every window and lantern; lights sit at the gate, the waystones, the lodge door, the fires and the pond's lantern string, the temple, the braziers, two crevasse geodes and the ridge's two big crystal fields (the sunset cleft glows unlit).
 - `check_map_project.py`: 0 FAILs. The nav grid now spans x −490..150, z −170..960.
 - `audit_map.py FrostboundGlacier`: the trail lanes are clear, and nothing collidable is within 4
   studs of a spawn.

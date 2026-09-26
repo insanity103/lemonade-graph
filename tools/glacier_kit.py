@@ -50,10 +50,11 @@ ICE_PALE = (206, 242, 255)      # frosted ice
 ICE_DEEP = (64, 166, 255)       # deep ice in the cracks and the column cores
 ICE_WALL = (30, 95, 208)        # the glacier walls' shaded vertical faces: deep saturated blue (#1E5FD0)
 ICE_WALL_LIT = (46, 116, 224)   # the wall's lit slabs: one step lighter, still deep
-ICE_CRAG = (74, 136, 232)       # the crags behind: a step paler again, the first breath of haze
+ICE_CRAG = (108, 160, 240)      # the crags behind: a big step paler, the first breath of haze
+ICE_CRAG_LIT = (128, 176, 246)  # their lit blocks
 NAVY = (11, 42, 107)            # crevasse slots cut into the walls (#0B2A6B)
-RANGE = (178, 208, 255)         # the far range, hazed: paler and bluer than anything nearer
-RANGE_DEEP = (150, 188, 250)    # its shaded ridges
+RANGE = (146, 188, 250)         # the far range, hazed: paler and bluer than anything nearer
+RANGE_DEEP = (116, 164, 242)    # its shaded ridges
 ROCK = (200, 204, 255)          # pale periwinkle stone
 ROCK_DEEP = (142, 146, 246)     # its shaded mass: the same hue deeper, never charcoal
 CRYSTAL = (72, 214, 255)        # cyan crystal
@@ -166,15 +167,27 @@ def _on(host_p, host_r, local):
     return _add(host_p, _apply(rotation(host_r), local))
 
 
-CLIFF_D = 22.0  # a wall slab's depth
+CLIFF_D = 26.0  # a wall slab's depth
+
+
+def _slot(out, name, host_p, host_r, local, w, h, roll, depth):
+    """A crevasse cut into a leaning face: a NAVY strip inside a slightly wider ICE_DEEP strip,
+    both lying in the host block's own frame (so they stay flush with it however it leans), sunk
+    into the face with only a hair standing proud. `local` is (x, y) on the face, `depth` the
+    host's depth; `roll` a small lean of the slot within the face."""
+    fx, fy = local
+    r = (host_r[0], host_r[1], host_r[2] + roll)
+    out.append(prim("block", f"{name}Deep", (w, h, 1.6), _on(host_p, host_r, (fx, fy, -depth / 2 + 0.6)), ICE_DEEP, r))
+    out.append(prim("block", name, (w * 0.42, h * 0.94, 1.6), _on(host_p, host_r, (fx, fy, -depth / 2 + 0.4)), NAVY, r))
 
 
 def _ice_wall(seed, slabs):
-    """A glacier wall after docs/map/glacier_refs/glacier_valley.png: two or three fat slabs of
-    deep-blue ice (ICE_WALL) leaning back 8-20 degrees, each with a rounded bulge at its foot, a
-    lit facet, an overhanging serac of pale ice tilted 15-30 degrees forward on top, long NAVY
-    crevasse slots (one vertical, one diagonal) cut down the face, snow on the seam and the crest,
-    and a drift along the foot (map_forge tumbles the rubble in front on whatever floor lies there).
+    """A glacier wall after docs/map/glacier_refs/glacier_valley.png: two fat slabs of deep-blue
+    ice (ICE_WALL) leaning back 9-16 degrees, a rounded bulge at the foot of one, a pale serac
+    leaning out over each crest with its snow cap sunk into it, a snow shelf sunk into the seam
+    behind it, one wide two-tone crevasse (NAVY in ICE_DEEP) flush in the upper half of each face,
+    and a drift along the foot (map_forge tumbles the rubble in front on whatever floor lies
+    there). Every part is chunky: 3-5 big shapes per slab, nothing thin and nothing hovering.
     `slabs` are (w, h, back, roll) per slab; the piece is their widths wide, front local -Z."""
     rng = random.Random(seed)
     total = sum(w for w, *_ in slabs)
@@ -184,66 +197,117 @@ def _ice_wall(seed, slabs):
     for i, (w, h, back, roll) in enumerate(slabs):
         cx = x + w / 2
         x += w
-        yaw = rng.uniform(-5, 5)
+        yaw = rng.uniform(-4, 4)
         dz = rng.uniform(-2, 2)
         # the slab: leaning back, its foot sunk, its top set back by the lean
         rb = (yaw, back, roll)
         pb = (cx, h / 2 - 1.5, dz + math.sin(math.radians(back)) * h * 0.25)
         tone = ICE_WALL if i % 2 == 0 else ICE_WALL_LIT
         out.append(prim("block", f"Slab{i}", (w + 1.0, h, D), pb, tone, rb, facet=True))
-        # a fat rounded bulge at the foot, standing proud of the face
-        out.append(prim("ball", f"Bulge{i}", (w * 0.92, h * 0.5, D * 0.9), (cx + rng.uniform(-1.5, 1.5), h * 0.2, dz - D * 0.18),
-                        tone, (yaw, rng.uniform(4, 9), rng.uniform(-6, 6)), lumpy=0.05))
-        # crevasse slots: long, one vertical and one diagonal, cut into the face
-        for k, (sw, sh, sr) in enumerate(((rng.uniform(2.0, 3.2), h * rng.uniform(0.6, 0.86), rng.uniform(-4, 4)),
-                                          (rng.uniform(1.6, 2.6), h * rng.uniform(0.45, 0.7),
-                                           rng.choice((-1, 1)) * rng.uniform(16, 30)))):
-            fx = rng.uniform(-w * 0.34, w * 0.34)
-            out.append(prim("block", f"Slot{i}_{k}", (sw, sh, 1.6),
-                            _on(pb, rb, (fx, -h / 2 + sh / 2 + rng.uniform(1, h * 0.12), -D / 2 + 0.2)),
-                            NAVY, (rb[0], rb[1], rb[2] + sr)))
-        # the serac: pale ice overhanging forward off the crest, tilted
-        hs = h * rng.uniform(0.36, 0.5)
-        ws = w * rng.uniform(0.62, 0.84)
-        tilt = -rng.uniform(15, 30)
-        rs = (yaw + rng.uniform(-10, 10), tilt, rng.uniform(-14, 14))
-        top_back = dz + math.sin(math.radians(back)) * h * 0.5
-        ps = (cx + rng.uniform(-w * 0.12, w * 0.12), h - 2.5 + hs / 2 * math.cos(math.radians(tilt)),
-              top_back - 2.0 + math.sin(math.radians(tilt)) * hs * 0.5)
-        out.append(prim("block", f"Serac{i}", (ws, hs, D * 0.7), ps, ICE_PALE, rs, facet=True))
-        # snow: a mound on the seam under the serac, a dome on top of it (both sunk in, so they
-        # read as drifted snow, not lids)
-        out.append(prim("ball", f"Ledge{i}", (w * 0.7, 8.0, 10.0), (cx + rng.uniform(-w * 0.1, w * 0.1), h - 4.5, top_back - D * 0.24),
-                        SNOW, (yaw, 6.0, rng.uniform(-5, 5)), lumpy=0.06))
-        out.append(prim("ball", f"Cap{i}", (ws * 0.78, ws * 0.34, D * 0.46), _on(ps, rs, (rng.uniform(-ws * 0.08, ws * 0.08), hs / 2 - ws * 0.11, 0)),
-                        SNOW, (rs[0], rs[1] * 0.5, rs[2]), lumpy=0.07))
-        for j in range(2):  # icicles under the serac's lip (mesh only)
-            out.append(prim("icicle", f"Icicle{i}_{j}", (1.4, rng.uniform(3, 7), 1.4),
-                            _on(ps, rs, ((j - 0.5) * ws * 0.5, -hs / 2 + 0.5, -D * 0.35 + 0.6)), ICE_PALE, hifi=True))
-    out.append(prim("ball", "Drift", (total * 1.1, 9.0, 18), (0, 1.2, -D / 2 - 4.0), SNOW_SHADE, (0, 3, 0), lumpy=0.03))
+        if i % 2 == 0:  # a fat rounded bulge at the foot, a little proud of the face
+            out.append(prim("ball", f"Bulge{i}", (w * 0.94, h * 0.46, D * 0.8), (cx + rng.uniform(-1.5, 1.5), h * 0.18, dz - D * 0.15),
+                            tone, (yaw, rng.uniform(4, 9), rng.uniform(-6, 6)), lumpy=0.05))
+        # one wide crevasse in the upper half of the face, clear of the bulge
+        sh = h * rng.uniform(0.4, 0.52)
+        _slot(out, f"Slot{i}", pb, rb, (rng.uniform(-w * 0.26, w * 0.26), h * 0.46 - sh / 2),
+              w * rng.uniform(0.11, 0.16), sh, rng.choice((-1, 1)) * rng.uniform(2, 5), D)
+        sx = rng.uniform(-w * 0.1, w * 0.1)
+        if i % 2 == 0:
+            # the serac: pale ice leaning out over the crest, its foot buried in the slab's top
+            hs = h * rng.uniform(0.3, 0.4)
+            ws = w * rng.uniform(0.5, 0.64)
+            tilt = -rng.uniform(16, 26)
+            rs = (yaw + rng.uniform(-6, 6), back + tilt, roll * 0.5 + rng.uniform(-8, 8))
+            ps = _on(pb, rb, (sx, h / 2 + hs * 0.36, D * 0.08))
+            out.append(prim("block", f"Serac{i}", (ws, hs, D * 0.7), ps, ICE_PALE, rs, facet=True))
+            ch = ws * 0.3  # its snow cap, sunk into its top
+            out.append(prim("ball", f"Cap{i}", (ws * 0.84, ch, D * 0.55), _on(ps, rs, (0, hs / 2 - ch * 0.45, 0)), SNOW, rs, lumpy=0.06))
+            for j in range(2):  # icicles under the serac's lip (mesh only)
+                out.append(prim("icicle", f"Icicle{i}_{j}", (1.4, rng.uniform(3, 7), 1.4),
+                                _on(ps, rs, ((j - 0.5) * ws * 0.5, -hs / 2 + 0.5, -D * 0.35 + 0.6)), ICE_PALE, hifi=True))
+        else:  # a pale shard standing off the crest, snow heaped round its foot
+            out.append(prim("shard", f"Crest{i}", (w * 0.22, h * 0.3, D * 0.4), _on(pb, rb, (sx, h / 2 - 3, -D * 0.1)), ICE_PALE,
+                            (yaw + rng.uniform(-30, 30), back - 8, roll + rng.uniform(-10, 10))))
+        # a snow shelf sunk into the slab's top, behind the serac or round the shard
+        out.append(prim("ball", f"Ledge{i}", (w * 0.7, 7.0, D * 0.6), _on(pb, rb, (-sx * 0.5, h / 2 - 2.6, D * 0.14)), SNOW, rb,
+                        lumpy=0.06))
+    out.append(prim("ball", "Drift", (total * 1.1, 9.0, 20), (0, 1.2, -D / 2 - 4.0), SNOW_SHADE, (0, 3, 0), lumpy=0.03))
     return out
 
 
 @piece
 def ice_cliff_a():
-    return _ice_wall(1, ((30, 48, 14, 6), (26, 40, 9, -10)))
+    return _ice_wall(1, ((56, 60, 12, 5), (44, 48, 9, -8)))
 
 
 @piece
 def ice_cliff_b():
-    return _ice_wall(2, ((22, 38, 18, -5), (34, 50, 10, 8)))
+    return _ice_wall(2, ((40, 46, 15, -5), (60, 62, 10, 6)))
 
 
 @piece
 def ice_cliff_c():
-    return _ice_wall(3, ((20, 34, 12, 4), (24, 46, 20, -8), (16, 30, 8, 12)))
+    return _ice_wall(3, ((52, 56, 11, 4), (34, 40, 16, -7)))
+
+
+# ── Ice spires: the giants, one huge leaning shard at each corner of the valley ──
+def _ice_spire(seed, h, w, lean, mirror):
+    """One enormous shard of deep-blue ice leaning back `lean` degrees: three tiers of block,
+    each narrower, turned a few degrees and leaning a little further than the one under it, so
+    the silhouette tapers to a pale turned tip; a buttress leaning the other way off one side, a
+    rounded foot, a wide two-tone crevasse in the base and one in the buttress, snow sunk into
+    the top tier, a shelf on the base and a drift at the foot. ~h tall at scale 1, w wide.
+    Front local -Z."""
+    rng = random.Random(seed)
+    m = -1 if mirror else 1
+    D = w * 0.85
+    out = []
+    tiers = ((1.0, 0.42, ICE_WALL), (0.68, 0.32, ICE_WALL_LIT), (0.42, 0.28, ICE_WALL))
+    pt = rt = th = None
+    for t, (fw, fh, tone) in enumerate(tiers):
+        tw, tl, td = w * fw, h * fh, D * fw
+        if t == 0:
+            rt = (rng.uniform(-4, 4), lean, m * rng.uniform(2, 5))
+            pt = (0, tl / 2 - 2, math.sin(math.radians(lean)) * tl * 0.5 + 3)
+            p1, r1, h1 = pt, rt, tl
+        else:
+            rt = (rt[0] + m * rng.uniform(8, 14), rt[1] + 4.0, rt[2] + m * 2.5)
+            pt = _on(pt, rt, (m * w * 0.03, th / 2 + tl / 2 - tl * 0.14, 0))
+        th = tl
+        out.append(prim("block", f"Tier{t}", (tw, tl, td), pt, tone, rt, facet=True))
+    out.append(prim("shard", "Tip", (tw * 0.66, h * 0.14, td * 0.66), _on(pt, rt, (0, th / 2 - 1.5, 0)), ICE_PALE,
+                    (rt[0] + m * 8, rt[1] + 2, rt[2])))
+    out.append(prim("ball", "Cap", (tw * 0.92, tw * 0.34, td * 0.8), _on(pt, rt, (0, th / 2 - tw * 0.12, 0)), SNOW, rt,
+                    lumpy=0.06))
+    out.append(prim("ball", "Foot", (w * 1.15, h * 0.2, D), (m * 3, h * 0.07, -D * 0.12), ICE_WALL, (0, 6, m * 3), lumpy=0.05))
+    r3 = (-m * 6, lean * 0.5, -m * 14)
+    p3 = (-m * w * 0.55, h * 0.16, D * 0.1)
+    out.append(prim("block", "Buttress", (w * 0.7, h * 0.34, D * 0.8), p3, ICE_WALL, r3, facet=True))
+    _slot(out, "Slot0", p1, r1, (m * w * 0.1, h1 * 0.06), w * 0.16, h1 * 0.6, m * 4, D)
+    _slot(out, "Slot1", p3, r3, (0, 0), w * 0.12, h * 0.2, -m * 8, D * 0.8)
+    out.append(prim("ball", "Shelf", (w * 0.7, 6.0, D * 0.5), _on(p1, r1, (-m * w * 0.12, h1 / 2 - 2.4, -D * 0.18)), SNOW, r1,
+                    lumpy=0.06))
+    out.append(prim("ball", "ButtressSnow", (w * 0.6, 6.0, D * 0.6), _on(p3, r3, (0, h * 0.17 - 2.4, 0)), SNOW, r3, lumpy=0.06))
+    out.append(prim("ball", "Drift", (w * 1.6, 10, 24), (0, 1.5, -D / 2 - 6), SNOW_SHADE, (0, 3, 0), lumpy=0.03))
+    return out
+
+
+@piece
+def ice_spire_a():
+    return _ice_spire(51, 170.0, 40.0, 9.0, False)
+
+
+@piece
+def ice_spire_b():
+    return _ice_spire(52, 150.0, 34.0, 7.0, True)
 
 
 # ── Ice crags: the second rank, giants stepping back and up behind the walls ──
 def _ice_crag(seed, mirror):
-    """A giant of deep-blue ice: a huge mass leaning back, a higher block leaning over it, a fat
-    rounded shoulder, a pale serac overhanging its crest, long NAVY crevasses, snow on every shelf.
-    ~150 tall at scale 1, 172 to the crest. Front local -Z."""
+    """A giant of pale-blue ice (ICE_CRAG, a step hazier than the walls): a huge mass leaning
+    back, a higher block leaning over it, a fat rounded shoulder, a pale serac overhanging its
+    crest, wide two-tone crevasses flush in the faces, snow sunk into every shelf. ~150 tall at
+    scale 1, 172 to the crest. Front local -Z."""
     rng = random.Random(seed)
     m = -1 if mirror else 1
     D = 36.0
@@ -251,10 +315,10 @@ def _ice_crag(seed, mirror):
     r1 = (rng.uniform(-5, 5), 9.0, m * 4.0)
     p1 = (0, 48, 6)
     out.append(prim("block", "Mass", (58, 100, D), p1, ICE_CRAG, r1, facet=True))
-    out.append(prim("ball", "Bulge", (56, 48, D), (m * 4, 18, -D * 0.2), ICE_CRAG, (0, 6, m * 3), lumpy=0.05))
+    out.append(prim("ball", "Bulge", (56, 48, D * 0.9), (m * 4, 18, -D * 0.16), ICE_CRAG, (0, 6, m * 3), lumpy=0.05))
     r2 = (m * 8, -6.0, -m * 7.0)
     p2 = (m * 8, 112, 12)
-    out.append(prim("block", "Upper", (40, 68, D * 0.8), p2, ICE_WALL_LIT, r2, facet=True))
+    out.append(prim("block", "Upper", (40, 68, D * 0.8), p2, ICE_CRAG_LIT, r2, facet=True))
     r3 = (-m * 14, 4.0, m * 10.0)
     p3 = (-m * 20, 92, 4)
     out.append(prim("block", "Shoulder", (30, 56, 28), p3, ICE_CRAG, r3, facet=True))
@@ -262,19 +326,13 @@ def _ice_crag(seed, mirror):
     ps = (m * 4, 150, 2)
     out.append(prim("block", "Serac", (30, 30, 22), ps, ICE_PALE, rs, facet=True))
     out.append(prim("shard", "Crest", (12, 22, 10), (m * 10, 160, 8), ICE_PALE, (rng.uniform(-30, 30), -6, m * 10)))
-    out.append(prim("shard", "ShoulderSpike", (9, 16, 8), (-m * 22, 118, 2), ICE_PALE, (rng.uniform(-30, 30), -3, -m * 14)))
-    out.append(prim("block", "Slot0", (3.2, 80, 1.6), _on(p1, r1, (-m * 10, -4, -D / 2 + 0.2)), NAVY,
-                    (r1[0], r1[1], r1[2] + m * 5)))
-    out.append(prim("block", "Slot1", (2.4, 60, 1.6), _on(p1, r1, (m * 16, -14, -D / 2 + 0.2)), NAVY,
-                    (r1[0], r1[1], r1[2] - m * 22)))
-    out.append(prim("block", "Slot2", (2.6, 46, 1.6), _on(p2, r2, (-m * 4, -6, -D * 0.4 + 0.2)), NAVY,
-                    (r2[0], r2[1], r2[2] + 12)))
-    out.append(prim("block", "Slot3", (2.0, 34, 1.6), _on(p3, r3, (m * 4, -4, -14 + 0.2)), NAVY,
-                    (r3[0], r3[1], r3[2] - m * 18)))
-    out.append(prim("ball", "Cap", (24, 10.0, 16), _on(ps, rs, (0, 12.0, 0)), SNOW, (rs[0], -10, rs[2]), lumpy=0.06))
-    out.append(prim("ball", "UpperSnow", (30, 9.0, 22), (m * 8, 144.0, 12), SNOW, (0, -5, -m * 4), lumpy=0.06))
-    out.append(prim("ball", "ShoulderSnow", (24, 8.0, 20), (-m * 20, 118.0, 4), SNOW, (0, 3, m * 5), lumpy=0.06))
-    out.append(prim("ball", "Ledge", (36, 7.0, 12), (m * 4, 96.6, -D / 2 + 12), SNOW, (0, 3, m * 2), lumpy=0.06))
+    _slot(out, "Slot0", p1, r1, (-m * 10, 8), 8.0, 50, m * 4, D)
+    _slot(out, "Slot1", p2, r2, (-m * 4, -2), 6.0, 36, 5, D * 0.8)
+    _slot(out, "Slot2", p3, r3, (m * 4, -2), 4.6, 26, -m * 6, 28)
+    out.append(prim("ball", "Cap", (24, 10.0, 16), _on(ps, rs, (0, 15 - 4.0, 0)), SNOW, rs, lumpy=0.06))
+    out.append(prim("ball", "UpperSnow", (30, 9.0, 22), _on(p2, r2, (0, 34 - 3.6, 0)), SNOW, r2, lumpy=0.06))
+    out.append(prim("ball", "ShoulderSnow", (24, 8.0, 20), _on(p3, r3, (0, 28 - 3.2, 0)), SNOW, r3, lumpy=0.06))
+    out.append(prim("ball", "Ledge", (36, 7.0, 14), _on(p1, r1, (m * 4, 50 - 2.6, -D / 2 + 8)), SNOW, r1, lumpy=0.06))
     out.append(prim("ball", "Drift", (70, 10, 22), (0, 1.5, -D / 2 - 5), SNOW_SHADE, (0, 3, 0), lumpy=0.03))
     return out
 
