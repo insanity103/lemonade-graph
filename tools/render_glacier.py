@@ -134,6 +134,9 @@ scene.view_settings.view_transform = "Standard"
 VIEWS = {  # name: (eye, target) in Roblox coords
     "g_gate": ((-60, 26, 0), (-160, 14, 0)),
     "g_hollow": ((-112, 22, 40), (-170, 12, -20)),
+    "g_village": ((-118, 16, 8), (-170, 16, -30)),  # up the street from the gate, toward the lodge
+    "g_pond": ((-114, 17, 12), (-150, 11, 46)),  # from the fingerpost, across the pond and the south cabins
+    "g_ceiling": ((-128, 14, 20), (-168, 34, -40)),  # from the pond, up at the lodge and the ice overhead
     "g_ascent": ((-160, 24, 6), (-260, 22, -10)),
     "g_lake": ((-236, 34, 40), (-300, 20, -40)),
     "g_ridge": ((-340, 44, -40), (-420, 34, -110)),

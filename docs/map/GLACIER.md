@@ -17,7 +17,7 @@ Aerial, ascent, lake, ridge, bridge and forecourt, rendered from the parts versi
 
 | Area | Where (x, z) | Floor Y | What's there |
 | --- | --- | --- | --- |
-| Frost Hollow | −184..−104, −56..56 | 10 | Safe zone. The expedition camp: a timber cabin with a smoking chimney, a campfire and log benches, tents, a supply sled, a snowman. **Waystone 6 "Frost Hollow"** (arrival −142, 14). Level with the hub, straight through the gate. |
+| Frost Hollow | −184..−104, −56..56 | 10 | Safe zone. A timber hamlet under the ice: the two-storey lodge ("The Thawed Kettle", lit porch) and four log cabins with lit windows, snow-heaped coral roofs, icicled eaves and smoking chimneys, either side of a lantern-lit street (the trail lane stays open); two campfires with log benches, a frozen skating pond, a well, log fences, firewood, sleds, banners, lantern strings, snow-laden firs; ice shelves overhang from every cliff with glowing undersides and icicles, and an ice arch spans the exit to the ascent. **Waystone 6 "Frost Hollow"** (arrival −142, 14). Level with the hub, straight through the gate. |
 | The Great Ascent | −228..−186, −28..28 | 10 → 20 | A 56-wide snow ramp between fir-lined banks, two lanterns, under the **Ice Arch**. |
 | Frozen Lake terrace | −350..−228, −104..64 | 20 | A cracked ice lake (r 30) with an ice-fishing hole, the **Frozen Fall** pouring off the north cliff, fir groves, crystal clusters. Four FrostImp packs (L18, L18, L19, L19), one out on the ice. |
 | Gargoyle Stair | −350..−318, −100..−60 | 20 → 30 | A ramp up the ridge's ice face between temple ruins. |
@@ -35,7 +35,7 @@ Beyond the handoff brief (Alex asked for creative choices), I added:
 - the colossus, as the milestone;
 - the crevasse and ice bridge, instead of a plain terrace step;
 - the aurora;
-- the expedition camp, which gives the safe staging area a story.
+- the Frost Hollow hamlet (after the snow-village reference), which gives the safe staging area a story.
 
 Walk times from the player spawn (`check_map_project.py`, run speed): Frost Hollow 6 s, the lake
 imps 10-13 s, Gargoyle Ridge 15 s, the Revenant 19 s.
@@ -107,8 +107,8 @@ Until this is done the Glacier plays and looks complete in parts. Nothing depend
 
 - Seed `0x61AC1E5`, private: the hub, Iron Lowlands and Briarwood regenerate byte-identical, apart
   from the hub's gate (unsealed, "Lv 18 - 25 | Open") and its removed placeholder vista.
-- About 1,400 parts in `FrostboundGlacier` (19 collidable) and 12 floors.
-- 14 PointLights (budget 20).
+- About 2,100 parts in `FrostboundGlacier` and 12 floors.
+- 15 PointLights (budget 20): the hamlet's lanterns are Neon without lights, bar the lodge lamp and the two fires.
 - `check_map_project.py`: 0 FAILs. The nav grid now spans x −490..150, z −170..960.
 - `audit_map.py FrostboundGlacier`: the trail lanes are clear, and nothing collidable is within 4
   studs of a spawn.

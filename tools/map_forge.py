@@ -6813,43 +6813,304 @@ def snowman(name, x, z, yaw, rng):
     return model(name, kids)
 
 
-def frost_cabin(name, x, z, yaw, rng):
-    """The expedition's timber cabin: crate-orange walls, a coral roof under a thick snow blanket, a
-    warm window and a smoking chimney. Front (the door) faces `yaw`."""
+# ── Frost Hollow village kit ──
+FROST_ROOF = (255, 84, 64)      # coral roofs under the snow
+FROST_WINDOW = (255, 214, 140)  # lit windows: warm against the ice
+FROST_LAMP = (255, 208, 132)    # lantern glass
+FROST_DOOR = (40, 196, 214)
+
+
+def frost_cabin(name, x, z, yaw, rng, w=14.0, d=10.0, storeys=1, porch=False, lit=False, chimney=True, sign=None,
+                lamp=True):
+    """A timber house of Frost Hollow: crate-orange log walls with crossed corner logs under a coral
+    roof buried in snow, warm lit windows on every side, a snowed chimney, icicles along both eaves
+    and drifts heaped round the foot. Front (the door) faces `yaw`. `storeys` 1 or 2 adds a second
+    row of windows and a taller wall; `porch` a lantern-lit deck under its own snowy shed roof;
+    `lit` gives the door lamp a PointLight (the rest of the village glows on Neon alone); `sign` a
+    board over the door. Only the walls and plinth collide: players bump the house, not its snow."""
     y = floor_at(x, z, 0.0)
     r, at = local_frame(x, y, z, yaw)
-    w, d, h = 14.0, 10.0, 7.0
+    sh = 6.4
+    h = sh * storeys + 0.6
+    front = -d / 2
     kids = [part("Plinth", (w + 1.2, 1.0, d + 1.2), at(0, 0.4, 0), GK.ROCK_DEEP, rot=r),
             part("Walls", (w, h, d), at(0, 0.9 + h / 2, 0), TIMBER, rot=r)]
-    for k in range(3):  # log courses
-        kids.append(part(f"Course{k}", (w + 0.5, 0.5, d + 0.5), at(0, 1.9 + k * 2.2, 0), BEAM, rot=r, collide=False))
-    kids.append(part("Door", (3.2, 5.2, 0.5), at(0, 3.5, -d / 2 - 0.15), (40, 196, 214), rot=r, collide=False))
-    kids.append(part("DoorFrame", (4.0, 6.0, 0.3), at(0, 3.9, -d / 2 - 0.05), BEAM, rot=r, collide=False))
-    for side in (-1, 1):
-        kids.append(part(f"Window{side}", (2.6, 2.2, 0.3), at(side * 4.3, 4.6, -d / 2 - 0.2), (255, 214, 140), "Neon",
-                         r, collide=False, query=False, shadow=False))
-        kids.append(part(f"Sill{side}", (3.2, 0.4, 0.8), at(side * 4.3, 3.3, -d / 2 - 0.4), GK.SNOW, rot=r,
-                         collide=False))
+    for k in range(int(h // 2.2)):  # log courses
+        kids.append(part(f"Course{k}", (w + 0.5, 0.5, d + 0.5), at(0, 1.9 + k * 2.2, 0), BEAM, rot=r, collide=False,
+                         query=False))
+    for sx in (-1, 1):  # the crossed log ends at every corner
+        for sz in (-1, 1):
+            kids.append(part(f"Corner{sx}{sz}", (1.2, h + 0.3, 1.2), at(sx * w / 2, 0.9 + h / 2, sz * d / 2), BEAM, rot=r,
+                             collide=False, query=False))
+    kids.append(part("Door", (3.2, 5.2, 0.5), at(0, 3.5, front - 0.15), FROST_DOOR, rot=r, collide=False))
+    kids.append(part("DoorFrame", (4.0, 6.0, 0.3), at(0, 3.9, front - 0.05), BEAM, rot=r, collide=False))
+    kids.append(part("Step", (4.2, 0.4, 1.6), at(0, 1.1, front - 0.9), GK.ROCK_DEEP, rot=r, collide=False))
+    ww = 2.6 if w >= 13 else 2.0
+    cols = [-8.5, -4.5, 4.5, 8.5] if w >= 20 else ([-4.3, 4.3] if w >= 13 else [-3.2, 3.2])
+    for s_ in range(storeys):
+        wy = 4.6 + s_ * sh
+        fronts = list(cols) + ([0.0] if s_ else [])  # upstairs, one over the door too
+        for k, lx in enumerate(fronts):
+            kids.append(part(f"Window{s_}_{k}", (ww, 2.2, 0.3), at(lx, wy, front - 0.2), FROST_WINDOW, "Neon", r,
+                             collide=False, query=False, shadow=False))
+            kids.append(part(f"Sill{s_}_{k}", (ww + 0.6, 0.4, 0.8), at(lx, wy - 1.3, front - 0.4), GK.SNOW, rot=r,
+                             collide=False, query=False))
+        for side in (-1, 1):  # one on each side wall, and the back
+            for k, lz in enumerate(((-d / 4, d / 4) if d >= 12 else (0.0,))):
+                kids.append(part(f"SideWindow{s_}_{side}_{k}", (0.3, 2.2, ww), at(side * (w / 2 + 0.2), wy, lz),
+                                 FROST_WINDOW, "Neon", r, collide=False, query=False, shadow=False))
+        kids.append(part(f"BackWindow{s_}", (ww, 2.2, 0.3), at(cols[0], wy, -front + 0.2), FROST_WINDOW, "Neon", r,
+                         collide=False, query=False, shadow=False))
     pitch = 30.0
-    run = d / 2 + 1.2
-    for side in (-1, 1):  # the roof: coral under a thick snow blanket
-        rr = mul(r, rot_x(side * -pitch))
-        kids.append(part(f"Roof{side}", (w + 2.4, 0.8, run / math.cos(math.radians(pitch))),
-                         at(0, h + 0.9 + math.tan(math.radians(pitch)) * run / 2, side * run / 2), (255, 84, 64), rot=rr,
-                         collide=False))
-        kids.append(part(f"RoofSnow{side}", (w + 2.0, 1.3, run / math.cos(math.radians(pitch)) - 0.2),
-                         at(0, h + 1.9 + math.tan(math.radians(pitch)) * run / 2, side * (run / 2 - 0.2)), GK.SNOW,
+    run = d / 2 + 1.4
+    t = math.tan(math.radians(pitch))
+    slope_len = run / math.cos(math.radians(pitch))
+    for side in (-1, 1):  # the roof: coral under a thick snow blanket, icicles along the eave
+        rr = mul(r, rot_x(side * pitch))  # rot_x(+a) tips local +Z down: the eave falls away from the ridge
+        kids.append(part(f"Roof{side}", (w + 2.8, 0.8, slope_len), at(0, h + 0.9 + t * run / 2, side * run / 2), FROST_ROOF,
                          rot=rr, collide=False))
-    ridge_y = h + 0.9 + math.tan(math.radians(pitch)) * run
-    kids.append(ellipsoid("RidgeSnow", (w + 2.6, 1.8, 2.4), at(0, ridge_y + 0.9, 0), GK.SNOW, rot=mul(r, rot_z(2)),
+        kids.append(part(f"RoofSnow{side}", (w + 2.4, 1.4, slope_len - 0.6), at(0, h + 1.95 + t * run / 2, side * (run / 2 - 0.3)),
+                         GK.SNOW, rot=rr, collide=False, query=False))
+        kids.append(ellipsoid(f"EaveSnow{side}", (w + 2.6, 1.6, 2.6), at(0, h + 1.8, side * (run - 0.4)), GK.SNOW,
+                              rot=mul(r, rot_z(1.5)), layer="prop"))
+        for k in range(int(w // 3)):
+            lx = -w / 2 + 1.5 + k * 3.0 + rng.uniform(-0.6, 0.6)
+            ln = rng.uniform(1.4, 3.2)
+            kids.append(part(f"Icicle{side}{k}", (ln, 0.55, 0.55), at(lx, h + 1.15 - ln / 2, side * (run - 0.2)), GK.ICE_PALE,
+                             rot=mul(r, rot_z(90)), shape="Cylinder", collide=False, query=False, shadow=False))
+    ridge_y = h + 0.9 + t * run
+    kids.append(ellipsoid("RidgeSnow", (w + 3.0, 2.0, 2.8), at(0, ridge_y + 0.9, 0), GK.SNOW, rot=mul(r, rot_z(2)),
                           layer="prop"))
-    kids.append(part("Gable", (w, 3.4, 0.4), at(0, h + 2.4, 0), TIMBER, rot=r, collide=False))
-    kids.append(part("Chimney", (2.2, 7.0, 2.2), at(4.2, h + 4.6, 2.0), GK.ROCK_DEEP, rot=r, collide=False,
-                     children=[smoke(3.0, 0.25, 2.5, (236, 244, 255))]))
-    kids.append(part("ChimneyCap", (2.8, 0.8, 2.8), at(4.2, h + 8.4, 2.0), GK.SNOW, rot=r, collide=False))
-    kids.append(part("DoorLamp", (0.8, 1.1, 0.8), at(2.6, 6.0, -d / 2 - 0.6), (255, 208, 132), "Neon", r,
-                     collide=False, query=False, shadow=False, children=[light(20, 1.2, LANTERN)]))
+    g = t * run  # the gable ends, at the ridge's two ends: two wedges meeting under the ridge in the wall's plane
+    for sx in (-1, 1):
+        for sz in (-1, 1):
+            # the wedge's vertical face (its top edge) sits at local +Z; turned so +Z points to the ridge
+            rw = mul(r, rot_y(0 if sz < 0 else 180))
+            kids.append(part(f"Gable{sx}{sz}", (0.6, g - 0.3, d / 2), at(sx * (w / 2 - 0.3), h + 0.9 + (g - 0.3) / 2, sz * d / 4),
+                             TIMBER, rot=rw, cls="WedgePart", collide=False, query=False))
+    if chimney:
+        cx, cz = w / 2 - 2.6, 1.6
+        ch = g + 3.6
+        kids.append(part("Chimney", (2.2, ch, 2.2), at(cx, h + 0.9 + ch / 2, cz), GK.ROCK_DEEP, rot=r, collide=False,
+                         query=False, children=[smoke(3.2, 0.3, 2.5, (236, 244, 255))]))
+        kids.append(part("ChimneyCap", (2.9, 0.9, 2.9), at(cx, h + 0.9 + ch + 0.4, cz), GK.SNOW, rot=r, collide=False,
+                         query=False))
+    if lamp:
+        kids.append(part("DoorLamp", (0.8, 1.1, 0.8), at(2.7, 6.2, front - 0.6), FROST_LAMP, "Neon", r, collide=False,
+                         query=False, shadow=False, children=[light(22, 1.3, LANTERN)] if lit else None))
+        kids.append(part("DoorLampHood", (1.2, 0.3, 1.2), at(2.7, 6.9, front - 0.6), BEAM, rot=r, collide=False,
+                         query=False, shadow=False))
+    if sign:
+        kids.append(part("SignBoard", (7.0, 1.7, 0.4), at(0, 7.4 if storeys == 1 else sh + 2.2, front - 0.35), BEAM, rot=r,
+                         collide=False, query=False, children=[label_gui("Front", sign, "", (255, 244, 220), px=60)]))
+    if porch:
+        pd = 4.6
+        kids.append(part("PorchDeck", (w * 0.55, 0.5, pd), at(0, 0.5, front - pd / 2 + 0.2), TIMBER, rot=r, collide=False,
+                         query=False))  # its top a hair under the plinth's: no shared plane
+        for side in (-1, 1):
+            px_ = side * (w * 0.55 / 2 - 0.5)
+            kids.append(part(f"PorchPost{side}", (0.7, 6.4, 0.7), at(px_, 3.9, front - pd + 0.6), BEAM, rot=r, collide=False,
+                             query=False))
+            kids.append(part(f"PorchRail{side}", (0.4, 0.4, pd - 1.6), at(px_, 3.2, front - pd / 2 - 0.1), BEAM, rot=r,
+                             collide=False, query=False))
+            kids.append(part(f"PorchLamp{side}", (0.8, 1.0, 0.8), at(px_, 6.2, front - pd + 0.1), FROST_LAMP, "Neon", r,
+                             collide=False, query=False, shadow=False))
+        sp = 16.0
+        ts = math.tan(math.radians(sp))
+        sl = (pd + 1.0) / math.cos(math.radians(sp))
+        rs = mul(r, rot_x(-sp))  # high against the wall, falling toward the street
+        kids.append(part("PorchRoof", (w * 0.55 + 2.0, 0.6, sl), at(0, 7.4 + ts * (pd + 1.0) / 2 - 0.3, front - pd / 2 + 0.2),
+                         FROST_ROOF, rot=rs, collide=False, query=False))
+        kids.append(part("PorchSnow", (w * 0.55 + 1.6, 1.1, sl - 0.8), at(0, 8.2 + ts * (pd + 1.0) / 2 - 0.3, front - pd / 2 + 0.1),
+                         GK.SNOW, rot=rs, collide=False, query=False))
+    for k in range(4):  # drifts heaped against the walls
+        sx, sz = ((-1, -1), (1, -1), (1, 1), (-1, 1))[k]
+        if sz < 0 and porch:
+            continue
+        kids.append(ellipsoid(f"FootDrift{k}", (rng.uniform(5, 8), 2.2, rng.uniform(3, 5)),
+                              at(sx * w * 0.36, 0.3, sz * (d / 2 + 0.6)), GK.SNOW_SHADE, rot=tilt(rng, 1, 3), layer="rock",
+                              shadow=False))
     return model(name, kids)
+
+
+def frost_fire(name, x, z, rng, lit=True):
+    """A village campfire: a ring of periwinkle stones, crossed logs, embers, flame, smoke and (lit)
+    warm light."""
+    y = floor_at(x, z, 0.0)
+    kids = []
+    for k in range(8):
+        a = k / 8 * math.tau + rng.uniform(-0.15, 0.15)
+        kids.append(part(f"Stone{k}", (1.4, 0.9, 1.1), (x + math.cos(a) * 2.4, y + 0.35, z + math.sin(a) * 2.4),
+                         rng.choice((GK.ROCK, GK.ROCK_DEEP)), "SmoothPlastic",
+                         mul(rot_y(math.degrees(-a)), rot_x(rng.uniform(-8, 8))), collide=False, query=False))
+    for k in range(3):
+        kids.append(part(f"Log{k}", (0.8, 0.8, 3.8), (x, y + 0.55, z), BARK, "SmoothPlastic", mul(rot_y(k * 60 + 10), rot_x(16)),
+                         collide=False, query=False))
+    kids.append(part("Embers", (1.5, 0.4, 1.5), (x, y + 0.4, z), EMBER, "Neon", collide=False, query=False, shadow=False,
+                     children=[fire(5, 8), smoke(2.4, 0.2, 3.0, (236, 244, 255))] + ([light(26, 1.8, (255, 170, 96))] if lit else [])))
+    return model(name, kids)
+
+
+def frost_lantern(name, x, z, yaw, rng, lit=False, h=8.4):
+    """A snow-capped lantern post. Neon glass; a PointLight only when `lit`."""
+    y = floor_at(x, z, 0.0)
+    r, at = local_frame(x, y, z, yaw)
+    kids = [part("Pole", (0.55, h, 0.55), at(0, h / 2, 0), BEAM, rot=r),
+            part("Arm", (0.35, 0.35, 2.2), at(0, h - 0.4, -0.9), BEAM, rot=r, collide=False, query=False),
+            part("Lantern", (0.9, 1.3, 0.9), at(0, h - 1.4, -1.7), FROST_LAMP, "Neon", r, collide=False, query=False,
+                 shadow=False, children=[light(18, 1.1, LANTERN)] if lit else None),
+            part("Hood", (1.3, 0.3, 1.3), at(0, h - 0.6, -1.7), BEAM, rot=r, collide=False, query=False, shadow=False),
+            part("Cap", (1.2, 1.2, 1.2), at(0, h + 0.3, 0), GK.SNOW, shape="Ball", collide=False, query=False, shadow=False)]
+    return model(name, kids)
+
+
+def log_fence(name, a, b, rng, h=3.0):
+    """A rail fence of caramel logs on orange posts from a to b (x, z), a snow cap on every post."""
+    (ax, az), (bx, bz) = a, b
+    ln = math.hypot(bx - ax, bz - az)
+    n = max(2, round(ln / 3.8) + 1)
+    kids = []
+    ya, yb = floor_at(ax, az, 0.0), floor_at(bx, bz, 0.0)
+    for k in range(n):
+        t = k / (n - 1)
+        px_, pz_ = ax + (bx - ax) * t, az + (bz - az) * t
+        y = floor_at(px_, pz_, 0.0)
+        kids.append(part(f"Post{k}", (0.6, h, 0.6), (px_, y + h / 2, pz_), BEAM, rot=rot_y(rng.uniform(-6, 6)), collide=False,
+                         query=False))
+        kids.append(part(f"PostCap{k}", (0.95, 0.95, 0.95), (px_, y + h + 0.1, pz_), GK.SNOW, shape="Ball", collide=False,
+                         query=False, shadow=False))
+    for k, ry in enumerate((h * 0.42, h * 0.8)):
+        kids.append(cyl(f"Rail{k}", (ax, ya + ry, az), (bx, yb + ry, bz), 0.5, BARK if k else BARK_DARK, collide=False,
+                        query=False, layer="prop"))
+    return model(name, kids)
+
+
+def firewood(name, x, z, yaw, rng, rows=3):
+    """Split logs stacked in a pyramid, snow on top."""
+    y = floor_at(x, z, 0.0)
+    r, at = local_frame(x, y, z, yaw)
+    kids = []
+    for row in range(rows):
+        n = rows + 1 - row
+        for k in range(n):
+            lx = (k - (n - 1) / 2) * 1.0
+            # each log tipped a few degrees (never two the same), so no two round tops share a plane
+            kids.append(part(f"Log{row}{k}", (0.95, 0.95, 3.4), at(lx, 0.5 + row * 0.86, rng.uniform(-0.2, 0.2)),
+                             rng.choice((BARK, BARK_DARK)),
+                             rot=mul(r, mul(rot_y(90 + rng.uniform(-3, 3)), rot_z(rng.choice((-1, 1)) * rng.uniform(3.5, 6)))),
+                             shape="Cylinder", collide=False, query=False))
+    kids.append(ellipsoid("Snow", (rows * 0.9 + 1.2, 1.1, 3.6), at(0, 0.5 + rows * 0.86 + 0.1, 0), GK.SNOW,
+                          rot=mul(r, rot_z(2)), layer="prop", shadow=False))
+    return model(name, kids)
+
+
+def lantern_string(name, a, b, rng, n=5, drop=8.2, sag=1.8):
+    """A rope strung between two lantern posts' tops with paper lanterns hung along its sag."""
+    (ax, az), (bx, bz) = a, b
+    ya, yb = floor_at(ax, az, 0.0) + drop, floor_at(bx, bz, 0.0) + drop
+    mid = ((ax + bx) / 2, (ya + yb) / 2 - sag, (az + bz) / 2)
+    kids = [cyl("Rope0", (ax, ya, az), mid, 0.22, BARK_DARK, collide=False, query=False, shadow=False, layer="prop"),
+            cyl("Rope1", mid, (bx, yb, bz), 0.22, BARK_DARK, collide=False, query=False, shadow=False, layer="prop")]
+    for k in range(n):
+        t = (k + 1) / (n + 1)
+        if t <= 0.5:
+            u = t * 2
+            px_, py, pz = ax + (mid[0] - ax) * u, ya + (mid[1] - ya) * u, az + (mid[2] - az) * u
+        else:
+            u = (t - 0.5) * 2
+            px_, py, pz = mid[0] + (bx - mid[0]) * u, mid[1] + (yb - mid[1]) * u, mid[2] + (bz - mid[2]) * u
+        kids.append(part(f"Lantern{k}", (1.1, 1.1, 1.1), (px_, py - 0.55, pz), (FROST_LAMP, LEMON, (255, 150, 90))[k % 3], "Neon",
+                         shape="Ball", collide=False, query=False, shadow=False))
+    return model(name, kids)
+
+
+def snow_well(name, x, z, rng):
+    """The village well: a periwinkle stone drum, two posts, a little coral roof under snow, a
+    bucket on its rope, and an icicle fringe. Bumpable: its drum collides."""
+    y = floor_at(x, z, 0.0)
+    kids = [drum("Ring", x, y - 0.2, y + 2.6, z, 2.3, 2.3, GK.ROCK, collide=True),
+            drum("Rim", x, y + 2.5, y + 3.0, z, 2.6, 2.6, GK.ROCK_DEEP)]
+    for side in (-1, 1):
+        kids.append(part(f"Post{side}", (0.6, 6.5, 0.6), (x + side * 2.1, y + 3.25, z), BEAM, collide=False, query=False))
+    kids.append(part("Bar", (5.0, 0.4, 0.4), (x, y + 6.1, z), BARK_DARK, rot=rot_y(0), shape="Cylinder", collide=False, query=False))
+    kids.append(part("Rope", (0.15, 2.4, 0.15), (x, y + 4.8, z), BARK_DARK, collide=False, query=False, shadow=False))
+    kids.append(part("Bucket", (1.1, 1.0, 1.0), (x, y + 3.3, z), BARK, rot=rot_z(90), shape="Cylinder", collide=False, query=False))
+    for side in (-1, 1):
+        rr = rot_x(side * 32)
+        kids.append(part(f"Roof{side}", (6.2, 0.5, 3.4), (x, y + 7.6, z + side * 1.4), FROST_ROOF, rot=rr, collide=False, query=False))
+        kids.append(part(f"RoofSnow{side}", (5.8, 1.0, 3.0), (x, y + 8.3, z + side * 1.25), GK.SNOW, rot=rr, collide=False, query=False))
+    kids.append(ellipsoid("RidgeSnow", (6.4, 1.4, 2.0), (x, y + 9.4, z), GK.SNOW, rot=rot_z(2), layer="prop"))
+    for k in range(4):
+        ln = rng.uniform(1.0, 2.2)  # hung from the eave, its top inside the roof plate
+        kids.append(part(f"Icicle{k}", (ln, 0.45, 0.45), (x - 2.4 + k * 1.6, y + 7.0 - ln / 2, z + rng.choice((-2.7, 2.7))),
+                         GK.ICE_PALE, rot=rot_z(90), shape="Cylinder", collide=False, query=False, shadow=False))
+    return model(name, kids)
+
+
+def frozen_pond(name, x, z, radius, rng):
+    """A frozen pond: frosted ice with a clear blue middle, skating loops scratched into it and a
+    snow rim."""
+    y = floor_at(x, z, 0.0)
+    kids = disc("Ice", x, z, radius, y + 0.25, 0.5, GK.ICE_PALE, "SmoothPlastic", collide=False, layer="decal")
+    kids += disc("DeepIce", x, z, radius * 0.62, y + 0.33, 0.2, GK.ICE, "SmoothPlastic", collide=False, layer="decal")
+    for k in range(3):  # skating loops
+        cx, cz = x + rng.uniform(-radius * 0.35, radius * 0.35), z + rng.uniform(-radius * 0.35, radius * 0.35)
+        rr = rng.uniform(radius * 0.3, radius * 0.5)
+        a0 = rng.uniform(0, math.tau)
+        n = 7
+        for j in range(n):
+            a, b = a0 + j / n * math.tau * 0.85, a0 + (j + 1) / n * math.tau * 0.85
+            p0 = (cx + math.cos(a) * rr, cz + math.sin(a) * rr)
+            p1 = (cx + math.cos(b) * rr, cz + math.sin(b) * rr)
+            if math.hypot(p1[0] - x, p1[1] - z) > radius - 1:
+                continue
+            ln = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
+            kids.append(part(f"Mark{k}_{j}", (ln + 0.2, 0.08, 0.3), ((p0[0] + p1[0]) / 2, y + 0.4 + (0.02 if j % 2 else 0), (p0[1] + p1[1]) / 2),
+                             GK.SNOW, rot=rot_y(math.degrees(math.atan2(-(p1[1] - p0[1]), p1[0] - p0[0]))), collide=False,
+                             query=False, shadow=False, layer="decal"))
+    for k in range(9):  # the rim
+        a = k / 9 * math.tau + rng.uniform(-0.15, 0.15)
+        kids.append(snow_drift(f"Rim{k}", x + math.cos(a) * (radius + 1.2), z + math.sin(a) * (radius + 1.2),
+                               rng.uniform(5, 8), rng.uniform(2.6, 3.6), rng, h=1.8, color=GK.SNOW))
+    return model(name, kids)
+
+
+def ice_shelf(name, x, z, yaw, w, depth, y, rng, icicles=7):
+    """Ice overhanging the hollow from the cliff behind: a cornice sunk into the cliff, a rounded
+    shelf reaching out over the village, a snow drape on top, glowing veins on its underside and a
+    fringe of icicles. Stands at (x, z) on the cliff's inner foot line, overhanging toward `yaw`."""
+    r, at = local_frame(x, y, z, yaw)
+    kids = [part("Cornice", (w * 0.7, 5.0, 10.0), at(0, -0.4, 4.5), GK.ICE_PALE, rot=r, collide=False, query=False),
+            ellipsoid("Shelf", (w, 5.2, depth), at(0, 0.4, -depth / 2 + 4.0), GK.ICE, rot=mul(r, rot_z(rng.uniform(-1.5, 1.5))),
+                      layer="rock"),
+            ellipsoid("Lobe", (w * 0.55, 4.2, depth * 0.75), at(w * 0.3, -0.3, -depth / 2 + 1.0), GK.ICE_PALE,
+                      rot=mul(r, rot_y(rng.uniform(-8, 8))), layer="rock"),
+            ellipsoid("Lobe2", (w * 0.45, 3.8, depth * 0.6), at(-w * 0.32, -0.2, -depth / 2 + 2.5), GK.ICE_PALE,
+                      rot=mul(r, rot_y(rng.uniform(-8, 8))), layer="rock"),
+            ellipsoid("Drape", (w * 0.96, 2.6, depth * 0.9), at(0, 2.9, -depth / 2 + 3.5), GK.SNOW, rot=mul(r, rot_z(1)),
+                      layer="rock", shadow=False)]
+    for k, (lx, lz, s) in enumerate(((-0.22, -0.1, 0.5), (0.2, -0.22, 0.42), (0.02, 0.05, 0.36))):
+        kids.append(ellipsoid(f"Glow{k}", (w * s, 1.6, depth * s * 0.8), at(lx * w, -1.9, -depth / 2 + 4.0 + lz * depth),
+                              GK.GLOW, "Neon", mul(r, rot_z(2)), layer="rock", shadow=False, attrs={"MeshGlow": True}))
+    for k in range(icicles):
+        fx = rng.uniform(-0.42, 0.42)
+        fz = rng.uniform(-0.35, 0.05)
+        ln = rng.uniform(3.0, 7.5)
+        kids.append(part(f"Icicle{k}", (ln, rng.uniform(0.7, 1.2), rng.uniform(0.7, 1.2)),
+                         at(fx * w, -1.2 - ln / 2, -depth / 2 + 4.0 + fz * depth), rng.choice((GK.ICE_PALE, GK.ICE)),
+                         rot=mul(r, rot_z(90)), shape="Cylinder", collide=False, query=False, shadow=False, layer="rock"))
+    return model(name, kids)
+
+
+def snow_bench(name, x, z, yaw, length=6.0):
+    """A log bench with snow along its back edge."""
+    y = floor_at(x, z, 0.0) - 0.2
+    r, at = local_frame(x, y, z, yaw)
+    return model(name, [
+        part("Log", (length, 1.7, 1.7), at(0, 0.7, 0), BARK_DARK, "SmoothPlastic", r, shape="Cylinder"),
+        part("Seat", (length - 0.6, 0.3, 1.2), at(0, 1.5, 0), TIMBER, "SmoothPlastic", r, collide=False, query=False),
+        ellipsoid("Snow", (length - 1.0, 0.7, 0.9), at(0, 1.75, 0.55), GK.SNOW, rot=mul(r, rot_z(2)), layer="prop", shadow=False),
+    ])
 
 
 def sled(name, x, z, yaw, rng):
@@ -7003,40 +7264,84 @@ def build_frostbound_glacier():
             visual.append(part(f"GlacierTrail{i:02d}", (seg + 7, 0.3, 7), ((ax + bx) / 2, top - 0.15, (az + bz) / 2),
                                GK.SNOW_PATH, rot=rot_y(yaw), collide=False, query=False, layer="decal"))
 
-    # ── Frost Hollow: the expedition's camp, safe inside the gate ──
+    # ── Frost Hollow: a timber hamlet under the ice, safe inside the gate ──
+    # Built from its own random stream; the shared one is advanced by exactly what the old camp drew
+    # (107 words), so every placement after the hollow stays where it was.
+    hv = random.Random(0xF0577)
     visual.append(hanging_sign("GlacierSign", -112, -13, yaw_facing(-1, 0), "Frostbound Glacier", "Lv 18 - 25"))
     for k, z in enumerate((-11.5, 11.5)):
-        visual.append(lantern_post(f"GateLantern{k}", -121, z, yaw_facing(0, -z), rng))
+        visual.append(lantern_post(f"GateLantern{k}", -121, z, yaw_facing(0, -z), hv))
     visual.append(waystone("FrostHollowWaystone", "FrostHollow", -152, Y0, 26, glow=GK.GLOW))
-    visual.append(frost_cabin("ExpeditionCabin", -158, -40, yaw_facing(0, 1), rng))
-    visual.append(desert_fire("CampFire", -140, -20, rng))
+    # The houses: the lodge, two storeys with a lit porch on the street, and four cabins on the yards
+    # behind it. The street itself (the trail lane, z -8..10) stays open.
+    visual.append(frost_cabin("FrostLodge", -152, -41, yaw_facing(0, 1), hv, w=22, d=14, storeys=2, porch=True, lit=True,
+                              sign="The Thawed Kettle"))
+    visual.append(frost_cabin("CabinNE", -127, -44, yaw_facing(0, 1), hv, w=12, d=10))
+    visual.append(frost_cabin("CabinNW", -177, -46, yaw_facing(1, 0), hv, w=10, d=9))
+    visual.append(frost_cabin("CabinS", -158, 48, yaw_facing(0, -1), hv, w=14, d=10))
+    visual.append(frost_cabin("CabinSW", -177, 44, yaw_facing(1, 0), hv, w=10, d=9, storeys=2))
+    # Fires: the camp fire by the street and the skaters' fire by the pond, log benches round each.
+    visual.append(frost_fire("CampFire", -140, -20, hv))
     for k, (x, z, yaw) in enumerate(((-140, -26.5, 0), (-146.6, -20, 90), (-133.4, -20, 90))):
-        visual.append(log_bench(f"CampLog{k}", x, z, yaw, 6.0))
-    visual.append(a_tent("CampTent0", -124, -42, 20, TENT_CLOTH[0], rng=rng))
-    visual.append(a_tent("CampTent1", -176, -20, 80, TENT_CLOTH[2], rng=rng))
-    visual.append(sled("SupplySled", -170, -34, 150, rng))
-    visual.append(crate_stack("CampCrates", -134, Y0, -44, rng))
-    visual.append(barrel("CampBarrel", -129, Y0, -47, rng))
-    visual.append(snowman("Snowman", -128, 34, yaw_facing(1, -0.4), rng))
+        visual.append(snow_bench(f"CampLog{k}", x, z, yaw, 6.0))
+    visual.append(frost_fire("PondFire", -147, 38, hv))
+    for k, (x, z, yaw) in enumerate(((-152.5, 38, 90), (-147, 32.5, 0))):
+        visual.append(snow_bench(f"PondLog{k}", x, z, yaw, 6.0))
+    visual.append(frozen_pond("SkatingPond", -129, 39, 10, hv))
+    visual.append(snowman("Snowman", -146, 46, yaw_facing(1, -0.4), hv))
+    # Lantern posts: down both sides of the street, by every door and round the pond (Neon, unlit).
+    for k, (x, z, yaw) in enumerate(((-174, -12, 0), (-154, -12, 0), (-136, -12, 0), (-174, 12, 180), (-158, 12, 180),
+                                     (-131, -37, 180), (-171, -50, -90), (-154, 41, 0), (-171, 40, -90), (-119, 32, 90),
+                                     (-140, 47, -90), (-125, 26, 180))):
+        visual.append(frost_lantern(f"HollowLantern{k}", x, z, yaw, hv))
+    for k, (a, b) in enumerate((((-174, -12), (-174, 12)), ((-154, -12), (-158, 12)), ((-140, 47), (-119, 32)),
+                                ((-119, 32), (-125, 26)), ((-154, 41), (-140, 47)))):
+        visual.append(lantern_string(f"StreetString{k}", a, b, hv))
+    visual.append(snow_well("HollowWell", -166, 34, hv))
+    for k, (x, z, sx, sz) in enumerate(((-166, 13.5, 8, 3), (-128, -13.5, 7, 3), (-147, -13.5, 7, 3), (-183, 14, 5, 3))):
+        visual.append(snow_drift(f"StreetDrift{k}", x, z, sx, sz, hv, h=1.6))
+    # Yard fences, firewood, sleds, stores, banners.
+    for k, (a, b) in enumerate((((-141, -27), (-129, -27)), ((-165, -27), (-176, -27)), ((-176, -27), (-176, -36)),
+                                ((-139, 26), (-119, 26)), ((-168, 36), (-178, 36)))):
+        visual.append(log_fence(f"HollowFence{k}", a, b, hv))
+    for k, (x, z, yaw) in enumerate(((-167, -50, 0), (-146, 52, 90), (-121, -50, 20))):
+        visual.append(firewood(f"Firewood{k}", x, z, yaw, hv))
+    visual.append(sled("SupplySled", -170, -32, 150, hv))
+    visual.append(sled("GateSled", -124, 20, 70, hv))
+    visual.append(crate_stack("LodgeCrates", -138, Y0, -34, hv))
+    visual.append(barrel("LodgeBarrel", -135, Y0, -30, hv))
+    for k, (x, z, yaw) in enumerate(((-165, -30, 180), (-139, -30, 180), (-176, -31, -90), (-176, 31, -90))):
+        visual.append(frost_banner(f"HollowBanner{k}", x, z, yaw, hv, h=11.0))
     visual.append(toy_finish(fingerpost("HollowPost", -178, Y0, 17, [("Frozen Lake", yaw_facing(-1, 0), 7.2),
                                                                      ("Hearthmere", yaw_facing(1, 0), 6.4)])))
-    for k, (key, x, z, s) in enumerate((("SnowFirA", -178, -48, 1.1), ("SnowFirB", -170, -50, 0.9),
-                                        ("SnowFirC", -124, 48, 1.0), ("SnowFirB", -134, 50, 0.85),
-                                        ("SnowFirA", -178, 48, 1.15), ("SnowFirC", -168, 50, 0.95),
-                                        ("SnowFirB", -122, -52, 0.8))):
-        visual.append(kit_piece(key, f"HollowFir{k}", x, z, rng.uniform(0, 360), s, layer="tree"))
-    for k, (key, x, z, s) in enumerate((("SnowRockA", -120, 26, 0.9), ("SnowRockC", -120, -28, 1.0),
-                                        ("SnowRockB", -182, 30, 0.9), ("SnowRockC", -160, 50, 1.0))):
-        visual.append(kit_piece(key, f"HollowRock{k}", x, z, rng.uniform(0, 360), s))
-    for k, (x, z, sx, sz) in enumerate(((-150, 52, 22, 7), (-120, 40, 6, 14), (-180, -2, 5, 16), (-146, -52, 16, 6))):
-        visual.append(snow_drift(f"HollowDrift{k}", x, z, sx, sz, rng))
+    # Snow-laden firs and rocks along the walls, drifts, and the ice: shelves overhanging the hollow
+    # from every cliff (glowing veins on their undersides) and an ice arch over the exit to the ascent.
+    for k, (key, x, z, s) in enumerate((("SnowFirA", -183, -33, 1.1), ("SnowFirC", -120, -54, 0.9),
+                                        ("SnowFirB", -140, -54, 0.85), ("SnowFirC", -168, 55, 1.0),
+                                        ("SnowFirA", -183, 32, 1.15), ("SnowFirB", -122, 52, 0.85),
+                                        ("SnowFirC", -146, 56, 1.0), ("SnowFirB", -174, 55, 0.9),
+                                        ("SnowFirA", -113, -50, 0.9), ("SnowFirB", -112, 48, 0.8))):
+        visual.append(kit_piece(key, f"HollowFir{k}", x, z, hv.uniform(0, 360), s, layer="tree"))
+    for k, (key, x, z, s) in enumerate((("SnowRockA", -120, -30, 0.9), ("SnowRockB", -182, 52, 0.9),
+                                        ("SnowRockC", -118, 50, 1.0), ("SnowRockC", -140, 54, 0.8))):
+        visual.append(kit_piece(key, f"HollowRock{k}", x, z, hv.uniform(0, 360), s))
+    for k, (x, z, sx, sz) in enumerate(((-146, -54, 16, 6), (-136, 55, 14, 5), (-118, -18, 6, 10), (-118, 8, 5, 8))):
+        visual.append(snow_drift(f"HollowDrift{k}", x, z, sx, sz, hv))
+    for k, (x, z, yaw, w, depth, y) in enumerate(((-167, -57, yaw_facing(0, 1), 40, 28, 34), (-133, -57, yaw_facing(0, 1), 34, 24, 31),
+                                                  (-167, 57, yaw_facing(0, -1), 36, 26, 32), (-133, 57, yaw_facing(0, -1), 40, 30, 35),
+                                                  (-150, -57, yaw_facing(0, 1), 26, 20, 38), (-150, 57, yaw_facing(0, -1), 26, 20, 39),
+                                                  (-185, -46, yaw_facing(1, 0), 20, 16, 29), (-185, 46, yaw_facing(1, 0), 20, 16, 30))):
+        visual.append(ice_shelf(f"IceShelf{k}", x, z, yaw, w, depth, Y0 + y, hv))
+    visual.append(kit_piece("IceArch", "HollowArch", -185, 0, yaw_facing(1, 0), 1.7, layer="rock"))
+    for _ in range(107):
+        rng.getrandbits(32)
 
     # ── The Great Ascent: a broad snow ramp between fir-lined banks, under an ice arch ──
     for side in (-1, 1):
-        for k, x in enumerate((-194, -214)):
+        for k, x in enumerate((-204, -214)):
             if k == 0:
                 visual.append(lantern_post(f"AscentLantern{side}", x, side * 26, yaw_facing(0, -side), rng))
-        for k, (key, x, s) in enumerate((("SnowFirB", -192, 0.8), ("SnowFirA", -206, 0.95), ("SnowFirC", -220, 0.9))):
+        for k, (key, x, s) in enumerate((("SnowFirB", -198, 0.8), ("SnowFirA", -208, 0.95), ("SnowFirC", -220, 0.9))):
             visual.append(kit_piece(key, f"AscentFir{side}{k}", x, side * 32.5, rng.uniform(0, 360), s, layer="tree"))
     visual.append(kit_piece("IceArch", "AscentArch", -236, 0, yaw_facing(1, 0), 1.3, layer="rock",
                             attrs={"Landmark": "AscentArch"}))
