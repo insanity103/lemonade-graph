@@ -126,17 +126,18 @@ scene.collection.objects.link(obj)
 world = bpy.data.worlds.new("w")
 scene.world = world
 world.use_nodes = True
-# Dusk under the ice: a deep, saturated blue world (the sky stays blue, never black) and a low warm
-# sun 25 degrees up in the west, so the snow is blue in shadow and the sunlit faces barely warm.
-world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.16, 0.34, 0.80, 1)  # late-afternoon sky: blue, not night
-world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.6
+# A bright afternoon under a saturated blue sky: one strong, slightly warm sun low in the west, so
+# every sunlit face goes near-white and every shaded face a deep ultramarine (the critic's ask:
+# walls only read as walls with a light direction). The hamlet's Neon and lamp pools still carry.
+world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.10, 0.36, 0.95, 1)
+world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.9
 sun = bpy.data.objects.new("sun", bpy.data.lights.new("sun", "SUN"))
-sun.data.energy = 2.4
-sun.data.color = (1.0, 0.86, 0.70)
+sun.data.energy = 4.2
+sun.data.color = (1.0, 0.94, 0.86)
 sun.data.angle = math.radians(3)
 # a sun points down its -Z; tilted (90 - elevation) about X it shines toward +Y, and -90 about Z
 # turns that to shine toward +X: from the west (Roblox -X is Blender -X)
-sun.rotation_euler = (math.radians(90 - 25), 0, math.radians(-90))
+sun.rotation_euler = (math.radians(90 - 32), 0, math.radians(-90 + 35))  # west-south-west, 32 up
 scene.collection.objects.link(sun)
 # the map's own PointLights: warm pools on the snow at the lodge door, the fires, the string lights
 for k, (pos, col, rng_, br) in enumerate(lights):
@@ -157,7 +158,7 @@ if os.environ.get("QUICK"):
     scene.cycles.samples = 12
     scene.render.resolution_x, scene.render.resolution_y = 960, 540
 scene.view_settings.view_transform = "Standard"
-scene.view_settings.exposure = -0.6  # late afternoon: snow just under white, Neon and lamp pools above it
+scene.view_settings.exposure = -0.15  # snow just under white; Neon and the lamp pools above it
 
 
 def snowfall(cam_obj, eye, tgt, count=170, seed=7):
