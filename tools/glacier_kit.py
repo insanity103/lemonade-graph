@@ -574,11 +574,11 @@ def ice_arch():
 
 @piece
 def ice_bridge():
-    """The ornament of the 16 x 26 ice bridge. Its origin is the centre of the deck's top: the arch
+    """The ornament of the 16 x 36 ice bridge (the crevasse is 35 wide). Its origin is the centre of the deck's top: the arch
     ribs hang below it, the balustrade stands on it. The walkable deck is map_forge's own floor slab.
     The span runs along local Z."""
     out = []
-    half_w, half_l = 8.0, 13.0
+    half_w, half_l = 8.0, 18.0
     for side in (-1, 1):
         x = side * (half_w - 0.6)
         rib_x = side * (half_w + 0.6)  # the ribs run just outboard of the deck's edges
@@ -593,8 +593,8 @@ def ice_bridge():
             ang = math.degrees(math.atan(10.0 * u / span))
             out.append(prim("block", f"Rib{side}_{i}", (1.8, 3.6, 2 * span / n + 0.5), (rib_x, y, z),
                             (ICE, ICE_PALE)[i % 2], (0, ang, 0), facet=True))
-        for i in range(5):  # balustrade posts, each under a snow ball
-            z = -half_l + 1 + i * (2 * half_l - 2) / 4
+        for i in range(6):  # balustrade posts, each under a snow ball
+            z = -half_l + 1 + i * (2 * half_l - 2) / 5
             out.append(prim("drum", f"Post{side}_{i}", (1.4, 3.6, 1.4), (x, -0.2, z), ICE_DEEP))
             out.append(prim("ball", f"PostSnow{side}_{i}", (1.9, 1.3, 1.9), (x, 3.5, z), SNOW, (0, 4, 0)))
         out.append(prim("block", f"Rail{side}", (0.9, 0.8, 2 * half_l - 1.6), (x, 2.6, 0), ICE_PALE, facet=True))
