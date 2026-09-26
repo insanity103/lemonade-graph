@@ -7169,7 +7169,7 @@ def ice_chunk(name, x, z, rng, s=1.0, y=None):
                 collide=False, query=False, layer="rock")
 
 
-GL_NOTCH = (-432.0, -366.0)  # x span of the gap in the ridge's north wall (z -132) that frames the range
+GL_NOTCH = (-441.0, -366.0)  # x span of the gap in the ridge's north wall (z -132) that frames the range
 
 
 def in_notch(x, z):
@@ -7229,7 +7229,10 @@ def glacier_walls(rng):
         if ax == bx == -116:  # against the hub's castle wall: its back is the wall here
             continue
         inner = floor_at(mx - out[0] * 3, mz - out[1] * 3, GL_HOLLOW_Y)
-        n = max(1, math.ceil(seg / 64.0))
+        n = max(1, math.ceil(seg / 110.0))
+        # the corridor's near flanks (the terrace and the hollow) stand tall; the ridge's walls at
+        # its far end step down, so the range shows over them
+        far = 0.78 if mx < -345 else 1.08
         for k in range(n):
             t = (k + 0.5) / n
             # 15 out: the slabs' foot bulges stop at the edge, clear of the camera's room over spawns
@@ -7237,7 +7240,7 @@ def glacier_walls(rng):
             # where the floor outside is the lower one (a terrace's own edge), the cliff stands on the
             # terrace: its snow drift lies on the floor it faces, not buried in it
             foot = max(floor_at(px, pz, inner), inner)
-            s = max(0.85, min(1.15, (inner + 46 - foot) / 50.0)) * rng.uniform(0.96, 1.06)
+            s = max(0.85, min(1.15, (inner + 50 - foot) / 56.0)) * far * rng.uniform(0.96, 1.06)
             yaw = yaw_facing(-out[0], -out[1]) + rng.uniform(-5, 5)
             if in_notch(px, pz):  # the notch: rubble and a low broken lip instead of a wall
                 visual.append(kit_piece("IceLedge", f"GlacierNotch{i:02d}_{k}", px, pz, yaw, 1.6, y=foot - 0.4,
@@ -7245,34 +7248,31 @@ def glacier_walls(rng):
                 continue
             key = keys[(i * 2 + k) % 3]
             visual.append(kit_piece(key, f"GlacierCliff{i:02d}_{k}", px, pz, yaw, s, y=foot - 0.4, layer="cliff"))
-            visual.append(wall_rubble(f"GlacierRubble{i:02d}_{k}", px, pz, out, (dx, dz), 28 * s, rng, marks))
-        # the second rank: giant crags on the apron behind the wall, ~170-200 to the crest
-        m = max(1, math.ceil(seg / 100.0))
-        ts = [(k + 0.5) / m for k in range(m)]
-        if (ax, az) == (-350, -132):  # the notch's jambs: a crag at each end of the ridge's north wall
-            ts = [0.02, 1.0]
-        for k, t in enumerate(ts):
-            s = max(0.95, min(1.15, (inner + 160 - 0.5) / 160.0)) * rng.uniform(0.94, 1.06)
-            # far enough out that its drift (to 36 * s in front of its centre) clears the floor slab,
-            # which runs 20 past the outline (further past the forecourt's alcove: step out until clear)
-            jx, jz = rng.uniform(-5, 5), rng.uniform(-5, 5)
-            for d in (24 + 36 * s, 36 + 36 * s, 48 + 36 * s):
-                qx = ax + (bx - ax) * t + out[0] * d + jx
-                qz = az + (bz - az) * t + out[1] * d + jz
-                if floor_at(qx - out[0] * 36 * s, qz - out[1] * 36 * s, 0.5) <= 1.0:
-                    break
-            else:
-                continue
-            if not (-596 < qx < -108 and -256 < qz < 90):
-                continue  # off the snowfield apron: the hub east, the desert south
-            if in_notch(qx, qz):
-                continue
-            foot = floor_at(qx, qz, 0.5)
-            if foot > 1.0:
-                continue
-            yaw = yaw_facing(-out[0], -out[1]) + rng.uniform(-14, 14)
-            visual.append(kit_piece(crags[(i + k) % 2], f"GlacierCrag{i:02d}_{k}", qx, qz, yaw, s, y=foot - 0.4,
-                                    layer="vista"))
+            visual.append(wall_rubble(f"GlacierRubble{i:02d}_{k}", px, pz, out, (dx, dz), 44 * s, rng, marks, n=7))
+    # The second rank: five enormous spires (IceSpireA/B, one huge leaning shard each, 150-200
+    # tall) at the valley's corners, and four crags a step paler between them, all on the apron
+    # well back from the walls. Placed by hand so that the corridor's sight line (from the ascent's
+    # top north-west over the stair, through the notch, to the range) has nothing tall in it: the
+    # spires flank it, the crags stand off it.
+    for k, (key, x, z, fx, fz, s) in enumerate((
+            ("IceSpireA", -166, -118, 0.0, 1.0, 1.0),     # over Frost Hollow's north wall
+            ("IceSpireB", -262, -190, 0.2, 1.0, 1.2),     # the terrace's north flank, nearest the corridor
+            ("IceSpireA", -352, -205, -0.3, 1.0, 1.15),   # the notch's east jamb
+            ("IceSpireB", -452, -215, 0.5, 1.0, 1.1),     # the notch's west jamb
+            ("IceSpireA", -528, -40, 1.0, 0.1, 1.05))):   # over the ridge's west wall
+        foot = floor_at(x, z, 0.5)
+        assert foot <= 1.0, (key, x, z, foot)
+        visual.append(kit_piece(key, f"GlacierSpire{k}", x, z, yaw_facing(fx, fz) + rng.uniform(-8, 8), s, y=foot - 0.4,
+                                layer="vista"))
+    for k, (key, x, z, fx, fz, s) in enumerate((
+            ("IceCragA", -196, -238, 0.0, 1.0, 1.0),
+            ("IceCragB", -304, -252, -0.2, 1.0, 1.05),
+            ("IceCragA", -604, -64, 1.0, 0.0, 1.0),
+            ("IceCragB", -586, 66, 1.0, -0.2, 0.95))):
+        foot = floor_at(x, z, 0.5)
+        assert foot <= 1.0, (key, x, z, foot)
+        visual.append(kit_piece(key, f"GlacierCrag{k}", x, z, yaw_facing(fx, fz) + rng.uniform(-10, 10), s, y=foot - 0.4,
+                                layer="vista"))
     return visual, proxies
 
 
@@ -7497,7 +7497,7 @@ def build_frostbound_glacier():
     # Floors. The slabs run out past the outline so the cliffs stand on them; the apron is the
     # snowfield under everything, out to the vista peaks, so no view ends on the bare baseplate.
     ground = [
-        slab("GlacierApron", -600, -104, -260, 92, 0.5, GK.SNOW_SHADE, "SmoothPlastic"),
+        slab("GlacierApron", -860, -104, -520, 92, 0.5, GK.SNOW_SHADE, "SmoothPlastic"),
         slab("FrostHollowFloor", -200, -104, -76, 76, Y0, GK.SNOW, "SmoothPlastic"),
         slab("AscentFloor", -228, -200, -56, 56, Y0, GK.SNOW, "SmoothPlastic"),
         ramp_x("GreatAscent", -186, -228, -28, 28, Y0, Y1, GK.SNOW_PATH),
@@ -7699,6 +7699,10 @@ def build_frostbound_glacier():
                                                 (x, Y1 + 0.5, z), GK.SNOW_SHADE,
                                                 rot=mul(rot_y(yaw), mul(rot_x(river_rng.uniform(4, 8)), rot_z(river_rng.uniform(-3, 3)))),
                                                 layer="rock", shadow=False))
+    # the river's landmark: a leaning ice pillar (a spire at toy scale) at its far end by the
+    # stair's mouth, so the floes read as a path to somewhere
+    if clear(-300, -94, 20, 14, 6):
+        visual.append(kit_piece("IceSpireB", "RiverPillar", -300, -94, yaw_facing(1, 0.4), 0.2, y=Y1))
     fx, fz = lx + 12, lz + 13  # an ice-fishing hole, the expedition's only trace out on the lake
     visual.append(disc("FishingHole", fx, fz, 1.6, Y1 + 0.42, 0.2, GK.TEMPLE_NIGHT, "SmoothPlastic", collide=False,
                        layer="decal")[0])
@@ -7778,14 +7782,24 @@ def build_frostbound_glacier():
                                                                 pz_ + math.sin(a) * (pr - 5)), GK.TEMPLE_TRIM,
                            rot=rot_y(90 - math.degrees(a)), collide=False, query=False, shadow=False, layer="decal"))
 
-    # ── Vista: the range on the snowfield's rim beyond the crags, 220-290 tall, hazed pale blue ──
-    # (along the north and the west; south lies the desert). One stands square behind the notch.
-    for k, (key, x, z, s) in enumerate((("SnowPeakB", -150, -222, 0.95), ("SnowPeakA", -236, -246, 1.05),
-                                        ("SnowPeakB", -318, -236, 1.1), ("SnowPeakA", -400, -250, 1.2),
-                                        ("SnowPeakB", -486, -238, 1.0), ("SnowPeakA", -566, -212, 1.15),
-                                        ("SnowPeakB", -586, -120, 1.05), ("SnowPeakA", -594, -30, 1.1),
-                                        ("SnowPeakB", -584, 56, 1.0))):
+    # ── Vista: the range far out on the snowfield's rim beyond the crags, hazed pale blue, low on
+    # the horizon from the floor (150-260 tall at 250-450 studs); two peaks stand square in the
+    # corridor's vanishing point, north-west through the notch ──
+    for k, (key, x, z, s) in enumerate((("SnowPeakB", -170, -400, 0.9), ("SnowPeakA", -300, -420, 1.0),
+                                        ("SnowPeakB", -440, -440, 1.05), ("SnowPeakA", -570, -410, 1.1),
+                                        ("SnowPeakB", -640, -380, 0.9), ("SnowPeakA", -700, -290, 1.0),
+                                        ("SnowPeakB", -760, -180, 1.0), ("SnowPeakA", -790, -60, 1.05),
+                                        ("SnowPeakB", -770, 60, 0.95))):
         visual.append(kit_piece(key, f"VistaPeak{k}", x, z, rng.uniform(0, 360), s, y=0.3, layer="vista"))
+    # Haze: banks of mist lying on the snowfield between the ranks (flat translucent lenses, no
+    # straight edge against the sky), so the feet of the crags and the range dissolve and each rank
+    # behind reads a step paler. Decoration only, nothing collides or queries.
+    for k, (x, z, sx, sz, yaw) in enumerate(((-230, -238, 260, 90, 4), (-450, -242, 240, 90, -6), (-380, -330, 420, 120, 8),
+                                             (-620, -330, 260, 110, 30), (-610, -120, 110, 240, 3), (-610, 60, 110, 220, -4),
+                                             (-730, -100, 130, 300, 6))):
+        h = 30.0 + 2.5 * k  # each bank its own height: no two tops level
+        visual.append(ellipsoid(f"GlacierMist{k}", (sx, h, sz), (x, 9.0 + 0.7 * k, z), GK.ICE_PALE,
+                                rot=mul(rot_y(yaw), rot_x(1.5 + 0.3 * k)), transparency=0.55, shadow=False, layer="vista"))
     return ground, visual, proxies
 
 
