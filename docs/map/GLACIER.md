@@ -17,7 +17,7 @@ Aerial, ascent, lake, ridge, bridge and forecourt, rendered from the parts versi
 
 | Area | Where (x, z) | Floor Y | What's there |
 | --- | --- | --- | --- |
-| Frost Hollow | −184..−104, −56..56 | 10 | Safe zone. The expedition camp: a timber cabin with a smoking chimney, a campfire and log benches, tents, a supply sled, a snowman. **Waystone 6 "Frost Hollow"** (arrival −142, 14). Level with the hub, straight through the gate. |
+| Frost Hollow | −184..−104, −56..56 | 10 (corner shelves 14) | Safe zone. A timber hamlet under the ice: the two-storey lodge "The Thawed Kettle" with its lit porch, six cabins (two on each raised corner shelf behind it, one on the south yard), roofs higher still on mounds against the west cliff, every chimney smoking; amber window panes, lantern strings, a dark-ice skating pond and two fires with log benches just inside the gate, a well, sleds, banners, and snow-people (a shopkeeper, a skater, one warming by the fire). The exit arch is deep ice with a glowing rim. **Waystone 6 "Frost Hollow"** (arrival −142, 14). Level with the hub, straight through the gate. |
 | The Great Ascent | −228..−186, −28..28 | 10 → 20 | A 56-wide snow ramp between fir-lined banks, two lanterns, under the **Ice Arch**. |
 | Frozen Lake terrace | −350..−228, −104..64 | 20 | A cracked ice lake (r 30) with an ice-fishing hole, the **Frozen Fall** pouring off the north cliff, fir groves, crystal clusters. Four FrostImp packs (L18, L18, L19, L19), one out on the ice. |
 | Gargoyle Stair | −350..−318, −100..−60 | 20 → 30 | A ramp up the ridge's ice face between temple ruins. |
@@ -109,8 +109,9 @@ Until this is done the Glacier plays and looks complete in parts. Nothing depend
 ## Air, weather, camera
 
 - `ZoneAir.client.luau`:
-  - moves the ambient, outdoor ambient and atmosphere colour toward a cool, high-key ice blue west
-    of the gate (`FROST_AIR`, 60 % share, daylight only);
+  - moves the ambient, outdoor ambient and atmosphere colour toward a deep, saturated dusk blue west
+    of the gate (`FROST_AIR`, 85 % share, daylight only): about a third darker than the town's
+    daylight shade, so the hamlet's amber windows and fires are the warm focal point of a cold frame;
   - caps the camera zoom at 44 in the Glacier;
   - adds an empty-SoundId `GlacierWind` bed for Alex to fill.
 - `GlacierAmbience.client.luau`:
@@ -124,8 +125,8 @@ Until this is done the Glacier plays and looks complete in parts. Nothing depend
 
 - Seed `0x61AC1E5`, private: the hub, Iron Lowlands and Briarwood regenerate byte-identical, apart
   from the hub's gate (unsealed, "Lv 18 - 25 | Open") and its removed placeholder vista.
-- About 2,370 parts in `FrostboundGlacier` (19 collidable; the walls, crags and range are ~1,500 of them) and 12 floors.
-- 14 PointLights (budget 20).
+- About 3,365 parts in `FrostboundGlacier` (47 collidable; the walls, crags and range are ~1,500 of them, the hamlet ~1,000) and 14 floors.
+- 16 PointLights (budget 20): Neon carries every window and lantern; lights sit only at the gate, the waystones, the lodge door, the two fires, the pond strings' hub, and the temple.
 - `check_map_project.py`: 0 FAILs. The nav grid now spans x −490..150, z −170..960.
 - `audit_map.py FrostboundGlacier`: the trail lanes are clear, and nothing collidable is within 4
   studs of a spawn.

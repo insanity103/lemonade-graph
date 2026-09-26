@@ -6710,16 +6710,19 @@ GLACIER_SPAWNS = [
 GLACIER_ARRIVALS = {"FrostHollow": (-142, 14), "GargoyleRidge": (-366, -44)}
 
 
-def kit_piece(key, name, x, z, yaw, s=1.0, y=None, layer="rock", attrs=None, light_on=None):
+def kit_piece(key, name, x, z, yaw, s=1.0, y=None, layer="rock", attrs=None, light_on=None, recolor=None):
     """One kit piece from tools/glacier_kit.py, built from parts: standing at (x, y, z) (y = the floor
     there), turned so its front (local -Z) faces `yaw`, grown by `s`. The model carries the MeshSlot
     attributes MeshSlots.server.luau needs to swap in the imported mesh: its key, the mesh's world
     centre (kit.json's measured centre, turned and grown the same way), yaw and scale. `light_on`
-    names a glow part that gets a PointLight."""
+    names a glow part that gets a PointLight. `recolor` maps kit colours to others for this one
+    placement (the parts only: the mesh, when it is swapped in, keeps the kit's colours)."""
     y = floor_at(x, z, 0.0) if y is None else y
     R = rot_y(yaw)
     kids = []
     for pt in GK.lofi(GK.build(key)):
+        if recolor:
+            pt = dict(pt, color=recolor.get(tuple(pt["color"]), pt["color"]))
         off = apply(R, tuple(v * s for v in pt["pos"]))
         pos = (x + off[0], y + off[1], z + off[2])
         size = tuple(v * s for v in pt["size"])
@@ -6786,38 +6789,64 @@ def snow_drift(name, x, z, sx, sz, rng, h=2.6, y=None, color=GK.SNOW_SHADE):
     return ellipsoid(name, (sx, h, sz), (x, y + h * 0.18, z), color, rot=tilt(rng, 1.5, 4), layer="rock", shadow=False)
 
 
-def snowman(name, x, z, yaw, rng):
+def snowman(name, x, z, yaw, rng, s=1.0):
+    """The village snowman; `s` < 1 makes a villager-scale snow-person (a shopkeeper, a skater)."""
     y = floor_at(x, z, 0.0)
-    r, at = local_frame(x, y, z, yaw)
-    kids = [part("Base", (4.6, 4.6, 4.6), at(0, 2.0, 0), GK.SNOW, shape="Ball", collide=False, query=False),
-            part("Middle", (3.5, 3.5, 3.5), at(0, 5.2, 0), GK.SNOW, shape="Ball", collide=False, query=False),
-            part("Head", (2.6, 2.6, 2.6), at(0, 7.7, 0), GK.SNOW, shape="Ball", collide=False, query=False),
-            part("Nose", (1.4, 0.5, 0.5), at(0, 7.7, -1.5), (255, 140, 40), "SmoothPlastic",
+    r, at0 = local_frame(x, y, z, yaw)
+
+    def at(lx, ly, lz):
+        return at0(lx * s, ly * s, lz * s)
+
+    def S(*v):
+        return tuple(c * s for c in v)
+
+    kids = [part("Base", S(4.6, 4.6, 4.6), at(0, 2.0, 0), GK.SNOW, shape="Ball", collide=False, query=False),
+            part("Middle", S(3.5, 3.5, 3.5), at(0, 5.2, 0), GK.SNOW, shape="Ball", collide=False, query=False),
+            part("Head", S(2.6, 2.6, 2.6), at(0, 7.7, 0), GK.SNOW, shape="Ball", collide=False, query=False),
+            part("Nose", S(1.4, 0.5, 0.5), at(0, 7.7, -1.5), (255, 140, 40), "SmoothPlastic",
                  mul(r, rot_y(90)), shape="Cylinder", collide=False, query=False),
-            part("Scarf", (3.0, 0.7, 3.0), at(0, 6.7, 0), LEMON, "SmoothPlastic", mul(r, rot_z(90)),
+            part("Scarf", S(3.0, 0.7, 3.0), at(0, 6.7, 0), LEMON, "SmoothPlastic", mul(r, rot_z(90)),
                  shape="Cylinder", collide=False, query=False),
-            part("ScarfTail", (0.8, 2.2, 0.35), at(0.9, 5.8, -1.3), LEMON, "SmoothPlastic", mul(r, rot_z(-10)),
+            part("ScarfTail", S(0.8, 2.2, 0.35), at(0.9, 5.8, -1.3), LEMON, "SmoothPlastic", mul(r, rot_z(-10)),
                  collide=False, query=False),
-            part("HatBrim", (0.3, 3.0, 3.0), at(0, 8.9, 0), GK.TEMPLE_NIGHT, "SmoothPlastic", mul(r, rot_z(90)),
+            part("HatBrim", S(0.3, 3.0, 3.0), at(0, 8.9, 0), GK.TEMPLE_NIGHT, "SmoothPlastic", mul(r, rot_z(90)),
                  shape="Cylinder", collide=False, query=False),
-            part("Hat", (1.9, 1.9, 1.9), at(0, 9.95, 0), GK.TEMPLE_NIGHT, "SmoothPlastic", mul(r, rot_z(90)),
+            part("Hat", S(1.9, 1.9, 1.9), at(0, 9.95, 0), GK.TEMPLE_NIGHT, "SmoothPlastic", mul(r, rot_z(90)),
                  shape="Cylinder", collide=False, query=False),
-            part("HatBand", (0.5, 2.0, 2.0), at(0, 9.3, 0), (255, 84, 64), "SmoothPlastic", mul(r, rot_z(90)),
+            part("HatBand", S(0.5, 2.0, 2.0), at(0, 9.3, 0), (255, 84, 64), "SmoothPlastic", mul(r, rot_z(90)),
                  shape="Cylinder", collide=False, query=False)]
     for k, lx in enumerate((-0.5, 0.5)):
-        kids.append(part(f"Eye{k}", (0.35, 0.35, 0.35), at(lx, 8.1, -1.2), GK.TEMPLE_NIGHT, shape="Ball",
+        kids.append(part(f"Eye{k}", S(0.35, 0.35, 0.35), at(lx, 8.1, -1.2), GK.TEMPLE_NIGHT, shape="Ball",
                          collide=False, query=False))
     for side in (-1, 1):
-        kids.append(cyl(f"Arm{side}", at(side * 1.4, 5.6, 0), at(side * 3.6, 7.4, -0.3), 0.35, BARK, collide=False,
+        kids.append(cyl(f"Arm{side}", at(side * 1.4, 5.6, 0), at(side * 3.6, 7.4, -0.3), 0.35 * s, BARK, collide=False,
                         query=False, layer="prop"))
     return model(name, kids)
 
 
 # ── Frost Hollow village kit ──
 FROST_ROOF = (255, 84, 64)      # coral roofs under the snow
-FROST_WINDOW = (255, 214, 140)  # lit windows: warm against the ice
-FROST_LAMP = (255, 208, 132)    # lantern glass
+FROST_WINDOW = (255, 170, 60)   # lit windows: amber against the dusk-blue snow (round 2: was a pale cream)
+FROST_LAMP = (255, 176, 72)     # lantern glass, a hair paler than the panes
+FROST_SMOKE = (226, 234, 246)   # chimney and fire puffs: blue-white, never grey
+
+
+def smoke_puffs(name, x, y, z, rng, n=3, s=1.0, drift=(0.6, 0.0)):
+    """Soft puffs rising from a chimney or fire at (x, y, z): ellipsoids growing and thinning as
+    they climb, leaning with `drift` (x, z per stud of rise). They collide with nothing; the Smoke
+    emitter carries the motion in play, these carry it in a still render."""
+    kids = []
+    rise = 0.3 * s  # the first puff's centre: its lower half inside the cap it rises from
+    for k in range(n):
+        d = (2.2 + k * 0.9) * s
+        if k:
+            rise += ((2.2 + (k - 1) * 0.9) * s + d) * 0.4 * 0.6  # the two half-heights, less an overlap
+        kids.append(ellipsoid(f"Puff{k}", (d * rng.uniform(0.9, 1.15), d * 0.8, d * rng.uniform(0.9, 1.15)),
+                              (x + drift[0] * rise + rng.uniform(-0.25, 0.25), y + rise, z + drift[1] * rise + rng.uniform(-0.25, 0.25)),
+                              FROST_SMOKE, rot=tilt(rng, 4, 12), transparency=0.3 + k * 0.08, shadow=False, layer="prop"))
+    return model(name, kids)
 FROST_DOOR = (40, 196, 214)
+FROST_POND_DEEP = (30, 110, 236)  # the pond's thick middle: between ICE_DEEP and TEMPLE_NIGHT
 
 
 def frost_cabin(name, x, z, yaw, rng, w=14.0, d=10.0, storeys=1, porch=False, lit=False, chimney=True, sign=None,
@@ -6895,6 +6924,8 @@ def frost_cabin(name, x, z, yaw, rng, w=14.0, d=10.0, storeys=1, porch=False, li
                          query=False, children=[smoke(3.2, 0.3, 2.5, (236, 244, 255))]))
         kids.append(part("ChimneyCap", (2.9, 0.9, 2.9), at(cx, h + 0.9 + ch + 0.4, cz), GK.SNOW, rot=r, collide=False,
                          query=False))
+        wx, wy, wz = at(cx, h + 0.9 + ch + 0.9, cz)
+        kids.append(smoke_puffs("ChimneySmoke", wx, wy, wz, rng, n=5, s=1.15 + 0.15 * storeys))
     if lamp:
         kids.append(part("DoorLamp", (0.8, 1.1, 0.8), at(2.7, 6.2, front - 0.6), FROST_LAMP, "Neon", r, collide=False,
                          query=False, shadow=False, children=[light(22, 1.3, LANTERN)] if lit else None))
@@ -6948,6 +6979,10 @@ def frost_fire(name, x, z, rng, lit=True):
                          collide=False, query=False))
     kids.append(part("Embers", (1.5, 0.4, 1.5), (x, y + 0.4, z), EMBER, "Neon", collide=False, query=False, shadow=False,
                      children=[fire(5, 8), smoke(2.4, 0.2, 3.0, (236, 244, 255))] + ([light(26, 1.8, (255, 170, 96))] if lit else [])))
+    for k in range(3):  # the flames themselves, for a still render: three tongues of ember orange
+        kids.append(ellipsoid(f"Flame{k}", (2.2 - k * 0.45, 2.8 - k * 0.5, 2.2 - k * 0.45), (x + rng.uniform(-0.3, 0.3), y + 1.6 + k * 1.1, z + rng.uniform(-0.3, 0.3)),
+                              (EMBER, (255, 170, 64), (255, 214, 110))[k], "Neon", tilt(rng, 3, 8), shadow=False, layer="prop"))
+    kids.append(smoke_puffs("FireSmoke", x, y + 4.4, z, rng, s=0.9, drift=(0.35, 0.2)))
     return model(name, kids)
 
 
@@ -7004,8 +7039,9 @@ def firewood(name, x, z, yaw, rng, rows=3):
     return model(name, kids)
 
 
-def lantern_string(name, a, b, rng, n=5, drop=8.2, sag=1.8):
-    """A rope strung between two lantern posts' tops with paper lanterns hung along its sag."""
+def lantern_string(name, a, b, rng, n=5, drop=8.2, sag=1.8, lit=False):
+    """A rope strung between two lantern posts' tops with paper lanterns hung along its sag. `lit`
+    gives the middle lantern a PointLight: the string's hub, one light for the whole run."""
     (ax, az), (bx, bz) = a, b
     ya, yb = floor_at(ax, az, 0.0) + drop, floor_at(bx, bz, 0.0) + drop
     mid = ((ax + bx) / 2, (ya + yb) / 2 - sag, (az + bz) / 2)
@@ -7020,7 +7056,8 @@ def lantern_string(name, a, b, rng, n=5, drop=8.2, sag=1.8):
             u = (t - 0.5) * 2
             px_, py, pz = mid[0] + (bx - mid[0]) * u, mid[1] + (yb - mid[1]) * u, mid[2] + (bz - mid[2]) * u
         kids.append(part(f"Lantern{k}", (1.1, 1.1, 1.1), (px_, py - 0.55, pz), (FROST_LAMP, LEMON, (255, 150, 90))[k % 3], "Neon",
-                         shape="Ball", collide=False, query=False, shadow=False))
+                         shape="Ball", collide=False, query=False, shadow=False,
+                         children=[light(24, 1.4, (255, 190, 96))] if lit and k == n // 2 else None))
     return model(name, kids)
 
 
@@ -7048,11 +7085,12 @@ def snow_well(name, x, z, rng):
 
 
 def frozen_pond(name, x, z, radius, rng):
-    """A frozen pond: frosted ice with a clear blue middle, skating loops scratched into it and a
-    snow rim."""
+    """A frozen pond: saturated deep-blue ice, darker still in the middle where it is thickest,
+    skating loops scratched into it and a snow rim. The one dark, saturated plane in the hamlet: the
+    blue-shadowed foil to the warm windows."""
     y = floor_at(x, z, 0.0)
-    kids = disc("Ice", x, z, radius, y + 0.25, 0.5, GK.ICE_PALE, "SmoothPlastic", collide=False, layer="decal")
-    kids += disc("DeepIce", x, z, radius * 0.62, y + 0.33, 0.2, GK.ICE, "SmoothPlastic", collide=False, layer="decal")
+    kids = disc("Ice", x, z, radius, y + 0.25, 0.5, GK.ICE_DEEP, "SmoothPlastic", collide=False, layer="decal")
+    kids += disc("DeepIce", x, z, radius * 0.62, y + 0.33, 0.2, FROST_POND_DEEP, "SmoothPlastic", collide=False, layer="decal")
     for k in range(3):  # skating loops
         cx, cz = x + rng.uniform(-radius * 0.35, radius * 0.35), z + rng.uniform(-radius * 0.35, radius * 0.35)
         rr = rng.uniform(radius * 0.3, radius * 0.5)
@@ -7065,7 +7103,7 @@ def frozen_pond(name, x, z, radius, rng):
             if math.hypot(p1[0] - x, p1[1] - z) > radius - 1:
                 continue
             ln = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
-            kids.append(part(f"Mark{k}_{j}", (ln + 0.2, 0.08, 0.3), ((p0[0] + p1[0]) / 2, y + 0.4 + (0.02 if j % 2 else 0), (p0[1] + p1[1]) / 2),
+            kids.append(part(f"Mark{k}_{j}", (ln + 0.2, 0.08, 0.3), ((p0[0] + p1[0]) / 2, y + 0.4 + 0.07 * k + (0.03 if j % 2 else 0), (p0[1] + p1[1]) / 2),
                              GK.SNOW, rot=rot_y(math.degrees(math.atan2(-(p1[1] - p0[1]), p1[0] - p0[0]))), collide=False,
                              query=False, shadow=False, layer="decal"))
     for k in range(9):  # the rim
@@ -7234,6 +7272,66 @@ def glacier_walls(rng):
     return visual, proxies
 
 
+def arch_glow_rim(name, x, z, yaw, s, rng, n=14):
+    """A GLOW Neon rim along the inner edge of an IceArch placed like kit_piece("IceArch", ..., x, z,
+    yaw, s): a run of glowing rods on both faces of the arch, so the arch reads as a lit ice portal
+    rather than one pale mass. The kit's voussoirs sit on an ellipse rx 17, ry 24 (radial depth 6.4);
+    the rim runs just inside them."""
+    y = floor_at(x, z, 0.0)
+    R = rot_y(yaw)
+    rx, ry = (17.0 - 3.8) * s, (24.0 - 3.8) * s
+    kids = []
+    for face in (-1, 1):
+        dz = face * 3.9 * s  # the arch's local Z is its thickness
+        pts = [(-rx * math.cos(math.pi * i / n), ry * math.sin(math.pi * i / n) + 1.0, dz) for i in range(n + 1)]
+        for i in range(n):
+            a = apply(R, pts[i])
+            b = apply(R, pts[i + 1])
+            kids.append(cyl(f"Rim{face}{i}", (x + a[0], y + a[1], z + a[2]), (x + b[0], y + b[1], z + b[2]), 0.7 * s,
+                            GK.GLOW, "Neon", collide=False, query=False, shadow=False, layer="prop", attrs={"MeshGlow": True}))
+    return model(name, kids)
+
+
+def frost_far_roof(name, x, z, yaw, y, rng, w=11.0, d=9.0):
+    """A house further up the ice: a snow mound at `y` with a roof, gable, one lit gable window,
+    chimney and smoke, no walls to speak of. Stacked behind the front row it reads as the hamlet
+    climbing the cliff, at a fraction of a cabin's parts. Nothing collides."""
+    r, at = local_frame(x, y, z, yaw)
+    kids = [ellipsoid("Mound", (w + 10, 7.0, d + 10), at(0, -0.4, 0), GK.SNOW_SHADE, rot=mul(r, rot_z(2)), layer="rock",
+                      shadow=False),
+            part("Walls", (w, 3.2, d), at(0, 2.6, 0), TIMBER, rot=r, collide=False, query=False),
+            part("Course", (w + 0.5, 0.5, d + 0.5), at(0, 3.2, 0), BEAM, rot=r, collide=False, query=False),
+            part("GableWindow", (2.2, 2.0, 0.3), at(0, 5.6, -d / 2 - 0.1), FROST_WINDOW, "Neon", r, collide=False, query=False,
+                 shadow=False),
+            part("Window", (2.4, 2.0, 0.3), at(-w / 4, 3.1, -d / 2 - 0.2), FROST_WINDOW, "Neon", r, collide=False, query=False,
+                 shadow=False)]
+    pitch = 32.0
+    run = d / 2 + 1.4
+    t = math.tan(math.radians(pitch))
+    slope_len = run / math.cos(math.radians(pitch))
+    h = 4.2
+    for side in (-1, 1):
+        rr = mul(r, rot_x(side * pitch))
+        kids.append(part(f"Roof{side}", (w + 2.8, 0.8, slope_len), at(0, h + t * run / 2, side * run / 2), FROST_ROOF, rot=rr,
+                         collide=False, query=False))
+        kids.append(part(f"RoofSnow{side}", (w + 2.4, 1.4, slope_len - 0.6), at(0, h + 1.05 + t * run / 2, side * (run / 2 - 0.3)),
+                         GK.SNOW, rot=rr, collide=False, query=False))
+    for sx in (-1, 1):
+        for sz in (-1, 1):
+            rw = mul(r, rot_y(0 if sz < 0 else 180))
+            kids.append(part(f"Gable{sx}{sz}", (0.6, t * run - 0.3, d / 2), at(sx * (w / 2 - 0.3), h + (t * run - 0.3) / 2, sz * d / 4),
+                             TIMBER, rot=rw, cls="WedgePart", collide=False, query=False))
+    kids.append(ellipsoid("RidgeSnow", (w + 3.0, 2.0, 2.8), at(0, h + t * run + 0.9, 0), GK.SNOW, rot=mul(r, rot_z(2)), layer="prop"))
+    cx, cz = w / 2 - 2.6, 1.6
+    ch = t * run + 3.2
+    kids.append(part("Chimney", (2.2, ch, 2.2), at(cx, h + ch / 2, cz), GK.ROCK_DEEP, rot=r, collide=False, query=False,
+                     children=[smoke(3.2, 0.3, 2.5, (236, 244, 255))]))
+    kids.append(part("ChimneyCap", (2.9, 0.9, 2.9), at(cx, h + ch + 0.4, cz), GK.SNOW, rot=r, collide=False, query=False))
+    wx, wy, wz = at(cx, h + ch + 0.9, cz)
+    kids.append(smoke_puffs("ChimneySmoke", wx, wy, wz, rng, n=4, s=1.1))
+    return model(name, kids)
+
+
 def build_frostbound_glacier():
     global AUTO_GROUND
     AUTO_GROUND = True
@@ -7300,46 +7398,72 @@ def build_frostbound_glacier():
     # Built from its own random stream; the shared one is advanced by exactly what the old camp drew
     # (107 words), so every placement after the hollow stays where it was.
     hv = random.Random(0xF0577)
+    # Round 2 (gauntlet, after glacier_refs/snow_village.png): the hamlet climbs its corners. Two snow
+    # shelves step up 4 studs in the north-west and south-west corners (Grounds slabs, built after the
+    # walls so the cliffs never see them) carrying a second row of small cabins behind the lodge; a
+    # third row of roofs sits higher still on mounds against the west cliff.
+    for tag, z0, z1 in (("NW", -58, -33), ("SW", 38, 61.5)):
+        ground.append(slab(f"HollowShelf{tag}", -186, -166, z0, z1, Y0 + 4.0, GK.SNOW, "SmoothPlastic"))
     visual.append(hanging_sign("GlacierSign", -112, -13, yaw_facing(-1, 0), "Frostbound Glacier", "Lv 18 - 25"))
     for k, z in enumerate((-11.5, 11.5)):
         visual.append(lantern_post(f"GateLantern{k}", -121, z, yaw_facing(0, -z), hv))
     visual.append(waystone("FrostHollowWaystone", "FrostHollow", -152, Y0, 26, glow=GK.GLOW))
-    # The houses: the lodge, two storeys with a lit porch on the street, and four cabins on the yards
-    # behind it. The street itself (the trail lane, z -8..10) stays open.
+    # The houses: the lodge, two storeys with a lit porch on the street, and the cabins on the yards
+    # behind it: two on each corner shelf, one on the south yard. The street itself (the trail lane,
+    # z -8..10) stays open.
     visual.append(frost_cabin("FrostLodge", -152, -41, yaw_facing(0, 1), hv, w=22, d=14, storeys=2, porch=True, lit=True,
                               sign="The Thawed Kettle"))
     visual.append(frost_cabin("CabinNE", -127, -44, yaw_facing(0, 1), hv, w=12, d=10))
-    visual.append(frost_cabin("CabinNW", -177, -46, yaw_facing(1, 0), hv, w=10, d=9))
+    visual.append(frost_cabin("CabinNW", -176, -51.5, yaw_facing(1, 0), hv, w=9, d=8))
+    visual.append(frost_cabin("CabinNW2", -176, -37.5, yaw_facing(1, 0), hv, w=9, d=7, storeys=2))
     visual.append(frost_cabin("CabinS", -158, 48, yaw_facing(0, -1), hv, w=14, d=10))
-    visual.append(frost_cabin("CabinSW", -177, 44, yaw_facing(1, 0), hv, w=10, d=9, storeys=2))
-    # Fires: the camp fire by the street and the skaters' fire by the pond, log benches round each.
+    visual.append(frost_cabin("CabinSW", -177, 43, yaw_facing(1, 0), hv, w=10, d=9, storeys=2))
+    visual.append(frost_cabin("CabinSW2", -176, 57, yaw_facing(1, 0), hv, w=9, d=6))
+    # The third row: roofs on mounds against the west cliff, over the shelves.
+    visual.append(frost_far_roof("FarRoofNW", -191, -50, yaw_facing(1, 0.3), Y0 + 18.0, hv))
+    visual.append(frost_far_roof("FarRoofNW2", -191, -37, yaw_facing(1, 0), Y0 + 15.0, hv, w=9, d=8))
+    visual.append(frost_far_roof("FarRoofSW", -191, 49, yaw_facing(1, -0.3), Y0 + 18.0, hv))
+    visual.append(frost_far_roof("FarRoofSW2", -191, 37, yaw_facing(1, 0), Y0 + 15.0, hv, w=9, d=8))
+    # Fires: the camp fire by the street and the skaters' fire past the pond, log benches round each.
     visual.append(frost_fire("CampFire", -140, -20, hv))
     for k, (x, z, yaw) in enumerate(((-140, -26.5, 0), (-146.6, -20, 90), (-133.4, -20, 90))):
         visual.append(snow_bench(f"CampLog{k}", x, z, yaw, 6.0))
-    visual.append(frost_fire("PondFire", -147, 38, hv))
-    for k, (x, z, yaw) in enumerate(((-152.5, 38, 90), (-147, 32.5, 0))):
+    visual.append(frost_fire("PondFire", -141, 41, hv))
+    for k, (x, z, yaw) in enumerate(((-147.5, 41, 90), (-141, 46.5, 0), (-134.5, 41, 90))):
         visual.append(snow_bench(f"PondLog{k}", x, z, yaw, 6.0))
-    visual.append(frozen_pond("SkatingPond", -129, 39, 10, hv))
-    visual.append(snowman("Snowman", -146, 46, yaw_facing(1, -0.4), hv))
+    # The pond: just south of the street inside the gate, the dark plane in the foreground of the
+    # view up the street (8 clear of the waystone's arrival).
+    visual.append(frozen_pond("SkatingPond", -136, 26, 10, hv))
+    visual.append(snowman("Snowman", -133, 50, yaw_facing(1, -0.4), hv))
+    # Villagers: the lodge's keeper on the porch step, a skater at the pond's edge, one warming by
+    # the camp fire. Snow-people at three-quarter scale: the hamlet is an enemy region's safe camp,
+    # so nothing here is an NPC.
+    visual.append(snowman("Shopkeeper", -149.5, -27.5, yaw_facing(0, 1), hv, s=0.78))
+    visual.append(snowman("Skater", -125, 36, yaw_facing(-0.6, -1), hv, s=0.7))
+    visual.append(snowman("Warmer", -134, -24.5, yaw_facing(-1, 0.6), hv, s=0.72))
     # Lantern posts: down both sides of the street, by every door and round the pond (Neon, unlit).
     for k, (x, z, yaw) in enumerate(((-174, -12, 0), (-154, -12, 0), (-136, -12, 0), (-174, 12, 180), (-158, 12, 180),
-                                     (-131, -37, 180), (-171, -50, -90), (-154, 41, 0), (-171, 40, -90), (-119, 32, 90),
-                                     (-140, 47, -90), (-125, 26, 180))):
+                                     (-131, -37, 180), (-169, -46, -90), (-113, 24, 180), (-118, 34, 90), (-129, 45, 0),
+                                     (-152, 40, 0), (-147, 22, 180))):
         visual.append(frost_lantern(f"HollowLantern{k}", x, z, yaw, hv))
-    for k, (a, b) in enumerate((((-174, -12), (-174, 12)), ((-154, -12), (-158, 12)), ((-140, 47), (-119, 32)),
-                                ((-119, 32), (-125, 26)), ((-154, 41), (-140, 47)))):
-        visual.append(lantern_string(f"StreetString{k}", a, b, hv))
+    # Strings: over the street's ends, round the pond and over the skaters' fire (that one lit: the
+    # strings' hub light).
+    for k, (a, b, lit) in enumerate((((-174, -12), (-174, 12), False), ((-154, -12), (-158, 12), False),
+                                     ((-113, 24), (-118, 34), False), ((-118, 34), (-129, 45), False),
+                                     ((-129, 45), (-152, 40), True), ((-147, 22), (-129, 45), False),
+                                     ((-152, 40), (-158, 12), False))):
+        visual.append(lantern_string(f"StreetString{k}", a, b, hv, lit=lit))
     visual.append(snow_well("HollowWell", -166, 34, hv))
     for k, (x, z, sx, sz) in enumerate(((-166, 13.5, 8, 3), (-128, -13.5, 7, 3), (-147, -13.5, 7, 3), (-183, 14, 5, 3))):
         visual.append(snow_drift(f"StreetDrift{k}", x, z, sx, sz, hv, h=1.6))
     # Yard fences, firewood, sleds, stores, banners.
     for k, (a, b) in enumerate((((-141, -27), (-129, -27)), ((-165, -27), (-176, -27)), ((-176, -27), (-176, -36)),
-                                ((-139, 26), (-119, 26)), ((-168, 36), (-178, 36)))):
+                                ((-118, 42), (-110, 42)), ((-168, 36), (-178, 36)))):
         visual.append(log_fence(f"HollowFence{k}", a, b, hv))
     for k, (x, z, yaw) in enumerate(((-167, -50, 0), (-146, 52, 90), (-121, -50, 20))):
         visual.append(firewood(f"Firewood{k}", x, z, yaw, hv))
-    visual.append(sled("SupplySled", -170, -32, 150, hv))
-    visual.append(sled("GateSled", -124, 20, 70, hv))
+    visual.append(sled("SupplySled", -120, -33, 150, hv))
+    visual.append(sled("GateSled", -112, 32, 70, hv))
     visual.append(crate_stack("LodgeCrates", -138, Y0, -34, hv))
     visual.append(barrel("LodgeBarrel", -135, Y0, -30, hv))
     for k, (x, z, yaw) in enumerate(((-165, -30, 180), (-139, -30, 180), (-176, -31, -90), (-176, 31, -90))):
@@ -7351,10 +7475,10 @@ def build_frostbound_glacier():
     for k, (key, x, z, s) in enumerate((("SnowFirA", -183, -33, 1.1), ("SnowFirC", -120, -54, 0.9),
                                         ("SnowFirB", -140, -54, 0.85), ("SnowFirC", -168, 55, 1.0),
                                         ("SnowFirA", -183, 32, 1.15), ("SnowFirB", -122, 52, 0.85),
-                                        ("SnowFirC", -146, 56, 1.0), ("SnowFirB", -174, 55, 0.9),
+                                        ("SnowFirC", -146, 56, 1.0), ("SnowFirB", -168, 59, 0.9),
                                         ("SnowFirA", -113, -50, 0.9), ("SnowFirB", -112, 48, 0.8))):
         visual.append(kit_piece(key, f"HollowFir{k}", x, z, hv.uniform(0, 360), s, layer="tree"))
-    for k, (key, x, z, s) in enumerate((("SnowRockA", -120, -30, 0.9), ("SnowRockB", -182, 52, 0.9),
+    for k, (key, x, z, s) in enumerate((("SnowRockA", -120, -30, 0.9), ("SnowRockB", -169, 41, 0.9),
                                         ("SnowRockC", -118, 50, 1.0), ("SnowRockC", -140, 54, 0.8))):
         visual.append(kit_piece(key, f"HollowRock{k}", x, z, hv.uniform(0, 360), s))
     for k, (x, z, sx, sz) in enumerate(((-146, -54, 16, 6), (-136, 55, 14, 5), (-118, -18, 6, 10), (-118, 8, 5, 8))):
@@ -7364,7 +7488,11 @@ def build_frostbound_glacier():
                                                   (-150, -57, yaw_facing(0, 1), 26, 20, 38), (-150, 57, yaw_facing(0, -1), 26, 20, 39),
                                                   (-185, -46, yaw_facing(1, 0), 20, 16, 29), (-185, 46, yaw_facing(1, 0), 20, 16, 30))):
         visual.append(ice_shelf(f"IceShelf{k}", x, z, yaw, w, depth, Y0 + y, hv))
-    visual.append(kit_piece("IceArch", "HollowArch", -185, 0, yaw_facing(1, 0), 1.7, layer="rock"))
+    # The exit arch: the kit's IceArch, its ice stepped one shade deeper and more saturated (the
+    # hollow's arch is seen against the dusk, not the sky), with a GLOW rim along its inner edge.
+    visual.append(kit_piece("IceArch", "HollowArch", -185, 0, yaw_facing(1, 0), 1.7, layer="rock",
+                            recolor={GK.ICE_PALE: GK.ICE, GK.ICE: GK.ICE_DEEP, GK.ICE_DEEP: (36, 118, 240)}))
+    visual.append(arch_glow_rim("HollowArchRim", -185, 0, yaw_facing(1, 0), 1.7, hv))
     for _ in range(107):
         rng.getrandbits(32)
 

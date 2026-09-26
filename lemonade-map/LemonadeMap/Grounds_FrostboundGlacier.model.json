@@ -602,6 +602,106 @@
     "CastShadow": true,
     "Shape": "Cylinder"
    }
+  },
+  {
+   "name": "HollowShelfNW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     20.0,
+     14.0,
+     25.0
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -176.0,
+       7.0,
+       -45.5
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9647,
+     0.9804,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
+  },
+  {
+   "name": "HollowShelfSW",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     20.0,
+     14.0,
+     23.5
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -176.0,
+       7.0,
+       49.75
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.9647,
+     0.9804,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": true,
+    "CanQuery": true,
+    "CanTouch": false,
+    "CastShadow": true
+   }
   }
  ]
 }
