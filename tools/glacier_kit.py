@@ -225,6 +225,76 @@ def crystal_cluster_c():  # a big one for the ridge
                      (13, 3.2, 11))
 
 
+# ── Crystal geodes and fields ──────────────────────────────────────────────────
+def _geode(spec, root):
+    """A crystal growth rooted in deep ice: shards fan out of the root, the biggest of them lit
+    (Neon). Its origin is the root's foot, so it stands on a ledge of the crevasse wall (yawed to
+    face across the slot, its shards leaning out over it: pitch < 0 leans toward the front) or on
+    the ground. `spec`: (x, z, height, width, yaw, lean, colour, glow)."""
+    out = [prim("ball", "Root", root, (0, root[1] * 0.3, 0), ICE_DEEP, (0, 4, 3), lumpy=0.05)]
+    for i, (x, z, h, w, yaw, lean, c, glow) in enumerate(spec):
+        out.append(prim("shard", "Core" if i == 0 else f"Shard{i}", (w, h, w), (x, 0.4, z), c, (yaw, lean, 0),
+                        glow=glow))
+    return out
+
+
+@piece
+def crystal_geode_a():  # a big cyan growth leaning out of a wall
+    return _geode([(0, 0, 14, 3.4, 0, -36, CRYSTAL, True), (-2.6, 0.6, 9.5, 2.4, 30, -52, CRYSTAL_VIOLET, False),
+                   (2.5, 0.4, 10.5, 2.6, -24, -44, CRYSTAL, True), (0.9, -1.4, 6.2, 1.8, 62, -22, ICE_PALE, False),
+                   (-1.5, -1.6, 5.2, 1.6, -58, -28, CRYSTAL, False), (3.3, 1.6, 5.6, 1.7, 14, -62, CRYSTAL_PINK, False),
+                   (-3.4, -0.4, 4.4, 1.4, 40, -40, ICE_PALE, False)], (8, 3.2, 6))
+
+
+@piece
+def crystal_geode_b():  # a violet growth, one lit heart
+    return _geode([(0, 0, 10, 2.8, 20, -40, CRYSTAL, True), (2.0, 0.8, 7.5, 2.0, -30, -55, CRYSTAL_VIOLET, False),
+                   (-2.0, 0.4, 8, 2.1, 45, -48, CRYSTAL_VIOLET, False), (0.6, -1.4, 5, 1.5, 70, -18, CRYSTAL_PINK, False),
+                   (-1.2, 1.6, 4.4, 1.3, -60, -64, ICE_PALE, False)], (6.4, 2.6, 5))
+
+
+def _field(spec, base):
+    """A crystal field for the ridge: a snow bank and a forest of tall shards, three of them lit."""
+    out = [prim("ball", "Base", base, (0, 0.6, 0), SNOW, (0, 3, 2), lumpy=0.04),
+           prim("ball", "Bank", (base[0] * 0.6, base[1] * 0.9, base[2] * 0.6), (base[0] * 0.28, 1.4, -base[2] * 0.2),
+                SNOW_SHADE, (20, 4, 3), lumpy=0.04)]
+    for i, (x, z, h, w, yaw, lean, c, glow) in enumerate(spec):
+        out.append(prim("shard", "Core" if i == 0 else f"Shard{i}", (w, h, w), (x, 0.3, z), c, (yaw, lean, 0),
+                        glow=glow))
+    return out
+
+
+@piece
+def crystal_field_a():
+    return _field([(0, 0, 24, 5.0, 0, 3, CRYSTAL, True), (-5.2, 1.6, 16, 4.0, 35, -14, CRYSTAL, False),
+                   (4.8, -1.4, 15, 3.8, 70, 15, CRYSTAL_VIOLET, False), (1.6, 4.6, 11, 3.0, 15, 22, CRYSTAL, True),
+                   (-2.6, -4.6, 10, 2.8, 55, -24, ICE_PALE, False), (6.4, 3.6, 8, 2.4, 5, 30, CRYSTAL_PINK, False),
+                   (-7.2, -2.0, 9, 2.6, 80, -30, CRYSTAL_VIOLET, False), (3.0, -5.4, 6.5, 2.0, 25, 28, CRYSTAL, True),
+                   (-4.6, 5.0, 7, 2.2, 60, -18, ICE_PALE, False), (8.0, 0.6, 5, 1.8, 40, 34, CRYSTAL_VIOLET, False)],
+                  (22, 4.4, 18))
+
+
+@piece
+def crystal_field_b():
+    return _field([(0, 0, 19, 4.2, 30, -6, CRYSTAL_VIOLET, True), (3.8, 2.0, 14, 3.4, 5, 18, CRYSTAL, True),
+                   (-3.8, 1.2, 12, 3.2, 50, -20, CRYSTAL, False), (0.8, -4.0, 9, 2.6, 80, 14, CRYSTAL_PINK, False),
+                   (-5.4, -2.6, 8, 2.4, 20, -30, CRYSTAL_VIOLET, False), (5.6, -2.0, 7, 2.2, 65, 26, ICE_PALE, False),
+                   (-1.6, 4.8, 6, 2.0, 40, 24, CRYSTAL, True)], (17, 3.8, 15))
+
+
+@piece
+def ice_block_pile():
+    """Tumbled ice: fallen blocks heaped on the canyon floor under a dusting of snow."""
+    return [
+        prim("block", "Big", (7, 5, 6), (0, 2.2, 0), ICE, (20, 12, -8), facet=True),
+        prim("block", "Lean", (5, 6.5, 4), (4.6, 2.4, 1.8), ICE_DEEP, (-30, -22, 14), facet=True),
+        prim("block", "Slab", (6, 2.4, 5), (-4.4, 1.0, -1.6), ICE_PALE, (50, 8, 6), facet=True),
+        prim("block", "Chip", (3, 3, 2.6), (1.6, 1.2, -4.2), ICE_PALE, (75, -14, 20), facet=True),
+        prim("ball", "Snow", (6.6, 2.0, 5.6), (-0.4, 5.0, 0.2), SNOW, (20, 6, -4), lumpy=0.04),
+        prim("ball", "SnowLean", (3.4, 1.4, 3.0), (-4.6, 2.5, -1.8), SNOW, (50, 4, 3), lumpy=0.04),
+    ]
+
+
 # ── Arches and the bridge ──────────────────────────────────────────────────────
 @piece
 def ice_arch():

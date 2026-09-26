@@ -21,8 +21,8 @@ Aerial, ascent, lake, ridge, bridge and forecourt, rendered from the parts versi
 | The Great Ascent | −228..−186, −28..28 | 10 → 20 | A 56-wide snow ramp between fir-lined banks, two lanterns, under the **Ice Arch**. |
 | Frozen Lake terrace | −350..−228, −104..64 | 20 | A cracked ice lake (r 30) with an ice-fishing hole, the **Frozen Fall** pouring off the north cliff, fir groves, crystal clusters. Four FrostImp packs (L18, L18, L19, L19), one out on the ice. |
 | Gargoyle Stair | −350..−318, −100..−60 | 20 → 30 | A ramp up the ridge's ice face between temple ruins. |
-| Gargoyle Ridge | −440..−350, −132..−24 | 30 | The **Frozen Colossus**: a giant ice knight half-sunk in the glacier, raising his sword. It's the milestone, seen from the lake. Big crystal fields; GlacialGargoyle L21/L22/L22 and the L23 elite. **Waystone 7 "Gargoyle Ridge"** (arrival −366, −44), just before the bridge, for short boss retries. |
-| Ice bridge / Blue Crevasse | bridge x −398..−382 over z −24..−4 | 30 (floor of the crevasse 3) | The one crossing. Invisible rails and lips make the crevasse impossible to fall into. Crystals and ice columns glow at its bottom. |
+| Gargoyle Ridge | −440..−350, −132..−24 | 30 | The **Frozen Colossus**: a giant ice knight half-sunk in the glacier, raising his sword. It's the milestone, seen from the lake. Big crystal fields (`CrystalFieldA/B`: forests of shards up to 30 tall, three of them Neon, the two largest lit); GlacialGargoyle L21/L22/L22 and the L23 elite. **Waystone 7 "Gargoyle Ridge"** (arrival −366, −44), just before the bridge, for short boss retries. |
+| Ice bridge / Blue Crevasse | bridge x −398..−382 over z −24..−4 | 30 (floor of the crevasse 3) | The one crossing. Invisible rails and lips make the crevasse impossible to fall into. Below: a canyon of layered blue ice (`blue_crevasse`, after `glacier_refs/ice_canyon.png`): strata of ICE / ICE_PALE / ICE_DEEP pitched into the slot and stepping out as they rise, snow on every ledge, crystal geodes glowing out of the walls and gems set into them, brows under the lips, a rim of ice and snow above each lip with icicle curtains beneath, tumbled blocks and drifts round a frozen meltwater pool, and the canyon closing at both ends: a dark cleft lit by a sunset glow in the west, a crystal-lit choke at the mouth over the lake. |
 | The Revenant's Forecourt | −440..−350, −4..88 | 30 | A round plaza (r 32) with an inlaid ring, four cold-fire braziers, frost banners, and a colonnade before the **Frozen Temple** (glowing doorway and snowflake crest) and its **Frozen Spire**. Boss_FrostRevenant L25, leash 30. |
 
 Around it all: ice cliffs grown so their crests stand ~46 studs over the floor they face, an
@@ -42,9 +42,10 @@ imps 10-13 s, Gargoyle Ridge 15 s, the Revenant 19 s.
 
 ## The kit: one spec, two builds
 
-`tools/glacier_kit.py` describes each of the 22 pieces once, as primitives (ball, drum, block,
+`tools/glacier_kit.py` describes each of the 27 pieces once, as primitives (ball, drum, block,
 wedge, cone, shard, icicle) in the piece's own frame:
 - the ice cliffs (3), snowy firs (3), snow rocks (3) and crystal clusters (3);
+- the crystal geodes (2, growing out of the crevasse walls), the crystal fields (2, the ridge) and the tumbled ice-block pile;
 - the ice arch and the ice bridge;
 - the temple column (intact and broken), the temple facade and the spire;
 - the Frozen Colossus, the Frozen Fall, and snow peaks (2).
@@ -79,9 +80,9 @@ Two builders read the same list:
 
 Until this is done the Glacier plays and looks complete in parts. Nothing depends on it.
 
-1. In Studio, with the map synced through Rojo, File > Import 3D each `assets/glacier/*.glb` (22 files).
+1. In Studio, with the map synced through Rojo, File > Import 3D each `assets/glacier/*.glb` (one per kit piece).
    Leave the importer's default orientation: `MeshSlots` turns the importer's 180° back.
-2. Move the 22 MeshParts (the importer leaves them in Workspace under "Scene" models) into a
+2. Move the MeshParts (the importer leaves them in Workspace under "Scene" models) into a
    Folder `ServerStorage/MapMeshes`. Name each exactly its key (`IceCliffA`, `SnowFirB`, ...).
    Each should be a plain MeshPart with a TextureID and no SurfaceAppearance.
 3. Play. `ServerScriptService/MeshSlots` swaps every slot whose mesh it finds and prints
@@ -107,8 +108,8 @@ Until this is done the Glacier plays and looks complete in parts. Nothing depend
 
 - Seed `0x61AC1E5`, private: the hub, Iron Lowlands and Briarwood regenerate byte-identical, apart
   from the hub's gate (unsealed, "Lv 18 - 25 | Open") and its removed placeholder vista.
-- About 1,400 parts in `FrostboundGlacier` (19 collidable) and 12 floors.
-- 14 PointLights (budget 20).
+- About 1,900 parts in `FrostboundGlacier` (19 collidable; the Blue Crevasse alone is ~600) and 12 floors.
+- 19 PointLights (budget 20): the crevasse's sunset cleft and two wall geodes, the ridge's two big fields.
 - `check_map_project.py`: 0 FAILs. The nav grid now spans x −490..150, z −170..960.
 - `audit_map.py FrostboundGlacier`: the trail lanes are clear, and nothing collidable is within 4
   studs of a spawn.
