@@ -1,5 +1,7 @@
 # Frostbound Glacier gauntlet: live progress
 
+Handoff to a local Studio session: `docs/map/GLACIER_LOCAL_HANDOFF.md`.
+
 The bar: the three photos in `docs/map/glacier_refs/`. Ours must be more striking, and still read
 as a toy. Each piece has a builder and a separate critic; the critic sees ours and the photo
 unlabelled and picks one.
