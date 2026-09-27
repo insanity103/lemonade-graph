@@ -7224,15 +7224,15 @@ def ice_boulder(name, x, z, rng, s=1.0, y=None):
     ])
 
 
-def glacier_tongue(name, path, y, rng, clear, wide=20.0):
+def glacier_tongue(name, path, y, rng, clear, wide=24.0):
     """The glacier tongue (round 5, after glacier_refs/glacier_valley.png): a raised band of
-    broken ice running up the valley's centre from the terrace's east end toward the stair, the
-    eye's line to the notch. A NAVY bed lies on the floor; over it a stair of fat rounded slabs of
-    frosted ice and snow (ICE_PALE, SNOW, ICE), each 8-12 long, up to the band's width across,
-    3 tall at the snout and 8 at the head, every one a little turned and tipped, a dark gap of bed
-    between neighbours; seracs (tilted blocks 6-12 tall under snow) stand on every third step,
-    away from the spawns' camera room; snow banks along both edges. All decorative: nothing
-    collides or queries, and the trail lane runs beside it."""
+    broken ice up the valley's centre, the eye's line to the notch. A NAVY bed lies on the floor;
+    over it a stair of fat rounded slabs (flattened ellipsoids of ICE_PALE, SNOW and ICE, 12-18
+    long, most of the band's width across, 3 tall at the snout and 8 at the head), each a little
+    turned and tipped, overlapping like scales with a dark gap of bed showing between them;
+    seracs (faceted blocks of ice 6-12 tall, tipped, under a snow cap) on every third slab and a
+    snow heap on every third, clear of the spawns' camera room; snow banks along both edges. All
+    decorative: nothing collides or queries."""
     kids = []
     total = sum(math.hypot(path[i + 1][0] - path[i][0], path[i + 1][1] - path[i][1]) for i in range(len(path) - 1))
     walked = 0.0
@@ -7246,27 +7246,26 @@ def glacier_tongue(name, path, y, rng, clear, wide=20.0):
         # the bed: a dark slab under the whole leg, alternate legs a hair different in height so
         # their overlaps at the bends never share a top
         bed_h = 1.0 if i % 2 else 1.3
-        kids.append(part(f"{name}Bed{i}", (seg + wide * 0.7, bed_h, wide + 2.0), ((ax + bx) / 2, y + bed_h / 2 - 0.2, (az + bz) / 2),
+        kids.append(part(f"{name}Bed{i}", (seg + wide * 0.6, bed_h, wide + 2.0), ((ax + bx) / 2, y + bed_h / 2 - 0.2, (az + bz) / 2),
                          GK.NAVY, rot=rot_y(yaw), collide=False, query=False, shadow=False, layer="decal"))
         d = 0.0
         while d < seg:
             t = (walked + d) / total  # 0 at the snout, 1 at the head
-            ln = rng.uniform(8.0, 12.0)
-            cx, cz = ax + ux * (d + ln / 2), az + uz * (d + ln / 2)
-            d += ln + rng.uniform(2.0, 3.2)  # the gap of bed between steps
-            h = 3.0 + 5.0 * t + rng.uniform(-0.6, 0.6)
-            w = wide * rng.uniform(0.7, 1.0)
-            off = rng.uniform(-1, 1) * (wide - w) * 0.5
+            ln = rng.uniform(12.0, 18.0)
+            cx, cz = ax + ux * (d + ln * 0.4), az + uz * (d + ln * 0.4)
+            d += ln * 0.62 + rng.uniform(1.0, 2.5)  # the slabs overlap, a slot of bed between
+            h = 3.5 + 6.0 * t + rng.uniform(-0.6, 0.6)
+            w = wide * rng.uniform(0.75, 1.05)
+            off = rng.uniform(-1, 1) * (wide - w) * 0.6
             x, z = cx + nx_ * off, cz + nz_ * off
             if not clear(x, z, 12, 10, 6):
                 continue
-            c = (GK.ICE_PALE, GK.ICE_PALE, GK.SNOW, GK.ICE, GK.ICE_PALE, GK.SNOW)[step % 6]
-            rot = mul(rot_y(yaw + rng.uniform(-9, 9)), mul(rot_x(rng.choice((-1, 1)) * rng.uniform(3.5, 5.0)),
-                                                          rot_z(rng.uniform(-3.5, 3.5))))
-            kids.append(part(f"{name}Step{step}", (ln, h, w), (x, y + h / 2 - 0.3, z), c, rot=rot, collide=False,
-                             query=False, layer="rock"))
+            c = (GK.ICE_PALE, GK.SNOW, GK.ICE_PALE, GK.ICE, GK.SNOW, GK.ICE_PALE)[step % 6]
+            rot = mul(rot_y(yaw + rng.uniform(-14, 14)), mul(rot_x(rng.choice((-1, 1)) * rng.uniform(3.0, 6.0)),
+                                                            rot_z(rng.uniform(-4.0, 4.0))))
+            kids.append(ellipsoid(f"{name}Slab{step}", (ln, h * 1.6, w), (x, y + h * 0.2, z), c, rot=rot, layer="rock"))
             if step % 3 == 1 and clear(x, z, 20, 16, 6):
-                # a serac on the step: a tilted block of clear or frosted ice under a snow cap
+                # a serac on the slab: a tipped faceted block of clear or frosted ice under a snow cap
                 sh = rng.uniform(6.0, 12.0)
                 sw = rng.uniform(4.5, 7.5)
                 sx, sz = x + nx_ * rng.uniform(-w * 0.2, w * 0.2), z + nz_ * rng.uniform(-w * 0.2, w * 0.2)
@@ -7279,8 +7278,8 @@ def glacier_tongue(name, path, y, rng, clear, wide=20.0):
                                       (sx + cap[0], y + h - 0.3 + sh * 0.4 + cap[1], sz + cap[2]), GK.SNOW,
                                       rot=mul(sr, rot_x(3)), layer="rock", shadow=False))
             elif step % 3 == 2:
-                # a snow lump heaped on the step's edge
-                kids.append(ellipsoid(f"{name}Heap{step}", (w * 0.5, h * 0.5, ln * 0.6),
+                # a snow lump heaped on the slab's edge
+                kids.append(ellipsoid(f"{name}Heap{step}", (w * 0.5, h * 0.6, ln * 0.6),
                                       (x + nx_ * w * 0.25, y + h - 0.3 + h * 0.1, z + nz_ * w * 0.25), GK.SNOW,
                                       rot=mul(rot_y(yaw), rot_x(rng.uniform(3, 7))), layer="rock", shadow=False))
             step += 1
@@ -7294,6 +7293,24 @@ def glacier_tongue(name, path, y, rng, clear, wide=20.0):
                                           rot=mul(rot_y(yaw), mul(rot_x(rng.uniform(4, 8)), rot_z(rng.uniform(-3, 3)))),
                                           layer="rock", shadow=False))
         walked += seg
+    return model(name, kids)
+
+
+def broken_ice(name, x0, z0, x1, z1, y, rng, clear, n=14):
+    """A patch of broken lake ice (round 5): low faceted plates of frosted ice and snow (1-2 tall)
+    heaved and tipped over a NAVY bed, in the frame's near foreground where the floor was bare.
+    Decorative, low enough to sit under any spawn's camera room."""
+    kids = [part(f"{name}Bed", (abs(x1 - x0) + 4, 0.9, abs(z1 - z0) + 4), ((x0 + x1) / 2, y + 0.25, (z0 + z1) / 2), GK.NAVY,
+                 rot=rot_y(rng.uniform(-6, 6)), collide=False, query=False, shadow=False, layer="decal")]
+    for k in range(n):
+        x, z = rng.uniform(min(x0, x1), max(x0, x1)), rng.uniform(min(z0, z1), max(z0, z1))
+        if not clear(x, z, 9, 10, 6):
+            continue
+        w, h = rng.uniform(5, 9), rng.uniform(0.8, 1.8)
+        c = (GK.ICE_PALE, GK.SNOW, GK.ICE)[k % 3]
+        rot = mul(rot_y(rng.uniform(0, 360)), mul(rot_x(rng.uniform(-14, 14)), rot_z(rng.uniform(-10, 10))))
+        kids.append(part(f"{name}Plate{k}", (w, h, w * rng.uniform(0.6, 1.0)), (x, y + h * 0.3 + w * 0.08, z), c, rot=rot,
+                         collide=False, query=False, layer="rock"))
     return model(name, kids)
 
 
@@ -7348,17 +7365,21 @@ def corridor_crest(px, pz, corner):
     (render_glacier, ZoneAir), so every wall south or west of the floor throws its shadow 0.9
     studs across it per stud of height: the south flank and the ridge's walls stay under ~85,
     where their shadows end at the river's south bank, and the floor stays bright."""
-    if corner:  # the short walls at x -350 closing the terrace's far corners: the notch's east jamb
-        return 72.0 if pz < 0 else 60.0  # stays low, so the notch beside it stays open
+    if corner:  # the short walls at x -350 closing the terrace's far corners
+        # the north one is the notch's east jamb, 8 degrees right of the sight line: it stays low
+        # (its crest 15 degrees up from the eye), so the peaks (24-28 up) stand clear over it
+        return 50.0 if pz < 0 else 60.0
     if px > -228:  # the terrace's east wall, behind the camera: no wider than its own short edges
         return 140.0 if pz < 0 else 110.0
-    if px >= -350 and pz < -104:  # the terrace's north flank: the corridor's towering wall
+    if px >= -350 and pz < -104:  # the terrace's north flank: the corridor's towering wall, sunlit
         return 232.0 - 0.85 * (-228 - px)  # 215 at the near piece, 145 at the far one (three pieces)
-    if px >= -350 and pz > 64:  # the south flank, on the sun's side
-        return 88.0 - 0.25 * (-228 - px)  # 80 at the near piece, 65 at the far one
+    if px >= -350 and pz > 64:  # the south flank, on the sun's side: its shadow lies over the near floor
+        return 124.0 - 0.2 * (-228 - px)  # 120 at the near piece, 100 at the far one
+    if px < -350 and pz > 88:  # the forecourt's south wall: its shadow reaches the lake's south half
+        return 130.0
     if px < -445 and pz < 18:  # the ridge's west wall
         return 62.0 + 0.08 * (pz + 132)
-    return 72.0  # the forecourt's walls, out of the corridor's frame
+    return 72.0  # the forecourt's other walls, out of the corridor's frame
 
 
 def glacier_walls(rng):
@@ -7374,7 +7395,7 @@ def glacier_walls(rng):
     from the lake."""
     visual, proxies = [], []
     keys = ("IceCliffA", "IceCliffB", "IceCliffC")
-    tiers = (("IceTierA", 200.0), ("IceTierB", 175.0))
+    tiers = (("IceWallA", 200.0), ("IceWallB", 170.0))
     marks = [xz for *_, xz, _ in GLACIER_SPAWNS] + list(GLACIER_ARRIVALS.values())
     pts = GL_OUTLINE
     for i in range(len(pts) - 1):
@@ -7392,9 +7413,10 @@ def glacier_walls(rng):
         valley = mx <= -228  # the terrace and beyond: the corridor's tiers
         corner = ax == bx == -350
         flank = valley and mz < -104 and -350 <= mx <= -228  # the terrace's north flank: the corridor's near wall
-        # one piece per ~110 studs of edge; the north flank gets one per 60 (three over its 122), so
-        # the stacks overlap by half their width and read as one continuous cliff, not three towers
-        n = max(1, math.ceil(seg / (60.0 if flank else 110.0)))
+        south = valley and mz > 64 and -350 <= mx <= -228  # the south flank, behind the eye's left shoulder
+        # one piece per ~110 studs of edge; the terrace's two flanks get one per 60 (three over their
+        # 122), so the pieces overlap by half their width and read as one continuous cliff
+        n = max(1, math.ceil(seg / (60.0 if flank or south else 110.0)))
         for k in range(n):
             t = (k + 0.5) / n
             # 15 out (the tiers 17): the feet stop at the edge, clear of the camera's room over spawns
@@ -7413,8 +7435,8 @@ def glacier_walls(rng):
                 s = corridor_crest(px, pz, corner) / kh * rng.uniform(0.97, 1.03)
                 far = mx < -345 and not corner
                 visual.append(kit_piece(key, f"GlacierCliff{i:02d}_{k}", px, pz, yaw, s, y=foot - 0.4, layer="cliff",
-                                        recolor=FAR_RANK if far else None, tilt=3.0 if flank else 0.0))
-                # less rubble on the terrace: its floor is the glacier tongue's, kept clear
+                                        recolor=FAR_RANK if far else None, tilt=3.0 if flank or south else 0.0))
+                # no rubble under the north flank: the glacier tongue runs along its foot
                 if not flank:
                     visual.append(wall_rubble(f"GlacierRubble{i:02d}_{k}", px, pz, out, (dx, dz), 40 * s, rng, marks,
                                               n=3 if not far else 6, big=0.9))
@@ -7431,13 +7453,14 @@ def glacier_walls(rng):
     for k, (key, x, z, fx, fz, s) in enumerate((
             ("IceSpireA", -166, -118, 0.0, 1.0, 1.0),     # over Frost Hollow's north wall
             ("IceSpireB", -262, -190, 0.2, 1.0, 1.2),     # the terrace's north flank, nearest the corridor
-            ("IceSpireA", -352, -205, -0.3, 1.0, 1.15),   # the notch's east jamb
-            ("IceSpireB", -452, -215, 0.5, 1.0, 1.1),     # the notch's west jamb
-            ("IceSpireA", -528, -40, 1.0, 0.1, 1.05))):   # over the ridge's west wall
+            ("IceSpireA", -352, -205, -0.3, 1.0, 1.15),   # the notch's east jamb, over the flank's far end
+            ("IceSpireB", -496, -62, 1.0, 0.2, 1.35),     # over the ridge's west wall: 20 degrees left of the notch
+            ("IceSpireA", -516, 10, 1.0, -0.1, 1.3))):    # over the forecourt's west wall: 36 degrees left
         foot = floor_at(x, z, 0.5)
         assert foot <= 1.0, (key, x, z, foot)
+        # the mid rank: a step paler than the walls (FAR_RANK), the silhouette behind them
         visual.append(kit_piece(key, f"GlacierSpire{k}", x, z, yaw_facing(fx, fz) + rng.uniform(-8, 8), s, y=foot - 0.4,
-                                layer="vista"))
+                                layer="vista", recolor=FAR_RANK))
     for k, (key, x, z, fx, fz, s) in enumerate((
             ("IceCragA", -196, -238, 0.0, 1.0, 1.0),
             ("IceCragB", -304, -252, -0.2, 1.0, 1.05),
@@ -7881,40 +7904,46 @@ def build_frostbound_glacier():
         a = k / 14 * math.tau + rng.uniform(-0.12, 0.12)
         x, z = lx + math.cos(a) * (lr + 2.2), lz + math.sin(a) * (lr + 2.2)
         if clear(x, z, 12, 12, 4):
-            visual.append(snow_drift(f"LakeRim{k}", x, z, rng.uniform(7, 11), rng.uniform(3.5, 5), rng, h=2.2,
+            visual.append(snow_drift(f"LakeRim{k}", x, z, rng.uniform(7, 11), rng.uniform(3.5, 5), rng, h=1.3,
                                      y=Y1, color=GK.SNOW))
     # The glacier tongue (round 5): the valley's leading line. A raised band of stepped, broken ice
-    # from the terrace's east end (right of the eye at the ascent's top, clear of the trail lane)
-    # round the lake's north shore to the stair's mouth, rising toward the notch; the trail crosses
-    # in front of its snout at the stair's foot. The lake's ice is left clean.
-    visual.append(glacier_tongue("Tongue", ((-244, -20), (-256, -38), (-272, -55), (-290, -65), (-306, -70)), Y1,
-                                 random.Random(0x70A6), clear))
-    # three crystal clusters, as accents: two by the north wall's foot, one by the south wall's
-    for k, (key, x, z, s) in enumerate((("CrystalClusterA", -240, -84, 1.2), ("CrystalClusterC", -332, -88, 1.0))):
+    # from the lake's east rim (right of the eye at the ascent's top, clear of the trail lane and
+    # the lake) north-west and then west along the north flank's foot to the stair's mouth,
+    # rising toward the notch. That strip is the one the sun reaches: the render's sun stands low
+    # in the west-south-west, so the west jamb and the south flank throw their shadows east-north-
+    # east over the lake and the near floor, and the tongue north of them lies lit. The trail
+    # crosses in front of its head at the stair's foot; the lake's ice is left clean.
+    visual.append(glacier_tongue("Tongue", ((-238, -22), (-248, -48), (-264, -68), (-284, -78), (-304, -82)), Y1,
+                                 random.Random(0x70A6), clear, wide=30.0))
+    visual.append(broken_ice("NearIce", -246, -14, -234, 6, Y1, random.Random(0xB0CE), clear))
+    # two crystal clusters, as accents by the north wall's foot
+    for k, (key, x, z, s) in enumerate((("CrystalClusterA", -228, -92, 1.1), ("CrystalClusterC", -332, -88, 1.0))):
         visual.append(kit_piece(key, f"LakeCrystal{k}", x, z, rng.uniform(0, 360), s,
                                 light_on=None))
     for k, (key, x, z, s) in enumerate((("SnowFirA", -238, -96, 1.2), ("SnowFirC", -250, -98, 1.1),
                                         ("SnowFirB", -262, -94, 0.9), ("SnowFirA", -236, 56, 1.1),
                                         ("SnowFirC", -248, 58, 1.0), ("SnowFirB", -326, 58, 0.9),
-                                        ("SnowFirA", -340, 38, 1.1), ("SnowFirC", -304, -96, 1.0),
+                                        ("SnowFirC", -304, -96, 1.0),
                                         ("SnowFirB", -318, 58, 0.8))):
         if clear(x, z, 22, 20, 6):
             visual.append(kit_piece(key, f"LakeFir{k}", x, z, rng.uniform(0, 360), s, layer="tree"))
     for k, (key, x, z, s) in enumerate((("SnowRockB", -296, -92, 1.0), ("SnowRockC", -266, 58, 1.1))):  # at the edges
         if clear(x, z, 14, 14, 5):
             visual.append(kit_piece(key, f"LakeRock{k}", x, z, rng.uniform(0, 360), s))
-    # The west jamb (round 5): the terrace's west edge, where the ridge and the forecourt stand
-    # 10 over it, is the corridor's near-left wall. From the ascent's top the eye looks north-west,
-    # so the south flank never enters the frame: the left side of the V is this edge. Two tier
-    # stacks stand on the terrace with their backs sunk under the higher floors, leaning east over
-    # it: a 185-tall one along the forecourt's edge (out of the top of the frame at its left edge)
-    # and a 100-tall one on the ridge's edge south of the stair, stepping down toward the notch;
-    # the crevasse mouth stays open as a cleft between them. Both keep 12 clear of the ridge
-    # waystone's arrival (-366, -44) and the stair's lane.
-    for k, (key, z, sc) in enumerate((("IceTierA", 36, 0.92), ("IceTierB", -44, 0.58))):
-        yaw = yaw_facing(1, 0) + rng.uniform(-3, 3)
-        visual.append(kit_piece(key, f"WestJamb{k}", -343, z, yaw, sc, y=Y1 - 0.4, layer="cliff", tilt=2.0))
-    visual.append(kit_piece("IceLedge", "RidgeFace0", -345, 82, yaw_facing(1, 0), 0.9, y=Y1 - 0.3, layer="cliff"))
+    # The west jamb (round 5): the terrace's west edge, where the forecourt stands 10 over it, is
+    # the corridor's near-left wall. From the ascent's top the eye looks north-west, so the south
+    # flank never enters the frame: the left side of the V is this edge. One fluted cliff 150 tall
+    # stands on the terrace with its back sunk under the forecourt's floor, leaning east over it,
+    # from z 9 to 79: its north end is the frame's left edge, rising out of the top, its face in
+    # shade (the sun is behind it). It starts no further north than z 9 so that its shadow, which
+    # falls east-north-east, lies over the lake and misses the tongue. The ridge's edge north of
+    # the crevasse mouth is only a broken lip (IceLedge): anything taller there would shade the
+    # tongue's head, and it keeps the ridge waystone's arrival (-366, -44) its camera room.
+    visual.append(kit_piece("IceWallB", "WestJamb", -347, 44, yaw_facing(1, 0) + rng.uniform(-3, 3), 0.88, y=Y1 - 0.4,
+                            layer="cliff", tilt=3.0))
+    for k, (z, sc) in enumerate(((-46, 1.5), (-8, 1.3))):
+        visual.append(kit_piece("IceLedge", f"RidgeFace{k}", -345, z, yaw_facing(1, 0) + rng.uniform(-4, 4), sc,
+                                y=Y1 - 0.3, layer="cliff"))
     visual.append(kit_piece("TempleColumn", "StairColumnTop", -346, -58, 0, 1.0))  # the stair's one ruin, up on the ridge
 
     # ── Gargoyle Ridge ──
@@ -7973,10 +8002,10 @@ def build_frostbound_glacier():
     # Three chunky massifs (SnowPeakC, SnowPeakA) stand square in the notch's vanishing point, 470-550
     # studs from the corridor's eye, their tops 19-25 degrees up: under the sky, over the far rank.
     for k, (key, x, z, s) in enumerate((("SnowPeakB", -170, -400, 0.9), ("SnowPeakA", -300, -420, 1.0),
-                                        ("SnowPeakB", -440, -440, 1.05), ("SnowPeakA", -570, -410, 1.1),
-                                        ("SnowPeakC", -640, -380, 1.15), ("SnowPeakA", -700, -290, 1.15),
-                                        ("SnowPeakB", -760, -180, 1.0), ("SnowPeakA", -790, -60, 1.05),
-                                        ("SnowPeakB", -770, 60, 0.95), ("SnowPeakC", -600, -290, 1.1))):
+                                        ("SnowPeakB", -440, -440, 1.05), ("SnowPeakA", -540, -400, 1.15),
+                                        ("SnowPeakC", -610, -350, 1.25), ("SnowPeakA", -650, -250, 1.2),
+                                        ("SnowPeakB", -720, -170, 1.0), ("SnowPeakA", -760, -60, 1.05),
+                                        ("SnowPeakB", -740, 60, 0.95), ("SnowPeakC", -570, -270, 1.2))):
         visual.append(kit_piece(key, f"VistaPeak{k}", x, z, rng.uniform(0, 360), s, y=0.3, layer="vista"))
     # Haze: banks of light-cyan mist lying on the snowfield between the ranks (big flat translucent
     # lenses, no straight edge against the sky), thickest between the mid rank and the range, so
