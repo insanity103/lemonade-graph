@@ -50,11 +50,11 @@ Check the last lines of `GLACIER_GAUNTLET.md`'s log for anything newer than this
 | Piece | Rounds | Status |
 | --- | --- | --- |
 | Village | 2 | **Won** on merit. Polish only: the empty snow field in the lower-centre foreground. |
-| Walls and range | 5 lost; 6 building | Round 5 (`c9a26bb`: a towering V onto one notch, fluted IceWall cliffs, a stepped glacier tongue) lost as "a blue crystal city". The notch is as busy and as blue as the near walls, the walls have window-like slots, and the foreground plates block the view. Round 6 brief: the critic's next three in the gauntlet page's table. |
-| Canyon | 3 lost; 4 building | Round 3 (`65e3791`) lost: it still reads as a hallway, not a gorge. The round 4 builder was running in the cloud when this was written (see below). |
+| Walls and range | 5 lost; 6 not started | Round 5 (`c9a26bb`: a towering V onto one notch, fluted IceWall cliffs, a stepped glacier tongue) lost as "a blue crystal city". The notch is as busy and as blue as the near walls, the walls have window-like slots, and the foreground plates block the view. Round 6 brief: the critic's next three in the gauntlet page's table. |
+| Canyon | 3 lost; 4 merged, unjudged | Round 3 (`65e3791`) lost: it still read as a hallway, not a gorge. Round 4 was merged at the handover (`3c6f87a`), validated but **never rendered or judged**: gorge strata with bulging snow-capped lips, a glowing ice path, and `g_canyon_up` moved west of the bridge. Judge it first. |
 | Frozen river field | 0 | Folded into the walls piece. The river is in the walls' frame. |
 
-**Round 4 canyon brief**, if it hasn't landed (no "canyon round 4" commit in `git log`):
+**Round 4 canyon brief** (what the merged round 4 was aiming at; use it to judge whether the round finished the job):
 - Gorge walls 4–6× a player's height, built as staggered strata. Each has a bulging, rounded,
   snow-capped lip, leaning in and stepping back to a thin sky slit.
 - 3–4 haze planes paler with distance.
