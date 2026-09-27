@@ -31,6 +31,7 @@ local function goldText(n: number): string
 end
 local RebirthConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("RebirthConfig"))
 local PanelChrome = require(ReplicatedStorage:WaitForChild("PanelChrome"))
+local CodexPanel = require(ReplicatedStorage:WaitForChild("CodexPanel"))
 local GuiShowcase = require(ReplicatedStorage:WaitForChild("GuiShowcase"))
 
 local ICONS = {
@@ -86,6 +87,7 @@ local NAV_ITEMS = {
 	{ id = "Skills", icon = ICONS.Skills, label = "Skills", top = Color3.fromRGB(160, 242, 118), bottom = Color3.fromRGB(44, 168, 60) },
 	{ id = "Rebirth", icon = "rbxassetid://80234316052758", label = "Rebirth", top = Color3.fromRGB(222, 164, 255), bottom = Color3.fromRGB(134, 62, 222) },
 	{ id = "Trade", icon = ICONS.Sword, label = "Trade", top = Color3.fromRGB(255, 232, 110), bottom = Color3.fromRGB(238, 150, 18) },
+	{ id = "Codex", icon = ICONS.Trophy, label = "Codex", top = Color3.fromRGB(255, 226, 120), bottom = Color3.fromRGB(226, 128, 24) },
 	{ id = "Settings", icon = ICONS.Settings, label = "Settings", top = Color3.fromRGB(236, 240, 248), bottom = Color3.fromRGB(150, 160, 182) },
 }
 
@@ -731,7 +733,7 @@ local function openInventoryDetail(item)
 			if sellLabel.Text == "SELLING..." then return end
 			sellButton.Active = false
 			sellLabel.Text = "SELLING..."
-			inventoryAction:FireServer("Sell", tool.Name)
+			inventoryAction:FireServer("Sell", tool) -- the exact sword on this tile, not its name
 			task.delay(5, function()
 				if sellButton and sellButton.Parent and sellLabel.Text == "SELLING..." then
 					sellButton.Active = true
@@ -2966,7 +2968,8 @@ local function buildTradeSession(order)
 		size2 = UDim2.new(1, -160, 1, 0), zIndex = 24 })
 	if not st.myConfirmed then
 		tradeButton(confirmCard, "Confirm", TRADE_GREEN, UDim2.new(1, 0, 0.5, -3), UDim2.fromOffset(148, 62), function()
-			tradeRemote:FireServer("Confirm")
+			-- the offer version on screen: the server refuses a Confirm for an offer that has changed
+			tradeRemote:FireServer("Confirm", st.version)
 		end)
 	end
 	return order
@@ -3522,6 +3525,14 @@ local function refreshNavSelection()
 	end
 end
 
+-- The Codex (bestiary + sword index): drawn by ReplicatedStorage.CodexPanel from the player's
+-- saved Codex attributes; a zone pick redraws it.
+local function buildCodexPanel()
+	clearBody()
+	headerTitle.Text = "Codex"
+	CodexPanel.build(body, { player = player, narrow = layoutMode == "narrow", rebuild = buildCodexPanel })
+end
+
 local function openTab(tabId)
 	activeTab = tabId
 	refreshNavSelection()
@@ -3538,12 +3549,13 @@ local function openTab(tabId)
 		local stroke = btn:FindFirstChildOfClass("UIStroke")
 		if stroke then stroke.Transparency = selected and 0 or 1 end
 	end
-	setWellTheme(tabId == 'Inventory' or tabId == 'Skills' or tabId == 'Rebirth' or tabId == 'Trade' or tabId == 'Settings')
+	setWellTheme(tabId == 'Inventory' or tabId == 'Skills' or tabId == 'Rebirth' or tabId == 'Trade' or tabId == 'Settings' or tabId == 'Codex')
 	if tabId ~= 'Inventory' then inventorySelection = nil end
 	if tabId == 'Inventory' then buildInventoryPanel()
 	elseif tabId == 'Skills' then buildSkillsPanel(); refreshSkills()
 	elseif tabId == 'Rebirth' then buildRebirthPanel()
 	elseif tabId == 'Trade' then buildTradePanel(); tradeRemote:FireServer("Refresh")
+	elseif tabId == 'Codex' then buildCodexPanel()
 	elseif tabId == 'Settings' then buildSettingsPanel() end
 end
 
@@ -3613,7 +3625,7 @@ end
 
 -- In-panel tab rail: one icon tab per menu tab, selected state set by openTab, with red
 -- count badges (swords carried, unspent skill points).
-local RAIL_TABS = { "Inventory", "Skills", "Rebirth", "Trade", "Settings" }
+local RAIL_TABS = { "Inventory", "Skills", "Rebirth", "Trade", "Codex", "Settings" }
 for i, id in ipairs(RAIL_TABS) do
 	local icon = ICONS.Inventory
 	for _, item in ipairs(NAV_ITEMS) do
@@ -3683,6 +3695,19 @@ onLayoutModeChanged = function()
 	if panelOpen and activeTab == "Rebirth" then buildRebirthPanel() end
 	if panelOpen and activeTab == "Settings" then buildSettingsPanel() end
 	if panelOpen and activeTab == "Trade" then buildTradePanel() end
+	if panelOpen and activeTab == "Codex" then buildCodexPanel() end
+end
+-- A kill or a new sword while the Codex is open redraws it (one redraw a frame at most).
+local codexDirty = false
+for _, attr in ipairs({ "CodexKills", "CodexSwords", "CodexClaims" }) do
+	player:GetAttributeChangedSignal(attr):Connect(function()
+		if codexDirty or not (panelOpen and activeTab == "Codex") then return end
+		codexDirty = true
+		task.defer(function()
+			codexDirty = false
+			if panelOpen and activeTab == "Codex" then buildCodexPanel() end
+		end)
+	end)
 end
 applyPanelLayout()
 
@@ -3705,7 +3730,7 @@ GuiShowcase.register("Inventory", function()
 		buildInventoryPanel()
 	end
 end)
-for _, tab in ipairs({ "Skills", "Rebirth", "Settings" }) do
+for _, tab in ipairs({ "Skills", "Rebirth", "Codex", "Settings" }) do
 	GuiShowcase.register(tab, function()
 		setMenuOpen(true)
 		openTab(tab)

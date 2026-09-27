@@ -182,6 +182,11 @@ function GuiShowcase.stage(name: string, stage: (ctx: any) -> ())
 		end
 		-- Stand the player's character at `cframe` (its root), facing along its look vector.
 		function ctx.place(cframe: CFrame)
+			-- a server move, not a teleport cheat: tell the anti-teleport guard (ServerScriptService.MoveGuard)
+			local guard = game:GetService("ServerScriptService"):FindFirstChild("MoveGuard")
+			if guard then
+				pcall(function() require(guard).serverMoved(player) end)
+			end
 			character:PivotTo(cframe)
 			root.AssemblyLinearVelocity = Vector3.zero
 		end

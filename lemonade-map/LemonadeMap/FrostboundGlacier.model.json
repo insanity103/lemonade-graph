@@ -22722,17 +22722,17 @@
         "orientation": [
          [
           -1.0,
-          0.0,
+          -0.0,
           0.0
          ],
          [
           0.0,
           0.866,
-          -0.5
+          0.5
          ],
          [
           -0.0,
-          -0.5,
+          0.5,
           -0.866
          ]
         ]
@@ -22772,17 +22772,17 @@
         "orientation": [
          [
           -1.0,
-          0.0,
+          -0.0,
           0.0
          ],
          [
           0.0,
           0.866,
-          -0.5
+          0.5
          ],
          [
           -0.0,
-          -0.5,
+          0.5,
           -0.866
          ]
         ]
@@ -22822,17 +22822,17 @@
         "orientation": [
          [
           -1.0,
-          -0.0,
+          0.0,
           0.0
          ],
          [
           0.0,
           0.866,
-          0.5
+          -0.5
          ],
          [
           -0.0,
-          0.5,
+          -0.5,
           -0.866
          ]
         ]
@@ -22872,17 +22872,17 @@
         "orientation": [
          [
           -1.0,
-          -0.0,
+          0.0,
           0.0
          ],
          [
           0.0,
           0.866,
-          0.5
+          -0.5
          ],
          [
           -0.0,
-          0.5,
+          -0.5,
           -0.866
          ]
         ]
@@ -22962,21 +22962,21 @@
      ]
     },
     {
-     "name": "Gable",
-     "className": "Part",
+     "name": "GableW-1",
+     "className": "WedgePart",
      "properties": {
       "Anchored": true,
       "Size": [
-       14.0,
-       3.4,
-       0.4
+       0.6,
+       3.5796,
+       6.2
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -158.0,
-         19.4,
-         -40.0
+         -151.3,
+         19.6898,
+         -36.9
         ],
         "orientation": [
          [
@@ -22993,6 +22993,156 @@
           -0.0,
           0.0,
           -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.6196,
+       0.1412
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "GableW1",
+     "className": "WedgePart",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.6,
+       3.5796,
+       6.2
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -151.3,
+         19.6898,
+         -43.1
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          -0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.6196,
+       0.1412
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "GableE-1",
+     "className": "WedgePart",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.6,
+       3.5796,
+       6.2
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -164.7,
+         19.6898,
+         -36.9
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.0,
+          0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.6196,
+       0.1412
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "GableE1",
+     "className": "WedgePart",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.6,
+       3.5796,
+       6.2
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -164.7,
+         19.6898,
+         -43.1
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          -0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
          ]
         ]
        }
@@ -41830,76 +41980,25 @@
    ]
   },
   {
-   "name": "FishingHole",
-   "className": "Part",
-   "properties": {
-    "Anchored": true,
-    "Size": [
-     0.2,
-     3.2,
-     3.2
-    ],
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -266.0,
-       20.32,
-       -5.0
-      ],
-      "orientation": [
-       [
-        0.0,
-        -1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Color": [
-     0.1569,
-     0.2824,
-     0.8157
-    ],
-    "Material": "SmoothPlastic",
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "CanCollide": false,
-    "CanQuery": true,
-    "CanTouch": false,
-    "CastShadow": true,
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "FishingBucket",
+   "name": "IceFishing",
    "className": "Model",
    "children": [
     {
-     "name": "Body",
+     "name": "Hole",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
+       0.12,
        3.0,
-       2.6,
-       2.6
+       3.0
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -263.2,
-         21.8,
-         -4.0
+         -266.0,
+         20.39,
+         -5.0
         ],
         "orientation": [
          [
@@ -41921,14 +42020,14 @@
        }
       },
       "Color": [
-       1.0,
-       0.6196,
-       0.1412
+       0.0706,
+       0.2275,
+       0.3765
       ],
       "Material": "SmoothPlastic",
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "CanCollide": true,
+      "CanCollide": false,
       "CanQuery": true,
       "CanTouch": false,
       "CastShadow": true,
@@ -41936,21 +42035,827 @@
      }
     },
     {
-     "name": "Band0",
+     "name": "Chip0",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       0.25,
-       2.75,
-       2.75
+       0.9372,
+       0.5534,
+       0.7
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -263.2,
-         21.0,
-         -4.0
+         -264.1007,
+         20.52,
+         -4.9472
+        ],
+        "orientation": [
+         [
+          0.0278,
+          -0.0554,
+          0.9981
+         ],
+         [
+          0.0,
+          0.9985,
+          0.0554
+         ],
+         [
+          -0.9996,
+          -0.0015,
+          0.0278
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8078,
+       0.949,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Chip1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.9131,
+       0.3506,
+       0.7
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -264.7215,
+         20.52,
+         -3.5945
+        ],
+        "orientation": [
+         [
+          0.7397,
+          0.0305,
+          0.6722
+         ],
+         [
+          0.0,
+          0.999,
+          -0.0453
+         ],
+         [
+          -0.6729,
+          0.0335,
+          0.739
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8078,
+       0.949,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Chip2",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.3214,
+       0.5282,
+       0.7
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -265.801,
+         20.52,
+         -3.1104
+        ],
+        "orientation": [
+         [
+          0.9945,
+          -0.0161,
+          0.1035
+         ],
+         [
+          0.0,
+          0.9881,
+          0.1539
+         ],
+         [
+          -0.1047,
+          -0.1531,
+          0.9827
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8078,
+       0.949,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Chip3",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.0065,
+       0.5447,
+       0.7
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -267.0688,
+         20.52,
+         -3.4291
+        ],
+        "orientation": [
+         [
+          0.8268,
+          -0.1228,
+          -0.5489
+         ],
+         [
+          0.0,
+          0.9759,
+          -0.2183
+         ],
+         [
+          0.5625,
+          0.1805,
+          0.8069
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8078,
+       0.949,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Chip4",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.0051,
+       0.4536,
+       0.7
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -267.7578,
+         20.52,
+         -4.2789
+        ],
+        "orientation": [
+         [
+          0.3795,
+          -0.0086,
+          -0.9251
+         ],
+         [
+          0.0,
+          1.0,
+          -0.0093
+         ],
+         [
+          0.9252,
+          0.0035,
+          0.3795
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8078,
+       0.949,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Chip5",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.9408,
+       0.5577,
+       0.7
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -267.7042,
+         20.52,
+         -5.8401
+        ],
+        "orientation": [
+         [
+          -0.4421,
+          -0.0239,
+          -0.8966
+         ],
+         [
+          0.0,
+          0.9996,
+          -0.0267
+         ],
+         [
+          0.8969,
+          -0.0118,
+          -0.442
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8078,
+       0.949,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Chip6",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.0314,
+       0.4403,
+       0.7
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -266.8132,
+         20.52,
+         -6.7172
+        ],
+        "orientation": [
+         [
+          -0.9038,
+          -0.0694,
+          -0.4223
+         ],
+         [
+          0.0,
+          0.9868,
+          -0.1622
+         ],
+         [
+          0.428,
+          -0.1466,
+          -0.8918
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8078,
+       0.949,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Chip7",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.0531,
+       0.392,
+       0.7
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -265.8512,
+         20.52,
+         -6.8942
+        ],
+        "orientation": [
+         [
+          -0.9969,
+          0.0138,
+          0.0771
+         ],
+         [
+          0.0,
+          0.9843,
+          -0.1767
+         ],
+         [
+          -0.0783,
+          -0.1761,
+          -0.9812
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8078,
+       0.949,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Chip8",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.2038,
+       0.3744,
+       0.7
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -264.6356,
+         20.52,
+         -6.3222
+        ],
+        "orientation": [
+         [
+          -0.6959,
+          -0.0138,
+          0.718
+         ],
+         [
+          0.0,
+          0.9998,
+          0.0192
+         ],
+         [
+          -0.7181,
+          0.0134,
+          -0.6958
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.8078,
+       0.949,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Seat",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.5,
+       0.3,
+       1.5
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -263.1,
+         21.87,
+         -4.4
+        ],
+        "orientation": [
+         [
+          0.9659,
+          0.0,
+          0.2588
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.2588,
+          0.0,
+          0.9659
+         ]
+        ]
+       }
+      },
+      "Color": [
+       1.0,
+       0.6196,
+       0.1412
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true
+     }
+    },
+    {
+     "name": "Leg0",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.4705,
+       0.24,
+       0.24
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -262.425,
+         21.07,
+         -4.4
+        ],
+        "orientation": [
+         [
+          -0.306,
+          -0.952,
+          0.0
+         ],
+         [
+          0.952,
+          -0.306,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.9412,
+       0.4706,
+       0.0784
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "Leg1",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.4705,
+       0.24,
+       0.24
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -263.4375,
+         21.07,
+         -3.8154
+        ],
+        "orientation": [
+         [
+          0.153,
+          0.476,
+          -0.866
+         ],
+         [
+          0.952,
+          -0.306,
+          0.0
+         ],
+         [
+          -0.265,
+          -0.8245,
+          -0.5
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.9412,
+       0.4706,
+       0.0784
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "Leg2",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.4705,
+       0.24,
+       0.24
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -263.4375,
+         21.07,
+         -4.9846
+        ],
+        "orientation": [
+         [
+          0.153,
+          0.476,
+          0.866
+         ],
+         [
+          0.952,
+          -0.306,
+          0.0
+         ],
+         [
+          0.265,
+          0.8245,
+          -0.5
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.9412,
+       0.4706,
+       0.0784
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "Rod",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       4.3142,
+       0.2,
+       0.2
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -265.0,
+         22.245,
+         -4.95
+        ],
+        "orientation": [
+         [
+          -0.5563,
+          -0.8056,
+          -0.204
+         ],
+         [
+          0.8229,
+          -0.5682,
+          0.0
+         ],
+         [
+          -0.1159,
+          -0.1678,
+          0.979
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.9412,
+       0.4706,
+       0.0784
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "Reel",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       0.4,
+       0.45,
+       0.45
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -264.15,
+         21.04,
+         -4.54
+        ],
+        "orientation": [
+         [
+          -0.0,
+          -0.0,
+          1.0
+         ],
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.2353,
+       0.4784,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": true,
+      "CanTouch": false,
+      "CastShadow": true,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "Line",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       3.55,
+       0.06,
+       0.06
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -266.2,
+         22.245,
+         -5.2
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          -0.0,
+          0.0
+         ],
+         [
+          0.0,
+          -0.0,
+          -1.0
+         ]
+        ]
+       }
+      },
+      "Color": [
+       0.9412,
+       0.9725,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanCollide": false,
+      "CanQuery": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "Pail",
+     "className": "Part",
+     "properties": {
+      "Anchored": true,
+      "Size": [
+       1.0,
+       0.9,
+       0.9
+      ],
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -262.8,
+         20.92,
+         -2.9
         ],
         "orientation": [
          [
@@ -41987,21 +42892,21 @@
      }
     },
     {
-     "name": "Band1",
+     "name": "PailRim",
      "className": "Part",
      "properties": {
       "Anchored": true,
       "Size": [
-       0.25,
-       2.75,
-       2.75
+       0.12,
+       1.04,
+       1.04
       ],
       "CFrame": {
        "CFrame": {
         "position": [
-         -263.2,
-         22.6,
-         -4.0
+         -262.8,
+         21.37,
+         -2.9
         ],
         "orientation": [
          [
@@ -42023,8 +42928,8 @@
        }
       },
       "Color": [
-       0.2353,
-       0.4784,
+       0.9647,
+       0.9804,
        1.0
       ],
       "Material": "SmoothPlastic",
@@ -77205,9 +78110,9 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77255,9 +78160,109 @@
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -367.4102,
+       30.36,
+       46.6885
+      ],
+      "orientation": [
+       [
+        0.1736,
+        0.0,
+        0.9848
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9848,
+        0.0,
+        0.1736
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing2",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -368.6283,
+       30.36,
+       51.2345
+      ],
+      "orientation": [
+       [
+        0.342,
+        0.0,
+        0.9397
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9397,
+        0.0,
+        0.342
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing3",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77300,14 +78305,114 @@
    }
   },
   {
-   "name": "PlazaRing2",
+   "name": "PlazaRing4",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -373.3168,
+       30.36,
+       59.3553
+      ],
+      "orientation": [
+       [
+        0.6428,
+        0.0,
+        0.766
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.766,
+        0.0,
+        0.6428
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing5",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -376.6447,
+       30.36,
+       62.6832
+      ],
+      "orientation": [
+       [
+        0.766,
+        0.0,
+        0.6428
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.6428,
+        0.0,
+        0.766
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing6",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77350,14 +78455,114 @@
    }
   },
   {
-   "name": "PlazaRing3",
+   "name": "PlazaRing7",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -384.7655,
+       30.36,
+       67.3717
+      ],
+      "orientation": [
+       [
+        0.9397,
+        0.0,
+        0.342
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.342,
+        0.0,
+        0.9397
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing8",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -389.3115,
+       30.36,
+       68.5898
+      ],
+      "orientation": [
+       [
+        0.9848,
+        0.0,
+        0.1736
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.1736,
+        0.0,
+        0.9848
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing9",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77400,14 +78605,114 @@
    }
   },
   {
-   "name": "PlazaRing4",
+   "name": "PlazaRing10",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -398.6885,
+       30.36,
+       68.5898
+      ],
+      "orientation": [
+       [
+        0.9848,
+        0.0,
+        -0.1736
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.1736,
+        0.0,
+        0.9848
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing11",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -403.2345,
+       30.36,
+       67.3717
+      ],
+      "orientation": [
+       [
+        0.9397,
+        0.0,
+        -0.342
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.342,
+        0.0,
+        0.9397
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing12",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77450,14 +78755,114 @@
    }
   },
   {
-   "name": "PlazaRing5",
+   "name": "PlazaRing13",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -411.3553,
+       30.36,
+       62.6832
+      ],
+      "orientation": [
+       [
+        0.766,
+        0.0,
+        -0.6428
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.6428,
+        0.0,
+        0.766
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing14",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -414.6832,
+       30.36,
+       59.3553
+      ],
+      "orientation": [
+       [
+        0.6428,
+        0.0,
+        -0.766
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.766,
+        0.0,
+        0.6428
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing15",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77500,14 +78905,114 @@
    }
   },
   {
-   "name": "PlazaRing6",
+   "name": "PlazaRing16",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -419.3717,
+       30.36,
+       51.2345
+      ],
+      "orientation": [
+       [
+        0.342,
+        0.0,
+        -0.9397
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9397,
+        0.0,
+        0.342
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing17",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -420.5898,
+       30.36,
+       46.6885
+      ],
+      "orientation": [
+       [
+        0.1736,
+        0.0,
+        -0.9848
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9848,
+        0.0,
+        0.1736
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing18",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77550,14 +79055,114 @@
    }
   },
   {
-   "name": "PlazaRing7",
+   "name": "PlazaRing19",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -420.5898,
+       30.36,
+       37.3115
+      ],
+      "orientation": [
+       [
+        -0.1736,
+        0.0,
+        -0.9848
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9848,
+        0.0,
+        -0.1736
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing20",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -419.3717,
+       30.36,
+       32.7655
+      ],
+      "orientation": [
+       [
+        -0.342,
+        0.0,
+        -0.9397
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9397,
+        0.0,
+        -0.342
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing21",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77600,14 +79205,114 @@
    }
   },
   {
-   "name": "PlazaRing8",
+   "name": "PlazaRing22",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -414.6832,
+       30.36,
+       24.6447
+      ],
+      "orientation": [
+       [
+        -0.6428,
+        0.0,
+        -0.766
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.766,
+        0.0,
+        -0.6428
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing23",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -411.3553,
+       30.36,
+       21.3168
+      ],
+      "orientation": [
+       [
+        -0.766,
+        0.0,
+        -0.6428
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.6428,
+        0.0,
+        -0.766
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing24",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77650,14 +79355,114 @@
    }
   },
   {
-   "name": "PlazaRing9",
+   "name": "PlazaRing25",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -403.2345,
+       30.36,
+       16.6283
+      ],
+      "orientation": [
+       [
+        -0.9397,
+        0.0,
+        -0.342
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.342,
+        0.0,
+        -0.9397
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing26",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -398.6885,
+       30.36,
+       15.4102
+      ],
+      "orientation": [
+       [
+        -0.9848,
+        0.0,
+        -0.1736
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.1736,
+        0.0,
+        -0.9848
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing27",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77700,14 +79505,114 @@
    }
   },
   {
-   "name": "PlazaRing10",
+   "name": "PlazaRing28",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -389.3115,
+       30.36,
+       15.4102
+      ],
+      "orientation": [
+       [
+        -0.9848,
+        0.0,
+        0.1736
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.1736,
+        0.0,
+        -0.9848
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing29",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -384.7655,
+       30.36,
+       16.6283
+      ],
+      "orientation": [
+       [
+        -0.9397,
+        0.0,
+        0.342
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.342,
+        0.0,
+        -0.9397
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing30",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77750,14 +79655,114 @@
    }
   },
   {
-   "name": "PlazaRing11",
+   "name": "PlazaRing31",
    "className": "Part",
    "properties": {
     "Anchored": true,
     "Size": [
-     5.4,
+     5.0124,
      0.12,
-     1.2
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -376.6447,
+       30.36,
+       21.3168
+      ],
+      "orientation": [
+       [
+        -0.766,
+        0.0,
+        0.6428
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.6428,
+        0.0,
+        -0.766
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing32",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -373.3168,
+       30.36,
+       24.6447
+      ],
+      "orientation": [
+       [
+        -0.6428,
+        0.0,
+        0.766
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.766,
+        0.0,
+        -0.6428
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing33",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
     ],
     "CFrame": {
      "CFrame": {
@@ -77781,6 +79786,106 @@
         -0.866,
         0.0,
         -0.5
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing34",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -368.6283,
+       30.36,
+       32.7655
+      ],
+      "orientation": [
+       [
+        -0.342,
+        0.0,
+        0.9397
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9397,
+        0.0,
+        -0.342
+       ]
+      ]
+     }
+    },
+    "Color": [
+     0.2824,
+     0.6275,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "CanCollide": false,
+    "CanQuery": false,
+    "CanTouch": false,
+    "CastShadow": false
+   }
+  },
+  {
+   "name": "PlazaRing35",
+   "className": "Part",
+   "properties": {
+    "Anchored": true,
+    "Size": [
+     5.0124,
+     0.12,
+     1.4
+    ],
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -367.4102,
+       30.36,
+       37.3115
+      ],
+      "orientation": [
+       [
+        -0.1736,
+        0.0,
+        0.9848
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.9848,
+        0.0,
+        -0.1736
        ]
       ]
      }

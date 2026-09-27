@@ -27,9 +27,40 @@ local lastRequestAt = {}
 -- Offers can hold carried swords (key "c:<tool name>") and vaulted ones ("v:<index>"). Vault
 -- offers keep a reference to the entry table, so index shifts from a Vaultkeeper visit mid-trade
 -- cannot swap which sword is on the table.
+-- ── Offers are pinned to the exact sword ─────────────────────────────────────────────
+-- 2026-09-24 playtest (trade-1/2/3, R20): offers were keyed by the sword's NAME, a sword that left
+-- the offer was pruned without reopening either side, and Confirm was not tied to what the player
+-- saw. Selling, depositing or withdrawing an offered sword, or swapping in a worse same-named copy,
+-- after the partner confirmed still completed the trade; a looped toggle beat a human Confirm 21 of
+-- 30 times. Now every offer holds the sword itself plus a fingerprint of it, any change to either
+-- offer reopens both sides and bumps session.version, and a Confirm must name the version the
+-- player was looking at.
+local toolIds = setmetatable({}, { __mode = "k" })
+local nextToolId = 0
+local function idOf(tool)
+	local id = toolIds[tool]
+	if not id then
+		nextToolId += 1
+		id = tostring(nextToolId)
+		toolIds[tool] = id
+	end
+	return id
+end
+
+local function fingerprint(name, attrs)
+	return table.concat({ tostring(name), tostring(attrs.Rarity), tostring(attrs.DamageMult),
+		tostring(attrs.Prefixes), tostring(attrs.BaseWeaponName), tostring(attrs.PoolKey) }, "|")
+end
+local function toolPrint(tool)
+	return fingerprint(tool.Name, tool:GetAttributes())
+end
+local function entryPrint(entry)
+	return fingerprint(entry.name, entry.attrs or {})
+end
+
 local function describeTool(tool, equipped)
 	return {
-		key = "c:" .. tool.Name,
+		key = "c:" .. idOf(tool),
 		source = "carried",
 		toolName = tool.Name,
 		name = tool.Name,
@@ -76,16 +107,28 @@ local function carriedRelics(player)
 	return list
 end
 
-local function findRelic(player, toolName)
+-- The player still holds this exact sword (on the character or in the Backpack). The starter is
+-- never traded away: the player always keeps one blade.
+local function owns(player, tool)
+	return tool ~= nil and tool.Parent ~= nil
+		and (tool.Parent == player.Character or tool.Parent == player:FindFirstChildOfClass("Backpack"))
+		and tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true and tool:GetAttribute("Starter") ~= true
+end
+
+local function findRelicById(player, id)
 	for _, container in ipairs({ player.Character, player:FindFirstChildOfClass("Backpack") }) do
-		if container then
-			local tool = container:FindFirstChild(toolName)
-			if tool and tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true and tool:GetAttribute("Starter") ~= true then
-				return tool -- the starter is never traded away: the player always keeps one blade
+		for _, tool in ipairs(container and container:GetChildren() or {}) do
+			if toolIds[tool] == id and owns(player, tool) then
+				return tool
 			end
 		end
 	end
 	return nil
+end
+
+local function alive(player)
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	return humanoid ~= nil and humanoid.Health > 0
 end
 
 local function partnerOf(session, player)
@@ -97,28 +140,46 @@ local function offerRows(session, player)
 	local vault = PlayerDataService.GetVault(player) or {}
 	for key, offer in pairs(session.offers[player]) do
 		if offer.kind == "carried" then
-			local tool = findRelic(player, offer.toolName)
-			if tool then
-				table.insert(rows, describeTool(tool, tool.Parent == player.Character))
-			else
-				session.offers[player][key] = nil -- sold or lost meanwhile
-			end
+			table.insert(rows, describeTool(offer.tool, offer.tool.Parent == player.Character))
 		else
-			local index = table.find(vault, offer.entry)
-			if index then
-				local row = describeEntry(offer.entry, index)
-				row.key = key
-				table.insert(rows, row)
-			else
-				session.offers[player][key] = nil -- withdrawn meanwhile
-			end
+			local row = describeEntry(offer.entry, table.find(vault, offer.entry) or 0)
+			row.key = key
+			table.insert(rows, row)
 		end
 	end
 	table.sort(rows, function(x, y) return x.rating > y.rating end)
 	return rows
 end
 
+-- Drop every offer whose sword has left the player (sold, stored, withdrawn, traded, destroyed) or
+-- changed (a reroll, a prefix change). Any drop reopens BOTH sides and bumps the version, so a
+-- partner's earlier Confirm can never carry over onto a smaller or different offer.
+local function validate(session)
+	local changed = false
+	for _, player in ipairs({ session.a, session.b }) do
+		local vault = PlayerDataService.GetVault(player) or {}
+		for key, offer in pairs(session.offers[player]) do
+			local ok
+			if offer.kind == "carried" then
+				ok = owns(player, offer.tool) and toolPrint(offer.tool) == offer.print
+			else
+				ok = table.find(vault, offer.entry) ~= nil and entryPrint(offer.entry) == offer.print
+			end
+			if not ok then
+				session.offers[player][key] = nil
+				changed = true
+			end
+		end
+	end
+	if changed then
+		session.confirmed = {}
+		session.version += 1
+	end
+	return changed
+end
+
 local function sendSession(session)
+	validate(session)
 	for _, player in ipairs({ session.a, session.b }) do
 		local partner = partnerOf(session, player)
 		TRADE:FireClient(player, "Session", {
@@ -128,6 +189,7 @@ local function sendSession(session)
 			theirs = offerRows(session, partner),
 			carried = carriedRelics(player),
 			vaulted = vaultedRelics(player),
+			version = session.version,
 			myConfirmed = session.confirmed[player] == true,
 			theirConfirmed = session.confirmed[partner] == true,
 			maxOffer = MAX_OFFER,
@@ -207,7 +269,7 @@ local function accept(player, fromId)
 		NOTIFY:FireClient(player, "That trade request expired.", "error")
 		return
 	end
-	local session = { a = from, b = player, offers = { [from] = {}, [player] = {} }, confirmed = {} }
+	local session = { a = from, b = player, offers = { [from] = {}, [player] = {} }, confirmed = {}, version = 1 }
 	sessions[from], sessions[player] = session, session
 	sendSession(session)
 end
@@ -235,8 +297,9 @@ local function toggleOffer(player, key)
 		if count >= MAX_OFFER then return end
 		local kind, rest = string.match(key, "^(%a):(.+)$")
 		if kind == "c" then
-			if not findRelic(player, rest) then return end
-			offers[key] = { kind = "carried", toolName = rest }
+			local tool = findRelicById(player, rest)
+			if not tool then return end
+			offers[key] = { kind = "carried", tool = tool, print = toolPrint(tool) }
 		elseif kind == "v" then
 			local vault = PlayerDataService.GetVault(player)
 			local entry = vault and vault[tonumber(rest) or 0]
@@ -244,12 +307,13 @@ local function toggleOffer(player, key)
 			for _, existing in pairs(offers) do -- same entry under an old index key
 				if existing.entry == entry then return end
 			end
-			offers[key] = { kind = "vault", entry = entry }
+			offers[key] = { kind = "vault", entry = entry, print = entryPrint(entry) }
 		else
 			return
 		end
 	end
 	session.confirmed = {} -- any change reopens both sides
+	session.version += 1
 	sendSession(session)
 end
 
@@ -261,11 +325,10 @@ local function complete(session)
 		local vault = PlayerDataService.GetVault(player) or {}
 		for _, offer in pairs(session.offers[player]) do
 			if offer.kind == "carried" then
-				local tool = findRelic(player, offer.toolName)
-				if not tool then return nil end
-				table.insert(tools, tool)
+				if not (owns(player, offer.tool) and toolPrint(offer.tool) == offer.print) then return nil end
+				table.insert(tools, offer.tool)
 			else
-				if not table.find(vault, offer.entry) then return nil end
+				if not (table.find(vault, offer.entry) and entryPrint(offer.entry) == offer.print) then return nil end
 				table.insert(entries, offer.entry)
 			end
 		end
@@ -309,9 +372,22 @@ local function complete(session)
 	return true
 end
 
-local function confirm(player)
+local function confirm(player, seenVersion)
 	local session = sessions[player]
 	if not session then return end
+	-- The Confirm must be for the offer the player was looking at. validate() first, so a sword
+	-- that left an offer since then has already bumped the version.
+	validate(session)
+	if seenVersion ~= session.version then
+		NOTIFY:FireClient(player, "The offer changed. Check it again, then confirm.", "error")
+		sendSession(session)
+		return
+	end
+	-- A sword delivered to a dead player went into the Backpack the respawn throws away.
+	if not alive(session.a) or not alive(session.b) then
+		NOTIFY:FireClient(player, "Both traders need to be alive to trade.", "error")
+		return
+	end
 	session.confirmed[player] = true
 	local partner = partnerOf(session, player)
 	if session.confirmed[partner] then
@@ -348,7 +424,7 @@ TRADE.OnServerEvent:Connect(function(player, action, arg)
 	elseif action == "Accept" then accept(player, arg)
 	elseif action == "Decline" then decline(player, arg)
 	elseif action == "Offer" then toggleOffer(player, arg)
-	elseif action == "Confirm" then confirm(player)
+	elseif action == "Confirm" then confirm(player, arg)
 	elseif action == "Cancel" then cancel(player)
 	end
 end)

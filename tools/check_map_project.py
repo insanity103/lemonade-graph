@@ -676,6 +676,7 @@ def check_projects():
                      ("StarterPlayer", "StarterPlayerScripts", "ZoneAir"),  # each zone's air and ambience beds
                      ("StarterPlayer", "StarterPlayerScripts", "OasisAmbience"),  # the oasis's wildlife and sway
                      ("StarterPlayer", "StarterPlayerScripts", "GlacierAmbience"),  # the glacier's snow and aurora
+                     ("StarterPlayer", "StarterPlayerScripts", "WorldEventGui"),  # the world event banner and its zone sky
                      ("ServerScriptService", "MeshSlots"),  # swaps the glacier kit's parts for imported meshes
                      # Studio-only capture stages (all inert outside Studio).
                      ("ServerScriptService", "SwordGalleryStage"),

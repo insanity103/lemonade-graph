@@ -15,14 +15,11 @@ local function onPlayerAdded(player)
 		end
 	end)
 	if not ok then
+		-- Hand the save lock back and send the player to rejoin, rather than a blank session that
+		-- silently never saves (2026-09-24 playtest, persistence-4).
 		warn(string.format("[PlayerDataStore] setup failed for %s: %s", player.Name, tostring(err)))
-		local recovered, fallbackErr = pcall(function()
-			PlayerDataService.StartFallback(player)
-		end)
-		if not recovered then
-			warn(string.format("[PlayerDataStore] fallback failed for %s: %s", player.Name, tostring(fallbackErr)))
-			player:SetAttribute("DataLoaded", false)
-		end
+		player:SetAttribute("DataLoaded", false)
+		PlayerDataService.Abandon(player)
 	end
 end
 

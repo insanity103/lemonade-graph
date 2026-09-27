@@ -281,6 +281,7 @@ local function sendState(player)
 				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true and tool:GetAttribute("Starter") ~= true then
 					local row = describe(PlayerDataService.SerializeTool(tool, tool == equippedTool))
 					row.toolName = tool.Name
+					row.tool = tool -- the exact sword: same-named copies can differ (Store sends this back)
 					row.equipped = tool == equippedTool
 					table.insert(carried, row)
 				end
@@ -333,7 +334,19 @@ local function nearKeeper(player): boolean
 	return keeper ~= nil and root ~= nil and (root.Position - keeper.PrimaryPart.Position).Magnitude <= INTERACT_RANGE
 end
 
-local function findCarriedTool(player, toolName)
+local function findCarriedTool(player, toolOrName)
+	-- The exact Tool the client picked, if this player still holds it (2026-09-24 playtest: a Store
+	-- by name shelved whichever same-named copy came first, G1-vault-name-lookup).
+	if typeof(toolOrName) == "Instance" then
+		local t = toolOrName
+		local held = t:IsA("Tool") and (t.Parent == player:FindFirstChildOfClass("Backpack")
+			or (player.Character ~= nil and t.Parent == player.Character))
+		if held and t:GetAttribute("BossDrop") == true and t:GetAttribute("Starter") ~= true then
+			return t
+		end
+		return nil
+	end
+	local toolName = toolOrName
 	for _, container in ipairs({ player.Character, player:FindFirstChildOfClass("Backpack") }) do
 		if container then
 			local tool = container:FindFirstChild(toolName)
@@ -346,7 +359,12 @@ local function findCarriedTool(player, toolName)
 end
 
 -- ── Actions ──────────────────────────────────────────────────────────────────
-local function deposit(player, toolName)
+local function isAlive(player)
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	return humanoid ~= nil and humanoid.Health > 0
+end
+
+local function deposit(player, toolOrName)
 	local vault = PlayerDataService.GetVault(player)
 	if not vault then return end
 	local capacity = capacityOf(player)
@@ -358,11 +376,12 @@ local function deposit(player, toolName)
 			"error")
 		return
 	end
-	local tool = findCarriedTool(player, toolName)
+	local tool = findCarriedTool(player, toolOrName)
 	if not tool then
 		NOTIFY:FireClient(player, "Only relic swords can be stored.", "error")
 		return
 	end
+	local toolName = tool.Name
 	if tool.Parent == player.Character then
 		local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
 		if humanoid then humanoid:UnequipTools() end
@@ -439,7 +458,10 @@ VAULT_ACTION.OnServerEvent:Connect(function(player, action, arg)
 	if player:GetAttribute("DataLoaded") ~= true or not nearKeeper(player) then return end
 	if action == "Open" then
 		sendState(player)
-	elseif action == "Deposit" and typeof(arg) == "string" then
+	elseif (action == "Deposit" or action == "Withdraw") and not isAlive(player) then
+		-- Not while dead (vault-7): the corpse's Backpack is thrown away on respawn.
+		NOTIFY:FireClient(player, "You can't use the vault while knocked out.", "error")
+	elseif action == "Deposit" and (typeof(arg) == "string" or typeof(arg) == "Instance") then
 		deposit(player, arg)
 	elseif action == "Withdraw" then
 		withdraw(player, arg)

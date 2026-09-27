@@ -260,14 +260,31 @@ local function findOwnedTool(player, toolName)
 	return nil
 end
 
-function InventoryService.SellSword(player, toolName)
-	if not player or not player.Parent or typeof(toolName) ~= "string" or toolName == "" then
+function InventoryService.SellSword(player, toolOrName)
+	if not player or not player.Parent then
 		return false
 	end
-
-	local tool = findOwnedTool(player, toolName)
+	-- The exact Tool the client clicked, if it sent one, and only if this player still holds it;
+	-- otherwise the old lookup by name.
+	local tool
+	if typeof(toolOrName) == "Instance" then
+		local bag = player:FindFirstChildOfClass("Backpack")
+		if toolOrName:IsA("Tool") and (toolOrName.Parent == bag or (player.Character and toolOrName.Parent == player.Character)) then
+			tool = toolOrName
+		end
+	elseif typeof(toolOrName) == "string" and toolOrName ~= "" then
+		tool = findOwnedTool(player, toolOrName)
+	end
+	-- Every refusal answers the client, so the tile's SELLING... button resets (inventory-6).
 	if not tool or tool.Name == "ClassicSword" or tool:GetAttribute("Starter") == true
 		or tool:GetAttribute("BossDrop") ~= true then
+		notifyClient(player)
+		return false
+	end
+	-- Not while dead: the corpse's sword would be sold out of the death rescue (inventory-9).
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then
+		notifyClient(player)
 		return false
 	end
 
@@ -294,10 +311,11 @@ function InventoryService.SellSword(player, toolName)
 		return false
 	end
 
+	local soldName = tool.Name
 	tool:Destroy()
 	gold.Value += sellValue
 	notifyClient(player)
-	print(string.format("[InventoryService] %s sold [%s] for %d Gold", player.Name, toolName, sellValue))
+	print(string.format("[InventoryService] %s sold [%s] for %d Gold", player.Name, soldName, sellValue))
 	return true, sellValue
 end
 

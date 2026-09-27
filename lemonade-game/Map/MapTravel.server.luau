@@ -6,6 +6,8 @@ local CollectionService = game:GetService("CollectionService")
 
 local MapMarkers = require(script.Parent:WaitForChild("MapMarkers"))
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
+-- Server moves are declared so the anti-teleport guard does not read them as a cheat.
+local MoveGuard = require(script.Parent:WaitForChild("MoveGuard"))
 
 if not MapMarkers.isPresent() then
 	warn("[MapTravel] Workspace.LemonadeMap not found; spawn point and travel stay idle")
@@ -161,6 +163,7 @@ local function travel(player: Player, destinationId: any)
 
 	lastTravelAt[player] = now
 	root.AssemblyLinearVelocity = Vector3.zero
+	MoveGuard.serverMoved(player)
 	character:PivotTo(destination.CFrame + ARRIVAL_LIFT)
 	travelRemote:FireClient(player, "Arrived", destinationId)
 end
@@ -213,6 +216,7 @@ local function onPlayer(player: Player)
 		-- A character that loaded before this script ran spawned at the place's own SpawnLocation.
 		local existing = player.Character
 		if existing then
+			MoveGuard.serverMoved(player)
 			existing:PivotTo(spawnLocation.CFrame + ARRIVAL_LIFT)
 		end
 	end

@@ -7,6 +7,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("Sw
 local DAMAGE_EVENT = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("DamageNumber")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
+local MoveGuard = require(script.Parent:WaitForChild("MoveGuard"))
 
 local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
 local SwingTiming = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("SwingTiming"))
@@ -50,6 +51,7 @@ local function calculateDamage(player, tool, comboIndex, perfect, heavy)
 	local critChance = (player:GetAttribute("SwordCritChance") or (tool and tool:GetAttribute("CritChance") or 0))
 		+ (player:GetAttribute("RebirthExtraCrit") or 0)
 	local rebirthDmgMult = player:GetAttribute("RebirthDamageMult") or 1
+	local codexMult = player:GetAttribute("CodexDamageMult") or 1 -- mastered Codex pages (CodexSystem)
 	local critDamageMult = player:GetAttribute("RebirthCritDamageMult") or 1.75
 
 	local base = (Config.BaseDamage + Config.StrengthDamagePerPoint * strength)
@@ -57,7 +59,7 @@ local function calculateDamage(player, tool, comboIndex, perfect, heavy)
 	-- is the whole point of having charged it (1.55 at the floor to 2.70 at a full charge,
 	-- against the chain's 1.00 to 1.30), and 0.70 if the button was let go too early.
 	local comboMult = if heavy then heavy.damage else (ComboConfig.COMBO_DAMAGE_MULT[comboIndex] or 1.0)
-	local withMults = base * swordMult * (1 + bonusPct) * (1 + Config.WeaponDamagePerLevel * weaponLevel) * rebirthDmgMult * comboMult
+	local withMults = base * swordMult * (1 + bonusPct) * (1 + Config.WeaponDamagePerLevel * weaponLevel) * rebirthDmgMult * codexMult * comboMult
 	-- Perfect timing: the swing was thrown inside PERFECT_TIMING_WINDOW of the last one's endlag
 	-- expiring. The server measured that itself (performComboSwing); the client cannot claim it.
 	if perfect then
@@ -73,7 +75,7 @@ local function calculateDamage(player, tool, comboIndex, perfect, heavy)
 end
 
 local function applyKnockback(enemyModel, playerHrp, knockbackForce)
-	if knockbackForce <= 0 then return end
+	if knockbackForce <= 0 or enemyModel:GetAttribute("KnockbackImmune") == true then return end
 	local enemyHrp = enemyModel.PrimaryPart or enemyModel:FindFirstChild("HumanoidRootPart")
 	if not enemyHrp then return end
 	
@@ -127,6 +129,12 @@ local function applyDamage(enemyModel, player, tool, playerHrp, comboIndex, char
 	local humanoid = enemyModel:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health <= 0 then
 		return
+	end
+	if enemyModel:GetAttribute("Returning") == true then
+		return -- leashed home: untouchable until it is back (EnemyCombat's RETURNING state)
+	end
+	if CombatUtil.absorbHit(enemyModel) then
+		return -- a Frost-shielded elite's shield took it (EliteAffixConfig)
 	end
 
 	local creatorTag = humanoid:FindFirstChild(CREATOR_TAG_NAME)
@@ -182,6 +190,11 @@ local function applyDamage(enemyModel, player, tool, playerHrp, comboIndex, char
 end
 
 local function performSwingWithCombo(player, character, tool, comboIndex, perfect, heavy)
+	-- The hitbox is placed from the client-owned root. A root that just crossed impossible ground
+	-- (MoveGuard) is not where the player really is: no hit this swing (combat-sword-1).
+	if MoveGuard.recentlyTeleported(player) then
+		return
+	end
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health <= 0 then
 		return

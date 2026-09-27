@@ -72,6 +72,45 @@ local VIEWS = {
 		fov = 52,
 		hideEnemies = true, -- the bandits wandering the rim would stand in front of the lens
 	},
+	-- Frostbound Glacier (docs/map/GLACIER_STUDIO_PLAN.md, Phase 0): the five frames the Blender
+	-- renders in docs/map/glacier_preview.png were taken from, so every change is judged Blender vs
+	-- Roblox and before vs after from the same place. The player stands on the floor just ahead of
+	-- the lens as a scale reference. Enemies hidden; afternoon clock.
+	GlacierGate = { -- the hub gate opening onto the expedition camp
+		clock = 15.3,
+		stand = { at = Vector3.new(-118, 13, 6), face = Vector3.new(-160, 13, 0) },
+		camera = { at = Vector3.new(-60, 26, 0), look = Vector3.new(-160, 14, 0) },
+		fov = 55,
+		hideEnemies = true,
+	},
+	GlacierAscent = { -- the ramp, the ice arch, the lake beyond
+		clock = 15.3,
+		stand = { at = Vector3.new(-192, 14, 2), face = Vector3.new(-260, 22, -10) },
+		camera = { at = Vector3.new(-160, 24, 6), look = Vector3.new(-260, 22, -10) },
+		fov = 55,
+		hideEnemies = true,
+	},
+	GlacierLake = { -- the frozen lake, the fall, the colossus
+		clock = 15.3,
+		stand = { at = Vector3.new(-262, 23, 18), face = Vector3.new(-300, 23, -40) },
+		camera = { at = Vector3.new(-246, 42, 26), look = Vector3.new(-300, 22, -40) }, -- moved in past LakeRock0, which filled the plan's frame
+		fov = 55,
+		hideEnemies = true,
+	},
+	GlacierRidge = { -- the colossus and the crystal fields
+		clock = 15.3,
+		stand = { at = Vector3.new(-370, 33, -62), face = Vector3.new(-420, 33, -110) },
+		camera = { at = Vector3.new(-336, 58, -28), look = Vector3.new(-425, 40, -115) }, -- raised: a crystal cluster filled the plan's frame
+		fov = 55,
+		hideEnemies = true,
+	},
+	GlacierForecourt = { -- the plaza, the temple, the spire
+		clock = 15.3,
+		stand = { at = Vector3.new(-392, 33, 60), face = Vector3.new(-450, 33, 36) },
+		camera = { at = Vector3.new(-360, 44, 70), look = Vector3.new(-450, 40, 36) },
+		fov = 55,
+		hideEnemies = true,
+	},
 	-- Three more Iron Lowlands angles (Alex, 2026-09-24: "show other angles of the area too"), so a
 	-- round judges the whole zone, not one camp. Same afternoon clock, enemies hidden.
 	-- The basin from the town gate: the trail dropping from the overlook into the pit, the scarp

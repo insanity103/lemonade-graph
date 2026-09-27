@@ -43,6 +43,11 @@ SaveConfig.ATTRIBUTES = {
 	ActiveQuestId = '',        -- current quest ID or '' if none
 	QuestProgress = 0,         -- progress toward current objective
 	DiscoveredWaypoints = '',  -- comma-separated map waypoint IDs (map project; empty on the baseplate)
+	CodexKills = '',           -- the Codex (Config.CodexConfig): kills per archetype, "IronSquire=12;FrostImp=3"
+	CodexSwords = '',          -- the Codex: comma-separated swords this player has ever held
+	CodexClaims = '',          -- the Codex: page rewards already paid, "IronLowlands:hunter,..."
+	StreakDay = 0,             -- login calendar (Config.DailyConfig): the day 1..7 claimed last (0 = never)
+	StreakLastClaim = 0,       -- login calendar: the UTC day number of that claim
 }
 
 -- [TUNING] The FREE shelf: boss swords the Vaultkeeper holds for a brand-new profile. Slots

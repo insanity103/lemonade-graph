@@ -86,8 +86,19 @@ local function applyHealth(player, points)
 		+ HEALTH_PER_POINT * points
 		+ math.max(0, rebirthFlatHealth)
 	))
+	-- Raise the pool without refilling it. Setting Health = newMax made every Health point spent
+	-- mid-fight a free full heal, which stretched a real boss fight from 16.5 s to far longer
+	-- (2026-09-24 playtest: leveling-skills-1, leveling-skills-R3-2). The new points are added to
+	-- the health the player has; a full bar stays full; a dead character stays dead.
+	local oldMax, oldHealth = humanoid.MaxHealth, humanoid.Health
 	humanoid.MaxHealth = newMax
-	humanoid.Health = newMax
+	if oldHealth <= 0 then
+		return
+	elseif oldHealth >= oldMax - 0.5 then
+		humanoid.Health = newMax
+	else
+		humanoid.Health = math.clamp(oldHealth + math.max(0, newMax - oldMax), 1, newMax)
+	end
 end
 
 -- ── THE INCOME WINDOW (what the death penalty is priced against) ────────────────────────────

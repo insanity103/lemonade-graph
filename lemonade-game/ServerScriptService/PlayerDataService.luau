@@ -9,6 +9,7 @@ local SaveConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild
 local InventoryService = require(script.Parent:WaitForChild("InventoryService"))
 local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
 local WeaponModifiers = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("WeaponModifiers"))
+local SwordKeep = require(script.Parent:WaitForChild("SwordKeep"))
 
 local PlayerDataService = {}
 
@@ -84,8 +85,25 @@ local function lockHeldByOther(lock)
 	if typeof(lock) ~= "table" then
 		return false
 	end
+	-- In Studio, a lock left by an earlier Studio session (a crash, a stopped test, a killed Studio)
+	-- is always stale: Studio runs one session at a time. Without this, one crash locked the owner
+	-- out of their own save for LOCK_STALE_AFTER (20 minutes). Live servers never take this branch.
+	if RunService:IsStudio() and typeof(lock.jobId) == "string" and string.sub(lock.jobId, 1, 7) == "studio-" then
+		return false
+	end
 	return lock.jobId ~= JOB_ID
 		and (os.time() - (tonumber(lock.time) or 0)) < SaveConfig.LOCK_STALE_AFTER
+end
+
+-- [userId] = true while this server is still writing a leaving session's save. A rejoin to the same
+-- server waits for it: the lock check cannot tell the two sessions apart (same JobId), so without
+-- this a quick rejoin could load the record from before the leave-save landed (persistence-10).
+local releasing = {}
+local LOCK_WAIT_ATTEMPTS = 6 -- [TUNING] tries at a profile another server still holds
+local LOCK_WAIT_SECONDS = 5  -- [TUNING] between them: ~25 s for that server's leave-save to land
+
+local function kick(player, message)
+	pcall(function() player:Kick(message) end)
 end
 
 local function lockHeldByThisServer(lock)
@@ -98,25 +116,50 @@ function PlayerDataService.Load(player)
 	local record
 
 	if store then
-		local ok, result = retry(function()
-			return store:UpdateAsync(keyFor(userId), function(old)
-				old = old or defaultData()
-				if lockHeldByOther(old.__lock) then
-					return nil  -- another live server owns this profile; don't claim it
-				end
-				old.__lock = { jobId = JOB_ID, time = os.time() }
-				return old
+		local waited = 0
+		while releasing[userId] and waited < 30 do
+			task.wait(0.5)
+			waited += 0.5
+		end
+		-- Claim the profile. A lock held by another live server is WAITED out (it is normally that
+		-- server's leave-save still landing) rather than failing on the first try; if it never
+		-- frees, or the DataStore itself is failing, the player is sent back to rejoin instead of
+		-- playing a blank level-1 profile that silently never saves (persistence-5).
+		local reason = "unknown"
+		for attempt = 1, LOCK_WAIT_ATTEMPTS do
+			local blocked = false
+			local ok, result = retry(function()
+				return store:UpdateAsync(keyFor(userId), function(old)
+					old = old or defaultData()
+					if lockHeldByOther(old.__lock) then
+						blocked = true
+						return nil  -- another live server owns this profile; don't claim it
+					end
+					blocked = false
+					old.__lock = { jobId = JOB_ID, time = os.time() }
+					return old
+				end)
 			end)
-		end)
-		if ok and typeof(result) == "table" and lockHeldByThisServer(result.__lock) then
-			record = result
-		else
-			local resultLock = typeof(result) == "table" and result.__lock or nil
-			local reason = lockHeldByOther(resultLock) and "profile is active in another server" or tostring(result)
-			warn(string.format("[PlayerDataService] load failed for %s (%s). "
-				.. "Using safe defaults; saving disabled this session to avoid overwrite.", player.Name, reason))
+			if ok and typeof(result) == "table" and lockHeldByThisServer(result.__lock) then
+				record = result
+				break
+			end
+			if not ok then
+				reason = "DataStore error: " .. tostring(result)
+				break
+			end
+			reason = if blocked then "profile is still open on another server" else "unexpected load result"
+			if attempt < LOCK_WAIT_ATTEMPTS and player.Parent then
+				task.wait(LOCK_WAIT_SECONDS)
+			else
+				break
+			end
+		end
+		if not record then
+			warn(string.format("[PlayerDataService] load failed for %s (%s); asking them to rejoin.", player.Name, reason))
 			record = defaultData()
 			record.__loadFailed = true
+			task.defer(kick, player, "Your progress could not be loaded yet (it is still being saved on another server). Please rejoin in a minute.")
 		end
 	else
 		record = memoryFallback[userId] or defaultData()
@@ -221,32 +264,17 @@ function PlayerDataService.Apply(player)
 
 	InventoryService.LoadPlayer(player, data.inventory)
 
-	-- Rebuild the saved boss swords now, but only drop them into the Backpack once the
-	-- character has spawned. A Backpack populated before the first spawn gets replaced
-	-- by the engine, which was silently eating restored swords.
-	local rebuiltSwords = {}
+	-- Rebuild the saved boss swords now and park them in the SwordKeep until the character has a
+	-- live Backpack (a Backpack populated before the first spawn is replaced by the engine). They
+	-- wait in the keep rather than in a local list, so the save still sees them if the player leaves
+	-- before spawning (2026-09-24 playtest, persistence-1), and the keep also carries every relic
+	-- through each later death and respawn (see SwordKeep).
+	SwordKeep.track(player)
 	for _, entry in ipairs(data.swords) do
 		local tool = BossSwordFactory.rebuild(entry, WeaponModifiers.SlotsOf(player))
-		if tool then rebuiltSwords[#rebuiltSwords + 1] = tool end
+		if tool then SwordKeep.hold(player, tool) end
 	end
-	local function giveSwords()
-		local bag = player:FindFirstChildOfClass("Backpack")
-		if not bag then return end
-		for _, tool in ipairs(rebuiltSwords) do
-			if tool.Parent == nil then
-				tool.Parent = bag
-			end
-		end
-	end
-	if #rebuiltSwords > 0 then
-		if player.Character then
-			task.defer(giveSwords)
-		else
-			player.CharacterAdded:Once(function()
-				task.defer(giveSwords)
-			end)
-		end
-	end
+	task.defer(SwordKeep.release, player)
 
 	if data.isNew == true then
 		InventoryService.GiveStarterItems(player)
@@ -286,16 +314,30 @@ end
 local function serializeSwords(player)
 	local out = {}
 	local equippedTool = player.Character and player.Character:FindFirstChildOfClass("Tool")
+	-- Everything the player owns as a Tool: the Backpack, the character, and the SwordKeep (relics
+	-- waiting out a death or the first spawn).
+	local tools = SwordKeep.held(player)
 	for _, container in ipairs({ player:FindFirstChildOfClass("Backpack"), player.Character }) do
 		if container then
 			for _, tool in ipairs(container:GetChildren()) do
-				-- GuiShowcaseOnly: a loaner relic a Studio-only capture stage put in the backpack;
-				-- it must never reach the profile.
-				if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true
-					and tool:GetAttribute("GuiShowcaseOnly") ~= true then
-					out[#out + 1] = PlayerDataService.SerializeTool(tool, tool == equippedTool)
-				end
+				table.insert(tools, tool)
 			end
+		end
+	end
+	-- One starter only. Before the first spawn the engine puts a stock starter in the Backpack while
+	-- the saved one (possibly struck with stats) waits in the keep; the keep is listed first, so the
+	-- saved starter is the one kept. SwordDropSystem makes the same one-starter rule on spawn.
+	local haveStarter = false
+	for _, tool in ipairs(tools) do
+		-- GuiShowcaseOnly: a loaner relic a Studio-only capture stage put in the backpack;
+		-- it must never reach the profile.
+		if tool:IsA("Tool") and tool:GetAttribute("BossDrop") == true
+			and tool:GetAttribute("GuiShowcaseOnly") ~= true then
+			local starter = tool:GetAttribute("Starter") == true
+			if not (starter and haveStarter) then
+				out[#out + 1] = PlayerDataService.SerializeTool(tool, tool == equippedTool)
+			end
+			haveStarter = haveStarter or starter
 		end
 	end
 	return out
@@ -424,6 +466,12 @@ function PlayerDataService.Save(player, releaseLock)
 			if old and lockHeldByOther(old.__lock) then
 				return nil  -- another server owns it now; don't stomp
 			end
+			-- An ordinary save (a trade's, the vault's, a retry) that lands after the player's
+			-- leave-save must not write: it would put back stale data AND the session lock the
+			-- leave-save just released (trade-6, vault-2, R108).
+			if not releaseLock and profiles[player] ~= profile then
+				return nil
+			end
 			return payload
 		end)
 	end)
@@ -440,13 +488,38 @@ function PlayerDataService.Save(player, releaseLock)
 		profile.dirty = false
 	else
 		warn(string.format("[PlayerDataService] save failed for %s: %s", player.Name, tostring(result)))
+		-- A failed save is tried again instead of dropped (persistence-15). This is also what keeps a
+		-- trade from leaving a sword on both accounts: the two post-trade saves are separate writes,
+		-- and a failed one now lands within seconds rather than at the next 120 s autosave.
+		profile.dirty = true
+		if not releaseLock and not profile.retryPending then
+			profile.retryPending = true
+			task.delay(10, function()
+				profile.retryPending = false
+				if profiles[player] == profile and player.Parent then
+					PlayerDataService.Save(player)
+				end
+			end)
+		end
 	end
 	return saved
 end
 
 function PlayerDataService.Release(player)
-	PlayerDataService.Save(player, true)
+	releasing[player.UserId] = true
+	local profile = profiles[player]
+	local saved = PlayerDataService.Save(player, true)
+	-- The leave-save is the last chance: try it again a couple of times if the DataStore refused it
+	-- (a save refused on purpose -- a failed load, a Studio capture -- is not retried).
+	local tries = 1
+	while not saved and tries < 3 and profile and not profile.data.__loadFailed and not showcaseActive() do
+		task.wait(3)
+		tries += 1
+		saved = PlayerDataService.Save(player, true)
+	end
 	profiles[player] = nil
+	SwordKeep.forget(player)
+	releasing[player.UserId] = nil
 end
 
 function PlayerDataService.SaveAll(releaseLock)
@@ -464,6 +537,27 @@ end
 
 -- Used only if the lifecycle wrapper itself throws. It gives the player a fully
 -- initialized, memory-only profile instead of leaving them without starter items.
+-- Setup failed after the profile was claimed (Apply threw). Hand the lock back WITHOUT saving (the
+-- half-applied state must not overwrite the real record) and send the player back to rejoin, instead
+-- of leaving them in a blank session that never saves while the lock sits on their record
+-- (persistence-4).
+function PlayerDataService.Abandon(player, message)
+	local profile = profiles[player]
+	profiles[player] = nil
+	if store and profile and not profile.data.__loadFailed then
+		pcall(function()
+			store:UpdateAsync(keyFor(player.UserId), function(old)
+				if typeof(old) == "table" and lockHeldByThisServer(old.__lock) then
+					old.__lock = nil
+					return old
+				end
+				return nil
+			end)
+		end)
+	end
+	kick(player, message or "Something went wrong loading your progress. Please rejoin.")
+end
+
 function PlayerDataService.StartFallback(player)
 	local data = defaultData()
 	data.__loadFailed = true

@@ -16,9 +16,13 @@ local lastActionAt = {}
 INVENTORY_ACTION_EVENT.OnServerEvent:Connect(function(player, action, itemId)
 	if player:GetAttribute("DataLoaded") ~= true
 		or typeof(action) ~= "string"
-		or typeof(itemId) ~= "string"
-		or #itemId > MAX_ITEM_ID_LENGTH
 		or not VALID_ACTIONS[action] then
+		return
+	end
+	-- Sell takes the exact Tool the player clicked (a same-named Legendary used to be sold in place
+	-- of the Common on the tile, 2026-09-24 playtest inventory-1); a name is still accepted.
+	local isTool = action == "Sell" and typeof(itemId) == "Instance" and itemId:IsA("Tool")
+	if not isTool and (typeof(itemId) ~= "string" or #itemId > MAX_ITEM_ID_LENGTH) then
 		return
 	end
 	local now = tick()

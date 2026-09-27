@@ -26,7 +26,9 @@ local SwordValue = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild
 local PlayerDataService = require(script.Parent:WaitForChild("PlayerDataService"))
 -- Depth into each area (the spin pool's rotation step) is recorded from this same Died hook.
 local SpinService = require(script.Parent:WaitForChild("SpinService"))
+local BossSwordFactory = require(script.Parent:WaitForChild("BossSwordFactory"))
 local REMOTES = ReplicatedStorage:WaitForChild("RemoteEvents")
+local DROP_EVENT = REMOTES:WaitForChild("SwordDrop") -- the reveal (SwordDropToast), for the first-boss-kill sword
 local TOKEN_EVENT = REMOTES:WaitForChild("TokenDrop")
 -- The pickup prompt, both ways down one remote: the client fires (offerId, "SELL" | "KEEP") and
 -- the server answers (offerId, "SOLD" | "KEPT" | "DENIED", gold, reason).
@@ -151,6 +153,7 @@ local function payTokens(player, model)
 	local role = TokenRules.RoleOf(model)
 	local zone = model:GetAttribute("Zone")
 	local total = TokenRules.ForKill(role, nil, typeof(zone) == "string" and zone or nil)
+	total = math.max(1, math.floor(total * TokenRules.KillMultiplier(model))) -- events, champions
 	local root = model:FindFirstChild("HumanoidRootPart") or model.PrimaryPart
 	local origin = root and root.Position or model:GetPivot().Position
 	TOKEN_EVENT:FireClient(player, origin, TokenRules.Split(total), total, role)
@@ -330,6 +333,33 @@ end)
 
 -- Hook enemy deaths (enemies carry Attribute "Enemy" or CollectionService tag "Enemy")
 local hooked = setmetatable({}, { __mode = "k" })
+-- FIRST BOSS KILL: one sword from that boss's own pool, once per profile. Kills pay tokens, not
+-- swords, but the quest chain's "Claim the Blade" steps (OBTAIN_POOL) still ask for a sword from a
+-- boss, and the wheel and the blacksmith do not sell boss-pool swords: every honest player stalled on
+-- quest 4 (2026-09-24 playtest: quests-2, quests-r2-q4lock). The profile's bossFirstDrops record is
+-- what settles those quests, and it is what makes this a one-time reward.
+local function firstBossReward(player, model)
+	local poolKey = model:GetAttribute("Archetype")
+	if typeof(poolKey) ~= "string" or not BossWeapons.PoolFor(poolKey) then return end
+	local firsts = PlayerDataService.GetField(player, "bossFirstDrops")
+	if typeof(firsts) ~= "table" then firsts = {} end
+	if firsts[poolKey] == true then return end
+	local ok, tool, mods, fullName, weaponData = pcall(BossSwordFactory.build, poolKey, {
+		level = player:GetAttribute("Level"), slots = player:GetAttribute("PrefixSlots"),
+	})
+	if not ok or not tool then
+		warn("[SwordDropSystem] first boss reward failed: " .. tostring(tool))
+		return
+	end
+	tool.Parent = player:FindFirstChildOfClass("Backpack") -- a dead killer's is caught by SwordKeep
+	firsts[poolKey] = true
+	PlayerDataService.SetField(player, "bossFirstDrops", firsts)
+	PlayerDataService.MarkDirty(player)
+	DROP_EVENT:FireClient(player, weaponData.rarity, weaponData.baseMult, fullName, mods,
+		{ pool = model:GetAttribute("DisplayName") or model.Name, baseName = weaponData.name, listedBase = weaponData.listedBase })
+	print(string.format("[SwordDropSystem] %s's first %s kill: [%s]", player.Name, poolKey, fullName))
+end
+
 local function hook(model)
 	if not CombatUtil.isEnemy(model) then return end
 	local humanoid = model:FindFirstChildOfClass("Humanoid")
@@ -350,6 +380,9 @@ local function hook(model)
 			return
 		end
 		payTokens(killer, model)
+		if model:GetAttribute("Boss") == true then
+			firstBossReward(killer, model)
+		end
 	end)
 end
 

@@ -116,9 +116,12 @@ end
 WorldLayout.PACKS = {
 	MIN = 3,
 	MAX = 6,
-	SPREAD = 4.2, -- studs from a pack's centre to its members' spots
-	MAP_MINION = 3, -- a map minion marker stands for a pack of this many (markers are dense already)
-	MAP_ELITE = 4, -- an elite marker: the elite plus escorts
+	-- 2026-09-25 (Alex): "enemies should move around more and not just stick in groups of three, and
+	-- slightly fewer of them". Members start twice as far apart (and wander, EnemyCombat IDLE), and
+	-- map packs are 2-3 instead of always 3: 111 enemies became about 86.
+	SPREAD = 8, -- studs from a pack's centre to its members' spots
+	MAP_MINION = { 2, 3, 2 }, -- map minion markers stand for packs of these sizes, in turn
+	MAP_ELITE = 3, -- an elite marker: the elite plus escorts
 }
 
 -- Pack size for the `packIndex`-th camp (1-based) of the `zoneIndex`-th zone.
@@ -161,13 +164,21 @@ end
 
 local function packMapSpawns(configs)
 	local out, zoneOrder = {}, {}
+	local minionPacks = 0
 	for index, zone in ipairs(WorldLayout.ZONES) do zoneOrder[zone.Name] = index end
 	for _, config in ipairs(configs) do
 		if config.role == "boss" then
 			table.insert(out, config)
 		else
 			local elite = config.role == "elite"
-			local size = if elite then WorldLayout.PACKS.MAP_ELITE else WorldLayout.PACKS.MAP_MINION
+			local cycle = WorldLayout.PACKS.MAP_MINION
+			local size
+			if elite then
+				size = WorldLayout.PACKS.MAP_ELITE
+			else
+				minionPacks += 1
+				size = cycle[((minionPacks - 1) % #cycle) + 1]
+			end
 			local seed = #out + (zoneOrder[config.zone] or 1)
 			expandPack(config, config.position, size, { config.level }, config.id or ("P" .. #out), seed, out)
 		end

@@ -6793,7 +6793,9 @@ def frost_cabin(name, x, z, yaw, rng):
     pitch = 30.0
     run = d / 2 + 1.2
     for side in (-1, 1):  # the roof: coral under a thick snow blanket
-        rr = mul(r, rot_x(side * -pitch))
+        # rot_x(+pitch) lowers +Z (as the hub houses' gables): each slab drops toward its eave. It
+        # was side * -pitch, which raised the eaves into a V (Alex, 2026-09-25: "fix the roof").
+        rr = mul(r, rot_x(side * pitch))
         kids.append(part(f"Roof{side}", (w + 2.4, 0.8, run / math.cos(math.radians(pitch))),
                          at(0, h + 0.9 + math.tan(math.radians(pitch)) * run / 2, side * run / 2), (255, 84, 64), rot=rr,
                          collide=False))
@@ -6803,12 +6805,50 @@ def frost_cabin(name, x, z, yaw, rng):
     ridge_y = h + 0.9 + math.tan(math.radians(pitch)) * run
     kids.append(ellipsoid("RidgeSnow", (w + 2.6, 1.8, 2.4), at(0, ridge_y + 0.9, 0), GK.SNOW, rot=mul(r, rot_z(2)),
                           layer="prop"))
-    kids.append(part("Gable", (w, 3.4, 0.4), at(0, h + 2.4, 0), TIMBER, rot=r, collide=False))
+    rise = math.tan(math.radians(pitch)) * run
+    for gx in (-w / 2 + 0.3, w / 2 - 0.3):  # the triangular gable ends under the slabs
+        for side, yaw in ((-1, 0), (1, 180)):  # WedgePart: vertical face at local +Z, slope toward -Z
+            kids.append(part(f"Gable{'W' if gx < 0 else 'E'}{side}", (0.6, rise, run),
+                             at(gx, h + 0.9 + rise / 2, side * run / 2), TIMBER, rot=mul(r, rot_y(yaw)),
+                             cls="WedgePart", collide=False))
     kids.append(part("Chimney", (2.2, 7.0, 2.2), at(4.2, h + 4.6, 2.0), GK.ROCK_DEEP, rot=r, collide=False,
                      children=[smoke(3.0, 0.25, 2.5, (236, 244, 255))]))
     kids.append(part("ChimneyCap", (2.8, 0.8, 2.8), at(4.2, h + 8.4, 2.0), GK.SNOW, rot=r, collide=False))
     kids.append(part("DoorLamp", (0.8, 1.1, 0.8), at(2.6, 6.0, -d / 2 - 0.6), (255, 208, 132), "Neon", r,
                      collide=False, query=False, shadow=False, children=[light(20, 1.2, LANTERN)]))
+    return model(name, kids)
+
+
+def ice_fishing(name, x, z, ice_top, rng):
+    """An ice-fishing spot that reads as one at a glance: a dark hole with a chipped ice rim, a stool,
+    a rod leaning out over the hole with its line down into the water, and a small pail. It was a
+    blue disc and a big crate-yellow barrel, which read as a stray drum on the lake (Alex, 2026-09-25:
+    "what is this yellow thing")."""
+    y = ice_top
+    water = (18, 58, 96)
+    kids = disc("Hole", x, z, 1.5, y + 0.03, 0.12, water, "SmoothPlastic", collide=False, layer="decal")
+    for k in range(9):  # chipped rim: pale slabs pushed up around the hole
+        a = k / 9 * math.tau + rng.uniform(-0.15, 0.15)
+        kids.append(part(f"Chip{k}", (rng.uniform(0.9, 1.4), rng.uniform(0.35, 0.6), 0.7),
+                         (x + math.cos(a) * 1.9, y + 0.1, z + math.sin(a) * 1.9), GK.ICE_PALE,
+                         rot=mul(rot_y(90 - math.degrees(a)), rot_x(rng.uniform(-14, 14))), collide=False))
+    sx, sz = x + 2.9, z + 0.6  # the stool, seat 1.4 up, on three splayed legs
+    kids.append(part("Seat", (1.5, 0.3, 1.5), (sx, y + 1.45, sz), TIMBER, rot=rot_y(15), collide=False))
+    for k in range(3):
+        a = k / 3 * math.tau
+        kids.append(cyl(f"Leg{k}", (sx + math.cos(a) * 0.9, y - 0.05, sz + math.sin(a) * 0.9),
+                        (sx + math.cos(a) * 0.45, y + 1.35, sz + math.sin(a) * 0.45), 0.24, BEAM,
+                        collide=False, layer="prop"))
+    tip = (x - 0.2, y + 3.6, z - 0.2)  # the rod, butt on the ice by the stool, tip over the hole
+    kids.append(cyl("Rod", (sx - 0.7, y + 0.05, sz - 0.3), tip, 0.2, BEAM, collide=False, layer="prop"))
+    kids.append(cyl("Reel", (sx - 1.05, y + 0.62, sz - 0.34), (sx - 1.05, y + 0.62, sz + 0.06), 0.45, IRON,
+                    collide=False, layer="prop"))
+    kids.append(cyl("Line", tip, (tip[0], y + 0.05, tip[2]), 0.06, (240, 248, 255), collide=False, query=False,
+                    shadow=False, layer="prop"))
+    kids.append(part("Pail", (1.0, 0.9, 0.9), (sx + 0.3, y + 0.5, sz + 1.5), IRON, rot=rot_z(90), shape="Cylinder",
+                     collide=False))
+    kids.append(part("PailRim", (0.12, 1.04, 1.04), (sx + 0.3, y + 0.95, sz + 1.5), GK.SNOW, rot=rot_z(90),
+                     shape="Cylinder", collide=False))
     return model(name, kids)
 
 
@@ -7028,10 +7068,8 @@ def build_frostbound_glacier():
             x, z = lx + math.cos(a + 0.2) * (lr - 1.5), lz + math.sin(a + 0.2) * (lr - 1.5)
             if clear(x, z, 10, 12, 3):
                 visual.append(ice_chunk(f"LakeIce{k}", x, z, rng, 1.2, y=Y1 + 0.3))
-    fx, fz = lx + 12, lz + 13  # an ice-fishing hole, the expedition's only trace out on the lake
-    visual.append(disc("FishingHole", fx, fz, 1.6, Y1 + 0.42, 0.2, GK.TEMPLE_NIGHT, "SmoothPlastic", collide=False,
-                       layer="decal")[0])
-    visual.append(barrel("FishingBucket", fx + 2.8, Y1 + 0.3, fz + 1.0, rng))
+    fx, fz = lx + 12, lz + 13  # an ice-fishing spot, the expedition's only trace out on the lake
+    visual.append(ice_fishing("IceFishing", fx, fz, Y1 + 0.42, random.Random(0x1CE)))  # own rng: the zone's stream stays put
     for k, (key, x, z, s) in enumerate((("CrystalClusterA", -240, -84, 1.2), ("CrystalClusterB", -236, -70, 1.0),
                                         ("CrystalClusterA", -338, 52, 1.1), ("CrystalClusterB", -262, 54, 1.0),
                                         ("CrystalClusterC", -332, -88, 1.0))):
@@ -7105,10 +7143,13 @@ def build_frostbound_glacier():
                                         ("SnowRockA", -400, 84, 1.0), ("SnowRockC", -436, 30, 0.8))):
         if clear(x, z, 14, 10, 4):
             visual.append(kit_piece(key, f"ForecourtRock{k}", x, z, rng.uniform(0, 360), s))
-    for k in range(12):  # the plaza's inlaid ring
-        a = k / 12 * math.tau
-        visual.append(part(f"PlazaRing{k}", (5.4, 0.12, 1.2), (px_ + math.cos(a) * (pr - 5), Y2 + 0.36,
-                                                                pz_ + math.sin(a) * (pr - 5)), GK.TEMPLE_TRIM,
+    # The plaza's inlaid ring: one unbroken band. Twelve 5-stud strips 14 studs apart read as loose
+    # planks at eye level (2026-09-25 Glacier recording), so 36 segments now overlap end to end.
+    ring_n, ring_r = 36, pr - 5
+    for k in range(ring_n):
+        a = k / ring_n * math.tau
+        visual.append(part(f"PlazaRing{k}", (math.tau * ring_r / ring_n + 0.3, 0.12, 1.4), (px_ + math.cos(a) * ring_r, Y2 + 0.36,
+                                                                pz_ + math.sin(a) * ring_r), GK.TEMPLE_TRIM,
                            rot=rot_y(90 - math.degrees(a)), collide=False, query=False, shadow=False, layer="decal"))
 
     # ── Vista: snow peaks on the snowfield beyond the walls ──

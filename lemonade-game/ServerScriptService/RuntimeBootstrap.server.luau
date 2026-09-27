@@ -8,6 +8,8 @@ local REMOTE_NAMES = {
 	"AdminAction", -- dev/bug-testing mod menu; see AdminSystem.server.luau + AdminGui.client.luau
 	"BossDoorNotice",
 	"ComboUpdate",
+	"DailyAction", -- the 7-day login calendar: client -> server "Claim" / "Preview"; server -> client
+	               -- ("Claimed" | "Preview", payload). DailyStreak + DailyStreakGui.
 	"DamageNumber",
 	"EnemyAttack",
 	"GoldGain",

@@ -59,7 +59,8 @@ local SHADOWS = true
 local SHADOW_SOFTNESS = 0.55
 
 -- Studio-only fixed clock for world-art captures (see WorldShowcase.client.luau).
-local SHOWCASE_CLOCK = { WorldDay = 15.3, WorldSunset = 17.2, WorldTown = 15.3, WorldOasis = 15.3, WorldForest = 15.3, WorldWall = 15.3,
+local SHOWCASE_CLOCK = { GlacierGate = 15.3, GlacierAscent = 15.3, GlacierLake = 15.3, GlacierRidge = 15.3, GlacierForecourt = 15.3,
+	WorldDay = 15.3, WorldSunset = 17.2, WorldTown = 15.3, WorldOasis = 15.3, WorldForest = 15.3, WorldWall = 15.3,
 	WorldBasin = 15.3, WorldMesas = 15.3, WorldPit = 15.3, WorldWest = 15.3, WorldNorth = 15.3 }
 
 local function rgb(r, g, b)

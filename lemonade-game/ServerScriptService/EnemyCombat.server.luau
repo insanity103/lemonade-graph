@@ -6,10 +6,12 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 
 local CombatUtil = require(script.Parent:WaitForChild("CombatUtil"))
+local MoveGuard = require(script.Parent:WaitForChild("MoveGuard"))
 local EnemyOutfits = require(ReplicatedStorage:WaitForChild("EnemyOutfits"))
 local WorldLayout = require(script.Parent:WaitForChild("WorldLayout"))
 local SafeHub = require(script.Parent:WaitForChild("SafeHub"))
 local ComboConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("ComboConfig"))
+local EliteAffixConfig = require(ReplicatedStorage:WaitForChild("Config"):WaitForChild("EliteAffixConfig"))
 local AudioManager = require(ReplicatedStorage:WaitForChild("AudioManager"))
 local GuiShowcase = require(ReplicatedStorage:WaitForChild("GuiShowcase"))
 WorldLayout.EnsureBuilt()
@@ -46,7 +48,9 @@ local ENEMY_HIT_INTERVAL_PER_PLAYER = 0.02 -- only stops two hits landing on the
 local ATTACK_COOLDOWN = 0.4
 local RESPAWN_DELAY = 5
 local DROP_RESPAWN_DELAY = 1.5 -- [TUNING] a rig that just paid a sword is back this fast
-local BOSS_RESPAWN_DELAY = 90 -- [TUNING] a boss is an event, not a farm: it was back in 5 s
+-- [TUNING] A boss is an event, not a farm: it was back in 5 s. 90 s read as "it never respawns"
+-- (Alex, 2026-09-25), so it is 30 s, with a countdown sign over the spawn spot (bossCountdown).
+local BOSS_RESPAWN_DELAY = 30
 -- Enemy swings telegraph before they land: damage resolves when the blade comes down, and only
 -- if the target is still within reach (+ grace for movement during the swing). Heavy hitters
 -- (slow attack cycles) wind up longer. Archetypes may override with `windup`.
@@ -54,6 +58,7 @@ local ENEMY_WINDUP = 0.32 -- [TUNING] seconds from raise to impact for ordinary 
 local HEAVY_WINDUP = 0.5 -- [TUNING] attackCooldown >= HEAVY_COOLDOWN
 local HEAVY_COOLDOWN = 1.6
 local HIT_GRACE = 1.5 -- [TUNING] studs beyond attackReach that still count at impact
+local RETURN_TIMEOUT = 12 -- [TUNING] seconds a leashed enemy may take to walk home before it is put there
 -- [TUNING] How far to either side of straight ahead an enemy's chop still lands, in degrees.
 -- Its swing is a forward arc; the players it misses are the ones it is not facing.
 local HIT_ARC_DEG = 75
@@ -98,6 +103,10 @@ local ARCHETYPE_TEXTURE_SET = {
 -- fixed tick preserves responsive combat while avoiding work proportional to
 -- enemies × players every frame.
 local AI_TICK_INTERVAL = 0.15
+-- [TUNING] How fast a rig in reach turns to its target, in degrees a second. Rigs used to turn only by
+-- walking (a 0.3-stud step), so one standing beside the player mostly faced away: measured live
+-- 2026-09-25, 58 of 71 chops landed facing away and missed (the chop only lands in front, HIT_ARC_DEG).
+local TURN_RATE_DEG = 540
 local TARGET_SCAN_INTERVAL = 0.5
 local MOVE_COMMAND_INTERVAL = 0.35
 local MOVE_TARGET_EPSILON = 2
@@ -171,6 +180,7 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 1.1,
 		patrolRadius = 14,
 		leashDistance = 40,
+		weapon = true, -- plain steel falchion (Alex, 2026-09-25: "the enemies dont have swords"); wardens and bosses glow
 	},
 	GlacialGargoyle = {
 		name = "Glacial Sentinel",
@@ -187,6 +197,7 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 1.7,
 		patrolRadius = 12,
 		leashDistance = 36,
+		weapon = true,
 	},
 
 	-- 3. Infernal Colossus Minions (North-East Caldera, Lv 30-38)
@@ -205,6 +216,7 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 1.2,
 		patrolRadius = 14,
 		leashDistance = 42,
+		weapon = true,
 	},
 	MagmaJuggernaut = {
 		name = "Magma Juggernaut",
@@ -221,6 +233,7 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 1.6,
 		patrolRadius = 12,
 		leashDistance = 38,
+		weapon = true,
 	},
 
 	-- 4. Void Archon Minions (South-East Void Spire, Lv 50-60)
@@ -239,6 +252,7 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 1.0,
 		patrolRadius = 16,
 		leashDistance = 46,
+		weapon = true,
 	},
 	AbyssTormentor = {
 		name = "Abyss Tormentor",
@@ -255,6 +269,7 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 1.5,
 		patrolRadius = 14,
 		leashDistance = 42,
+		weapon = true,
 	},
 
 	-- 5. Celestial Titan Minions (Far Astral Sanctuary, Lv 75-88)
@@ -273,6 +288,7 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 0.9,
 		patrolRadius = 18,
 		leashDistance = 50,
+		weapon = true,
 	},
 	SolarDominator = {
 		name = "Solar Dominator",
@@ -289,6 +305,7 @@ local ENEMY_ARCHETYPES = {
 		attackCooldown = 1.4,
 		patrolRadius = 16,
 		leashDistance = 48,
+		weapon = true,
 	},
 
 	-- Bridge zones (WorldLayout: Briarwood Lv8, Sunken Marsh Lv23, Stormwatch Lv40). Their
@@ -302,11 +319,13 @@ local ENEMY_ARCHETYPES = {
 		name = "Thorn Stalker", color = Color3.fromRGB(120, 236, 56), scale = 1.0, walkSpeed = 15,
 		baseHealth = 203, healthGrowth = 1.23, baseDamage = 21, damageGrowth = 1.14, baseXP = 170,
 		aggroRange = 26, attackReach = 6.0, attackCooldown = 1.2, patrolRadius = 14, leashDistance = 38,
+		weapon = true,
 	},
 	BriarBrute = {
 		name = "Briar Brute", color = Color3.fromRGB(80, 216, 48), scale = 1.35, walkSpeed = 11,
 		baseHealth = 377, healthGrowth = 1.23, baseDamage = 32, damageGrowth = 1.14, baseXP = 240,
 		aggroRange = 23, attackReach = 7.5, attackCooldown = 1.7, patrolRadius = 10, leashDistance = 34,
+		weapon = true,
 	},
 	RootWarden = {
 		name = "Rootbound Warden", title = "Keeper of the Grove", color = Color3.fromRGB(48, 192, 56),
@@ -319,11 +338,13 @@ local ENEMY_ARCHETYPES = {
 		name = "Bog Lurker", color = Color3.fromRGB(48, 224, 176), scale = 1.05, walkSpeed = 14.5,
 		baseHealth = 1030, healthGrowth = 1.26, baseDamage = 50, damageGrowth = 1.17, baseXP = 750,
 		aggroRange = 27, attackReach = 6.5, attackCooldown = 1.2, patrolRadius = 14, leashDistance = 40,
+		weapon = true,
 	},
 	MireHulk = {
 		name = "Mire Hulk", color = Color3.fromRGB(32, 200, 150), scale = 1.45, walkSpeed = 10.5,
 		baseHealth = 1915, healthGrowth = 1.26, baseDamage = 74, damageGrowth = 1.17, baseXP = 950,
 		aggroRange = 24, attackReach = 8.0, attackCooldown = 1.8, patrolRadius = 11, leashDistance = 36,
+		weapon = true,
 	},
 	DrownedBellwarden = {
 		name = "Drowned Bellwarden", title = "Toller of the Sunken Bell", color = Color3.fromRGB(24, 176, 144),
@@ -336,11 +357,13 @@ local ENEMY_ARCHETYPES = {
 		name = "Stormcaller", color = Color3.fromRGB(88, 156, 255), scale = 1.1, walkSpeed = 17,
 		baseHealth = 2750, healthGrowth = 1.31, baseDamage = 95, damageGrowth = 1.20, baseXP = 2800,
 		aggroRange = 32, attackReach = 7.0, attackCooldown = 1.0, patrolRadius = 16, leashDistance = 44,
+		weapon = true,
 	},
 	ThunderConstruct = {
 		name = "Thunder Construct", color = Color3.fromRGB(64, 128, 255), scale = 1.5, walkSpeed = 12,
 		baseHealth = 5100, healthGrowth = 1.31, baseDamage = 143, damageGrowth = 1.20, baseXP = 3500,
 		aggroRange = 27, attackReach = 9.0, attackCooldown = 1.6, patrolRadius = 13, leashDistance = 40,
+		weapon = true,
 	},
 	TempestWarden = {
 		name = "Tempest Warden", title = "Keeper of the Observatory", color = Color3.fromRGB(48, 104, 255),
@@ -731,6 +754,10 @@ local function createEnemyRig(archetypeKey, spawnPosition, level, role)
 	humanoid.WalkSpeed = arch.walkSpeed
 	-- The joints outlive the death: every client plays the collapse through them (EnemyAnimator).
 	humanoid.BreakJointsOnDeath = false
+	-- A rig bumped by a packmate or a knockback used to trip and lie on its back mid-chase, still
+	-- sliding after the player (2026-09-25 Glacier recording, the Frost Stalkers on the lake).
+	humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+	humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
 	humanoid.Parent = model
 
 	local maxHp = getEnemyMaxHealth(arch, level)
@@ -939,7 +966,7 @@ local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 	end
 	local ignore = CollectionService:GetTagged(ENEMY_TAG)
 	table.insert(ignore, playerChar)
-	if not CombatUtil.hasLineOfSight(enemyRoot.Position, playerRoot.Position, ignore) then
+	if not CombatUtil.hasLineOfSight(enemyRoot.Position, playerRoot.Position, ignore, true) then
 		return
 	end
 	-- The sanctuary is a hard no-damage volume, enforced on the server at the point
@@ -972,6 +999,12 @@ local function applyEnemyDamageToPlayer(enemyModel, playerChar, arch, level)
 	local finalDamage = math.max(1, math.floor(exactDamage + 0.5))
 
 	humanoid:TakeDamage(exactDamage)
+	-- A Vampiric elite (EliteAffixConfig) heals from what it lands.
+	local lifesteal = enemyModel:GetAttribute("Lifesteal")
+	local enemyHumanoid = lifesteal and enemyModel:FindFirstChildOfClass("Humanoid")
+	if enemyHumanoid and enemyHumanoid.Health > 0 then
+		enemyHumanoid.Health = math.min(enemyHumanoid.MaxHealth, enemyHumanoid.Health + exactDamage * lifesteal)
+	end
 	if player then
 		-- Combat stamp: the town spin wheel refuses a spin within a few seconds of a hit (SpinSystem).
 		player:SetAttribute("CombatAt", workspace:GetServerTimeNow())
@@ -998,6 +1031,51 @@ end
 -- itself is animated on every client by ReplicatedStorage.EnemyAnimator from this attribute:
 -- (swing counter, seconds to impact). The server only publishes it; it never poses a joint.
 local ATTACK_ATTRIBUTE = "EnemyAttack"
+
+-- Turn a rig toward a point through an AlignOrientation, at most TURN_RATE_DEG a second. It used to
+-- write hrp.CFrame, and a CFrame write replicates as a teleport: clients drop their interpolation and
+-- snap the rig to the server's newest position, so a chasing enemy jumped several studs onto the
+-- player right as its wind-up turned it (Alex, 2026-09-25: "if they're not close enough then they
+-- teleport to you"). The constraint turns it through physics, which replicates smoothly.
+local function faceAlign(hrp: BasePart): AlignOrientation
+	local align = hrp:FindFirstChild("FaceAlign")
+	if align then return align end
+	local attachment = Instance.new("Attachment")
+	attachment.Name = "FaceAttachment"
+	attachment.Parent = hrp
+	align = Instance.new("AlignOrientation")
+	align.Name = "FaceAlign"
+	align.Mode = Enum.OrientationAlignmentMode.OneAttachment
+	align.Attachment0 = attachment
+	align.MaxTorque = math.huge
+	align.MaxAngularVelocity = math.rad(TURN_RATE_DEG)
+	align.Responsiveness = 200
+	align.Enabled = false
+	align.Parent = hrp
+	return align
+end
+
+local function faceToward(hrp: BasePart, point: Vector3)
+	local flat = (point - hrp.Position) * Vector3.new(1, 0, 1)
+	if flat.Magnitude < 0.1 then return end
+	local align = faceAlign(hrp)
+	align.CFrame = CFrame.lookAt(Vector3.zero, flat)
+	if not align.Enabled then
+		align.Enabled = true
+		local humanoid = hrp.Parent and hrp.Parent:FindFirstChildOfClass("Humanoid")
+		if humanoid then humanoid.AutoRotate = false end
+	end
+end
+
+-- Hands turning back to the Humanoid (it faces the way it walks).
+local function releaseFacing(hrp: BasePart)
+	local align = hrp:FindFirstChild("FaceAlign")
+	if align and align.Enabled then
+		align.Enabled = false
+		local humanoid = hrp.Parent and hrp.Parent:FindFirstChildOfClass("Humanoid")
+		if humanoid then humanoid.AutoRotate = true end
+	end
+end
 
 local function swingWeapon(model, arch)
 	local windup = getWindup(arch)
@@ -1094,7 +1172,9 @@ end
 
 -- The spot this rig fights from: on its slot around the target, just inside its reach.
 local function slotPoint(state, targetPos, arch)
-	local r = math.max(2.8, arch.attackReach * 0.6)
+	-- Far enough out that the rig's body stands beside the player's, not inside it (the 2026-09-25
+	-- recording showed Stalkers overlapping the player at 0.6 of their reach).
+	local r = math.max(2.2 + 1.6 * (arch.scale or 1), arch.attackReach * 0.7)
 	return targetPos + Vector3.new(math.cos(state.slotAngle) * r, 0, math.sin(state.slotAngle) * r)
 end
 
@@ -1138,6 +1218,23 @@ local function separated(model, hrp: BasePart, destination: Vector3, scale: numb
 	return destination + push
 end
 
+-- Camps packed close together (the Glacier ridge: four camps 29-47 studs apart) used to wander into
+-- each other and merge into one crowd of ten. A rig roams at most ROAM_SHARE of the way to the
+-- nearest other camp's spot, so each camp keeps its own ground. Worked out once per spawn.
+local ROAM_SHARE = 0.35 -- [TUNING]
+local function roamCap(model, state): number
+	if state.roamCap then return state.roamCap end
+	local packId = model:GetAttribute("PackId")
+	local nearest = math.huge
+	for other, otherState in pairs(activeEnemies) do
+		if other ~= model and (packId == nil or other:GetAttribute("PackId") ~= packId) then
+			nearest = math.min(nearest, ((otherState.spawnPos - state.spawnPos) * FLAT).Magnitude)
+		end
+	end
+	state.roamCap = nearest * ROAM_SHARE
+	return state.roamCap
+end
+
 task.spawn(function()
 	while true do
 		local now = tick()
@@ -1158,6 +1255,7 @@ task.spawn(function()
 		local level = model:GetAttribute("EnemyLevel") or 1
 
 		local distFromSpawn = (hrp.Position - state.spawnPos).Magnitude
+		local facing = false -- set when the rig turns toward its target this tick
 
 		-- Field groups carry their own leash from the anchor contract so a region's
 		-- roamers stay in their territory; arena enemies fall back to the archetype's.
@@ -1169,10 +1267,30 @@ task.spawn(function()
 			commandMove(state, humanoid, state.spawnPos, now)
 		end
 
+		-- Whatever pulled it out of RETURNING (a pack call, a respawn) also ends the untouchable walk.
+		if state.mode ~= "RETURNING" and model:GetAttribute("Returning") == true then
+			model:SetAttribute("Returning", nil)
+			state.returnStart = nil
+		end
+
 		if state.mode == "RETURNING" then
-			if (hrp.Position - state.spawnPos).Magnitude < 4 then
+			-- Leashed home: untouchable on the way (the "Returning" attribute; SwordSystem and the
+			-- unarmed path refuse damage), whole again on arrival, and never stuck on the way. It used
+			-- to take free hits all the way home, never fight back and never heal, so luring a boss to
+			-- its leash edge killed it for free (2026-09-24 playtest: combat-enemy-F1, combat-enemy-1).
+			state.returnStart = state.returnStart or now
+			if model:GetAttribute("Returning") ~= true then model:SetAttribute("Returning", true) end
+			local arrived = (hrp.Position - state.spawnPos).Magnitude < 4
+			if not arrived and now - state.returnStart > RETURN_TIMEOUT then
+				model:PivotTo(CFrame.new(state.spawnPos) * hrp.CFrame.Rotation) -- stuck on a wall: home
+				arrived = true
+			end
+			if arrived then
 				state.mode = "IDLE"
 				state.nextPatrolTime = now + math.random(1, 3)
+				state.returnStart = nil
+				humanoid.Health = humanoid.MaxHealth
+				model:SetAttribute("Returning", nil)
 			else
 				commandMove(state, humanoid, state.spawnPos, now)
 			end
@@ -1201,15 +1319,17 @@ task.spawn(function()
 					local scale = arch.scale or 1
 					if spot and ((spot - hrp.Position) * Vector3.new(1, 0, 1)).Magnitude > 1.6 and not state.windingUp then
 						commandMove(state, humanoid, separated(model, hrp, spot, scale), now)
-					elseif flat.Magnitude > 0.1 and hrp.CFrame.LookVector:Dot(flat.Unit) < 0.85 then
-						commandMove(state, humanoid, hrp.Position + flat.Unit * 0.3, now)
 					elseif arch.boss or state.windingUp then
 						commandMove(state, humanoid, hrp.Position, now)
 					else
 						-- On its spot and facing in: stand, unless a packmate is standing in it too.
 						commandMove(state, humanoid, separated(model, hrp, hrp.Position, scale), now)
 					end
-					if now - state.lastAttackTime >= getAttackCooldown(arch) + state.nextSwingGap and not state.windingUp then
+					-- Keep turning toward the target while in reach (a rig that just walked to its slot
+					-- faces the way it walked); a player can still slip behind a slow wind-up.
+					faceToward(hrp, targetHrp.Position)
+					facing = true
+					if now - state.lastAttackTime >= getAttackCooldown(arch) * (model:GetAttribute("AffixCooldownMult") or 1) + state.nextSwingGap and not state.windingUp then
 						state.lastAttackTime = now
 						state.nextSwingGap = getAttackCooldown(arch) * CADENCE_JITTER * (math.random() * 2 - 1)
 						state.windingUp = true
@@ -1249,8 +1369,12 @@ task.spawn(function()
 				-- Refuse to acquire a target standing in the sanctuary, so enemies never
 				-- line up on players who are shopping, questing or rebirthing.
 				-- ...and only players they can actually see, so nothing aggroes through cliffs or walls.
+				-- Only walls count: a packmate or a crystal in the way used to hide the player, so a
+				-- crowd let the player walk through it untouched (2026-09-25 Glacier recording).
+				local sightIgnore = CollectionService:GetTagged(ENEMY_TAG)
+				if pChar then table.insert(sightIgnore, pChar) end
 				if pChar and pHrp and SafeHub.canEnemyAttack(hrp.Position, pHrp.Position)
-					and CombatUtil.hasLineOfSight(hrp.Position, pHrp.Position, { model, pChar }) then
+					and CombatUtil.hasLineOfSight(hrp.Position, pHrp.Position, sightIgnore, true) then
 					state.mode = "CHASE"
 					state.targetChar = pChar
 					model:SetAttribute(ALERT_ATTRIBUTE, Workspace:GetServerTimeNow())
@@ -1259,18 +1383,57 @@ task.spawn(function()
 			end
 			if state.mode == "IDLE" then
 				if now >= state.nextPatrolTime then
-					state.nextPatrolTime = now + math.random(3, 6)
+					-- Wander wide and often, each rig on its own, so a camp drifts apart and the field
+					-- looks alive instead of clumps of three standing still (Alex, 2026-09-25). Kept
+					-- well inside the leash so a wander never trips it.
+					state.nextPatrolTime = now + 2 + math.random() * 3
+					local leash = model:GetAttribute("LeashRadius") or arch.leashDistance or 30
+					local roam = math.max(6, math.min(arch.patrolRadius * 1.6, leash * 0.6, roamCap(model, state)))
 					local angle = math.random() * math.pi * 2
-					local dist = math.random(3, arch.patrolRadius)
+					local dist = 3 + math.random() * (roam - 3)
 					local patrolTarget = state.spawnPos + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
 					commandMove(state, humanoid, patrolTarget, now)
 				end
 			end
 		end
+		if not facing then releaseFacing(hrp) end
 	end
 		task.wait(AI_TICK_INTERVAL)
 	end
 end)
+
+-- A sign over a dead boss's spawn spot counting down to its return, so an empty arena reads as
+-- "back in 24s" rather than as a boss that never respawns.
+local function bossCountdown(name: string, position: Vector3, seconds: number)
+	local anchor = Instance.new("Part")
+	anchor.Name = "BossRespawnSign"
+	anchor.Anchored, anchor.CanCollide, anchor.CanQuery, anchor.CanTouch = true, false, false, false
+	anchor.Transparency = 1
+	anchor.Size = Vector3.new(1, 1, 1)
+	anchor.Position = position + Vector3.new(0, 7, 0)
+	local gui = Instance.new("BillboardGui")
+	gui.Size = UDim2.fromOffset(320, 60)
+	gui.AlwaysOnTop = false
+	gui.MaxDistance = 90
+	gui.Parent = anchor
+	local label = Instance.new("TextLabel")
+	label.BackgroundTransparency = 1
+	label.Size = UDim2.fromScale(1, 1)
+	label.Font = Enum.Font.FredokaOne
+	label.TextScaled = true
+	label.TextColor3 = Color3.fromRGB(255, 236, 170)
+	label.TextStrokeTransparency = 0.2
+	label.Parent = gui
+	anchor.Parent = Workspace
+	task.spawn(function()
+		local deadline = os.clock() + seconds
+		while anchor.Parent and os.clock() < deadline do
+			label.Text = string.format("%s returns in %ds", name, math.ceil(deadline - os.clock()))
+			task.wait(0.5)
+		end
+		anchor:Destroy()
+	end)
+end
 
 local function spawnEnemy(config)
 	local model, humanoid, hrp, arch, groundedPos = createEnemyRig(config.archetype, config.position, config.level, config.role)
@@ -1303,6 +1466,37 @@ local function spawnEnemy(config)
 			title.TextColor3 = Color3.fromRGB(255, 200, 90)
 		end
 	end
+	-- Elite affixes (Config.EliteAffixConfig): a pack leader or an elite may roll one trait.
+	local affix = EliteAffixConfig.Roll(config.role, config.packIndex, arch.boss == true, math.random, function(n)
+		return math.random(1, n)
+	end)
+	if affix then
+		model:SetAttribute("Affix", affix.id)
+		model:SetAttribute("AffixTokenMult", EliteAffixConfig.TOKEN_MULT)
+		if affix.cooldownMult then model:SetAttribute("AffixCooldownMult", affix.cooldownMult) end
+		if affix.speedMult then humanoid.WalkSpeed *= affix.speedMult end
+		if affix.healthMult then
+			humanoid.MaxHealth *= affix.healthMult
+			humanoid.Health = humanoid.MaxHealth
+		end
+		if affix.knockbackImmune then model:SetAttribute("KnockbackImmune", true) end
+		if affix.lifesteal then model:SetAttribute("Lifesteal", affix.lifesteal) end
+		local torso = model:FindFirstChild("Torso")
+		if affix.shield then
+			model:SetAttribute("ShieldCharges", affix.shield)
+			if torso then
+				model:SetAttribute("ShieldMaterial", torso.Material.Name)
+				torso.Material = Enum.Material.ForceField
+			end
+		end
+		local head = model:FindFirstChild("Head")
+		local tag = head and head:FindFirstChild("NameTag")
+		local title = tag and tag:FindFirstChild("Title")
+		if title then
+			title.Text = affix.id .. " " .. title.Text
+			title.TextColor3 = affix.color
+		end
+	end
 	startEnemyAI(model, humanoid, hrp, arch, groundedPos, config.level, function()
 		-- A kill that PAID a sword brings its target back inside DROP_RESPAWN_DELAY instead of the
 		-- usual wait, so the drop reveal ends with the next roll already standing there rather
@@ -1311,6 +1505,9 @@ local function spawnEnemy(config)
 		task.delay(0.25, function()
 			local paid = model and model:GetAttribute("DropPaid") == true
 			local wait = if arch.boss then BOSS_RESPAWN_DELAY elseif paid then DROP_RESPAWN_DELAY else RESPAWN_DELAY
+			if arch.boss then
+				bossCountdown(arch.name or model.Name, groundedPos, wait - 0.25)
+			end
 			task.delay(math.max(wait - 0.25, 0), function()
 				spawnEnemy(config)
 			end)
@@ -1325,6 +1522,12 @@ local function attackEnemy(player, enemyModel)
 	local humanoid = enemyModel:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health <= 0 then
 		return
+	end
+	if enemyModel:GetAttribute("Returning") == true then
+		return -- leashed home: untouchable until it is back (see the RETURNING state)
+	end
+	if CombatUtil.absorbHit(enemyModel) then
+		return -- a Frost-shielded elite's shield took it
 	end
 
 	local creatorTag = humanoid:FindFirstChild(CREATOR_TAG_NAME)
@@ -1356,7 +1559,7 @@ local function attackEnemy(player, enemyModel)
 	local char = player.Character
 	local playerHrp = char and char:FindFirstChild("HumanoidRootPart")
 	local knockback = (player:GetAttribute("SwordKnockbackBonus") or 0) + (player:GetAttribute("RebirthExtraKnockback") or 0)
-	if playerHrp and knockback > 0 then
+	if playerHrp and knockback > 0 and enemyModel:GetAttribute("KnockbackImmune") ~= true then
 		local enemyHrp = enemyModel.PrimaryPart or enemyModel:FindFirstChild("HumanoidRootPart")
 		if enemyHrp then
 			local dir = (enemyHrp.Position - playerHrp.Position)
@@ -1415,6 +1618,11 @@ end
 local function tryUnarmedAttack(player)
 	local character, hrp = getAliveCharacter(player)
 	if not character or hasEquippedTool(character) then
+		return
+	end
+	-- The target is found from the client-owned root: not right after an impossible jump
+	-- (combat-enemy-F2, teleport-hits from 633 studs).
+	if MoveGuard.recentlyTeleported(player) then
 		return
 	end
 	local now = tick()

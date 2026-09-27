@@ -42,6 +42,21 @@
       "PlayerDataStore": {
         "$path": "lemonade-game/ServerScriptService/PlayerDataStore.server.luau"
       },
+      "SwordKeep": {
+        "$path": "lemonade-game/ServerScriptService/SwordKeep.luau"
+      },
+      "MoveGuard": {
+        "$path": "lemonade-game/ServerScriptService/MoveGuard.luau"
+      },
+      "CodexSystem": {
+        "$path": "lemonade-game/ServerScriptService/CodexSystem.server.luau"
+      },
+      "DailyStreak": {
+        "$path": "lemonade-game/ServerScriptService/DailyStreak.server.luau"
+      },
+      "WorldEvents": {
+        "$path": "lemonade-game/ServerScriptService/WorldEvents.server.luau"
+      },
       "QuestSystem": {
         "$path": "lemonade-game/ServerScriptService/QuestSystem.server.luau"
       },
@@ -136,6 +151,9 @@
         },
         "XPGainUI": {
           "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/XPGainUI.client.luau"
+        },
+        "DailyStreakGui": {
+          "$path": "lemonade-game/StarterPlayer/StarterPlayerScripts/DailyStreakGui.client.luau"
         }
       }
     }

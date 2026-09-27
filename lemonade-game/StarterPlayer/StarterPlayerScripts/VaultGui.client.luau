@@ -204,6 +204,9 @@ end
 -- The Tool to draw for a card: the carried sword itself, or for a vault entry a carried sword
 -- of the same boss tier (same mesh), else the part-built stand-in.
 local function toolFor(info, carried)
+	if typeof(info.tool) == "Instance" and info.tool.Parent then
+		return info.tool, false -- the exact sword the server listed
+	end
 	if info.toolName then
 		for _, tool in ipairs(carried) do
 			if tool.Name == info.toolName then return tool, false end
@@ -868,7 +871,7 @@ doStore = function()
 	if not sel then return end
 	panes.backpack.selected = nil
 	applySelection("backpack")
-	VAULT_ACTION:FireServer("Deposit", sel.info.toolName)
+	VAULT_ACTION:FireServer("Deposit", sel.info.tool or sel.info.toolName) -- the exact sword picked
 end
 doTake = function()
 	local sel = panes.vault.selected

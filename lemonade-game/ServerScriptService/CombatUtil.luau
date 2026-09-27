@@ -83,7 +83,26 @@ end
 -- Server combat systems use this before applying damage so a wall or locked boss
 -- room door cannot be bypassed by attacking through it. The caller supplies the
 -- two combat models to exclude from the raycast.
-function CombatUtil.hasLineOfSight(origin, target, ignoredInstances)
+-- A Frost-shielded elite (EliteAffixConfig) soaks its first hits: true when this hit was absorbed.
+-- The last charge breaks the shield and gives the torso its own material back.
+function CombatUtil.absorbHit(enemyModel)
+	local charges = enemyModel:GetAttribute("ShieldCharges")
+	if typeof(charges) ~= "number" or charges <= 0 then return false end
+	charges -= 1
+	enemyModel:SetAttribute("ShieldCharges", charges)
+	if charges <= 0 then
+		local torso = enemyModel:FindFirstChild("Torso")
+		local was = enemyModel:GetAttribute("ShieldMaterial")
+		if torso and typeof(was) == "string" then
+			pcall(function() torso.Material = Enum.Material[was] end)
+		end
+	end
+	return true
+end
+
+-- `solidOnly`: only parts a character collides with block the line, so decor a player walks
+-- through (crystals, snow drifts, banners) neither hides them nor shields them.
+function CombatUtil.hasLineOfSight(origin, target, ignoredInstances, solidOnly)
 	if typeof(origin) ~= "Vector3" or typeof(target) ~= "Vector3" then
 		return false
 	end
@@ -96,6 +115,7 @@ function CombatUtil.hasLineOfSight(origin, target, ignoredInstances)
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Exclude
 	params.FilterDescendantsInstances = ignoredInstances or {}
+	params.RespectCanCollide = solidOnly == true
 	return Workspace:Raycast(origin, direction, params) == nil
 end
 

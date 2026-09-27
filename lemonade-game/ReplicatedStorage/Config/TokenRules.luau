@@ -65,6 +65,23 @@ function TokenRules.ForKill(role: string?, rng: ((number, number) -> number)?, z
 	return math.max(1, math.floor((rng or math.random)(lo, hi)))
 end
 
+-- Everything that multiplies one kill's tokens on top of its band (the caller floors the product):
+--   * a world event running in the enemy's zone (WorldEvents: workspace WorldEventZone / Mult)
+--   * an event champion (the enemy's own EventTokenMult: Gilded, Hunt Leader)
+--   * an elite affix (the enemy's own AffixTokenMult: Frenzied, Vampiric ...)
+function TokenRules.KillMultiplier(model: Instance?): number
+	local mult = 1
+	if not model then return mult end
+	local ws = game:GetService("Workspace")
+	local zone = model:GetAttribute("Zone")
+	if zone ~= nil and ws:GetAttribute("WorldEvent") ~= nil and ws:GetAttribute("WorldEventZone") == zone then
+		mult *= tonumber(ws:GetAttribute("WorldEventMult")) or 1
+	end
+	mult *= tonumber(model:GetAttribute("EventTokenMult")) or 1
+	mult *= tonumber(model:GetAttribute("AffixTokenMult")) or 1 -- an elite affix (EliteAffixConfig)
+	return mult
+end
+
 -- Split a payout into pickups: { value, value, ... } summing to `total`, never more than
 -- MAX_PICKUPS entries, larger values first.
 function TokenRules.Split(total: number): { number }
