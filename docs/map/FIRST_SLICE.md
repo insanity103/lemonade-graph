@@ -141,7 +141,7 @@ waystone splinters from before.
 - `SwordValue` rates a relic sword from rarity base x modifier tier weights (+Blessed, +boss
   tier); a player's **Wealth** sums every sword carried or vaulted. It is a player attribute
   (vault and trade UIs) and a leaderstat beside Level and Rebirths; derived, never saved.
-- **Vaultkeeper** (log shack NE of spawn): store up to 12 relic swords in the profile vault;
+- **Vaultkeeper** (log shack on the south road's west side, its door to the road, opposite the Quest Master; the Spin Wheel and its Upgrade Stall stand beside the Quest Master on the east side): store up to 12 relic swords in the profile vault;
   they survive rebirths and server hops. `VaultSystem` + `VaultGui`.
 - **Trading** (Menu > Trade): the tab lists players in the server first; a request notifies
   the other player (toast + menu opens on the Trade tab) to accept or decline. In a trade your

@@ -1,5 +1,8 @@
 # Frostbound Glacier: the Studio session's plan
 
+> The gauntlet has moved on since this was written. For the current state, and for which parts of
+> this plan are stale, read `docs/map/GLACIER_LOCAL_HANDOFF.md` first.
+
 For the session that works on the Glacier inside Roblox Studio, with Alex at the PC. The zone was
 built in a cloud session with **no Studio access**: everything below was validated only offline
 (Rojo builds, `check_map_project.py` 0 FAILs, the audit, the tests) and rendered in Blender
