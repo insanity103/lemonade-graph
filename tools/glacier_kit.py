@@ -53,8 +53,8 @@ ICE_WALL_LIT = (46, 116, 224)   # the wall's lit slabs: one step lighter, still 
 ICE_CRAG = (108, 160, 240)      # the crags behind: a big step paler, the first breath of haze
 ICE_CRAG_LIT = (128, 176, 246)  # their lit blocks
 NAVY = (11, 42, 107)            # crevasse slots cut into the walls (#0B2A6B)
-RANGE = (184, 210, 252)         # the far range, hazed: paler than anything nearer, even its shaded east faces
-RANGE_DEEP = (150, 186, 248)    # its shaded ridges
+RANGE = (166, 200, 250)         # the far range, hazed: paler than the crags, a hair deeper than the sky at 15 degrees
+RANGE_DEEP = (136, 174, 244)    # its shaded ridges (round 5: the range was lost against the sky when it matched it)
 COBALT = (48, 110, 235)         # mid cobalt: the crevasse's middle strata
 SNOW_WARM = (255, 247, 232)     # the sun on the highest caps: warm top light over the blue slot
 ROCK = (200, 204, 255)          # pale periwinkle stone
@@ -321,6 +321,103 @@ def ice_tier_b():
     return _ice_tier(62, 175.0, 96.0, 4, 7.0, True)
 
 
+# ── Ice walls: the corridor's continuous fluted cliffs (round 5) ──
+def _ice_cliff(seed, h, w, n, lean, mirror):
+    """A glacier cliff after docs/map/glacier_refs/glacier_valley.png, round 5: one continuous
+    chunky face, not a stack of drums or a row of boxes. A big faceted core of deep-blue ice
+    (ICE_WALL) ~h tall and w wide leans `lean` degrees forward over the floor it faces (local -Z);
+    against its front stand `n` flutes shoulder to shoulder, tall faceted blades of the wall's two
+    blues (a pale one now and then) of uneven width, height and prominence, each turned a hair,
+    so the face is broken by vertical ribs and the crest is ragged; a snow cap sunk into every
+    flute's top and a white band sunk across the taller ones part way up (the horizontal strata
+    the photo's walls carry), a snow cornice along the core's crest, two pale seracs tipped out
+    over it; NAVY-in-ICE_DEEP crevasse slots flush in the widest flutes; a rounded foot and a
+    drift. map_forge overlaps pieces by half their width along an edge, so a row reads as one
+    cliff. Front local -Z."""
+    rng = random.Random(seed)
+    m = -1 if mirror else 1
+    D = w * 0.3
+    Df = D * 0.55
+    slope = math.tan(math.radians(lean))
+    out = [prim("ball", "Foot", (w * 1.1, h * 0.1, D * 1.2), (m * w * 0.02, h * 0.03, -D * 0.1), ICE_WALL,
+                (m * 3, 4, m * 2), lumpy=0.05)]
+    hc = h * 0.92
+    rc = (rng.uniform(-2, 2), -lean, m * rng.uniform(-1.5, 1.5))
+    pc = (0, hc / 2 - 1.5, -slope * hc / 2 + D * 0.1)
+    out.append(prim("block", "Core", (w * 0.92, hc, D), pc, ICE_WALL, rc, facet=True))
+    out.append(prim("ball", "Cornice", (w * 0.86, h * 0.05, D * 0.7), _on(pc, rc, (0, hc / 2 - h * 0.018, D * 0.05)), SNOW,
+                    (rc[0], rc[1] + 2, rc[2]), lumpy=0.05))
+    # the flutes: widths summing to ~1.04 w with small overlaps, heights in a ragged profile
+    widths = [rng.uniform(0.7, 1.3) for _ in range(n)]
+    tot = sum(widths)
+    x = -w * 0.52
+    flutes = []
+    for j in range(n):
+        fw = w * 1.04 * widths[j] / tot
+        cx = x + fw / 2
+        x += fw
+        f = abs(2 * j / (n - 1) - 1)  # 0 mid, 1 at the ends
+        fh = h * (0.62 + 0.38 * (1 - f) ** 0.6) * rng.uniform(0.86, 1.06)
+        fh = min(fh, h * 1.04)
+        proud = D * rng.uniform(-0.06, 0.46) * (1.0 - 0.5 * f)
+        rf = (rng.uniform(-5, 5), -lean + rng.uniform(-3.5, 2.5), m * rng.uniform(-3, 3))
+        pf = (cx, fh / 2 - 1.0, -slope * fh / 2 - (D - Df) / 2 - proud + D * 0.1)
+        tone = (ICE_WALL, ICE_WALL_LIT, ICE_WALL, ICE_WALL_LIT, ICE_PALE, ICE_WALL_LIT)[(j + seed) % 6]
+        out.append(prim("block", f"Flute{j}", (fw * 1.06, fh, Df), pf, tone, rf, facet=True))
+        out.append(prim("ball", f"FluteCap{j}", (fw * 1.2, fw * 0.4, Df * 1.3), _on(pf, rf, (0, fh / 2 - fw * 0.1, 0)), SNOW,
+                        (rf[0], rf[1] + 2, rf[2]), lumpy=0.05))
+        flutes.append((fw, fh, pf, rf))
+        # snow clinging in the flute's grooves: one or two white streaks flush on its face, so a
+        # face the sun never reaches (the jamb's, the near flank's east sides) still has form
+        for q in range(1 + (j + seed) % 2):
+            sy = fh * rng.uniform(-0.36, 0.3)
+            out.append(prim("block", f"Streak{j}_{q}", (fw * rng.uniform(0.4, 0.7), fh * rng.uniform(0.08, 0.2), 1.6),
+                            _on(pf, rf, (m * rng.uniform(-0.12, 0.12) * fw, sy, -Df / 2 + 0.5)), SNOW,
+                            (rf[0], rf[1], rf[2] + rng.uniform(-14, 14))))
+    order = sorted(range(n), key=lambda j: -flutes[j][0])
+    for k, j in enumerate(order[:3]):  # a crevasse slot in each of the three widest flutes
+        fw, fh, pf, rf = flutes[j]
+        _slot(out, f"Slot{k}", pf, rf, (m * rng.uniform(-0.15, 0.15) * fw, fh * rng.uniform(-0.12, 0.1)),
+              fw * rng.uniform(0.12, 0.18), fh * rng.uniform(0.3, 0.42), m * rng.uniform(2, 6), Df)
+    for k, j in enumerate(order[1:5]):  # white bands sunk across the taller flutes, part way up
+        fw, fh, pf, rf = flutes[j]
+        if fh < h * 0.7:
+            continue
+        by = fh * rng.uniform(0.2, 0.5) - fh / 2 + fh * 0.12
+        out.append(prim("ball", f"Band{k}", (fw * 1.16, fw * 0.3, Df * 1.2), _on(pf, rf, (0, by, -Df * 0.05)), SNOW,
+                        (rf[0], rf[1] + 3, rf[2]), lumpy=0.05))
+    # two snow ledges right across the face, sunk into the flutes and standing proud of them: the
+    # horizontal strata the photo's walls carry, and their tops catch the sun even on the wall
+    # that stands with its back to it
+    for k, fy in enumerate((0.3, 0.58)):
+        ly = h * fy * rng.uniform(0.92, 1.08)
+        out.append(prim("ball", f"Ledge{k}", (w * rng.uniform(1.0, 1.12), h * 0.03, Df * 1.6),
+                        (rng.uniform(-w * 0.05, w * 0.05), ly, -slope * ly - (D - Df) / 2 - D * 0.16 + D * 0.1), SNOW,
+                        (rng.uniform(-3, 3), -lean + 3, m * rng.uniform(-2, 2)), lumpy=0.05))
+    for k in range(2):  # pale seracs tipped out over the crest
+        j = order[k * 2 % n]
+        fw, fh, pf, rf = flutes[j]
+        sh, sw = h * rng.uniform(0.1, 0.14), fw * rng.uniform(0.7, 0.9)
+        rs = (rf[0] + rng.uniform(-8, 8), rf[1] - rng.uniform(10, 18), rf[2] + m * rng.uniform(-8, 8))
+        ps = _on(pf, rf, (m * fw * 0.1, fh / 2 + sh * 0.3, Df * 0.1))
+        out.append(prim("block", f"Serac{k}", (sw, sh, Df * 0.8), ps, ICE_PALE, rs, facet=True))
+        out.append(prim("ball", f"SeracCap{k}", (sw * 1.1, sw * 0.32, Df * 0.75), _on(ps, rs, (0, sh / 2 - sw * 0.1, 0)), SNOW,
+                        (rs[0], rs[1] + 2, rs[2]), lumpy=0.05))
+    out.append(prim("ball", "Drift", (w * 0.95, h * 0.04, D * 0.7), (0, h * 0.008, -D * 0.55), SNOW_SHADE, (0, 3, 0),
+                    lumpy=0.03))
+    return out
+
+
+@piece
+def ice_wall_a():
+    return _ice_cliff(71, 200.0, 110.0, 9, 10.0, False)
+
+
+@piece
+def ice_wall_b():
+    return _ice_cliff(72, 170.0, 80.0, 7, 12.0, True)
+
+
 # ── Ice spires: the giants, one huge leaning shard at each corner of the valley ──
 def _ice_spire(seed, h, w, lean, mirror):
     """One enormous shard of deep-blue ice leaning back `lean` degrees: three tiers of block,
@@ -432,9 +529,8 @@ def ice_ledge():
         c = (ICE_WALL, ICE_WALL_LIT, ICE_WALL, ICE_WALL_LIT)[i]
         p = (cx, h * 0.46, rng.uniform(-1, 1))
         out.append(prim("ball", f"Block{i}", (w, h, 11), p, c, r, lumpy=0.05))
-        out.append(prim("block", f"Fissure{i}", (1.4, h * 0.5, 1.2),
-                        _on(p, r, (rng.uniform(-w * 0.2, w * 0.2), -h * 0.05, -5.6)),
-                        NAVY, (r[0], r[1], r[2] + rng.uniform(-18, 18))))
+        _slot(out, f"Fissure{i}", p, r, (rng.uniform(-w * 0.2, w * 0.2), -h * 0.05), w * 0.18, h * 0.42,
+              rng.uniform(-12, 12), 11)
         if i % 2 == 0:
             out.append(prim("shard", f"Shard{i}", (4, rng.uniform(5, 8), 3.6), (cx + rng.uniform(-2, 2), h * 0.8, 0),
                             ICE_PALE, (rng.uniform(-40, 40), rng.uniform(-6, 6), rng.uniform(-16, 16))))
