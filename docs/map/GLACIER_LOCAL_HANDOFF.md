@@ -50,7 +50,7 @@ Check the last lines of `GLACIER_GAUNTLET.md`'s log for anything newer than this
 | Piece | Rounds | Status |
 | --- | --- | --- |
 | Village | 2 | **Won** on merit. Polish only: the empty snow field in the lower-centre foreground. |
-| Walls and range | 5 | Round 5 merged (`c9a26bb`): a continuous towering V onto one notch, fluted IceWall cliffs, a stepped glacier tongue, big peaks in the notch. 0 FAILs, 3,768 parts, 20 lights. **Not judged yet.** |
+| Walls and range | 5 lost; 6 building | Round 5 (`c9a26bb`: a towering V onto one notch, fluted IceWall cliffs, a stepped glacier tongue) lost as "a blue crystal city". The notch is as busy and as blue as the near walls, the walls have window-like slots, and the foreground plates block the view. Round 6 brief: the critic's next three in the gauntlet page's table. |
 | Canyon | 3 lost; 4 building | Round 3 (`65e3791`) lost: it still reads as a hallway, not a gorge. The round 4 builder was running in the cloud when this was written (see below). |
 | Frozen river field | 0 | Folded into the walls piece. The river is in the walls' frame. |
 
